@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Log In</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Poppins',sans-serif}
+
+/* ── FULL PAGE BACKGROUND ──────────────────────────────── */
+body{
+  min-height:100vh;
+  background:linear-gradient(180deg,
+    #1565c0 0%,
+    #1976d2 20%,
+    #42a5f5 50%,
+    #90caf9 70%,
+    #e3f2fd 85%,
+    #f5f5f5 100%
+  );
+  position:relative;
+  overflow-x:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:32px 16px 0;
+}
+
+/* ── CLOUDS ──────────────────────────────────────────────── */
+.cloud{
+  position:fixed;
+  background:#fff;
+  border-radius:50px;
+  opacity:0.35;
+  pointer-events:none;
+}
+.cloud::before,.cloud::after{
+  content:'';position:absolute;background:#fff;border-radius:50%;
+}
+.cloud::before{width:60%;height:130%;top:-30%;left:15%}
+.cloud::after{width:45%;height:120%;top:-25%;right:10%}
+
+/* Paw prints scattered */
+.paw{
+  position:fixed;font-size:28px;opacity:0.18;color:#fff;
+  pointer-events:none;
+}
+
+/* Birds */
+.bird{position:fixed;font-size:24px;opacity:0.55;color:#90caf9;pointer-events:none}
+
+/* Hearts */
+.heart{position:fixed;font-size:22px;opacity:0.3;color:#90caf9;pointer-events:none}
+
+/* ── LOGO SECTION ──────────────────────────────────────── */
+.logo-section{
+  display:flex;flex-direction:column;align-items:center;
+  margin-bottom:24px;position:relative;z-index:2;
+}
+.logo-heart{
+  width:80px;height:80px;margin-bottom:12px;
+  filter:drop-shadow(0 4px 16px rgba(0,0,0,0.25));
+  font-size:72px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-name{
+  font-size:42px;font-weight:900;color:#fff;
+  text-shadow:0 2px 12px rgba(0,0,0,0.2);
+  letter-spacing:-1px;
+}
+.logo-tag{
+  font-size:16px;color:rgba(255,255,255,0.9);
+  font-weight:500;margin-top:4px;
+  text-shadow:0 1px 4px rgba(0,0,0,0.15);
+}
+
+/* ── LOGIN CARD ──────────────────────────────────────────── */
+.login-card{
+  background:#fff;
+  border-radius:20px;
+  padding:32px 36px;
+  width:100%;
+  max-width:520px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.15);
+  position:relative;z-index:2;
+  margin-bottom:0;
+}
+
+/* Field */
+.field-wrap{
+  display:flex;align-items:center;
+  border:1.5px solid #e0e0e0;border-radius:10px;
+  background:#f5f5f5;padding:0 16px;
+  height:54px;margin-bottom:12px;
+  transition:border-color 0.15s;
+}
+.field-wrap:focus-within{border-color:#1a56db;background:#fff}
+.field-wrap i{font-size:20px;color:#9e9e9e;margin-right:12px;flex-shrink:0}
+.field-wrap input{
+  flex:1;border:none;outline:none;background:transparent;
+  font-size:15px;font-family:'Poppins',sans-serif;color:#333;
+}
+.field-wrap input::placeholder{color:#9e9e9e}
+
+/* Password row with Forgot */
+.pass-row{position:relative;margin-bottom:16px}
+.pass-row .field-wrap{margin-bottom:0}
+.forgot-link{
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  font-size:13px;font-weight:600;color:#1a56db;cursor:pointer;
+  background:#f5f5f5;
+}
+.pass-row .field-wrap:focus-within .forgot-link{background:#fff}
+.forgot-link:hover{text-decoration:underline}
+
+/* Login button — teal like in image 2 */
+.login-btn{
+  width:100%;height:54px;border-radius:10px;
+  background:linear-gradient(135deg,#00897b,#00695c);
+  color:#fff;font-size:17px;font-weight:800;
+  border:none;cursor:pointer;font-family:'Poppins',sans-serif;
+  margin-top:4px;margin-bottom:18px;
+  box-shadow:0 4px 16px rgba(0,137,123,0.35);
+  transition:filter 0.15s;
+}
+.login-btn:hover{filter:brightness(1.08)}
+
+/* Or divider */
+.or-row{
+  display:flex;align-items:center;gap:12px;
+  color:#9e9e9e;font-size:14px;font-weight:500;
+  margin-bottom:14px;
+}
+.or-row::before,.or-row::after{content:'';flex:1;height:1px;background:#e0e0e0}
+
+/* Social buttons */
+.social-btn{
+  width:100%;height:52px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  font-family:'Poppins',sans-serif;
+  margin-bottom:10px;border:1.5px solid #e0e0e0;
+  background:#fff;color:#1a1a2e;transition:background 0.12s;
+}
+.social-btn:hover{background:#f5f5f5}
+.social-btn.facebook{
+  background:#3b5998;color:#fff;border-color:#3b5998;
+}
+.social-btn.facebook:hover{background:#2d4373}
+.social-btn.apple{background:#000;color:#fff;border-color:#000}
+.social-btn.apple:hover{background:#222}
+
+/* G logo */
+.g-logo{
+  width:22px;height:22px;
+  background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="%23EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.5 2.5 30.1 0 24 0 14.8 0 7 5.4 3 13.2l7.8 6.1C12.8 13 18 9.5 24 9.5z"/><path fill="%234285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="%23FBBC05" d="M10.8 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7L2.5 13.2A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.5 10.8l8.3-6.1z"/><path fill="%2334A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6 0-11.1-4-12.9-9.5l-8 6.2C7 43.1 14.9 48 24 48z"/></svg>') center/contain no-repeat;
+  flex-shrink:0;
+}
+
+/* Sign up link */
+.signup-row{
+  text-align:center;margin-top:16px;
+  font-size:14px;color:#555;
+  padding-top:16px;border-top:1px solid #e0e0e0;
+}
+.signup-link{
+  color:#f97316;font-weight:800;cursor:pointer;
+  text-decoration:underline;
+}
+
+/* Terms */
+.terms{
+  text-align:center;font-size:12px;color:#9e9e9e;
+  margin-top:10px;line-height:1.6;
+}
+.terms a{color:#555;text-decoration:underline;cursor:pointer}
+
+/* Error message */
+.err-msg{
+  background:#fff3cd;color:#856404;border:1px solid #ffc107;
+  padding:10px 14px;border-radius:8px;
+  font-size:13px;font-weight:600;margin-bottom:12px;display:none;
+}
+
+/* ── PET IMAGES STRIP ────────────────────────────────────── */
+.pets-strip{
+  width:100%;max-width:700px;
+  position:relative;z-index:2;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-top:-10px;
+  pointer-events:none;
+}
+.pet-left{
+  height:200px;object-fit:contain;
+  filter:drop-shadow(0 4px 16px rgba(0,0,0,0.2));
+  margin-left:-10px;
+}
+.pet-right{
+  height:180px;object-fit:contain;
+  filter:drop-shadow(0 4px 16px rgba(0,0,0,0.2));
+  margin-right:-10px;
+}
+.pet-right-rabbit{
+  height:130px;object-fit:contain;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+  margin-right:20px;
+}
+
+/* ── REGISTRATION MODAL ──────────────────────────────────── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.55);z-index:100;
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:#fff;border-radius:20px;padding:32px 28px;
+  width:100%;max-width:480px;
+  box-shadow:0 12px 48px rgba(0,0,0,0.2);
+  position:relative;max-height:90vh;overflow-y:auto;
+}
+.modal-title{font-size:22px;font-weight:900;color:#1e293b;margin-bottom:4px}
+.modal-sub{font-size:13px;color:#64748b;margin-bottom:20px}
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  width:32px;height:32px;border-radius:50%;
+  background:#f1f5f9;border:none;cursor:pointer;
+  font-size:18px;display:flex;align-items:center;justify-content:center;
+}
+.reg-btn{
+  width:100%;height:52px;border-radius:10px;
+  background:linear-gradient(135deg,#f97316,#ea580c);
+  color:#fff;font-size:16px;font-weight:800;
+  border:none;cursor:pointer;font-family:'Poppins',sans-serif;
+  margin-top:8px;box-shadow:0 4px 16px rgba(249,115,22,0.35);
+  transition:filter 0.15s;
+}
+.reg-btn:hover{filter:brightness(1.08)}
+.reg-btn:disabled{opacity:0.6;cursor:not-allowed}
+
+/* Made with AI badge */
+.made-badge{
+  position:fixed;top:16px;right:16px;
+  background:rgba(255,255,255,0.95);
+  border-radius:20px;padding:6px 16px;
+  font-size:13px;font-weight:700;color:#333;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:10;
+}
+</style>
+</head>
+<body>
+
+<!-- Made with AI badge -->
+<div class="made-badge">Made with AI</div>
+
+<!-- Clouds -->
+<div class="cloud" style="width:200px;height:60px;top:8%;left:2%"></div>
+<div class="cloud" style="width:160px;height:50px;top:5%;right:8%"></div>
+<div class="cloud" style="width:240px;height:70px;top:18%;left:30%"></div>
+<div class="cloud" style="width:180px;height:55px;top:32%;right:2%"></div>
+<div class="cloud" style="width:140px;height:45px;top:28%;left:5%"></div>
+
+<!-- Paw prints -->
+<div class="paw" style="top:10%;left:6%">🐾</div>
+<div class="paw" style="top:18%;right:10%">🐾</div>
+<div class="paw" style="top:8%;right:25%;font-size:20px">🐾</div>
+<div class="paw" style="top:35%;left:3%;font-size:18px">🐾</div>
+
+<!-- Birds -->
+<div class="bird" style="top:9%;left:28%">🐦</div>
+<div class="bird" style="top:22%;right:15%;font-size:30px">🐦</div>
+
+<!-- Hearts -->
+<div class="heart" style="top:38%;left:5%">💙</div>
+<div class="heart" style="top:45%;left:8%;font-size:16px">💙</div>
+
+<!-- Logo -->
+<div class="logo-section">
+  <!-- Cartoon pet heart logo from shared image -->
+  <img
+    src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=120&q=80"
+    style="display:none"
+    onerror="">
+  <div style="position:relative;width:110px;height:110px;margin-bottom:14px">
+    <!-- Heart shape with cartoon pets inside -->
+    <div style="width:110px;height:110px;border-radius:50%;
+      background:linear-gradient(135deg,#ff6b6b,#ff8e53);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 6px 24px rgba(255,107,107,0.5);
+      font-size:64px;position:relative;overflow:hidden">
+      <!-- Cartoon dog and cat emoji as logo -->
+      <span style="position:absolute;font-size:52px;bottom:8px;left:8px">🐕</span>
+      <span style="position:absolute;font-size:44px;bottom:8px;right:6px">🐱</span>
+      <!-- Heart overlay -->
+      <span style="position:absolute;top:6px;left:50%;transform:translateX(-50%);font-size:28px">❤️</span>
+    </div>
+  </div>
+  <div class="logo-name">PawBook</div>
+  <div class="logo-tag">Connect. Care. Share.</div>
+</div>
+
+<!-- Login Card -->
+<div class="login-card">
+  <div class="err-msg" id="login-err"></div>
+
+  <!-- Email -->
+  <div class="field-wrap">
+    <i class="ti ti-mail"></i>
+    <input id="login-email" type="email" placeholder="Email or Mobile Number">
+  </div>
+
+  <!-- Password + Forgot -->
+  <div class="pass-row">
+    <div class="field-wrap">
+      <i class="ti ti-lock"></i>
+      <input id="login-pass" type="password" placeholder="Password" style="padding-right:130px">
+      <span class="forgot-link">Forgot Password?</span>
+    </div>
+  </div>
+
+  <!-- Log In button -->
+  <button class="login-btn" id="login-btn" onclick="doLogin()">Log In</button>
+
+  <!-- Or -->
+  <div class="or-row">Or</div>
+
+  <!-- Social -->
+  <button class="social-btn">
+    <div class="g-logo"></div>
+    Continue with <strong>Google</strong>
+  </button>
+  <button class="social-btn facebook">
+    <i class="ti ti-brand-facebook" style="font-size:22px"></i>
+    Continue with <strong>Facebook</strong>
+  </button>
+  <button class="social-btn apple">
+    <i class="ti ti-brand-apple" style="font-size:22px"></i>
+    Continue with <strong>Apple</strong>
+  </button>
+
+  <!-- Sign Up -->
+  <div class="signup-row">
+    New to PawBook? <span class="signup-link" onclick="openRegModal()">Sign Up</span>
+  </div>
+  <div class="terms">
+    By logging in, you agree to our <a>Terms of Service</a> &amp; <a>Privacy Policy</a>.
+  </div>
+</div>
+
+<!-- Cartoon pet images fixed at bottom corners - exactly like reference -->
+<!-- Bottom left: Cartoon Corgi dog -->
+<div style="position:fixed;bottom:0;left:0;z-index:5;pointer-events:none;
+  display:flex;flex-direction:column;align-items:flex-start">
+  <div style="font-size:130px;line-height:1;
+    filter:drop-shadow(0 4px 16px rgba(0,0,0,0.25));
+    margin-left:-10px;margin-bottom:-8px">🐕</div>
+  <!-- First aid kit next to dog -->
+  <div style="position:absolute;right:-30px;bottom:40px;font-size:48px;
+    filter:drop-shadow(0 2px 8px rgba(0,0,0,0.2))">🧳</div>
+  <!-- Ball -->
+  <div style="position:absolute;right:10px;bottom:10px;font-size:28px">🟠</div>
+</div>
+
+<!-- Bottom right: Cartoon cat + rabbit -->
+<div style="position:fixed;bottom:0;right:0;z-index:5;pointer-events:none;
+  display:flex;align-items:flex-end;gap:0">
+  <!-- Rabbit -->
+  <div style="font-size:80px;line-height:1;margin-right:-10px;
+    filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));margin-bottom:0">🐰</div>
+  <!-- Cat -->
+  <div style="font-size:120px;line-height:1;
+    filter:drop-shadow(0 4px 16px rgba(0,0,0,0.25));margin-bottom:-8px;
+    margin-right:-8px">🐈</div>
+  <!-- Food bowl -->
+  <div style="position:absolute;left:10px;bottom:8px;font-size:30px">🥣</div>
+</div>
+
+<!-- Ground grass strip bottom -->
+<div style="position:fixed;bottom:0;left:0;right:0;height:40px;z-index:4;
+  background:linear-gradient(180deg,transparent,rgba(100,180,80,0.3));
+  pointer-events:none"></div>
+
+<!-- ── REGISTRATION MODAL ──────────────────────────────────────────────── -->
+<div class="modal-overlay" id="reg-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeRegModal()">×</button>
+    <div class="modal-title">🐾 Create Account</div>
+    <div class="modal-sub">Join PawBook — India's pet community</div>
+
+    <div class="err-msg" id="reg-err"></div>
+
+    <!-- Full Name -->
+    <div class="field-wrap">
+      <i class="ti ti-user"></i>
+      <input id="reg-name" type="text" placeholder="Full Name">
+    </div>
+
+    <!-- Username -->
+    <div class="field-wrap">
+      <i class="ti ti-at"></i>
+      <input id="reg-username" type="text" placeholder="Username (e.g. pawlover_delhi)" autocomplete="off">
+    </div>
+
+    <!-- Email -->
+    <div class="field-wrap">
+      <i class="ti ti-mail"></i>
+      <input id="reg-email" type="email" placeholder="Email Address">
+    </div>
+
+    <!-- Phone -->
+    <div class="field-wrap">
+      <i class="ti ti-phone"></i>
+      <input id="reg-phone" type="tel" placeholder="Mobile Number (optional)">
+    </div>
+
+    <!-- Password -->
+    <div class="field-wrap">
+      <i class="ti ti-lock"></i>
+      <input id="reg-pass" type="password" placeholder="Password (min 8 characters)">
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="field-wrap">
+      <i class="ti ti-lock-check"></i>
+      <input id="reg-pass2" type="password" placeholder="Confirm Password">
+    </div>
+
+    <!-- Role -->
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:700;color:#64748b;margin-bottom:8px">I am a:</div>
+      <div style="display:flex;gap:8px">
+        <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;
+          border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600">
+          <input type="radio" name="reg-role" value="pet_owner" checked style="accent-color:#f97316"> 🐾 Pet Owner
+        </label>
+        <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;
+          border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600">
+          <input type="radio" name="reg-role" value="vet" style="accent-color:#f97316"> 🩺 Veterinarian
+        </label>
+      </div>
+    </div>
+
+    <button class="reg-btn" id="reg-btn" onclick="doRegister()">
+      Create Account & Continue →
+    </button>
+
+    <div style="text-align:center;margin-top:14px;font-size:12px;color:#94a3b8">
+      Already have an account?
+      <span onclick="closeRegModal()" style="color:#1a56db;font-weight:700;cursor:pointer">Log In</span>
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+if(typeof Auth!=='undefined'&&Auth.isLoggedIn())location.href='07_home.html';
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const err=document.getElementById('login-err');
+  const btn=document.getElementById('login-btn');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Please enter your email and password.';err.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Logging in…';
+  try{
+    await AuthAPI.login(email,pass);
+    location.href='07_home.html';
+  }catch(e){
+    err.textContent=e.message||'Invalid credentials. Please try again.';
+    err.style.display='block';
+  }finally{btn.disabled=false;btn.textContent='Log In';}
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('reg-modal').classList.contains('open'))doLogin();});
+
+// ── REGISTER MODAL ────────────────────────────────────────────────────────────
+function openRegModal(){
+  document.getElementById('reg-modal').classList.add('open');
+  document.getElementById('reg-err').style.display='none';
+}
+function closeRegModal(){
+  document.getElementById('reg-modal').classList.remove('open');
+}
+// Close on overlay click
+document.getElementById('reg-modal').addEventListener('click', function(e){
+  if(e.target===this) closeRegModal();
+});
+
+async function doRegister(){
+  const name     = document.getElementById('reg-name').value.trim();
+  const username = document.getElementById('reg-username').value.trim().toLowerCase();
+  const email    = document.getElementById('reg-email').value.trim();
+  const phone    = document.getElementById('reg-phone').value.trim();
+  const pass     = document.getElementById('reg-pass').value;
+  const pass2    = document.getElementById('reg-pass2').value;
+  const role     = document.querySelector('input[name="reg-role"]:checked')?.value || 'pet_owner';
+  const err      = document.getElementById('reg-err');
+  const btn      = document.getElementById('reg-btn');
+
+  err.style.display='none';
+
+  // Validate
+  if(!name)        { showRegErr('Please enter your full name.'); return; }
+  if(!username || username.length < 3)
+                   { showRegErr('Username must be at least 3 characters.'); return; }
+  if(!/^[a-z0-9_.]+$/.test(username))
+                   { showRegErr('Username can only contain letters, numbers, _ and .'); return; }
+  if(!email)       { showRegErr('Please enter your email address.'); return; }
+  if(pass.length < 8) { showRegErr('Password must be at least 8 characters.'); return; }
+  if(pass !== pass2)  { showRegErr('Passwords do not match.'); return; }
+
+  btn.disabled=true; btn.textContent='Creating account…';
+
+  try {
+    await AuthAPI.register({
+      full_name: name,
+      username,
+      email,
+      password: pass,
+      role,
+      ...(phone ? { phone } : {})
+    });
+    // Success — go to onboarding
+    location.href='02_onboarding.html';
+  } catch(e) {
+    showRegErr(e.message || 'Registration failed. Please try again.');
+  } finally {
+    btn.disabled=false; btn.textContent='Create Account & Continue →';
+  }
+}
+
+function showRegErr(msg){
+  const err=document.getElementById('reg-err');
+  err.textContent=msg; err.style.display='block';
+  err.scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+<script>
+function socialLogin(provider) {
+  toast('🔄 Connecting with ' + provider + '...', 'info');
+  setTimeout(() => { toast('✅ Logged in with ' + provider + '!'); goTo('07_home.html'); }, 1500);
+}
+function goTo(p){window.location.href=p;}
+function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+</script>
+</body>
+</html>

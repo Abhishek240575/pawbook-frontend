@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+.group-layout{max-width:1080px;margin:0 auto;padding:0 0 80px}
+.group-cover{width:100%;height:220px;object-fit:cover;display:block;background:#dbeafe}
+.group-hero{background:#fff;padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.group-av{width:80px;height:80px;border-radius:14px;border:4px solid #fff;object-fit:cover;margin-top:-40px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:32px}
+.group-av img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.group-meta{display:flex;align-items:flex-start;gap:12px;margin-top:10px}
+.group-info{flex:1}
+.group-name{font-size:22px;font-weight:900;color:var(--text)}
+.group-desc{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.5}
+.group-stats{display:flex;gap:16px;margin-top:8px;font-size:13px;color:var(--muted);font-weight:600}
+.group-stat span{color:var(--text);font-weight:800}
+.group-actions{display:flex;gap:8px;margin-top:12px}
+.group-tabs{background:#fff;display:flex;border-bottom:2px solid var(--border);position:sticky;top:56px;z-index:400;overflow-x:auto;scrollbar-width:none}
+.group-tabs::-webkit-scrollbar{display:none}
+.gtab{flex-shrink:0;padding:13px 20px;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;background:none;border-top:none;border-left:none;border-right:none;font-family:'Poppins',sans-serif;white-space:nowrap}
+.gtab:hover{color:var(--text);background:#f8f9ff}
+.gtab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.group-body{display:grid;grid-template-columns:1fr 300px;gap:14px;padding:0 16px;margin-top:14px}
+@media(max-width:800px){.group-body{grid-template-columns:1fr}.group-sidebar{display:none}}
+
+/* Post composer */
+.gcomposer{background:#fff;border-radius:12px;border:1px solid var(--border);padding:14px;margin-bottom:12px}
+.gcomposer-row{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.gcomposer-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:16px;flex-shrink:0}
+.gcomposer-input{flex:1;height:40px;border-radius:20px;border:1.5px solid var(--border);padding:0 16px;font-family:'Poppins',sans-serif;font-size:13px;cursor:pointer;background:#f0f2f5;outline:none}
+.gcomposer-actions{display:flex;gap:0;border-top:1px solid var(--border);padding-top:10px}
+.gca{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:34px;border-radius:8px;border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.gca:hover{background:#f0f2f5}
+.gca i{font-size:18px}
+
+/* Post cards */
+.gpost{background:#fff;border-radius:12px;border:1px solid var(--border);margin-bottom:12px;overflow:hidden}
+.gpost-header{padding:14px 16px;display:flex;align-items:center;gap:10px}
+.gpost-av{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
+.gpost-av img{width:100%;height:100%;object-fit:cover}
+.gpost-name{font-size:14px;font-weight:700}
+.gpost-meta{font-size:12px;color:var(--muted)}
+.gpost-body{padding:0 16px 10px;font-size:14px;line-height:1.6;color:var(--text)}
+.gpost-img{width:100%;max-height:400px;object-fit:cover}
+.gpost-stats{padding:8px 16px;display:flex;justify-content:space-between;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border)}
+.gpost-actions{display:flex;border-top:1px solid var(--border)}
+.gpa{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:38px;border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.gpa:hover{background:#f0f2f5}
+.gpa.liked{color:#e41e3f}
+.gpost-comments{padding:8px 16px 12px;background:#f8f9ff;display:none}
+.gpc-item{display:flex;gap:8px;margin-bottom:8px}
+.gpc-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:11px;flex-shrink:0}
+.gpc-bubble{background:#fff;border-radius:12px;padding:8px 12px;font-size:13px;flex:1}
+.gpc-name{font-size:11px;font-weight:800;margin-bottom:2px}
+.gpc-input{display:flex;gap:8px;margin-top:8px}
+.gpc-inp{flex:1;height:36px;border-radius:18px;border:1.5px solid var(--border);padding:0 14px;font-family:'Poppins',sans-serif;font-size:13px;background:#fff;outline:none}
+
+/* Sidebar */
+.gsidebar-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:14px;margin-bottom:12px}
+.gsidebar-title{font-size:14px;font-weight:800;margin-bottom:12px;color:var(--text)}
+.member-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.member-av{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:13px}
+.member-av img{width:100%;height:100%;object-fit:cover}
+.member-name{font-size:13px;font-weight:700}
+.member-role{font-size:11px;color:var(--muted)}
+
+/* New post modal */
+.gmodal{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:600;display:none;align-items:center;justify-content:center}
+.gmodal.open{display:flex}
+.gmodal-box{background:#fff;border-radius:16px;width:520px;max-width:94vw;max-height:90vh;overflow-y:auto}
+.gmodal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.gmodal-body{padding:16px 20px}
+.gmodal-img-preview{display:none;border-radius:10px;overflow:hidden;margin:10px 0;position:relative}
+.gmodal-img-preview img{width:100%;max-height:280px;object-fit:cover}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search group…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab active" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab" onclick="goTo('13_messages.html')"><i class="ti ti-message-circle"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" id="nav-av" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<div class="group-layout" style="padding-top:56px">
+  <!-- Cover -->
+  <img id="group-cover" class="group-cover" src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&q=80">
+
+  <!-- Hero -->
+  <div class="group-hero">
+    <div class="group-av" id="group-av-wrap">
+      <img id="group-av-img" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80">
+    </div>
+    <div class="group-meta">
+      <div class="group-info">
+        <div class="group-name" id="group-name">Loading…</div>
+        <div class="group-desc" id="group-desc">Loading group details…</div>
+        <div class="group-stats">
+          <div><span id="member-count">…</span> members</div>
+          <div><span id="post-count">…</span> posts/week</div>
+          <div id="privacy-badge">🔓 Public</div>
+        </div>
+      </div>
+      <div class="group-actions">
+        <button class="btn btn-blue" id="join-btn" onclick="toggleJoin()">
+          <i class="ti ti-user-plus"></i> Join Group
+        </button>
+        <button class="btn btn-gray" onclick="shareGroup()"><i class="ti ti-share"></i> Share</button>
+        <button class="nav-icon-btn" onclick="showGroupMenu()"><i class="ti ti-dots"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="group-tabs">
+    <button class="gtab active" onclick="showTab('feed',this)">📰 Feed</button>
+    <button class="gtab" onclick="showTab('members',this)">👥 Members</button>
+    <button class="gtab" onclick="showTab('media',this)">📸 Media</button>
+    <button class="gtab" onclick="showTab('about',this)">ℹ️ About</button>
+    <button class="gtab" onclick="showTab('events',this)">🎉 Events</button>
+  </div>
+
+  <!-- Body -->
+  <div class="group-body">
+    <!-- Main feed -->
+    <div>
+      <!-- Feed tab -->
+      <div id="tab-feed">
+        <!-- Composer -->
+        <div class="gcomposer" id="group-composer">
+          <div class="gcomposer-row">
+            <div class="gcomposer-av" id="composer-initial">A</div>
+            <input class="gcomposer-input" placeholder="Write something to the group…" onclick="openGroupPost()" readonly>
+          </div>
+          <div class="gcomposer-actions">
+            <button class="gca" onclick="openGroupPost('photo')"><i class="ti ti-photo" style="color:#45bd62"></i> Photo</button>
+            <button class="gca" onclick="openGroupPost('video')"><i class="ti ti-video" style="color:#e41e3f"></i> Video</button>
+            <button class="gca" onclick="openGroupPost('feeling')"><i class="ti ti-mood-smile" style="color:#f7b928"></i> Feeling</button>
+          </div>
+        </div>
+        <!-- Posts -->
+        <div id="group-posts">
+          <div style="text-align:center;padding:32px;color:var(--muted)">
+            <div style="font-size:32px;margin-bottom:8px">⏳</div>
+            <div style="font-weight:700">Loading posts…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Members tab -->
+      <div id="tab-members" style="display:none">
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--border);padding:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:15px;font-weight:800">Members</div>
+            <input placeholder="Search members…" style="height:34px;border-radius:8px;border:1.5px solid var(--border);padding:0 12px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;width:180px">
+          </div>
+          <div id="members-list"></div>
+        </div>
+      </div>
+
+      <!-- Media tab -->
+      <div id="tab-media" style="display:none">
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--border);padding:14px">
+          <div style="font-size:15px;font-weight:800;margin-bottom:12px">Group Photos & Videos</div>
+          <div id="media-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;border-radius:10px;overflow:hidden"></div>
+        </div>
+      </div>
+
+      <!-- About tab -->
+      <div id="tab-about" style="display:none">
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--border);padding:20px">
+          <div style="font-size:16px;font-weight:800;margin-bottom:14px">About this group</div>
+          <div id="about-content"></div>
+        </div>
+      </div>
+
+      <!-- Events tab -->
+      <div id="tab-events" style="display:none">
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--border);padding:14px">
+          <div style="font-size:15px;font-weight:800;margin-bottom:12px">Upcoming Events</div>
+          <div style="text-align:center;padding:24px;color:var(--muted)">
+            <div style="font-size:40px;margin-bottom:8px">🎉</div>
+            <div style="font-weight:700">No upcoming events</div>
+            <button onclick="goTo('30_events.html')" class="btn btn-blue" style="margin-top:12px">Create Event</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="group-sidebar">
+      <div class="gsidebar-card" id="sidebar-about-card">
+        <div class="gsidebar-title">About</div>
+        <div id="sidebar-about" style="font-size:13px;color:var(--muted);line-height:1.6">Loading…</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px" id="sidebar-meta"></div>
+      </div>
+      <div class="gsidebar-card">
+        <div class="gsidebar-title">Admins & Moderators</div>
+        <div id="sidebar-admins"></div>
+      </div>
+      <div class="gsidebar-card">
+        <div class="gsidebar-title">Members you may know</div>
+        <div id="sidebar-members"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Post Modal -->
+<div class="gmodal" id="group-post-modal">
+  <div class="gmodal-box">
+    <div class="gmodal-header">
+      <div style="font-size:16px;font-weight:800">Create post in group</div>
+      <button onclick="closeGroupPost()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div class="gmodal-body">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div class="gcomposer-av" style="width:44px;height:44px;font-size:18px" id="gmodal-av">A</div>
+        <div>
+          <div style="font-size:14px;font-weight:700" id="gmodal-name">You</div>
+          <div style="font-size:12px;color:var(--muted)">Posting in <span id="gmodal-group-name" style="font-weight:700;color:var(--blue)">Group</span></div>
+        </div>
+      </div>
+      <textarea id="gpost-body" placeholder="Write something to the group…" style="width:100%;min-height:120px;border:none;font-size:15px;font-family:'Poppins',sans-serif;outline:none;resize:none;color:var(--text)"></textarea>
+
+      <!-- Image preview -->
+      <div class="gmodal-img-preview" id="gmodal-preview">
+        <img id="gmodal-preview-img" src="">
+        <button onclick="clearGModalImg()" style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.55);border:none;color:#fff;font-size:16px;cursor:pointer">✕</button>
+      </div>
+
+      <!-- Add to post bar -->
+      <div style="border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:4px;margin:10px 0">
+        <div style="font-size:13px;font-weight:700;color:var(--text);flex:1">Add to post:</div>
+        <input type="file" id="gpost-file" accept="image/*,video/*" style="display:none" onchange="handleGPostFile(this)">
+        <button onclick="document.getElementById('gpost-file').click()" style="width:36px;height:36px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:20px" title="Photo">
+          <i class="ti ti-photo" style="color:#45bd62"></i>
+        </button>
+        <button onclick="document.getElementById('gpost-file').click()" style="width:36px;height:36px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:20px" title="Video">
+          <i class="ti ti-video" style="color:#e41e3f"></i>
+        </button>
+        <button onclick="tagInGroup()" style="width:36px;height:36px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:20px" title="Tag">
+          <i class="ti ti-user-plus" style="color:#1877f2"></i>
+        </button>
+        <button onclick="addGFeeling()" style="width:36px;height:36px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:20px" title="Feeling">
+          <i class="ti ti-mood-smile" style="color:#f7b928"></i>
+        </button>
+      </div>
+
+      <div id="gpost-err" style="background:#fee2e2;color:var(--red);padding:10px;border-radius:8px;font-size:13px;display:none;margin-bottom:8px"></div>
+      <button class="btn btn-blue btn-full btn-lg" onclick="submitGroupPost()">Post</button>
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+function goTo(p){location.href=p;}
+if (!Auth.isLoggedIn()) return;
+const user=Auth.getUser();
+const params=new URLSearchParams(location.search);
+const GROUP_ID=params.get('group')||'1';
+let groupData=null, isMember=false, isAdmin=false;
+let gPostImgData=null;
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(async function init(){
+  const init=(user?.full_name||user?.username||'A')[0].toUpperCase();
+  document.getElementById('nav-av').textContent=init;
+  document.getElementById('composer-initial').textContent=init;
+  document.getElementById('gmodal-av').textContent=init;
+  document.getElementById('gmodal-name').textContent=user?.full_name||user?.username||'You';
+  await loadGroup();
+  await loadPosts();
+})();
+
+// ── LOAD GROUP ────────────────────────────────────────────────────────────────
+async function loadGroup(){
+  try{
+    const r=await GroupAPI.get(GROUP_ID);
+    const g=r?.data;if(!g)return useFallback();
+    groupData=g;
+    document.getElementById('group-name').textContent=g.name||'Group';
+    document.getElementById('group-desc').textContent=g.description||'A PawBook community';
+    document.getElementById('member-count').textContent=fmt(g.member_count||0);
+    document.getElementById('post-count').textContent=g.post_count||0;
+    document.getElementById('privacy-badge').textContent=(g.privacy==='private'||g.is_private)?'🔒 Private':'🔓 Public';
+    document.getElementById('gmodal-group-name').textContent=g.name||'Group';
+    if(g.cover_url)document.getElementById('group-cover').src=g.cover_url;
+    if(g.avatar_url)document.getElementById('group-av-img').src=g.avatar_url;
+    document.title='PawBook — '+g.name;
+    isMember=g.is_member;
+    if(isMember){
+      const btn=document.getElementById('join-btn');
+      btn.innerHTML='<i class="ti ti-check"></i> Joined';
+      btn.className='btn btn-gray';
+    }
+    // Sidebar
+    document.getElementById('sidebar-about').textContent=g.description||'No description yet.';
+    document.getElementById('sidebar-meta').innerHTML=`
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="ti ti-users"></i> ${fmt(g.member_count||0)} members</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="ti ti-map-pin"></i> ${g.city||'India'}</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="ti ti-calendar"></i> Created ${fmtDate(g.created_at)}</div>`;
+  }catch{useFallback();}
+}
+
+function useFallback(){
+  document.getElementById('group-name').textContent='Delhi Dog Parents 🐕';
+  document.getElementById('group-desc').textContent='A community for dog owners in Delhi and NCR. Share photos, tips, meet-ups and more!';
+  document.getElementById('member-count').textContent='4.2K';
+  document.getElementById('post-count').textContent='23';
+  document.getElementById('sidebar-about').textContent='A community for dog owners in Delhi and NCR. Share photos, tips, meet-ups and more!';
+  document.getElementById('sidebar-meta').innerHTML=`
+    <div style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="ti ti-users"></i> 4,238 members</div>
+    <div style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="ti ti-map-pin"></i> Delhi, India</div>
+    <div style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="ti ti-calendar"></i> Created Jan 2024</div>`;
+}
+
+// ── LOAD POSTS ────────────────────────────────────────────────────────────────
+const PET_IMGS=['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80','https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80','https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&q=80','https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&q=80'];
+
+async function loadPosts(){
+  const container=document.getElementById('group-posts');
+  try{
+    const r=await GroupAPI.feed(GROUP_ID);
+    const posts=r?.data||[];
+    if(!posts.length){renderFallbackPosts();return;}
+    container.innerHTML=posts.map((p,i)=>buildPostCard(p,i)).join('');
+    loadSidebar(posts);
+  }catch{renderFallbackPosts();}
+}
+
+function renderFallbackPosts(){
+  const fallback=[
+    {post_id:'f1',author_name:'Rahul Sharma',body:'Bruno had the best time at Lodhi Garden today! 🐾 #DelhiDogs',img:PET_IMGS[0],likes:47,comments:12,time:'2 hours ago'},
+    {post_id:'f2',author_name:'Priya Mehta',body:'Luna discovered she loves carrots 🥕 Healthy snacks for cats — who knew! #CatLife #Nutrition',img:PET_IMGS[2],likes:89,comments:23,time:'5 hours ago'},
+    {post_id:'f3',author_name:'Ananya Singh',body:'Free vaccination camp this Sunday at Sanjay Gandhi Animal Care Centre! Spread the word 🩺 #Delhi #PetHealth',img:null,likes:156,comments:34,time:'Yesterday'},
+    {post_id:'f4',author_name:'Dr. Arjun Mehta',body:'Reminder: Monsoon season brings increased risk of leptospirosis. Make sure your dogs are vaccinated! Happy to answer any questions below. 👇',img:PET_IMGS[3],likes:234,comments:67,time:'2 days ago'},
+  ];
+  document.getElementById('group-posts').innerHTML=fallback.map((p,i)=>buildFallbackCard(p,i)).join('');
+  loadSidebar();
+}
+
+function buildFallbackCard(p,i){
+  const init=p.author_name[0].toUpperCase();
+  const colors=['#6366f1','#10b981','#f59e0b','#ef4444'];
+  return `
+  <div class="gpost" id="gp-${p.post_id}">
+    <div class="gpost-header">
+      <div class="gpost-av" style="background:${colors[i%colors.length]}">${init}</div>
+      <div style="flex:1">
+        <div class="gpost-name">${p.author_name}</div>
+        <div class="gpost-meta">${p.time} · 🌍 Group member</div>
+      </div>
+      <button onclick="postMenu('${p.post_id}')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:20px"><i class="ti ti-dots"></i></button>
+    </div>
+    <div class="gpost-body">${p.body}</div>
+    ${p.img?`<img class="gpost-img" src="${p.img}" loading="lazy">`:''}
+    <div class="gpost-stats">
+      <span id="lstats-${p.post_id}">❤️🐾 ${p.likes} reactions</span>
+      <div><span onclick="toggleComments('${p.post_id}')" style="cursor:pointer">${p.comments} comments</span></div>
+    </div>
+    <div class="gpost-actions">
+      <button class="gpa" id="lb-${p.post_id}" onclick="likePost('${p.post_id}',${p.likes},this)"><i class="ti ti-heart"></i> Like</button>
+      <button class="gpa" onclick="toggleComments('${p.post_id}')"><i class="ti ti-message-circle"></i> Comment</button>
+      <button class="gpa" onclick="sharePost('${p.body}')"><i class="ti ti-share"></i> Share</button>
+    </div>
+    <div class="gpost-comments" id="gc-${p.post_id}">
+      <div class="gpc-item">
+        <div class="gpc-av">R</div>
+        <div class="gpc-bubble"><div class="gpc-name">Rahul Dev</div>Amazing! 🐾</div>
+      </div>
+      <div class="gpc-input">
+        <div class="gpc-av" style="background:linear-gradient(135deg,var(--blue),#6366f1)">${(user?.full_name||'A')[0]}</div>
+        <input class="gpc-inp" id="ci-${p.post_id}" placeholder="Write a comment…" onkeydown="if(event.key==='Enter')addComment('${p.post_id}')">
+        <button onclick="addComment('${p.post_id}')" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:18px">➤</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildPostCard(p,i){
+  const init=(p.author_name||p.pet_name||'U')[0].toUpperCase();
+  return buildFallbackCard({
+    post_id:p.post_id,
+    author_name:p.author_name||p.pet_name||'Member',
+    body:p.body||'',
+    img:p.media_url||PET_IMGS[i%PET_IMGS.length],
+    likes:p.reaction_count||0,
+    comments:p.comment_count||0,
+    time:fmtDate(p.created_at)
+  },i);
+}
+
+function loadSidebar(posts){
+  // Admins
+  const adminColors=['#6366f1','#10b981','#f59e0b'];
+  const admins=['Priya Mehta (Admin)','Rahul Sharma (Mod)','PawBook Team'];
+  document.getElementById('sidebar-admins').innerHTML=admins.map((a,i)=>`
+    <div class="member-row">
+      <div class="member-av" style="background:${adminColors[i]}">${a[0]}</div>
+      <div><div class="member-name">${a.split(' (')[0]}</div><div class="member-role">${a.includes('Admin')?'👑 Admin':a.includes('Mod')?'🛡️ Moderator':'👥 Member'}</div></div>
+    </div>`).join('');
+  // Suggested members
+  const members=['Ananya B.','Dr. Arjun M.','Sneha K.','Vikram P.'];
+  document.getElementById('sidebar-members').innerHTML=members.map((m,i)=>`
+    <div class="member-row">
+      <div class="member-av" style="background:${adminColors[i%3]}">${m[0]}</div>
+      <div style="flex:1"><div class="member-name">${m}</div><div class="member-role">4 mutual friends</div></div>
+      <button onclick="this.textContent=this.textContent==='Follow'?'Following':'Follow'" style="height:28px;padding:0 12px;border-radius:8px;border:1.5px solid var(--blue);background:#fff;color:var(--blue);font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;cursor:pointer">Follow</button>
+    </div>`).join('');
+
+  // Members tab
+  const allMembers=[...admins.map((a,i)=>({n:a.split(' (')[0],role:a.includes('Admin')?'Admin':a.includes('Mod')?'Mod':'Member',color:adminColors[i]})),...members.map((m,i)=>({n:m,role:'Member',color:adminColors[i%3]}))];
+  document.getElementById('members-list').innerHTML=allMembers.map(m=>`
+    <div class="member-row" style="padding:8px 0;border-bottom:1px solid #f1f5f9">
+      <div class="member-av" style="background:${m.color};width:44px;height:44px;font-size:16px">${m.n[0]}</div>
+      <div style="flex:1"><div class="member-name">${m.n}</div><div class="member-role">${m.role==='Admin'?'👑 Admin':m.role==='Mod'?'🛡️ Moderator':'👥 Member'}</div></div>
+      <button onclick="goTo('29_user_profile.html')" style="height:32px;padding:0 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">View Profile</button>
+    </div>`).join('');
+
+  // Media grid
+  document.getElementById('media-grid').innerHTML=PET_IMGS.concat(PET_IMGS).slice(0,9).map((img,i)=>`
+    <div style="aspect-ratio:1;overflow:hidden;cursor:pointer" onclick="openImg('${img}')">
+      <img src="${img}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+    </div>`).join('');
+
+  // About tab
+  document.getElementById('about-content').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <i class="ti ti-info-circle" style="font-size:20px;color:var(--blue);flex-shrink:0;margin-top:2px"></i>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7">${document.getElementById('group-desc').textContent}</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <i class="ti ti-eye" style="font-size:20px;color:var(--blue);flex-shrink:0"></i>
+        <div><div style="font-size:13px;font-weight:700">Public Group</div><div style="font-size:12px;color:var(--muted)">Anyone can see members and posts</div></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <i class="ti ti-users" style="font-size:20px;color:var(--blue);flex-shrink:0"></i>
+        <div><div style="font-size:13px;font-weight:700">${document.getElementById('member-count').textContent} members</div><div style="font-size:12px;color:var(--muted)">Growing community</div></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <i class="ti ti-calendar" style="font-size:20px;color:var(--blue);flex-shrink:0"></i>
+        <div><div style="font-size:13px;font-weight:700">Group created</div><div style="font-size:12px;color:var(--muted)">January 2024</div></div>
+      </div>
+    </div>`;
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+function likePost(postId,count,btn){
+  const isLiked=btn.classList.toggle('liked');
+  count=isLiked?count+1:count-1;
+  btn.innerHTML=`<i class="ti ti-heart"></i> ${isLiked?'Loved':'Like'}`;
+  const stats=document.getElementById('lstats-'+postId);
+  if(stats)stats.textContent=`❤️🐾 ${count} reactions`;
+}
+
+function toggleComments(postId){
+  const c=document.getElementById('gc-'+postId);
+  if(!c)return;
+  c.style.display=c.style.display==='block'?'none':'block';
+  if(c.style.display==='block')document.getElementById('ci-'+postId)?.focus();
+}
+
+function addComment(postId){
+  const inp=document.getElementById('ci-'+postId);
+  const text=inp?.value?.trim();if(!text)return;
+  inp.value='';
+  const c=document.getElementById('gc-'+postId);
+  const div=document.createElement('div');div.className='gpc-item';
+  div.innerHTML=`<div class="gpc-av" style="background:linear-gradient(135deg,var(--blue),#6366f1)">${(user?.full_name||'A')[0]}</div>
+    <div class="gpc-bubble"><div class="gpc-name">${user?.full_name||'You'}</div>${text}</div>`;
+  c.insertBefore(div,c.querySelector('.gpc-input'));
+  toast('Comment posted!','success',1500);
+}
+
+function sharePost(body){
+  if(navigator.share)navigator.share({title:'PawBook Group Post',text:body,url:location.href}).catch(()=>{});
+  else{navigator.clipboard?.writeText(location.href);toast('🔗 Link copied!','success',1500);}
+}
+
+function postMenu(id){toast('Post options coming soon','info',1500);}
+
+async function toggleJoin(){
+  const btn=document.getElementById('join-btn');
+  try{
+    const r=await GroupAPI.join(GROUP_ID);
+    isMember=r?.data?.joined;
+    btn.innerHTML=isMember?'<i class="ti ti-check"></i> Joined':'<i class="ti ti-user-plus"></i> Join Group';
+    btn.className=isMember?'btn btn-gray':'btn btn-blue';
+    toast(isMember?'✅ Joined group!':'Left group','success');
+  }catch{toast('Please log in to join','error');}
+}
+
+function shareGroup(){
+  navigator.share?.({title:'PawBook Group',text:document.getElementById('group-name').textContent,url:location.href}).catch(()=>{});
+  if(!navigator.share){navigator.clipboard?.writeText(location.href);toast('🔗 Link copied!','success');}
+}
+
+function showGroupMenu(){
+  const menu=document.createElement('div');
+  menu.style.cssText='position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.3);display:flex;align-items:flex-end;justify-content:center';
+  menu.innerHTML=`<div style="background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:8px 0 32px">
+    <div style="width:36px;height:4px;background:#e2e8f0;border-radius:2px;margin:10px auto 16px"></div>
+    ${['🔔 Notifications','📋 Copy link','🚩 Report group','🔕 Mute group'].map(l=>`
+      <div style="padding:14px 20px;font-size:15px;font-weight:600;cursor:pointer;border-bottom:1px solid #f1f5f9" onclick="toast('Done!','success',1000);this.closest('div[style*=fixed]').remove()">${l}</div>`).join('')}
+    <div style="padding:14px 20px;font-size:15px;color:var(--muted);cursor:pointer" onclick="this.closest('div[style*=fixed]').remove()">Cancel</div>
+  </div>`;
+  menu.addEventListener('click',e=>{if(e.target===menu)menu.remove();});
+  document.body.appendChild(menu);
+}
+
+// ── GROUP POST MODAL ──────────────────────────────────────────────────────────
+function openGroupPost(type){
+  document.getElementById('group-post-modal').classList.add('open');
+  document.getElementById('gpost-body').focus();
+  if(type==='photo'||type==='video')setTimeout(()=>document.getElementById('gpost-file').click(),300);
+}
+function closeGroupPost(){
+  document.getElementById('group-post-modal').classList.remove('open');
+  document.getElementById('gpost-body').value='';
+  gPostImgData=null;
+  document.getElementById('gmodal-preview').style.display='none';
+}
+document.getElementById('group-post-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeGroupPost();});
+
+function handleGPostFile(inp){
+  const file=inp.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    gPostImgData=e.target.result;
+    const preview=document.getElementById('gmodal-preview');
+    document.getElementById('gmodal-preview-img').src=gPostImgData;
+    preview.style.display='block';
+  };
+  reader.readAsDataURL(file);
+  inp.value='';
+}
+function clearGModalImg(){gPostImgData=null;document.getElementById('gmodal-preview').style.display='none';}
+function tagInGroup(){toast('👤 Tag coming soon','info',1500);}
+function addGFeeling(){toast('😊 Feeling picker coming soon','info',1500);}
+
+async function submitGroupPost(){
+  const body=document.getElementById('gpost-body').value.trim();
+  const err=document.getElementById('gpost-err');
+  if(!body&&!gPostImgData){err.textContent='Write something or add a photo!';err.style.display='block';return;}
+  err.style.display='none';
+  try{
+    await GroupAPI.post(GROUP_ID,{body,media_url:gPostImgData});
+    closeGroupPost();
+    toast('Post shared to group! 🐾','success');
+    await loadPosts();
+  }catch{
+    // Optimistic UI: add post locally
+    const container=document.getElementById('group-posts');
+    const div=document.createElement('div');
+    div.innerHTML=buildFallbackCard({
+      post_id:'new-'+Date.now(),
+      author_name:user?.full_name||'You',
+      body,img:gPostImgData,likes:0,comments:0,time:'Just now'
+    },0);
+    container.prepend(div.firstElementChild);
+    closeGroupPost();
+    toast('Post shared! 🐾','success');
+  }
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function showTab(tab,el){
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['feed','members','media','about','events'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===tab?'block':'none';
+  });
+}
+
+function openImg(src){
+  const o=document.createElement('div');
+  o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer';
+  o.innerHTML=`<img src="${src}" style="max-width:90vw;max-height:88vh;object-fit:contain;border-radius:8px">`;
+  o.addEventListener('click',()=>o.remove());
+  document.body.appendChild(o);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function fmt(n){if(n>=1000)return (n/1000).toFixed(1)+'K';return String(n);}
+function fmtDate(iso){
+  if(!iso)return 'Recently';
+  const d=new Date(iso);const diff=Math.floor((Date.now()-d)/1000);
+  if(diff<60)return 'Just now';if(diff<3600)return Math.floor(diff/60)+'m ago';
+  if(diff<86400)return Math.floor(diff/3600)+'h ago';
+  return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+}
+function toast(msg,type='success',dur=2000){
+  const t=document.createElement('div');
+  t.style.cssText=`position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:${type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a'};color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:'Poppins',sans-serif;white-space:nowrap`;
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),dur);
+}
+</script>
+</body>
+</html>

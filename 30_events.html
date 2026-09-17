@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Events</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e2e8f0;z-index:500;display:flex;align-items:center;padding:0 16px;gap:10px}
+.hero{background:linear-gradient(135deg,#1a4db3,#6366f1,#8b5cf6);padding:40px 20px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.hero::before{content:'🎪🐾🦁🐬🎭🎉';position:absolute;top:10px;right:10px;font-size:24px;opacity:0.3;letter-spacing:4px}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;scrollbar-width:none;background:#fff;border-bottom:1px solid #e2e8f0}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{flex-shrink:0;height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#64748b;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:all 0.15s}
+.filter-chip.active{background:#1a4db3;border-color:#1a4db3;color:#fff}
+.event-card{background:#fff;border-radius:14px;margin:8px 16px;overflow:visible;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e4e6eb}
+.event-img{width:100%;height:160px;object-fit:cover}
+.event-body{padding:14px}
+.event-date-badge{display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1a4db3;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;margin-bottom:10px}
+.event-title{font-size:16px;font-weight:900;color:#1e293b;margin-bottom:4px}
+.event-meta{font-size:12px;color:#64748b;display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.event-attendees{display:flex;align-items:center;gap:-4px;margin-bottom:12px}
+.attendee-av{width:28px;height:28px;border-radius:50%;border:2px solid #fff;object-fit:cover;margin-right:-8px}
+.event-actions{display:flex;gap:8px;align-items:center;padding:0 14px 14px;flex-wrap:wrap}
+.event-btn{height:32px;padding:0 16px;border-radius:999px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all 0.15s;white-space:nowrap}
+.btn-going{background:#1a4db3;color:#fff}
+.btn-going.active{background:#dcfce7;color:#16a34a;border:1.5px solid #16a34a}
+.btn-interested{background:#f0f2f5;color:#1e293b;border:1.5px solid #e2e8f0}
+.section-label{padding:16px 16px 4px;font-size:13px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.5px}
+.create-btn{position:fixed;bottom:70px;right:16px;height:48px;padding:0 20px;border-radius:24px;background:linear-gradient(135deg,#1a4db3,#6366f1);color:#fff;border:none;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(26,77,179,0.4);display:flex;align-items:center;gap:8px;z-index:400}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+<nav class="topnav">
+  <button onclick="location.href='07_home.html'" style="background:none;border:none;cursor:pointer;font-size:22px;color:#64748b"><i class="ti ti-arrow-left"></i></button>
+  <div style="font-size:16px;font-weight:800">Events</div>
+  <button onclick="location.href='15_search.html'" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:22px;color:#64748b"><i class="ti ti-search"></i></button>
+</nav>
+
+<div style="padding-top:56px;padding-bottom:80px">
+  <div class="hero">
+    <div style="font-size:36px;margin-bottom:8px">🎉</div>
+    <div style="font-size:22px;font-weight:900;margin-bottom:6px">Pet Events Near You</div>
+    <div style="font-size:14px;opacity:0.85">Meetups · Adoption Drives · Vet Camps · Shows</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
+      <div style="background:rgba(255,255,255,0.2);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700">📍 Delhi</div>
+      <div style="background:rgba(255,255,255,0.2);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700">This Week</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-row">
+    <button class="filter-chip active" onclick="filterEvents('all',this)">All Events</button>
+    <button class="filter-chip" onclick="filterEvents('meetup',this)">🐾 Pet Meetups</button>
+    <button class="filter-chip" onclick="filterEvents('adoption',this)">🏠 Adoption Drives</button>
+    <button class="filter-chip" onclick="filterEvents('vet',this)">🩺 Vet Camps</button>
+    <button class="filter-chip" onclick="filterEvents('show',this)">🏆 Pet Shows</button>
+    <button class="filter-chip" onclick="filterEvents('training',this)">🎓 Training</button>
+    <button class="filter-chip" onclick="filterEvents('online',this)">💻 Online</button>
+  </div>
+
+  <div id="events-list"></div>
+</div>
+
+<button class="create-btn" onclick="createEvent()"><i class="ti ti-plus"></i> Create Event</button>
+
+<!-- Bottom nav -->
+<div style="position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e2e8f0;display:flex;z-index:500">
+  <button onclick="location.href='07_home.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-home" style="font-size:20px"></i>Home</button>
+  <button onclick="location.href='03_groups.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-users" style="font-size:20px"></i>Groups</button>
+  <button style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#1a4db3;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-calendar-event" style="font-size:20px"></i>Events</button>
+  <button onclick="location.href='26_discover.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-world" style="font-size:20px"></i>Discover</button>
+  <button onclick="location.href='08_pet_profile.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-user" style="font-size:20px"></i>Profile</button>
+</div>
+
+<script src="api.js"></script>
+<script>
+const EVENTS = [
+  { id:1, type:'meetup', title:'Delhi Dog Park Meetup 🐕', date:'Sun, Sep 15 · 7:00 AM', location:'Lodhi Garden, New Delhi', description:'Monthly dog meetup! All breeds welcome. Bring water and treats.', img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&q=80', attendees:234, interested:567, organizer:'Delhi Dog Club', free:true, going:false },
+  { id:2, type:'adoption', title:'Adoption Drive — 50 Pets Need Homes 🏠', date:'Sat, Sep 14 · 10:00 AM - 5:00 PM', location:'Connaught Place, New Delhi', description:'Hopeful Tails Shelter is hosting a mega adoption event. Meet dogs, cats, rabbits, and more!', img:'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=600&q=80', attendees:89, interested:1234, organizer:'Hopeful Tails Shelter', free:true, going:false },
+  { id:3, type:'vet', title:'Free Vaccination Camp 💉', date:'Sat, Sep 14 · 9:00 AM - 1:00 PM', location:'Sanjay Gandhi Animal Care, GK-1', description:'Free rabies + distemper vaccination for all pets. Bring health records.', img:'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=600&q=80', attendees:156, interested:892, organizer:'Delhi SPCA', free:true, going:false },
+  { id:4, type:'show', title:'PawBook Pet Talent Show 🏆', date:'Sat, Sep 21 · 3:00 PM', location:'India Habitat Centre, New Delhi', description:'Show off your pet\'s talents! Prizes for Best Trick, Cutest Pet, Best Costume.', img:'https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a?w=600&q=80', attendees:312, interested:2341, organizer:'PawBook India', free:false, price:'₹299', going:false },
+  { id:5, type:'training', title:'Puppy Socialization Workshop 🎓', date:'Sun, Sep 22 · 10:00 AM', location:'Vasant Kunj Pet Club, Delhi', description:'Professional trainers teach basic commands, leash walking, and socialization for puppies 8-16 weeks.', img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80', attendees:28, interested:145, organizer:'Cessna Lifeline', free:false, price:'₹599', going:false },
+  { id:6, type:'online', title:'Live Q&A: Exotic Pet Care 🦎', date:'Fri, Sep 13 · 8:00 PM IST', location:'PawBook Live', description:'Dr. Arjun Mehta answers your questions about reptiles, birds, and exotic pet care. Join free!', img:'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=600&q=80', attendees:678, interested:4521, organizer:'Dr. Arjun Mehta', free:true, going:false },
+  { id:7, type:'meetup', title:'Mumbai Cat Lovers Cafe Meetup 🐈', date:'Sat, Sep 28 · 4:00 PM', location:'Bandra, Mumbai', description:'Monthly cat lovers gathering at The Purrfect Cafe. Cats welcome on leash!', img:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&q=80', attendees:67, interested:234, organizer:'Mumbai Cat Society', free:true, going:false },
+  { id:8, type:'vet', title:'Bird & Avian Health Camp 🦜', date:'Sun, Sep 29 · 9:00 AM', location:'Lajpat Nagar, Delhi', description:'Free checkup and clipping for all pet birds. Specialist avian vet on site.', img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80', attendees:45, interested:321, organizer:'Delhi Avian Society', free:true, going:false },
+];
+
+let currentFilter = 'all';
+let goingEvents = new Set();
+
+function renderEvents(filter = 'all') {
+  const filtered = filter === 'all' ? EVENTS : EVENTS.filter(e => e.type === filter);
+  const list = document.getElementById('events-list');
+
+  // Group by upcoming vs this week
+  list.innerHTML = '';
+
+  const upcoming = filtered.filter((_,i) => i < 3);
+  const more = filtered.filter((_,i) => i >= 3);
+
+  if(upcoming.length) {
+    list.innerHTML += `<div class="section-label">📅 This Weekend</div>`;
+    list.innerHTML += upcoming.map(e => renderEventCard(e)).join('');
+  }
+  if(more.length) {
+    list.innerHTML += `<div class="section-label">🗓️ Coming Up</div>`;
+    list.innerHTML += more.map(e => renderEventCard(e)).join('');
+  }
+  if(!filtered.length) {
+    list.innerHTML = `<div style="text-align:center;padding:40px;color:#94a3b8"><div style="font-size:48px;margin-bottom:12px">📭</div><div style="font-weight:700">No events in this category</div><div style="font-size:13px;margin-top:6px">Check back soon!</div></div>`;
+  }
+}
+
+function renderEventCard(e) {
+  const isGoing = goingEvents.has(e.id);
+  return `
+  <div class="event-card">
+    <img class="event-img" src="${e.img}" onerror="this.style.background='#dbeafe';this.style.height='80px'">
+    <div class="event-body">
+      <div class="event-date-badge">📅 ${e.date}</div>
+      <div class="event-title">${e.title}</div>
+      <div class="event-meta"><i class="ti ti-map-pin" style="color:#1a4db3"></i> ${e.location}</div>
+      <div class="event-meta"><i class="ti ti-users" style="color:#10b981"></i> ${e.attendees} going · ${e.interested} interested · by ${e.organizer}</div>
+      <div style="font-size:12px;color:#475569;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${e.description}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px">
+        <div style="display:flex;align-items:center">
+          <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=60&q=80" style="width:24px;height:24px;border-radius:50%;border:2px solid #fff;margin-right:-6px;object-fit:cover;flex-shrink:0">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&q=80" style="width:24px;height:24px;border-radius:50%;border:2px solid #fff;margin-right:-6px;object-fit:cover;flex-shrink:0">
+          <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=60&q=80" style="width:24px;height:24px;border-radius:50%;border:2px solid #fff;margin-right:-6px;object-fit:cover;flex-shrink:0">
+        </div>
+        <span style="font-size:11px;color:#64748b;margin-left:10px">+${e.attendees-3} going</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 14px">
+        <span style="font-size:13px;font-weight:800;color:${e.free?'#16a34a':'#1877F2'}">${e.free?'🆓 Free':e.price}</span>
+        <span style="font-size:11px;color:#65676b">${e.category||''}</span>
+      </div>
+      <div class="event-actions">
+        <button class="event-btn btn-going ${isGoing?'active':''}" id="going-${e.id}" onclick="toggleGoing(${e.id},this)">
+          ${isGoing?'✓ Going':'Going'}
+        </button>
+        <button class="event-btn btn-interested" onclick="toggleInterested(${e.id},this)">Interested</button>
+        <button class="event-btn btn-interested" onclick="shareEvent('${e.title}')" style="padding:0 10px"><i class="ti ti-share"></i></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function filterEvents(type, el) {
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = type;
+  renderEvents(type);
+}
+
+function toggleGoing(id, btn) {
+  if(goingEvents.has(id)) { goingEvents.delete(id); btn.textContent='Going'; btn.classList.remove('active'); showToast('Removed from going'); }
+  else { goingEvents.add(id); btn.textContent='✓ Going'; btn.classList.add('active'); showToast('✅ You\'re going!'); }
+}
+function toggleInterested(id, btn) {
+  btn.textContent = btn.textContent==='Interested'?'★ Interested':'Interested';
+  btn.style.color = btn.textContent==='★ Interested'?'#f59e0b':'';
+  showToast(btn.textContent==='★ Interested'?'⭐ Marked as interested!':'Removed');
+}
+function shareEvent(title) {
+  navigator.clipboard?.writeText('Check out this event on PawBook: '+title).then(()=>showToast('🔗 Link copied!'));
+}
+function createEvent() {
+  const title = prompt('Event name:');
+  if(!title) return;
+  showToast('🎉 Event created! (Coming soon — full form)');
+}
+function showToast(msg) {
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a4db3;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);
+}
+
+renderEvents();
+</script>
+</body>
+</html>

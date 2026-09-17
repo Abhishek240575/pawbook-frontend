@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Lost Pet Alerts</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.topnav-logo{font-size:20px;font-weight:900;color:#1877F2;display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px}
+.topnav-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#050505;font-size:18px}
+.nav-icon-btn:hover{background:#e4e6eb}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* PAGE */
+.page-wrap{padding-top:56px;padding-bottom:60px}
+
+/* HERO */
+.lp-hero{background:linear-gradient(135deg,#dc2626,#7c3aed);padding:24px 16px;position:relative;overflow:hidden}
+.lp-hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=80') center/cover;opacity:.1}
+.lp-hero-inner{position:relative;z-index:1}
+.lp-hero h1{font-size:22px;font-weight:900;color:#fff;margin-bottom:4px}
+.lp-hero p{font-size:13px;color:rgba(255,255,255,.75);margin-bottom:16px}
+.lp-hero-search{display:flex;gap:8px}
+.lp-hero-search input{flex:1;height:42px;border-radius:999px;border:none;padding:0 16px;font-size:14px;font-family:'Inter',sans-serif;outline:none}
+.lp-hero-search button{height:42px;padding:0 18px;border-radius:999px;border:none;background:#fff;color:#dc2626;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif}
+.lp-stats{display:flex;gap:20px;margin-top:16px}
+.lp-stat{text-align:center}
+.lp-stat-val{font-size:18px;font-weight:900;color:#fff}
+.lp-stat-lbl{font-size:10px;color:rgba(255,255,255,.6)}
+
+/* ACTION BUTTONS */
+.lp-actions{display:flex;gap:10px;padding:14px 16px;background:#fff;border-bottom:1px solid #e4e6eb;overflow-x:auto;scrollbar-width:none}
+.lp-actions::-webkit-scrollbar{display:none}
+.lp-act-btn{height:40px;padding:0 18px;border-radius:999px;border:none;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .15s;flex-shrink:0}
+.lp-act-report{background:#dc2626;color:#fff}
+.lp-act-report:hover{background:#b91c1c}
+.lp-act-found{background:#16a34a;color:#fff}
+.lp-act-found:hover{background:#15803d}
+.lp-act-sighting{background:#1877F2;color:#fff}
+.lp-act-sighting:hover{background:#1564d3}
+.lp-act-share{background:#f0f2f5;color:#050505}
+.lp-act-share:hover{background:#e4e6eb}
+
+/* TABS */
+.lp-tabs{display:flex;background:#fff;border-bottom:1px solid #e4e6eb;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.lp-tabs::-webkit-scrollbar{display:none}
+.lp-tab{height:46px;padding:0 16px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px;font-family:'Inter',sans-serif;transition:all .15s;flex-shrink:0}
+.lp-tab:hover{color:#1877F2;background:#f0f2f5}
+.lp-tab.active{color:#1877F2;border-bottom-color:#1877F2}
+
+/* LAYOUT */
+.lp-layout{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-columns:1fr 340px;gap:16px}
+@media(max-width:860px){.lp-layout{grid-template-columns:1fr}}
+@media(max-width:860px){.lp-sidebar{display:none}}
+
+/* MAP */
+.map-card{background:#fff;border-radius:12px;border:1px solid #e4e6eb;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.map-header{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f2f5}
+.map-title{font-size:14px;font-weight:800;color:#050505;display:flex;align-items:center;gap:6px}
+#lp-map{width:100%;height:320px;z-index:1}
+.map-footer{padding:10px 14px;display:flex;align-items:center;gap:12px;font-size:12px;color:#65676b;flex-wrap:wrap}
+.map-legend{display:flex;align-items:center;gap:5px}
+.map-dot{width:10px;height:10px;border-radius:50%}
+
+/* ALERT CARD */
+.alert-card{background:#fff;border-radius:12px;border:1px solid #e4e6eb;overflow:hidden;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.08);transition:box-shadow .15s}
+.alert-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.alert-top{display:flex;gap:12px;padding:14px}
+.alert-img{width:80px;height:80px;border-radius:10px;object-fit:cover;flex-shrink:0;border:2px solid #e4e6eb}
+.alert-info{flex:1;min-width:0}
+.alert-name{font-size:16px;font-weight:800;color:#050505;margin-bottom:2px}
+.alert-breed{font-size:12px;color:#65676b;margin-bottom:4px}
+.alert-location{font-size:12px;color:#1877F2;font-weight:600;display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.alert-time{font-size:11px;color:#8a8d91}
+.alert-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700}
+.badge-lost{background:#fee2e2;color:#dc2626}
+.badge-found{background:#dcfce7;color:#16a34a}
+.badge-sighting{background:#dbeafe;color:#1877F2}
+.alert-desc{padding:0 14px 10px;font-size:13px;color:#3d4451;line-height:1.5}
+.alert-actions{display:flex;gap:6px;padding:10px 14px;border-top:1px solid #f0f2f5;flex-wrap:wrap}
+.alert-btn{height:32px;padding:0 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
+.abtn-red{background:#fee2e2;color:#dc2626}
+.abtn-red:hover{background:#fecaca}
+.abtn-green{background:#dcfce7;color:#16a34a}
+.abtn-green:hover{background:#bbf7d0}
+.abtn-blue{background:#dbeafe;color:#1877F2}
+.abtn-blue:hover{background:#bfdbfe}
+.abtn-gray{background:#f0f2f5;color:#3d4451;border:1.5px solid #e4e6eb}
+.abtn-gray:hover{background:#e4e6eb}
+
+/* SIDEBAR */
+.sidebar-card{background:#fff;border-radius:12px;border:1px solid #e4e6eb;padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.sidebar-title{font-size:14px;font-weight:800;color:#050505;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+
+/* REPORT MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+.modal-bg.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)}
+.modal-head{padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0}
+.modal-title{font-size:16px;font-weight:800}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:16px}
+.form-group{margin-bottom:12px}
+.form-label{font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px}
+.form-input{width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:#1877F2}
+.form-textarea{width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:none;transition:border-color .15s}
+.form-textarea:focus{border-color:#1877F2}
+.form-select{width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;font-family:'Inter',sans-serif;outline:none;background:#fff;cursor:pointer}
+.photo-upload{border:2px dashed #e4e6eb;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:border-color .15s}
+.photo-upload:hover{border-color:#1877F2}
+.submit-btn{width:100%;height:44px;border-radius:999px;border:none;background:#dc2626;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s}
+.submit-btn:hover{background:#b91c1c}
+.submit-btn.green{background:#16a34a}
+.submit-btn.green:hover{background:#15803d}
+.submit-btn.blue{background:#1877F2}
+.submit-btn.blue:hover{background:#1564d3}
+
+/* TOAST */
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* BOTTOM NAV */
+.bottomnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-around;z-index:300}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px;border-radius:8px;border:none;background:none;font-family:'Inter',sans-serif}
+.bnav-item i{font-size:22px;color:#8a8d91}
+.bnav-item.active i{color:#1877F2}
+.bnav-item span{font-size:9px;font-weight:600;color:#8a8d91}
+.bnav-item.active span{color:#1877F2}
+</style>
+</head>
+<body>
+<script>
+function goTo(p){window.location.href=p;}
+function toast(msg,type){
+  var t=document.getElementById('pb-toast');
+  t.textContent=msg;
+  t.style.background=type==='error'?'#dc2626':type==='success'?'#16a34a':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2600);
+}
+</script>
+
+<!-- TOPNAV -->
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html">
+    <div class="logo-icon">🐾</div> PawBook
+  </a>
+  <div class="topnav-right">
+    <button class="nav-icon-btn" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+    <button class="nav-icon-btn" onclick="goTo('13_messages.html')"><i class="ti ti-message-circle"></i></button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+<!-- HERO -->
+<div class="lp-hero">
+  <div class="lp-hero-inner">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;color:#fff">🚨 Lost Pet Alerts</span>
+    </div>
+    <h1>Find Missing Pets 🐾</h1>
+    <p>Help reunite lost pets with their families across India</p>
+    <div class="lp-hero-search">
+      <input placeholder="Search by pet name, breed, location…" id="lp-search" oninput="filterAlerts()">
+      <button onclick="filterAlerts()">Search</button>
+    </div>
+    <div class="lp-stats">
+      <div class="lp-stat"><div class="lp-stat-val">248</div><div class="lp-stat-lbl">Active alerts</div></div>
+      <div class="lp-stat"><div class="lp-stat-val">1,847</div><div class="lp-stat-lbl">Pets reunited</div></div>
+      <div class="lp-stat"><div class="lp-stat-val">Delhi</div><div class="lp-stat-lbl">Most active city</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION BUTTONS -->
+<div class="lp-actions">
+  <button class="lp-act-btn lp-act-report" onclick="openModal('report-modal')">
+    <i class="ti ti-alert-triangle"></i> Report Lost Pet
+  </button>
+  <button class="lp-act-btn lp-act-found" onclick="openModal('found-modal')">
+    <i class="ti ti-check"></i> I Found a Pet
+  </button>
+  <button class="lp-act-btn lp-act-sighting" onclick="openModal('sighting-modal')">
+    <i class="ti ti-map-pin"></i> Report Sighting
+  </button>
+  <button class="lp-act-btn lp-act-share" onclick="shareAlert()">
+    <i class="ti ti-share"></i> Share Alert
+  </button>
+  <button class="lp-act-btn lp-act-share" onclick="openModal('search-modal')">
+    <i class="ti ti-users"></i> Join Search Party
+  </button>
+</div>
+
+<!-- TABS -->
+<div class="lp-tabs">
+  <button class="lp-tab active" onclick="setTab('all',this)">🐾 All Alerts</button>
+  <button class="lp-tab" onclick="setTab('lost',this)">🚨 Lost</button>
+  <button class="lp-tab" onclick="setTab('found',this)">✅ Found</button>
+  <button class="lp-tab" onclick="setTab('sighting',this)">👁 Sightings</button>
+  <button class="lp-tab" onclick="setTab('nearby',this)">📍 Near Me</button>
+</div>
+
+<!-- LAYOUT -->
+<div class="lp-layout">
+
+  <!-- MAIN -->
+  <main>
+    <!-- MAP -->
+    <div class="map-card">
+      <div class="map-header">
+        <div class="map-title"><i class="ti ti-map-pin" style="color:#dc2626"></i> Live Alert Map</div>
+        <div style="display:flex;gap:6px">
+          <button onclick="centerMap()" style="height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif"><i class="ti ti-current-location"></i> My Area</button>
+          <button onclick="toggleHeatmap()" style="height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Heatmap</button>
+        </div>
+      </div>
+      <div id="lp-map"></div>
+      <div class="map-footer">
+        <div class="map-legend"><div class="map-dot" style="background:#dc2626"></div> Lost</div>
+        <div class="map-legend"><div class="map-dot" style="background:#16a34a"></div> Found</div>
+        <div class="map-legend"><div class="map-dot" style="background:#1877F2"></div> Sighting</div>
+        <span style="margin-left:auto;font-size:11px;color:#8a8d91">Tap a marker for details</span>
+      </div>
+    </div>
+
+    <!-- ALERTS LIST -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:800;color:#050505" id="alerts-title">Recent Alerts</div>
+      <select id="sort-select" onchange="sortAlerts(this.value)" style="height:32px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:12px;font-family:'Inter',sans-serif;outline:none;background:#fff;cursor:pointer">
+        <option value="recent">Most Recent</option>
+        <option value="nearby">Nearest</option>
+        <option value="urgent">Most Urgent</option>
+      </select>
+    </div>
+
+    <div id="alerts-list"></div>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="lp-sidebar">
+    <!-- Emergency contacts -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">🚨 Emergency Contacts</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#fee2e2;border-radius:10px">
+          <div style="font-size:22px">🚑</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Animal Ambulance</div><div style="font-size:11px;color:#65676b">Delhi</div></div>
+          <button onclick="window.open('tel:+911125847200')" style="height:30px;padding:0 12px;border-radius:999px;border:none;background:#dc2626;color:#fff;font-size:11px;font-weight:700;cursor:pointer">📞 Call</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#f0fdf4;border-radius:10px">
+          <div style="font-size:22px">🐾</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Animal Welfare Board</div><div style="font-size:11px;color:#65676b">Helpline</div></div>
+          <button onclick="window.open('tel:1962')" style="height:30px;padding:0 12px;border-radius:999px;border:none;background:#16a34a;color:#fff;font-size:11px;font-weight:700;cursor:pointer">📞 1962</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#eff6ff;border-radius:10px">
+          <div style="font-size:22px">🏥</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Nearest Vet Clinic</div><div style="font-size:11px;color:#65676b">Open 24/7</div></div>
+          <button onclick="goTo('11_vet_booking.html')" style="height:30px;padding:0 12px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:11px;font-weight:700;cursor:pointer">Find</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">💡 Search Tips</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#3d4451;line-height:1.5">
+        <div style="display:flex;gap:8px"><span>🔍</span><span>Check nearby parks, markets and railway stations</span></div>
+        <div style="display:flex;gap:8px"><span>📢</span><span>Post on local WhatsApp groups immediately</span></div>
+        <div style="display:flex;gap:8px"><span>🏥</span><span>Alert nearby vet clinics with your pet's photo</span></div>
+        <div style="display:flex;gap:8px"><span>🌙</span><span>Pets often return home at night — leave food outside</span></div>
+        <div style="display:flex;gap:8px"><span>👕</span><span>Leave worn clothes near home — scent guides them back</span></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">📊 This Week</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="text-align:center;padding:12px;background:#fee2e2;border-radius:10px"><div style="font-size:22px;font-weight:900;color:#dc2626">23</div><div style="font-size:11px;color:#65676b">Reported lost</div></div>
+        <div style="text-align:center;padding:12px;background:#dcfce7;border-radius:10px"><div style="font-size:22px;font-weight:900;color:#16a34a">18</div><div style="font-size:11px;color:#65676b">Reunited</div></div>
+        <div style="text-align:center;padding:12px;background:#dbeafe;border-radius:10px"><div style="font-size:22px;font-weight:900;color:#1877F2">47</div><div style="font-size:11px;color:#65676b">Sightings</div></div>
+        <div style="text-align:center;padding:12px;background:#f3e8ff;border-radius:10px"><div style="font-size:22px;font-weight:900;color:#7c3aed">78%</div><div style="font-size:11px;color:#65676b">Found rate</div></div>
+      </div>
+    </div>
+  </aside>
+</div>
+</div>
+
+<!-- ── MODALS ── -->
+
+<!-- Report Lost Pet -->
+<div class="modal-bg" id="report-modal" onclick="if(event.target===this)closeModal('report-modal')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">🚨 Report Lost Pet</div>
+      <button class="modal-close" onclick="closeModal('report-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Pet Name *</label><input class="form-input" id="r-name" placeholder="e.g. Bruno"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label class="form-label">Species *</label>
+          <select class="form-select" id="r-species"><option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Breed</label><input class="form-input" id="r-breed" placeholder="Golden Retriever"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label class="form-label">Colour</label><input class="form-input" id="r-color" placeholder="Golden, white patch"></div>
+        <div class="form-group"><label class="form-label">Age</label><input class="form-input" id="r-age" placeholder="3 years"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Last seen location *</label><input class="form-input" id="r-location" placeholder="Lodhi Garden, New Delhi"></div>
+      <div class="form-group"><label class="form-label">Date & Time Lost</label><input class="form-input" type="datetime-local" id="r-time"></div>
+      <div class="form-group"><label class="form-label">Description / Identifying marks</label><textarea class="form-textarea" id="r-desc" rows="3" placeholder="Any unique features, collar colour, microchip info…"></textarea></div>
+      <div class="form-group"><label class="form-label">Contact Number *</label><input class="form-input" id="r-phone" type="tel" placeholder="+91 98765 43210"></div>
+      <div class="form-group">
+        <label class="form-label">Pet Photo</label>
+        <div class="photo-upload" onclick="document.getElementById('r-photo').click()">
+          <i class="ti ti-camera" style="font-size:28px;color:#c7d2fe;display:block;margin-bottom:6px"></i>
+          <div style="font-size:13px;font-weight:600;color:#65676b">Tap to upload photo</div>
+          <div style="font-size:11px;color:#8a8d91;margin-top:3px">Clear recent photo preferred</div>
+          <input type="file" id="r-photo" accept="image/*" style="display:none" onchange="previewPhoto(this,'r-photo-preview')">
+        </div>
+        <img id="r-photo-preview" style="display:none;width:100%;border-radius:10px;margin-top:8px;max-height:200px;object-fit:cover">
+      </div>
+      <button class="submit-btn" onclick="submitReport('lost')">🚨 Submit Lost Pet Alert</button>
+    </div>
+  </div>
+</div>
+
+<!-- Found a Pet -->
+<div class="modal-bg" id="found-modal" onclick="if(event.target===this)closeModal('found-modal')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">✅ I Found a Pet</div>
+      <button class="modal-close" onclick="closeModal('found-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Pet Description *</label><input class="form-input" id="f-desc" placeholder="Brown dog, medium size, no collar"></div>
+      <div class="form-group"><label class="form-label">Where found *</label><input class="form-input" id="f-location" placeholder="Connaught Place, Delhi"></div>
+      <div class="form-group"><label class="form-label">Current location of pet *</label><input class="form-input" id="f-current" placeholder="With me / Nearby shelter / etc."></div>
+      <div class="form-group"><label class="form-label">Your Contact *</label><input class="form-input" id="f-phone" type="tel" placeholder="+91 98765 43210"></div>
+      <div class="form-group">
+        <label class="form-label">Photo of Found Pet</label>
+        <div class="photo-upload" onclick="document.getElementById('f-photo').click()">
+          <i class="ti ti-camera" style="font-size:28px;color:#c7d2fe;display:block;margin-bottom:6px"></i>
+          <div style="font-size:13px;font-weight:600;color:#65676b">Tap to upload photo</div>
+          <input type="file" id="f-photo" accept="image/*" style="display:none" onchange="previewPhoto(this,'f-photo-preview')">
+        </div>
+        <img id="f-photo-preview" style="display:none;width:100%;border-radius:10px;margin-top:8px;max-height:200px;object-fit:cover">
+      </div>
+      <button class="submit-btn green" onclick="submitReport('found')">✅ Submit Found Pet Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- Report Sighting -->
+<div class="modal-bg" id="sighting-modal" onclick="if(event.target===this)closeModal('sighting-modal')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">📍 Report a Sighting</div>
+      <button class="modal-close" onclick="closeModal('sighting-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:#eff6ff;border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;color:#1877F2;font-weight:600">
+        📢 Seen a lost pet? Report its location — the owner will be notified instantly!
+      </div>
+      <div class="form-group"><label class="form-label">Pet description</label><input class="form-input" id="s-desc" placeholder="Brown dog, limping, near metro"></div>
+      <div class="form-group"><label class="form-label">Location *</label><input class="form-input" id="s-location" placeholder="Exact location or landmark"></div>
+      <div class="form-group"><label class="form-label">When did you see it?</label><input class="form-input" type="datetime-local" id="s-time"></div>
+      <div class="form-group"><label class="form-label">Your name (optional)</label><input class="form-input" id="s-name" placeholder="Helpful samaritan"></div>
+      <div class="form-group"><label class="form-label">Contact (optional)</label><input class="form-input" id="s-phone" type="tel" placeholder="+91…"></div>
+      <button class="submit-btn blue" onclick="submitReport('sighting')">📍 Submit Sighting Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- Search Party Modal -->
+<div class="modal-bg" id="search-modal" onclick="if(event.target===this)closeModal('search-modal')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">👥 Join Search Party</div>
+      <button class="modal-close" onclick="closeModal('search-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:#65676b;margin-bottom:14px;line-height:1.6">Help search for a lost pet in your area. Volunteers will be coordinated via WhatsApp group.</div>
+      <div class="form-group"><label class="form-label">Your Name *</label><input class="form-input" id="sp-name" placeholder="Rahul Dev"></div>
+      <div class="form-group"><label class="form-label">Your Area *</label><input class="form-input" id="sp-area" placeholder="Lajpat Nagar, Delhi"></div>
+      <div class="form-group"><label class="form-label">WhatsApp Number *</label><input class="form-input" id="sp-phone" type="tel" placeholder="+91 98765 43210"></div>
+      <div class="form-group"><label class="form-label">Available from</label><input class="form-input" type="time" id="sp-time" value="08:00"></div>
+      <button class="submit-btn blue" onclick="joinSearchParty()">👥 Join Search Party</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="pb-toast"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottomnav">
+  <button class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></button>
+  <button class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></button>
+  <button class="bnav-item active"><i class="ti ti-map-pin"></i><span>Lost</span></button>
+  <button class="bnav-item" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i><span>Vet</span></button>
+  <button class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Me</span></button>
+</nav>
+
+<script src="api.js"></script>
+<script>
+// ── DEMO DATA ──────────────────────────────────────────────────────────────────
+var ALERTS = [
+  {id:1,type:'lost',name:'Bruno',species:'Dog',breed:'Beagle',color:'Tri-color',age:'3 years',location:'Lodhi Garden, New Delhi',time:'2 hours ago',desc:'Bruno ran away during morning walk. Wearing a blue collar with name tag. Very friendly, responds to his name.',img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80',phone:'+91 98765 43210',lat:28.5935,lng:77.2196,urgent:true},
+  {id:2,type:'found',name:'Unknown Cat',species:'Cat',breed:'Persian mix',color:'White & grey',age:'~2 years',location:'Connaught Place, Delhi',time:'5 hours ago',desc:'Found near Janpath. Very calm and friendly. Has a flea collar. Looking for owner.',img:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80',phone:'+91 87654 32109',lat:28.6304,lng:77.2177,urgent:false},
+  {id:3,type:'sighting',name:'Sighting: Brown dog',species:'Dog',breed:'Unknown',color:'Brown',age:'Adult',location:'Nehru Place, Delhi',time:'1 hour ago',desc:'Spotted a brown medium-sized dog near the metro station. Looked lost and scared.',img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',phone:'',lat:28.5491,lng:77.2527,urgent:false},
+  {id:4,type:'lost',name:'Mochi',species:'Cat',breed:'Ragdoll',color:'White with grey patches',age:'1.5 years',location:'Vasant Kunj, Delhi',time:'Yesterday',desc:'Indoor cat, never goes outside. Got out through open window. Has microchip. Reward offered.',img:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&q=80',phone:'+91 76543 21098',lat:28.5230,lng:77.1590,urgent:true},
+  {id:5,type:'found',name:'Unknown Puppy',species:'Dog',breed:'Indie mix',color:'Black & white',age:'~4 months',location:'Saket, Delhi',time:'3 hours ago',desc:'Found a tiny puppy near Select City Walk mall. Very hungry, being taken care of. Please contact if owner.',img:'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=300&q=80',phone:'+91 65432 10987',lat:28.5288,lng:77.2108,urgent:false},
+];
+
+var currentFilter = 'all';
+var mapInstance = null;
+var mapMarkers = [];
+
+// ── MAP ────────────────────────────────────────────────────────────────────────
+function initMap() {
+  if(mapInstance) return;
+  try {
+    mapInstance = L.map('lp-map', {zoomControl:true}).setView([28.5935,77.2196], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:'© OpenStreetMap contributors', maxZoom:18
+    }).addTo(mapInstance);
+    addMapMarkers(ALERTS);
+    setTimeout(function(){ mapInstance.invalidateSize(); }, 300);
+  } catch(e) {
+    document.getElementById('lp-map').innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#f8fafc;color:#65676b;font-size:13px;flex-direction:column;gap:8px"><div style="font-size:32px">🗺️</div><div>Map loading… Open from http://localhost:62814</div></div>';
+  }
+}
+
+function addMapMarkers(alerts) {
+  if(!mapInstance) return;
+  mapMarkers.forEach(function(m){ mapInstance.removeLayer(m); });
+  mapMarkers = [];
+  alerts.forEach(function(a) {
+    var color = a.type==='lost'?'#dc2626':a.type==='found'?'#16a34a':'#1877F2';
+    var emoji = a.type==='lost'?'🚨':a.type==='found'?'✅':'👁';
+    var icon = L.divIcon({
+      className:'',
+      html:'<div style="width:36px;height:36px;border-radius:50%;background:'+color+';border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">'+emoji+'</div>',
+      iconSize:[36,36], iconAnchor:[18,18]
+    });
+    var marker = L.marker([a.lat,a.lng],{icon:icon}).addTo(mapInstance);
+    marker.bindPopup(
+      '<div style="font-family:Inter,sans-serif;min-width:180px">'+
+      '<div style="font-weight:700;font-size:14px;margin-bottom:4px">'+a.name+'</div>'+
+      '<div style="font-size:12px;color:#65676b;margin-bottom:4px">'+a.breed+' · '+a.location+'</div>'+
+      '<div style="font-size:11px;color:'+color+';font-weight:700;margin-bottom:8px">'+emoji+' '+a.type.toUpperCase()+'</div>'+
+      (a.phone?'<a href="tel:'+a.phone+'" style="display:inline-block;background:'+color+';color:#fff;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;text-decoration:none">📞 Call Owner</a>':'')+'</div>'
+    );
+    mapMarkers.push(marker);
+  });
+}
+
+function centerMap() {
+  if(!mapInstance) return;
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos){
+      mapInstance.setView([pos.coords.latitude, pos.coords.longitude], 13);
+      toast('📍 Centered on your location','success');
+    }, function(){
+      toast('Could not get your location','error');
+    });
+  } else {
+    toast('Geolocation not available','error');
+  }
+}
+
+function toggleHeatmap() {
+  toast('Heatmap view — coming soon!','info');
+}
+
+// ── TABS & FILTER ──────────────────────────────────────────────────────────────
+function setTab(type, btn) {
+  document.querySelectorAll('.lp-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  currentFilter = type;
+  renderAlerts();
+}
+
+function filterAlerts() {
+  renderAlerts();
+}
+
+function sortAlerts(by) {
+  renderAlerts();
+}
+
+// ── RENDER ALERTS ──────────────────────────────────────────────────────────────
+function renderAlerts() {
+  var q = document.getElementById('lp-search').value.toLowerCase();
+  var filtered = ALERTS.filter(function(a){
+    if(currentFilter !== 'all' && a.type !== currentFilter) return false;
+    if(q && !a.name.toLowerCase().includes(q) && !a.location.toLowerCase().includes(q) && !a.breed.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  document.getElementById('alerts-title').textContent =
+    (currentFilter==='all'?'All':currentFilter.charAt(0).toUpperCase()+currentFilter.slice(1))+' Alerts ('+filtered.length+')';
+
+  var list = document.getElementById('alerts-list');
+  if(!filtered.length) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#8a8d91"><div style="font-size:40px;margin-bottom:12px">🔍</div><div style="font-weight:700;margin-bottom:6px">No alerts found</div><div style="font-size:13px">Try a different search or filter</div></div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(function(a){
+    var badgeClass = a.type==='lost'?'badge-lost':a.type==='found'?'badge-found':'badge-sighting';
+    var badgeText = a.type==='lost'?'🚨 Lost':a.type==='found'?'✅ Found':'👁 Sighting';
+    var urgentBar = a.urgent ? '<div style="background:#dc2626;color:#fff;font-size:11px;font-weight:700;padding:4px 14px;display:flex;align-items:center;gap:6px"><i class="ti ti-alert-triangle"></i> URGENT — Missing for more than 24 hours</div>' : '';
+
+    return '<div class="alert-card">'+
+      urgentBar+
+      '<div class="alert-top">'+
+        '<img class="alert-img" src="'+a.img+'" alt="'+a.name+'" onerror="this.style.background=\'#e4e6eb\';this.style.display=\'flex\'">'+
+        '<div class="alert-info">'+
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+            '<div class="alert-name">'+a.name+'</div>'+
+            '<span class="alert-badge '+badgeClass+'">'+badgeText+'</span>'+
+            (a.urgent?'<span class="alert-badge" style="background:#fef3c7;color:#d97706">⚡ Urgent</span>':'')+
+          '</div>'+
+          '<div class="alert-breed">'+a.breed+' · '+a.color+' · '+a.age+'</div>'+
+          '<div class="alert-location"><i class="ti ti-map-pin" style="font-size:11px"></i>'+a.location+'</div>'+
+          '<div class="alert-time">🕐 '+a.time+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="alert-desc">'+a.desc+'</div>'+
+      '<div class="alert-actions">'+
+        (a.phone?'<button class="alert-btn abtn-red" onclick="window.open(\'tel:'+a.phone+'\')"><i class="ti ti-phone"></i> Call Owner</button>':'')+
+        '<button class="alert-btn abtn-blue" onclick="reportSightingFor('+a.id+')"><i class="ti ti-map-pin"></i> I Saw This Pet</button>'+
+        '<button class="alert-btn abtn-green" onclick="shareSpecificAlert('+a.id+')"><i class="ti ti-share"></i> Share</button>'+
+        (a.type==='lost'?'<button class="alert-btn abtn-gray" onclick="markFound('+a.id+',this)"><i class="ti ti-check"></i> Mark Found</button>':'')+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  // Update map
+  addMapMarkers(filtered);
+}
+
+// ── ACTIONS ────────────────────────────────────────────────────────────────────
+function reportSightingFor(id) {
+  var a = ALERTS.find(function(x){return x.id===id;});
+  if(a) document.getElementById('s-desc').value = a.name + ' — ' + a.breed;
+  openModal('sighting-modal');
+}
+
+function markFound(id, btn) {
+  var a = ALERTS.find(function(x){return x.id===id;});
+  if(!a) return;
+  if(!confirm('"'+a.name+'" has been found? This will update the alert.')) return;
+  a.type = 'found';
+  toast('🎉 Great news! '+a.name+' marked as found!','success');
+  renderAlerts();
+}
+
+function shareAlert() {
+  if(navigator.share) {
+    navigator.share({title:'Lost Pet Alert — PawBook',text:'Help find missing pets in your area!',url:location.href});
+  } else if(navigator.clipboard) {
+    navigator.clipboard.writeText(location.href);
+    toast('🔗 Link copied to clipboard!','success');
+  }
+}
+
+function shareSpecificAlert(id) {
+  var a = ALERTS.find(function(x){return x.id===id;});
+  if(!a) return;
+  var msg = '🚨 LOST PET ALERT!\n'+a.name+' ('+a.breed+')\nLast seen: '+a.location+'\n'+a.time+'\n📞 '+a.phone+'\n\nPlease share! PawBook.app';
+  if(navigator.share) {
+    navigator.share({title:'Lost Pet: '+a.name,text:msg});
+  } else if(navigator.clipboard) {
+    navigator.clipboard.writeText(msg);
+    toast('Alert message copied! Share on WhatsApp','success');
+  }
+}
+
+function joinSearchParty() {
+  var name = document.getElementById('sp-name').value.trim();
+  var phone = document.getElementById('sp-phone').value.trim();
+  if(!name||!phone){toast('Please fill in name and WhatsApp number','error');return;}
+  closeModal('search-modal');
+  var waMsg = 'Hi! I want to join the search party.\nName: '+name+'\nArea: '+document.getElementById('sp-area').value+'\nAvailable from: '+document.getElementById('sp-time').value;
+  window.open('https://wa.me/918800000000?text='+encodeURIComponent(waMsg),'_blank');
+  toast('✅ Joining search party! WhatsApp opening…','success');
+}
+
+// ── SUBMIT FORMS ──────────────────────────────────────────────────────────────
+function submitReport(type) {
+  var fields = {
+    lost: [{id:'r-name',label:'Pet name'},{id:'r-location',label:'Location'},{id:'r-phone',label:'Contact number'}],
+    found: [{id:'f-desc',label:'Pet description'},{id:'f-location',label:'Where found'},{id:'f-phone',label:'Your contact'}],
+    sighting: [{id:'s-location',label:'Location'}]
+  };
+  var required = fields[type]||[];
+  for(var i=0;i<required.length;i++){
+    var el = document.getElementById(required[i].id);
+    if(!el||!el.value.trim()){toast('Please enter: '+required[i].label,'error');el&&el.focus();return;}
+  }
+
+  // Add to demo list
+  if(type==='lost') {
+    ALERTS.unshift({
+      id:Date.now(),type:'lost',
+      name:document.getElementById('r-name').value,
+      species:document.getElementById('r-species').value,
+      breed:document.getElementById('r-breed').value||'Unknown',
+      color:document.getElementById('r-color').value||'',
+      age:document.getElementById('r-age').value||'',
+      location:document.getElementById('r-location').value,
+      time:'Just now',
+      desc:document.getElementById('r-desc').value||'Recently reported missing.',
+      img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80',
+      phone:document.getElementById('r-phone').value,
+      lat:28.5935+Math.random()*0.1-0.05,
+      lng:77.2196+Math.random()*0.1-0.05,
+      urgent:false
+    });
+  }
+
+  var modals = {lost:'report-modal',found:'found-modal',sighting:'sighting-modal'};
+  closeModal(modals[type]);
+  renderAlerts();
+
+  var msgs = {lost:'🚨 Lost pet alert posted! Community has been notified.',found:'✅ Found pet report submitted! Owner search started.',sighting:'📍 Sighting reported! Owner has been notified.'};
+  toast(msgs[type]||'Submitted!','success');
+}
+
+// ── MODAL HELPERS ─────────────────────────────────────────────────────────────
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow='';
+}
+function previewPhoto(input,previewId){
+  if(!input.files||!input.files[0]) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var img=document.getElementById(previewId);
+    img.src=e.target.result;img.style.display='block';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  renderAlerts();
+  initMap();
+});
+</script>
+</body>
+</html>

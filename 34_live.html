@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Live</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#0a0a12;color:#fff;height:100vh;overflow:hidden}
+
+/* ── BROWSE MODE ── */
+.live-browse{height:100vh;overflow-y:auto;background:#0a0a12;padding-bottom:70px}
+.live-header{padding:60px 16px 16px;display:flex;align-items:center;justify-content:space-between}
+.live-header h1{font-size:22px;font-weight:900}
+.go-live-btn{height:38px;padding:0 18px;border-radius:20px;border:none;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* Featured live */
+.featured-live{margin:0 16px 16px;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;height:220px}
+.featured-live img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:0;filter:none}
+.featured-overlay{position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,0.8))}
+.featured-live-badge{position:absolute;top:12px;left:12px;background:#ef4444;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px}
+.featured-live-info{position:absolute;bottom:12px;left:12px;right:12px}
+.featured-live-title{font-size:16px;font-weight:800;margin-bottom:4px}
+.featured-live-meta{font-size:12px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:8px}
+.viewer-count{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.5);padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700}
+
+/* Live grid */
+.live-section-title{padding:4px 16px 10px;font-size:15px;font-weight:800;color:rgba(255,255,255,0.9)}
+.live-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px 16px}
+.live-card{border-radius:12px;overflow:hidden;position:relative;cursor:pointer;aspect-ratio:9/16}
+/* Background image - must fill card completely, no oval */
+.live-card img.live-bg{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  border-radius:0;
+  filter:none;
+  z-index:0;
+}
+.live-card:hover img.live-bg{transform:scale(1.04);transition:transform 0.3s}
+.live-card-overlay{position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,0.85));z-index:1}
+.live-badge{position:absolute;top:8px;left:8px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;z-index:2}
+.live-card-info{position:absolute;bottom:8px;left:8px;right:8px;z-index:2}
+.live-card-name{font-size:12px;font-weight:800;margin-bottom:2px}
+.live-card-topic{font-size:10px;color:rgba(255,255,255,0.7)}
+.live-av{width:28px;height:28px;border-radius:50%;border:2px solid #ef4444;object-fit:cover;position:absolute;top:8px;right:8px;z-index:2}
+
+/* ── STREAM MODE ── */
+.stream-view{position:fixed;inset:0;background:#000;z-index:200;display:none;flex-direction:column}
+.stream-view.active{display:flex}
+.stream-video-area{flex:1;position:relative;overflow:hidden}
+.stream-video-bg{width:100%;height:100%;object-fit:cover;filter:brightness(0.85)}
+.stream-overlay{position:absolute;inset:0}
+
+/* Top bar */
+.stream-topbar{position:absolute;top:0;left:0;right:0;padding:48px 14px 14px;background:linear-gradient(rgba(0,0,0,0.6),transparent);display:flex;align-items:center;gap:10px;z-index:10}
+.stream-av{width:38px;height:38px;border-radius:50%;border:2px solid #ef4444;object-fit:cover}
+.stream-name{font-size:14px;font-weight:800}
+.stream-sub{font-size:11px;color:rgba(255,255,255,0.7)}
+.stream-live-pill{background:#ef4444;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.follow-stream-btn{height:30px;padding:0 14px;border-radius:15px;border:1.5px solid rgba(255,255,255,0.7);background:transparent;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.follow-stream-btn.following{background:rgba(255,255,255,0.15)}
+.stream-close{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Viewer count bar */
+.stream-stats{position:absolute;top:100px;left:14px;display:flex;gap:8px;z-index:10}
+.stat-pill{background:rgba(0,0,0,0.55);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:5px}
+.stat-pill i{font-size:13px}
+
+/* Comments feed */
+.stream-comments{position:absolute;bottom:100px;left:0;right:0;padding:0 14px;z-index:10;pointer-events:none}
+.comment-feed{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow:hidden;justify-content:flex-end}
+.comment-item{display:flex;align-items:flex-start;gap:8px;animation:slideUp 0.3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.comment-av{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.comment-bubble{background:rgba(0,0,0,0.5);border-radius:16px;padding:5px 10px;font-size:12px;line-height:1.4;pointer-events:auto}
+.comment-author{font-weight:700;color:#fbbf24;font-size:11px}
+
+/* Emoji reactions */
+.emoji-burst{position:absolute;pointer-events:none;font-size:24px;animation:floatUp 2s ease forwards;z-index:20}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-200px) scale(1.5)}}
+
+/* Bottom bar */
+.stream-bottom{position:absolute;bottom:0;left:0;right:0;padding:0 14px 30px;background:linear-gradient(transparent,rgba(0,0,0,0.7));z-index:10}
+.stream-input-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.stream-comment-input{flex:1;height:40px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.12);color:#fff;padding:0 16px;font-family:'Poppins',sans-serif;font-size:13px;outline:none}
+.stream-comment-input::placeholder{color:rgba(255,255,255,0.5)}
+.stream-send-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stream-reactions{display:flex;gap:10px;justify-content:center}
+.react-btn{font-size:26px;cursor:pointer;transition:transform 0.15s;-webkit-tap-highlight-color:transparent}
+.react-btn:active{transform:scale(1.4)}
+.share-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto}
+
+/* ── GO LIVE MODE ── */
+.go-live-view{position:fixed;inset:0;background:#000;z-index:300;display:none;flex-direction:column}
+.go-live-view.active{display:flex}
+.camera-preview{flex:1;background:#111;position:relative;display:flex;align-items:center;justify-content:center}
+.camera-placeholder{text-align:center;color:rgba(255,255,255,0.5)}
+.go-live-controls{padding:20px 20px 40px;background:#111}
+.live-title-input{width:100%;height:46px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;padding:0 14px;font-family:'Poppins',sans-serif;font-size:14px;outline:none;margin-bottom:10px}
+.live-title-input::placeholder{color:rgba(255,255,255,0.4)}
+.category-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:16px}
+.category-chips::-webkit-scrollbar{display:none}
+.cat-chip{flex-shrink:0;height:32px;padding:0 14px;border-radius:16px;border:1.5px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.7);font-size:12px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap}
+.cat-chip.on{background:#ef4444;border-color:#ef4444;color:#fff}
+.start-live-btn{width:100%;height:52px;border-radius:26px;border:none;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+
+/* Bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(10,10,18,0.95);border-top:1px solid rgba(255,255,255,0.08);display:flex;z-index:100}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.bni.on{color:#ef4444}
+.bni i{font-size:20px}
+
+/* OVERRIDE - force all card/thumb images rectangular */
+.live-card img.live-bg,
+.live-card > img,
+.featured-live > img,
+.stream-video-bg {
+  border-radius: 0 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+
+<!-- ── BROWSE MODE ── -->
+<div class="live-browse" id="browse-view">
+  <div class="live-header">
+    <h1>🔴 Live Now</h1>
+    <button class="go-live-btn" onclick="openGoLive()">
+      <div class="live-dot"></div> Go Live
+    </button>
+  </div>
+
+  <!-- Featured -->
+  <div class="featured-live" onclick="openStream(0)">
+    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=95">
+    <div class="featured-overlay"></div>
+    <div class="featured-live-badge"><div class="live-dot"></div> LIVE</div>
+    <div class="featured-live-info">
+      <div class="featured-live-title">Dr. Priya's Live Vet Q&A 🩺</div>
+      <div class="featured-live-meta">
+        <span>Dr. Priya Sharma</span>
+        <div class="viewer-count"><i class="ti ti-eye" style="font-size:12px"></i> 2.4K</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="live-section-title">🔥 Trending Streams</div>
+  <div class="live-grid" id="live-grid">
+    <div class="live-card" onclick="openStream(1)">
+      <img class="live-bg" src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=95">
+      <div class="live-card-overlay"></div>
+      <div class="live-badge"><div class="live-dot" style="background:#fff"></div> LIVE</div>
+      <img class="live-av" src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=800&q=95">
+      <div class="live-card-info">
+        <div class="live-card-name">Rahul & Bruno 🐕</div>
+        <div class="live-card-topic">Dog park meetup!</div>
+        <div class="viewer-count" style="margin-top:4px"><i class="ti ti-eye" style="font-size:10px"></i> 847</div>
+      </div>
+    </div>
+    <div class="live-card" onclick="openStream(2)">
+      <img class="live-bg" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=95">
+      <div class="live-card-overlay"></div>
+      <div class="live-badge"><div class="live-dot" style="background:#fff"></div> LIVE</div>
+      <img class="live-av" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&q=95">
+      <div class="live-card-info">
+        <div class="live-card-name">Priya & Luna 🐈</div>
+        <div class="live-card-topic">Cat grooming tips</div>
+        <div class="viewer-count" style="margin-top:4px"><i class="ti ti-eye" style="font-size:10px"></i> 1.2K</div>
+      </div>
+    </div>
+    <div class="live-card" onclick="openStream(3)">
+      <img class="live-bg" src="https://images.unsplash.com/photo-1444212477490-ca407925329e?w=800&q=95">
+      <div class="live-card-overlay"></div>
+      <div class="live-badge"><div class="live-dot" style="background:#fff"></div> LIVE</div>
+      <img class="live-av" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=800&q=95">
+      <div class="live-card-info">
+        <div class="live-card-name">BirdLover Mumbai 🦜</div>
+        <div class="live-card-topic">Parrot training session</div>
+        <div class="viewer-count" style="margin-top:4px"><i class="ti ti-eye" style="font-size:10px"></i> 523</div>
+      </div>
+    </div>
+    <div class="live-card" onclick="openStream(4)">
+      <img class="live-bg" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=95">
+      <div class="live-card-overlay"></div>
+      <div class="live-badge"><div class="live-dot" style="background:#fff"></div> LIVE</div>
+      <img class="live-av" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=800&q=95">
+      <div class="live-card-info">
+        <div class="live-card-name">Hopeful Tails 🏠</div>
+        <div class="live-card-topic">Adoption event — meet 20 pets!</div>
+        <div class="viewer-count" style="margin-top:4px"><i class="ti ti-eye" style="font-size:10px"></i> 3.1K</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="live-section-title" style="margin-top:8px">📅 Starting Soon</div>
+  <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+    <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="toast('🔔 You\'ll be notified when this starts!')">
+      <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=95" style="width:48px;height:48px;border-radius:50%;object-fit:cover">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:800">Dr. Arjun's Exotic Pet Care</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px">Starts in 25 min · Reptiles & Birds</div>
+      </div>
+      <button onclick="event.stopPropagation();this.textContent=this.textContent==='Remind'?'✓ Set':'Remind';toast(this.textContent==='✓ Set'?'🔔 Reminder set!':'Reminder removed')" style="height:30px;padding:0 14px;border-radius:15px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Remind</button>
+    </div>
+    <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="toast('🔔 You\'ll be notified!')">
+      <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=95" style="width:48px;height:48px;border-radius:50%;object-fit:cover">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:800">PawBook Delhi Dog Meetup Live</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px">Starts in 2 hrs · Meetup & Play</div>
+      </div>
+      <button onclick="event.stopPropagation();this.textContent=this.textContent==='Remind'?'✓ Set':'Remind';toast(this.textContent==='✓ Set'?'🔔 Reminder set!':'Reminder removed')" style="height:30px;padding:0 14px;border-radius:15px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Remind</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── STREAM VIEW ── -->
+<div class="stream-view" id="stream-view">
+  <div class="stream-video-area">
+    <img class="stream-video-bg" id="stream-bg" src="">
+    <div class="stream-overlay">
+      <!-- Top bar -->
+      <div class="stream-topbar">
+        <img class="stream-av" id="stream-av" src="">
+        <div>
+          <div class="stream-name" id="stream-name"></div>
+          <div class="stream-sub" id="stream-sub"></div>
+        </div>
+        <div class="stream-live-pill"><div class="live-dot"></div> LIVE</div>
+        <button class="follow-stream-btn" id="follow-stream-btn" onclick="toggleFollowStream(this)">Follow</button>
+        <button class="stream-close" onclick="closeStream()">✕</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stream-stats">
+        <div class="stat-pill"><i class="ti ti-eye"></i> <span id="viewer-count">1,247</span></div>
+        <div class="stat-pill"><i class="ti ti-heart"></i> <span id="heart-count">3,891</span></div>
+        <div class="stat-pill" style="background:rgba(239,68,68,0.4)">🔴 <span id="stream-duration">00:00</span></div>
+      </div>
+
+      <!-- Comment feed -->
+      <div class="stream-comments">
+        <div class="comment-feed" id="comment-feed"></div>
+      </div>
+
+      <!-- Bottom -->
+      <div class="stream-bottom">
+        <div class="stream-input-row">
+          <input class="stream-comment-input" id="stream-comment-input" placeholder="Say something…" onkeydown="if(event.key==='Enter')sendStreamComment()">
+          <button class="stream-send-btn" onclick="sendStreamComment()"><i class="ti ti-send"></i></button>
+          <button class="share-btn" onclick="shareStream()"><i class="ti ti-share"></i></button>
+        </div>
+        <div class="stream-reactions">
+          <span class="react-btn" onclick="sendReaction(this,'❤️')">❤️</span>
+          <span class="react-btn" onclick="sendReaction(this,'🐾')">🐾</span>
+          <span class="react-btn" onclick="sendReaction(this,'🔥')">🔥</span>
+          <span class="react-btn" onclick="sendReaction(this,'😍')">😍</span>
+          <span class="react-btn" onclick="sendReaction(this,'👏')">👏</span>
+          <span class="react-btn" onclick="sendReaction(this,'🎉')">🎉</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── GO LIVE VIEW ── -->
+<div class="go-live-view" id="go-live-view">
+  <div style="padding:52px 16px 14px;display:flex;align-items:center;gap:12px;background:#111">
+    <button onclick="closeGoLive()" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer"><i class="ti ti-arrow-left"></i></button>
+    <div style="font-size:17px;font-weight:800">Go Live</div>
+  </div>
+  <div class="camera-preview">
+    <div class="camera-placeholder">
+      <div style="font-size:64px;margin-bottom:16px">📷</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px">Camera Preview</div>
+      <div style="font-size:13px;opacity:0.6">Allow camera access to go live</div>
+      <button onclick="requestCamera()" style="margin-top:16px;height:40px;padding:0 24px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Enable Camera</button>
+    </div>
+    <video id="camera-feed" autoplay muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none"></video>
+  </div>
+  <div class="go-live-controls">
+    <input class="live-title-input" id="live-title" placeholder="What's your live about? 🐾">
+    <div class="category-chips" id="cat-chips">
+      <button class="cat-chip on" onclick="toggleCat(this)">🩺 Vet Tips</button>
+      <button class="cat-chip" onclick="toggleCat(this)">🐕 Dog Life</button>
+      <button class="cat-chip" onclick="toggleCat(this)">🐈 Cat Life</button>
+      <button class="cat-chip" onclick="toggleCat(this)">🏠 Adoption</button>
+      <button class="cat-chip" onclick="toggleCat(this)">🎓 Training</button>
+      <button class="cat-chip" onclick="toggleCat(this)">🎉 Meetup</button>
+      <button class="cat-chip" onclick="toggleCat(this)">🌿 Nutrition</button>
+    </div>
+    <button class="start-live-btn" onclick="startLive()">
+      <div class="live-dot" style="width:10px;height:10px"></div>
+      Start Live Stream
+    </button>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<div class="bnav">
+  <button class="bni" onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
+  <button class="bni" onclick="location.href='27_stories.html'"><i class="ti ti-circle-dot"></i>Stories</button>
+  <button class="bni" onclick="location.href='28_reels.html'"><i class="ti ti-player-play"></i>Reels</button>
+  <button class="bni on"><i class="ti ti-live-view"></i>Live</button>
+  <button class="bni" onclick="location.href='08_pet_profile.html'"><i class="ti ti-user"></i>Profile</button>
+</div>
+
+<script src="api.js"></script>
+<script>
+function goTo(p){location.href=p;}
+
+const STREAMS=[
+  {name:'Dr. Priya Sharma',sub:'Veterinary Clinic · Q&A Session',av:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=95',bg:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=95',viewers:2418,topic:'Vet Q&A 🩺'},
+  {name:'Rahul & Bruno',sub:'Dog Parent · Park Meetup',av:'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=800&q=95',bg:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=95',viewers:847,topic:'Dog Park 🐕'},
+  {name:'Priya M. & Luna',sub:'Cat Mom · Grooming Tips',av:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&q=95',bg:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=95',viewers:1247,topic:'Cat Grooming 🐈'},
+  {name:'BirdLover Mumbai',sub:'Parrot Trainer · Live Demo',av:'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=800&q=95',bg:'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=800&q=95',viewers:523,topic:'Parrot Training 🦜'},
+  {name:'Hopeful Tails Shelter',sub:'Adoption Event · Meet the Pets',av:'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=800&q=95',bg:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=95',viewers:3124,topic:'Adoption Drive 🏠'},
+];
+
+const FAKE_COMMENTS=[
+  ['Luna Fan','Your Luna is so adorable! 😍','#f59e0b'],['DelhiDogs','Bruno looks so happy 🐾','#6366f1'],
+  ['PetMom99','Can you recommend puppy food?','#10b981'],['Dr_Arjun','Great tips as always!','#ef4444'],
+  ['AnanyaB','Watching from Bengaluru 🐕','#8b5cf6'],['VetStudent','This is so helpful, thank you!','#1a4db3'],
+  ['BrunoLover','My dog does this too!! 😂','#d97706'],['CatDad42','What food do you recommend for cats?','#6366f1'],
+];
+
+let streamInterval=null, commentInterval=null, durationInterval=null;
+let streamSeconds=0, viewerCount=0, heartCount=0;
+let myStream=false;
+
+function openStream(idx){
+  const s=STREAMS[idx];
+  document.getElementById('stream-view').classList.add('active');
+  document.getElementById('stream-bg').src=s.bg;
+  document.getElementById('stream-av').src=s.av;
+  document.getElementById('stream-name').textContent=s.name;
+  document.getElementById('stream-sub').textContent=s.sub;
+  viewerCount=s.viewers;
+  heartCount=Math.floor(s.viewers*1.6);
+  updateStats();
+  streamSeconds=Math.floor(Math.random()*1800);
+  updateDuration();
+  startSimulation();
+}
+function closeStream(){
+  document.getElementById('stream-view').classList.remove('active');
+  clearInterval(streamInterval);
+  clearInterval(commentInterval);
+  clearInterval(durationInterval);
+  document.getElementById('comment-feed').innerHTML='';
+}
+function updateStats(){
+  document.getElementById('viewer-count').textContent=fmt(viewerCount);
+  document.getElementById('heart-count').textContent=fmt(heartCount);
+}
+function updateDuration(){
+  const m=Math.floor(streamSeconds/60).toString().padStart(2,'0');
+  const s=(streamSeconds%60).toString().padStart(2,'0');
+  document.getElementById('stream-duration').textContent=m+':'+s;
+}
+function startSimulation(){
+  clearInterval(streamInterval);clearInterval(commentInterval);clearInterval(durationInterval);
+  streamInterval=setInterval(()=>{
+    viewerCount+=Math.floor(Math.random()*5-1);
+    heartCount+=Math.floor(Math.random()*8);
+    updateStats();
+  },2000);
+  commentInterval=setInterval(()=>{
+    const c=FAKE_COMMENTS[Math.floor(Math.random()*FAKE_COMMENTS.length)];
+    addComment(c[0],c[1],c[2]);
+  },2500);
+  durationInterval=setInterval(()=>{streamSeconds++;updateDuration();},1000);
+}
+function addComment(author,text,color,isMe=false){
+  const feed=document.getElementById('comment-feed');
+  const div=document.createElement('div');
+  div.className='comment-item';
+  div.innerHTML=`
+    <div class="comment-av" style="background:${color||'#1a4db3'}">${author[0]}</div>
+    <div class="comment-bubble">
+      <div class="comment-author" style="color:${isMe?'#60a5fa':'#fbbf24'}">${isMe?'You':author}</div>
+      ${text}
+    </div>`;
+  feed.appendChild(div);
+  while(feed.children.length>6) feed.removeChild(feed.firstChild);
+  feed.scrollTop=feed.scrollHeight;
+}
+function sendStreamComment(){
+  const input=document.getElementById('stream-comment-input');
+  const text=input.value.trim();if(!text)return;
+  input.value='';
+  const user=typeof Auth!=='undefined'?Auth.getUser():null;
+  addComment(user?.full_name||'You',text,'#1a4db3',true);
+}
+function sendReaction(el,emoji){
+  el.style.transform='scale(1.5)';
+  setTimeout(()=>el.style.transform='scale(1)',300);
+  heartCount+=Math.floor(Math.random()*10+5);
+  updateStats();
+  // Float emoji up
+  const burst=document.createElement('div');
+  burst.className='emoji-burst';
+  burst.textContent=emoji;
+  burst.style.left=Math.random()*60+20+'%';
+  burst.style.bottom='120px';
+  document.getElementById('stream-view').appendChild(burst);
+  setTimeout(()=>burst.remove(),2000);
+}
+function toggleFollowStream(btn){
+  btn.classList.toggle('following');
+  btn.textContent=btn.classList.contains('following')?'Following':'Follow';
+  if(btn.classList.contains('following'))toast('✓ Following! You\'ll be notified.');
+}
+function shareStream(){
+  navigator.share?.({title:'PawBook Live',text:'Watch this live stream!',url:location.href}).catch(()=>{});
+  if(!navigator.share){navigator.clipboard?.writeText(location.href);toast('🔗 Link copied!');}
+}
+function fmt(n){if(n>=1000)return (n/1000).toFixed(1)+'K';return String(n);}
+
+// ── GO LIVE ────────────────────────────────────────────────────────────────
+function openGoLive(){document.getElementById('go-live-view').classList.add('active');}
+function closeGoLive(){document.getElementById('go-live-view').classList.remove('active');}
+
+function requestCamera(){
+  navigator.mediaDevices?.getUserMedia({video:true,audio:true}).then(stream=>{
+    const video=document.getElementById('camera-feed');
+    video.srcObject=stream;
+    video.style.display='block';
+    document.querySelector('.camera-placeholder').style.display='none';
+    toast('📷 Camera ready!');
+  }).catch(()=>toast('Camera permission denied — demo mode active','error'));
+}
+
+function toggleCat(btn){
+  document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function startLive(){
+  const title=document.getElementById('live-title').value.trim();
+  if(!title){toast('Add a title for your stream!','error');return;}
+  closeGoLive();
+  myStream=true;
+  // Open self-stream view
+  const user=typeof Auth!=='undefined'?Auth.getUser():null;
+  openStream(0);
+  document.getElementById('stream-name').textContent=user?.full_name||'Your Live';
+  document.getElementById('stream-sub').textContent=title;
+  viewerCount=1;streamSeconds=0;heartCount=0;
+  updateStats();
+  toast('🔴 You are now LIVE!');
+  addComment('PawBook','Welcome to your first live stream! 🎉','#ef4444');
+}
+
+function toast(msg,type='success'){
+  const t=document.createElement('div');
+  t.style.cssText=`position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:${type==='error'?'#dc2626':'#1a4db3'};color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:'Poppins',sans-serif;white-space:nowrap`;
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
+}
+</script>
+</body>
+</html>

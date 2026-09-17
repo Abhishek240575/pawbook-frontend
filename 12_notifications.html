@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Notifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:antialiased}
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.topnav-logo{font-size:20px;font-weight:900;color:#1877F2;display:flex;align-items:center;gap:8px;text-decoration:none;cursor:pointer}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px}
+.topnav-search{flex:1;max-width:260px;height:38px;background:#f0f2f5;border-radius:999px;display:flex;align-items:center;padding:0 14px;gap:8px}
+.topnav-search input{border:none;outline:none;background:transparent;font-size:13px;color:#050505;width:100%;font-family:'Inter',sans-serif}
+.topnav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
+.topnav-tab{height:48px;width:100px;border-radius:8px;border:none;background:transparent;cursor:pointer;color:#65676b;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.topnav-tab:hover{background:#f0f2f5;color:#1877F2}
+.topnav-tab.active{color:#1877F2}
+.topnav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:#1877F2;border-radius:3px 3px 0 0}
+.topnav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#050505;font-size:18px}
+.nav-icon-btn:hover{background:#e4e6eb}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+.page-wrap{padding-top:56px;max-width:680px;margin:0 auto;padding-bottom:70px}
+
+/* Filter tabs */
+.notif-header{background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.notif-tabs{display:flex;gap:0}
+.ntab{height:48px;padding:0 18px;border:none;background:transparent;cursor:pointer;font-size:14px;font-weight:600;color:#65676b;font-family:'Inter',sans-serif;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .15s;white-space:nowrap}
+.ntab:hover{color:#1877F2;background:#f0f2f5}
+.ntab.active{color:#1877F2;border-bottom-color:#1877F2;font-weight:700}
+.mark-all-btn{height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#1877F2;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.mark-all-btn:hover{background:#f0f2f5}
+
+/* Notification items */
+.notif-section{padding:12px 16px 6px;font-size:12px;font-weight:800;color:#65676b;text-transform:uppercase;letter-spacing:.5px}
+.notif-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;cursor:pointer;transition:background .1s;border-bottom:1px solid #f8fafc;background:#fff}
+.notif-item:hover{background:#f7f8fa}
+.notif-item.unread{background:#e7f0fd}
+.notif-item.unread:hover{background:#dce8fb}
+.notif-av{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;position:relative}
+.notif-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.notif-icon-badge{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid #fff}
+.notif-body{flex:1;min-width:0}
+.notif-text{font-size:14px;line-height:1.5;color:#050505}
+.notif-text strong{font-weight:700}
+.notif-time{font-size:12px;color:#8a8d91;margin-top:3px}
+.notif-item.unread .notif-time{color:#1877F2;font-weight:600}
+.notif-dot{width:10px;height:10px;border-radius:50%;background:#1877F2;flex-shrink:0;margin-top:4px}
+.notif-action-btns{display:flex;gap:6px;margin-top:8px}
+.notif-btn-accept{height:28px;padding:0 12px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.notif-btn-decline{height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#050505;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.notif-thumb{width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0}
+.notif-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+.empty-state{text-align:center;padding:60px 20px;color:#8a8d91}
+.empty-state-icon{font-size:56px;margin-bottom:12px}
+
+/* Toast */
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Bottom nav */
+.bottomnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e4e6eb;display:none;align-items:center;justify-content:space-around;z-index:400}
+@media(max-width:768px){.bottomnav{display:flex}}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 14px;border-radius:8px;border:none;background:none;font-family:'Inter',sans-serif}
+.bnav-item i{font-size:22px;color:#8a8d91}
+.bnav-item.active i{color:#1877F2}
+.bnav-label{font-size:9px;font-weight:600;color:#8a8d91}
+.bnav-item.active .bnav-label{color:#1877F2}
+</style>
+</head>
+<body>
+<script>
+function goTo(p){window.location.href=p;}
+function showToast(msg,type){
+  var t=document.getElementById('pb-toast');
+  t.style.background=type==='error'?'#dc2626':type==='success'?'#16a34a':'rgba(0,0,0,.88)';
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2600);
+}
+</script>
+
+<nav class="topnav">
+  <a class="topnav-logo" onclick="goTo('07_home.html')">
+    <div class="logo-icon">🐾</div> PawBook
+  </a>
+  <div class="topnav-search"><i class="ti ti-search" style="color:#8a8d91;font-size:15px;flex-shrink:0"></i><input placeholder="Search notifications…" oninput="searchNotifs(this.value)"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn" onclick="goTo('13_messages.html')"><i class="ti ti-message-circle"></i></button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <!-- Header with tabs -->
+  <div style="background:#fff;padding:14px 16px 0;border-bottom:1px solid #e4e6eb">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:20px;font-weight:900;color:#050505">Notifications</div>
+      <button class="mark-all-btn" onclick="markAllRead()">Mark all as read</button>
+    </div>
+    <div class="notif-tabs">
+      <button class="ntab active" onclick="filterNotifs('all',this)">All</button>
+      <button class="ntab" onclick="filterNotifs('unread',this)">Unread</button>
+      <button class="ntab" onclick="filterNotifs('health',this)">Health</button>
+      <button class="ntab" onclick="filterNotifs('social',this)">Social</button>
+    </div>
+  </div>
+
+  <!-- Notifications list -->
+  <div id="notif-list"></div>
+</div>
+
+<div class="toast" id="pb-toast"></div>
+
+<nav class="bottomnav">
+  <button class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span class="bnav-label">Home</span></button>
+  <button class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span class="bnav-label">Groups</span></button>
+  <button class="bnav-item" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i><span class="bnav-label">Shop</span></button>
+  <button class="bnav-item active"><i class="ti ti-bell"></i><span class="bnav-label">Alerts</span></button>
+  <button class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span class="bnav-label">Me</span></button>
+</nav>
+
+<script>
+var NOTIFS = [
+  {id:1,type:'social',category:'new',unread:true,icon:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',badge:'❤️',badgeBg:'#fee2e2',text:'<strong>Priya Sharma</strong> liked your photo of Bruno at the park.',time:'2 minutes ago',thumb:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80'},
+  {id:2,type:'social',category:'new',unread:true,icon:'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80',badge:'💬',badgeBg:'#dbeafe',text:'<strong>Rahul Dev</strong> commented on your post: "Bruno looks so happy!"',time:'15 minutes ago',thumb:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=80&q=80'},
+  {id:3,type:'social',category:'new',unread:true,icon:'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=80&q=80',badge:'👥',badgeBg:'#f3e8ff',text:'<strong>Delhi Dog Parents</strong> accepted your join request. Welcome to the group!',time:'1 hour ago',actions:true},
+  {id:4,type:'health',category:'new',unread:true,icon:'💉',iconBg:'#dbeafe',badge:'🏥',badgeBg:'#dbeafe',text:'<strong>Vaccination Reminder:</strong> Bruno\'s Leptospirosis vaccine is due in 3 days.',time:'2 hours ago',btn:{label:'Book Vet',action:"goTo('11_vet_booking.html')"}},
+  {id:5,type:'social',category:'today',unread:false,icon:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',badge:'👤',badgeBg:'#dcfce7',text:'<strong>Ananya Bose</strong> started following you.',time:'3 hours ago',followBtn:true},
+  {id:6,type:'health',category:'today',unread:false,icon:'📅',iconBg:'#dcfce7',badge:'✅',badgeBg:'#dcfce7',text:'<strong>Appointment Confirmed:</strong> Video consultation with Dr. Priya Sharma tomorrow at 10:30 AM.',time:'5 hours ago',btn:{label:'View',action:"goTo('11_vet_booking.html')"}},
+  {id:7,type:'social',category:'today',unread:false,icon:'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80',badge:'❤️',badgeBg:'#fee2e2',text:'<strong>Dr. Arjun Mehta</strong> and <strong>12 others</strong> liked your vaccination update.',time:'6 hours ago'},
+  {id:8,type:'health',category:'week',unread:false,icon:'🏆',iconBg:'#fef3c7',badge:'⭐',badgeBg:'#fef3c7',text:'<strong>Achievement Unlocked!</strong> Bruno earned the "Healthy Pup" badge — all vaccinations up to date!',time:'Yesterday'},
+  {id:9,type:'social',category:'week',unread:false,icon:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80',badge:'🐾',badgeBg:'#f0fdf4',text:'<strong>Lost Pet Alert</strong> near your area: Golden Retriever missing in Lodhi Garden. Can you help?',time:'2 days ago',btn:{label:'View Alert',action:"goTo('05_lost_pet.html')"}},
+  {id:10,type:'social',category:'week',unread:false,icon:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=80&q=80',badge:'📢',badgeBg:'#fef3c7',text:'<strong>Delhi Dog Parents</strong> posted: "Sunday meetup at Lodhi Garden 8 AM — all breeds welcome!"',time:'3 days ago',thumb:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=80&q=80'},
+  {id:11,type:'health',category:'older',unread:false,icon:'💊',iconBg:'#fee2e2',badge:'⚠️',badgeBg:'#fee2e2',text:'<strong>Health Tip:</strong> Monsoon season — check Bruno\'s paws for fungal infections after every walk.',time:'1 week ago'},
+  {id:12,type:'social',category:'older',unread:false,icon:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',badge:'👥',badgeBg:'#f3e8ff',text:'<strong>Priya Sharma</strong> invited you to join <strong>Mumbai Cat Lovers</strong> group.',time:'1 week ago',actions:true},
+];
+
+var currentFilter = 'all';
+var currentSearch = '';
+
+function renderNotifs() {
+  var filtered = NOTIFS.filter(function(n) {
+    if(currentFilter === 'unread' && !n.unread) return false;
+    if(currentFilter === 'health' && n.type !== 'health') return false;
+    if(currentFilter === 'social' && n.type !== 'social') return false;
+    if(currentSearch) {
+      var text = n.text.replace(/<[^>]+>/g,'').toLowerCase();
+      if(text.indexOf(currentSearch.toLowerCase()) < 0) return false;
+    }
+    return true;
+  });
+
+  var list = document.getElementById('notif-list');
+  if(!filtered.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔔</div><div style="font-size:16px;font-weight:700;margin-bottom:6px">All caught up!</div><div style="font-size:13px">No notifications to show</div></div>';
+    return;
+  }
+
+  var categories = {new:'New',today:'Today',week:'This Week',older:'Earlier'};
+  var html = '';
+  var shown = {};
+
+  Object.keys(categories).forEach(function(cat) {
+    var items = filtered.filter(function(n){ return n.category === cat; });
+    if(!items.length) return;
+    html += '<div class="notif-section">'+categories[cat]+'</div>';
+    items.forEach(function(n) {
+      // Avatar
+      var avHtml = '';
+      if(n.icon && n.icon.startsWith('http')) {
+        avHtml = '<img src="'+n.icon+'" alt="">';
+      } else {
+        avHtml = '<div style="width:44px;height:44px;border-radius:50%;background:'+(n.iconBg||'#f0f2f5')+';display:flex;align-items:center;justify-content:center;font-size:22px">'+n.icon+'</div>';
+      }
+
+      // Action buttons
+      var actionsHtml = '';
+      if(n.actions) {
+        actionsHtml = '<div class="notif-action-btns"><button class="notif-btn-accept" onclick="event.stopPropagation();acceptInvite('+n.id+',this)">Accept</button><button class="notif-btn-decline" onclick="event.stopPropagation();declineInvite('+n.id+',this)">Decline</button></div>';
+      } else if(n.followBtn) {
+        actionsHtml = '<div class="notif-action-btns"><button class="notif-btn-accept" onclick="event.stopPropagation();followBack('+n.id+',this)">Follow Back</button></div>';
+      } else if(n.btn) {
+        actionsHtml = '<div class="notif-action-btns"><button class="notif-btn-accept" onclick="event.stopPropagation();'+n.btn.action+'">'+n.btn.label+'</button></div>';
+      }
+
+      html += '<div class="notif-item'+(n.unread?' unread':'')+'" id="notif-'+n.id+'" onclick="markOneRead('+n.id+')">' +
+        '<div class="notif-av" style="position:relative">'+avHtml+
+          '<div class="notif-icon-badge" style="background:'+n.badgeBg+'">'+n.badge+'</div>'+
+        '</div>'+
+        '<div class="notif-body">'+
+          '<div class="notif-text">'+n.text+'</div>'+
+          '<div class="notif-time">'+n.time+'</div>'+
+          actionsHtml+
+        '</div>'+
+        (n.thumb ? '<div class="notif-thumb"><img src="'+n.thumb+'" alt=""></div>' : '')+
+        (n.unread ? '<div class="notif-dot"></div>' : '')+
+      '</div>';
+    });
+  });
+
+  list.innerHTML = html;
+}
+
+function filterNotifs(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.ntab').forEach(function(b){
+    b.classList.remove('active');
+  });
+  if(btn) btn.classList.add('active');
+  renderNotifs();
+}
+
+function searchNotifs(q) {
+  currentSearch = q;
+  renderNotifs();
+}
+
+function markOneRead(id) {
+  var n = NOTIFS.find(function(x){ return x.id === id; });
+  if(n) n.unread = false;
+  var el = document.getElementById('notif-' + id);
+  if(el) {
+    el.classList.remove('unread');
+    var dot = el.querySelector('.notif-dot');
+    if(dot) dot.remove();
+  }
+}
+
+function markAllRead() {
+  NOTIFS.forEach(function(n){ n.unread = false; });
+  renderNotifs();
+  showToast('All notifications marked as read', 'success');
+}
+
+function acceptInvite(id, btn) {
+  btn.textContent = 'Joined!';
+  btn.style.background = '#16a34a';
+  var decline = btn.nextElementSibling;
+  if(decline) decline.style.display = 'none';
+  showToast('Joined the group!', 'success');
+}
+
+function declineInvite(id, btn) {
+  var parent = btn.closest('.notif-item');
+  if(parent) parent.style.opacity = '0.4';
+  showToast('Invitation declined', 'info');
+}
+
+function followBack(id, btn) {
+  btn.textContent = 'Following';
+  btn.style.background = '#16a34a';
+  showToast('Now following!', 'success');
+}
+
+// Init
+renderNotifs();
+</script>
+</body>
+</html>

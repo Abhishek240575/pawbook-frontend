@@ -1,0 +1,486 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Welcome</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;min-height:100vh;overflow:hidden}
+
+/* Each step fills the full screen */
+.step{
+  display:none;
+  width:100vw;min-height:100vh;
+  position:absolute;top:0;left:0;
+  flex-direction:column;align-items:center;justify-content:center;
+}
+.step.active{display:flex;}
+
+/* ────────────────────────────────────────────────────────────
+   STEP 1 — Welcome
+──────────────────────────────────────────────────────────── */
+#s1{
+  background:linear-gradient(180deg,#1e88e5 0%,#1565c0 45%,#42a5f5 75%,#bbdefb 100%);
+  padding:20px;
+}
+.s1-card{
+  background:#fff;border-radius:24px;
+  padding:36px 32px;width:100%;max-width:380px;
+  box-shadow:0 12px 48px rgba(0,0,0,0.22);
+  position:relative;z-index:1;text-align:center;
+}
+.s1-logo-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#ff9a6c);display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 14px;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+.s1-title{font-size:22px;font-weight:900;color:#1565c0;margin-bottom:4px}
+.s1-sub{font-size:13px;color:#65676b;margin-bottom:28px}
+.s1-start{width:100%;padding:14px;border-radius:28px;background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff;font-size:16px;font-weight:800;border:none;cursor:pointer;font-family:'Poppins',sans-serif;margin-bottom:24px;box-shadow:0 4px 12px rgba(76,175,80,0.4)}
+.s1-features{display:flex;justify-content:space-around;margin-bottom:22px}
+.s1-feat{display:flex;flex-direction:column;align-items:center;gap:6px}
+.s1-feat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.s1-feat-label{font-size:11px;font-weight:700;color:#555}
+.s1-login{font-size:13px;color:#888;cursor:pointer}
+.s1-login span{color:#1565c0;font-weight:700}
+/* clouds */
+.cloud-abs{position:absolute;background:rgba(255,255,255,0.35);border-radius:40px}
+.paw-abs{position:absolute;font-size:26px;opacity:0.18;color:#fff}
+
+/* ────────────────────────────────────────────────────────────
+   STEP 2 — Create Profile
+──────────────────────────────────────────────────────────── */
+#s2{background:#f0f4f8;padding:20px;}
+.step-card{
+  background:#fff;border-radius:24px;
+  width:100%;max-width:400px;
+  box-shadow:0 12px 48px rgba(0,0,0,0.15);
+  overflow:hidden;
+}
+.step-card-header{
+  background:linear-gradient(135deg,#1e88e5,#1565c0);
+  padding:26px 28px;text-align:center;color:#fff;
+}
+.step-card-header h2{font-size:20px;font-weight:900;margin-bottom:4px}
+.step-card-header p{font-size:13px;opacity:0.85}
+.step-card-body{padding:28px}
+.field{margin-bottom:18px}
+.field label{font-size:13px;font-weight:700;color:#333;display:block;margin-bottom:6px}
+.field input,.field select{
+  width:100%;height:46px;border:1.5px solid #ddd;border-radius:10px;
+  padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;
+  outline:none;background:#fafafa;color:#333;
+}
+.field input:focus,.field select:focus{border-color:#1e88e5;background:#fff}
+.next-btn{
+  width:100%;padding:14px;border-radius:28px;
+  background:linear-gradient(135deg,#4caf50,#2e7d32);
+  color:#fff;font-size:16px;font-weight:800;border:none;cursor:pointer;
+  font-family:'Poppins',sans-serif;
+  box-shadow:0 4px 12px rgba(76,175,80,0.4);margin-bottom:12px;
+}
+.next-btn-blue{
+  width:100%;padding:14px;border-radius:28px;
+  background:linear-gradient(135deg,#1e88e5,#1565c0);
+  color:#fff;font-size:16px;font-weight:800;border:none;cursor:pointer;
+  font-family:'Poppins',sans-serif;
+  box-shadow:0 4px 12px rgba(30,136,229,0.4);margin-bottom:12px;
+}
+.step-num{text-align:center;font-size:12px;color:#999;font-weight:600}
+
+/* ────────────────────────────────────────────────────────────
+   STEP 3 — Add Your Pet
+──────────────────────────────────────────────────────────── */
+#s3{background:#f0f4f8;padding:20px;}
+.pet-header-img{font-size:52px;text-align:center;padding:12px 0 4px}
+.species-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.sp-chip{
+  display:flex;align-items:center;gap:6px;padding:6px 14px;
+  border-radius:20px;border:1.5px solid #1e88e5;background:#e3f2fd;
+  font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;
+  color:#1565c0;
+}
+.sp-chip .cb{width:17px;height:17px;border-radius:4px;background:#1e88e5;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:900;flex-shrink:0}
+.sp-chip.off{border-color:#ddd;background:#fafafa;color:#555}
+.sp-chip.off .cb{background:#ddd;color:transparent}
+.upload-btn{
+  width:100%;padding:12px;border-radius:10px;
+  background:linear-gradient(135deg,#1e88e5,#1565c0);
+  color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;
+  font-family:'Poppins',sans-serif;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+
+/* ────────────────────────────────────────────────────────────
+   STEP 4 — Interests
+──────────────────────────────────────────────────────────── */
+#s4{background:#f0f4f8;padding:20px;}
+.int-item{
+  display:flex;align-items:center;gap:14px;
+  background:#fafafa;border:1.5px solid #e0e0e0;
+  border-radius:14px;padding:14px 16px;margin-bottom:12px;cursor:pointer;
+  transition:all 0.15s;
+}
+.int-item.sel{border-color:#1e88e5;background:#e3f2fd}
+.int-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.int-name{font-size:14px;font-weight:700;color:#1a1a2e}
+.int-check{width:30px;height:30px;border-radius:50%;background:#1e88e5;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;margin-left:auto;flex-shrink:0}
+.int-change{text-align:center;font-size:12px;color:#1e88e5;font-weight:600;margin:10px 0 16px}
+
+/* ────────────────────────────────────────────────────────────
+   STEP 5 — Notifications
+──────────────────────────────────────────────────────────── */
+#s5{
+  background:linear-gradient(180deg,#1e88e5 0%,#1565c0 100%);
+  padding:20px;
+}
+.notif-card{
+  background:rgba(255,255,255,0.08);
+  border:1.5px solid rgba(255,255,255,0.2);
+  backdrop-filter:blur(10px);
+  border-radius:24px;padding:32px 28px;
+  width:100%;max-width:420px;
+}
+.notif-title{font-size:22px;font-weight:900;color:#fff;text-align:center;margin-bottom:6px}
+.notif-sub{font-size:13px;color:rgba(255,255,255,0.85);text-align:center;margin-bottom:24px}
+.notif-row{
+  display:flex;align-items:center;gap:14px;
+  background:rgba(255,255,255,0.12);border-radius:14px;
+  padding:15px 16px;margin-bottom:12px;
+}
+.n-icon{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.n-label{flex:1;font-size:15px;font-weight:700;color:#fff}
+.n-sub{font-size:12px;color:rgba(255,255,255,0.7);font-weight:500}
+.toggle{width:54px;height:30px;border-radius:15px;background:#4caf50;position:relative;cursor:pointer;flex-shrink:0}
+.toggle::after{content:'';position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;top:3px;right:3px;transition:all 0.2s;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
+.toggle.off{background:rgba(255,255,255,0.3)}
+.toggle.off::after{right:auto;left:3px}
+.notif-note{text-align:center;font-size:12px;color:rgba(255,255,255,0.7);margin:12px 0 20px}
+.enable-btn{
+  width:100%;padding:14px;border-radius:28px;
+  background:linear-gradient(135deg,#1a56db,#0d47a1);
+  color:#fff;font-size:16px;font-weight:800;border:none;cursor:pointer;
+  font-family:'Poppins',sans-serif;box-shadow:0 4px 16px rgba(13,71,161,0.5);
+  margin-bottom:12px;
+}
+.skip-link{text-align:center;font-size:13px;color:rgba(255,255,255,0.8);cursor:pointer;font-weight:600}
+
+/* ────────────────────────────────────────────────────────────
+   STEP 6 — You're All Set
+──────────────────────────────────────────────────────────── */
+#s6{
+  background:linear-gradient(180deg,#64b5f6 0%,#42a5f5 30%,#7ecbca 65%,#a8d8a8 100%);
+  padding:20px;position:relative;overflow:hidden;
+}
+.done-cloud{position:absolute;background:rgba(255,255,255,0.55);border-radius:40px}
+.done-gear{position:absolute;font-size:30px;opacity:0.4;color:#fff}
+.done-card{
+  position:relative;z-index:1;text-align:center;
+  width:100%;max-width:420px;
+}
+.done-confetti{font-size:32px;margin-bottom:6px}
+.done-title{font-size:28px;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.2);margin-bottom:4px}
+.done-subtitle{font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
+.done-sub{font-size:14px;color:rgba(255,255,255,0.9);margin-bottom:16px}
+.done-pets{font-size:80px;line-height:1;margin-bottom:24px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.2))}
+.done-btn{
+  width:100%;padding:16px;border-radius:28px;
+  background:linear-gradient(135deg,#1e88e5,#1565c0);
+  color:#fff;font-size:17px;font-weight:800;border:none;cursor:pointer;
+  font-family:'Poppins',sans-serif;box-shadow:0 6px 20px rgba(21,101,192,0.45);
+}
+
+/* progress dots */
+.dots{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:100;
+}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);transition:all 0.3s}
+.dot.active{width:24px;border-radius:4px;background:#fff}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+
+<!-- Step 1: Welcome -->
+<div class="step active" id="s1">
+  <div class="cloud-abs" style="width:110px;height:32px;top:7%;left:-5%"></div>
+  <div class="cloud-abs" style="width:85px;height:26px;top:13%;right:-3%"></div>
+  <div class="cloud-abs" style="width:130px;height:38px;top:24%;left:8%;opacity:0.2"></div>
+  <div class="cloud-abs" style="width:95px;height:28px;bottom:28%;right:2%"></div>
+  <div class="paw-abs" style="top:9%;left:7%">🐾</div>
+  <div class="paw-abs" style="top:20%;right:9%;font-size:18px">🐾</div>
+  <div class="paw-abs" style="bottom:22%;left:13%;font-size:16px">🐾</div>
+  <div class="s1-card">
+    <div class="s1-logo-icon">🐾</div>
+    <div class="s1-title">Welcome to PawBook!</div>
+    <div class="s1-sub">Connect. Care. Share love for pets!</div>
+    <button class="s1-start" onclick="goStep(2)">Get Started</button>
+    <div class="s1-features">
+      <div class="s1-feat">
+        <div class="s1-feat-icon" style="background:#e3f2fd">🚗</div>
+        <div class="s1-feat-label">Find a Vet</div>
+      </div>
+      <div class="s1-feat">
+        <div class="s1-feat-icon" style="background:#fce4ec">❤️</div>
+        <div class="s1-feat-label">Join Communities</div>
+      </div>
+      <div class="s1-feat">
+        <div class="s1-feat-icon" style="background:#fff3e0">🏥</div>
+        <div class="s1-feat-label">Adopt & Rescue</div>
+      </div>
+    </div>
+    <div class="s1-login">Already have an account? <span onclick="goTo('01_login.html')">Log In</span></div>
+  </div>
+</div>
+
+<!-- Step 2: Create Profile -->
+<div class="step" id="s2">
+  <div class="step-card">
+    <div class="step-card-header">
+      <h2>Create Your Profile</h2>
+      <p>Tell us about yourself.</p>
+    </div>
+    <div class="step-card-body">
+      <div class="field"><label>Full Name</label><input id="cp-name" placeholder="Your full name"></div>
+      <div class="field"><label>Email Address</label><input id="cp-email" type="email" placeholder="email@example.com"></div>
+      <div class="field">
+        <label>Location (City)</label>
+        <select id="cp-city">
+          <option value=""></option>
+          <option>Delhi</option><option>Mumbai</option><option>Bengaluru</option>
+          <option>Chennai</option><option>Hyderabad</option><option>Pune</option>
+          <option>Kolkata</option><option>Ahmedabad</option><option>Other</option>
+        </select>
+      </div>
+      <button class="next-btn" onclick="goStep(3)">Next</button>
+      <div class="step-num">Step 1 of 4</div>
+    </div>
+  </div>
+</div>
+
+<!-- Step 3: Add Your Pet -->
+<div class="step" id="s3">
+  <div class="step-card">
+    <div class="step-card-header">
+      <h2>Add Your Pet</h2>
+      <p>Let's create your pet's profile</p>
+      <div class="pet-header-img">🐕🐱🦜🐇</div>
+    </div>
+    <div class="step-card-body">
+      <!-- Pet photo upload -->
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px">
+        <div id="pet-photo-preview" onclick="document.getElementById('pet-photo-input').click()"
+          style="width:100px;height:100px;border-radius:50%;background:#e0f2fe;
+          border:3px dashed #1a56db;display:flex;align-items:center;justify-content:center;
+          cursor:pointer;overflow:hidden;margin-bottom:8px;position:relative">
+          <span id="pet-photo-icon" style="font-size:40px">🐾</span>
+          <img id="pet-photo-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%">
+        </div>
+        <input type="file" id="pet-photo-input" accept="image/*" style="display:none" onchange="previewPetPhoto(this)">
+        <button class="upload-btn" onclick="document.getElementById('pet-photo-input').click()" type="button">
+          📷 Upload Pet Photo
+        </button>
+        <div style="font-size:11px;color:#94a3b8;margin-top:4px">Tap the circle or button to upload</div>
+      </div>
+      <div class="field"><label>Pet Name</label><input id="pet-name" placeholder="e.g. Bruno, Mittens"></div>
+      <div class="field">
+        <label>Species</label>
+        <div class="species-row">
+          <div class="sp-chip" onclick="selSp(this)"><div class="cb">✓</div> Dog</div>
+          <div class="sp-chip" onclick="selSp(this)"><div class="cb">✓</div> Cat</div>
+          <div class="sp-chip off" onclick="selSp(this)"><div class="cb"></div> Bird</div>
+          <div class="sp-chip off" onclick="selSp(this)"><div class="cb"></div> Rabbit</div>
+          <div class="sp-chip off" onclick="selSp(this)"><div class="cb"></div> Other</div>
+        </div>
+      </div>
+      <div class="field"><label>Breed</label><input id="pet-breed" placeholder="e.g. Labrador, Persian"></div>
+      <div class="field"><input id="pet-dob" placeholder="Birthday (DD/MM/YYYY)"></div>
+      <button class="next-btn" onclick="savePetAndContinue()">Next</button>
+      <div class="step-num">Step 2 of 4</div>
+    </div>
+  </div>
+</div>
+
+<!-- Step 4: Select Interests -->
+<div class="step" id="s4">
+  <div class="step-card">
+    <div class="step-card-header">
+      <h2>Select Interests</h2>
+      <p>What are you most interested in?</p>
+    </div>
+    <div class="step-card-body">
+      <div class="int-item sel" onclick="toggleInt(this)">
+        <div class="int-icon" style="background:#e3f2fd">🛒</div>
+        <div class="int-name">Pet Health & Vet Care</div>
+        <div class="int-check">✓</div>
+      </div>
+      <div class="int-item sel" onclick="toggleInt(this)">
+        <div class="int-icon" style="background:#fce4ec">❤️</div>
+        <div class="int-name">Adoption & Rescue</div>
+        <div class="int-check">✓</div>
+      </div>
+      <div class="int-item sel" onclick="toggleInt(this)">
+        <div class="int-icon" style="background:#e8f5e9">🎉</div>
+        <div class="int-name">Pet Events & Meetups</div>
+        <div class="int-check">✓</div>
+      </div>
+      <div class="int-change">You can change these later</div>
+      <button class="next-btn-blue" onclick="goStep(5)">Next</button>
+      <div class="step-num">Step 3 of 4</div>
+    </div>
+  </div>
+</div>
+
+<!-- Step 5: Notifications -->
+<div class="step" id="s5">
+  <div class="notif-card">
+    <div class="notif-title">Set Up Notifications</div>
+    <div class="notif-sub">Stay updated with important alerts</div>
+    <div class="notif-row">
+      <div class="n-icon">💉</div>
+      <div><div class="n-label">Health Reminders</div></div>
+      <div class="toggle" onclick="this.classList.toggle('off')"></div>
+    </div>
+    <div class="notif-row">
+      <div class="n-icon">❤️</div>
+      <div><div class="n-label">Adoption Updates</div></div>
+      <div class="toggle" onclick="this.classList.toggle('off')"></div>
+    </div>
+    <div class="notif-row">
+      <div class="n-icon">🎮</div>
+      <div><div class="n-label">Lost Pet Alerts</div></div>
+      <div class="toggle" onclick="this.classList.toggle('off')"></div>
+    </div>
+    <div class="notif-note">Notifications can be changed anytime in settings</div>
+    <button class="enable-btn" onclick="goStep(6)">Enable Notifications</button>
+    <div class="skip-link" onclick="goStep(6)">Skip</div>
+    <div style="text-align:center;font-size:12px;color:rgba(255,255,255,0.65);margin-top:12px;font-weight:600">Step 4 of 4</div>
+  </div>
+</div>
+
+<!-- Step 6: You're All Set -->
+<div class="step" id="s6">
+  <div class="done-cloud" style="width:130px;height:38px;top:7%;left:5%"></div>
+  <div class="done-cloud" style="width:100px;height:30px;top:12%;right:8%"></div>
+  <div class="done-cloud" style="width:110px;height:32px;top:22%;left:20%;opacity:0.4"></div>
+  <div class="done-cloud" style="width:90px;height:28px;bottom:30%;right:5%"></div>
+  <div class="done-gear" style="top:7%;right:9%">⚙️</div>
+  <div class="done-gear" style="top:7%;left:9%;font-size:22px">⚙️</div>
+  <div class="done-card">
+    <div class="done-confetti">🎊 🎉 🎊</div>
+    <div class="done-title">You're All Set!</div>
+    <div class="done-subtitle">Welcome to PawBook!</div>
+    <div class="done-sub">Let's start exploring</div>
+    <div class="done-pets">🐕🐈🐩</div>
+    <button class="done-btn" onclick="goTo('07_home.html')">Go to Home</button>
+  </div>
+</div>
+
+<!-- Progress dots -->
+<div class="dots" id="dots">
+  <div class="dot active" id="d1"></div>
+  <div class="dot" id="d2"></div>
+  <div class="dot" id="d3"></div>
+  <div class="dot" id="d4"></div>
+  <div class="dot" id="d5"></div>
+  <div class="dot" id="d6"></div>
+</div>
+
+<script src="api.js"></script>
+<script>
+function goTo(page){ window.location.href = page; }
+let cur=1;
+let petPhotoBase64 = null;
+
+function goStep(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('d'+cur).classList.remove('active');
+  cur=n;
+  document.getElementById('s'+cur).classList.add('active');
+  document.getElementById('d'+cur).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── Pet photo preview ──────────────────────────────────────────────────────
+function previewPetPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    petPhotoBase64 = e.target.result; // store base64
+    const img = document.getElementById('pet-photo-img');
+    const icon = document.getElementById('pet-photo-icon');
+    img.src = petPhotoBase64;
+    img.style.display = 'block';
+    icon.style.display = 'none';
+    // Save to localStorage so profile page can show it immediately
+    localStorage.setItem('pb_pending_pet_photo', petPhotoBase64);
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Save pet via API then continue ────────────────────────────────────────
+async function savePetAndContinue() {
+  const name    = document.getElementById('pet-name').value.trim();
+  const breed   = document.getElementById('pet-breed').value.trim();
+  const dob     = document.getElementById('pet-dob').value.trim();
+  const speciesEl = document.querySelector('.species-row .sp-chip:not(.off)');
+  const species = speciesEl ? speciesEl.textContent.trim().toLowerCase() : 'dog';
+
+  if (!name) {
+    alert('Please enter your pet\'s name!');
+    return;
+  }
+
+  // Save pet name/species to localStorage for profile page fallback
+  localStorage.setItem('pb_pending_pet_name', name);
+  localStorage.setItem('pb_pending_pet_species', species);
+
+  // Try to create pet via API (requires auth)
+  if (Auth.isLoggedIn()) {
+    try {
+      const payload = { name, species };
+      if (breed) payload.breed = breed;
+      if (dob) {
+        // Convert DD/MM/YYYY to ISO
+        const parts = dob.split('/');
+        if (parts.length === 3) payload.date_of_birth = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+      }
+      const res = await PetAPI.create(payload);
+      const petId = res?.data?.pet_id;
+      if (petId) {
+        localStorage.setItem('pb_pending_pet_id', petId);
+        // If photo uploaded, save base64 keyed to pet_id
+        if (petPhotoBase64) {
+          localStorage.setItem(`pb_pet_photo_${petId}`, petPhotoBase64);
+        }
+      }
+    } catch(e) {
+      // Don't block onboarding if pet creation fails
+      console.warn('Pet creation failed:', e.message);
+    }
+  }
+
+  goStep(4);
+}
+
+function selSp(el){
+  el.closest('.species-row').querySelectorAll('.sp-chip').forEach(c=>{
+    c.classList.add('off');c.querySelector('.cb').textContent='';
+  });
+  el.classList.remove('off');
+  el.querySelector('.cb').textContent='✓';
+}
+
+function toggleInt(el){
+  const sel=el.classList.contains('sel');
+  const check=el.querySelector('.int-check');
+  if(sel){
+    el.classList.remove('sel');
+    check.style.background='#e0e0e0';check.style.color='transparent';
+  }else{
+    el.classList.add('sel');
+    check.style.background='#1e88e5';check.style.color='#fff';
+  }
+}
+</script>
+</body>
+</html>

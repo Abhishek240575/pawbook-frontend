@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>PawBook â€” Report Lost Pet</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+.form-section{background:#fff;border-radius:14px;padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:16px}
+.form-section-title{font-size:16px;font-weight:800;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field-label{font-size:13px;font-weight:700;color:#333;display:block;margin-bottom:6px}
+.field-input{width:100%;height:46px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa}
+.field-input:focus{border-color:var(--blue);background:#fff}
+.field-select{width:100%;height:46px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;cursor:pointer}
+.upload-box{border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:border-color 0.15s;background:#fafafa}
+.upload-box:hover{border-color:var(--blue);background:#f0f4ff}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head><body>
+<nav class="topnav"><a class="topnav-logo" href="07_home.html"><div class="logo-icon">ðŸ¾</div> PawBook</a>
+<div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Searchâ€¦"></div>
+<div class="topnav-tabs">
+  <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+  <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+  <button class="topnav-tab active"><i class="ti ti-map-pin"></i></button>
+  <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+  <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+</div>
+<div class="topnav-right"><div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div></div></nav>
+
+<div style="max-width:760px;margin:20px auto;padding:0 16px">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+    <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#4338ca,#6d28d9);display:flex;align-items:center;justify-content:center;font-size:24px">ðŸš¨</div>
+    <div><div style="font-size:22px;font-weight:900">Report a Lost Pet</div><div style="font-size:14px;color:var(--muted)">We'll alert the community and help you find your pet</div></div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-paw"></i> Pet Information</div>
+    <div class="form-grid">
+      <div><label class="field-label">Pet Name *</label><input class="field-input" placeholder="e.g. Bruno"></div>
+      <div><label class="field-label">Species *</label><select class="field-select"><option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option></select></div>
+      <div><label class="field-label">Breed</label><input class="field-input" placeholder="e.g. Beagle, Labrador"></div>
+      <div><label class="field-label">Age</label><input class="field-input" placeholder="e.g. 3 years"></div>
+      <div><label class="field-label">Color / Markings</label><input class="field-input" placeholder="e.g. Brown & white"></div>
+      <div><label class="field-label">Collar / ID Tag</label><input class="field-input" placeholder="e.g. Blue collar with tag"></div>
+    </div>
+    <div style="margin-top:14px"><label class="field-label">Additional Description</label>
+    <textarea class="field-input" style="height:80px;padding:12px 14px;resize:none" placeholder="Any distinctive markings, scars, behaviour patternsâ€¦"></textarea></div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-map-pin"></i> Last Known Location</div>
+    <div class="form-grid">
+      <div><label class="field-label">Area / Locality *</label><input class="field-input" placeholder="e.g. Lodhi Garden, New Delhi"></div>
+      <div><label class="field-label">Date Last Seen *</label><input class="field-input" type="date"></div>
+      <div><label class="field-label">Time Last Seen</label><input class="field-input" type="time"></div>
+      <div><label class="field-label">Alert Radius</label><select class="field-select"><option>1 km</option><option selected>2 km</option><option>5 km</option><option>10 km</option><option>City-wide</option></select></div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-photo"></i> Upload Pet Photos</div>
+    <div class="upload-box">
+      <div style="font-size:40px;margin-bottom:8px">ðŸ“¸</div>
+      <div style="font-weight:700;margin-bottom:4px">Click to upload or drag & drop</div>
+      <div style="font-size:13px;color:var(--muted)">PNG, JPG up to 10MB each Â· Upload up to 5 photos</div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-phone"></i> Contact Information</div>
+    <div class="form-grid">
+      <div><label class="field-label">Your Name *</label><input class="field-input" placeholder="Full name" value="Abhishek"></div>
+      <div><label class="field-label">Phone Number *</label><input class="field-input" placeholder="+91 XXXXXXXXXX"></div>
+      <div style="grid-column:1/-1"><label class="field-label">Email</label><input class="field-input" placeholder="your@email.com" value="abhishek@pawbook.app"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-bottom:30px">
+    <button class="btn btn-blue" style="flex:1;padding:16px;font-size:16px;font-weight:800" onclick="alert('Alert posted! Your community has been notified.')">ðŸš¨ Post Lost Pet Alert</button>
+    <button class="btn btn-gray" style="padding:16px 24px" onclick="goTo('05_lost_pet.html')">Cancel</button>
+  </div>
+</div>
+<script src="api.js"></script><script>function goTo(p){window.location.href=p;}</script>
+</body></html>
+

@@ -1,0 +1,450 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Saved & More</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e2e8f0;z-index:500;display:flex;align-items:center;padding:0 16px;gap:10px}
+.tabs{background:#fff;display:flex;border-bottom:1px solid #e2e8f0;position:sticky;top:56px;z-index:400;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;height:44px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 16px;font-size:13px;font-weight:700;color:#64748b;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab.active{color:#1a4db3;border-bottom-color:#1a4db3}
+.card{background:#fff;border-radius:12px;margin:8px 16px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.section-title{font-size:15px;font-weight:800;color:#1e293b;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.post-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#e2e8f0;border-radius:12px;overflow:hidden;margin:8px 16px}
+.post-thumb{aspect-ratio:1;overflow:hidden;cursor:pointer;position:relative}
+.post-thumb img{width:100%;height:100%;object-fit:cover}
+.post-thumb-bar{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.5));padding:8px 6px 4px;color:#fff;font-size:10px;font-weight:700}
+.fund-card{background:#fff;border-radius:14px;margin:8px 16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.fund-img{width:100%;height:140px;object-fit:cover}
+.fund-body{padding:12px 14px}
+.fund-bar{height:8px;background:#e2e8f0;border-radius:4px;margin:8px 0;overflow:hidden}
+.fund-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#10b981,#059669)}
+.memory-card{background:linear-gradient(135deg,#1a4db3,#6366f1);border-radius:14px;margin:8px 16px;padding:20px;color:#fff;position:relative;overflow:hidden}
+.memory-card::before{content:'🌟';position:absolute;top:12px;right:16px;font-size:32px;opacity:0.3}
+.activity-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.birthday-card{background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:14px;margin:8px 16px;padding:16px;color:#fff;display:flex;align-items:center;gap:14px}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+<nav class="topnav">
+  <button onclick="location.href='07_home.html'" style="background:none;border:none;cursor:pointer;font-size:22px;color:#64748b"><i class="ti ti-arrow-left"></i></button>
+  <div style="font-size:16px;font-weight:800">My Activity</div>
+</nav>
+
+<div style="padding-top:56px;padding-bottom:70px">
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('saved',this)">🔖 Saved</div>
+    <div class="tab" onclick="showTab('fundraising',this)">❤️ Fundraising</div>
+    <div class="tab" onclick="showTab('memory',this)">🌟 Memories</div>
+    <div class="tab" onclick="showTab('activity',this)">📊 Activity</div>
+    <div class="tab" onclick="showTab('birthdays',this)">🎂 Birthdays</div>
+  </div>
+
+  <!-- SAVED POSTS -->
+  <div id="tab-saved">
+    <div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:14px;font-weight:800">Saved Posts <span style="color:#94a3b8;font-size:12px" id="saved-count">(0)</span></div>
+      <button onclick="clearSaved()" style="background:none;border:none;color:#ef4444;font-size:12px;font-weight:700;cursor:pointer">Clear all</button>
+    </div>
+    <div id="saved-grid" class="post-grid"></div>
+    <div id="saved-empty" style="display:none;text-align:center;padding:40px;color:#94a3b8">
+      <div style="font-size:48px;margin-bottom:10px">🔖</div>
+      <div style="font-weight:700;margin-bottom:6px">No saved posts yet</div>
+      <div style="font-size:13px">Tap the 🔖 icon on any post to save it here</div>
+    </div>
+  </div>
+
+  <!-- FUNDRAISING -->
+  <div id="tab-fundraising" style="display:none">
+    <div class="card" style="margin-top:8px">
+      <div class="section-title">❤️ Support a Cause</div>
+      <div style="font-size:13px;color:#64748b;line-height:1.6">Your donations help shelters, rescue animals, and support veterinary care for pets in need across India.</div>
+    </div>
+
+
+    <div class="fund-card">
+      <img class="fund-img" src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=600&q=80">
+      <div class="fund-body">
+        <div style="display:inline-block;background:#fee2e2;color:#dc2626;font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;margin-bottom:6px">🔴 URGENT</div>
+        <div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:2px">Emergency Vet Fund for Strays</div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:8px">by SPCA Delhi</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px">
+          <span style="color:#10b981">₹87K raised</span><span style="color:#64748b">of ₹150K</span>
+        </div>
+        <div class="fund-bar"><div class="fund-fill" style="width:58%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:12px">
+          <span>234 donors</span><span>12 days left</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="donate(this,'Emergency Vet Fund')" style="height:30px;padding:0 14px;border-radius:999px;border:none;background:#10b981;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">❤️ Donate Now</button>
+          <button onclick="shareF('Emergency Vet Fund')" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fund-card">
+      <img class="fund-img" src="https://images.unsplash.com/photo-1444212477490-ca407925329e?w=600&q=80">
+      <div class="fund-body">
+        <div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:2px">Build New Shelter for 200 Animals</div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:8px">by Hopeful Tails</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px">
+          <span style="color:#10b981">₹342K raised</span><span style="color:#64748b">of ₹500K</span>
+        </div>
+        <div class="fund-bar"><div class="fund-fill" style="width:68%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:12px">
+          <span>891 donors</span><span>45 days left</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="donate(this,'Build New Shelter')" style="height:30px;padding:0 14px;border-radius:999px;border:none;background:#10b981;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">❤️ Donate Now</button>
+          <button onclick="shareF('Build New Shelter')" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fund-card">
+      <img class="fund-img" src="https://images.unsplash.com/photo-1551717743-49959800b1f6?w=600&q=80">
+      <div class="fund-body">
+        <div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:2px">Vaccination Drive for 1000 Strays</div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:8px">by People for Animals</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px">
+          <span style="color:#10b981">₹46K raised</span><span style="color:#64748b">of ₹100K</span>
+        </div>
+        <div class="fund-bar"><div class="fund-fill" style="width:46%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:12px">
+          <span>156 donors</span><span>30 days left</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="donate(this,'Vaccination Drive')" style="height:30px;padding:0 14px;border-radius:999px;border:none;background:#10b981;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">❤️ Donate Now</button>
+          <button onclick="shareF('Vaccination Drive')" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMORY -->
+  <div id="tab-memory" style="display:none">
+    <div class="memory-card">
+      <div style="font-size:13px;font-weight:700;opacity:0.8;margin-bottom:4px">🌟 On This Day</div>
+      <div style="font-size:22px;font-weight:900;margin-bottom:6px">1 Year Ago Today</div>
+      <div style="font-size:14px;opacity:0.9">Bruno had his first birthday! 🎂🐾</div>
+      <button onclick="shareMemory()" style="margin-top:14px;height:36px;padding:0 20px;border-radius:20px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Share Memory</button>
+    </div>
+
+
+    <div class="card">
+      <div style="display:flex;gap:12px;align-items:center">
+        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80" style="width:70px;height:70px;border-radius:10px;object-fit:cover">
+        <div style="flex:1">
+          <div style="font-size:12px;color:#94a3b8;font-weight:600">1 year ago • Sep 10</div>
+          <div style="font-size:14px;font-weight:700;margin-top:2px">🎂 Bruno's first birthday party!</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <button onclick="shareMemory()" style="height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
+        <button onclick="toast('Added to highlights!','success')" style="height:28px;padding:0 12px;border-radius:999px;border:none;background:#eff6ff;color:#1a4db3;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Highlight</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;gap:12px;align-items:center">
+        <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80" style="width:70px;height:70px;border-radius:10px;object-fit:cover">
+        <div style="flex:1">
+          <div style="font-size:12px;color:#94a3b8;font-weight:600">2 years ago • Sep 10</div>
+          <div style="font-size:14px;font-weight:700;margin-top:2px">🏥 Bruno's first vet visit — so brave!</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <button onclick="shareMemory()" style="height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
+        <button onclick="toast('Added to highlights!','success')" style="height:28px;padding:0 12px;border-radius:999px;border:none;background:#eff6ff;color:#1a4db3;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Highlight</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY LOG -->
+  <div id="tab-activity" style="display:none">
+    <div class="card">
+      <div class="section-title">📊 Your Activity</div>
+      <div id="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#fee2e2">❤️</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">You liked Bruno's post</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">2 minutes ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#dbeafe">💬</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">You commented on Dr. Priya's post</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">15 minutes ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#dcfce7">👤</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">Rahul started following you</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">1 hour ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#fef3c7">🐾</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">Bruno's vaccination is due next week</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">2 hours ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#f3e8ff">🛒</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">You ordered Royal Canin Dog Food</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">1 day ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#fee2e2">📍</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">You reported a lost pet sighting</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">2 days ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#dbeafe">🏥</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">Vet appointment with Dr. Priya confirmed</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">3 days ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#dcfce7">🎉</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">You joined Delhi Dog Parents group</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">5 days ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#fef3c7">📸</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">You posted 3 new photos</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">1 week ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background:#f3e8ff">🔖</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:#1e293b">You saved 2 posts</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px">1 week ago</div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIRTHDAYS -->
+  <div id="tab-birthdays" style="display:none">
+    <div class="birthday-card">
+      <div style="font-size:48px">🎂</div>
+      <div>
+        <div style="font-size:12px;opacity:0.8;font-weight:600">TODAY</div>
+        <div style="font-size:16px;font-weight:900">Bruno turns 3! 🐕</div>
+        <button onclick="sendBirthdayWish()" style="margin-top:8px;height:32px;padding:0 16px;border-radius:16px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🎁 Send Wish</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">🐾 Upcoming Pet Birthdays</div>
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9">
+          <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f59e0b">
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">Luna 🎂</div>
+            <div style="font-size:11px;color:#64748b">Persian Cat · Priya Sharma</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:12px;font-weight:700;color:#f59e0b">Sep 18</div>
+            <button onclick="sendBirthdayWish('Luna')" style="font-size:10px;color:#1a4db3;background:none;border:none;cursor:pointer;font-weight:700;font-family:'Poppins',sans-serif">Send Wish</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9">
+          <img src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=80&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f59e0b">
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">Mittens 🎂</div>
+            <div style="font-size:11px;color:#64748b">Tabby Cat · Ananya Bose</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:12px;font-weight:700;color:#f59e0b">Sep 25</div>
+            <button onclick="sendBirthdayWish('Mittens')" style="font-size:10px;color:#1a4db3;background:none;border:none;cursor:pointer;font-weight:700;font-family:'Poppins',sans-serif">Send Wish</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9">
+          <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=80&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f59e0b">
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">Gizmo 🎂</div>
+            <div style="font-size:11px;color:#64748b">Labrador · Rahul Dev</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:12px;font-weight:700;color:#f59e0b">Oct 2</div>
+            <button onclick="sendBirthdayWish('Gizmo')" style="font-size:10px;color:#1a4db3;background:none;border:none;cursor:pointer;font-weight:700;font-family:'Poppins',sans-serif">Send Wish</button>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<div style="position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e2e8f0;display:flex;z-index:500">
+  <button onclick="location.href='07_home.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-home" style="font-size:20px"></i>Home</button>
+  <button onclick="location.href='30_events.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-calendar" style="font-size:20px"></i>Events</button>
+  <button style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#1a4db3;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-bookmark" style="font-size:20px"></i>Saved</button>
+  <button onclick="location.href='08_pet_profile.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-user" style="font-size:20px"></i>Profile</button>
+</div>
+
+<script src="api.js"></script>
+<script>
+function showTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['saved','fundraising','memory','activity','birthdays'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display = t===tab?'block':'none';
+  });
+  if(tab==='saved') loadSavedPosts();
+}
+
+function loadSavedPosts() {
+  const saved = JSON.parse(localStorage.getItem('pb_saved_posts')||'[]');
+  const grid = document.getElementById('saved-grid');
+  const empty = document.getElementById('saved-empty');
+  const count = document.getElementById('saved-count');
+  count.textContent = '('+saved.length+')';
+  if(!saved.length) { grid.style.display='none'; empty.style.display='block'; return; }
+  empty.style.display='none'; grid.style.display='grid';
+  const imgs=['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80','https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80','https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'];
+  grid.innerHTML = saved.map((id,i)=>`
+    <div class="post-thumb">
+      <img src="${imgs[i%imgs.length]}">
+      <div class="post-thumb-bar">❤️ Saved</div>
+    </div>`).join('');
+}
+
+function clearSaved() {
+  if(!confirm('Remove all saved posts?')) return;
+  localStorage.removeItem('pb_saved_posts');
+  loadSavedPosts();
+  showToast('Saved posts cleared');
+}
+
+function donate(btn, title) {
+  const amounts = ['₹100','₹250','₹500','₹1000','Custom'];
+  const choice = prompt(`Donate to "${title}"?\n\nChoose amount:\n1. ₹100\n2. ₹250\n3. ₹500\n4. ₹1000\n\nEnter amount or number:`);
+  if(!choice) return;
+  showToast('❤️ Thank you for donating! Your contribution matters.');
+}
+function shareF(title) { navigator.clipboard?.writeText('Support: '+title+' on PawBook').then(()=>showToast('🔗 Link copied!')); }
+function shareMemory() { showToast('🌟 Memory shared to your story!'); }
+function sendBirthdayWish(name) { showToast('🎂 Birthday wish sent to '+(name||'Bruno')+'!'); }
+function showToast(msg) {
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a4db3;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap;max-width:90vw;text-align:center';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
+}
+loadSavedPosts();
+</script>
+<script>function goTo(p){window.location.href=p;}</script>
+</body>
+</html>

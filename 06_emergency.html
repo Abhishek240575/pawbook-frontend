@@ -1,0 +1,460 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Emergency Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size:14px}
+
+/* ── TOPNAV ───────────────────────────────────────────────── */
+.topnav{position:sticky;top:0;z-index:200;height:56px;background:#1a56db;display:flex;align-items:center;padding:0 16px;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.topnav-logo{display:flex;align-items:center;gap:8px;color:#fff;font-size:20px;font-weight:800;text-decoration:none;flex-shrink:0}
+.logo-icon{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px}
+.topnav-search{flex:1;max-width:280px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);border-radius:20px;padding:6px 14px}
+.topnav-search input{background:transparent;border:none;outline:none;color:#fff;font-size:13px;font-family:'Poppins',sans-serif;width:100%}
+.topnav-search input::placeholder{color:rgba(255,255,255,0.65)}
+.topnav-search i{color:rgba(255,255,255,0.65);font-size:16px}
+.topnav-tabs{flex:1;display:flex;justify-content:center;gap:2px}
+.topnav-tab{width:100px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);cursor:pointer;font-size:22px;border:none;background:transparent}
+.topnav-tab:hover{background:rgba(255,255,255,0.1);color:#fff}
+.topnav-tab.active{color:#fff;border-bottom:3px solid #fff}
+.topnav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-icon-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:18px}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:#fff;color:#1a56db;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.emer-hero{
+  background:linear-gradient(135deg,#0f2057 0%,#1a3a8f 50%,#0d3b8e 100%);
+  padding:28px 0;text-align:center;position:relative;overflow:hidden;
+}
+.emer-hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=1400&q=80') center/cover;opacity:0.12}
+.hero-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:16px}
+.hero-badge{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#1a56db,#0f2057);border:4px solid #fff;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+.hero-text-title{font-size:32px;font-weight:900;color:#fff;text-align:left;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.hero-text-sub{font-size:15px;color:rgba(255,255,255,0.88);text-align:left;margin-top:4px}
+
+/* ── 4 BIG ACTION BUTTONS ────────────────────────────────── */
+.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.act-card{padding:18px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:filter 0.15s;border-right:1px solid rgba(255,255,255,0.2)}
+.act-card:last-child{border-right:none}
+.act-card:hover{filter:brightness(0.93)}
+.act-icon{width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.act-title{font-size:14px;font-weight:800;color:#fff;line-height:1.2}
+.act-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:2px}
+.act-red   {background:linear-gradient(135deg,#1a56db,#0f2057)}
+.act-blue  {background:linear-gradient(135deg,#0f4c81,#0a3260)}
+.act-green {background:linear-gradient(135deg,#0e7490,#0369a1)}
+.act-orange{background:linear-gradient(135deg,#b45309,#92400e)}
+
+/* ── PAGE LAYOUT ─────────────────────────────────────────── */
+.emer-page{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:16px;padding:16px;align-items:start}
+
+/* ── CARD BASE ────────────────────────────────────────────── */
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;overflow:hidden;margin-bottom:14px}
+.card-head{padding:14px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #e4e6eb}
+.card-head-title{font-size:16px;font-weight:800;color:#0f2057}
+
+/* ── MAP ─────────────────────────────────────────────────── */
+.map-container{
+  position:relative;height:220px;overflow:hidden;
+  background:linear-gradient(160deg,#8bc34a 0%,#689f38 40%,#7cb342 70%,#558b2f 100%);
+}
+.road-h{position:absolute;left:0;right:0;height:14px;background:rgba(200,160,60,0.6)}
+.road-v{position:absolute;top:0;bottom:0;width:14px;background:rgba(200,160,60,0.6)}
+.pond{position:absolute;border-radius:50%;background:rgba(70,150,200,0.55)}
+.m-tree{position:absolute;font-size:18px}
+/* Clinic pins */
+.clinic-pin{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;z-index:3}
+.pin-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);border:3px solid #fff}
+.pin-label{font-size:9px;font-weight:800;color:#fff;background:rgba(0,0,0,0.6);padding:1px 5px;border-radius:4px;margin-top:2px}
+
+/* Clinic list */
+.clinic-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
+.clinic-item:hover{background:#f8f9ff}
+.clinic-item:last-child{border-bottom:none}
+.clinic-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.clinic-name{font-size:14px;font-weight:800;color:#0f2057}
+.clinic-meta{font-size:12px;color:#65676b;margin-top:2px}
+.clinic-stars{color:#fbbf24;font-size:13px}
+.nav-btn{padding:8px 20px;border-radius:8px;background:#0f2057;color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;margin-left:auto;flex-shrink:0}
+.nav-btn.green{background:#0369a1}
+
+/* ── SOS Alerts ──────────────────────────────────────────── */
+.sos-item{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
+.sos-item:hover{background:#f8faff}
+.sos-item:last-child{border-bottom:none}
+.sos-av{width:54px;height:54px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.sos-av img{width:100%;height:100%;object-fit:cover}
+.sos-name{font-size:14px;font-weight:800;color:#1a1a2e}
+.sos-time{font-size:12px;color:#65676b;margin-bottom:4px}
+.sos-text{font-size:13px;color:#333;line-height:1.4;margin-bottom:6px}
+.sos-urgent{color:#b45309;font-weight:800}
+.sos-btns{display:flex;gap:8px;flex-wrap:wrap}
+.sos-pet-img{width:54px;height:54px;border-radius:10px;overflow:hidden;flex-shrink:0}
+.sos-pet-img img{width:100%;height:100%;object-fit:cover}
+.sb-offer{padding:5px 14px;border-radius:6px;background:#e0f2fe;color:#0369a1;font-size:12px;font-weight:700;border:1.5px solid #0369a1;cursor:pointer}
+.sb-share{padding:5px 14px;border-radius:6px;background:#e3f2fd;color:#1a56db;font-size:12px;font-weight:700;border:1.5px solid #1a56db;cursor:pointer}
+.sb-shelter{padding:5px 14px;border-radius:6px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:700;border:1.5px solid #94a3b8;cursor:pointer}
+
+/* ── Bottom stories strip ────────────────────────────────── */
+.stories-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:14px}
+.story-tile{position:relative;height:110px;overflow:hidden;cursor:pointer}
+.story-tile img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s}
+.story-tile:hover img{transform:scale(1.05)}
+.story-tile-overlay{position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,0.7));display:flex;align-items:flex-end;padding:10px 10px}
+.story-tile-text{color:#fff;font-size:12px;font-weight:700;line-height:1.3}
+.story-tile-arrow{position:absolute;right:10px;bottom:10px;color:#fff;font-size:16px}
+
+/* ── RIGHT SIDEBAR ────────────────────────────────────────── */
+.sidebar{position:sticky;top:72px}
+
+/* Quick Consult */
+.qc-card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;padding:16px;margin-bottom:14px}
+.qc-title{font-size:15px;font-weight:800;color:#0f2057;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.qc-input{width:100%;height:44px;border:1.5px solid #dde1e7;border-radius:8px;padding:0 14px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;margin-bottom:10px;color:#65676b}
+.qc-row{display:flex;align-items:center;gap:10px;height:44px;border:1.5px solid #dde1e7;border-radius:8px;padding:0 14px;background:#f8f9fa;margin-bottom:10px;font-size:13px;font-weight:600;color:#333;cursor:pointer}
+.qc-row i{color:#1a56db;font-size:18px}
+.qc-row .arrow{margin-left:auto;color:#65676b}
+.connect-btn{width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,#0f2057,#1a56db);color:#fff;font-size:15px;font-weight:800;border:none;cursor:pointer;font-family:'Poppins',sans-serif;box-shadow:0 4px 12px rgba(15,32,87,0.35)}
+
+/* Tips */
+.tip-item-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
+.tip-item-row:hover{background:#f8f9ff}
+.tip-item-row:last-child{border-bottom:none}
+.tip-icon-sq{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tip-name{font-size:14px;font-weight:700;color:#1a56db}
+.tip-sub{font-size:12px;color:#65676b}
+.tip-arrow{margin-left:auto;color:#65676b;font-size:18px}
+
+/* Vet card in sidebar */
+.vet-sidebar{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #e4e6eb}
+.vet-sidebar:last-child{border-bottom:none}
+.vet-s-av{width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;position:relative}
+.vet-s-av img{width:100%;height:100%;object-fit:cover;object-position:top}
+.vet-s-dot{position:absolute;bottom:0;right:0;width:12px;height:12px;border-radius:50%;background:#0e7490;border:2px solid #fff}
+.vet-s-name{font-size:13px;font-weight:700;color:#1a1a2e}
+.vet-s-avail{font-size:12px;color:#0e7490;font-weight:600}
+.consult-btn{padding:6px 14px;border-radius:6px;background:#0f2057;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;margin-left:auto}
+
+/* Emergency contacts */
+.ec-box{border-radius:10px;padding:13px;margin-bottom:8px}
+.ec-name{font-size:13px;font-weight:800}
+.ec-number{font-size:18px;font-weight:900;color:#1a1a2e;margin:2px 0}
+.ec-sub{font-size:11px;color:#65676b}
+.call-btn{width:100%;padding:11px;border-radius:8px;background:#0f2057;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+
+<!-- TOPNAV -->
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search emergency services…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab" onclick="location.href='09_marketplace.html'"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-ambulance"></i></button>
+    <button class="topnav-tab" onclick="location.href='04_adoption.html'"><i class="ti ti-heart"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" onclick="location.href='08_pet_profile.html'">A</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="emer-hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🐾</div>
+    <div>
+      <div class="hero-text-title">Emergency Services</div>
+      <div class="hero-text-sub">Help is just a tap away</div>
+    </div>
+  </div>
+</div>
+
+<!-- 4 BIG ACTION BUTTONS -->
+<div class="action-grid">
+  <div class="act-card act-red">
+    <div class="act-icon"><i class="ti ti-phone" style="font-size:24px;color:#fff"></i></div>
+    <div><div class="act-title">Call Vet Hotline</div><div class="act-sub">24/7 Support</div></div>
+  </div>
+  <div class="act-card act-blue">
+    <div class="act-icon"><i class="ti ti-map-pin" style="font-size:24px;color:#fff"></i></div>
+    <div><div class="act-title">Nearest Open Clinic</div><div class="act-sub">1.2km Away</div></div>
+  </div>
+  <div class="act-card act-green" onclick="location.href='11_vet_booking.html'">
+    <div class="act-icon"><i class="ti ti-video" style="font-size:24px;color:#fff"></i></div>
+    <div><div class="act-title">Emergency Consult</div><div class="act-sub">Video Call Now</div></div>
+  </div>
+  <div class="act-card act-orange" onclick="sendCommunityAlert()">
+    <div class="act-icon"><i class="ti ti-bell-ringing" style="font-size:24px;color:#fff"></i></div>
+    <div><div class="act-title">Send Alert to Community</div><div class="act-sub">Notify Nearby Users</div></div>
+  </div>
+</div>
+
+<!-- MAIN PAGE -->
+<div class="emer-page">
+  <main>
+    <!-- Find Nearest Clinic -->
+    <div class="card">
+      <div class="card-head"><div class="card-head-title">📍 Find Nearest Clinic</div></div>
+      <!-- CSS Map -->
+      <div class="map-container">
+        <div class="road-h" style="top:38%"></div>
+        <div class="road-h" style="top:62%"></div>
+        <div class="road-v" style="left:25%"></div>
+        <div class="road-v" style="left:55%"></div>
+        <div class="road-v" style="left:78%"></div>
+        <div class="pond" style="width:70px;height:45px;top:12%;left:8%;opacity:0.7"></div>
+        <div class="pond" style="width:50px;height:32px;bottom:15%;right:6%;opacity:0.5"></div>
+        <div class="m-tree" style="top:8%;left:38%">🌳</div>
+        <div class="m-tree" style="top:12%;right:18%">🌲</div>
+        <div class="m-tree" style="bottom:12%;left:15%">🌳</div>
+        <div class="m-tree" style="bottom:10%;right:28%">🌲</div>
+        <!-- Clinic pins -->
+        <div class="clinic-pin" style="top:20%;left:18%">
+          <div class="pin-circle" style="background:#0e7490"><i class="ti ti-paw" style="font-size:18px"></i></div>
+          <div class="pin-label">VET</div>
+        </div>
+        <div class="clinic-pin" style="top:28%;left:38%">
+          <div class="pin-circle" style="background:#dc2626;font-size:13px;font-weight:900">ER</div>
+          <div class="pin-label">EMERGENCY</div>
+        </div>
+        <div class="clinic-pin" style="top:18%;left:55%">
+          <div class="pin-circle" style="background:#d97706;font-size:11px;font-weight:900">24/7</div>
+          <div class="pin-label">24/7 OPEN</div>
+        </div>
+        <div class="clinic-pin" style="top:22%;left:72%">
+          <div class="pin-circle" style="background:#1a56db;font-size:13px;font-weight:900">AR</div>
+          <div class="pin-label">ANIMAL</div>
+        </div>
+        <div class="clinic-pin" style="top:14%;right:8%">
+          <div class="pin-circle" style="background:#1a56db;font-size:11px;font-weight:900">ER</div>
+        </div>
+      </div>
+      <!-- Clinic list -->
+      <div class="clinic-item">
+        <div class="clinic-dot" style="background:#16a34a"></div>
+        <div style="flex:1">
+          <div class="clinic-name">Greenfield Vet Hospital <span class="clinic-stars">★★★★☆</span></div>
+          <div class="clinic-meta">1.5 km Navigate</div>
+        </div>
+        <button class="nav-btn" onclick="navigateToClinic(this)">Navigate</button>
+      </div>
+      <div class="clinic-item">
+        <div class="clinic-dot" style="background:#dc2626"></div>
+        <div style="flex:1">
+          <div class="clinic-name" style="color:#dc2626">City Pet Emergency <span class="clinic-stars">★★★★☆</span></div>
+          <div class="clinic-meta">Open Now · 3 mgata</div>
+        </div>
+        <button class="nav-btn" style="background:#0369a1">Navigate</button>
+      </div>
+      <div class="clinic-item">
+        <div class="clinic-dot" style="background:#1a56db"></div>
+        <div style="flex:1">
+          <div class="clinic-name">Paws &amp; Claws Specialty Care</div>
+          <div class="clinic-meta">4.2m Now · 4.2 mgata</div>
+        </div>
+        <button class="nav-btn" onclick="navigateToClinic(this)">Navigate</button>
+      </div>
+    </div>
+
+    <!-- Community SOS Alerts -->
+    <div class="card">
+      <div class="card-head">
+        <div style="width:32px;height:32px;border-radius:50%;background:#0f2057;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;flex-shrink:0">!</div>
+        <div class="card-head-title" style="color:#0f2057">Community SOS Alerts</div>
+      </div>
+      <!-- Laura -->
+      <div class="sos-item">
+        <div class="sos-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&q=80" alt="Laura"></div>
+        <div style="flex:1">
+          <div class="sos-name">Laura <span class="sos-time">· 5 min ago</span></div>
+          <div class="sos-text"><strong>Found injured cat near the park. Looks scared.</strong><br>
+            <span style="color:#ea580c;font-size:12px;font-weight:600">Offer Help | Share Alert. URGENT fon to 9RGert.</span>
+          </div>
+          <div class="sos-btns">
+            <button class="sb-offer" onclick="offerHelp(this)">Offer Help</button>
+            <button class="sb-share" onclick="shareSOSAlert(this)">Share Alert</button>
+            <button class="sb-shelter" onclick="reportToShelter(this)">Report to Shelter</button>
+          </div>
+        </div>
+        <div class="sos-pet-img"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=100&q=80" alt="cat"></div>
+      </div>
+      <!-- Mark -->
+      <div class="sos-item">
+        <div class="sos-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&q=80" alt="Mark"></div>
+        <div style="flex:1">
+          <div class="sos-name">Mark <span class="sos-time">· 10 min ago</span></div>
+          <div class="sos-text"><span class="sos-urgent">URGENT:</span> Need vet transport for my dog!</div>
+          <div class="sos-btns">
+            <button class="sb-offer" onclick="offerHelp(this)">Offer Help</button>
+            <button class="sb-share" onclick="shareSOSAlert(this)">Share Alert</button>
+          </div>
+        </div>
+        <div class="sos-pet-img"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80" alt="dog"></div>
+      </div>
+    </div>
+
+    <!-- Bottom stories strip -->
+    <div class="stories-strip card" style="border-radius:14px">
+      <div class="story-tile">
+        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&q=80" alt="Dog">
+        <div class="story-tile-overlay"><div class="story-tile-text">Back P anato Hales</div><div class="story-tile-arrow">→</div></div>
+      </div>
+      <div class="story-tile">
+        <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&q=80" alt="Cat">
+        <div class="story-tile-overlay"><div class="story-tile-text">MaH a Belgitve Gage</div><div class="story-tile-arrow">→</div></div>
+      </div>
+      <div class="story-tile">
+        <img src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=400&q=80" alt="Shelter">
+        <div class="story-tile-overlay"><div class="story-tile-text">Pice Coold to Margate...</div><div class="story-tile-arrow">→</div></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar">
+    <!-- Quick Consult -->
+    <div class="qc-card">
+      <div class="qc-title"><span style="width:28px;height:28px;border-radius:50%;background:#0f2057;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0">!</span> Quick Consult</div>
+      <input class="qc-input" placeholder="Describe the emergency…">
+      <div class="qc-row"><i class="ti ti-photo"></i> Attach Photo <span class="arrow"><i class="ti ti-selector"></i></span></div>
+      <div class="qc-row"><i class="ti ti-stethoscope"></i> Symptom: Choking <span class="arrow"><i class="ti ti-chevron-right"></i></span></div>
+      <button class="connect-btn" onclick="location.href='11_vet_booking.html'">Connect to Vet Now</button>
+    </div>
+
+    <!-- Emergency Tips -->
+    <div class="card">
+      <div class="card-head">
+        <div style="width:28px;height:28px;border-radius:50%;background:#dc2626;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0">!</div>
+        <div class="card-head-title" style="color:#0f2057">Emergency Tips</div>
+      </div>
+      <div class="tip-item-row">
+        <div class="tip-icon-sq" style="background:#dbeafe"><i class="ti ti-bandage" style="color:#1a56db;font-size:20px"></i></div>
+        <div><div class="tip-name">First Aid Basics</div><div class="tip-sub">Bleeding &amp; CPR</div></div>
+        <i class="ti ti-chevron-right tip-arrow"></i>
+      </div>
+      <div class="tip-item-row">
+        <div class="tip-icon-sq" style="background:#dcfce7"><i class="ti ti-shield" style="color:#16a34a;font-size:20px"></i></div>
+        <div><div class="tip-name">Poison Control Guide</div><div class="tip-sub">Toxic Foods &amp; Plants</div></div>
+        <i class="ti ti-chevron-right tip-arrow"></i>
+      </div>
+      <div class="tip-item-row">
+        <div class="tip-icon-sq" style="background:#dbeafe"><i class="ti ti-settings" style="color:#1a56db;font-size:20px"></i></div>
+        <div><div class="tip-name">Heatstroke Prevention</div><div class="tip-sub">Keep Pets Cool</div></div>
+        <i class="ti ti-chevron-right tip-arrow"></i>
+      </div>
+      <div class="tip-item-row">
+        <div class="tip-icon-sq" style="background:#e0f2fe"><i class="ti ti-video" style="color:#0369a1;font-size:20px"></i></div>
+        <div><div class="tip-name">Emergency Kit Checklist</div><div class="tip-sub">Be Prepared</div></div>
+        <i class="ti ti-chevron-right tip-arrow"></i>
+      </div>
+      <!-- Icon row -->
+      <div style="display:flex;justify-content:space-around;padding:14px 10px;border-top:1px solid #e4e6eb;font-size:26px">
+        🎁 🎒 🏥 🔒 🔐
+      </div>
+    </div>
+
+    <!-- Online Vets -->
+    <div class="card">
+      <div class="card-head"><div class="card-head-title">🩺 Online Vets Now</div></div>
+      <div style="padding:10px 16px">
+        <div class="vet-sidebar">
+          <div class="vet-s-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80" alt="Dr. Priya"><div class="vet-s-dot"></div></div>
+          <div><div class="vet-s-name">Dr. Priya Sharma</div><div class="vet-s-avail">● Available Now</div></div>
+          <button class="consult-btn" onclick="location.href='11_vet_booking.html'">Consult</button>
+        </div>
+        <div class="vet-sidebar">
+          <div class="vet-s-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80" alt="Dr. Arjun"><div class="vet-s-dot"></div></div>
+          <div><div class="vet-s-name">Dr. Arjun Mehta</div><div class="vet-s-avail">● Available Now</div></div>
+          <button class="consult-btn" onclick="location.href='11_vet_booking.html'">Consult</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Contacts -->
+    <div class="card">
+      <div class="card-head"><div class="card-head-title">📞 Emergency Contacts</div></div>
+      <div style="padding:14px">
+        <div class="ec-box" style="background:#dbeafe;margin-bottom:10px">
+          <div class="ec-name" style="color:#0f2057">🚨 Pet Emergency Hotline</div>
+          <div class="ec-number">1800-PET-HELP</div>
+          <div class="ec-sub">24/7 · Free Call</div>
+        </div>
+        <div class="ec-box" style="background:#dbeafe">
+          <div class="ec-name" style="color:#1a56db">🏥 AWBI Helpline</div>
+          <div class="ec-number">1962</div>
+          <div class="ec-sub">Animal Welfare Board India</div>
+        </div>
+        <button class="call-btn" onclick="callEmergency()"><i class="ti ti-phone" style="font-size:16px"></i> Call Emergency Now</button>
+      </div>
+    </div>
+  </aside>
+
+<script>
+function goTo(p){window.location.href=p;}
+function toast(msg,type){
+  var bg=type==="error"?"#dc2626":type==="success"?"#16a34a":type==="info"?"#1877F2":"rgba(0,0,0,.85)";
+  var t=document.getElementById("em-toast");
+  if(!t){t=document.createElement("div");t.id="em-toast";t.style.cssText="position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:#000;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center";document.body.appendChild(t);}
+  t.style.background=bg;t.textContent=msg;t.style.opacity="1";t.style.transform="translateX(-50%) translateY(0)";
+  setTimeout(function(){t.style.opacity="0";t.style.transform="translateX(-50%) translateY(8px)";},2600);
+}
+function findNearestClinic(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var url="https://www.google.com/maps/search/veterinary+clinic+near+me/@"+pos.coords.latitude+","+pos.coords.longitude+",14z";
+      window.open(url,"_blank");
+    },function(){
+      window.open("https://www.google.com/maps/search/veterinary+clinic+Delhi","_blank");
+    });
+  } else {
+    window.open("https://www.google.com/maps/search/veterinary+clinic+Delhi","_blank");
+  }
+  toast("Finding nearest clinic...","info");
+}
+function sendCommunityAlert(){
+  var msg="URGENT: Emergency pet help needed near me! Please respond if you can help. PawBook Emergency Alert.";
+  if(navigator.share){
+    navigator.share({title:"PawBook Emergency Alert",text:msg,url:location.href});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(msg);
+    toast("Alert copied! Share on WhatsApp now","success");
+  }
+}
+function navigateToClinic(btn){
+  var item=btn.closest(".clinic-item");
+  var name=item?item.querySelector(".clinic-name").textContent.trim().replace(/★/g,"").trim():"Vet Clinic";
+  window.open("https://www.google.com/maps/search/"+encodeURIComponent(name+", Delhi"),"_blank");
+  toast("Opening Google Maps...","info");
+}
+function offerHelp(btn){
+  btn.textContent="✓ Offered";btn.style.background="#16a34a";btn.style.color="#fff";btn.disabled=true;
+  toast("Help offered! User notified.","success");
+}
+function shareSOSAlert(btn){
+  var card=btn.closest("[class*=sos]")||btn.parentElement.parentElement;
+  var text=card?card.querySelector("[class*=text]")||card:null;
+  var msg="Emergency alert on PawBook! "+location.href;
+  if(navigator.clipboard){navigator.clipboard.writeText(msg);}
+  btn.textContent="✓ Shared";btn.style.background="#1877F2";btn.style.color="#fff";
+  toast("Alert copied! Share on WhatsApp","success");
+}
+function reportToShelter(btn){
+  btn.textContent="✓ Reported";btn.style.background="#7c3aed";btn.style.color="#fff";btn.disabled=true;
+  toast("Reported to nearest shelter!","success");
+}
+function callEmergency(){
+  if(confirm("Call Animal Welfare Board India?\n\nNumber: 1962\n\nPress OK to call")){window.open("tel:1962");}
+  else{if(navigator.clipboard)navigator.clipboard.writeText("1962");toast("Number 1962 copied!","info");}
+}
+</script>
+</body>
+</html>

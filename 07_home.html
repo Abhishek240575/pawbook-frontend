@@ -1,0 +1,729 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* PawBook Design Enhancement - Safe, no layout overrides */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* Font only - don't override layout */
+body { font-family: 'Inter', -apple-system, sans-serif !important; -webkit-font-smoothing: antialiased; }
+
+/* Better topnav */
+.topnav {
+  background: #fff !important;
+  border-bottom: 1px solid #e4e6eb !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08) !important;
+}
+.topnav-logo { color: #1877F2 !important; font-weight: 900 !important; }
+.logo-icon { background: linear-gradient(135deg,#1877F2,#8b5cf6) !important; border-radius: 10px !important; }
+.topnav-tab.active { color: #1877F2 !important; }
+.topnav-tab.active::after { background: #1877F2 !important; }
+
+/* Pill buttons */
+.btn, .btn-blue, .btn-gray, .btn-sm, .btn-full,
+.btn-white, .btn-blue-sm, .btn-gray-sm {
+  border-radius: 999px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+}
+.btn-blue { background: #1877F2 !important; color: #fff !important; }
+.btn-blue:hover { background: #0d65d9 !important; }
+
+/* Composer */
+.composer { background: #fff !important; border-radius: 12px !important; box-shadow: 0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06) !important; }
+.c-action { border-radius: 8px !important; font-family: 'Inter', sans-serif !important; font-weight: 600 !important; }
+
+/* Post */
+.post { background: #fff !important; border-radius: 12px !important; box-shadow: 0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06) !important; border: 1px solid #e4e6eb !important; }
+.post-action { border-radius: 8px !important; font-family: 'Inter', sans-serif !important; font-weight: 700 !important; }
+.post-action.liked, .post-action:has(i.ti-thumb-up-filled) { color: #1877F2 !important; }
+
+/* Story cards */
+.story-card { border-radius: 12px !important; border: none !important; }
+.story-add-card { border-radius: 12px !important; }
+
+/* Story avatar ring */
+.story-card .story-card-av { border: 3px solid #1877F2 !important; }
+
+/* Bottom nav */
+.bottomnav { background: #fff !important; border-top: 1px solid #e4e6eb !important; }
+.bnav-item.active i { color: #1877F2 !important; }
+.bnav-item.active .bnav-label { color: #1877F2 !important; }
+
+/* Profile mini sidebar */
+.profile-mini { border-radius: 12px !important; }
+
+/* Group/suggestion cards in sidebar */
+.sidebar .card { border-radius: 12px !important; border: 1px solid #e4e6eb !important; }
+
+/* Badge pills */
+.badge { border-radius: 999px !important; font-weight: 700 !important; }
+
+/* Input focus */
+input:focus, textarea:focus, select:focus { border-color: #1877F2 !important; outline: none !important; }
+
+/* Toast */
+.toast { border-radius: 999px !important; backdrop-filter: blur(8px); background: rgba(0,0,0,0.85) !important; }
+
+/* Notification dot */
+.nav-icon-btn .notif-dot { background: #ef4444 !important; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+</style>
+
+
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+/* HOME PAGE LAYOUT */
+.page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:20px 16px;
+  display:grid;
+  grid-template-columns:280px 1fr 300px;
+  gap:20px;
+  align-items:start;
+}
+@media(max-width:1100px){.page{grid-template-columns:240px 1fr}}
+@media(max-width:768px){.page{grid-template-columns:1fr!important;padding:0!important;gap:0!important}}
+.left-sidebar,.right-sidebar{position:sticky;top:72px;max-height:calc(100vh - 80px);overflow-y:auto;scrollbar-width:thin}
+.online-friends{display:flex;flex-wrap:wrap;gap:10px;padding:14px}
+.of-av{width:48px;height:48px;border-radius:50%;border:3px solid var(--blue);position:relative;overflow:hidden;cursor:pointer}
+.of-av img{width:100%;height:100%;object-fit:cover}
+.of-dot{position:absolute;bottom:1px;right:1px;width:12px;height:12px;border-radius:50%;background:#31a24c;border:2px solid #fff}
+.of-name{font-size:11px;font-weight:600;color:var(--muted);text-align:center;max-width:52px}
+/* Story cards */
+.story-card{flex-shrink:0;width:116px;height:200px;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;border:3px solid var(--blue)}
+.story-img{width:100%;height:100%;object-fit:cover}
+.story-grad{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,0.75))}
+.story-av-ring{position:absolute;top:10px;left:10px;width:38px;height:38px;border-radius:50%;border:3px solid var(--blue);overflow:hidden;background:#fff}
+.story-av-ring img{width:100%;height:100%;object-fit:cover}
+.story-name{position:absolute;bottom:8px;left:0;right:0;color:#fff;font-size:12px;font-weight:700;text-align:center;padding:0 6px}
+/* Post images */
+.post-img-wrap{width:100%;max-height:500px;overflow:hidden;background:#f0f2f5}
+.post-img-wrap img{width:100%;object-fit:cover;max-height:500px}
+/* Vet strip */
+.vet-av-img{width:100%;height:100%;object-fit:cover;border-radius:0}
+/* Sidebar menu */
+.sidebar-menu{list-style:none;padding:0;margin:0}
+.sidebar-menu li{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:8px;cursor:pointer;
+  font-size:14px;font-weight:600;color:var(--text);
+  transition:background .12s;
+}
+.sidebar-menu li:hover{background:var(--bg,#f0f2f5)}
+.sidebar-menu li.active{background:#e7f0fd;color:#1877F2}
+.sidebar-menu li i{font-size:20px;width:22px;text-align:center;flex-shrink:0}
+.sidebar-menu .count{
+  margin-left:auto;background:#ef4444;color:#fff;
+  border-radius:999px;font-size:11px;font-weight:700;
+  padding:1px 7px;min-width:18px;text-align:center;
+}
+/* Profile mini */
+.profile-mini{display:flex;align-items:center;cursor:pointer;padding:4px;border-radius:8px}
+.profile-mini:hover{background:var(--bg,#f0f2f5)}
+.profile-mini-name{font-size:15px;font-weight:700}
+.profile-mini-sub{font-size:12px;color:var(--muted,#65676b)}
+/* Sidebar stats */
+#s-friends,#s-pets,#s-posts{font-size:16px!important;font-weight:800!important;color:#1877F2!important}
+
+/* Sidebar nav items */
+.sidebar-nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:8px;cursor:pointer;
+  font-size:14px;font-weight:600;color:var(--text);
+  transition:background .1s;text-decoration:none;
+}
+.sidebar-nav-item:hover{background:var(--bg)}
+.sidebar-nav-item.active{background:var(--blue-soft);color:var(--blue)}
+.sidebar-nav-item i{font-size:20px;width:24px;text-align:center}
+.sidebar-nav-item .badge-count{
+  margin-left:auto;background:var(--red);color:#fff;
+  border-radius:999px;font-size:11px;font-weight:700;
+  padding:1px 6px;min-width:18px;text-align:center;
+}
+
+
+/* ── MOBILE HOME ── */
+@media(max-width:768px){
+  /* Layout */
+  .home-layout{grid-template-columns:1fr!important;padding:0!important;margin:0!important;gap:0!important}
+  .left-sidebar,.right-sidebar{display:none!important}
+
+  /* Topnav */
+  .topnav-search{display:none!important}
+  .topnav{padding:0 12px!important;gap:8px!important;height:52px!important}
+  .topnav-tab{width:38px!important;height:38px!important;font-size:16px!important}
+  .topnav-logo{font-size:15px!important}
+
+  /* Stories — horizontal scroll with snap, all visible */
+  .stories-row{
+    overflow-x:auto!important;flex-wrap:nowrap!important;
+    scroll-snap-type:x mandatory!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+    padding:10px 10px!important;gap:8px!important;
+  }
+  .stories-row::-webkit-scrollbar{display:none!important}
+  .story-card{
+    flex-shrink:0!important;scroll-snap-align:start!important;
+    width:80px!important;height:138px!important;border-radius:10px!important;
+  }
+  .story-label{font-size:10px!important;padding:0 3px!important;text-align:center!important}
+
+  /* Composer actions — all 4 buttons visible via scroll */
+  .composer-actions{
+    overflow-x:auto!important;flex-wrap:nowrap!important;
+    scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;gap:0!important;
+  }
+  .composer-actions::-webkit-scrollbar{display:none!important}
+  .composer-action{flex-shrink:0!important;font-size:11px!important;padding:5px 10px!important;white-space:nowrap!important}
+
+  /* Post cards — edge to edge */
+  .card{border-radius:0!important;margin-bottom:8px!important;border-left:none!important;border-right:none!important}
+  .post-header{padding:10px 14px!important}
+  .post-text{font-size:14px!important;padding:4px 14px 8px!important}
+  .post-img-wrap img{max-height:320px!important}
+  .post-stats{padding:6px 14px!important;font-size:12px!important}
+  .post-actions{padding:2px 0!important;gap:0!important}
+  .post-action{font-size:12px!important;flex:1!important;justify-content:center!important;height:38px!important}
+
+  /* Modal as bottom sheet */
+  .modal-overlay{align-items:flex-end!important}
+  .modal-box{
+    width:100%!important;max-width:100%!important;
+    border-radius:20px 20px 0 0!important;
+    position:fixed!important;bottom:0!important;left:0!important;right:0!important;
+    max-height:92vh!important;overflow-y:auto!important;
+  }
+}
+@media(max-width:390px){
+  .story-card{width:72px!important;height:124px!important}
+  .topnav-tab{width:34px!important;height:34px!important;font-size:14px!important}
+  .post-action i+span,.post-action i+*{display:none!important}
+}
+</style>
+<link rel="stylesheet" href="mobile.css">
+<style>
+.vet-mini{background:#fff;border-radius:12px;border:1px solid #e4e6eb;box-shadow:0 1px 2px rgba(0,0,0,.08);margin-bottom:10px;overflow:hidden;transition:box-shadow .15s}
+.vet-mini:hover{box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.vet-mini-cover{height:70px;overflow:hidden;background:#e7f0fd}
+.vet-mini-cover img{width:100%;height:70px;object-fit:cover;object-position:top;display:block}
+.vet-mini-body{padding:10px 12px}
+.vet-mini-name{font-size:14px;font-weight:700;color:#050505;margin-bottom:2px}
+.vet-mini-spec{font-size:12px;color:#65676b;margin-bottom:4px}
+.vet-mini-stars{font-size:13px;color:#f59e0b;margin-bottom:8px;letter-spacing:1px}
+.vet-mini-btn{width:100%;height:34px;border-radius:999px;background:#1877F2;color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;transition:background .15s}
+.vet-mini-btn:hover{background:#0d65d9}
+</style></head>
+<script>function goTo(p){window.location.href=p;}</script>
+<body>
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search PawBook…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab active"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('04_adoption.html')"><i class="ti ti-heart"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn"><i class="ti ti-grid-dots"></i></button>
+    <button class="nav-icon-btn"><i class="ti ti-message-circle"></i></button>
+    <div class="nav-icon-btn" style="position:relative"><i class="ti ti-bell"></i><span style="position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--blue)"></span></div>
+    <div class="nav-avatar" id="nav-av" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<div class="page">
+  <!-- LEFT SIDEBAR -->
+  <aside class="left-sidebar">
+    <div class="card">
+      <div class="card-body" style="padding:10px">
+        <div class="profile-mini" onclick="goTo('08_pet_profile.html')" style="gap:12px">
+          <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--blue)">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.background='var(--blue)';this.style.display='none'">
+          </div>
+          <div>
+            <div class="profile-mini-name" id="sidebar-name">Abhishek Kumar</div>
+            <div class="profile-mini-sub" id="sidebar-sub">@abhishek</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;padding:6px 0">
+          <div style="cursor:pointer"><div style="font-size:16px;font-weight:800;color:var(--blue)" id="s-friends">248</div><div style="font-size:11px;color:var(--muted)">Friends</div></div>
+          <div style="cursor:pointer"><div style="font-size:16px;font-weight:800;color:var(--blue)" id="s-pets">1</div><div style="font-size:11px;color:var(--muted)">Pets</div></div>
+          <div style="cursor:pointer"><div style="font-size:16px;font-weight:800;color:var(--blue)" id="s-posts">32</div><div style="font-size:11px;color:var(--muted)">Posts</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body" style="padding:6px">
+        <ul class="sidebar-menu">
+          <li class="active" onclick="goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</li>
+          <li onclick="goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</li>
+          <li onclick="goTo('27_stories.html')"><i class="ti ti-circle-dot"></i> Stories</li>
+          <li onclick="goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</li>
+          <li onclick="goTo('34_live.html')"><i class="ti ti-live-view"></i> Live</li>
+          <li onclick="goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="count">3</span></li>
+          <li onclick="goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</li>
+          <li onclick="goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</li>
+          <li onclick="goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</li>
+          <li onclick="goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</li>
+          <li onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</li>
+          <li onclick="goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</li>
+          <li onclick="goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</li>
+          <li onclick="goTo('05_lost_pet.html')"><i class="ti ti-map-pin"></i> Lost Pet Alerts</li>
+          <li onclick="goTo('06_emergency.html')"><i class="ti ti-ambulance"></i> Emergency</li>
+          <li onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i> Marketplace</li>
+          <li onclick="goTo('26_discover.html')"><i class="ti ti-world"></i> Discover 🌍</li>
+          <li onclick="goTo('33_breeds.html')"><i class="ti ti-paw"></i> Breeds Encyclopedia</li>
+          <li onclick="goTo('23_nutrition.html')"><i class="ti ti-salad"></i> Nutrition</li>
+          <li onclick="goTo('22_training.html')"><i class="ti ti-trophy"></i> Training</li>
+          <li onclick="goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</li>
+          <li onclick="goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</li>
+          <li onclick="goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</li>
+          <li onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</li>
+          <li onclick="goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</li>
+        </ul>
+        <div class="divider"></div>
+        <ul class="sidebar-menu">
+          <li onclick="AuthAPI.logout()"><i class="ti ti-logout"></i> Log Out</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MIDDLE -->
+  <main>
+    <!-- Stories -->
+    <div class="card">
+      <div class="stories-row" style="padding:12px;gap:8px">
+        <!-- Add story -->
+        <div class="story-card" style="border:none;cursor:pointer" onclick="openPostModal()">
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.4)">
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:14px">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--blue);border:4px solid #fff;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:20px;color:#fff"><i class="ti ti-plus"></i></div>
+            <div style="color:#fff;font-size:12px;font-weight:700">Create Story</div>
+          </div>
+        </div>
+        <!-- Pet stories with real images -->
+        <div class="story-card" onclick="goTo('04_adoption.html')">
+          <img class="story-img" src="https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=300&q=80" alt="Adopt">
+          <div class="story-grad"></div>
+          <div class="story-av-ring"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=60&q=80"></div>
+          <div class="story-name">Adopt 🐾</div>
+        </div>
+        <div class="story-card" onclick="goTo('06_emergency.html')">
+          <img class="story-img" src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=300&q=80" alt="Emergency">
+          <div class="story-grad"></div>
+          <div class="story-av-ring" style="border-color:var(--red)"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
+          <div class="story-name">Emergency 🚑</div>
+        </div>
+        <div class="story-card" onclick="goTo('05_lost_pet.html')">
+          <img class="story-img" src="https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=300&q=80" alt="Lost Pet">
+          <div class="story-grad"></div>
+          <div class="story-av-ring" style="border-color:var(--amber)"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=60&q=80"></div>
+          <div class="story-name">Lost Pet 🔍</div>
+        </div>
+        <div class="story-card" onclick="goTo('03_groups.html')">
+          <img class="story-img" src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=300&q=80" alt="Community">
+          <div class="story-grad"></div>
+          <div class="story-av-ring" style="border-color:var(--green)"><img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=60&q=80"></div>
+          <div class="story-name">Community 👥</div>
+        </div>
+        <div class="story-card" id="pet-story" style="display:none" onclick="goTo('08_pet_profile.html')">
+          <img class="story-img" id="pet-story-img" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80" alt="My Pet">
+          <div class="story-grad"></div>
+          <div class="story-name" id="pet-story-name">My Pet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Composer -->
+    <div class="card">
+      <div class="composer">
+        <div class="composer-top">
+          <div style="width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--blue-light)">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" style="width:100%;height:100%;object-fit:cover" id="composer-img" onerror="this.style.display='none'">
+          </div>
+          <div class="composer-input-box" onclick="openPostModal()">What is your pet up to today? 🐾</div>
+        </div>
+        <div class="divider" style="margin:0 -14px"></div>
+        <div class="composer-actions">
+          <button class="composer-action" onclick="openPostModal()"><i class="ti ti-photo ca-photo"></i> Photo/Video</button>
+          <button class="composer-action" onclick="openPostModal()"><i class="ti ti-mood-smile" style="color:var(--amber)"></i> Feeling</button>
+          <button class="composer-action" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope ca-vet"></i> Ask Vet</button>
+          <button class="composer-action" onclick="openPostModal()"><i class="ti ti-live-view ca-live"></i> Live</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feed -->
+    <div id="feed">
+
+<div style="background:#fff;border-radius:12px;border:1px solid #e4e6eb;box-shadow:0 1px 2px rgba(0,0,0,.1);margin-bottom:12px;overflow:hidden">
+  <div style="padding:12px 14px;display:flex;align-items:center;gap:10px">
+    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0">
+    <div style="flex:1"><div style="font-size:14px;font-weight:700">Priya Sharma ✔️</div><div style="font-size:12px;color:#65676b">2 hours ago · 🌍</div></div>
+  </div>
+  <div style="padding:0 14px 10px;font-size:14px;line-height:1.65">Luna had her first birthday today! 🎂🐈 She loved her tuna cake and all the cuddles. #CatLife #PawBook</div>
+  <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=85" style="width:100%;max-height:400px;object-fit:cover;display:block">
+  <div style="padding:8px 14px;font-size:13px;color:#65676b;border-top:1px solid #e4e6eb;border-bottom:1px solid #e4e6eb;display:flex;justify-content:space-between"><span>👍 247 Likes</span><span>38 Comments · 12 Shares</span></div>
+  <div style="display:flex;padding:4px 8px">
+    <button onclick="this.style.color=this.style.color=='rgb(24, 119, 242)'?'':'#1877F2'" style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">👍 Like</button>
+    <button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">💬 Comment</button>
+    <button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">↗️ Share</button>
+  </div>
+</div>
+
+<div style="background:#fff;border-radius:12px;border:1px solid #e4e6eb;box-shadow:0 1px 2px rgba(0,0,0,.1);margin-bottom:12px;overflow:hidden">
+  <div style="padding:12px 14px;display:flex;align-items:center;gap:10px">
+    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0">
+    <div style="flex:1"><div style="font-size:14px;font-weight:700">Rahul Dev</div><div style="font-size:12px;color:#65676b">4 hours ago · 🌍</div></div>
+  </div>
+  <div style="padding:0 14px 10px;font-size:14px;line-height:1.65">Max aced his first agility training! 🏆🐕 Our trainer said he is a natural. So proud! #GoldenRetriever #DogTraining</div>
+  <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=85" style="width:100%;max-height:400px;object-fit:cover;display:block">
+  <div style="padding:8px 14px;font-size:13px;color:#65676b;border-top:1px solid #e4e6eb;border-bottom:1px solid #e4e6eb;display:flex;justify-content:space-between"><span>👍 189 Likes</span><span>24 Comments · 8 Shares</span></div>
+  <div style="display:flex;padding:4px 8px">
+    <button onclick="this.style.color=this.style.color=='rgb(24, 119, 242)'?'':'#1877F2'" style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">👍 Like</button>
+    <button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">💬 Comment</button>
+    <button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">↗️ Share</button>
+  </div>
+</div>
+
+<div style="background:#fff;border-radius:12px;border:1px solid #e4e6eb;box-shadow:0 1px 2px rgba(0,0,0,.1);margin-bottom:12px;overflow:hidden">
+  <div style="padding:12px 14px;display:flex;align-items:center;gap:10px">
+    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=80&q=80" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0">
+    <div style="flex:1"><div style="font-size:14px;font-weight:700">Dr. Ananya Rao ✔️</div><div style="font-size:12px;color:#65676b">8 hours ago · 🌍</div></div>
+  </div>
+  <div style="padding:0 14px 10px;font-size:14px;line-height:1.65">⚠️ Monsoon pet care: Keep paws dry, watch for fungal infections. Ticks and fleas are more active — use vet-approved preventives. 🐾🩺 #VetTips #PetHealth</div>
+  <div style="padding:8px 14px;font-size:13px;color:#65676b;border-top:1px solid #e4e6eb;border-bottom:1px solid #e4e6eb;display:flex;justify-content:space-between"><span>👍 892 Likes</span><span>143 Comments · 234 Shares</span></div>
+  <div style="display:flex;padding:4px 8px">
+    <button onclick="this.style.color=this.style.color=='rgb(24, 119, 242)'?'':'#1877F2'" style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">👍 Like</button>
+    <button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">💬 Comment</button>
+    <button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">↗️ Share</button>
+  </div>
+</div>
+
+<div style="background:#fff;border-radius:12px;border:1px solid #e4e6eb;box-shadow:0 1px 2px rgba(0,0,0,.1);margin-bottom:12px;overflow:hidden">
+  <div style="padding:12px 14px;display:flex;align-items:center;gap:10px">
+    <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=80&q=80" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0">
+    <div style="flex:1"><div style="font-size:14px;font-weight:700">Delhi Dog Parents ✔️</div><div style="font-size:12px;color:#65676b">Yesterday · 🌍</div></div>
+  </div>
+  <div style="padding:0 14px 10px;font-size:14px;line-height:1.65">🎉 Sunday Park Meetup! 40+ dogs at Lodhi Garden this morning. What a pawsome community! Next meetup — Sunday 8 AM. Tag a friend! 🐾 #DelhiDogs</div>
+  <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=85" style="width:100%;max-height:400px;object-fit:cover;display:block">
+  <div style="padding:8px 14px;font-size:13px;color:#65676b;border-top:1px solid #e4e6eb;border-bottom:1px solid #e4e6eb;display:flex;justify-content:space-between"><span>👍 412 Likes</span><span>67 Comments · 89 Shares</span></div>
+  <div style="display:flex;padding:4px 8px">
+    <button onclick="this.style.color=this.style.color=='rgb(24, 119, 242)'?'':'#1877F2'" style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">👍 Like</button>
+    <button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">💬 Comment</button>
+    <button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;font-family:Inter,sans-serif">↗️ Share</button>
+  </div>
+</div>
+
+</div>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="right-sidebar">
+    <!-- Vet strip -->
+    <div class="card">
+      <div class="card-body"><div class="card-title">🩺 Vets Available Now <a onclick="goTo('11_vet_booking.html')">See all</a></div></div>
+      <div class="vet-strip">
+        <div class="vet-mini">
+          <div class="vet-mini-cover" style="padding:0;overflow:hidden">
+            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&q=80" style="width:100%;height:70px;object-fit:cover;object-position:top">
+          </div>
+          <div class="vet-mini-body">
+            <div class="vet-mini-name">Dr. Priya Sharma</div>
+            <div class="vet-mini-spec">Small Animals</div>
+            <div class="vet-mini-stars">★★★★★</div>
+            <button class="vet-mini-btn" onclick="goTo('11_vet_booking.html')">Consult ₹299</button>
+          </div>
+        </div>
+        <div class="vet-mini">
+          <div class="vet-mini-cover" style="padding:0;overflow:hidden">
+            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&q=80" style="width:100%;height:70px;object-fit:cover;object-position:top">
+          </div>
+          <div class="vet-mini-body">
+            <div class="vet-mini-name">Dr. Arjun Mehta</div>
+            <div class="vet-mini-spec">Exotic Pets</div>
+            <div class="vet-mini-stars">★★★★★</div>
+            <button class="vet-mini-btn" onclick="goTo('11_vet_booking.html')">Consult ₹399</button>
+          </div>
+        </div>
+        <div class="vet-mini">
+          <div class="vet-mini-cover" style="padding:0;overflow:hidden">
+            <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&q=80" style="width:100%;height:70px;object-fit:cover;object-position:top">
+          </div>
+          <div class="vet-mini-body">
+            <div class="vet-mini-name">Dr. Ananya Rao</div>
+            <div class="vet-mini-spec">Birds & Reptiles</div>
+            <div class="vet-mini-stars">★★★★★</div>
+            <button class="vet-mini-btn" onclick="goTo('11_vet_booking.html')">Consult ₹349</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active friends -->
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">🟢 Active Now <a>See all</a></div>
+        <div class="online-friends">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="of-av"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=80&q=80"><div class="of-dot"></div></div>
+            <div class="of-name">Bruno</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="of-av"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80"><div class="of-dot"></div></div>
+            <div class="of-name">Mittens</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="of-av"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80"><div class="of-dot"></div></div>
+            <div class="of-name">Max</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="of-av"><img src="https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=80&q=80"><div class="of-dot"></div></div>
+            <div class="of-name">Luna</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="of-av"><img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=80&q=80"><div class="of-dot"></div></div>
+            <div class="of-name">Buddy</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="of-av"><img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=80&q=80"><div class="of-dot"></div></div>
+            <div class="of-name">Snowball</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trending -->
+    <div class="card">
+      <div class="card-body"><div class="card-title">🔥 Trending Today <a>More</a></div></div>
+      <div class="trend-item"><span class="trend-tag">#MonsoonPetCare</span><span class="trend-count">2.4k posts</span></div>
+      <div class="trend-item"><span class="trend-tag">#DelhiDogWalk</span><span class="trend-count">1.8k posts</span></div>
+      <div class="trend-item"><span class="trend-tag">#AdoptDontShop</span><span class="trend-count">1.2k posts</span></div>
+      <div class="trend-item"><span class="trend-tag">#VaccinationDrive</span><span class="trend-count">986 posts</span></div>
+      <div class="trend-item"><span class="trend-tag">#PawBookIndia</span><span class="trend-count">754 posts</span></div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- Groups -->
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">👥 Groups You May Like <a onclick="goTo('03_groups.html')">See all</a></div>
+        <div class="group-card">
+          <div class="group-av" style="padding:0;overflow:hidden"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=80&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+          <div style="flex:1"><div class="group-name">Delhi Dog Parents</div><div class="group-meta">12.4K members</div></div>
+          <button class="btn btn-gray btn-sm">Join</button>
+        </div>
+        <div class="group-card">
+          <div class="group-av" style="padding:0;overflow:hidden"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+          <div style="flex:1"><div class="group-name">Indian Cat Lovers</div><div class="group-meta">8.9K members</div></div>
+          <button class="btn btn-gray btn-sm">Join</button>
+        </div>
+        <div class="group-card">
+          <div class="group-av" style="padding:0;overflow:hidden"><img src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=80&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+          <div style="flex:1"><div class="group-name">Pug Lovers India</div><div class="group-meta">4.2K members</div></div>
+          <button class="btn btn-gray btn-sm">Join</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Create Post Modal -->
+<div class="modal-overlay" id="post-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Create Post</div>
+      <button class="modal-close" onclick="closePostModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:42px;height:42px;border-radius:50%;overflow:hidden;border:2px solid var(--blue)">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:700" id="modal-name">You</div>
+          <select id="post-visibility" style="border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:12px;font-family:'Poppins',sans-serif">
+            <option value="public">🌍 Public</option>
+            <option value="followers">👥 Friends</option>
+            <option value="private">🔒 Only me</option>
+          </select>
+        </div>
+      </div>
+      <div id="post-err" style="background:#fee2e2;color:var(--red);padding:10px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:10px;display:none"></div>
+      <textarea id="post-body" style="width:100%;min-height:120px;border:none;font-size:16px;font-family:'Poppins',sans-serif;outline:none;resize:none;color:var(--text)" placeholder="What's on your mind? Share a pet moment 🐾"></textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+        <span onclick="toggleTag(this,'PetLife')" style="background:#f0f2f5;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">#PetLife</span>
+        <span onclick="toggleTag(this,'DogMom')" style="background:#f0f2f5;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">#DogMom</span>
+        <span onclick="toggleTag(this,'CatLife')" style="background:#f0f2f5;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">#CatLife</span>
+        <span onclick="toggleTag(this,'AdoptDontShop')" style="background:#f0f2f5;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">#AdoptDontShop</span>
+      </div>
+      <div class="divider"></div>
+      <button class="btn btn-blue btn-full btn-lg" id="post-submit" onclick="submitPost()" style="margin-top:6px">Post</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap"></div>
+<script src="api.js"></script>
+<script>
+if (!Auth.isLoggedIn()) return;
+const user=Auth.getUser();
+let myPets=[],selTags=[];
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  if(user){
+    document.getElementById('nav-av').textContent=(user.full_name||user.username||'A')[0].toUpperCase();
+    document.getElementById('sidebar-name').textContent=user.full_name||user.username;
+    document.getElementById('sidebar-sub').textContent='@'+(user.username||'');
+    document.getElementById('modal-name').textContent=user.full_name||user.username;
+  }
+  await Promise.all([loadProfile(),loadFeed(),loadMyPets()]);
+});
+
+async function loadProfile(){
+  try{
+    const r=await AuthAPI.me();const u=r?.data;if(!u)return;
+    document.getElementById('s-friends').textContent=fmt(u.follower_count||0);
+    document.getElementById('s-pets').textContent=fmt(u.pet_count||0);
+    document.getElementById('s-posts').textContent=fmt(u.post_count||0);
+  }catch{}
+}
+
+async function loadFeed(){
+  const feed=document.getElementById('feed');
+  try{
+    const r=await PostAPI.feed(1,15);const posts=r?.data||[];
+    if(!posts.length){
+      feed.innerHTML=`<div class="card" style="text-align:center;padding:40px">
+        <img src="https://images.unsplash.com/photo-1444212477490-ca407925329e?w=400&q=80" style="width:200px;height:160px;object-fit:cover;border-radius:12px;margin-bottom:16px">
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px">No posts yet!</div>
+        <div style="color:var(--muted);margin-bottom:16px">Be the first — share what your pet is up to!</div>
+        <button class="btn btn-blue" onclick="openPostModal()">Create Post</button>
+      </div>`;return;
+    }
+    // Assign real images to posts based on index
+    const petImgs=[
+      'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=80',
+      'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=80',
+      'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=80',
+      'https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=800&q=80',
+      'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&q=80',
+      'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80',
+      'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=800&q=80',
+      'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=800&q=80',
+    ];
+    feed.innerHTML=posts.map((p,i)=>`
+    <div class="card" id="post-${p.post_id}">
+      <div class="post-header">
+        <div class="post-av" style="padding:0;overflow:hidden">
+          <img src="${petImgs[i%petImgs.length]}" style="width:42px;height:42px;object-fit:cover;border-radius:50%" onerror="this.parentElement.innerHTML='🐾'">
+        </div>
+        <div>
+          <div class="post-name">${p.pet_name||p.author_name||'PawBook User'}</div>
+          <div class="post-sub">${p.location_name?'📍 '+p.location_name+' · ':''}${formatDate(p.created_at)} · <i class="ti ti-world" style="font-size:12px"></i></div>
+        </div>
+        <button class="post-more" onclick="pmenu('${p.post_id}','${p.author_id}')"><i class="ti ti-dots"></i></button>
+      </div>
+      ${p.body?`<div class="post-text">${p.body}</div>`:''}
+      ${(p.hashtags||[]).length?`<div class="post-tags">${(p.hashtags||[]).map(h=>`<span class="post-tag">#${h}</span>`).join('')}</div>`:''}
+      <div class="post-img-wrap">
+        <img src="${petImgs[i%petImgs.length]}" alt="Pet post" style="width:100%;max-height:420px;object-fit:cover">
+      </div>
+      <div class="post-stats">
+        <span>❤️🐾😍 ${fmt(p.reaction_count||0)} reactions</span>
+        <div style="display:flex;gap:14px"><span style="cursor:pointer">${fmt(p.comment_count||0)} comments</span><span>${fmt(p.share_count||0)} shares</span></div>
+      </div>
+      <div class="post-actions">
+        <button class="post-action" id="r-${p.post_id}" onclick="doReact('${p.post_id}')"><i class="ti ti-heart"></i> Like</button>
+        <button class="post-action" onclick="doComment('${p.post_id}')"><i class="ti ti-message-circle"></i> Comment</button>
+        <button class="post-action" onclick="doShare('${p.post_id}')"><i class="ti ti-share"></i> Share</button>
+        <button class="post-action" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Ask Vet</button>
+      </div>
+    </div>`).join('');
+  }catch(e){
+    feed.innerHTML=`<div class="card" style="text-align:center;padding:30px">
+      <div style="font-size:36px;margin-bottom:8px">⚠️</div>
+      <div style="color:var(--red);font-weight:700;margin-bottom:8px">${e.message}</div>
+      <button class="btn btn-blue btn-sm" onclick="loadFeed()">Retry</button>
+    </div>`;
+  }
+}
+
+async function doReact(id){const b=document.getElementById('r-'+id);try{const r=await PostAPI.react(id,'love');const v=r?.data?.reacted;b.className='post-action'+(v?' liked':'');b.innerHTML=`<i class="ti ti-heart"></i> ${v?'Loved':'Like'}`;toast(v?'❤️ Loved!':'Removed','success',1500);}catch(e){toast(e.message,'error');}}
+async function doComment(id){const b=prompt('Write a comment:');if(!b?.trim())return;try{await PostAPI.addComment(id,b.trim());toast('Comment posted!','success');loadFeed();}catch(e){toast(e.message,'error');}}
+function doShare(id){navigator.clipboard?.writeText(location.href+'#post-'+id).then(()=>toast('Link copied!','success'));}
+function pmenu(id,aid){if(aid===user?.user_id&&confirm('Delete post?')){PostAPI.delete(id).then(()=>{toast('Deleted','success');loadFeed();}).catch(e=>toast(e.message,'error'));}}
+
+async function loadMyPets(){
+  try{
+    const r=await PetAPI.mine();myPets=r?.data||[];
+    if(myPets.length){
+      const p=myPets[0];
+      const dogImgs={dog:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',cat:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80',bird:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=300&q=80',rabbit:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&q=80'};
+      document.getElementById('pet-story-img').src=dogImgs[p.species?.toLowerCase()]||dogImgs.dog;
+      document.getElementById('pet-story-name').textContent=p.name;
+      document.getElementById('pet-story').style.display='block';
+    }
+  }catch{}
+}
+
+function openPostModal(){document.getElementById('post-modal').classList.add('open');}
+function closePostModal(){document.getElementById('post-modal').classList.remove('open');}
+document.getElementById('post-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closePostModal();});
+
+let selTags2=[];
+function toggleTag(el,tag){
+  if(selTags2.includes(tag)){selTags2=selTags2.filter(t=>t!==tag);el.style.background='#f0f2f5';el.style.color='var(--muted)';}
+  else{selTags2.push(tag);el.style.background='var(--blue)';el.style.color='#fff';}
+}
+async function submitPost(){
+  const body=document.getElementById('post-body').value.trim();
+  const vis=document.getElementById('post-visibility').value;
+  const err=document.getElementById('post-err');const btn=document.getElementById('post-submit');
+  err.style.display='none';
+  if(!body){err.textContent='Please write something!';err.style.display='block';return;}
+  setLoading(btn,true);
+  try{await PostAPI.create({body,visibility:vis,hashtags:selTags2,pet_id:myPets[0]?.pet_id||null});closePostModal();document.getElementById('post-body').value='';selTags2=[];toast('Posted! 🐾','success');await loadFeed();}
+  catch(e){err.textContent=e.message;err.style.display='block';}
+  finally{setLoading(btn,false,'Post');}
+}
+function renderPost(p){
+  var img = p.img ? '<div style="width:100%;max-height:420px;overflow:hidden"><img src="'+p.img+'" style="width:100%;object-fit:cover;max-height:420px;display:block"></div>' : '';
+  var badge = p.verified ? '<i class="ti ti-rosette-discount-check" style="color:#1877F2;font-size:13px;margin-left:4px"></i>' : '';
+  return '<div class="card post" style="margin-bottom:12px">'+
+    '<div class="post-header" style="padding:12px 14px;display:flex;align-items:center;gap:10px">'+
+      '<div style="width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0"><img src="'+p.av+'" style="width:100%;height:100%;object-fit:cover"></div>'+
+      '<div style="flex:1"><div style="font-size:14px;font-weight:700">'+p.user+badge+'</div><div style="font-size:12px;color:#65676b">'+p.time+' · 🌍</div></div>'+
+      '<button style="background:none;border:none;cursor:pointer;font-size:20px;color:#65676b"><i class="ti ti-dots"></i></button>'+
+    '</div>'+
+    (p.text ? '<div style="padding:0 14px 10px;font-size:14px;line-height:1.65;color:#050505">'+p.text+'</div>' : '')+
+    img+
+    '<div style="padding:8px 14px;font-size:13px;color:#65676b;border-top:1px solid #e4e6eb;border-bottom:1px solid #e4e6eb;display:flex;justify-content:space-between">'+
+      '<span>👍 '+p.likes+' Likes</span><span>'+p.comments+' Comments · '+p.shares+' Shares</span>'+
+    '</div>'+
+    '<div style="display:flex;padding:4px 8px">'+
+      '<button onclick="var i=this.querySelector(\'i\');var liked=i.className.includes(\'filled\');i.className=liked?\'ti ti-thumb-up\':\'ti ti-thumb-up-filled\';this.style.color=liked?\'\':\' #1877F2\'" style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px"><i class="ti ti-thumb-up"></i> Like</button>'+
+      '<button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px"><i class="ti ti-message-circle"></i> Comment</button>'+
+      '<button style="flex:1;height:38px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:700;color:#65676b;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:8px"><i class="ti ti-share"></i> Share</button>'+
+    '</div>'+
+  '</div>';
+}
+</script>
+</body>
+</html>

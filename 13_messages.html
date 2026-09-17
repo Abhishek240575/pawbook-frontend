@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PawBook — Messages</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+.msg-layout{max-width:1100px;margin:16px auto;padding:0 16px;display:grid;grid-template-columns:340px 1fr;gap:0;height:calc(100vh - 88px)}
+.msg-list{border-right:1px solid var(--border);background:#fff;border-radius:var(--radius-md) 0 0 var(--radius-md);overflow:hidden;display:flex;flex-direction:column}
+.msg-list-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.msg-search{display:flex;align-items:center;gap:8px;background:#f0f2f5;border-radius:20px;padding:8px 14px;margin:10px 16px}
+.msg-search input{border:none;outline:none;background:transparent;font-size:14px;font-family:'Poppins',sans-serif;flex:1}
+.msg-item{display:flex;gap:12px;padding:12px 16px;cursor:pointer;transition:background 0.12s;border-bottom:1px solid var(--border);align-items:center}
+.msg-item:hover,.msg-item.active{background:#e7f3ff}
+.msg-av{width:50px;height:50px;border-radius:50%;overflow:hidden;flex-shrink:0;position:relative}
+.msg-av img{width:100%;height:100%;object-fit:cover}
+.msg-online{position:absolute;bottom:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#31a24c;border:2px solid #fff}
+.msg-name{font-size:14px;font-weight:700;color:var(--text)}
+.msg-preview{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.msg-time{font-size:11px;color:var(--muted);margin-left:auto;flex-shrink:0}
+.msg-badge{background:var(--blue);color:#fff;font-size:11px;font-weight:800;border-radius:10px;padding:1px 7px;margin-left:auto}
+/* Chat window */
+.chat-window{background:#f0f2f5;display:flex;flex-direction:column;border-radius:0 var(--radius-md) var(--radius-md) 0;overflow:hidden;border:1px solid var(--border);border-left:none}
+.chat-header{background:#fff;padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.chat-av{width:44px;height:44px;border-radius:50%;overflow:hidden}
+.chat-av img{width:100%;height:100%;object-fit:cover}
+.chat-name{font-size:15px;font-weight:800}
+.chat-status{font-size:12px;color:#31a24c;font-weight:600}
+.chat-actions{margin-left:auto;display:flex;gap:8px}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg-bubble-wrap{display:flex;gap:8px;align-items:flex-end}
+.msg-bubble-wrap.mine{flex-direction:row-reverse}
+.bubble-av{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.bubble-av img{width:100%;height:100%;object-fit:cover}
+.bubble{max-width:65%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5}
+.bubble.theirs{background:#fff;color:var(--text);border-radius:18px 18px 18px 4px;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.bubble.mine{background:var(--blue);color:#fff;border-radius:18px 18px 4px 18px}
+.bubble-time{font-size:11px;color:var(--muted);margin-top:3px;text-align:right}
+.chat-footer{background:#fff;padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.chat-input{flex:1;border:none;outline:none;font-size:14px;font-family:'Poppins',sans-serif;padding:8px 16px;background:#f0f2f5;border-radius:20px}
+.send-btn{width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px}
+
+/* ── MOBILE MESSAGES ── */
+@media(max-width:768px){
+  .topnav-search{display:none}
+  .topnav{padding:0 10px;gap:6px}
+  .msg-layout{
+    grid-template-columns:1fr!important;
+    height:calc(100vh - 52px)!important;
+    margin:0!important;padding:0!important;
+    padding-top:52px!important;
+  }
+  .msg-list{
+    display:none!important;
+    position:fixed!important;top:52px!important;left:0!important;right:0!important;
+    z-index:300!important;height:calc(100vh - 52px)!important;
+    border-radius:0!important;
+  }
+  .msg-list.mobile-open{display:flex!important}
+  .chat-window{
+    border-radius:0!important;border:none!important;
+    height:calc(100vh - 52px)!important;
+  }
+  .chat-header{padding:10px 12px}
+  .chat-name{font-size:14px}
+  .bubble{max-width:82%;font-size:13px;padding:8px 12px}
+  .chat-body{padding:10px 8px;gap:6px}
+  .chat-footer{padding:8px 10px;gap:6px}
+  .cinput{font-size:14px;padding:8px 12px}
+  .ibtn{width:34px;height:34px;font-size:16px}
+  .sbtn{width:38px;height:38px;font-size:16px}
+  .epicker{width:94vw!important;left:3vw!important}
+  .call-overlay{padding:50px 16px 40px}
+  .cbig{width:100px;height:100px}
+  .cself{width:80px;height:110px;top:50px;right:14px}
+  /* Back button to show conversation list on mobile */
+  .chat-header::before{
+    content:'\276E';
+    font-size:20px;color:#64748b;cursor:pointer;margin-right:8px;
+    display:inline-block;
+  }
+}
+@media(max-width:390px){
+  .bubble{max-width:88%}
+  .chat-actions{gap:4px}
+  .chat-actions .nav-icon-btn{width:30px;height:30px;font-size:14px}
+}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search messages…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-message-circle"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<div class="msg-layout">
+  <!-- Conversations list -->
+  <div class="msg-list">
+    <div class="msg-list-header">
+      <div style="font-size:18px;font-weight:800">Messages</div>
+      <button class="btn btn-blue btn-sm"><i class="ti ti-edit"></i> New</button>
+    </div>
+    <div class="msg-search"><i class="ti ti-search" style="color:var(--muted)"></i><input placeholder="Search Messenger"></div>
+    <div style="overflow-y:auto;flex:1">
+      <div class="msg-item active">
+        <div class="msg-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80"><div class="msg-online"></div></div>
+        <div style="flex:1;min-width:0"><div class="msg-name">Dr. Priya Sharma</div><div class="msg-preview">Your appointment is confirmed for May 20</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="msg-time">2m</div><div class="msg-badge">2</div></div>
+      </div>
+      <div class="msg-item">
+        <div class="msg-av"><img src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=80&q=80"><div class="msg-online"></div></div>
+        <div style="flex:1;min-width:0"><div class="msg-name">Rahul & Bruno</div><div class="msg-preview">Hey! Loved Bruno's park photos 😍</div></div>
+        <div class="msg-time">15m</div>
+      </div>
+      <div class="msg-item">
+        <div class="msg-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80"></div>
+        <div style="flex:1;min-width:0"><div class="msg-name">Dr. Arjun Mehta</div><div class="msg-preview">Please ensure Bruno stays hydrated</div></div>
+        <div class="msg-time">1h</div>
+      </div>
+      <div class="msg-item">
+        <div class="msg-av"><img src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=80&q=80"></div>
+        <div style="flex:1;min-width:0"><div class="msg-name">Hopeful Tails Shelter</div><div class="msg-preview">Thank you for your donation! 🙏</div></div>
+        <div class="msg-time">3h</div>
+      </div>
+      <div class="msg-item">
+        <div class="msg-av"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=80&q=80"><div class="msg-online"></div></div>
+        <div style="flex:1;min-width:0"><div class="msg-name">Priya M. & Luna</div><div class="msg-preview">Are you coming to the dog park meetup?</div></div>
+        <div class="msg-time">5h</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat window -->
+  <div class="chat-window">
+    <div class="chat-header">
+      <div class="chat-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80"></div>
+      <div>
+        <div class="chat-name">Dr. Priya Sharma</div>
+        <div class="chat-status">● Active now · Veterinary Clinic</div>
+      </div>
+      <div class="chat-actions">
+        <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-phone"></i></button>
+        <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-video"></i></button>
+        <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-info-circle"></i></button>
+      </div>
+    </div>
+
+    <div class="chat-body">
+      <div class="msg-bubble-wrap">
+        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
+        <div><div class="bubble theirs">Hello! I've reviewed Bruno's vaccination records. He's due for his Leptospirosis booster next week.</div><div class="bubble-time">10:30 AM</div></div>
+      </div>
+      <div class="msg-bubble-wrap mine">
+        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&q=80"></div>
+        <div><div class="bubble mine">Thank you Doctor! Should I book an appointment for May 20?</div><div class="bubble-time">10:32 AM</div></div>
+      </div>
+      <div class="msg-bubble-wrap">
+        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
+        <div><div class="bubble theirs">Yes, May 20 at 4 PM works perfectly. I'll confirm the appointment right away.</div><div class="bubble-time">10:35 AM</div></div>
+      </div>
+      <div class="msg-bubble-wrap">
+        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
+        <div><div class="bubble theirs">Also, please make sure Bruno fasts for 2 hours before the appointment. 🐾</div><div class="bubble-time">10:35 AM</div></div>
+      </div>
+      <div class="msg-bubble-wrap mine">
+        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&q=80"></div>
+        <div><div class="bubble mine">Your appointment is confirmed for May 20 ✅</div><div class="bubble-time">10:38 AM</div></div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--muted);padding:4px 0">Today, 2:15 PM</div>
+      <div class="msg-bubble-wrap">
+        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
+        <div><div class="bubble theirs">Your appointment is confirmed for May 20 at 4:00 PM. See you then! 😊</div><div class="bubble-time">2:15 PM</div></div>
+      </div>
+    </div>
+
+    <div class="chat-footer">
+      <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-photo"></i></button>
+      <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-mood-smile"></i></button>
+      <input class="chat-input" placeholder="Aa — Type a message…">
+      <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-microphone"></i></button>
+      <button class="send-btn"><i class="ti ti-send"></i></button>
+    </div>
+  </div>
+</div>
+<script src="api.js"></script>
+<script>
+// Mobile: tap header area to go back to conversation list
+document.addEventListener('DOMContentLoaded', () => {
+  const chatHeader = document.querySelector('.chat-header');
+  if(chatHeader && window.innerWidth <= 768) {
+    chatHeader.style.cursor = 'pointer';
+    chatHeader.addEventListener('click', e => {
+      if(e.target.closest('.chat-actions')) return;
+      const msgList = document.querySelector('.msg-list');
+      if(msgList) {
+        msgList.classList.toggle('mobile-open');
+        if(msgList.classList.contains('mobile-open')) {
+          document.querySelector('.chat-window').style.display = 'none';
+        } else {
+          document.querySelector('.chat-window').style.display = 'flex';
+        }
+      }
+    });
+    // Selecting a conversation hides list on mobile
+    document.querySelectorAll('.msg-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelector('.msg-list')?.classList.remove('mobile-open');
+        document.querySelector('.chat-window').style.display = 'flex';
+      });
+    });
+  }
+});
+
+</script>
+<script>
+function goTo(p){window.location.href=p;}
+function newMessage(){toast('💬 New message composer coming soon','info');}
+function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+</script>
+</body></html>

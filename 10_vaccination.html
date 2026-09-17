@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Vaccination Diary</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size:14px}
+
+/* ── TOPNAV ───────────────────────────────────────────────── */
+.topnav{position:sticky;top:0;z-index:200;height:56px;background:#1a56db;display:flex;align-items:center;padding:0 16px;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.topnav-logo{display:flex;align-items:center;gap:8px;color:#fff;font-size:20px;font-weight:800;text-decoration:none;flex-shrink:0}
+.logo-icon{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px}
+.topnav-search{flex:1;max-width:280px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);border-radius:20px;padding:6px 14px}
+.topnav-search input{background:transparent;border:none;outline:none;color:#fff;font-size:13px;font-family:'Poppins',sans-serif;width:100%}
+.topnav-search input::placeholder{color:rgba(255,255,255,0.65)}
+.topnav-search i{color:rgba(255,255,255,0.65);font-size:16px}
+.topnav-tabs{flex:1;display:flex;justify-content:center;gap:2px}
+.topnav-tab{width:100px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);cursor:pointer;font-size:22px;border:none;background:transparent}
+.topnav-tab:hover{background:rgba(255,255,255,0.1);color:#fff}
+.topnav-tab.active{color:#fff;border-bottom:3px solid #fff}
+.topnav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-icon-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:18px}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:#fff;color:#1a56db;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.vacc-hero{
+  position:relative;overflow:hidden;height:180px;
+  background:linear-gradient(135deg,#1a56db 0%,#0f2057 60%,#1a56db 100%);
+}
+.vacc-hero-img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}
+.vacc-hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right,rgba(26,86,219,0.88) 40%,rgba(26,86,219,0.3) 100%);
+  display:flex;flex-direction:column;justify-content:center;padding:28px 36px;
+}
+.vacc-hero-label{font-size:13px;font-weight:700;color:rgba(255,255,255,0.8);margin-bottom:6px}
+.vacc-hero-title{font-size:34px;font-weight:900;color:#fff;margin-bottom:4px}
+.vacc-hero-sub{font-size:14px;color:rgba(255,255,255,0.88)}
+
+/* ── PET TABS ─────────────────────────────────────────────── */
+.pet-tabs-bar{background:#fff;border-bottom:2px solid #e4e6eb;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.pet-tabs-bar::-webkit-scrollbar{display:none}
+.pet-tab{display:flex;align-items:center;gap:8px;padding:11px 20px;font-size:14px;font-weight:700;color:#65676b;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;border:none;background:transparent;font-family:'Poppins',sans-serif;transition:all 0.15s}
+.pet-tab.active{border-bottom-color:#1a56db;color:#1a56db;background:#f0f4ff}
+.pet-tab:hover:not(.active){color:#1a56db;background:#f0f2f5}
+.pet-tab-icon{font-size:22px}
+.pet-tab-name{font-size:14px;font-weight:700}
+
+/* ── SUBTABS ──────────────────────────────────────────────── */
+.subtabs-bar{background:#fff;display:flex;border-bottom:2px solid #e4e6eb;overflow-x:auto;scrollbar-width:none}
+.subtabs-bar::-webkit-scrollbar{display:none}
+.stab{padding:12px 22px;font-size:14px;font-weight:700;color:#65676b;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;border:none;background:transparent;font-family:'Poppins',sans-serif}
+.stab.active{color:#1a56db;border-bottom-color:#1a56db}
+.stab:hover:not(.active){color:#1a56db;background:#f0f2f5}
+
+/* ── PAGE LAYOUT ─────────────────────────────────────────── */
+.vacc-page{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 280px;gap:16px;padding:16px;align-items:start}
+
+/* ── CARD BASE ────────────────────────────────────────────── */
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;overflow:hidden;margin-bottom:14px}
+.card-body{padding:16px}
+
+/* ── NEXT DUE CARD ────────────────────────────────────────── */
+.next-due{
+  background:#fff;border-radius:14px;padding:16px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;margin-bottom:14px;
+}
+.nd-left{display:flex;align-items:center;gap:14px}
+.nd-icon{width:56px;height:56px;border-radius:14px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.nd-title{font-size:15px;font-weight:800;color:#1a56db;margin-bottom:4px}
+.nd-name{font-size:14px;font-weight:700;color:#1a1a2e}
+.nd-due{font-size:12px;color:#65676b;margin-top:2px}
+.book-btn{padding:12px 20px;border-radius:10px;background:#1a56db;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;white-space:nowrap}
+
+/* ── TIMELINE HEADER ──────────────────────────────────────── */
+.timeline-head{background:linear-gradient(135deg,#1a56db,#2563eb);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.timeline-head-title{font-size:15px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.add-rec-btn{padding:8px 16px;border-radius:8px;background:#fff;color:#1a56db;font-size:13px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;gap:5px}
+
+/* ── TIMELINE GRID ────────────────────────────────────────── */
+.tl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:#f8f9fa}
+.tl-card{background:#fff;border:1px solid #e4e6eb;cursor:pointer;transition:box-shadow 0.15s}
+.tl-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1)}
+.tl-img{height:140px;overflow:hidden;position:relative}
+.tl-img img{width:100%;height:100%;object-fit:cover}
+.tl-img-plus{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#1a56db;box-shadow:0 2px 6px rgba(0,0,0,0.2)}
+.tl-body{padding:12px}
+.tl-name{font-size:13px;font-weight:800;color:#1a1a2e;margin-bottom:3px}
+.tl-date{font-size:11px;color:#65676b;margin-bottom:8px}
+.tl-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700}
+.badge-green{background:#dcfce7;color:#16a34a}
+.badge-amber{background:#fef3c7;color:#d97706}
+.badge-blue{background:#dbeafe;color:#1a56db}
+.tl-btn{width:100%;padding:8px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;margin-top:8px;font-family:'Poppins',sans-serif}
+.tl-btn-blue{background:#1a56db;color:#fff}
+.tl-btn-green{background:#16a34a;color:#fff}
+
+/* ── HISTORY SECTION ──────────────────────────────────────── */
+.month-head{background:#e7ebf0;padding:11px 16px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:#1a1a2e}
+.hist-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
+.hist-item:hover{background:#f8f9ff}
+.hist-item:last-child{border-bottom:none}
+.hist-av{width:56px;height:56px;border-radius:12px;overflow:hidden;flex-shrink:0}
+.hist-av img{width:100%;height:100%;object-fit:cover}
+.hist-name{font-size:14px;font-weight:800;color:#1a1a2e;display:flex;align-items:center;gap:6px}
+.hist-date{font-size:12px;color:#65676b;margin:2px 0}
+.hist-badges{display:flex;flex-direction:column;gap:4px;margin-left:auto;align-items:flex-end;flex-shrink:0}
+.hbadge{padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;text-align:center;min-width:100px}
+.hb-green{background:#16a34a;color:#fff}
+.hb-blue{background:#1a56db;color:#fff}
+.hb-amber{background:#d97706;color:#fff}
+
+/* ── RIGHT SIDEBAR ────────────────────────────────────────── */
+.sidebar{position:sticky;top:72px}
+
+/* Vaccine info */
+.vi-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #e4e6eb;cursor:pointer}
+.vi-item:last-child{border-bottom:none}
+.vi-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.vi-name{font-size:13px;font-weight:700;color:#1a56db}
+.vi-sub{font-size:11px;color:#65676b}
+.vi-arrow{margin-left:auto;color:#65676b;font-size:18px}
+
+/* Vet appointment */
+.appt-box{background:#f8f9fa;border-radius:10px;padding:14px;margin-bottom:12px}
+.appt-label{font-size:12px;color:#65676b;font-weight:600;margin-bottom:4px}
+.appt-vet{font-size:15px;font-weight:800;color:#1a56db}
+.appt-time{font-size:13px;font-weight:600;color:#1a1a2e;margin:2px 0}
+.appt-note{font-size:12px;color:#65676b}
+.appt-av{width:44px;height:44px;border-radius:50%;overflow:hidden;float:left;margin-right:10px}
+.appt-av img{width:100%;height:100%;object-fit:cover;object-position:top}
+.reschedule-btn{width:100%;padding:10px;border-radius:8px;background:#1a56db;color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* Health reminders */
+.hr-box{border-radius:10px;padding:13px;margin-bottom:8px}
+.hr-title{font-size:13px;font-weight:800}
+.hr-sub{font-size:12px;color:#65676b;margin-top:3px}
+.set-reminder-btn{width:100%;padding:10px;border-radius:8px;background:#1a56db;color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;margin-top:8px}
+
+/* Medicine image */
+.medicine-img{width:100%;border-radius:10px;overflow:hidden;margin-top:10px}
+.medicine-img img{width:100%;height:80px;object-fit:cover}
+</style>
+</head>
+<body>
+
+<!-- TOPNAV -->
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search vaccines…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab" onclick="location.href='09_marketplace.html'"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-vaccine"></i></button>
+    <button class="topnav-tab" onclick="location.href='04_adoption.html'"><i class="ti ti-heart"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" onclick="location.href='08_pet_profile.html'">A</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="vacc-hero">
+  <img class="vacc-hero-img" src="https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=1400&q=85" alt="Vaccination Diary">
+  <div class="vacc-hero-overlay">
+    <div class="vacc-hero-label">🐾 Health Tracker</div>
+    <div class="vacc-hero-title">Vaccination Diary</div>
+    <div class="vacc-hero-sub">Track &amp; Manage Your Pet's Vaccines</div>
+  </div>
+</div>
+
+<!-- PET TABS -->
+<div class="pet-tabs-bar">
+  <button class="pet-tab active" onclick="setPetTab(this)">
+    <span class="pet-tab-icon">🐕</span><span class="pet-tab-name">Haale</span>
+    <i class="ti ti-chevron-down" style="font-size:14px;color:#1a56db"></i>
+  </button>
+  <button class="pet-tab" onclick="setPetTab(this)">
+    <span class="pet-tab-icon">🐈</span><span class="pet-tab-name">Spemar</span>
+  </button>
+  <button class="pet-tab" onclick="setPetTab(this)">
+    <span class="pet-tab-icon" style="font-size:18px">📋</span><span class="pet-tab-name">History</span>
+  </button>
+  <button class="pet-tab" onclick="setPetTab(this)">
+    <span class="pet-tab-icon" style="font-size:18px">🔔</span><span class="pet-tab-name">Reminders</span>
+  </button>
+</div>
+
+<!-- SUBTABS -->
+<div class="subtabs-bar">
+  <button class="stab active" onclick="setStab(this)">Vaccinating Schedule</button>
+  <button class="stab" onclick="setStab(this)">Upcoming</button>
+  <button class="stab" onclick="setStab(this)">History</button>
+  <button class="stab" onclick="setStab(this)">Reminders</button>
+</div>
+
+<!-- MAIN PAGE -->
+<div class="vacc-page">
+  <main>
+    <!-- Next Due Vaccine -->
+    <div class="next-due">
+      <div class="nd-left">
+        <div class="nd-icon">🐕</div>
+        <div>
+          <div class="nd-title">Next Due Vaccine 🔔</div>
+          <div class="nd-name">Leptospirosis Vaccine 🚨</div>
+          <div class="nd-due">Due: May 20, 2024</div>
+        </div>
+      </div>
+      <button class="book-btn" onclick="location.href='11_vet_booking.html'">Book Vet Appointment</button>
+    </div>
+
+    <!-- Vaccination Timeline -->
+    <div class="card" style="overflow:hidden">
+      <div class="timeline-head">
+        <div class="timeline-head-title"><i class="ti ti-calendar" style="font-size:18px"></i> Vaccination Timeline</div>
+        <button class="add-rec-btn" onclick="openAddVaccine()"><i class="ti ti-plus" style="font-size:14px"></i> Add Record</button>
+      </div>
+      <div class="tl-grid">
+        <!-- Rabies -->
+        <div class="tl-card">
+          <div class="tl-img">
+            <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80" alt="Dog">
+            <div class="tl-img-plus">+</div>
+          </div>
+          <div class="tl-body">
+            <div class="tl-name">Mun. - May 20, 2024</div>
+            <div class="tl-date">Reminder Gstet</div>
+            <span class="tl-badge badge-green">✓ Confirmed</span>
+            <button class="tl-btn tl-btn-blue" onclick="openAddVaccine()">Update Record</button>
+          </div>
+        </div>
+        <!-- Leptospirosis -->
+        <div class="tl-card">
+          <div class="tl-img">
+            <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80" alt="Cat">
+            <div class="tl-img-plus">+</div>
+          </div>
+          <div class="tl-body">
+            <div class="tl-name">Delay: S bam: 24 Guna</div>
+            <div class="tl-date">Reminder Sstet</div>
+            <span class="tl-badge badge-amber">Delayed</span>
+            <button class="tl-btn tl-btn-green" onclick="toast(\'🔔 Reminder already set!\',\'info\')">🔔 Reminder Set</button>
+          </div>
+        </div>
+        <!-- DHPP -->
+        <div class="tl-card">
+          <div class="tl-img">
+            <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80" alt="Dog">
+            <div class="tl-img-plus">+</div>
+          </div>
+          <div class="tl-body">
+            <div class="tl-name">Girn...: S hav: 30, 2024</div>
+            <div class="tl-date">View Document</div>
+            <span class="tl-badge badge-blue">Certificate</span>
+            <button class="tl-btn tl-btn-blue" onclick="openAddVaccine()">Update Record</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- April 2024 History -->
+    <div class="card">
+      <div class="month-head"><i class="ti ti-calendar" style="font-size:18px"></i> April 2024</div>
+      <div class="hist-item">
+        <div class="hist-av"><img src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&q=80" alt="Dog"></div>
+        <div style="flex:1">
+          <div class="hist-name">Rabies Vaccine <i class="ti ti-circle-check" style="color:#16a34a;font-size:16px"></i></div>
+          <div class="hist-date">April 10, 2024</div>
+        </div>
+        <div class="hist-badges">
+          <div class="hbadge hb-green">✓ Confiticated</div>
+          <div class="hbadge" style="background:transparent;color:#1a56db;font-weight:700;font-size:12px">Completed</div>
+        </div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-av"><img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&q=80" alt="Dog"></div>
+        <div style="flex:1">
+          <div class="hist-name">Distemper Combo <i class="ti ti-circle-check" style="color:#16a34a;font-size:16px"></i></div>
+          <div class="hist-date">February 12, 2024</div>
+        </div>
+        <div class="hist-badges">
+          <div class="hbadge hb-green">✓ Completed</div>
+          <div class="hbadge" style="background:transparent;color:#1a56db;font-weight:700;font-size:12px">Adminstered</div>
+        </div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-av"><img src="https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=100&q=80" alt="Cat"></div>
+        <div style="flex:1">
+          <div class="hist-name">Flea &amp; Tick Prevention</div>
+          <div class="hist-date">February 12, 2024</div>
+        </div>
+        <div class="hist-badges">
+          <div class="hbadge hb-blue">✓ Refittncament</div>
+          <div class="hbadge" style="background:transparent;color:#1a56db;font-weight:700;font-size:12px">Details</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- January 2024 -->
+    <div class="card">
+      <div class="month-head"><i class="ti ti-calendar" style="font-size:18px"></i> January 2024</div>
+      <div class="hist-item">
+        <div class="hist-av"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=100&q=80" alt="Dog"></div>
+        <div style="flex:1">
+          <div class="hist-name">Bordetella Vaccine <i class="ti ti-circle-check" style="color:#16a34a;font-size:16px"></i></div>
+          <div class="hist-date">January 5, 2024</div>
+        </div>
+        <div class="hist-badges">
+          <div class="hbadge hb-green">✓ Completed</div>
+          <div class="hbadge" style="background:transparent;color:#1a56db;font-weight:700;font-size:12px">Completed</div>
+        </div>
+      </div>
+    </div>
+  
+  <!-- UPCOMING SECTION -->
+  <div id="upcoming-section" style="display:none">
+    <div style="background:#fff;border-radius:12px;border:1px solid #e4e6eb;padding:16px;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:800;margin-bottom:14px">📅 Upcoming Vaccinations</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a">
+          <div style="width:42px;height:42px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💉</div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700;color:#1e293b">Leptospirosis Vaccine</div>
+            <div style="font-size:12px;color:#d97706;font-weight:600">🚨 Due: May 20, 2024 (Overdue)</div>
+            <div style="font-size:11px;color:#65676b">Bruno · Annual booster</div>
+          </div>
+          <button onclick="location.href='11_vet_booking.html'" style="height:32px;padding:0 14px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Book Vet</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0">
+          <div style="width:42px;height:42px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💉</div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700;color:#1e293b">DHPP Booster</div>
+            <div style="font-size:12px;color:#16a34a;font-weight:600">📅 Due: August 15, 2024</div>
+            <div style="font-size:11px;color:#65676b">Bruno · Annual booster</div>
+          </div>
+          <button onclick="location.href='11_vet_booking.html'" style="height:32px;padding:0 14px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Book Vet</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0">
+          <div style="width:42px;height:42px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💉</div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700;color:#1e293b">Rabies (Spemar)</div>
+            <div style="font-size:12px;color:#16a34a;font-weight:600">📅 Due: October 10, 2024</div>
+            <div style="font-size:11px;color:#65676b">Spemar · 3-year vaccine</div>
+          </div>
+          <button onclick="location.href='11_vet_booking.html'" style="height:32px;padding:0 14px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Book Vet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY SECTION -->
+  <div id="history-section" style="display:none">
+    <div style="background:#fff;border-radius:12px;border:1px solid #e4e6eb;padding:16px;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:800;margin-bottom:14px">📋 Vaccination History</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid #e4e6eb">
+          <div style="width:36px;height:36px;background:#dcfce7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✅</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Rabies Vaccine</div><div style="font-size:11px;color:#65676b">May 15, 2023 · Dr. Priya Sharma · Bruno</div></div>
+          <span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px">✓ Done</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid #e4e6eb">
+          <div style="width:36px;height:36px;background:#dcfce7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✅</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">DHPP Vaccine</div><div style="font-size:11px;color:#65676b">March 10, 2023 · Dr. Priya Sharma · Bruno</div></div>
+          <span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px">✓ Done</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid #e4e6eb">
+          <div style="width:36px;height:36px;background:#dcfce7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✅</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Bordetella Vaccine</div><div style="font-size:11px;color:#65676b">January 5, 2024 · City Vet Clinic · Bruno</div></div>
+          <span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px">✓ Done</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid #e4e6eb">
+          <div style="width:36px;height:36px;background:#dcfce7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✅</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">FVRCP Vaccine (Spemar)</div><div style="font-size:11px;color:#65676b">October 20, 2023 · Dr. Ananya Rao · Spemar</div></div>
+          <span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px">✓ Done</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REMINDERS SECTION -->
+  <div id="reminders-section" style="display:none">
+    <div style="background:#fff;border-radius:12px;border:1px solid #e4e6eb;padding:16px;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:800;margin-bottom:14px">🔔 Vaccination Reminders</div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="reminders-list">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#fef3c7;border-radius:10px;border:1px solid #fde68a">
+          <div style="font-size:24px">🚨</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;color:#1e293b">Leptospirosis — Bruno</div>
+            <div style="font-size:12px;color:#d97706;font-weight:600">Overdue since May 20, 2024</div>
+          </div>
+          <button onclick="location.href='11_vet_booking.html'" style="height:30px;padding:0 12px;border-radius:999px;border:none;background:#d97706;color:#fff;font-size:11px;font-weight:700;cursor:pointer">Book Now</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe">
+          <div style="font-size:24px">📅</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;color:#1e293b">DHPP Booster — Bruno</div>
+            <div style="font-size:12px;color:#1877F2;font-weight:600">Due: August 15, 2024</div>
+          </div>
+          <button onclick="setVaccReminder && setVaccReminder(this)" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #1877F2;background:#fff;color:#1877F2;font-size:11px;font-weight:700;cursor:pointer">🔔 Remind</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe">
+          <div style="font-size:24px">📅</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;color:#1e293b">Rabies — Spemar</div>
+            <div style="font-size:12px;color:#1877F2;font-weight:600">Due: October 10, 2024</div>
+          </div>
+          <button onclick="setVaccReminder && setVaccReminder(this)" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #1877F2;background:#fff;color:#1877F2;font-size:11px;font-weight:700;cursor:pointer">🔔 Remind</button>
+        </div>
+        <div style="text-align:center;padding:16px 0">
+          <button onclick="openAddVaccine()" style="height:36px;padding:0 20px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#1877F2;font-size:13px;font-weight:700;cursor:pointer">+ Add Custom Reminder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar">
+    <!-- Vaccine Info & Tips -->
+    <div class="card">
+      <div style="padding:14px 16px;border-bottom:1px solid #e4e6eb">
+        <div style="font-size:15px;font-weight:800;color:#d97706;display:flex;align-items:center;gap:6px">🌟 Vaccine Info &amp; Tips</div>
+      </div>
+      <div style="padding:0 16px">
+        <div class="vi-item">
+          <div class="vi-icon" style="background:#fee2e2"><i class="ti ti-virus" style="color:#dc2626;font-size:20px"></i></div>
+          <div><div class="vi-name">Core Vaccines</div><div class="vi-sub">Rabies, Distemper, Parvo</div></div>
+          <i class="ti ti-chevron-right vi-arrow"></i>
+        </div>
+        <div class="vi-item">
+          <div class="vi-icon" style="background:#dbeafe"><i class="ti ti-plus" style="color:#1a56db;font-size:20px"></i></div>
+          <div><div class="vi-name">Booster Reminders</div><div class="vi-sub">Set up booster alerts</div></div>
+          <i class="ti ti-chevron-right vi-arrow"></i>
+        </div>
+        <div class="vi-item">
+          <div class="vi-icon" style="background:#fff3e0"><i class="ti ti-plane" style="color:#d97706;font-size:20px"></i></div>
+          <div><div class="vi-name">Travel Vaccinations</div><div class="vi-sub">Vaccines for safe trips</div></div>
+          <i class="ti ti-chevron-right vi-arrow"></i>
+        </div>
+        <div class="vi-item">
+          <div class="vi-icon" style="background:#dcfce7"><i class="ti ti-file-certificate" style="color:#16a34a;font-size:20px"></i></div>
+          <div><div class="vi-name">Health Certificate</div><div class="vi-sub">Download Vaccine Records</div></div>
+          <i class="ti ti-chevron-right vi-arrow"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vet Appointments -->
+    <div class="card">
+      <div style="padding:14px 16px;border-bottom:1px solid #e4e6eb">
+        <div style="font-size:15px;font-weight:800;color:#d97706;display:flex;align-items:center;gap:6px">🏥 Vet Appointments</div>
+      </div>
+      <div class="card-body">
+        <div class="appt-box">
+          <div class="appt-label">Upcoming Visit:</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+            <div class="appt-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80" alt="Dr. Mehta"></div>
+            <div>
+              <div class="appt-vet">Dr. Mehta</div>
+              <div class="appt-time">May 20, 2024 · 4:00 PM</div>
+            </div>
+          </div>
+        </div>
+        <button class="reschedule-btn" onclick="location.href='11_vet_booking.html'">
+          <i class="ti ti-calendar" style="font-size:16px"></i> Reschedule
+        </button>
+      </div>
+    </div>
+
+    <!-- Health Reminders -->
+    <div class="card">
+      <div style="padding:14px 16px;border-bottom:1px solid #e4e6eb">
+        <div style="font-size:15px;font-weight:800;color:#dc2626;display:flex;align-items:center;gap:6px">📍 Health Reminders</div>
+      </div>
+      <div class="card-body">
+        <div class="hr-box" style="background:#fee2e2">
+          <div class="hr-title" style="color:#dc2626">🐾 Monthly Flea &amp; Tick Treatment Due Soon!</div>
+          <div class="hr-sub">Last done: Feb 12 · Due: May 12</div>
+        </div>
+        <button class="set-reminder-btn" onclick="setVaccReminder(this)">🔔 Set Reminder</button>
+        <!-- Medicine image -->
+        <div class="medicine-img">
+          <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80" alt="Medicine" onerror="this.style.display='none'">
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+function setPetTab(el){
+  document.querySelectorAll('.pet-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  // Update active pet name display
+  const petName = el.querySelector('.pet-tab-name')?.textContent?.trim() || el.textContent?.trim();
+  const petNameEl = document.getElementById('active-pet-name');
+  if(petNameEl) petNameEl.textContent = petName;
+  if(typeof toast==='function') toast('Viewing ' + petName + '\'s records', 'info');
+}
+
+function setStab(el){
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const label = el.textContent.trim().toLowerCase();
+
+  // Get all main sections
+  const nd = document.querySelector('.next-due');
+  const timeline = document.querySelector('.card');
+  const upcoming = document.getElementById('upcoming-section');
+  const history = document.getElementById('history-section');
+  const reminders = document.getElementById('reminders-section');
+
+  // Hide all
+  [nd, timeline, upcoming, history, reminders].forEach(s => { if(s) s.style.display='none'; });
+
+  if(label.includes('schedule') || label.includes('vaccinating')) {
+    if(nd) nd.style.display='';
+    if(timeline) timeline.style.display='';
+  } else if(label.includes('upcoming')) {
+    if(upcoming) upcoming.style.display='';
+    else { if(nd) nd.style.display=''; if(timeline) timeline.style.display=''; }
+  } else if(label.includes('history')) {
+    if(history) history.style.display='';
+    else { if(nd) nd.style.display=''; if(timeline) timeline.style.display=''; }
+  } else if(label.includes('reminder')) {
+    if(reminders) reminders.style.display='';
+    else showRemindersSection();
+  }
+}
+
+function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+</script>
+
+<!-- ADD VACCINE MODAL -->
+<div id="add-vaccine-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:600;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)" onclick="if(event.target===this)closeAddVaccine()">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.18)">
+    <div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0">
+      <div style="font-size:17px;font-weight:800;color:#1e293b">💉 Add Vaccination Record</div>
+      <button onclick="closeAddVaccine()" style="width:32px;height:32px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:17px">✕</button>
+    </div>
+    <div style="padding:18px">
+      <!-- Pet selector -->
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Pet *</label>
+        <select id="av-pet" style="width:100%;height:44px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:'Poppins',sans-serif;background:#fff">
+          <option>Bruno (Labrador)</option>
+          <option>Spemar (Cat)</option>
+          <option>Haale</option>
+        </select>
+      </div>
+      <!-- Vaccine name -->
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Vaccine Name *</label>
+        <select id="av-name" style="width:100%;height:44px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:'Poppins',sans-serif;background:#fff">
+          <option>Rabies</option>
+          <option>DHPP (Distemper, Hepatitis, Parvo, Parainfluenza)</option>
+          <option>Leptospirosis</option>
+          <option>Bordetella (Kennel Cough)</option>
+          <option>Lyme Disease</option>
+          <option>Canine Influenza</option>
+          <option>FVRCP (Cats)</option>
+          <option>FeLV (Cats)</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <!-- Custom vaccine name -->
+      <div style="margin-bottom:12px" id="av-custom-wrap" style="display:none">
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Custom Vaccine Name</label>
+        <input id="av-custom" placeholder="Enter vaccine name" style="width:100%;height:44px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:'Poppins',sans-serif">
+      </div>
+      <!-- Date given -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Date Given *</label>
+          <input type="date" id="av-date" style="width:100%;height:44px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:'Poppins',sans-serif">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Next Due Date</label>
+          <input type="date" id="av-due" style="width:100%;height:44px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:'Poppins',sans-serif">
+        </div>
+      </div>
+      <!-- Vet name -->
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Administered by (Vet Name)</label>
+        <input id="av-vet" placeholder="Dr. Priya Sharma" style="width:100%;height:44px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:'Poppins',sans-serif">
+      </div>
+      <!-- Batch number -->
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Batch / Lot Number</label>
+        <input id="av-batch" placeholder="e.g. BN-2024-0291" style="width:100%;height:44px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:'Poppins',sans-serif">
+      </div>
+      <!-- Notes -->
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Notes / Side effects</label>
+        <textarea id="av-notes" placeholder="Any reactions, clinic name, notes…" rows="2" style="width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 14px;font-size:14px;outline:none;resize:none;font-family:'Poppins',sans-serif"></textarea>
+      </div>
+      <!-- Set reminder -->
+      <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#eff6ff;border-radius:10px;margin-bottom:16px">
+        <input type="checkbox" id="av-reminder" checked style="width:16px;height:16px;accent-color:#1877F2">
+        <label for="av-reminder" style="font-size:13px;font-weight:600;cursor:pointer;color:#1e293b">🔔 Set reminder for next due date</label>
+      </div>
+      <!-- Submit -->
+      <button onclick="saveVaccineRecord()" style="width:100%;height:46px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        💉 Save Vaccination Record
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function goTo(p){window.location.href=p;}
+
+function openAddVaccine(){
+  // Set today's date as default
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('av-date').value = today;
+  // Set next due 1 year from now as default
+  var nextYear = new Date();
+  nextYear.setFullYear(nextYear.getFullYear()+1);
+  document.getElementById('av-due').value = nextYear.toISOString().split('T')[0];
+  document.getElementById('add-vaccine-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function closeAddVaccine(){
+  document.getElementById('add-vaccine-modal').style.display='none';
+  document.body.style.overflow='';
+}
+
+function saveVaccineRecord(){
+  var petName = document.getElementById('av-pet').value;
+  var vaccineName = document.getElementById('av-name').value;
+  var dateGiven = document.getElementById('av-date').value;
+  var duoDate = document.getElementById('av-due').value;
+  var vetName = document.getElementById('av-vet').value || 'Unknown Vet';
+  var reminder = document.getElementById('av-reminder').checked;
+
+  if(!dateGiven){
+    showToast('Please enter the date vaccine was given','error');
+    return;
+  }
+
+  // Save to localStorage
+  var records = JSON.parse(localStorage.getItem('pb_vacc_records')||'[]');
+  records.push({
+    id: Date.now(),
+    pet: petName,
+    vaccine: vaccineName,
+    date: dateGiven,
+    due: duoDate,
+    vet: vetName,
+    batch: document.getElementById('av-batch').value,
+    notes: document.getElementById('av-notes').value,
+    reminder: reminder,
+    addedAt: new Date().toISOString()
+  });
+  localStorage.setItem('pb_vacc_records', JSON.stringify(records));
+
+  closeAddVaccine();
+
+  // Add a new record card to the timeline
+  addRecordToTimeline({
+    pet: petName, vaccine: vaccineName, date: dateGiven,
+    due: duoDate, vet: vetName
+  });
+
+  if(reminder) showToast('✅ Record saved! Reminder set for next due date.');
+  else showToast('✅ Vaccination record saved!');
+}
+
+function addRecordToTimeline(rec){
+  var grid = document.querySelector('.tl-grid');
+  if(!grid) return;
+  var card = document.createElement('div');
+  card.className = 'tl-card';
+  card.style.cssText = 'background:#fff;border-radius:12px;border:1px solid #e4e6eb;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)';
+  card.innerHTML =
+    '<div style="height:80px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:36px">💉</div>' +
+    '<div style="padding:10px 12px">' +
+      '<div style="font-size:13px;font-weight:800;color:#1e293b;margin-bottom:3px">'+rec.vaccine+'</div>' +
+      '<div style="font-size:11px;color:#65676b;margin-bottom:2px">📅 '+rec.date+'</div>' +
+      (rec.due?'<div style="font-size:11px;color:#1877F2;font-weight:600">Next: '+rec.due+'</div>':'') +
+      '<div style="margin-top:6px;display:inline-block;background:#dcfce7;color:#16a34a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">✅ Recorded</div>' +
+    '</div>';
+  grid.insertBefore(card, grid.firstChild);
+}
+
+function showToast(msg, type){
+  if(typeof toast === 'function'){ toast(msg, type||'success'); return; }
+  var t=document.createElement('div');
+  var bg = type==='error'?'#dc2626':'#16a34a';
+  t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+bg+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);
+}
+</script>
+</body>
+</html>

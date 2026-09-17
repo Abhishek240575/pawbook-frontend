@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Training & Behavior</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+<style>
+.train-hero{background:linear-gradient(135deg,#312e81,#4338ca,#6d28d9);padding:80px 20px 36px;text-align:center;color:#fff}
+.train-hero h1{font-size:clamp(24px,4vw,38px);font-weight:900;margin-bottom:8px}
+.train-page{max-width:1100px;margin:0 auto;padding:16px 16px 80px;display:grid;grid-template-columns:1fr 280px;gap:16px}
+@media(max-width:768px){.train-page{grid-template-columns:1fr!important}aside{display:none!important}}
+.prog-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.prog-circle{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative}
+.prog-circle-inner{width:56px;height:56px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#4338ca}
+.prog-label{font-size:11px;font-weight:700;color:#1e293b;text-align:center;max-width:70px}
+.session-card{display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s;align-items:flex-start}
+.session-card:hover{background:#f8f9ff}
+.session-card:last-child{border-bottom:none}
+.session-img{width:96px;height:68px;border-radius:10px;overflow:hidden;flex-shrink:0}
+.session-img img{width:100%;height:100%;object-fit:cover}
+.session-name{font-size:14px;font-weight:700;margin-bottom:3px}
+.session-meta{font-size:11px;color:var(--muted);margin-bottom:2px}
+.diff-easy{background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-top:5px}
+.diff-med{background:#fef3c7;color:#d97706;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-top:5px}
+.diff-hard{background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-top:5px}
+.expert-card{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center}
+.expert-card:last-child{border-bottom:none}
+.expert-av{width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.expert-av img{width:100%;height:100%;object-fit:cover}
+</style>
+</head>
+<body>
+<script>function goTo(p){window.location.href=p;}</script>
+
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search training sessions…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-certificate"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<div class="train-hero">
+  <div style="font-size:48px;margin-bottom:10px">🎓🐾</div>
+  <h1>Training &amp; Behavior</h1>
+  <p style="opacity:0.85;max-width:480px;margin:0 auto 16px">Expert-guided sessions to build a stronger bond with your pet</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <button class="btn" style="background:#fff;color:#4338ca;padding:10px 20px;font-weight:700" onclick="filterSess(\'basic\',this)">📹 Video Sessions</button>
+    <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterSess(\'advanced\',this)">👨‍🏫 Live Expert</button>
+  </div>
+</div>
+
+<div class="train-page">
+  <main>
+    <!-- Progress -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-body">
+        <div class="card-title">🏆 Bruno's Training Progress</div>
+        <div style="display:flex;justify-content:space-around;padding:16px 0;flex-wrap:wrap;gap:12px">
+          <div class="prog-wrap">
+            <div class="prog-circle" style="background:conic-gradient(#4338ca 252deg,#e4e6eb 0)">
+              <div class="prog-circle-inner">70%</div>
+            </div>
+            <div class="prog-label">Basic Commands</div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-circle" style="background:conic-gradient(#4338ca 144deg,#e4e6eb 0)">
+              <div class="prog-circle-inner">40%</div>
+            </div>
+            <div class="prog-label">Socialisation</div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-circle" style="background:conic-gradient(#10b981 324deg,#e4e6eb 0)">
+              <div class="prog-circle-inner" style="color:#10b981">90%</div>
+            </div>
+            <div class="prog-label">Potty Training</div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-circle" style="background:conic-gradient(#f59e0b 108deg,#e4e6eb 0)">
+              <div class="prog-circle-inner" style="color:#f59e0b">30%</div>
+            </div>
+            <div class="prog-label">Agility</div>
+          </div>
+        </div>
+        <div style="background:#e7f3ff;border-radius:10px;padding:12px 16px;font-size:13px;font-weight:600;color:#1a4db3">
+          🎯 Next Goal: Complete <strong>Recall Training</strong> — 2 sessions remaining
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions -->
+    <div class="card">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div style="font-size:16px;font-weight:800">📚 Training Sessions</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-blue btn-sm" onclick="filterSess('all',this)">All</button>
+          <button class="btn btn-gray btn-sm" onclick="filterSess('basic',this)">Basic</button>
+          <button class="btn btn-gray btn-sm" onclick="filterSess('advanced',this)">Advanced</button>
+        </div>
+      </div>
+
+      <div class="session-card" data-level="basic">
+        <div class="session-img"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80" alt="Training"></div>
+        <div style="flex:1">
+          <div class="session-name">Sit, Stay &amp; Recall Basics</div>
+          <div class="session-meta">⏱ 15 min · 📹 Video · Trainer: Kavita R.</div>
+          <div class="session-meta">⭐ 4.9 · 2.3k completions</div>
+          <span class="diff-easy">Easy</span>
+        </div>
+        <button class="btn btn-blue btn-sm" onclick="startSession('Sit, Stay & Recall Basics')">Start</button>
+      </div>
+
+      <div class="session-card" data-level="basic">
+        <div class="session-img"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&q=80" alt="Training"></div>
+        <div style="flex:1">
+          <div class="session-name">Leash Walking Without Pulling</div>
+          <div class="session-meta">⏱ 25 min · 📹 Video · Trainer: Aryan P.</div>
+          <div class="session-meta">⭐ 4.7 · 1.8k completions</div>
+          <span class="diff-med">Medium</span>
+        </div>
+        <button class="btn btn-blue btn-sm" onclick="startSession('Leash Walking')">Start</button>
+      </div>
+
+      <div class="session-card" data-level="basic">
+        <div class="session-img"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Training"></div>
+        <div style="flex:1">
+          <div class="session-name">Separation Anxiety Management</div>
+          <div class="session-meta">⏱ 30 min · 👨‍🏫 Live · Trainer: Dr. Neha M.</div>
+          <div class="session-meta">⭐ 4.8 · 920 completions</div>
+          <span class="diff-med">Medium</span>
+        </div>
+        <button class="btn btn-blue btn-sm" onclick="bookSession('Separation Anxiety')">Book</button>
+      </div>
+
+      <div class="session-card" data-level="advanced">
+        <div class="session-img"><img src="https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=200&q=80" alt="Training"></div>
+        <div style="flex:1">
+          <div class="session-name">Advanced Agility Training</div>
+          <div class="session-meta">⏱ 45 min · 👨‍🏫 Live · Trainer: Rahul S.</div>
+          <div class="session-meta">⭐ 4.6 · 450 completions</div>
+          <span class="diff-hard">Advanced</span>
+        </div>
+        <button class="btn btn-blue btn-sm" onclick="bookSession('Agility Training')">Book</button>
+      </div>
+
+      <div class="session-card" data-level="advanced">
+        <div class="session-img"><img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&q=80" alt="Training"></div>
+        <div style="flex:1">
+          <div class="session-name">Off-Leash Recall Mastery</div>
+          <div class="session-meta">⏱ 40 min · 📹 Video · Trainer: Kavita R.</div>
+          <div class="session-meta">⭐ 4.9 · 1.1k completions</div>
+          <span class="diff-hard">Advanced</span>
+        </div>
+        <button class="btn btn-blue btn-sm" onclick="startSession('Recall Mastery')">Start</button>
+      </div>
+    </div>
+  </main>
+
+  <aside style="position:sticky;top:72px">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div class="card-title">👨‍🏫 Expert Trainers</div>
+        <div class="expert-card">
+          <div class="expert-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80"></div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:13px">Kavita Rao</div>
+            <div style="font-size:11px;color:var(--muted)">Basic &amp; Puppy Training</div>
+            <div style="font-size:11px;color:#fbbf24">★★★★★ 4.9</div>
+          </div>
+          <button class="btn btn-blue btn-sm" onclick="bookSession('Kavita Rao')">Book</button>
+        </div>
+        <div class="expert-card">
+          <div class="expert-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80"></div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:13px">Dr. Aryan Patel</div>
+            <div style="font-size:11px;color:var(--muted)">Behaviour Specialist</div>
+            <div style="font-size:11px;color:#fbbf24">★★★★☆ 4.7</div>
+          </div>
+          <button class="btn btn-blue btn-sm" onclick="bookSession('Dr. Aryan')">Book</button>
+        </div>
+        <div class="expert-card">
+          <div class="expert-av"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=80&q=80"></div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:13px">Dr. Neha Malhotra</div>
+            <div style="font-size:11px;color:var(--muted)">Anxiety &amp; Aggression</div>
+            <div style="font-size:11px;color:#fbbf24">★★★★★ 4.8</div>
+          </div>
+          <button class="btn btn-blue btn-sm" onclick="bookSession('Dr. Neha')">Book</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div class="card-title">📅 Upcoming Sessions</div>
+        <div style="background:#e7f3ff;border-radius:10px;padding:12px;margin-bottom:8px">
+          <div style="font-weight:700;font-size:13px">Leash Training Live</div>
+          <div style="font-size:12px;color:var(--muted)">Tomorrow · 10:00 AM · Dr. Aryan</div>
+        </div>
+        <div style="background:#f0fdfa;border-radius:10px;padding:12px">
+          <div style="font-weight:700;font-size:13px">Recall Practice</div>
+          <div style="font-size:12px;color:var(--muted)">Sat, May 25 · 4:00 PM · Kavita</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">🏅 Achievements</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;text-align:center">
+          <div><div style="font-size:30px">🥇</div><div style="font-size:10px;font-weight:700">Sit Master</div></div>
+          <div><div style="font-size:30px">🏅</div><div style="font-size:10px;font-weight:700">Potty Pro</div></div>
+          <div><div style="font-size:30px">⭐</div><div style="font-size:10px;font-weight:700">Good Boy</div></div>
+          <div style="opacity:0.4"><div style="font-size:30px">🔒</div><div style="font-size:10px;font-weight:700;color:var(--muted)">Locked</div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="api.js"></script>
+<script>
+function startSession(name) {
+  toast('▶️ Starting: ' + name);
+}
+function bookSession(name) {
+  toast('📅 Booking session with ' + name + '…');
+  setTimeout(() => toast('✅ Session booked! Check your notifications.'), 1500);
+}
+function filterSess(level, btn) {
+  document.querySelectorAll('.session-card').forEach(c => {
+    c.style.display = (level === 'all' || c.dataset.level === level) ? 'flex' : 'none';
+  });
+  btn.closest('div').querySelectorAll('button').forEach(b => b.className = 'btn btn-gray btn-sm');
+  btn.className = 'btn btn-blue btn-sm';
+}
+function toast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#4338ca;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';
+  t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
+}
+</script>
+</body>
+</html>

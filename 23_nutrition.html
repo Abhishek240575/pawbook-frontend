@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PawBook — Nutrition Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+.nutr-hero{background:linear-gradient(135deg,#064e3b,#059669,#0d9488);padding:36px 20px;text-align:center;position:relative;overflow:hidden}
+.nutr-hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=1400&q=80') center/cover;opacity:0.1}
+.nutr-hero-inner{position:relative;z-index:1}
+.nutr-hero h1{font-size:36px;font-weight:900;color:#fff;margin-bottom:8px}
+.nutr-page{max-width:1100px;margin:16px auto;padding:0 16px;display:grid;grid-template-columns:1fr 280px;gap:16px}
+/* Macro ring */
+.macro-ring{position:relative;width:150px;height:150px;margin:0 auto 16px}
+.macro-svg{transform:rotate(-90deg)}
+.macro-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.macro-pct{font-size:22px;font-weight:900;color:var(--text)}
+.macro-lbl{font-size:11px;color:var(--muted)}
+/* Food item */
+.food-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s}
+.food-item:hover{background:#f8f9ff}
+.food-item:last-child{border-bottom:none}
+.food-img{width:56px;height:56px;border-radius:10px;overflow:hidden;flex-shrink:0}
+.food-img img{width:100%;height:100%;object-fit:cover}
+.food-name{font-size:14px;font-weight:700}
+.food-cal{font-size:12px;color:var(--muted)}
+.food-bar{height:6px;border-radius:3px;background:#e4e6eb;margin-top:6px;overflow:hidden}
+.food-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#059669,#0d9488)}
+/* Meal card */
+.meal-slot{background:#f8f9fa;border-radius:10px;padding:14px;margin-bottom:10px}
+.meal-time{font-size:13px;font-weight:800;color:var(--blue);margin-bottom:8px}
+.meal-item{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px}
+.meal-dot{width:10px;height:10px;border-radius:50%;background:#059669;flex-shrink:0}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search nutrition plans…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-salad"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<div class="nutr-hero">
+  <div class="nutr-hero-inner">
+    <div style="font-size:48px;margin-bottom:10px">🥗🐾</div>
+    <h1>Nutrition Planner</h1>
+    <p style="color:rgba(255,255,255,0.85)">Personalised diet plans crafted by veterinary nutritionists</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+      <button class="btn" style="background:#fff;color:#059669;padding:10px 20px;font-weight:700" onclick="filterPet(\'dogs\',this)">🐕 Dogs</button>
+      <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterPet(\'cats\',this)">🐈 Cats</button>
+      <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterPet(\'rabbits\',this)">🐰 Rabbits</button>
+    </div>
+  </div>
+</div>
+
+<div class="nutr-page">
+  <main>
+    <!-- Daily Meal Plan -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:16px;font-weight:800">🍽 Bruno's Daily Meal Plan</div>
+        <div style="font-size:13px;color:var(--muted)">Beagle · 3 yrs · 12kg</div>
+      </div>
+      <div class="card-body">
+        <div class="meal-slot">
+          <div class="meal-time">🌅 Morning (7:00 AM)</div>
+          <div class="meal-item"><div class="meal-dot"></div> Royal Canin Adult — 80g</div>
+          <div class="meal-item"><div class="meal-dot"></div> Boiled egg (1 whole)</div>
+          <div class="meal-item"><div class="meal-dot"></div> Fresh water — unlimited</div>
+        </div>
+        <div class="meal-slot">
+          <div class="meal-time">☀️ Afternoon (1:00 PM)</div>
+          <div class="meal-item"><div class="meal-dot"></div> Cooked chicken — 50g</div>
+          <div class="meal-item"><div class="meal-dot"></div> Brown rice — 30g</div>
+          <div class="meal-item"><div class="meal-dot"></div> Steamed carrots — 20g</div>
+        </div>
+        <div class="meal-slot" style="margin-bottom:0">
+          <div class="meal-time">🌙 Evening (7:00 PM)</div>
+          <div class="meal-item"><div class="meal-dot"></div> Royal Canin Adult — 80g</div>
+          <div class="meal-item"><div class="meal-dot"></div> Dog probiotic supplement</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommended Foods -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border)"><div style="font-size:16px;font-weight:800">✅ Recommended Foods</div></div>
+      <div class="food-item">
+        <div class="food-img"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=100&q=80"></div>
+        <div style="flex:1"><div class="food-name">Royal Canin Medium Adult</div><div class="food-cal">320 kcal/100g · High Protein</div><div class="food-bar"><div class="food-bar-fill" style="width:85%"></div></div></div>
+        <div style="font-size:13px;font-weight:700;color:#059669">★ 4.9</div>
+      </div>
+      <div class="food-item">
+        <div class="food-img"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=100&q=80"></div>
+        <div style="flex:1"><div class="food-name">Boiled Chicken Breast</div><div class="food-cal">165 kcal/100g · Lean Protein</div><div class="food-bar"><div class="food-bar-fill" style="width:92%"></div></div></div>
+        <div style="font-size:13px;font-weight:700;color:#059669">★ 5.0</div>
+      </div>
+      <div class="food-item" style="border-bottom:none">
+        <div class="food-img"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=100&q=80"></div>
+        <div style="flex:1"><div class="food-name">Pedigree Adult Dry Food</div><div class="food-cal">295 kcal/100g · Balanced</div><div class="food-bar"><div class="food-bar-fill" style="width:75%"></div></div></div>
+        <div style="font-size:13px;font-weight:700;color:#059669">★ 4.7</div>
+      </div>
+    </div>
+
+    <!-- Foods to Avoid -->
+    <div class="card">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border)"><div style="font-size:16px;font-weight:800;color:#dc2626">⚠️ Foods to Avoid</div></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🍫</div><div style="font-size:12px;font-weight:700;color:#dc2626">Chocolate</div></div>
+          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🧅</div><div style="font-size:12px;font-weight:700;color:#dc2626">Onions</div></div>
+          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🍇</div><div style="font-size:12px;font-weight:700;color:#dc2626">Grapes</div></div>
+          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🥑</div><div style="font-size:12px;font-weight:700;color:#dc2626">Avocado</div></div>
+          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🍬</div><div style="font-size:12px;font-weight:700;color:#dc2626">Xylitol</div></div>
+          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🧄</div><div style="font-size:12px;font-weight:700;color:#dc2626">Garlic</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <aside style="position:sticky;top:72px">
+    <!-- Macros -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div class="card-title">📊 Daily Macro Targets</div>
+        <div style="margin:12px 0">
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Protein</span><span style="color:#059669">68% ✓</span></div>
+          <div class="food-bar"><div class="food-bar-fill" style="width:68%"></div></div>
+        </div>
+        <div style="margin:12px 0">
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Fat</span><span style="color:#d97706">45%</span></div>
+          <div class="food-bar"><div class="food-bar-fill" style="width:45%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
+        </div>
+        <div style="margin:12px 0">
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Carbs</span><span style="color:var(--blue)">52%</span></div>
+          <div class="food-bar"><div class="food-bar-fill" style="width:52%;background:linear-gradient(90deg,var(--blue),#60a5fa)"></div></div>
+        </div>
+        <div style="background:#e7f3ff;border-radius:8px;padding:10px;margin-top:10px;text-align:center">
+          <div style="font-size:24px;font-weight:900;color:var(--blue)">780</div>
+          <div style="font-size:12px;color:var(--muted)">kcal / day target</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div class="card-title">🛒 Shop Recommended</div>
+        <button class="btn btn-blue btn-full" onclick="goTo('09_marketplace.html')">Browse Pet Food</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">👩‍⚕️ Consult Nutritionist</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Get a personalised diet plan from a certified veterinary nutritionist.</p>
+        <button class="btn btn-blue btn-full" onclick="goTo('11_vet_booking.html')">Book Consultation</button>
+      </div>
+    </div>
+  </aside>
+</div>
+<script src="api.js"></script>
+<script>function goTo(page){ window.location.href = page; }</script>
+<script>
+function filterPet(type,btn){
+  btn.closest('div').querySelectorAll('button').forEach(b=>{ b.style.background='rgba(255,255,255,0.2)'; b.style.color='#fff'; });
+  btn.style.background='#fff'; btn.style.color='#059669';
+  toast('Showing ' + type + ' nutrition plans','info');
+}
+</script>
+</body></html>
