@@ -503,7 +503,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
       </div>
       <div style="display:flex;gap:6px">
         <button class="btn btn-sm" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px">⚙️</button>
-        <button class="btn btn-sm" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px">⭐</button>
+        <button class="btn btn-sm" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px" onclick="showToast('Added to favorites!','success')">⭐</button>
       </div>
     </div>
 
@@ -970,7 +970,7 @@ function submitPost(){
       (postText?'<div style="padding:0 16px 12px;font-size:14px;line-height:1.6;color:#1e293b">'+postText+'</div>':'')+
       photoHTML+
       '<div style="padding:10px 16px;display:flex;gap:16px;border-top:1px solid #f1f5f9">'+
-        '<button onclick="this.style.color='#ef4444'" style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;display:flex;align-items:center;gap:5px"><i class="ti ti-heart"></i> Like</button>'+
+        '<button onclick="pbHeart(this)" style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;display:flex;align-items:center;gap:5px"><i class="ti ti-heart"></i> Like</button>'+
         '<button style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;display:flex;align-items:center;gap:5px"><i class="ti ti-message-circle"></i> Comment</button>'+
         '<button style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;display:flex;align-items:center;gap:5px"><i class="ti ti-share"></i> Share</button>'+
       '</div>';
@@ -991,7 +991,7 @@ function loadDemoFeed(){
   if(!feed)return;
   var DEMO=[
     {img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=80',text:'Bruno had the best time at the park today! 🐾 Running, playing, and making new friends. This little guy never fails to bring a smile 😊',time:'2 hours ago',likes:24,comments:8},
-    {img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=80',text:'Vaccination done! 💉 Bruno was such a brave boy at the vet today. Dr. Priya said he's in perfect health. So proud of him! 🏥',time:'3 days ago',likes:47,comments:12},
+    {img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=80',text:'Vaccination done! 💉 Bruno was such a brave boy at the vet today. Dr. Priya said he is in perfect health. So proud of him! 🏥',time:'3 days ago',likes:47,comments:12},
     {img:'https://images.unsplash.com/photo-1568572933382-74d440642117?w=800&q=80',text:'Lazy Sunday mornings with Bruno are my favourite 🌅 Nothing beats cuddles with your pup!',time:'1 week ago',likes:62,comments:19},
   ];
   feed.innerHTML=DEMO.map(function(p){
@@ -1004,9 +1004,9 @@ function loadDemoFeed(){
       '<div style="margin:0 0 12px"><img src="'+p.img+'" style="width:100%;max-height:360px;object-fit:cover;display:block"></div>'+
       '<div style="padding:6px 16px;font-size:12px;color:#64748b;border-top:1px solid #f8fafc;border-bottom:1px solid #f8fafc">'+p.likes+' likes · '+p.comments+' comments</div>'+
       '<div style="padding:4px 8px;display:flex;gap:4px">'+
-        '<button onclick="var c=this.querySelector('i');c.style.color=c.style.color==='rgb(239, 68, 68)'?'':'#ef4444'" style="flex:1;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;padding:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-heart"></i> Like</button>'+
+        '<button onclick="pbHeart(this)" style="flex:1;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;padding:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-heart"></i> Like</button>'+
         '<button style="flex:1;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;padding:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-message-circle"></i> Comment</button>'+
-        '<button onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href);toast('Link copied!','success')" style="flex:1;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;padding:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-share"></i> Share</button>'+
+        '<button onclick="pbShare()" style="flex:1;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;padding:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-share"></i> Share</button>'+
       '</div>'+
     '</div>';
   }).join('');
@@ -1338,6 +1338,73 @@ function addPet() {
 <script>
 function goTo(p){window.location.href=p;}
 function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap;max-width:90vw;text-align:center';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+</script>
+<input type="file" id="cover-upload" accept="image/*" style="display:none" onchange="updateCover(this)">
+<script>
+function editPet(petId) {
+  var modal = document.getElementById('edit-pet-modal');
+  if(modal) { modal.style.display='flex'; document.body.style.overflow='hidden'; }
+  else { showToast('Edit pet feature coming soon!','info'); }
+}
+
+function addVaccination(petId) {
+  var modal = document.getElementById('vacc-modal');
+  if(modal) { modal.style.display='flex'; document.body.style.overflow='hidden'; }
+  else { goTo('10_vaccination.html'); }
+}
+
+function bookVet() { goTo('11_vet_booking.html'); }
+
+function openModal(id) {
+  var m = document.getElementById(id);
+  if(m) { m.style.display='flex'; document.body.style.overflow='hidden'; }
+}
+function closeModal(id) {
+  var m = document.getElementById(id);
+  if(m) { m.style.display='none'; document.body.style.overflow=''; }
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('pb-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'pb-toast';
+    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:#000;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;max-width:90vw;text-align:center';
+    document.body.appendChild(t);
+  }
+  var bg = type==='error'?'#ef4444':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
+  t.style.background = bg;
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 2600);
+}
+
+function updateCover(input) {
+  if(!input.files||!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var cover = document.querySelector('.profile-cover, .cover-photo, [class*="cover"]');
+    if(cover) cover.style.backgroundImage = 'url(' + e.target.result + ')';
+    showToast('Cover photo updated!','success');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+</script>
+<script>function pbHeart(btn){btn.style.color=btn.style.color==="#ef4444"?"#65676b":"#ef4444";}</script>
+<script>
+function pbHeart(btn) {
+  var liked = btn.dataset.liked === "1";
+  btn.dataset.liked = liked ? "0" : "1";
+  btn.style.color = liked ? "#65676b" : "#ef4444";
+  var icon = btn.querySelector("i");
+  if(icon) icon.className = liked ? "ti ti-heart" : "ti ti-heart-filled";
+}
+function pbShare() {
+  if(navigator.clipboard) navigator.clipboard.writeText(location.href);
+  showToast("Link copied!", "success");
+}
+function goTo(p) { window.location.href = p; }
 </script>
 </body>
 </html>
