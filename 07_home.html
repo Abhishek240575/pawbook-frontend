@@ -607,9 +607,14 @@ async function loadFeed(){
       post_id: p.post_id,
     })).join('');
   } catch(e) {
-    // API unavailable — show demo posts
-    const DEMO = [{'user': 'Priya Sharma', 'handle': '@priya_pets', 'time': '2 hours ago', 'verified': True, 'av': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80', 'text': "Luna had her first birthday today! 🎂🐈 She absolutely loved her tuna cake and all the cuddles. Can't believe how much she's grown this year. #CatLife #PersianCat #PawBook", 'img': 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=85', 'likes': 247, 'comments': 38, 'shares': 12}, {'user': 'Rahul Dev', 'handle': '@rahul_and_max', 'time': '4 hours ago', 'verified': False, 'av': 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80', 'text': "Max aced his first agility training session today! 🏆🐕 Our trainer Dr. Kavita said he's a natural. So proud of this little champion. Training begins at 8 months people — don't wait! #GoldenRetriever #DogTraining", 'img': 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=85', 'likes': 189, 'comments': 24, 'shares': 8}, {'user': 'Delhi Dog Parents', 'handle': '@delhidogparents', 'time': '6 hours ago', 'verified': True, 'av': 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80', 'text': "🎉 Sunday Park Meetup Recap! Over 40 dogs and their parents came together at Lodhi Garden this morning. What a pawsome community we've built! Next meetup — Sunday 8 AM. Tag a friend who should join! 🐾 #DelhiDogs #PetMeetup", 'img': 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=85', 'likes': 412, 'comments': 67, 'shares': 89}, {'user': 'Dr. Ananya Rao', 'handle': '@drAnanya_vet', 'time': '8 hours ago', 'verified': True, 'av': 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=80&q=80', 'text': '⚠️ Monsoon pet care reminder: Keep your pets dry and watch for fungal infections between paw pads. Clean and dry after every walk. Ticks and fleas are also more active — use vet-approved preventives. DM for any questions! 🐾🩺 #VetTips #PetHealth #MonsoonCare', 'img': '', 'likes': 892, 'comments': 143, 'shares': 234}, {'user': 'Ananya Bose', 'handle': '@ananya_milo', 'time': '1 day ago', 'verified': False, 'av': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80', 'text': "Milo discovered the mirror today and has been staring at it for 20 minutes straight 😂🐇 He's either extremely vain or very confused. Either way it's the best thing I've seen all week. #BunnyLife #RabbitMom #ToooCute", 'img': 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=85', 'likes': 156, 'comments': 29, 'shares': 5}];
-    feed.innerHTML = DEMO.map(p => renderPost(p)).join('');
+    var DEMO = [
+      {user:"Priya Sharma",handle:"@priya_pets",time:"2 hours ago",verified:true,av:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80",text:"Luna had her first birthday today! She loved her tuna cake. #CatLife #PawBook",img:"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=85",likes:247,comments:38,shares:12},
+      {user:"Rahul Dev",handle:"@rahul_and_max",time:"4 hours ago",verified:false,av:"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80",text:"Max aced his first agility training today! So proud of this champion. #GoldenRetriever #DogTraining",img:"https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=85",likes:189,comments:24,shares:8},
+      {user:"Delhi Dog Parents",handle:"@delhidogparents",time:"6 hours ago",verified:true,av:"https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80",text:"Sunday Park Meetup at Lodhi Garden — 40+ dogs! Next meetup Sunday 8 AM. #DelhiDogs",img:"https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=85",likes:412,comments:67,shares:89},
+      {user:"Dr. Ananya Rao",handle:"@drAnanya_vet",time:"8 hours ago",verified:true,av:"https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=80&q=80",text:"Monsoon pet care: Keep paws dry, watch for fungal infections. Use vet-approved tick preventives. #VetTips",img:"",likes:892,comments:143,shares:234},
+      {user:"Ananya Bose",handle:"@ananya_milo",time:"1 day ago",verified:false,av:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80",text:"Milo discovered the mirror and has been staring for 20 minutes! #BunnyLife #RabbitMom",img:"https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=85",likes:156,comments:29,shares:5}
+    ];
+    feed.innerHTML = DEMO.map(function(p){ return renderPost(p); }).join("");
   }
 }
 
@@ -626,8 +631,14 @@ async function loadMyPets(){
   }catch{}
 }
 
-function openPostModal(){document.getElementById('post-modal').classList.add('open');}
-function closePostModal(){document.getElementById('post-modal').classList.remove('open');}
+function openPostModal(){
+  var m=document.getElementById("post-modal");
+  if(m){m.style.display="flex";document.body.style.overflow="hidden";}
+}
+function closePostModal(){
+  var m=document.getElementById("post-modal");
+  if(m){m.style.display="none";document.body.style.overflow="";}
+}
 document.getElementById('post-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closePostModal();});
 
 let selTags2=[];
@@ -645,6 +656,57 @@ async function submitPost(){
   try{await PostAPI.create({body,visibility:vis,hashtags:selTags2,pet_id:myPets[0]?.pet_id||null});closePostModal();document.getElementById('post-body').value='';selTags2=[];toast('Posted! 🐾','success');await loadFeed();}
   catch(e){err.textContent=e.message;err.style.display='block';}
   finally{setLoading(btn,false,'Post');}
+}
+</script>
+<script>
+function previewPostImg(input) {
+  if(!input.files||!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById("post-img-el").src = e.target.result;
+    document.getElementById("post-img-preview").style.display = "block";
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function removePostImg() {
+  document.getElementById("post-img-preview").style.display = "none";
+  document.getElementById("post-file").value = "";
+}
+
+function showFeelingPicker() {
+  var fp = document.getElementById("feeling-picker");
+  if(fp) fp.style.display = fp.style.display==="flex" ? "none" : "flex";
+}
+
+function addFeeling(btn, feeling) {
+  var ta = document.getElementById("post-text");
+  if(ta && !ta.value.includes("feeling")) ta.value += " — feeling " + feeling;
+  document.getElementById("feeling-picker").style.display = "none";
+}
+
+function tagVet() {
+  var ta = document.getElementById("post-text");
+  if(ta) ta.value += " @DrPriyaSharma";
+  ta.focus();
+}
+
+function submitPost() {
+  var text = document.getElementById("post-text").value.trim();
+  if(!text) { alert("Write something first!"); return; }
+  var imgEl = document.getElementById("post-img-el");
+  var hasImg = document.getElementById("post-img-preview").style.display !== "none";
+  var newPost = {
+    user:"Abhishek Kumar", handle:"@abhishek", time:"Just now",
+    verified:false, av:"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80",
+    text:text, img: hasImg ? imgEl.src : "",
+    likes:0, comments:0, shares:0
+  };
+  var feed = document.getElementById("feed");
+  if(feed) feed.insertAdjacentHTML("afterbegin", renderPost(newPost));
+  document.getElementById("post-text").value = "";
+  removePostImg();
+  closePostModal();
 }
 </script>
 </body>
