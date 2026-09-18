@@ -1,10 +1,10 @@
-/**
+﻿/**
  * PawBook API Client v2
  * All frontend pages import this one file.
  * Change API_BASE if deploying to production.
  */
 
-const API_BASE = 'http://localhost:4000/api/v1';
+const API_BASE = 'https://pawbook-api-cquc.onrender.com/api/v1';
 
 // ── Token storage ─────────────────────────────────────────────────────────────
 const Auth = {
