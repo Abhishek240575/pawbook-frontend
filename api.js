@@ -82,10 +82,7 @@ const Auth = {
 };
 
 // ── AUTH API ──────────────────────────────────────────────────
-const AuthAPI = {
-  me:             ()     => get('/auth/me'),
-  changePassword: (data) => patch('/auth/password', data),
-};
+// (AuthAPI defined in aliases section below)
 
 // ── USER API ──────────────────────────────────────────────────
 const UserAPI = {
