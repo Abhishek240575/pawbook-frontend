@@ -198,3 +198,14 @@ async function checkAPIHealth() {
 
 // Check on load
 checkAPIHealth();
+
+// ── BACKWARD COMPATIBILITY ALIASES ───────────────────────────
+// Some pages use AuthAPI.login, UserAPI.notifications etc.
+const AuthAPI = {
+  login:          (email, password) => Auth.login(email, password),
+  register:       (data)            => Auth.register(data),
+  me:             ()                => Auth.me(),
+  logout:         ()                => Auth.logout(),
+  changePassword: (data)            => patch('/auth/password', data),
+  notifications:  (page)            => get('/users/me/notifications?page=' + (page||1)),
+};
