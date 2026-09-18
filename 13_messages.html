@@ -152,9 +152,9 @@
         <div class="chat-status">● Active now · Veterinary Clinic</div>
       </div>
       <div class="chat-actions">
-        <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-phone"></i></button>
-        <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-video"></i></button>
-        <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-info-circle"></i></button>
+        <button class="nav-icon-btn" onclick="startCall('audio')" title="Voice call" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-phone"></i></button>
+        <button class="nav-icon-btn" onclick="startCall('video')" title="Video call" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-video"></i></button>
+        <button class="nav-icon-btn" onclick="showInfo()" title="Info" style="background:#f0f2f5;color:var(--text)"><i class="ti ti-info-circle"></i></button>
       </div>
     </div>
 
@@ -187,11 +187,11 @@
     </div>
 
     <div class="chat-footer">
-      <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-photo"></i></button>
-      <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-mood-smile"></i></button>
-      <input class="chat-input" placeholder="Aa — Type a message…">
-      <button class="nav-icon-btn" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-microphone"></i></button>
-      <button class="send-btn"><i class="ti ti-send"></i></button>
+      <button class="nav-icon-btn" onclick="attachPhoto()" title="Attach photo" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-photo"></i></button>
+      <button class="nav-icon-btn" onclick="toggleEmoji()" title="Emoji" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-mood-smile"></i></button>
+      <input class="chat-input" id="chat-input" placeholder="Aa — Type a message…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}">
+      <button class="nav-icon-btn" onclick="voiceMessage()" title="Voice message" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-microphone"></i></button>
+      <button class="send-btn" onclick="sendMessage()" title="Send"><i class="ti ti-send"></i></button>
     </div>
   </div>
 </div>
@@ -229,5 +229,158 @@ document.addEventListener('DOMContentLoaded', () => {
 function goTo(p){window.location.href=p;}
 function newMessage(){toast('💬 New message composer coming soon','info');}
 function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+</script>
+<script>
+function sendMessage() {
+  var input = document.getElementById('chat-input');
+  if(!input) input = document.querySelector('.chat-input');
+  var text = input ? input.value.trim() : '';
+  if(!text) return;
+  
+  var msgs = document.querySelector('.chat-messages');
+  if(msgs) {
+    var time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    var div = document.createElement('div');
+    div.innerHTML = '<div><div class="bubble mine">' + text + '</div><div class="bubble-time" style="text-align:right">' + time + '</div></div>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    
+    // Auto reply after 1.5s
+    setTimeout(function() {
+      var replies = [
+        "Got it! I will check and get back to you shortly.",
+        "Thank you for reaching out. Bruno sounds great!",
+        "Sure, I can help with that. Let me look into it.",
+        "That sounds good. See you at the appointment!"
+      ];
+      var reply = replies[Math.floor(Math.random() * replies.length)];
+      var replyDiv = document.createElement('div');
+      replyDiv.innerHTML = '<div><div class="bubble theirs">' + reply + '</div><div class="bubble-time">' + time + '</div></div>';
+      msgs.appendChild(replyDiv);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1500);
+  }
+  if(input) input.value = '';
+}
+
+function startCall(type) {
+  var name = document.querySelector('.chat-name');
+  var vetName = name ? name.textContent.trim() : 'Vet';
+  if(type === 'video') {
+    if(confirm('Start video call with ' + vetName + '?')) {
+      window.location.href = '11_vet_booking.html';
+    }
+  } else {
+    if(confirm('Start voice call with ' + vetName + '?')) {
+      window.open('tel:+911125847200');
+    }
+  }
+}
+
+function showInfo() {
+  var name = document.querySelector('.chat-name');
+  var vetName = name ? name.textContent.trim() : 'Contact';
+  alert(vetName + '\n\nVeterinary Clinic\nActive Now\n\nTap profile photo to view full profile.');
+}
+
+function attachPhoto() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function() {
+    if(this.files && this.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var msgs = document.querySelector('.chat-messages');
+        if(msgs) {
+          var time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+          var div = document.createElement('div');
+          div.innerHTML = '<div><div class="bubble mine" style="padding:4px"><img src="' + e.target.result + '" style="max-width:220px;border-radius:10px;display:block"></div><div class="bubble-time" style="text-align:right">' + time + '</div></div>';
+          msgs.appendChild(div);
+          msgs.scrollTop = msgs.scrollHeight;
+        }
+      };
+      reader.readAsDataURL(this.files[0]);
+    }
+  };
+  input.click();
+}
+
+function toggleEmoji() {
+  var emojis = ['😊','🐾','🐕','🐈','❤️','👍','🎉','🙏','😂','😍'];
+  var picker = document.getElementById('emoji-quick');
+  if(!picker) {
+    picker = document.createElement('div');
+    picker.id = 'emoji-quick';
+    picker.style.cssText = 'position:absolute;bottom:70px;left:16px;background:#fff;border:1px solid #e4e6eb;border-radius:12px;padding:10px;display:flex;flex-wrap:wrap;gap:6px;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:200px';
+    emojis.forEach(function(em) {
+      var btn = document.createElement('button');
+      btn.textContent = em;
+      btn.style.cssText = 'font-size:20px;border:none;background:none;cursor:pointer;padding:2px';
+      btn.onclick = function() {
+        var input = document.getElementById('chat-input') || document.querySelector('.chat-input');
+        if(input) { input.value += em; input.focus(); }
+        picker.remove();
+      };
+      picker.appendChild(btn);
+    });
+    document.querySelector('.chat-footer') && document.querySelector('.chat-footer').appendChild(picker);
+    document.body.appendChild(picker);
+  } else {
+    picker.remove();
+  }
+}
+
+function voiceMessage() {
+  var btn = event.currentTarget || event.target;
+  var recording = btn.dataset.recording === '1';
+  if(!recording) {
+    btn.dataset.recording = '1';
+    btn.style.color = '#ef4444';
+    btn.style.background = '#fee2e2';
+    btn.title = 'Stop recording';
+    showToastMsg('Recording… tap mic again to send', 'info');
+  } else {
+    btn.dataset.recording = '0';
+    btn.style.color = '';
+    btn.style.background = '#f0f2f5';
+    btn.title = 'Voice message';
+    // Add voice message bubble
+    var msgs = document.querySelector('.chat-messages');
+    if(msgs) {
+      var time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      var div = document.createElement('div');
+      div.innerHTML = '<div><div class="bubble mine" style="display:flex;align-items:center;gap:8px;min-width:120px">🎤 Voice message (0:03)</div><div class="bubble-time" style="text-align:right">' + time + '</div></div>';
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+  }
+}
+
+function selectConv(el) {
+  document.querySelectorAll('.conv-item').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  var name = el.querySelector('.conv-name');
+  var chatName = document.querySelector('.chat-name');
+  if(name && chatName) chatName.textContent = name.textContent;
+}
+
+function newConversation() {
+  showToastMsg('New conversation feature coming soon!', 'info');
+}
+
+function showToastMsg(msg, type) {
+  var t = document.getElementById('msg-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'msg-toast';
+    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:#000;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;max-width:90vw;text-align:center';
+    document.body.appendChild(t);
+  }
+  var bg = type==='error'?'#ef4444':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
+  t.style.background = bg; t.textContent = msg;
+  t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 2600);
+}
 </script>
 </body></html>
