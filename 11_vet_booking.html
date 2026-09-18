@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -277,7 +277,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
 /* ── RESPONSIVE ── */
 @media(max-width:600px){
   .vet-actions{flex-wrap:wrap}
-  .vbtn{justify-content:center}
+  .vbtn{flex:1;justify-content:center}
   .time-slots{grid-template-columns:repeat(3,1fr)}
   .consult-tabs{gap:5px}
   .ctab{font-size:11px;padding:10px 6px}
@@ -313,9 +313,20 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
     <div class="vet-search-bar">
       <i class="ti ti-search" style="color:#94a3b8;font-size:18px"></i>
       <input placeholder="Search by name, speciality, city…" id="vet-search-input">
-      <select id="vet-city-filter" onchange="filterVets()">
+      <select id="vet-country-filter" onchange="pbUpdateStates('vet-country-filter','vet-state-filter','vet-city-filter');filterVets()" style="border:none;outline:none;font-size:12px;color:var(--pb-text2);background:transparent;padding:0 4px;border-left:1.5px solid var(--pb-border);cursor:pointer">
+        <option value="">🌍 Country</option>
+        <option selected>India</option>
+        <option>USA</option><option>UK</option><option>Australia</option>
+        <option>Canada</option><option>UAE</option><option>Singapore</option>
+      </select>
+      <select id="vet-state-filter" onchange="pbUpdateCities('vet-country-filter','vet-state-filter','vet-city-filter');filterVets()" style="border:none;outline:none;font-size:12px;color:var(--pb-text2);background:transparent;padding:0 4px;border-left:1.5px solid var(--pb-border);cursor:pointer">
+        <option value="">State</option>
+        <option>Delhi</option><option>Maharashtra</option><option>Karnataka</option>
+        <option>Tamil Nadu</option><option>Telangana</option>
+      </select>
+      <select id="vet-city-filter" onchange="filterVets()" style="border:none;outline:none;font-size:12px;color:var(--pb-text2);background:transparent;padding:0 4px;border-left:1.5px solid var(--pb-border);cursor:pointer">
         <option value="">All Cities</option>
-        <option>Delhi</option><option>Mumbai</option><option>Bangalore</option>
+        <option>New Delhi</option><option>Mumbai</option><option>Bangalore</option>
         <option>Chennai</option><option>Hyderabad</option><option>Pune</option>
       </select>
       <button onclick="filterVets()" style="height:42px;padding:0 18px;border-radius:10px;border:none;background:var(--vet-blue);color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Search</button>
@@ -927,7 +938,7 @@ function renderVets(vets) {
             ${v.type.includes('clinic') ? `<span style="background:#fef3c7;color:#d97706;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px">🏥 In-Clinic</span>` : ''}
           </div>
           <div class="vet-actions">
-            <button onclick="bookAppointment(VETS.find(x=>x.id===${v.id}))" class="vbtn vbtn-primary"><i class="ti ti-calendar-plus"></i> Book Appointment</button>
+            <button onclick="bookAppointment(VETS.find(x=>x.id===${v.id}))" class="vbtn vbtn-primary" style="flex:2"><i class="ti ti-calendar-plus"></i> Book Appointment</button>
             ${v.type.includes('video') ? `<button onclick="openVideoCall(VETS.find(x=>x.id===${v.id}))" style="height:38px;padding:0 14px;border-radius:999px;border:none;background:#7c3aed;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap" title="Start video call now"><i class="ti ti-video" style="font-size:16px"></i> Video Call</button>` : ''}
             ${v.type.includes('audio') ? `<button onclick="openAudioCall(VETS.find(x=>x.id===${v.id}))" style="height:38px;padding:0 14px;border-radius:999px;border:none;background:#0d9488;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap" title="Start audio call now"><i class="ti ti-phone" style="font-size:16px"></i> Call</button>` : ''}
             <button onclick="openChat(VETS.find(x=>x.id===${v.id}))" style="height:38px;padding:0 14px;border-radius:999px;border:1.5px solid #bbf7d0;background:#f0fdf4;color:#16a34a;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap"><i class="ti ti-message-circle" style="font-size:16px"></i> Chat</button>
