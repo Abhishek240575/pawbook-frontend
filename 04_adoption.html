@@ -1,469 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<style>
-/* ═══════════════════════════════════════════════════════════
-   PAWBOOK UNIFIED THEME v3
-   Facebook Blue × Clean White × India-first
-═══════════════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-:root {
-  --pb-blue: #1877F2;
-  --pb-blue-dark: #0d65d9;
-  --pb-blue-soft: #e7f0fd;
-  --pb-green: #22c55e;
-  --pb-green-soft: #dcfce7;
-  --pb-red: #ef4444;
-  --pb-red-soft: #fee2e2;
-  --pb-amber: #f59e0b;
-  --pb-purple: #8b5cf6;
-  --pb-grad: linear-gradient(135deg,#1877F2,#8b5cf6);
-  --pb-ig-grad: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-bg: #f0f2f5;
-  --pb-card: #ffffff;
-  --pb-border: #e4e6eb;
-  --pb-text: #050505;
-  --pb-text2: #65676b;
-  --pb-text3: #8a8d91;
-  --pb-radius: 12px;
-  --pb-radius-sm: 8px;
-  --pb-pill: 999px;
-  --pb-shadow: 0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --pb-shadow-md: 0 4px 20px rgba(0,0,0,.1);
-  --pb-shadow-lg: 0 12px 48px rgba(0,0,0,.16);
-  --pb-nav-h: 56px;
-}
-
-/* ── RESET ── */
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased}
-a{text-decoration:none;color:inherit}
-button{font-family:'Inter',sans-serif;cursor:pointer}
-input,textarea,select{font-family:'Inter',sans-serif}
-img{max-width:100%;display:block}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-
-/* ── TOPNAV ── */
-.pb-nav{
-  position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);
-  background:#fff;border-bottom:1px solid var(--pb-border);
-  display:flex;align-items:center;padding:0 16px;gap:10px;
-  z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08);
-}
-.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
-.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.pb-nav-search{flex:1;max-width:260px;height:40px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
-.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;color:var(--pb-text);width:100%}
-.pb-nav-search input::placeholder{color:var(--pb-text3)}
-.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
-.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
-.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
-.pb-nav-tab.active{color:var(--pb-blue)}
-.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-blue);border-radius:3px 3px 0 0}
-.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
-.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s;position:relative}
-.pb-icon-btn:hover{background:var(--pb-border)}
-.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-
-/* ── BUTTONS ── */
-.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
-.pb-btn-blue{background:var(--pb-blue);color:#fff}
-.pb-btn-blue:hover{background:var(--pb-blue-dark)}
-.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}
-.pb-btn-gray:hover{background:var(--pb-border)}
-.pb-btn-green{background:var(--pb-green);color:#fff}
-.pb-btn-green:hover{background:#16a34a}
-.pb-btn-red{background:var(--pb-red);color:#fff}
-.pb-btn-red:hover{background:#dc2626}
-.pb-btn-outline{background:transparent;border:1.5px solid var(--pb-border);color:var(--pb-text2)}
-.pb-btn-outline:hover{background:var(--pb-bg)}
-.pb-btn-sm{height:30px;padding:0 12px;font-size:12px}
-.pb-btn-lg{height:44px;padding:0 28px;font-size:15px}
-.pb-btn-full{width:100%;justify-content:center}
-
-/* ── CARDS ── */
-.pb-card{background:var(--pb-card);border-radius:var(--pb-radius);border:1px solid var(--pb-border);box-shadow:var(--pb-shadow);overflow:hidden}
-.pb-card-body{padding:14px 16px}
-
-/* ── BADGES ── */
-.pb-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--pb-pill);font-size:11px;font-weight:700}
-.pb-badge-blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.pb-badge-green{background:var(--pb-green-soft);color:#16a34a}
-.pb-badge-red{background:var(--pb-red-soft);color:var(--pb-red)}
-.pb-badge-amber{background:#fef3c7;color:var(--pb-amber)}
-.pb-badge-purple{background:#f3e8ff;color:var(--pb-purple)}
-
-/* ── FORM INPUTS ── */
-.pb-input{width:100%;height:44px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:0 14px;font-size:14px;color:var(--pb-text);outline:none;background:var(--pb-card);transition:border-color .15s}
-.pb-input:focus{border-color:var(--pb-blue)}
-.pb-select{width:100%;height:44px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:0 14px;font-size:14px;color:var(--pb-text);outline:none;background:var(--pb-card);cursor:pointer}
-.pb-select:focus{border-color:var(--pb-blue)}
-.pb-textarea{width:100%;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:10px 14px;font-size:14px;color:var(--pb-text);outline:none;resize:none;transition:border-color .15s}
-.pb-textarea:focus{border-color:var(--pb-blue)}
-.pb-label{font-size:12px;font-weight:700;color:var(--pb-text2);display:block;margin-bottom:5px}
-
-/* ── MODAL ── */
-.pb-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
-.pb-modal-bg.open{display:flex}
-.pb-modal{background:var(--pb-card);border-radius:16px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--pb-shadow-lg)}
-.pb-modal-head{padding:16px 18px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--pb-card);z-index:1;border-radius:16px 16px 0 0}
-.pb-modal-title{font-size:17px;font-weight:800;color:var(--pb-text)}
-.pb-modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;color:var(--pb-text2)}
-.pb-modal-body{padding:18px}
-
-/* ── TOAST ── */
-.pb-toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#fff;padding:10px 20px;border-radius:var(--pb-pill);font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center;backdrop-filter:blur(8px)}
-.pb-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── BOTTOM NAV ── */
-.pb-bottomnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);display:none;align-items:center;justify-content:space-around;z-index:400}
-@media(max-width:768px){.pb-bottomnav{display:flex}}
-.pb-bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px;border-radius:var(--pb-radius-sm);border:none;background:none}
-.pb-bnav-item i{font-size:22px;color:var(--pb-text3)}
-.pb-bnav-item.active i{color:var(--pb-blue)}
-.pb-bnav-label{font-size:9px;font-weight:600;color:var(--pb-text3)}
-.pb-bnav-item.active .pb-bnav-label{color:var(--pb-blue)}
-
-/* ── PAGE LAYOUT ── */
-.pb-page-wrap{padding-top:var(--pb-nav-h);padding-bottom:60px;min-height:100vh}
-.pb-container{max-width:1100px;margin:0 auto;padding:20px 16px}
-
-/* ── SECTION HEADERS ── */
-.pb-section-title{font-size:18px;font-weight:800;color:var(--pb-text);margin-bottom:14px}
-.pb-divider{height:1px;background:var(--pb-border);margin:12px 0}
-
-/* ── HERO BANNER ── */
-.pb-hero{background:var(--pb-blue);position:relative;overflow:hidden;padding:40px 20px}
-.pb-hero-dark{background:var(--pb-text)}
-.pb-hero::before{content:'';position:absolute;inset:0;opacity:.12}
-.pb-hero-inner{position:relative;z-index:1}
-.pb-hero h1{font-size:clamp(24px,4vw,36px);font-weight:900;color:#fff;margin-bottom:8px}
-.pb-hero p{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:20px}
-
-/* ── DROPDOWN ── */
-.pb-dropdown{position:relative}
-.pb-dropdown-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius);box-shadow:var(--pb-shadow-md);z-index:100;max-height:260px;overflow-y:auto;display:none}
-.pb-dropdown-menu.open{display:block}
-.pb-dropdown-item{padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--pb-bg)}
-.pb-dropdown-item:hover{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.pb-dropdown-item:last-child{border-bottom:none}
-
-</style>
-<script>
-/* ═══════════════════════════════════════════════
-   PAWBOOK SHARED UTILITIES
-   Include after api.js on every page
-═══════════════════════════════════════════════ */
-
-// ── NAVIGATION ────────────────────────────────
-function goTo(p){window.location.href=p;}
-
-function pbNavBar(activePage) {
-  var pages = {
-    home:'07_home.html', groups:'03_groups.html',
-    marketplace:'09_marketplace.html', vet:'11_vet_booking.html',
-    notifications:'12_notifications.html'
-  };
-  var tabs = [
-    {key:'home', icon:'ti-home', label:'Home'},
-    {key:'groups', icon:'ti-users', label:'Groups'},
-    {key:'marketplace', icon:'ti-building-store', label:'Shop'},
-    {key:'vet', icon:'ti-stethoscope', label:'Vet'},
-    {key:'notifications', icon:'ti-bell', label:'Alerts'},
-  ];
-  return tabs.map(function(t){
-    var isActive = t.key === activePage;
-    return '<button class="pb-nav-tab'+(isActive?' active':'')+'" onclick="goTo(\''+pages[t.key]+'\')" title="'+t.label+'"><i class="ti '+t.icon+'"></i></button>';
-  }).join('');
-}
-
-function pbBottomNav(activePage) {
-  var pages = {
-    home:'07_home.html', groups:'03_groups.html',
-    vet:'11_vet_booking.html', notifications:'12_notifications.html',
-    profile:'08_pet_profile.html'
-  };
-  var tabs = [
-    {key:'home', icon:'ti-home', label:'Home'},
-    {key:'groups', icon:'ti-users', label:'Groups'},
-    {key:'vet', icon:'ti-stethoscope', label:'Vet'},
-    {key:'notifications', icon:'ti-bell', label:'Alerts'},
-    {key:'profile', icon:'ti-user-circle', label:'Me'},
-  ];
-  return tabs.map(function(t){
-    var isActive = t.key === activePage;
-    return '<button class="pb-bnav-item'+(isActive?' active':'')+'" onclick="goTo(\''+pages[t.key]+'\')"><i class="ti '+t.icon+'"></i><span class="pb-bnav-label">'+t.label+'</span></button>';
-  }).join('');
-}
-
-// ── TOAST ────────────────────────────────────
-function toast(msg, type) {
-  var t = document.getElementById('pb-toast');
-  if(!t) {
-    t = document.createElement('div');
-    t.id = 'pb-toast';
-    t.className = 'pb-toast';
-    document.body.appendChild(t);
-  }
-  var bg = type==='error'?'#ef4444':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
-  t.style.background = bg;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 2800);
-}
-
-// ── MODAL HELPERS ────────────────────────────
-function openModal(id) {
-  var m = document.getElementById(id);
-  if(m) { m.classList.add('open'); document.body.style.overflow='hidden'; }
-}
-function closeModal(id) {
-  var m = document.getElementById(id);
-  if(m) { m.classList.remove('open'); document.body.style.overflow=''; }
-}
-
-// ── CITY DROPDOWN DATA ────────────────────────
-var PB_CITIES = {
-  'India': {
-    'Delhi': ['New Delhi','Gurgaon','Noida','Faridabad','Ghaziabad'],
-    'Maharashtra': ['Mumbai','Pune','Nagpur','Nashik','Aurangabad'],
-    'Karnataka': ['Bangalore','Mysore','Hubli','Mangalore','Belgaum'],
-    'Tamil Nadu': ['Chennai','Coimbatore','Madurai','Trichy','Salem'],
-    'Telangana': ['Hyderabad','Warangal','Nizamabad','Karimnagar'],
-    'West Bengal': ['Kolkata','Howrah','Durgapur','Asansol'],
-    'Gujarat': ['Ahmedabad','Surat','Vadodara','Rajkot','Gandhinagar'],
-    'Rajasthan': ['Jaipur','Jodhpur','Udaipur','Kota','Ajmer'],
-    'Uttar Pradesh': ['Lucknow','Kanpur','Agra','Varanasi','Allahabad'],
-    'Punjab': ['Chandigarh','Ludhiana','Amritsar','Jalandhar'],
-    'Kerala': ['Thiruvananthapuram','Kochi','Kozhikode','Thrissur'],
-  },
-  'USA': {
-    'California': ['Los Angeles','San Francisco','San Diego','Sacramento','San Jose'],
-    'New York': ['New York City','Buffalo','Rochester','Albany'],
-    'Texas': ['Houston','Dallas','Austin','San Antonio','Fort Worth'],
-    'Florida': ['Miami','Orlando','Tampa','Jacksonville'],
-    'Illinois': ['Chicago','Springfield','Rockford'],
-  },
-  'UK': {
-    'England': ['London','Manchester','Birmingham','Liverpool','Leeds','Bristol'],
-    'Scotland': ['Edinburgh','Glasgow','Aberdeen'],
-    'Wales': ['Cardiff','Swansea'],
-  },
-  'Australia': {
-    'New South Wales': ['Sydney','Newcastle','Wollongong'],
-    'Victoria': ['Melbourne','Geelong','Ballarat'],
-    'Queensland': ['Brisbane','Gold Coast','Cairns'],
-    'Western Australia': ['Perth','Fremantle'],
-  },
-  'Canada': {
-    'Ontario': ['Toronto','Ottawa','Hamilton','London'],
-    'British Columbia': ['Vancouver','Victoria','Kelowna'],
-    'Quebec': ['Montreal','Quebec City','Laval'],
-    'Alberta': ['Calgary','Edmonton'],
-  },
-  'Singapore': {'Singapore': ['Singapore City','Jurong','Tampines','Woodlands']},
-  'UAE': {
-    'Dubai': ['Dubai City','Deira','Bur Dubai','Jumeirah'],
-    'Abu Dhabi': ['Abu Dhabi City','Al Ain'],
-  },
-};
-
-// ── EMERGENCY NUMBERS ────────────────────────
-var PB_EMERGENCY = {
-  'India': {
-    'Delhi': [{name:'Animal Welfare Board Helpline',no:'1962',type:'govt'},{name:'Delhi Animal Hospital',no:'+91 11 2584 7200',type:'hospital'},{name:'Friendicoes SECA',no:'+91 11 2463 5945',type:'shelter'},{name:'Wildlife SOS',no:'+91 98005 44477',type:'wildlife'}],
-    'Maharashtra': [{name:'PETA India Helpline',no:'+91 98201 22602',type:'ngo'},{name:'Mumbai SPCA',no:'+91 22 2413 6640',type:'shelter'},{name:'Animal Welfare Hotline',no:'1962',type:'govt'}],
-    'Karnataka': [{name:'CUPA Bangalore',no:'+91 80 2341 0386',type:'shelter'},{name:'BBMP Animal Helpline',no:'+91 80 2295 5052',type:'govt'}],
-    'Tamil Nadu': [{name:'Blue Cross of India',no:'+91 44 2235 1006',type:'shelter'},{name:'Animal Welfare Board',no:'1962',type:'govt'}],
-    'All India': [{name:'Animal Welfare Board of India',no:'1962',type:'govt'},{name:'PETA India',no:'+91 98201 22602',type:'ngo'},{name:'Wildlife Crime Control Bureau',no:'+91 11 2436 2625',type:'govt'}],
-  },
-  'USA': {
-    'All USA': [{name:'ASPCA Emergency',no:'(888) 426-4435',type:'ngo'},{name:'Humane Society',no:'(202) 452-1100',type:'ngo'},{name:'Animal Poison Control',no:'(888) 426-4435',type:'emergency'}],
-    'California': [{name:'LA Animal Services',no:'(888) 452-7381',type:'govt'},{name:'SF SPCA',no:'(415) 554-3000',type:'shelter'}],
-    'New York': [{name:'NYC Animal Care Centers',no:'(212) 788-4000',type:'govt'},{name:'ASPCA NYC',no:'(212) 876-7700',type:'ngo'}],
-  },
-  'UK': {
-    'All UK': [{name:'RSPCA Emergency',no:'0300 1234 999',type:'ngo'},{name:'PDSA Vet Line',no:'0800 731 2502',type:'ngo'},{name:'British Vet Association',no:'020 7636 6541',type:'govt'}],
-    'England': [{name:'Dogs Trust',no:'020 7837 0006',type:'shelter'},{name:'Cats Protection',no:'03000 12 12 12',type:'shelter'}],
-  },
-  'Australia': {
-    'All Australia': [{name:'RSPCA Australia',no:'(02) 6282 8300',type:'ngo'},{name:'Animal Ethics',no:'1300 369 711',type:'govt'}],
-    'New South Wales': [{name:'NSW RSPCA',no:'(02) 9770 7555',type:'shelter'},{name:'Sydney Animal Hospital',no:'(02) 9519 4010',type:'hospital'}],
-  },
-  'Canada': {
-    'All Canada': [{name:'Canadian Humane Society',no:'(613) 224-8072',type:'ngo'},{name:'SPCA Canada',no:'1-833-722-7722',type:'ngo'}],
-    'Ontario': [{name:'Toronto Humane Society',no:'(416) 392-2273',type:'shelter'},{name:'Ottawa Humane Society',no:'(613) 725-3166',type:'shelter'}],
-  },
-  'UAE': {
-    'All UAE': [{name:'Dubai Municipality Animal',no:'800 900',type:'govt'},{name:'Emirates Animal Welfare',no:'+971 4 347 5536',type:'ngo'}],
-    'Dubai': [{name:'Dubai Pet Rescue',no:'+971 55 549 1986',type:'shelter'},{name:'K9 Friends Dubai',no:'+971 4 340 8402',type:'shelter'}],
-  },
-  'Singapore': {
-    'Singapore': [{name:'SPCA Singapore',no:'6287 5355',type:'shelter'},{name:'AVS Emergency',no:'1800 476 1600',type:'govt'},{name:'Animal Concern Research',no:'6974 1981',type:'ngo'}],
-  },
-};
-
-// ── CITY SELECTOR BUILDER ─────────────────────
-function buildCitySelector(countryId, stateId, cityId, onchange) {
-  var countries = Object.keys(PB_CITIES);
-  var countryHtml = '<select class="pb-select" id="'+countryId+'" onchange="pbUpdateStates(\''+countryId+'\',\''+stateId+'\',\''+cityId+'\')">';
-  countryHtml += '<option value="">🌍 Select Country</option>';
-  countries.forEach(function(c){ countryHtml += '<option>'+c+'</option>'; });
-  countryHtml += '</select>';
-
-  var stateHtml = '<select class="pb-select" id="'+stateId+'" onchange="pbUpdateCities(\''+countryId+'\',\''+stateId+'\',\''+cityId+'\')" disabled><option value="">Select State/Region</option></select>';
-  var cityHtml = '<select class="pb-select" id="'+cityId+'" disabled><option value="">Select City</option></select>';
-
-  return {country: countryHtml, state: stateHtml, city: cityHtml};
-}
-
-function pbUpdateStates(countryId, stateId, cityId) {
-  var country = document.getElementById(countryId).value;
-  var stateEl = document.getElementById(stateId);
-  var cityEl = document.getElementById(cityId);
-  stateEl.innerHTML = '<option value="">Select State/Region</option>';
-  cityEl.innerHTML = '<option value="">Select City</option>';
-  cityEl.disabled = true;
-  if(!country || !PB_CITIES[country]) { stateEl.disabled = true; return; }
-  stateEl.disabled = false;
-  Object.keys(PB_CITIES[country]).forEach(function(s){
-    stateEl.innerHTML += '<option>'+s+'</option>';
-  });
-}
-
-function pbUpdateCities(countryId, stateId, cityId) {
-  var country = document.getElementById(countryId).value;
-  var state = document.getElementById(stateId).value;
-  var cityEl = document.getElementById(cityId);
-  cityEl.innerHTML = '<option value="">Select City</option>';
-  if(!country || !state || !PB_CITIES[country] || !PB_CITIES[country][state]) { cityEl.disabled = true; return; }
-  cityEl.disabled = false;
-  PB_CITIES[country][state].forEach(function(c){
-    cityEl.innerHTML += '<option>'+c+'</option>';
-  });
-}
-
-// ── EMERGENCY NUMBER LOOKUP ───────────────────
-function pbGetEmergencyNumbers(country, region) {
-  if(!country || !PB_EMERGENCY[country]) return [];
-  var results = [];
-  var allKey = 'All ' + country;
-  if(PB_EMERGENCY[country][allKey]) results = results.concat(PB_EMERGENCY[country][allKey]);
-  if(region && PB_EMERGENCY[country][region]) results = results.concat(PB_EMERGENCY[country][region]);
-  return results;
-}
-
-// ── NEARBY SHELTERS ───────────────────────────
-var PB_SHELTERS = {
-  'Delhi': [{name:'Friendicoes SECA',addr:'6/7 Siri Institutional Area',phone:'+91 11 2463 5945',animals:'Dogs,Cats'},{name:'Jeevashram',addr:'Shiv Vihar, Delhi',phone:'+91 98100 45022',animals:'All animals'},{name:'Charlie's Animal Rescue',addr:'Dwarka, New Delhi',phone:'+91 95992 03433',animals:'Dogs,Cats,Birds'}],
-  'Mumbai': [{name:'World For Animals',addr:'Oshiwara, Andheri West',phone:'+91 98192 89920',animals:'Dogs,Cats'},{name:'In Defence of Animals',addr:'Bandra West',phone:'+91 22 2641 3528',animals:'Dogs'}],
-  'Bangalore': [{name:'CUPA',addr:'Outer Ring Road, Devarabeesanahalli',phone:'+91 80 2341 0386',animals:'All animals'},{name:'Animal Rahat',addr:'Electronic City',phone:'+91 80 6741 8100',animals:'Horses,Donkeys,Bulls'}],
-  'Chennai': [{name:'Blue Cross of India',addr:'Velachery Main Road',phone:'+91 44 2235 1006',animals:'All animals'},{name:'PAWS Chennai',addr:'Anna Nagar',phone:'+91 44 2626 4460',animals:'Dogs,Cats'}],
-  'London': [{name:'Battersea Dogs & Cats Home',addr:'Battersea Park Road',phone:'020 7622 3626',animals:'Dogs,Cats'},{name:'RSPCA London',addr:'Southall',phone:'0300 1234 999',animals:'All animals'}],
-  'New York City': [{name:'NYC ACC Manhattan',addr:'326 E 110th St',phone:'(212) 788-4000',animals:'All animals'},{name:'ASPCA NYC',addr:'424 E 92nd St',phone:'(212) 876-7700',animals:'All animals'}],
-  'Sydney': [{name:'RSPCA NSW',addr:'Yagoona',phone:'(02) 9770 7555',animals:'All animals'},{name:'Sydney Dogs & Cats Home',addr:'St Peters',phone:'(02) 9587 9611',animals:'Dogs,Cats'}],
-};
-
-function pbGetNearbyShelters(city) {
-  return PB_SHELTERS[city] || [];
-}
-
-</script>
-
-
-<style>
-/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-:root{
-  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
-  --purple:#8b5cf6;--pink:#ec4899;
-  --green:#22c55e;--green-soft:#dcfce7;
-  --red:#ef4444;--amber:#f59e0b;
-  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --bg:#f0f2f5;--card:#fff;
-  --border:#e4e6eb;--border-soft:#f0f2f5;
-  --text:#050505;--text2:#65676b;--text3:#8a8d91;
-  --radius:12px;--radius-sm:8px;--pill:999px;
-  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --shadow-md:0 4px 20px rgba(0,0,0,.1);
-}
-body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
-
-/* Topnav */
-.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
-.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
-.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
-.topnav-tab.active{color:var(--blue)!important}
-.topnav-tab.active::after{background:var(--blue)!important}
-
-/* Buttons - make all buttons rounder and Facebook-style */
-.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
-button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
-.btn-blue{background:var(--blue)!important;color:#fff!important}
-.btn-blue:hover{background:var(--blue-dark)!important}
-.btn-gray{background:var(--bg)!important;color:var(--text)!important}
-
-/* Cards - cleaner */
-.card,.sidebar-card,.scard,.filter-section,.pb-card{
-  border-radius:var(--radius)!important;
-  border:1px solid var(--border)!important;
-  box-shadow:var(--shadow)!important;
-  background:var(--card)!important;
-}
-
-/* Badges - rounder */
-.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
-.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
-.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
-
-/* Post actions */
-.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
-.post-action.liked,.liked{color:var(--blue)!important}
-
-/* Story cards */
-.story-card{border-radius:var(--radius)!important}
-.story-card-av,.story-av{border:3px solid var(--blue)!important}
-
-/* Bottom nav */
-.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
-.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
-.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
-
-/* Market cards */
-.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
-
-/* Inputs */
-input,textarea,select{font-family:'Inter',sans-serif!important}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
-
-/* Modals */
-.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
-.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
-
-/* Progress/fill */
-.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
-
-/* Tab bars */
-.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
-
-/* Notification unread */
-.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
-
-/* Vet-specific */
-.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-</style>
-
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PawBook — Adopt a Pet</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -661,7 +198,6 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
 .trend-link { color:var(--blue); font-weight:700; font-size:13px; cursor:pointer; display:block; margin:4px 0; }
 .trend-link:hover { text-decoration:underline; }
 </style>
-<link rel="stylesheet" href="mobile.css">
 </head>
 <body>
 
@@ -680,6 +216,42 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
     <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
   </div>
 </nav>
+<!-- SHELTER FINDER -->
+<div style="background:#fff;border-bottom:1px solid #e4e6eb;padding:14px 16px">
+  <div style="font-size:14px;font-weight:800;color:#050505;margin-bottom:10px">🏠 Find Adoption Shelters Near You</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+    <div style="flex:1;min-width:120px">
+      <label style="font-size:11px;font-weight:700;color:#65676b;display:block;margin-bottom:4px">Country</label>
+      <select id="sh-country" onchange="shUpdateStates()" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;outline:none;background:#fff;cursor:pointer">
+        <option value="">Select Country</option>
+        <option value="India">India</option>
+        <option value="USA">USA</option>
+        <option value="UK">UK</option>
+        <option value="Australia">Australia</option>
+        <option value="Canada">Canada</option>
+        <option value="UAE">UAE</option>
+        <option value="Singapore">Singapore</option>
+      </select>
+    </div>
+    <div style="flex:1;min-width:120px">
+      <label style="font-size:11px;font-weight:700;color:#65676b;display:block;margin-bottom:4px">State</label>
+      <select id="sh-state" disabled onchange="shUpdateCities()" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;outline:none;background:#f0f2f5;cursor:not-allowed">
+        <option value="">Select country first</option>
+      </select>
+    </div>
+    <div style="flex:1;min-width:120px">
+      <label style="font-size:11px;font-weight:700;color:#65676b;display:block;margin-bottom:4px">City</label>
+      <select id="sh-city" disabled onchange="shShowShelters()" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;outline:none;background:#f0f2f5;cursor:not-allowed">
+        <option value="">Select state first</option>
+      </select>
+    </div>
+    <button onclick="shShowShelters()" style="height:40px;padding:0 20px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Find Shelters</button>
+  </div>
+  <div id="sh-results" style="margin-top:12px;display:none">
+    <div style="font-size:12px;font-weight:700;color:#65676b;margin-bottom:8px" id="sh-title"></div>
+    <div id="sh-list" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+</div>
 
 <!-- HERO -->
 <div class="adopt-hero">
@@ -730,7 +302,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
             <div class="feat-name">Max</div>
             <div class="feat-meta">2 Years Old · Male · Beagle</div>
             <div class="feat-avail">3 available for Adoption</div>
-            <button class="feat-adopt-btn" onclick="adoptMe(this)">Adopt Me 🐾</button>
+            <button class="feat-adopt-btn">Adopt Me</button>
           </div>
         </div>
         <!-- Daisy -->
@@ -743,7 +315,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
             <div class="feat-name">Daisy</div>
             <div class="feat-meta">3 Months Old · Female · Persian</div>
             <div class="feat-avail">3 Months old · Female</div>
-            <button class="feat-adopt-btn" onclick="adoptMe(this)">Adopt Me 🐾</button>
+            <button class="feat-adopt-btn">Adopt Me</button>
           </div>
         </div>
         <!-- Gizmo -->
@@ -756,7 +328,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
             <div class="feat-name">Gizmo</div>
             <div class="feat-meta">2 Years Old · Male · Labrador Mix</div>
             <div class="feat-avail">4 available for Adoption</div>
-            <button class="feat-adopt-btn" onclick="adoptMe(this)">Adopt Me 🐾</button>
+            <button class="feat-adopt-btn">Adopt Me</button>
           </div>
         </div>
       </div>
@@ -775,7 +347,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="avail-body">
             <div class="avail-name">Buddy</div>
             <div class="avail-meta">1 Year · Male · Labrador Mix</div>
-            <div class="avail-btns"><button class="a-details" onclick="viewDetails(this)">View Details</button><button class="a-adopt" onclick="inquire(this)">Inquire</button></div>
+            <div class="avail-btns"><button class="a-details">Details</button><button class="a-adopt">Inquirm</button></div>
           </div>
         </div>
         <!-- Mittens -->
@@ -787,7 +359,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="avail-body">
             <div class="avail-name">Mittens</div>
             <div class="avail-meta">8 Year · Senior</div>
-            <div class="avail-btns"><button class="a-details" onclick="viewDetails(this)">View Details</button><button class="a-adopt">Adoptte</button></div>
+            <div class="avail-btns"><button class="a-details">Details</button><button class="a-adopt">Adoptte</button></div>
           </div>
         </div>
         <!-- Coco -->
@@ -798,7 +370,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="avail-body">
             <div class="avail-name">Coco</div>
             <div class="avail-meta">3 Months · Male</div>
-            <div class="avail-btns"><button class="a-details" onclick="viewDetails(this)">View Details</button><button class="a-inquire" onclick="inquire(this)">Inquire</button></div>
+            <div class="avail-btns"><button class="a-details">Details</button><button class="a-inquire">Inquire</button></div>
           </div>
         </div>
         <!-- Luna -->
@@ -809,7 +381,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="avail-body">
             <div class="avail-name">Luna</div>
             <div class="avail-meta">2 Years · Female</div>
-            <div class="avail-btns"><button class="a-details" onclick="viewDetails(this)">View Details</button><button class="a-inquire" onclick="inquire(this)">Inquire</button></div>
+            <div class="avail-btns"><button class="a-details">Details</button><button class="a-inquire">Inquire</button></div>
           </div>
         </div>
         <!-- Rocky -->
@@ -820,7 +392,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="avail-body">
             <div class="avail-name">Rocky</div>
             <div class="avail-meta">4 Years · Hhale</div>
-            <div class="avail-btns"><button class="a-details" onclick="viewDetails(this)">View Details</button><button class="a-inquire" onclick="inquire(this)">Inquire</button></div>
+            <div class="avail-btns"><button class="a-details">Details</button><button class="a-inquire">Inquire</button></div>
           </div>
         </div>
         <!-- Bella -->
@@ -831,7 +403,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="avail-body">
             <div class="avail-name">Bella</div>
             <div class="avail-meta">6 Months · Male</div>
-            <div class="avail-btns"><button class="a-details" onclick="viewDetails(this)">View Details</button><button class="a-inquire" onclick="inquire(this)">Inquire</button></div>
+            <div class="avail-btns"><button class="a-details">Details</button><button class="a-inquire">Inquire</button></div>
           </div>
         </div>
       </div>
@@ -920,315 +492,196 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
 <div class="toast-wrap"></div>
 <script src="api.js"></script>
 <script>
-function goTo(page){ window.location.href = page; }
 function setTab(el){
   document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
 }
-
-// ── Wire Adoption Page ────────────────────────────────────────────────────────
-(async function wireAdoption() {
-
-  // Species images map
-  const speciesImg = {
-    dog:    'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80',
-    cat:    'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80',
-    rabbit: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&q=80',
-    bird:   'https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=300&q=80',
-    default:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'
-  };
-
-  function getImg(species, avatarUrl) {
-    if (avatarUrl) return avatarUrl;
-    return speciesImg[species?.toLowerCase()] || speciesImg.default;
+</script>
+<script>
+var SH_CITIES = {
+  India: {
+    Delhi: ["New Delhi","Gurgaon","Noida","Faridabad"],
+    Maharashtra: ["Mumbai","Pune","Nagpur","Nashik"],
+    Karnataka: ["Bangalore","Mysore","Hubli"],
+    "Tamil Nadu": ["Chennai","Coimbatore","Madurai"],
+    Telangana: ["Hyderabad","Warangal"],
+    Gujarat: ["Ahmedabad","Surat","Vadodara"],
+    "West Bengal": ["Kolkata","Howrah"],
+    Rajasthan: ["Jaipur","Jodhpur"],
+    Punjab: ["Chandigarh","Ludhiana","Amritsar"],
+    Kerala: ["Kochi","Thiruvananthapuram"]
+  },
+  USA: {
+    California: ["Los Angeles","San Francisco","San Diego"],
+    "New York": ["New York City","Buffalo"],
+    Texas: ["Houston","Dallas","Austin"],
+    Florida: ["Miami","Orlando"],
+    Illinois: ["Chicago"]
+  },
+  UK: {
+    England: ["London","Manchester","Birmingham","Liverpool"],
+    Scotland: ["Edinburgh","Glasgow"],
+    Wales: ["Cardiff"]
+  },
+  Australia: {
+    "New South Wales": ["Sydney","Newcastle"],
+    Victoria: ["Melbourne","Geelong"],
+    Queensland: ["Brisbane","Gold Coast"],
+    "Western Australia": ["Perth"]
+  },
+  Canada: {
+    Ontario: ["Toronto","Ottawa","Hamilton"],
+    "British Columbia": ["Vancouver","Victoria"],
+    Quebec: ["Montreal","Quebec City"],
+    Alberta: ["Calgary","Edmonton"]
+  },
+  UAE: {
+    Dubai: ["Dubai City","Jumeirah","Deira"],
+    "Abu Dhabi": ["Abu Dhabi City","Al Ain"]
+  },
+  Singapore: {
+    Singapore: ["Singapore City","Jurong","Tampines"]
   }
+};
 
-  function speciesEmoji(s) {
-    const m = {dog:'🐕',cat:'🐈',rabbit:'🐇',bird:'🦜',fish:'🐠',hamster:'🐹'};
-    return m[s?.toLowerCase()] || '🐾';
+var SH_DATA = {
+  "New Delhi": [
+    {name:"Friendicoes SECA",addr:"6/7 Siri Institutional Area, New Delhi",phone:"+91-11-24635945",animals:"Dogs, Cats, All"},
+    {name:"Jeevashram",addr:"Shiv Vihar Extension, New Delhi",phone:"+91-9810045022",animals:"All animals"},
+    {name:"Charlie Animal Rescue",addr:"Dwarka Sector 5, New Delhi",phone:"+91-9599203433",animals:"Dogs, Cats"}
+  ],
+  Mumbai: [
+    {name:"World For Animals",addr:"Oshiwara, Andheri West",phone:"+91-9819289920",animals:"Dogs, Cats"},
+    {name:"In Defence of Animals",addr:"Bandra West",phone:"+91-22-26413528",animals:"Dogs"}
+  ],
+  Bangalore: [
+    {name:"CUPA Shelter",addr:"Outer Ring Road, Devarabeesanahalli",phone:"+91-80-23410386",animals:"All animals"},
+    {name:"Cessna Lifeline",addr:"Bellandur, Bangalore",phone:"+91-80-25735432",animals:"Dogs, Cats"}
+  ],
+  Chennai: [
+    {name:"Blue Cross of India",addr:"Velachery Main Road",phone:"+91-44-22351006",animals:"All animals"},
+    {name:"PAWS Chennai",addr:"Anna Nagar",phone:"+91-44-26264460",animals:"Dogs, Cats"}
+  ],
+  Hyderabad: [
+    {name:"CUPA Hyderabad",addr:"Madhapur",phone:"+91-9848022222",animals:"Dogs, Cats"}
+  ],
+  London: [
+    {name:"Battersea Dogs and Cats Home",addr:"Battersea Park Road",phone:"020-7622-3626",animals:"Dogs, Cats"},
+    {name:"RSPCA London",addr:"Southall",phone:"0300-1234-999",animals:"All animals"}
+  ],
+  "New York City": [
+    {name:"NYC ACC Manhattan",addr:"326 E 110th St",phone:"212-788-4000",animals:"All animals"},
+    {name:"ASPCA NYC",addr:"424 E 92nd St",phone:"212-876-7700",animals:"All animals"}
+  ],
+  Sydney: [
+    {name:"RSPCA NSW",addr:"Yagoona",phone:"02-9770-7555",animals:"All animals"},
+    {name:"Sydney Dogs and Cats Home",addr:"St Peters",phone:"02-9587-9611",animals:"Dogs, Cats"}
+  ],
+  "Singapore City": [
+    {name:"SPCA Singapore",addr:"Mount Vernon Road",phone:"6287-5355",animals:"All animals"},
+    {name:"Animal Lovers League",addr:"Jalan Lekar",phone:"6791-1981",animals:"Dogs, Cats"}
+  ]
+};
+
+function shUpdateStates() {
+  var country = document.getElementById("sh-country").value;
+  var stateEl = document.getElementById("sh-state");
+  var cityEl = document.getElementById("sh-city");
+  while (stateEl.options.length > 0) stateEl.remove(0);
+  while (cityEl.options.length > 0) cityEl.remove(0);
+  var so = document.createElement("option"); so.value=""; so.textContent="Select state"; stateEl.appendChild(so);
+  var co = document.createElement("option"); co.value=""; co.textContent="Select city"; cityEl.appendChild(co);
+  cityEl.disabled = true; cityEl.style.background = "#f0f2f5"; cityEl.style.cursor = "not-allowed";
+  document.getElementById("sh-results").style.display = "none";
+  if (!country || !SH_CITIES[country]) {
+    stateEl.disabled = true; stateEl.style.background = "#f0f2f5"; stateEl.style.cursor = "not-allowed"; return;
   }
-
-  function ageLabel(dob) {
-    if (!dob) return '';
-    const months = Math.floor((Date.now() - new Date(dob)) / (30*24*3600*1000));
-    if (months < 12) return `${months} months`;
-    return `${Math.floor(months/12)} yr${Math.floor(months/12)>1?'s':''}`;
-  }
-
-  // Try to load real adoption listings from AdoptionListing table
-  let listings = [];
-  try {
-    // Try the adoption endpoint
-    const res = await apiFetch('/adoption?limit=20&status=available');
-    listings = res?.data || [];
-  } catch(e) {
-    // Fallback: use lost pet alerts that are found/returned as potential adoptions
-    try {
-      const res2 = await LostPetAPI.list({ status:'active', limit:12 });
-      listings = (res2?.data || []).map(a => ({
-        ...a,
-        adoption_status: 'available',
-        name: a.pet_name,
-        _fromAlert: true
-      }));
-    } catch {}
-  }
-
-  if (!listings.length) {
-    // Keep static content, just wire buttons
-    wireStaticButtons();
-    return;
-  }
-
-  // Replace featured grid
-  const featGrid = document.querySelector('.featured-grid');
-  if (featGrid && listings.length >= 3) {
-    const featured = listings.slice(0,3);
-    featGrid.innerHTML = featured.map((p,i) => `
-      <div class="feat-card">
-        <div class="feat-img-wrap">
-          <img src="${getImg(p.species, p.avatar_url || p.pet_avatar)}"
-            onerror="this.src='${speciesImg.default}'" alt="${p.name}">
-          <div class="feat-badge" style="${i===2?'background:var(--red)':''}">
-            ${i===2?'🔴 Urgent':'🌟 Featured'}
-          </div>
-        </div>
-        <div class="feat-body">
-          <div class="feat-name">${p.name} ${speciesEmoji(p.species)}</div>
-          <div class="feat-meta">${ageLabel(p.date_of_birth)||'Young'} · ${p.gender||'Unknown'} · ${p.breed||p.species}</div>
-          <div class="feat-avail">${p.shelter_name || 'Shelter Pet'}</div>
-          <button class="feat-adopt-btn" onclick="inquireAdopt('${p.pet_id||p.alert_id}','${p.name}')">
-            Adopt Me 🐾
-          </button>
-        </div>
-      </div>`).join('');
-  }
-
-  // Replace available pets grid
-  const availGrid = document.querySelector('.avail-grid');
-  if (availGrid && listings.length > 3) {
-    const available = listings.slice(3);
-    availGrid.innerHTML = available.map((p,i) => `
-      <div class="avail-card">
-        <div class="avail-img-wrap">
-          <img src="${getImg(p.species, p.avatar_url || p.pet_avatar)}"
-            onerror="this.src='${speciesImg.default}'" alt="${p.name}">
-          ${i < 2 ? `<div class="avail-tag" style="background:var(--red)">Urgent</div>` :
-            `<div class="avail-tag" style="background:#059669">Available</div>`}
-        </div>
-        <div class="avail-body">
-          <div class="avail-name">${p.name} ${speciesEmoji(p.species)}</div>
-          <div class="avail-meta">${ageLabel(p.date_of_birth)||'Young'} · ${p.gender||''} · ${p.breed||p.species}</div>
-          <div class="avail-btns">
-            <button class="a-details" onclick="viewPet('${p.pet_id||p.alert_id}','${p.name}')">Details</button>
-            <button class="a-adopt" onclick="inquireAdopt('${p.pet_id||p.alert_id}','${p.name}')">Adopt</button>
-          </div>
-        </div>
-      </div>`).join('');
-  }
-
-  wireStaticButtons();
-})();
-
-function wireStaticButtons() {
-  // Wire all static Adopt Me buttons
-  document.querySelectorAll('.feat-adopt-btn, .a-adopt').forEach(btn => {
-    if (!btn.onclick) btn.onclick = () => showAdoptModal();
-  });
-  document.querySelectorAll('.a-details').forEach(btn => {
-    if (!btn.onclick) btn.onclick = () => showAdoptModal();
+  stateEl.disabled = false; stateEl.style.background = "#fff"; stateEl.style.cursor = "pointer";
+  Object.keys(SH_CITIES[country]).forEach(function(s) {
+    var o = document.createElement("option"); o.value = s; o.textContent = s; stateEl.appendChild(o);
   });
 }
 
-function inquireAdopt(id, name) {
-  if (!Auth.isLoggedIn()) {
-    if (confirm(`Login to adopt ${name}. Go to login?`)) location.href = '01_login.html';
-    return;
+function shUpdateCities() {
+  var country = document.getElementById("sh-country").value;
+  var state = document.getElementById("sh-state").value;
+  var cityEl = document.getElementById("sh-city");
+  while (cityEl.options.length > 0) cityEl.remove(0);
+  var co = document.createElement("option"); co.value=""; co.textContent="Select city"; cityEl.appendChild(co);
+  document.getElementById("sh-results").style.display = "none";
+  if (!country || !state || !SH_CITIES[country] || !SH_CITIES[country][state]) {
+    cityEl.disabled = true; cityEl.style.background = "#f0f2f5"; cityEl.style.cursor = "not-allowed"; return;
   }
-  showAdoptModal(name);
+  cityEl.disabled = false; cityEl.style.background = "#fff"; cityEl.style.cursor = "pointer";
+  SH_CITIES[country][state].forEach(function(c) {
+    var o = document.createElement("option"); o.value = c; o.textContent = c; cityEl.appendChild(o);
+  });
 }
 
-function viewPet(id, name) {
-  showAdoptModal(name);
+function shShowShelters() {
+  var city = document.getElementById("sh-city").value;
+  var state = document.getElementById("sh-state").value;
+  var res = document.getElementById("sh-results");
+  var title = document.getElementById("sh-title");
+  var list = document.getElementById("sh-list");
+  var lookup = city || state;
+  if (!lookup) { res.style.display = "none"; return; }
+  var shelters = SH_DATA[lookup] || SH_DATA[city] || [];
+  title.textContent = shelters.length + " shelter(s) near " + (city || state);
+  list.innerHTML = "";
+  if (!shelters.length) {
+    var msg = document.createElement("div");
+    msg.style.cssText = "text-align:center;padding:16px;color:#65676b;font-size:13px";
+    msg.textContent = "No registered shelters found yet. Try a nearby city.";
+    list.appendChild(msg);
+  } else {
+    shelters.forEach(function(s) {
+      var card = document.createElement("div");
+      card.style.cssText = "display:flex;align-items:flex-start;gap:12px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e4e6eb";
+      var icon = document.createElement("div");
+      icon.style.cssText = "width:42px;height:42px;border-radius:10px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0";
+      icon.textContent = "🏠";
+      var info = document.createElement("div");
+      info.style.cssText = "flex:1;min-width:0";
+      var nm = document.createElement("div"); nm.style.cssText = "font-size:14px;font-weight:700;color:#050505"; nm.textContent = s.name;
+      var addr = document.createElement("div"); addr.style.cssText = "font-size:12px;color:#65676b;margin-top:2px"; addr.textContent = "📍 " + s.addr;
+      var animals = document.createElement("div"); animals.style.cssText = "font-size:12px;color:#1877F2;font-weight:600;margin-top:2px"; animals.textContent = "🐾 " + s.animals;
+      info.appendChild(nm); info.appendChild(addr); info.appendChild(animals);
+      var btns = document.createElement("div");
+      btns.style.cssText = "display:flex;flex-direction:column;gap:6px;flex-shrink:0";
+      var callBtn = document.createElement("button");
+      callBtn.style.cssText = "height:30px;padding:0 12px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:11px;font-weight:700;cursor:pointer";
+      callBtn.textContent = "📞 Call";
+      (function(phone) { callBtn.addEventListener("click", function() { window.open("tel:" + phone); }); })(s.phone);
+      var mapBtn = document.createElement("button");
+      mapBtn.style.cssText = "height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#050505;font-size:11px;font-weight:700;cursor:pointer";
+      mapBtn.textContent = "🗺 Map";
+      (function(name, addr) { mapBtn.addEventListener("click", function() { window.open("https://www.google.com/maps/search/" + encodeURIComponent(name + " " + addr), "_blank"); }); })(s.name, s.addr);
+      btns.appendChild(callBtn); btns.appendChild(mapBtn);
+      card.appendChild(icon); card.appendChild(info); card.appendChild(btns);
+      list.appendChild(card);
+    });
+  }
+  res.style.display = "block";
 }
 
-function showAdoptModal(name) {
-  const modal = document.createElement('div');
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';
-  modal.innerHTML = `
-    <div style="background:#fff;border-radius:16px;padding:28px;max-width:400px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.2)">
-      <div style="font-size:20px;font-weight:900;color:#1e293b;margin-bottom:4px">🐾 Adopt ${name||'This Pet'}</div>
-      <div style="font-size:13px;color:#64748b;margin-bottom:16px">Fill in your details and we'll connect you with the shelter.</div>
-      <input id="adopter-name" placeholder="Your Full Name" style="width:100%;height:44px;border-radius:10px;border:1.5px solid #e2e8f0;padding:0 12px;font-family:'Poppins',sans-serif;font-size:13px;margin-bottom:10px;outline:none">
-      <input id="adopter-phone" placeholder="Phone Number" type="tel" style="width:100%;height:44px;border-radius:10px;border:1.5px solid #e2e8f0;padding:0 12px;font-family:'Poppins',sans-serif;font-size:13px;margin-bottom:10px;outline:none">
-      <textarea id="adopter-msg" placeholder="Why do you want to adopt this pet?" style="width:100%;height:80px;border-radius:10px;border:1.5px solid #e2e8f0;padding:10px 12px;font-family:'Poppins',sans-serif;font-size:13px;margin-bottom:14px;outline:none;resize:none"></textarea>
-      <div style="display:flex;gap:8px">
-        <button onclick="this.closest('div[style*=fixed]').remove()"
-          style="flex:1;height:42px;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Cancel</button>
-        <button onclick="submitAdoption(this, '${name||'Pet'}')"
-          style="flex:1;height:42px;border-radius:10px;border:none;background:#6366f1;color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Submit Enquiry</button>
-      </div>
-    </div>`;
-  document.body.appendChild(modal);
-  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
-}
+function goTo(p) { window.location.href = p; }
 
-async function submitAdoption(btn, name) {
-  const adopter = document.getElementById('adopter-name')?.value?.trim();
-  const phone = document.getElementById('adopter-phone')?.value?.trim();
-  if (!adopter || !phone) { alert('Please fill in your name and phone number.'); return; }
-  btn.textContent = 'Submitting...'; btn.disabled = true;
-  await new Promise(r => setTimeout(r, 800));
-  btn.closest('div[style*="fixed"]').remove();
-  const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:12px 24px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.25);font-family:Poppins,sans-serif;text-align:center';
-  t.textContent = `✅ Enquiry submitted for ${name}! The shelter will contact you soon.`;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 4000);
-}
-
-// Wire adopt/donate/sponsor tabs
-function apiFetch(path, opts={}) {
-  const token = typeof Auth !== 'undefined' ? Auth.getToken() : null;
-  const headers = {'Content-Type':'application/json', ...opts.headers};
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  return fetch(`http://localhost:4000/api/v1${path}`, {...opts, headers}).then(r=>r.json());
-}
-</script>
-<script>
-function adoptMe(btn) {
-  const card = btn.closest('[class*="card"],[class*="item"],[class*="pet"]');
-  const name = card?.querySelector('[class*="name"],[class*="title"],h3,h4')?.textContent?.trim() || 'this pet';
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px';
-  overlay.innerHTML = `<div style="background:#fff;border-radius:16px;padding:24px;width:420px;max-width:100%">
-    <div style="font-size:18px;font-weight:900;margin-bottom:8px">🐾 Adopt ${name}</div>
-    <p style="font-size:13px;color:#64748b;margin-bottom:16px">Fill in your details and our team will contact you within 24 hours.</p>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <input id="ad-name" placeholder="Your full name *" style="height:42px;border-radius:10px;border:1.5px solid #e2e8f0;padding:0 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none">
-      <input id="ad-phone" placeholder="Phone number *" type="tel" style="height:42px;border-radius:10px;border:1.5px solid #e2e8f0;padding:0 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none">
-      <input id="ad-email" placeholder="Email address" type="email" style="height:42px;border-radius:10px;border:1.5px solid #e2e8f0;padding:0 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none">
-      <select id="ad-home" style="height:42px;border-radius:10px;border:1.5px solid #e2e8f0;padding:0 12px;font-family:'Poppins',sans-serif;font-size:13px;outline:none">
-        <option value="">Home type...</option>
-        <option>Apartment</option><option>House with garden</option><option>House without garden</option><option>Farm/Rural</option>
-      </select>
-      <textarea id="ad-msg" placeholder="Why do you want to adopt? (optional)" style="height:70px;border-radius:10px;border:1.5px solid #e2e8f0;padding:10px 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;resize:none"></textarea>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:14px">
-      <button onclick="this.closest('div[style*=fixed]').remove()" style="flex:1;height:42px;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Cancel</button>
-      <button onclick="submitAdoption(this,'${name}')" style="flex:1;height:42px;border-radius:10px;border:none;background:#1a4db3;color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Submit Application 🐾</button>
-    </div>
-  </div>`;
-  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
-  document.body.appendChild(overlay);
-}
-function submitAdoption(btn, name) {
-  const n = document.getElementById('ad-name')?.value?.trim();
-  const p = document.getElementById('ad-phone')?.value?.trim();
-  if (!n||!p) { toast('Please fill required fields','error'); return; }
-  btn.textContent='Submitting...';btn.disabled=true;
-  setTimeout(()=>{btn.closest('div[style*="fixed"]')?.remove();toast('✅ Application submitted! We'll call within 24 hours.','success');},1000);
-}
-function viewDetails(btn) {
-  const card = btn.closest('[class*="card"],[class*="item"]');
-  const name = card?.querySelector('[class*="name"],[class*="title"],h3,h4')?.textContent?.trim() || 'Pet';
-  toast('📋 Loading details for ' + name + '...','info');
-}
-function inquire(btn) { adoptMe(btn); }
-</script>
-<script>
-function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap;max-width:90vw;text-align:center';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
-</script>
-
-<!-- FIND NEARBY SHELTERS SECTION -->
-<div style="background:#fff;border-radius:12px;border:1px solid var(--pb-border);padding:18px;margin:16px 0;box-shadow:var(--pb-shadow)">
-  <div style="font-size:16px;font-weight:800;color:var(--pb-text);margin-bottom:14px;display:flex;align-items:center;gap:8px">
-    🏠 Find Adoption Shelters Near You
-  </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px">
-    <div>
-      <label class="pb-label">Country</label>
-      <select class="pb-select" id="sh-country" onchange="pbUpdateStates('sh-country','sh-state','sh-city');updateShelterList()">
-        <option value="">🌍 Country</option>
-        <option selected>India</option>
-        <option>USA</option><option>UK</option>
-        <option>Australia</option><option>Canada</option>
-        <option>UAE</option><option>Singapore</option>
-      </select>
-    </div>
-    <div>
-      <label class="pb-label">State</label>
-      <select class="pb-select" id="sh-state" onchange="pbUpdateCities('sh-country','sh-state','sh-city');updateShelterList()" disabled>
-        <option value="">Select State</option>
-      </select>
-    </div>
-    <div>
-      <label class="pb-label">City</label>
-      <select class="pb-select" id="sh-city" onchange="updateShelterList()" disabled>
-        <option value="">Select City</option>
-      </select>
-    </div>
-    <div style="display:flex;align-items:flex-end">
-      <button onclick="updateShelterList()" class="pb-btn pb-btn-blue pb-btn-full" style="height:44px">
-        <i class="ti ti-search"></i> Find Shelters
-      </button>
-    </div>
-  </div>
-  <div id="shelter-list-container"></div>
-</div>
-
-<script>
-// Pre-populate India/Delhi on load
-document.addEventListener('DOMContentLoaded', function(){
-  var shCountry = document.getElementById('sh-country');
-  if(shCountry) {
-    shCountry.value = 'India';
-    pbUpdateStates('sh-country','sh-state','sh-city');
-    setTimeout(function(){
-      var shState = document.getElementById('sh-state');
-      if(shState) { shState.value = 'Delhi'; pbUpdateCities('sh-country','sh-state','sh-city'); }
-      setTimeout(function(){
-        var shCity = document.getElementById('sh-city');
-        if(shCity) { shCity.value = 'New Delhi'; updateShelterList(); }
+document.addEventListener("DOMContentLoaded", function() {
+  var c = document.getElementById("sh-country");
+  if (c) {
+    c.value = "India";
+    shUpdateStates();
+    setTimeout(function() {
+      var s = document.getElementById("sh-state");
+      if (s) { s.value = "Delhi"; shUpdateCities(); }
+      setTimeout(function() {
+        var ci = document.getElementById("sh-city");
+        if (ci) { ci.value = "New Delhi"; shShowShelters(); }
       }, 100);
     }, 100);
   }
 });
-
-function updateShelterList() {
-  var city = document.getElementById('sh-city').value ||
-             document.getElementById('sh-state').value ||
-             document.getElementById('sh-country').value;
-  var container = document.getElementById('shelter-list-container');
-  if(!container) return;
-
-  // Map city names to shelter data keys
-  var cityMap = {'New Delhi':'Delhi','New York City':'New York City','Sydney':'Sydney','London':'London'};
-  var lookupCity = cityMap[city] || city;
-  var shelters = pbGetNearbyShelters(lookupCity);
-
-  if(!shelters.length) {
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--pb-text3);font-size:13px">No registered shelters found for this area yet.<br><button onclick="goTo('11_vet_booking.html')" class="pb-btn pb-btn-blue" style="margin-top:10px">Find a Vet Instead</button></div>';
-    return;
-  }
-
-  container.innerHTML = '<div style="font-size:13px;font-weight:700;color:var(--pb-text2);margin-bottom:10px">'+shelters.length+' shelter(s) found near '+city+'</div>' +
-    shelters.map(function(s){
-      return '<div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--pb-bg);border-radius:10px;border:1px solid var(--pb-border);margin-bottom:8px">' +
-        '<div style="width:44px;height:44px;border-radius:10px;background:var(--pb-blue-soft);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏠</div>' +
-        '<div style="flex:1;min-width:0">' +
-          '<div style="font-size:14px;font-weight:700;color:var(--pb-text)">'+s.name+'</div>' +
-          '<div style="font-size:12px;color:var(--pb-text3);margin-top:2px">📍 '+s.addr+'</div>' +
-          '<div style="font-size:12px;color:var(--pb-text2);margin-top:2px">🐾 '+s.animals+'</div>' +
-        '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">' +
-          '<button onclick="window.open('tel:'+s.phone+'')" class="pb-btn pb-btn-blue pb-btn-sm">📞 Call</button>' +
-          '<button onclick="window.open('https://www.google.com/maps/search/'+encodeURIComponent(s.name)+'')" class="pb-btn pb-btn-gray pb-btn-sm">🗺 Map</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-}
 </script>
-
 </body>
 </html>
