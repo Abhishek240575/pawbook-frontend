@@ -220,8 +220,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
       </div>
     </div>
   </div>
-</div>
-<script src="api.js"></script>
+
 
 <!-- SECURITY SECTION -->
 <div id="section-security" style="display:none">
@@ -396,6 +395,9 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
   </div>
 </div>
 
+</div>
+<script src="api.js"></script>
+
 <!-- CHANGE PASSWORD MODAL -->
 <div id="change-pwd-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:#fff;border-radius:16px;width:100%;max-width:400px;box-shadow:0 12px 48px rgba(0,0,0,.2)">
@@ -557,40 +559,29 @@ function showToastMsg(msg, type) {
 
 // Better showSection - insert into content area
 function showSection(id) {
-  // Hide all sections and profile content
-  var allSections = ['security','privacy','notifications','appearance','language','help','report'];
-  allSections.forEach(function(s) {
-    var el = document.getElementById('section-' + s);
-    if(el) el.style.display = 'none';
+  var allIds = ['security','privacy','notifications','appearance','language','help','report'];
+  
+  // Hide profile content
+  document.querySelectorAll('.sc-header,.sc-body,.avatar-section').forEach(function(el){
+    el.style.display='none';
   });
-
-  // Hide original profile content (sc-header + sc-body with avatar)
-  var origHeader = document.querySelector('.settings-content .sc-header');
-  var origBody = document.querySelector('.settings-content .sc-body');
-  if(origHeader) origHeader.style.display = 'none';
-  if(origBody) origBody.style.display = 'none';
-
-  // Show requested section
-  var target = document.getElementById('section-' + id);
-  if(!target) { showToastMsg('Coming soon!', 'info'); return; }
-
-  // Move section into settings-content if not already there
-  var content = document.querySelector('.settings-content');
-  if(content && target.parentElement !== content) {
-    content.appendChild(target);
-  }
-  target.style.display = 'block';
-
-  // Update active nav item
-  document.querySelectorAll('.sn-item').forEach(function(item) {
+  
+  // Hide all sections
+  allIds.forEach(function(s){
+    var el=document.getElementById('section-'+s);
+    if(el) el.style.display='none';
+  });
+  
+  // Show target
+  var target=document.getElementById('section-'+id);
+  if(target){ target.style.display='block'; }
+  else { showToastMsg('Coming soon!','info'); }
+  
+  // Update nav active
+  document.querySelectorAll('.sn-item').forEach(function(item){
     item.classList.remove('active');
-    var txt = item.textContent.trim().toLowerCase();
-    if(txt.includes(id) || (id==='notifications' && txt.includes('notification')) ||
-       (id==='appearance' && txt.includes('appearance')) ||
-       (id==='language' && txt.includes('language'))) {
-      item.classList.add('active');
-    }
   });
+  event.currentTarget && event.currentTarget.classList.add('active');
 }
 </script>
 </body></html>
