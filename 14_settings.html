@@ -413,40 +413,6 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
 </div>
 
 <script>
-function showSection(id) {
-  // Update nav active state
-  document.querySelectorAll('.sn-item').forEach(function(item) {
-    item.classList.remove('active');
-    if(item.textContent.trim().toLowerCase().includes(id.toLowerCase())) {
-      item.classList.add('active');
-    }
-  });
-
-  // Hide main profile content and all sections
-  var mainContent = document.querySelector('.sc-body');
-  var scHeader = document.querySelector('.sc-header');
-  var avatarSection = document.querySelector('.avatar-section');
-  if(avatarSection) avatarSection.parentElement.parentElement.style.display = 'none';
-
-  // Hide all sections
-  ['security','privacy','notifications','appearance','language','help','report'].forEach(function(s) {
-    var el = document.getElementById('section-' + s);
-    if(el) el.style.display = 'none';
-  });
-
-  // Show requested section
-  var target = document.getElementById('section-' + id);
-  if(target) {
-    target.style.display = 'block';
-    // Insert into settings-content
-    var content = document.querySelector('.settings-content');
-    if(content) {
-      content.innerHTML = '';
-      content.appendChild(target);
-      target.style.display = 'block';
-    }
-  }
-}
 
 function saveProfileChanges() {
   var inputs = document.querySelectorAll('.input-field');
@@ -591,27 +557,40 @@ function showToastMsg(msg, type) {
 
 // Better showSection - insert into content area
 function showSection(id) {
-  var sectionEl = document.getElementById('section-' + id);
-  if(!sectionEl) { showToastMsg('Section coming soon!', 'info'); return; }
+  // Hide all sections and profile content
+  var allSections = ['security','privacy','notifications','appearance','language','help','report'];
+  allSections.forEach(function(s) {
+    var el = document.getElementById('section-' + s);
+    if(el) el.style.display = 'none';
+  });
 
-  // Update active nav
-  document.querySelectorAll('.sn-item').forEach(function(item){ item.classList.remove('active'); });
+  // Hide original profile content (sc-header + sc-body with avatar)
+  var origHeader = document.querySelector('.settings-content .sc-header');
+  var origBody = document.querySelector('.settings-content .sc-body');
+  if(origHeader) origHeader.style.display = 'none';
+  if(origBody) origBody.style.display = 'none';
 
-  // Show section in content panel
+  // Show requested section
+  var target = document.getElementById('section-' + id);
+  if(!target) { showToastMsg('Coming soon!', 'info'); return; }
+
+  // Move section into settings-content if not already there
   var content = document.querySelector('.settings-content');
-  if(content) {
-    // Hide original profile content
-    content.querySelectorAll(':scope > *').forEach(function(child){ child.style.display='none'; });
-    // Remove any previously inserted section
-    var prev = content.querySelector('[data-section]');
-    if(prev) prev.remove();
-    // Clone and insert
-    var clone = sectionEl.cloneNode(true);
-    clone.style.display = 'block';
-    clone.setAttribute('data-section', id);
-    content.appendChild(clone);
+  if(content && target.parentElement !== content) {
+    content.appendChild(target);
   }
-  showToastMsg('', '');
+  target.style.display = 'block';
+
+  // Update active nav item
+  document.querySelectorAll('.sn-item').forEach(function(item) {
+    item.classList.remove('active');
+    var txt = item.textContent.trim().toLowerCase();
+    if(txt.includes(id) || (id==='notifications' && txt.includes('notification')) ||
+       (id==='appearance' && txt.includes('appearance')) ||
+       (id==='language' && txt.includes('language'))) {
+      item.classList.add('active');
+    }
+  });
 }
 </script>
 </body></html>
