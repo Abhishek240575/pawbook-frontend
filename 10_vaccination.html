@@ -161,6 +161,9 @@ img{max-width:100%;display:block}
 
 // ── NAVIGATION ────────────────────────────────
 function goTo(p){window.location.href=p;}
+function closeInfoTip(){var m=document.getElementById('info-tip-modal');if(m){m.style.display='none';document.body.style.overflow='';}}
+function goToVetBooking(){window.location.href="11_vet_booking.html";}
+function closeReminderModal(){var m=document.getElementById('set-reminder-modal');if(m){m.style.display='none';document.body.style.overflow='';}}
 
 function pbNavBar(activePage) {
   var pages = {
@@ -359,11 +362,11 @@ function pbGetEmergencyNumbers(country, region) {
 
 // ── NEARBY SHELTERS ───────────────────────────
 var PB_SHELTERS = {
-  'Delhi': [{name:'Friendicoes SECA',addr:'6/7 Siri Institutional Area',phone:'+91 11 2463 5945',animals:'Dogs,Cats'},{name:'Jeevashram',addr:'Shiv Vihar, Delhi',phone:'+91 98100 45022',animals:'All animals'},{name:'Charlie's Animal Rescue',addr:'Dwarka, New Delhi',phone:'+91 95992 03433',animals:'Dogs,Cats,Birds'}],
+  'Delhi': [{name:'Friendicoes SECA',addr:'6/7 Siri Institutional Area',phone:'+91 11 2463 5945',animals:'Dogs,Cats'},{name:'Jeevashram',addr:'Shiv Vihar, Delhi',phone:'+91 98100 45022',animals:'All animals'},{name:'Charlies Animal Rescue',addr:'Dwarka, New Delhi',phone:'+91 95992 03433',animals:'Dogs,Cats,Birds'}],
   'Mumbai': [{name:'World For Animals',addr:'Oshiwara, Andheri West',phone:'+91 98192 89920',animals:'Dogs,Cats'},{name:'In Defence of Animals',addr:'Bandra West',phone:'+91 22 2641 3528',animals:'Dogs'}],
   'Bangalore': [{name:'CUPA',addr:'Outer Ring Road, Devarabeesanahalli',phone:'+91 80 2341 0386',animals:'All animals'},{name:'Animal Rahat',addr:'Electronic City',phone:'+91 80 6741 8100',animals:'Horses,Donkeys,Bulls'}],
   'Chennai': [{name:'Blue Cross of India',addr:'Velachery Main Road',phone:'+91 44 2235 1006',animals:'All animals'},{name:'PAWS Chennai',addr:'Anna Nagar',phone:'+91 44 2626 4460',animals:'Dogs,Cats'}],
-  'London': [{name:'Battersea Dogs & Cats Home',addr:'Battersea Park Road',phone:'020 7622 3626',animals:'Dogs,Cats'},{name:'RSPCA London',addr:'Southall',phone:'0300 1234 999',animals:'All animals'}],
+  'London': [{name:'Battersea Dogs and Cats Home',addr:'Battersea Park Road',phone:'020 7622 3626',animals:'Dogs,Cats'},{name:'RSPCA London',addr:'Southall',phone:'0300 1234 999',animals:'All animals'}],
   'New York City': [{name:'NYC ACC Manhattan',addr:'326 E 110th St',phone:'(212) 788-4000',animals:'All animals'},{name:'ASPCA NYC',addr:'424 E 92nd St',phone:'(212) 876-7700',animals:'All animals'}],
   'Sydney': [{name:'RSPCA NSW',addr:'Yagoona',phone:'(02) 9770 7555',animals:'All animals'},{name:'Sydney Dogs & Cats Home',addr:'St Peters',phone:'(02) 9587 9611',animals:'Dogs,Cats'}],
 };
@@ -893,22 +896,22 @@ body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size
         <div style="font-size:15px;font-weight:800;color:#d97706;display:flex;align-items:center;gap:6px">🌟 Vaccine Info &amp; Tips</div>
       </div>
       <div style="padding:0 16px">
-        <div class="vi-item">
+        <div class="vi-item" onclick="openInfoTip('Core Vaccines')" style="cursor:pointer">
           <div class="vi-icon" style="background:#fee2e2"><i class="ti ti-virus" style="color:#dc2626;font-size:20px"></i></div>
           <div><div class="vi-name">Core Vaccines</div><div class="vi-sub">Rabies, Distemper, Parvo</div></div>
           <i class="ti ti-chevron-right vi-arrow"></i>
         </div>
-        <div class="vi-item">
+        <div class="vi-item" onclick="openInfoTip('Booster Reminders')" style="cursor:pointer">
           <div class="vi-icon" style="background:#dbeafe"><i class="ti ti-plus" style="color:#1a56db;font-size:20px"></i></div>
           <div><div class="vi-name">Booster Reminders</div><div class="vi-sub">Set up booster alerts</div></div>
           <i class="ti ti-chevron-right vi-arrow"></i>
         </div>
-        <div class="vi-item">
+        <div class="vi-item" onclick="openInfoTip('Travel Vaccinations')" style="cursor:pointer">
           <div class="vi-icon" style="background:#fff3e0"><i class="ti ti-plane" style="color:#d97706;font-size:20px"></i></div>
           <div><div class="vi-name">Travel Vaccinations</div><div class="vi-sub">Vaccines for safe trips</div></div>
           <i class="ti ti-chevron-right vi-arrow"></i>
         </div>
-        <div class="vi-item">
+        <div class="vi-item" onclick="openInfoTip('Health Certificate')" style="cursor:pointer">
           <div class="vi-icon" style="background:#dcfce7"><i class="ti ti-file-certificate" style="color:#16a34a;font-size:20px"></i></div>
           <div><div class="vi-name">Health Certificate</div><div class="vi-sub">Download Vaccine Records</div></div>
           <i class="ti ti-chevron-right vi-arrow"></i>
@@ -966,7 +969,7 @@ function setPetTab(el){
   const petName = el.querySelector('.pet-tab-name')?.textContent?.trim() || el.textContent?.trim();
   const petNameEl = document.getElementById('active-pet-name');
   if(petNameEl) petNameEl.textContent = petName;
-  toast('Viewing ' + petName + ''s records', 'info');
+  if(typeof toast==='function') toast('Viewing ' + petName + ' records', 'info');
 }
 
 function setStab(el){
@@ -1080,6 +1083,9 @@ function toast(msg,type='success'){const t=document.createElement('div');t.style
 
 <script>
 function goTo(p){window.location.href=p;}
+function closeInfoTip(){var m=document.getElementById('info-tip-modal');if(m){m.style.display='none';document.body.style.overflow='';}}
+function goToVetBooking(){window.location.href="11_vet_booking.html";}
+function closeReminderModal(){var m=document.getElementById('set-reminder-modal');if(m){m.style.display='none';document.body.style.overflow='';}}
 
 function openAddVaccine(){
   // Set today's date as default
@@ -1163,6 +1169,117 @@ function showToast(msg, type){
   t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+bg+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
   t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);
 }
+</script>
+<script>
+// ── INFO TIP MODAL ──────────────────────────────────────────
+function openInfoTip(el) {
+  var name = typeof el === 'string' ? el : el.querySelector('.vi-name') ? el.querySelector('.vi-name').textContent.trim() : 'Info';
+  var tips = {
+    'Core Vaccines': {icon:'🦠', content:'Core vaccines protect against the most dangerous diseases.\n\n🐕 Dogs: Rabies, DHPP (Distemper, Hepatitis, Parvo, Parainfluenza)\n🐈 Cats: FVRCP (Rhinotracheitis, Calicivirus, Panleukopenia)\n\nMandatory for all pets from 6-8 weeks of age.'},
+    'Booster Reminders': {icon:'🔔', content:'Boosters maintain immunity after initial vaccination.\n\n📅 Schedule:\n• Rabies: Every 1-3 years\n• DHPP: Annual or every 3 years\n• Leptospirosis: Annual\n• Bordetella: Every 6-12 months'},
+    'Travel Vaccinations': {icon:'✈️', content:'Travelling with your pet requires additional vaccines.\n\n✈️ Required for international travel:\n• Rabies certificate (mandatory)\n• Leptospirosis (risk areas)\n• Canine Influenza (USA/Canada)\n\n📋 Always carry original vaccination records.'},
+    'Health Certificate': {icon:'📋', content:'A health certificate is required for:\n• International pet travel\n• Airline travel\n• Dog shows and competitions\n• Adoption transfers\n\n🏥 Issued by a licensed vet after physical examination.\n⏰ Valid for 10 days from issue date.'}
+  };
+  var tip = tips[name] || {icon:'💉', content:'Consult your vet for personalized vaccination advice for your pet.'};
+  
+  var modal = document.getElementById('info-tip-modal');
+  if(!modal) {
+    modal = document.createElement('div');
+    modal.id = 'info-tip-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)';
+    modal.onclick = function(e){ if(e.target===this) this.style.display='none'; document.body.style.overflow=''; };
+    modal.innerHTML = '<div style="background:#fff;border-radius:16px;width:100%;max-width:420px;box-shadow:0 12px 48px rgba(0,0,0,.2)">' +
+      '<div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between">' +
+        '<div id="tip-title" style="font-size:16px;font-weight:800"></div>' +
+        '<button onclick="closeInfoTip()" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">✕</button>' +
+      '</div>' +
+      '<div style="padding:18px">' +
+        '<div id="tip-icon" style="font-size:40px;text-align:center;margin-bottom:12px"></div>' +
+        '<div id="tip-content" style="font-size:14px;line-height:1.7;color:#050505;white-space:pre-line"></div>' +
+        '<button onclick="goToVetBooking()" style="margin-top:16px;width:100%;height:40px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">Book Vet Consultation</button>' +
+      '</div>' +
+    '</div>';
+    document.body.appendChild(modal);
+  }
+  document.getElementById('tip-title').textContent = name;
+  document.getElementById('tip-icon').textContent = tip.icon;
+  document.getElementById('tip-content').textContent = tip.content;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+// ── REMINDER MODAL ──────────────────────────────────────────
+function setVaccReminder(btn) {
+  var card = btn.closest('[style*="background"]') || btn.parentElement.parentElement;
+  var name = card ? (card.querySelector('[style*="font-weight:700"]') || card.querySelector('div')).textContent.trim() : 'Vaccination';
+  
+  var modal = document.getElementById('set-reminder-modal');
+  if(!modal) {
+    modal = document.createElement('div');
+    modal.id = 'set-reminder-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px';
+    modal.onclick = function(e){ if(e.target===this) this.style.display='none'; document.body.style.overflow=''; };
+    modal.innerHTML = '<div style="background:#fff;border-radius:16px;width:100%;max-width:380px;box-shadow:0 12px 48px rgba(0,0,0,.2)">' +
+      '<div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between">' +
+        '<div style="font-size:16px;font-weight:800">🔔 Set Reminder</div>' +
+        '<button onclick="closeReminderModal()" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">✕</button>' +
+      '</div>' +
+      '<div style="padding:18px">' +
+        '<div id="rem-vacc-name" style="font-size:14px;font-weight:700;color:#1877F2;margin-bottom:14px;padding:10px;background:#eff6ff;border-radius:8px"></div>' +
+        '<div style="margin-bottom:12px"><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Reminder Date</label>' +
+          '<input id="rem-date" type="date" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif"></div>' +
+        '<div style="margin-bottom:14px"><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Reminder Time</label>' +
+          '<input id="rem-time" type="time" value="09:00" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif"></div>' +
+        '<div style="margin-bottom:14px"><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Notify via</label>' +
+          '<div style="display:flex;gap:8px">' +
+            '<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:#1877F2"> App notification</label>' +
+            '<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:#1877F2"> Email</label>' +
+          '</div></div>' +
+        '<button onclick="saveReminder()" style="width:100%;height:42px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">🔔 Set Reminder</button>' +
+      '</div>' +
+    '</div>';
+    document.body.appendChild(modal);
+  }
+  
+  // Set default date to 1 week from now
+  var d = new Date(); d.setDate(d.getDate() + 7);
+  document.getElementById('rem-date').value = d.toISOString().split('T')[0];
+  document.getElementById('rem-vacc-name').textContent = '💉 ' + name.substring(0, 50);
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function saveReminder() {
+  var date = document.getElementById('rem-date').value;
+  if(!date) { alert('Please select a date'); return; }
+  document.getElementById('set-reminder-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  showVaccToast('🔔 Reminder set! We will notify you on ' + new Date(date).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}), 'success');
+  
+  // Request browser notification permission
+  if('Notification' in window && Notification.permission !== 'denied') {
+    Notification.requestPermission();
+  }
+}
+
+function showVaccToast(msg, type) {
+  var t = document.getElementById('vacc-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'vacc-toast';
+    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:#000;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;max-width:90vw;text-align:center';
+    document.body.appendChild(t);
+  }
+  var bg = type==='error'?'#ef4444':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
+  t.style.background=bg; t.textContent=msg;
+  t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)';
+  setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(8px)';},2800);
+}
+
+function goTo(p){window.location.href=p;}
+function closeInfoTip(){var m=document.getElementById('info-tip-modal');if(m){m.style.display='none';document.body.style.overflow='';}}
+function goToVetBooking(){window.location.href="11_vet_booking.html";}
+function closeReminderModal(){var m=document.getElementById('set-reminder-modal');if(m){m.style.display='none';document.body.style.overflow='';}}
 </script>
 </body>
 </html>
