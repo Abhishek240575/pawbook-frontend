@@ -111,31 +111,31 @@
   <div class="msg-list">
     <div class="msg-list-header">
       <div style="font-size:18px;font-weight:800">Messages</div>
-      <button class="btn btn-blue btn-sm"><i class="ti ti-edit"></i> New</button>
+      <button class="btn btn-blue btn-sm" onclick="newConversation()"><i class="ti ti-edit"></i> New</button>
     </div>
     <div class="msg-search"><i class="ti ti-search" style="color:var(--muted)"></i><input placeholder="Search Messenger"></div>
     <div style="overflow-y:auto;flex:1">
-      <div class="msg-item active">
+      <div class="msg-item active" onclick="switchChat('priya', this)" data-chat="priya">
         <div class="msg-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80"><div class="msg-online"></div></div>
         <div style="flex:1;min-width:0"><div class="msg-name">Dr. Priya Sharma</div><div class="msg-preview">Your appointment is confirmed for May 20</div></div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="msg-time">2m</div><div class="msg-badge">2</div></div>
       </div>
-      <div class="msg-item">
+      <div class="msg-item" onclick="switchChat('rahul', this)" data-chat="rahul">
         <div class="msg-av"><img src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=80&q=80"><div class="msg-online"></div></div>
         <div style="flex:1;min-width:0"><div class="msg-name">Rahul & Bruno</div><div class="msg-preview">Hey! Loved Bruno's park photos 😍</div></div>
         <div class="msg-time">15m</div>
       </div>
-      <div class="msg-item">
+      <div class="msg-item" onclick="switchChat('arjun', this)" data-chat="arjun">
         <div class="msg-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80"></div>
         <div style="flex:1;min-width:0"><div class="msg-name">Dr. Arjun Mehta</div><div class="msg-preview">Please ensure Bruno stays hydrated</div></div>
         <div class="msg-time">1h</div>
       </div>
-      <div class="msg-item">
+      <div class="msg-item" onclick="switchChat('shelter', this)" data-chat="shelter">
         <div class="msg-av"><img src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=80&q=80"></div>
         <div style="flex:1;min-width:0"><div class="msg-name">Hopeful Tails Shelter</div><div class="msg-preview">Thank you for your donation! 🙏</div></div>
         <div class="msg-time">3h</div>
       </div>
-      <div class="msg-item">
+      <div class="msg-item" onclick="switchChat('priyam', this)" data-chat="priyam">
         <div class="msg-av"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=80&q=80"><div class="msg-online"></div></div>
         <div style="flex:1;min-width:0"><div class="msg-name">Priya M. & Luna</div><div class="msg-preview">Are you coming to the dog park meetup?</div></div>
         <div class="msg-time">5h</div>
@@ -158,35 +158,63 @@
       </div>
     </div>
 
-    <div class="chat-body">
-      <div class="msg-bubble-wrap">
-        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
-        <div><div class="bubble theirs">Hello! I've reviewed Bruno's vaccination records. He's due for his Leptospirosis booster next week.</div><div class="bubble-time">10:30 AM</div></div>
-      </div>
-      <div class="msg-bubble-wrap mine">
-        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&q=80"></div>
-        <div><div class="bubble mine">Thank you Doctor! Should I book an appointment for May 20?</div><div class="bubble-time">10:32 AM</div></div>
-      </div>
-      <div class="msg-bubble-wrap">
-        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
-        <div><div class="bubble theirs">Yes, May 20 at 4 PM works perfectly. I'll confirm the appointment right away.</div><div class="bubble-time">10:35 AM</div></div>
-      </div>
-      <div class="msg-bubble-wrap">
-        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
-        <div><div class="bubble theirs">Also, please make sure Bruno fasts for 2 hours before the appointment. 🐾</div><div class="bubble-time">10:35 AM</div></div>
-      </div>
-      <div class="msg-bubble-wrap mine">
-        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&q=80"></div>
-        <div><div class="bubble mine">Your appointment is confirmed for May 20 ✅</div><div class="bubble-time">10:38 AM</div></div>
-      </div>
-      <div style="text-align:center;font-size:12px;color:var(--muted);padding:4px 0">Today, 2:15 PM</div>
-      <div class="msg-bubble-wrap">
-        <div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
-        <div><div class="bubble theirs">Your appointment is confirmed for May 20 at 4:00 PM. See you then! 😊</div><div class="bubble-time">2:15 PM</div></div>
-      </div>
-    </div>
+    <!-- CHAT: Priya Sharma -->
+<div class="chat-body" id="chat-priya" style="display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:16px;gap:12px;background:#f0f2f5">
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
+    <div><div class="bubble theirs">Hello! I have reviewed Bruno vaccination records. He is due for his Leptospirosis booster next week.</div><div class="bubble-time">10:30 AM</div></div></div>
+  <div style="display:flex;justify-content:flex-end;flex-direction:column;align-items:flex-end;gap:2px">
+    <div class="bubble mine">Thank you Doctor! Should I book an appointment for May 20?</div><div class="bubble-time" style="text-align:right">10:32 AM</div></div>
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
+    <div><div class="bubble theirs">Yes, May 20 at 4 PM works perfectly. I will confirm the appointment right away.</div><div class="bubble-time">10:35 AM</div></div></div>
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80"></div>
+    <div><div class="bubble theirs">Also, please make sure Bruno fasts for 2 hours before the appointment.</div><div class="bubble-time">10:35 AM</div></div></div>
+  <div style="display:flex;justify-content:flex-end;flex-direction:column;align-items:flex-end;gap:2px">
+    <div class="bubble mine">Your appointment is confirmed for May 20 at 4 PM!</div><div class="bubble-time" style="text-align:right">2:15 PM</div></div>
+</div>
 
-    <div class="chat-footer">
+<!-- CHAT: Rahul -->
+<div class="chat-body" id="chat-rahul" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding:16px;gap:12px;background:#f0f2f5">
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=60&q=80"></div>
+    <div><div class="bubble theirs">Hey! Loved Bruno park photo. He is getting so big!</div><div class="bubble-time">11:00 AM</div></div></div>
+  <div style="display:flex;justify-content:flex-end;flex-direction:column;align-items:flex-end;gap:2px">
+    <div class="bubble mine">Thanks! He loves the park. We should do a pet meetup!</div><div class="bubble-time" style="text-align:right">11:05 AM</div></div>
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=60&q=80"></div>
+    <div><div class="bubble theirs">100%! Sunday morning at Lodhi Garden? Max would love it too.</div><div class="bubble-time">11:10 AM</div></div></div>
+  <div style="display:flex;justify-content:flex-end;flex-direction:column;align-items:flex-end;gap:2px">
+    <div class="bubble mine">Sunday works! See you at 8 AM.</div><div class="bubble-time" style="text-align:right">11:12 AM</div></div>
+</div>
+
+<!-- CHAT: Dr. Arjun -->
+<div class="chat-body" id="chat-arjun" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding:16px;gap:12px;background:#f0f2f5">
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=60&q=80"></div>
+    <div><div class="bubble theirs">Please ensure Bruno stays hydrated in this weather. Monsoon can be tricky for dogs.</div><div class="bubble-time">9:00 AM</div></div></div>
+  <div style="display:flex;justify-content:flex-end;flex-direction:column;align-items:flex-end;gap:2px">
+    <div class="bubble mine">Thank you Dr. Arjun! Any specific diet recommendations?</div><div class="bubble-time" style="text-align:right">9:15 AM</div></div>
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=60&q=80"></div>
+    <div><div class="bubble theirs">Yes — avoid street food, keep his paws dry, and give probiotics if he has loose stools.</div><div class="bubble-time">9:20 AM</div></div></div>
+</div>
+
+<!-- CHAT: Shelter -->
+<div class="chat-body" id="chat-shelter" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding:16px;gap:12px;background:#f0f2f5">
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=60&q=80"></div>
+    <div><div class="bubble theirs">Thank you for your donation! We used it to vaccinate 12 rescued dogs this week.</div><div class="bubble-time">3:00 PM</div></div></div>
+  <div style="display:flex;justify-content:flex-end;flex-direction:column;align-items:flex-end;gap:2px">
+    <div class="bubble mine">That is wonderful! Happy to help. Are there any dogs available for adoption?</div><div class="bubble-time" style="text-align:right">3:10 PM</div></div>
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=60&q=80"></div>
+    <div><div class="bubble theirs">Yes! We have 3 Labrador mixes and a Persian cat ready for adoption. Come visit us!</div><div class="bubble-time">3:15 PM</div></div></div>
+</div>
+
+<!-- CHAT: Priya M -->
+<div class="chat-body" id="chat-priyam" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding:16px;gap:12px;background:#f0f2f5">
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=60&q=80"></div>
+    <div><div class="bubble theirs">Are you coming to the dog park meetup on Sunday?</div><div class="bubble-time">5:00 PM</div></div></div>
+  <div style="display:flex;justify-content:flex-end;flex-direction:column;align-items:flex-end;gap:2px">
+    <div class="bubble mine">Yes! Bruno is super excited. What time are you reaching?</div><div class="bubble-time" style="text-align:right">5:05 PM</div></div>
+  <div class="msg-bubble-wrap"><div class="bubble-av"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=60&q=80"></div>
+    <div><div class="bubble theirs">Around 8:15 AM with Luna. She has been wanting to meet Bruno!</div><div class="bubble-time">5:08 PM</div></div></div>
+</div>
+
+<div class="chat-footer">
       <button class="nav-icon-btn" onclick="attachPhoto()" title="Attach photo" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-photo"></i></button>
       <button class="nav-icon-btn" onclick="toggleEmoji()" title="Emoji" style="background:#f0f2f5;color:var(--blue)"><i class="ti ti-mood-smile"></i></button>
       <input class="chat-input" id="chat-input" placeholder="Aa — Type a message…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}">
@@ -382,5 +410,86 @@ function showToastMsg(msg, type) {
   t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
   setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 2600);
 }
+</script>
+<script>
+function switchChat(chatId, el) {
+  // Update active conv item
+  document.querySelectorAll('.msg-item').forEach(function(c){ c.classList.remove('active'); });
+  if(el) el.classList.add('active');
+  
+  // Show correct chat body
+  document.querySelectorAll('.chat-body').forEach(function(b){ b.style.display='none'; });
+  var body = document.getElementById('chat-' + chatId);
+  if(body) { body.style.display='flex'; body.scrollTop = body.scrollHeight; }
+  
+  // Update chat header
+  var chatNames = {
+    'priya': {name:'Dr. Priya Sharma', role:'● Active now · Veterinary Clinic', img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80'},
+    'rahul': {name:'Rahul & Bruno', role:'● Active now · Friend', img:'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=80&q=80'},
+    'arjun': {name:'Dr. Arjun Mehta', role:'Exotic Pets Specialist', img:'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80'},
+    'shelter': {name:'Hopeful Tails Shelter', role:'Animal Shelter', img:'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=80&q=80'},
+    'priyam': {name:'Priya M. & Luna', role:'● Active now · Friend', img:'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=80&q=80'}
+  };
+  var info = chatNames[chatId];
+  if(info) {
+    var nameEl = document.querySelector('.chat-name');
+    var roleEl = document.querySelector('.chat-status');
+    var avEl = document.querySelector('.chat-av img');
+    if(nameEl) nameEl.textContent = info.name;
+    if(roleEl) roleEl.textContent = info.role;
+    if(avEl) avEl.src = info.img;
+  }
+  
+  // Store current chat for sendMessage
+  window.currentChat = chatId;
+}
+
+function newConversation() {
+  var name = prompt('Search for a person or vet to message:');
+  if(name && name.trim()) {
+    showToastMsg('Starting conversation with ' + name.trim() + '...', 'info');
+  }
+}
+
+// Update sendMessage to use current chat body
+var _origSend = window.sendMessage;
+function sendMessage() {
+  var input = document.getElementById('chat-input') || document.querySelector('.chat-input');
+  var text = input ? input.value.trim() : '';
+  if(!text) return;
+  
+  var chatId = window.currentChat || 'priya';
+  var msgs = document.getElementById('chat-' + chatId);
+  if(!msgs) msgs = document.querySelector('.chat-body[style*="flex"]');
+  
+  if(msgs) {
+    var time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    var div = document.createElement('div');
+    div.style.cssText = 'display:flex;justify-content:flex-end;flex-direction:column;align-items:flex-end;gap:2px';
+    div.innerHTML = '<div class="bubble mine">' + text + '</div><div class="bubble-time" style="text-align:right">' + time + '</div>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    
+    // Auto reply
+    setTimeout(function() {
+      var replies = ["Got it! I will check and get back to you.", "Sounds great! See you then.", "Thank you for reaching out!", "Sure, that works for me!"];
+      var reply = replies[Math.floor(Math.random() * replies.length)];
+      var info = {priya:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80', rahul:'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=60&q=80', arjun:'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=60&q=80', shelter:'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=60&q=80', priyam:'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=60&q=80'};
+      var replyDiv = document.createElement('div');
+      replyDiv.className = 'msg-bubble-wrap';
+      replyDiv.innerHTML = '<div class="bubble-av"><img src="' + (info[chatId]||info.priya) + '"></div><div><div class="bubble theirs">' + reply + '</div><div class="bubble-time">' + time + '</div></div>';
+      msgs.appendChild(replyDiv);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1500);
+  }
+  if(input) input.value = '';
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', function() {
+  window.currentChat = 'priya';
+  var priyadBody = document.getElementById('chat-priya');
+  if(priyadBody) { priyadBody.style.display = 'flex'; priyadBody.scrollTop = priyadBody.scrollHeight; }
+});
 </script>
 </body></html>
