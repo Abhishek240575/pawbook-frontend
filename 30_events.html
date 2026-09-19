@@ -359,11 +359,11 @@ function pbGetEmergencyNumbers(country, region) {
 
 // ── NEARBY SHELTERS ───────────────────────────
 var PB_SHELTERS = {
-  'Delhi': [{name:'Friendicoes SECA',addr:'6/7 Siri Institutional Area',phone:'+91 11 2463 5945',animals:'Dogs,Cats'},{name:'Jeevashram',addr:'Shiv Vihar, Delhi',phone:'+91 98100 45022',animals:'All animals'},{name:'Charlie's Animal Rescue',addr:'Dwarka, New Delhi',phone:'+91 95992 03433',animals:'Dogs,Cats,Birds'}],
+  'Delhi': [{name:'Friendicoes SECA',addr:'6/7 Siri Institutional Area',phone:'+91 11 2463 5945',animals:'Dogs,Cats'},{name:'Jeevashram',addr:'Shiv Vihar, Delhi',phone:'+91 98100 45022',animals:'All animals'},{name:'Charlies Animal Rescue',addr:'Dwarka, New Delhi',phone:'+91 95992 03433',animals:'Dogs,Cats,Birds'}],
   'Mumbai': [{name:'World For Animals',addr:'Oshiwara, Andheri West',phone:'+91 98192 89920',animals:'Dogs,Cats'},{name:'In Defence of Animals',addr:'Bandra West',phone:'+91 22 2641 3528',animals:'Dogs'}],
   'Bangalore': [{name:'CUPA',addr:'Outer Ring Road, Devarabeesanahalli',phone:'+91 80 2341 0386',animals:'All animals'},{name:'Animal Rahat',addr:'Electronic City',phone:'+91 80 6741 8100',animals:'Horses,Donkeys,Bulls'}],
   'Chennai': [{name:'Blue Cross of India',addr:'Velachery Main Road',phone:'+91 44 2235 1006',animals:'All animals'},{name:'PAWS Chennai',addr:'Anna Nagar',phone:'+91 44 2626 4460',animals:'Dogs,Cats'}],
-  'London': [{name:'Battersea Dogs & Cats Home',addr:'Battersea Park Road',phone:'020 7622 3626',animals:'Dogs,Cats'},{name:'RSPCA London',addr:'Southall',phone:'0300 1234 999',animals:'All animals'}],
+  'London': [{name:'Battersea Dogs and Cats Home',addr:'Battersea Park Road',phone:'020 7622 3626',animals:'Dogs,Cats'},{name:'RSPCA London',addr:'Southall',phone:'0300 1234 999',animals:'All animals'}],
   'New York City': [{name:'NYC ACC Manhattan',addr:'326 E 110th St',phone:'(212) 788-4000',animals:'All animals'},{name:'ASPCA NYC',addr:'424 E 92nd St',phone:'(212) 876-7700',animals:'All animals'}],
   'Sydney': [{name:'RSPCA NSW',addr:'Yagoona',phone:'(02) 9770 7555',animals:'All animals'},{name:'Sydney Dogs & Cats Home',addr:'St Peters',phone:'(02) 9587 9611',animals:'Dogs,Cats'}],
 };
@@ -515,7 +515,47 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
   </div>
 
   <!-- Filters -->
-  <div class="filter-row">
+  <!-- Location & Time Filters -->
+<div style="background:#fff;border-bottom:1px solid #e4e6eb;padding:10px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+  <div style="display:flex;align-items:center;gap:6px">
+    <i class="ti ti-map-pin" style="color:#1877F2;font-size:15px"></i>
+    <select id="ev-location" onchange="filterByLocation(this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;background:#fff;cursor:pointer">
+      <option value="">📍 All Locations</option>
+      <option value="Delhi" selected>Delhi</option>
+      <option value="Mumbai">Mumbai</option>
+      <option value="Bangalore">Bangalore</option>
+      <option value="Chennai">Chennai</option>
+      <option value="Hyderabad">Hyderabad</option>
+      <option value="Pune">Pune</option>
+      <option value="Kolkata">Kolkata</option>
+      <option value="Online">🌐 Online</option>
+    </select>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <i class="ti ti-calendar" style="color:#1877F2;font-size:15px"></i>
+    <select id="ev-time" onchange="filterByTime(this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;background:#fff;cursor:pointer">
+      <option value="">🗓 Any Time</option>
+      <option value="today">Today</option>
+      <option value="tomorrow">Tomorrow</option>
+      <option value="week" selected>This Week</option>
+      <option value="weekend">This Weekend</option>
+      <option value="month">This Month</option>
+    </select>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <i class="ti ti-users" style="color:#1877F2;font-size:15px"></i>
+    <select id="ev-type" onchange="filterByType(this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;background:#fff;cursor:pointer">
+      <option value="">👥 All Types</option>
+      <option value="free">🆓 Free Only</option>
+      <option value="paid">💰 Paid</option>
+      <option value="online">💻 Online</option>
+      <option value="inperson">📍 In Person</option>
+    </select>
+  </div>
+  <button onclick="clearEventFilters()" style="height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;color:#65676b">✕ Clear</button>
+</div>
+
+<div class="filter-row">
     <button class="filter-chip active" onclick="filterEvents('all',this)">All Events</button>
     <button class="filter-chip" onclick="filterEvents('meetup',this)">🐾 Pet Meetups</button>
     <button class="filter-chip" onclick="filterEvents('adoption',this)">🏠 Adoption Drives</button>
@@ -528,7 +568,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
   <div id="events-list"></div>
 </div>
 
-<button class="create-btn" onclick="createEvent()"><i class="ti ti-plus"></i> Create Event</button>
+<button class="create-btn" onclick="openCreateEvent()"><i class="ti ti-plus"></i> Create Event</button>
 
 <!-- Bottom nav -->
 <div style="position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e2e8f0;display:flex;z-index:500">
@@ -643,6 +683,170 @@ function showToast(msg) {
 }
 
 renderEvents();
+</script>
+
+<!-- CREATE EVENT MODAL -->
+<div id="create-event-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)" onclick="if(event.target===this)closeCreateEvent()">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)">
+    <div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;border-radius:16px 16px 0 0">
+      <div style="font-size:17px;font-weight:800">🎉 Create Event</div>
+      <button onclick="closeCreateEvent()" style="width:32px;height:32px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Event Name *</label>
+        <input id="ce-name" placeholder="e.g. Delhi Dog Park Meetup" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Date *</label>
+          <input id="ce-date" type="date" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Time *</label>
+          <input id="ce-time" type="time" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Category</label>
+        <select id="ce-category" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif;background:#fff">
+          <option value="meetup">🐾 Pet Meetup</option>
+          <option value="adoption">🏠 Adoption Drive</option>
+          <option value="vet">🩺 Vet Camp</option>
+          <option value="show">🏆 Pet Show</option>
+          <option value="training">🎓 Training</option>
+          <option value="online">💻 Online Event</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Location *</label>
+        <input id="ce-location" placeholder="e.g. Lodhi Garden, New Delhi" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Max Attendees</label>
+          <input id="ce-max" type="number" placeholder="50" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Entry Fee</label>
+          <input id="ce-fee" placeholder="Free / ₹100" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Description</label>
+        <textarea id="ce-desc" placeholder="Tell people what your event is about..." rows="3" style="width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 14px;font-size:14px;outline:none;resize:none;font-family:Inter,sans-serif"></textarea>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Cover Photo</label>
+        <div onclick="document.getElementById('ce-photo').click()" style="border:2px dashed #e4e6eb;border-radius:10px;padding:20px;text-align:center;cursor:pointer">
+          <div style="font-size:28px;margin-bottom:6px">📷</div>
+          <div style="font-size:13px;font-weight:600;color:#65676b">Click to upload cover photo</div>
+          <input type="file" id="ce-photo" accept="image/*" style="display:none">
+        </div>
+      </div>
+      <button onclick="submitCreateEvent()" style="width:100%;height:44px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">🎉 Create Event</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openCreateEvent() {
+  var m = document.getElementById('create-event-modal');
+  if(m) { m.style.display='flex'; document.body.style.overflow='hidden'; }
+}
+function closeCreateEvent() {
+  var m = document.getElementById('create-event-modal');
+  if(m) { m.style.display='none'; document.body.style.overflow=''; }
+}
+
+function submitCreateEvent() {
+  var name = document.getElementById('ce-name').value.trim();
+  var date = document.getElementById('ce-date').value;
+  var time = document.getElementById('ce-time').value;
+  var location = document.getElementById('ce-location').value.trim();
+  if(!name){alert('Please enter an event name');document.getElementById('ce-name').focus();return;}
+  if(!date){alert('Please select a date');return;}
+  if(!location){alert('Please enter a location');return;}
+  
+  // Format date nicely
+  var d = new Date(date + 'T' + (time||'09:00'));
+  var dateStr = d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}) + (time ? ' · ' + d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '');
+  
+  // Add to events list
+  var newEvent = {
+    id: Date.now(),
+    title: name,
+    location: location,
+    date: dateStr,
+    category: document.getElementById('ce-category').value,
+    attendees: 1,
+    free: !document.getElementById('ce-fee').value || document.getElementById('ce-fee').value.toLowerCase() === 'free',
+    price: document.getElementById('ce-fee').value || 'Free',
+    description: document.getElementById('ce-desc').value || 'Join us for this amazing event!',
+    img: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=85'
+  };
+  
+  EVENTS = EVENTS || [];
+  EVENTS.unshift(newEvent);
+  renderEvents(EVENTS);
+  closeCreateEvent();
+  
+  // Show success toast
+  var t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap';
+  t.textContent = 'Event created successfully!';
+  document.body.appendChild(t);
+  setTimeout(function(){t.remove();}, 2600);
+}
+
+function filterByLocation(val) {
+  var locBtn = document.getElementById('ev-location');
+  currentLocation = val;
+  applyEventFilters();
+}
+
+function filterByTime(val) {
+  currentTime = val;
+  applyEventFilters();
+}
+
+function filterByType(val) {
+  currentType = val;
+  applyEventFilters();
+}
+
+function clearEventFilters() {
+  document.getElementById('ev-location').value = '';
+  document.getElementById('ev-time').value = '';
+  document.getElementById('ev-type').value = '';
+  currentLocation = '';
+  currentTime = '';
+  currentType = '';
+  applyEventFilters();
+}
+
+var currentLocation = 'Delhi';
+var currentTime = 'week';
+var currentType = '';
+
+function applyEventFilters() {
+  if(typeof EVENTS === 'undefined') return;
+  var filtered = EVENTS.filter(function(e) {
+    if(currentLocation && !e.location.toLowerCase().includes(currentLocation.toLowerCase())) return false;
+    if(currentType === 'free' && !e.free) return false;
+    if(currentType === 'paid' && e.free) return false;
+    if(currentType === 'online' && e.category !== 'online') return false;
+    if(currentType === 'inperson' && e.category === 'online') return false;
+    return true;
+  });
+  renderEvents(filtered);
+  
+  // Update title
+  var title = document.getElementById('events-count');
+  if(title) title.textContent = filtered.length + ' event' + (filtered.length !== 1 ? 's' : '') + ' found';
+}
+
+function goTo(p) { window.location.href = p; }
 </script>
 </body>
 </html>
