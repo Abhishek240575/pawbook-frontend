@@ -210,11 +210,11 @@ body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size
 
 <!-- 4 BIG ACTION BUTTONS -->
 <div class="action-grid">
-  <div class="act-card act-red">
+  <div class="act-card act-red" onclick="window.open('tel:1962')" style="cursor:pointer" title="Call Animal Welfare Board - 1962">
     <div class="act-icon"><i class="ti ti-phone" style="font-size:24px;color:#fff"></i></div>
     <div><div class="act-title">Call Vet Hotline</div><div class="act-sub">24/7 Support</div></div>
   </div>
-  <div class="act-card act-blue">
+  <div class="act-card act-blue" onclick="findNearestClinic()" style="cursor:pointer" title="Find nearest open vet clinic">
     <div class="act-icon"><i class="ti ti-map-pin" style="font-size:24px;color:#fff"></i></div>
     <div><div class="act-title">Nearest Open Clinic</div><div class="act-sub">1.2km Away</div></div>
   </div>
@@ -355,8 +355,8 @@ body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size
     <div class="qc-card">
       <div class="qc-title"><span style="width:28px;height:28px;border-radius:50%;background:#0f2057;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0">!</span> Quick Consult</div>
       <input class="qc-input" placeholder="Describe the emergency…">
-      <div class="qc-row"><i class="ti ti-photo"></i> Attach Photo <span class="arrow"><i class="ti ti-selector"></i></span></div>
-      <div class="qc-row"><i class="ti ti-stethoscope"></i> Symptom: Choking <span class="arrow"><i class="ti ti-chevron-right"></i></span></div>
+      <div class="qc-row" onclick="attachEmergencyPhoto()" style="cursor:pointer;transition:background .15s" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background=''"><i class="ti ti-photo"></i> Attach Photo <span class="arrow"><i class="ti ti-selector"></i></span></div>
+      <div class="qc-row" onclick="showSymptomPicker()" style="cursor:pointer;transition:background .15s" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background=''" id="symptom-row"><i class="ti ti-stethoscope"></i> <span id="symptom-label">Symptom: Choking</span> <span class="arrow"><i class="ti ti-chevron-right"></i></span></div>
       <button class="connect-btn" onclick="goTo('11_vet_booking.html')">Connect to Vet Now</button>
     </div>
 
@@ -366,22 +366,22 @@ body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size
         <div style="width:28px;height:28px;border-radius:50%;background:#dc2626;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0">!</div>
         <div class="card-head-title" style="color:#0f2057">Emergency Tips</div>
       </div>
-      <div class="tip-item-row">
+      <div class="tip-item-row" onclick="openEmergencyTip('First Aid Basics')" style="cursor:pointer;border-radius:8px;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
         <div class="tip-icon-sq" style="background:#dbeafe"><i class="ti ti-bandage" style="color:#1a56db;font-size:20px"></i></div>
         <div><div class="tip-name">First Aid Basics</div><div class="tip-sub">Bleeding &amp; CPR</div></div>
         <i class="ti ti-chevron-right tip-arrow"></i>
       </div>
-      <div class="tip-item-row">
+      <div class="tip-item-row" onclick="openEmergencyTip('Poison Control Guide')" style="cursor:pointer;border-radius:8px;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
         <div class="tip-icon-sq" style="background:#dcfce7"><i class="ti ti-shield" style="color:#16a34a;font-size:20px"></i></div>
         <div><div class="tip-name">Poison Control Guide</div><div class="tip-sub">Toxic Foods &amp; Plants</div></div>
         <i class="ti ti-chevron-right tip-arrow"></i>
       </div>
-      <div class="tip-item-row">
+      <div class="tip-item-row" onclick="openEmergencyTip('Heatstroke Prevention')" style="cursor:pointer;border-radius:8px;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
         <div class="tip-icon-sq" style="background:#dbeafe"><i class="ti ti-settings" style="color:#1a56db;font-size:20px"></i></div>
         <div><div class="tip-name">Heatstroke Prevention</div><div class="tip-sub">Keep Pets Cool</div></div>
         <i class="ti ti-chevron-right tip-arrow"></i>
       </div>
-      <div class="tip-item-row">
+      <div class="tip-item-row" onclick="openEmergencyTip('Emergency Kit Checklist')" style="cursor:pointer;border-radius:8px;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
         <div class="tip-icon-sq" style="background:#e0f2fe"><i class="ti ti-video" style="color:#0369a1;font-size:20px"></i></div>
         <div><div class="tip-name">Emergency Kit Checklist</div><div class="tip-sub">Be Prepared</div></div>
         <i class="ti ti-chevron-right tip-arrow"></i>
@@ -567,12 +567,39 @@ function navigateToClinic(btn) {
   var name = item ? item.querySelector(".clinic-name").textContent.trim() : "Vet Clinic";
   window.open("https://www.google.com/maps/search/" + encodeURIComponent(name), "_blank");
 }
-function offerHelp(btn) { btn.textContent = "Offered"; btn.style.background = "#22c55e"; btn.style.color = "#fff"; btn.disabled = true; }
-function shareSOSAlert(btn) {
-  if (navigator.clipboard) navigator.clipboard.writeText("Emergency pet alert: " + location.href);
-  btn.textContent = "Shared"; btn.style.color = "#1877F2";
+function offerHelp(btn) {
+  btn.textContent = "✓ Help Offered";
+  btn.style.background = "#22c55e";
+  btn.style.color = "#fff";
+  btn.disabled = true;
+  var card = btn.closest("[class*=sos]") || btn.parentElement.parentElement;
+  var name = card ? (card.querySelector("[class*=name]") || card.querySelector("strong") || card.querySelector("b")) : null;
+  var petName = name ? name.textContent.trim() : "this pet";
+  showEmToast("🤝 You offered to help find " + petName + "! The owner has been notified and will contact you shortly.", "success");
 }
-function reportToShelter(btn) { btn.textContent = "Reported"; btn.style.background = "#8b5cf6"; btn.style.color = "#fff"; btn.disabled = true; }
+function shareSOSAlert(btn) {
+  var card = btn.closest("[class*=sos]") || btn.parentElement.parentElement;
+  var text = card ? card.textContent.trim().substring(0, 100) : "Emergency pet alert";
+  var msg = "🚨 EMERGENCY PET ALERT\n" + text + "\n\nHelp find this pet! Share now: " + location.href;
+  btn.textContent = "✓ Shared";
+  btn.style.background = "#1877F2";
+  btn.style.color = "#fff";
+  if (navigator.share) {
+    navigator.share({title: "Emergency Pet Alert", text: msg, url: location.href});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(msg);
+    showEmToast("📋 Alert message copied! Paste and share on WhatsApp, Facebook or any platform.", "info");
+  }
+}
+
+
+function reportToShelter(btn) {
+  btn.textContent = "✓ Reported";
+  btn.style.background = "#8b5cf6";
+  btn.style.color = "#fff";
+  btn.disabled = true;
+  showEmToast("📋 Reported to nearest animal shelter! They will dispatch a rescue team within 30 minutes.", "success");
+}
 function callEmergency() { if (confirm("Call Animal Welfare Board India? Number: 1962")) { window.open("tel:1962"); } }
 
 function showToast(msg, type) {
@@ -581,6 +608,146 @@ function showToast(msg, type) {
   t.textContent = msg;
   t.style.opacity = "1";
   setTimeout(function() { t.style.opacity = "0"; }, 2600);
+}
+</script>
+<script>
+function attachEmergencyPhoto() {
+  var input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.onchange = function() {
+    if(this.files && this.files[0]) {
+      var row = document.querySelector(".qc-row");
+      if(row) {
+        row.innerHTML = '<i class="ti ti-check" style="color:#22c55e"></i> Photo attached <span class="arrow"><i class="ti ti-check" style="color:#22c55e"></i></span>';
+        row.style.color = "#22c55e";
+      }
+      showEmToast("📷 Photo attached to emergency consultation!", "success");
+    }
+  };
+  input.click();
+}
+
+function showSymptomPicker() {
+  var symptoms = ["Choking","Difficulty Breathing","Seizure","Poisoning","Severe Bleeding","Unconscious","Broken Bone","Eye Injury","Heatstroke","Allergic Reaction","Vomiting Blood","Not Moving"];
+  var modal = document.getElementById("symptom-modal");
+  if(!modal) {
+    modal = document.createElement("div");
+    modal.id = "symptom-modal";
+    modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;padding:20px";
+    modal.onclick = function(e){ if(e.target===this){ this.style.display="none"; } };
+    
+    var box = document.createElement("div");
+    box.style.cssText = "background:#fff;border-radius:16px;width:100%;max-width:380px;box-shadow:0 12px 48px rgba(0,0,0,.2)";
+    
+    var head = document.createElement("div");
+    head.style.cssText = "padding:14px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between";
+    var title = document.createElement("div");
+    title.style.cssText = "font-size:16px;font-weight:800";
+    title.textContent = "Select Symptom";
+    var closeBtn = document.createElement("button");
+    closeBtn.style.cssText = "width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px";
+    closeBtn.textContent = "x";
+    closeBtn.onclick = function(){ modal.style.display="none"; };
+    head.appendChild(title); head.appendChild(closeBtn);
+    
+    var body = document.createElement("div");
+    body.style.cssText = "padding:12px;display:flex;flex-wrap:wrap;gap:8px";
+    
+    symptoms.forEach(function(s) {
+      var btn = document.createElement("button");
+      btn.style.cssText = "height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;cursor:pointer;font-family:Inter,sans-serif";
+      btn.textContent = s;
+      btn.onclick = function(){ selectSymptom(s); };
+      body.appendChild(btn);
+    });
+    
+    box.appendChild(head); box.appendChild(body);
+    modal.appendChild(box);
+    document.body.appendChild(modal);
+  }
+  modal.style.display = "flex";
+}
+
+
+function selectSymptom(symptom) {
+  var label = document.getElementById("symptom-label");
+  if(label) label.textContent = "Symptom: " + symptom;
+  var modal = document.getElementById("symptom-modal");
+  if(modal) modal.style.display = "none";
+  showEmToast("🩺 Symptom set to: " + symptom + ". Connecting you to the right specialist.", "info");
+}
+
+function openEmergencyTip(tipName) {
+  var tips = {
+    "First Aid Basics": {icon:"🩹", steps:["Stay calm and keep your pet calm","Check for breathing and pulse","Stop any bleeding by applying pressure","Do NOT give human medications","Keep the pet warm and still","Call your vet immediately"]},
+    "Poison Control Guide": {icon:"☠️", steps:["Identify what your pet ingested","Do NOT induce vomiting unless told by vet","Note the time of ingestion","Bring the substance packaging to vet","Call Animal Poison Control: 1962","Keep your pet calm and still"]},
+    "Heatstroke Prevention": {icon:"🌡️", steps:["Move pet to cool shaded area immediately","Apply cool (not cold) water to paw pads","Offer small sips of cool water","Do NOT use ice","Fan the pet to aid evaporation","Rush to nearest vet - heatstroke is fatal"]},
+    "Emergency Kit Checklist": {icon:"🧰", steps:["Sterile gauze pads and bandages","Digital thermometer","Hydrogen peroxide (vet-approved use only)","Activated charcoal (for poisoning)","Emergency vet contact numbers","Pet first aid manual"]},
+    "Bleeding & CPR": {icon:"❤️", steps:["Apply firm pressure with clean cloth","Do NOT remove cloth - add more on top","Elevate the injured limb if possible","For CPR: 30 chest compressions then 2 breaths","Get to emergency vet immediately"]}
+  };
+  var tip = tips[tipName] || {icon:"💡", steps:["Consult your veterinarian immediately."]};
+
+  var modal = document.getElementById("em-tip-modal");
+  if(!modal) {
+    modal = document.createElement("div");
+    modal.id = "em-tip-modal";
+    modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;padding:20px";
+    modal.onclick = function(e){ if(e.target===this) modal.style.display="none"; };
+    document.body.appendChild(modal);
+  }
+
+  var stepsHtml = tip.steps.map(function(s, i) {
+    return "<div style='display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f0f2f5'><div style='width:24px;height:24px;border-radius:50%;background:#dc2626;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0'>" + (i+1) + "</div><div style='font-size:13px;line-height:1.5'>" + s + "</div></div>";
+  }).join("");
+
+  var box = document.createElement("div");
+  box.style.cssText = "background:#fff;border-radius:16px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)";
+
+  var head = document.createElement("div");
+  head.style.cssText = "padding:14px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0";
+
+  var title = document.createElement("div");
+  title.style.cssText = "font-size:16px;font-weight:800";
+  title.textContent = tip.icon + " " + tipName;
+
+  var closeBtn = document.createElement("button");
+  closeBtn.style.cssText = "width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px";
+  closeBtn.textContent = "x";
+  closeBtn.onclick = function(){ modal.style.display="none"; };
+  head.appendChild(title); head.appendChild(closeBtn);
+
+  var body = document.createElement("div");
+  body.style.cssText = "padding:16px";
+  body.innerHTML = "<div style='background:#fee2e2;border-radius:10px;padding:12px;margin-bottom:14px;font-size:12px;color:#dc2626;font-weight:600'>This is first-aid guidance only. Always consult a vet immediately.</div>" + stepsHtml;
+
+  var vetBtn = document.createElement("button");
+  vetBtn.style.cssText = "margin-top:14px;width:100%;height:42px;border-radius:999px;border:none;background:#dc2626;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif";
+  vetBtn.textContent = "Connect to Emergency Vet Now";
+  vetBtn.onclick = function(){ window.location.href="11_vet_booking.html"; };
+  body.appendChild(vetBtn);
+
+  modal.innerHTML = "";
+  box.appendChild(head); box.appendChild(body);
+  modal.appendChild(box);
+  modal.style.display = "flex";
+}
+
+
+function showEmToast(msg, type) {
+  var t = document.getElementById("em-toast-msg");
+  if(!t) {
+    t = document.createElement("div");
+    t.id = "em-toast-msg";
+    t.style.cssText = "position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:#000;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,.2)";
+    document.body.appendChild(t);
+  }
+  var bg = type==="error"?"#dc2626":type==="success"?"#22c55e":type==="info"?"#1877F2":"rgba(0,0,0,.88)";
+  t.style.background = bg;
+  t.textContent = msg;
+  t.style.opacity = "1";
+  t.style.transform = "translateX(-50%) translateY(0)";
+  setTimeout(function(){ t.style.opacity="0"; t.style.transform="translateX(-50%) translateY(8px)"; }, 3500);
 }
 </script>
 </body>
