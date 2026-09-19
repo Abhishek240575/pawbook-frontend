@@ -1,587 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<style>
-/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-:root{
-  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
-  --purple:#8b5cf6;--pink:#ec4899;
-  --green:#22c55e;--green-soft:#dcfce7;
-  --red:#ef4444;--amber:#f59e0b;
-  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --bg:#f0f2f5;--card:#fff;
-  --border:#e4e6eb;--border-soft:#f0f2f5;
-  --text:#050505;--text2:#65676b;--text3:#8a8d91;
-  --radius:12px;--radius-sm:8px;--pill:999px;
-  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --shadow-md:0 4px 20px rgba(0,0,0,.1);
-}
-body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
-
-/* Topnav */
-.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
-.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
-.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
-.topnav-tab.active{color:var(--blue)!important}
-.topnav-tab.active::after{background:var(--blue)!important}
-
-/* Buttons - make all buttons rounder and Facebook-style */
-.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
-button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
-.btn-blue{background:var(--blue)!important;color:#fff!important}
-.btn-blue:hover{background:var(--blue-dark)!important}
-.btn-gray{background:var(--bg)!important;color:var(--text)!important}
-
-/* Cards - cleaner */
-.card,.sidebar-card,.scard,.filter-section,.pb-card{
-  border-radius:var(--radius)!important;
-  border:1px solid var(--border)!important;
-  box-shadow:var(--shadow)!important;
-  background:var(--card)!important;
-}
-
-/* Badges - rounder */
-.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
-.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
-.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
-
-/* Post actions */
-.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
-.post-action.liked,.liked{color:var(--blue)!important}
-
-/* Story cards */
-.story-card{border-radius:var(--radius)!important}
-.story-card-av,.story-av{border:3px solid var(--blue)!important}
-
-/* Bottom nav */
-.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
-.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
-.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
-
-/* Market cards */
-.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
-
-/* Inputs */
-input,textarea,select{font-family:'Inter',sans-serif!important}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
-
-/* Modals */
-.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
-.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
-
-/* Progress/fill */
-.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
-
-/* Tab bars */
-.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
-
-/* Notification unread */
-.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
-
-/* Vet-specific */
-.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-</style>
-
-<meta charset="UTF-8"><title>PawBook — Settings</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PawBook — Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link rel="stylesheet" href="style.css">
 <style>
-.settings-page{max-width:1000px;margin:16px auto;padding:0 16px;display:grid;grid-template-columns:260px 1fr;gap:16px}
-.settings-nav{background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;height:fit-content;position:sticky;top:72px}
-.sn-section{font-size:11px;font-weight:800;color:var(--muted);padding:14px 16px 6px;text-transform:uppercase;letter-spacing:0.5px}
-.sn-item{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);transition:background 0.12s;border-left:3px solid transparent}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#050505}
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;padding:0 16px;gap:12px;z-index:400}
+.nav-logo{font-size:18px;font-weight:900;color:#1877F2;display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-search{flex:0 0 240px;height:38px;background:#f0f2f5;border-radius:999px;display:flex;align-items:center;padding:0 14px;gap:8px}
+.nav-search input{border:none;outline:none;background:transparent;font-size:13px;width:100%;font-family:'Inter',sans-serif}
+.nav-tabs{flex:1;display:flex;justify-content:center;gap:4px}
+.nav-tab{height:48px;width:90px;border-radius:8px;border:none;background:transparent;cursor:pointer;color:#65676b;font-size:20px;transition:all .15s;position:relative}
+.nav-tab:hover{background:#f0f2f5;color:#1877F2}
+.nav-tab.active{color:#1877F2}
+.nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:#1877F2;border-radius:3px 3px 0 0}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#050505}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+.page-wrap{padding-top:72px;max-width:1100px;margin:0 auto;padding-left:16px;padding-right:16px;display:grid;grid-template-columns:260px 1fr;gap:20px;min-height:calc(100vh - 56px)}
+
+/* LEFT NAV */
+.settings-nav{background:#fff;border-radius:12px;border:1px solid #e4e6eb;box-shadow:0 1px 2px rgba(0,0,0,.08);height:fit-content;position:sticky;top:72px;overflow:hidden}
+.sn-section{font-size:11px;font-weight:800;color:#8a8d91;padding:14px 16px 6px;text-transform:uppercase;letter-spacing:.5px}
+.sn-item{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;transition:background .12s;border-left:3px solid transparent;border-bottom:none}
 .sn-item:hover{background:#f0f2f5}
-.sn-item.active{background:#e7f3ff;color:var(--blue);border-left-color:var(--blue)}
+.sn-item.active{background:#e7f3ff;color:#1877F2;border-left-color:#1877F2}
 .sn-item i{font-size:18px;flex-shrink:0}
-.settings-content{background:#fff;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
-.sc-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.sc-title{font-size:20px;font-weight:800}
+
+/* RIGHT CONTENT */
+.settings-content{background:#fff;border-radius:12px;border:1px solid #e4e6eb;box-shadow:0 1px 2px rgba(0,0,0,.08);overflow:hidden;min-height:400px}
+.sec-panel{display:none}
+.sec-panel.active{display:block}
+.sc-head{padding:20px 24px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;gap:12px}
+.sc-head-title{font-size:20px;font-weight:800}
 .sc-body{padding:24px}
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #f0f2f5;gap:16px}
 .setting-row:last-child{border-bottom:none}
-.setting-label{font-size:15px;font-weight:700;color:var(--text)}
-.setting-sub{font-size:13px;color:var(--muted);margin-top:3px}
-/* Toggle */
-.toggle{position:relative;width:50px;height:26px;flex-shrink:0}
+.setting-label{font-size:15px;font-weight:700}
+.setting-sub{font-size:13px;color:#65676b;margin-top:2px}
+.input-field{width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.input-field:focus{border-color:#1877F2}
+.btn{height:40px;padding:0 20px;border-radius:999px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-blue{background:#1877F2;color:#fff}
+.btn-blue:hover{background:#0d65d9}
+.btn-gray{background:#f0f2f5;color:#050505;border:1.5px solid #e4e6eb}
+.btn-gray:hover{background:#e4e6eb}
+.btn-red{background:#fee2e2;color:#dc2626}
+.btn-red:hover{background:#fecaca}
+.btn-sm{height:34px;padding:0 16px;font-size:13px}
+.toggle{position:relative;width:48px;height:26px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:#e0e0e0;border-radius:26px;cursor:pointer;transition:0.3s}
-.toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
-.toggle input:checked + .toggle-slider{background:var(--blue)}
-.toggle input:checked + .toggle-slider::before{transform:translateX(24px)}
-/* Avatar section */
-.avatar-section{display:flex;align-items:center;gap:20px;padding:20px 0;border-bottom:1px solid var(--border);margin-bottom:20px}
-.av-large{width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid var(--blue)}
-.av-large img{width:100%;height:100%;object-fit:cover}
-.av-info{flex:1}
-.av-name{font-size:18px;font-weight:800;margin-bottom:4px}
-.change-photo-btn{padding:8px 18px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
-.input-field{width:100%;height:46px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;transition:border-color 0.15s}
-.input-field:focus{border-color:var(--blue)}
+.toggle-slider{position:absolute;inset:0;background:#e0e0e0;border-radius:999px;cursor:pointer;transition:.3s}
+.toggle-slider:before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked + .toggle-slider{background:#1877F2}
+.toggle input:checked + .toggle-slider:before{transform:translateX(22px)}
+.avatar-wrap{display:flex;align-items:center;gap:16px;padding:20px 24px;border-bottom:1px solid #e4e6eb}
+.av-img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #e4e6eb}
+.av-name{font-size:18px;font-weight:800}
+.av-handle{font-size:13px;color:#65676b}
+.theme-btn{height:36px;padding:0 16px;border-radius:999px;border:2px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.theme-btn.active{border-color:#1877F2;background:#eff6ff;color:#1877F2}
+.select-field{height:38px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 14px;font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;background:#fff}
+.select-field:focus{border-color:#1877F2}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;width:100%;max-width:420px;box-shadow:0 12px 48px rgba(0,0,0,.2)}
+.modal-head{padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:16px;font-weight:800}
+.modal-close{width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:18px;display:flex;flex-direction:column;gap:12px}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);padding:10px 22px;border-radius:999px;font-size:13px;font-weight:700;color:#fff;z-index:9999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:768px){.page-wrap{grid-template-columns:1fr;padding-top:72px}.settings-nav{position:static}}
 </style>
-<script>function goTo(p){window.location.href=p;}</script>
 </head>
 <body>
+<script>function goTo(p){window.location.href=p;}</script>
+
 <nav class="topnav">
-  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
-  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search settings…"></div>
-  <div class="topnav-tabs">
-    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
-    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
-    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
-    <button class="topnav-tab active"><i class="ti ti-settings"></i></button>
-    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  <a class="nav-logo" onclick="goTo('07_home.html')"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="nav-search"><i class="ti ti-search" style="color:#8a8d91;flex-shrink:0"></i><input placeholder="Search settings…"></div>
+  <div class="nav-tabs">
+    <button class="nav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="nav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="nav-tab" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i></button>
+    <button class="nav-tab active"><i class="ti ti-settings"></i></button>
+    <button class="nav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
   </div>
-  <div class="topnav-right">
-    <button class="nav-icon-btn"><i class="ti ti-bell"></i></button>
+  <div class="nav-right">
+    <button class="nav-icon-btn" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+    <button class="nav-icon-btn" onclick="goTo('13_messages.html')"><i class="ti ti-message-circle"></i></button>
     <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
   </div>
 </nav>
 
-<div class="settings-page">
-  <!-- Left nav -->
-  <div class="settings-nav">
-    <div class="sn-section">Account</div>
-    <div class="sn-item active"><i class="ti ti-user"></i> Profile</div>
-    <div class="sn-item" onclick="showSection("security")" style="cursor:pointer"><i class="ti ti-lock"></i> Security</div>
-    <div class="sn-item" onclick="showSection("privacy")" style="cursor:pointer"><i class="ti ti-shield"></i> Privacy</div>
-    <div class="sn-section">Preferences</div>
-    <div class="sn-item" onclick="showSection("notifications")" style="cursor:pointer"><i class="ti ti-bell"></i> Notifications</div>
-    <div class="sn-item" onclick="showSection("appearance")" style="cursor:pointer"><i class="ti ti-palette"></i> Appearance</div>
-    <div class="sn-item" onclick="showSection("language")" style="cursor:pointer"><i class="ti ti-world"></i> Language</div>
-    <div class="sn-section">Pets</div>
-    <div class="sn-item" onclick="goTo('08_pet_profile.html')" style="cursor:pointer"><i class="ti ti-paw"></i> My Pets</div>
-    <div class="sn-item" onclick="goTo('10_vaccination.html')" style="cursor:pointer"><i class="ti ti-vaccine"></i> Health Records</div>
-    <div class="sn-section">Support</div>
-    <div class="sn-item" onclick="showSection("help")" style="cursor:pointer"><i class="ti ti-help-circle"></i> Help Center</div>
-    <div class="sn-item" onclick="showSection("report")" style="cursor:pointer"><i class="ti ti-message-report"></i> Report Issue</div>
-    <div class="sn-item" onclick="doLogout()" style="color:#dc2626;cursor:pointer"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</div>
-  </div>
+<div class="page-wrap">
 
-  <!-- Content -->
-  <div class="settings-content">
-    <div class="sc-header">
-      <i class="ti ti-user" style="font-size:24px;color:var(--blue)"></i>
-      <div class="sc-title">Profile Settings</div>
+<!-- LEFT NAV -->
+<div class="settings-nav">
+  <div class="sn-section">Account</div>
+  <div class="sn-item active" onclick="showTab('profile',this)"><i class="ti ti-user"></i> Profile</div>
+  <div class="sn-item" onclick="showTab('security',this)"><i class="ti ti-lock"></i> Security</div>
+  <div class="sn-item" onclick="showTab('privacy',this)"><i class="ti ti-shield"></i> Privacy</div>
+  <div class="sn-section">Preferences</div>
+  <div class="sn-item" onclick="showTab('notifications',this)"><i class="ti ti-bell"></i> Notifications</div>
+  <div class="sn-item" onclick="showTab('appearance',this)"><i class="ti ti-palette"></i> Appearance</div>
+  <div class="sn-item" onclick="showTab('language',this)"><i class="ti ti-world"></i> Language</div>
+  <div class="sn-section">Pets</div>
+  <div class="sn-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</div>
+  <div class="sn-item" onclick="goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Health Records</div>
+  <div class="sn-section">Support</div>
+  <div class="sn-item" onclick="showTab('help',this)"><i class="ti ti-help-circle"></i> Help Center</div>
+  <div class="sn-item" onclick="showTab('report',this)"><i class="ti ti-message-report"></i> Report Issue</div>
+  <div class="sn-item" onclick="doLogout()" style="color:#dc2626"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</div>
+</div>
+
+<!-- RIGHT CONTENT -->
+<div class="settings-content">
+
+  <!-- PROFILE -->
+  <div id="tab-profile" class="sec-panel active">
+    <div class="avatar-wrap">
+      <img id="av-img" class="av-img" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=120&q=80">
+      <div style="flex:1">
+        <div class="av-name">Abhishek Kumar</div>
+        <div class="av-handle">@abhishek_pawbook</div>
+        <button class="btn btn-gray btn-sm" style="margin-top:8px" onclick="changePhoto()">📷 Change Photo</button>
+        <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="updatePhoto(this)">
+      </div>
     </div>
     <div class="sc-body">
-      <!-- Avatar -->
-      <div class="avatar-section">
-        <div class="av-large"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=120&q=80"></div>
-        <div class="av-info">
-          <div class="av-name">Abhishek</div>
-          <div style="font-size:13px;color:var(--muted)">@abhishek_pawbook</div>
-        </div>
-        <button class="change-photo-btn" onclick="changeProfilePhoto()">Change Photo</button>
-      </div>
-
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-        <div><div class="setting-label" style="margin-bottom:6px;font-size:13px">Full Name</div><input class="input-field" value="Abhishek"></div>
-        <div><div class="setting-label" style="margin-bottom:6px;font-size:13px">Username</div><input class="input-field" value="abhishek_pawbook"></div>
-        <div><div class="setting-label" style="margin-bottom:6px;font-size:13px">Email</div><input class="input-field" value="abhishek@pawbook.app"></div>
-        <div><div class="setting-label" style="margin-bottom:6px;font-size:13px">Phone</div><input class="input-field" value="+91 9876543210"></div>
-        <div><div class="setting-label" style="margin-bottom:6px;font-size:13px">City</div><input class="input-field" value="Delhi, India"></div>
-        <div><div class="setting-label" style="margin-bottom:6px;font-size:13px">Date of Birth</div><input class="input-field" value="1995-06-15" type="date"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Full Name</label><input class="input-field" value="Abhishek Kumar"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Username</label><input class="input-field" value="abhishek_pawbook"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Email</label><input class="input-field" type="email" value="abhishek@pawbook.app"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Phone</label><input class="input-field" value="+91 9876543210"></div>
+        <div style="grid-column:1/-1"><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Bio</label><textarea class="input-field" rows="3" style="height:auto;padding:10px 14px;resize:none">Dog parent 🐕 | Cat lover 🐈 | Based in New Delhi</textarea></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">City</label><input class="input-field" value="New Delhi"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Country</label><input class="input-field" value="India"></div>
       </div>
-      <div style="margin-bottom:20px"><div class="setting-label" style="margin-bottom:6px;font-size:13px">Bio</div>
-        <textarea class="input-field" style="height:80px;padding:12px 14px;resize:none;line-height:1.5">🐾 Pet lover & proud parent of Bruno the Beagle. Based in Delhi. Sharing pet life, vet tips & adoption stories.</textarea>
-      </div>
-
-      <div style="font-size:16px;font-weight:800;margin-bottom:14px;color:var(--blue)">Notification Preferences</div>
-      <div class="setting-row">
-        <div><div class="setting-label">Vaccination Reminders</div><div class="setting-sub">Get notified 7 days before due vaccines</div></div>
-        <label class="toggle"><input type="checkbox" checked><div class="toggle-slider"></div></label>
-      </div>
-      <div class="setting-row">
-        <div><div class="setting-label">Lost Pet Alerts</div><div class="setting-sub">Alert when a pet is reported missing near you</div></div>
-        <label class="toggle"><input type="checkbox" checked><div class="toggle-slider"></div></label>
-      </div>
-      <div class="setting-row">
-        <div><div class="setting-label">Post Reactions & Comments</div><div class="setting-sub">When someone reacts to your posts</div></div>
-        <label class="toggle"><input type="checkbox" checked><div class="toggle-slider"></div></label>
-      </div>
-      <div class="setting-row">
-        <div><div class="setting-label">Marketing Emails</div><div class="setting-sub">Deals, new features and promotions</div></div>
-        <label class="toggle"><input type="checkbox"><div class="toggle-slider"></div></label>
-      </div>
-
-      <div style="display:flex;gap:12px;margin-top:24px">
-        <button class="btn btn-blue" style="padding:12px 28px;font-size:15px">Save Changes</button>
-        <button class="btn btn-gray" style="padding:12px 28px;font-size:15px">Cancel</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-blue" onclick="saveProfile()">Save Changes</button>
+        <button class="btn btn-gray" onclick="toast('Changes discarded','info')">Cancel</button>
       </div>
     </div>
   </div>
 
-
-<!-- SECURITY SECTION -->
-<div id="section-security" style="display:none">
-  <div class="sc-header"><i class="ti ti-lock" style="font-size:24px;color:#1877F2"></i><div class="sc-title">Security</div></div>
-  <div class="sc-body">
-    <div class="setting-row">
-      <div><div class="setting-label">Change Password</div><div class="setting-sub">Update your account password</div></div>
-      <button class="btn btn-blue" onclick="showChangePassword()" style="height:34px;padding:0 16px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Change</button>
-    </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Two-Factor Authentication</div><div class="setting-sub">Add extra security to your account</div></div>
-      <label class="toggle"><input type="checkbox" onchange="toggle2FA(this)"><span class="toggle-slider"></span></label>
-    </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Login Alerts</div><div class="setting-sub">Get notified of new logins</div></div>
-      <label class="toggle"><input type="checkbox" checked onchange="toggleSetting('login_alerts',this)"><span class="toggle-slider"></span></label>
-    </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Active Sessions</div><div class="setting-sub">Manage where you are logged in</div></div>
-      <button onclick="showActiveSessions()" style="height:34px;padding:0 16px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer">View (2 devices)</button>
-    </div>
-    <div class="setting-row" style="border-bottom:none">
-      <div><div class="setting-label" style="color:#dc2626">Delete Account</div><div class="setting-sub">Permanently delete your PawBook account</div></div>
-      <button onclick="confirmDeleteAccount()" style="height:34px;padding:0 16px;border-radius:999px;border:none;background:#fee2e2;color:#dc2626;font-size:13px;font-weight:700;cursor:pointer">Delete</button>
+  <!-- SECURITY -->
+  <div id="tab-security" class="sec-panel">
+    <div class="sc-head"><i class="ti ti-lock" style="font-size:22px;color:#1877F2"></i><div class="sc-head-title">Security</div></div>
+    <div class="sc-body">
+      <div class="setting-row"><div><div class="setting-label">Change Password</div><div class="setting-sub">Update your account password</div></div><button class="btn btn-blue btn-sm" onclick="openPwdModal()">Change</button></div>
+      <div class="setting-row"><div><div class="setting-label">Two-Factor Authentication</div><div class="setting-sub">Add extra security with 2FA</div></div><label class="toggle"><input type="checkbox" onchange="toast(this.checked?'2FA enabled!':'2FA disabled','success')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row"><div><div class="setting-label">Login Alerts</div><div class="setting-sub">Get notified of new logins to your account</div></div><label class="toggle"><input type="checkbox" checked onchange="toast(this.checked?'Login alerts on':'Login alerts off','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row"><div><div class="setting-label">Active Sessions</div><div class="setting-sub">Chrome on Windows · iPhone 14 (2 devices)</div></div><button class="btn btn-gray btn-sm" onclick="toast('2 active sessions: Chrome Windows, iPhone 14','info')">View</button></div>
+      <div class="setting-row" style="border-bottom:none"><div><div class="setting-label" style="color:#dc2626">Delete Account</div><div class="setting-sub">Permanently delete your PawBook account and all data</div></div><button class="btn btn-red btn-sm" onclick="deleteAccount()">Delete</button></div>
     </div>
   </div>
-</div>
 
-<!-- PRIVACY SECTION -->
-<div id="section-privacy" style="display:none">
-  <div class="sc-header"><i class="ti ti-shield" style="font-size:24px;color:#1877F2"></i><div class="sc-title">Privacy</div></div>
-  <div class="sc-body">
-    <div class="setting-row">
-      <div><div class="setting-label">Profile Visibility</div><div class="setting-sub">Who can see your profile</div></div>
-      <select onchange="saveSetting('profile_visibility',this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;cursor:pointer">
-        <option value="public">🌍 Everyone</option>
-        <option value="friends" selected>👥 Friends Only</option>
-        <option value="private">🔒 Only Me</option>
-      </select>
-    </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Pet Profile Visibility</div><div class="setting-sub">Who can see your pet profiles</div></div>
-      <select onchange="saveSetting('pet_visibility',this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;cursor:pointer">
-        <option value="public" selected>🌍 Everyone</option>
-        <option value="friends">👥 Friends Only</option>
-        <option value="private">🔒 Only Me</option>
-      </select>
-    </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Show Location</div><div class="setting-sub">Allow location on posts and alerts</div></div>
-      <label class="toggle"><input type="checkbox" checked onchange="toggleSetting('show_location',this)"><span class="toggle-slider"></span></label>
-    </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Online Status</div><div class="setting-sub">Show when you are active</div></div>
-      <label class="toggle"><input type="checkbox" checked onchange="toggleSetting('online_status',this)"><span class="toggle-slider"></span></label>
-    </div>
-    <div class="setting-row" style="border-bottom:none">
-      <div><div class="setting-label">Blocked Users</div><div class="setting-sub">Manage your blocked list</div></div>
-      <button onclick="showBlockedList()" style="height:34px;padding:0 16px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer">View (0)</button>
+  <!-- PRIVACY -->
+  <div id="tab-privacy" class="sec-panel">
+    <div class="sc-head"><i class="ti ti-shield" style="font-size:22px;color:#1877F2"></i><div class="sc-head-title">Privacy</div></div>
+    <div class="sc-body">
+      <div class="setting-row"><div><div class="setting-label">Profile Visibility</div><div class="setting-sub">Who can see your profile</div></div><select class="select-field" onchange="toast('Profile visibility saved','success')"><option>🌍 Everyone</option><option selected>👥 Friends Only</option><option>🔒 Only Me</option></select></div>
+      <div class="setting-row"><div><div class="setting-label">Pet Profile Visibility</div><div class="setting-sub">Who can see your pet profiles</div></div><select class="select-field" onchange="toast('Pet visibility saved','success')"><option selected>🌍 Everyone</option><option>👥 Friends Only</option><option>🔒 Only Me</option></select></div>
+      <div class="setting-row"><div><div class="setting-label">Show Location on Posts</div><div class="setting-sub">Add city to your posts and alerts</div></div><label class="toggle"><input type="checkbox" checked onchange="toast(this.checked?'Location enabled':'Location hidden','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row"><div><div class="setting-label">Online Status</div><div class="setting-sub">Show when you are active</div></div><label class="toggle"><input type="checkbox" checked onchange="toast(this.checked?'Online status visible':'Online status hidden','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">Blocked Users</div><div class="setting-sub">Manage your blocked accounts</div></div><button class="btn btn-gray btn-sm" onclick="toast('No blocked users','info')">View (0)</button></div>
     </div>
   </div>
-</div>
 
-<!-- NOTIFICATIONS SECTION -->
-<div id="section-notifications" style="display:none">
-  <div class="sc-header"><i class="ti ti-bell" style="font-size:24px;color:#1877F2"></i><div class="sc-title">Notifications</div></div>
-  <div class="sc-body">
-    <div class="setting-row"><div><div class="setting-label">Push Notifications</div><div class="setting-sub">Receive push notifications on device</div></div><label class="toggle"><input type="checkbox" checked onchange="toggleSetting('push',this)"><span class="toggle-slider"></span></label></div>
-    <div class="setting-row"><div><div class="setting-label">Email Notifications</div><div class="setting-sub">Receive important updates by email</div></div><label class="toggle"><input type="checkbox" checked onchange="toggleSetting('email',this)"><span class="toggle-slider"></span></label></div>
-    <div class="setting-row"><div><div class="setting-label">Vaccination Reminders</div><div class="setting-sub">Get reminders for pet vaccinations</div></div><label class="toggle"><input type="checkbox" checked onchange="toggleSetting('vacc_reminders',this)"><span class="toggle-slider"></span></label></div>
-    <div class="setting-row"><div><div class="setting-label">Appointment Alerts</div><div class="setting-sub">Vet appointment confirmations and reminders</div></div><label class="toggle"><input type="checkbox" checked onchange="toggleSetting('appt_alerts',this)"><span class="toggle-slider"></span></label></div>
-    <div class="setting-row"><div><div class="setting-label">Lost Pet Alerts</div><div class="setting-sub">Nearby lost and found pet notifications</div></div><label class="toggle"><input type="checkbox" checked onchange="toggleSetting('lost_pet',this)"><span class="toggle-slider"></span></label></div>
-    <div class="setting-row"><div><div class="setting-label">Group Updates</div><div class="setting-sub">Posts and events from your groups</div></div><label class="toggle"><input type="checkbox" onchange="toggleSetting('group_updates',this)"><span class="toggle-slider"></span></label></div>
-    <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">Marketing Emails</div><div class="setting-sub">News, tips and offers from PawBook</div></div><label class="toggle"><input type="checkbox" onchange="toggleSetting('marketing',this)"><span class="toggle-slider"></span></label></div>
+  <!-- NOTIFICATIONS -->
+  <div id="tab-notifications" class="sec-panel">
+    <div class="sc-head"><i class="ti ti-bell" style="font-size:22px;color:#1877F2"></i><div class="sc-head-title">Notifications</div></div>
+    <div class="sc-body">
+      <div class="setting-row"><div><div class="setting-label">Push Notifications</div><div class="setting-sub">Receive push notifications on your device</div></div><label class="toggle"><input type="checkbox" checked onchange="toast(this.checked?'Push on':'Push off','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row"><div><div class="setting-label">Email Notifications</div><div class="setting-sub">Important updates sent to your email</div></div><label class="toggle"><input type="checkbox" checked onchange="toast(this.checked?'Email on':'Email off','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row"><div><div class="setting-label">Vaccination Reminders</div><div class="setting-sub">Get reminded before vaccinations are due</div></div><label class="toggle"><input type="checkbox" checked onchange="toast(this.checked?'Reminders on':'Reminders off','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row"><div><div class="setting-label">Appointment Alerts</div><div class="setting-sub">Vet booking confirmations and reminders</div></div><label class="toggle"><input type="checkbox" checked onchange="toast(this.checked?'Alerts on':'Alerts off','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row"><div><div class="setting-label">Lost Pet Alerts</div><div class="setting-sub">Alerts for lost and found pets near you</div></div><label class="toggle"><input type="checkbox" checked onchange="toast(this.checked?'Lost pet alerts on':'Lost pet alerts off','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row"><div><div class="setting-label">Group Updates</div><div class="setting-sub">Posts and events from your groups</div></div><label class="toggle"><input type="checkbox" onchange="toast(this.checked?'Group updates on':'Group updates off','info')"><span class="toggle-slider"></span></label></div>
+      <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">Marketing Emails</div><div class="setting-sub">News, tips and offers from PawBook</div></div><label class="toggle"><input type="checkbox" onchange="toast(this.checked?'Marketing on':'Marketing off','info')"><span class="toggle-slider"></span></label></div>
+    </div>
   </div>
-</div>
 
-<!-- APPEARANCE SECTION -->
-<div id="section-appearance" style="display:none">
-  <div class="sc-header"><i class="ti ti-palette" style="font-size:24px;color:#1877F2"></i><div class="sc-title">Appearance</div></div>
-  <div class="sc-body">
-    <div class="setting-row">
-      <div><div class="setting-label">Theme</div><div class="setting-sub">Choose your preferred theme</div></div>
-      <div style="display:flex;gap:8px">
-        <button onclick="setTheme('light',this)" style="height:34px;padding:0 14px;border-radius:999px;border:2px solid #1877F2;background:#fff;font-size:13px;font-weight:700;cursor:pointer">☀️ Light</button>
-        <button onclick="setTheme('dark',this)" style="height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer">🌙 Dark</button>
-        <button onclick="setTheme('auto',this)" style="height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer">🌓 Auto</button>
+  <!-- APPEARANCE -->
+  <div id="tab-appearance" class="sec-panel">
+    <div class="sc-head"><i class="ti ti-palette" style="font-size:22px;color:#1877F2"></i><div class="sc-head-title">Appearance</div></div>
+    <div class="sc-body">
+      <div class="setting-row"><div><div class="setting-label">Theme</div><div class="setting-sub">Choose light, dark or auto theme</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="theme-btn active" id="theme-light" onclick="setTheme('light',this)">☀️ Light</button>
+          <button class="theme-btn" id="theme-dark" onclick="setTheme('dark',this)">🌙 Dark</button>
+          <button class="theme-btn" id="theme-auto" onclick="setTheme('auto',this)">🌓 Auto</button>
+        </div>
       </div>
-    </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Text Size</div><div class="setting-sub">Adjust the size of text throughout the app</div></div>
-      <select onchange="setTextSize(this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;cursor:pointer">
-        <option value="small">Small</option>
-        <option value="medium" selected>Medium</option>
-        <option value="large">Large</option>
-      </select>
-    </div>
-    <div class="setting-row" style="border-bottom:none">
-      <div><div class="setting-label">Compact Mode</div><div class="setting-sub">Show more content with less spacing</div></div>
-      <label class="toggle"><input type="checkbox" onchange="toggleSetting('compact',this)"><span class="toggle-slider"></span></label>
+      <div class="setting-row"><div><div class="setting-label">Text Size</div><div class="setting-sub">Adjust reading comfort</div></div>
+        <select class="select-field" onchange="setTextSize(this.value)"><option value="sm">Small</option><option value="md" selected>Medium</option><option value="lg">Large</option></select>
+      </div>
+      <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">Compact Mode</div><div class="setting-sub">Show more content with reduced spacing</div></div><label class="toggle"><input type="checkbox" onchange="toast(this.checked?'Compact mode on':'Compact mode off','info')"><span class="toggle-slider"></span></label></div>
     </div>
   </div>
-</div>
 
-<!-- LANGUAGE SECTION -->
-<div id="section-language" style="display:none">
-  <div class="sc-header"><i class="ti ti-world" style="font-size:24px;color:#1877F2"></i><div class="sc-title">Language & Region</div></div>
-  <div class="sc-body">
-    <div class="setting-row">
-      <div><div class="setting-label">App Language</div><div class="setting-sub">Language used throughout PawBook</div></div>
-      <select onchange="setLanguage(this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;cursor:pointer">
-        <option value="en" selected>🇬🇧 English</option>
-        <option value="hi">🇮🇳 Hindi</option>
-        <option value="ta">🇮🇳 Tamil</option>
-        <option value="te">🇮🇳 Telugu</option>
-        <option value="mr">🇮🇳 Marathi</option>
-        <option value="bn">🇮🇳 Bengali</option>
-        <option value="ar">🇦🇪 Arabic</option>
-        <option value="fr">🇫🇷 French</option>
-        <option value="es">🇪🇸 Spanish</option>
-      </select>
-    </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Region</div><div class="setting-sub">Affects date format and currency</div></div>
-      <select onchange="saveSetting('region',this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;cursor:pointer">
-        <option value="IN" selected>🇮🇳 India</option>
-        <option value="US">🇺🇸 United States</option>
-        <option value="UK">🇬🇧 United Kingdom</option>
-        <option value="AU">🇦🇺 Australia</option>
-        <option value="AE">🇦🇪 UAE</option>
-        <option value="SG">🇸🇬 Singapore</option>
-      </select>
-    </div>
-    <div class="setting-row" style="border-bottom:none">
-      <div><div class="setting-label">Time Format</div><div class="setting-sub">12-hour or 24-hour clock</div></div>
-      <div style="display:flex;gap:8px">
-        <button onclick="setTimeFormat('12h',this)" style="height:34px;padding:0 14px;border-radius:999px;border:2px solid #1877F2;background:#fff;font-size:13px;font-weight:700;cursor:pointer">12h</button>
-        <button onclick="setTimeFormat('24h',this)" style="height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer">24h</button>
+  <!-- LANGUAGE -->
+  <div id="tab-language" class="sec-panel">
+    <div class="sc-head"><i class="ti ti-world" style="font-size:22px;color:#1877F2"></i><div class="sc-head-title">Language & Region</div></div>
+    <div class="sc-body">
+      <div class="setting-row"><div><div class="setting-label">App Language</div><div class="setting-sub">Language used throughout PawBook</div></div>
+        <select class="select-field" onchange="toast('Language updated — restart to apply','success')">
+          <option selected>🇬🇧 English</option><option>🇮🇳 Hindi</option><option>🇮🇳 Tamil</option>
+          <option>🇮🇳 Telugu</option><option>🇮🇳 Marathi</option><option>🇮🇳 Bengali</option>
+          <option>🇦🇪 Arabic</option><option>🇫🇷 French</option><option>🇪🇸 Spanish</option>
+        </select>
+      </div>
+      <div class="setting-row"><div><div class="setting-label">Region</div><div class="setting-sub">Affects date format and currency</div></div>
+        <select class="select-field" onchange="toast('Region saved','success')">
+          <option selected>🇮🇳 India</option><option>🇺🇸 United States</option><option>🇬🇧 United Kingdom</option>
+          <option>🇦🇺 Australia</option><option>🇦🇪 UAE</option><option>🇸🇬 Singapore</option>
+        </select>
+      </div>
+      <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">Time Format</div><div class="setting-sub">12-hour or 24-hour clock</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="theme-btn active" onclick="setTimeFmt('12h',this)">12h</button>
+          <button class="theme-btn" onclick="setTimeFmt('24h',this)">24h</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- HELP SECTION -->
-<div id="section-help" style="display:none">
-  <div class="sc-header"><i class="ti ti-help-circle" style="font-size:24px;color:#1877F2"></i><div class="sc-title">Help Center</div></div>
-  <div class="sc-body">
-    <div class="setting-row" style="cursor:pointer" onclick="showToastMsg('Opening FAQs...')"><div><div class="setting-label">Frequently Asked Questions</div><div class="setting-sub">Find answers to common questions</div></div><i class="ti ti-chevron-right" style="color:#65676b"></i></div>
-    <div class="setting-row" style="cursor:pointer" onclick="showToastMsg('Opening contact form...')"><div><div class="setting-label">Contact Support</div><div class="setting-sub">Get help from our team</div></div><i class="ti ti-chevron-right" style="color:#65676b"></i></div>
-    <div class="setting-row" style="cursor:pointer" onclick="showToastMsg('Opening community guidelines...')"><div><div class="setting-label">Community Guidelines</div><div class="setting-sub">Rules for a safe pet community</div></div><i class="ti ti-chevron-right" style="color:#65676b"></i></div>
-    <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">App Version</div><div class="setting-sub">PawBook v2.0.0 — Up to date</div></div><span style="font-size:12px;color:#22c55e;font-weight:700">✓ Latest</span></div>
-  </div>
-</div>
-
-<!-- REPORT SECTION -->
-<div id="section-report" style="display:none">
-  <div class="sc-header"><i class="ti ti-message-report" style="font-size:24px;color:#dc2626"></i><div class="sc-title">Report an Issue</div></div>
-  <div class="sc-body">
-    <div style="margin-bottom:12px"><label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:6px">Issue Type</label>
-      <select style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;font-family:Inter,sans-serif;outline:none">
-        <option>Bug or technical issue</option>
-        <option>Inappropriate content</option>
-        <option>Account problem</option>
-        <option>Feature request</option>
-        <option>Other</option>
-      </select>
+  <!-- HELP -->
+  <div id="tab-help" class="sec-panel">
+    <div class="sc-head"><i class="ti ti-help-circle" style="font-size:22px;color:#1877F2"></i><div class="sc-head-title">Help Center</div></div>
+    <div class="sc-body">
+      <div class="setting-row" style="cursor:pointer" onclick="toast('Opening FAQs…','info')"><div><div class="setting-label">Frequently Asked Questions</div><div class="setting-sub">Answers to common questions about PawBook</div></div><i class="ti ti-chevron-right" style="color:#8a8d91"></i></div>
+      <div class="setting-row" style="cursor:pointer" onclick="toast('Opening contact form…','info')"><div><div class="setting-label">Contact Support</div><div class="setting-sub">Get help from our team — we reply within 24h</div></div><i class="ti ti-chevron-right" style="color:#8a8d91"></i></div>
+      <div class="setting-row" style="cursor:pointer" onclick="toast('Opening community guidelines…','info')"><div><div class="setting-label">Community Guidelines</div><div class="setting-sub">Rules for a safe and kind pet community</div></div><i class="ti ti-chevron-right" style="color:#8a8d91"></i></div>
+      <div class="setting-row" style="cursor:pointer" onclick="toast('Privacy policy opening…','info')"><div><div class="setting-label">Privacy Policy</div><div class="setting-sub">How we handle your data</div></div><i class="ti ti-chevron-right" style="color:#8a8d91"></i></div>
+      <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">App Version</div><div class="setting-sub">PawBook v2.0.0</div></div><span style="font-size:12px;color:#22c55e;font-weight:700;background:#f0fdf4;padding:4px 10px;border-radius:999px">✓ Up to date</span></div>
     </div>
-    <div style="margin-bottom:12px"><label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:6px">Description</label>
-      <textarea id="report-desc" rows="5" placeholder="Describe the issue in detail..." style="width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:12px;font-size:14px;font-family:Inter,sans-serif;outline:none;resize:none"></textarea>
-    </div>
-    <button onclick="submitReport()" style="width:100%;height:42px;border-radius:999px;border:none;background:#dc2626;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">Submit Report</button>
   </div>
-</div>
 
-</div>
-<script src="api.js"></script>
+  <!-- REPORT -->
+  <div id="tab-report" class="sec-panel">
+    <div class="sc-head"><i class="ti ti-message-report" style="font-size:22px;color:#dc2626"></i><div class="sc-head-title">Report an Issue</div></div>
+    <div class="sc-body">
+      <div style="margin-bottom:14px"><label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:6px">Issue Type</label>
+        <select class="input-field" style="cursor:pointer"><option>Bug or technical issue</option><option>Inappropriate content</option><option>Account problem</option><option>Feature request</option><option>Other</option></select>
+      </div>
+      <div style="margin-bottom:14px"><label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:6px">Description</label>
+        <textarea id="report-text" class="input-field" rows="5" style="height:auto;padding:10px 14px;resize:none" placeholder="Describe the issue in detail…"></textarea>
+      </div>
+      <button class="btn" style="background:#dc2626;color:#fff;width:100%" onclick="submitReport()">Submit Report</button>
+    </div>
+  </div>
+
+</div><!-- end settings-content -->
+</div><!-- end page-wrap -->
 
 <!-- CHANGE PASSWORD MODAL -->
-<div id="change-pwd-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#fff;border-radius:16px;width:100%;max-width:400px;box-shadow:0 12px 48px rgba(0,0,0,.2)">
-    <div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between">
-      <div style="font-size:16px;font-weight:800">Change Password</div>
-      <button onclick="document.getElementById('change-pwd-modal').style.display='none'" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">✕</button>
-    </div>
-    <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
-      <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Current Password</label><input type="password" id="pwd-current" class="input-field" placeholder="Enter current password"></div>
-      <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">New Password</label><input type="password" id="pwd-new" class="input-field" placeholder="Min 8 characters"></div>
-      <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Confirm New Password</label><input type="password" id="pwd-confirm" class="input-field" placeholder="Repeat new password"></div>
-      <button onclick="submitPasswordChange()" style="width:100%;height:42px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">Update Password</button>
+<div class="modal-bg" id="pwd-modal" onclick="if(event.target===this)closePwdModal()">
+  <div class="modal-box">
+    <div class="modal-head"><div class="modal-title">🔒 Change Password</div><button class="modal-close" onclick="closePwdModal()">✕</button></div>
+    <div class="modal-body">
+      <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Current Password</label><input type="password" id="pwd-cur" class="input-field" placeholder="Enter current password"></div>
+      <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">New Password</label><input type="password" id="pwd-new" class="input-field" placeholder="Minimum 8 characters"></div>
+      <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Confirm New Password</label><input type="password" id="pwd-conf" class="input-field" placeholder="Repeat new password"></div>
+      <button class="btn btn-blue" style="width:100%" onclick="changePwd()">Update Password</button>
     </div>
   </div>
 </div>
 
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script src="api.js"></script>
 <script>
-
-function saveProfileChanges() {
-  var inputs = document.querySelectorAll('.input-field');
-  var data = {};
-  inputs.forEach(function(inp) { if(inp.value) data[inp.placeholder || 'field'] = inp.value; });
-  showToastMsg('Profile saved successfully!', 'success');
+function showTab(id, navEl) {
+  // Hide all panels
+  document.querySelectorAll('.sec-panel').forEach(function(p){ p.classList.remove('active'); });
+  // Show target
+  var target = document.getElementById('tab-' + id);
+  if(target) target.classList.add('active');
+  // Update nav
+  document.querySelectorAll('.sn-item').forEach(function(i){ i.classList.remove('active'); });
+  if(navEl) navEl.classList.add('active');
 }
 
-function cancelChanges() {
-  showToastMsg('Changes discarded', 'info');
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  var bg = type==='success'?'#22c55e':type==='error'?'#dc2626':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
+  t.style.background = bg;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
 }
 
-function changeProfilePhoto() {
-  var input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = function() {
-    if(this.files && this.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var img = document.querySelector('.av-large img');
-        if(img) img.src = e.target.result;
-        showToastMsg('Profile photo updated!', 'success');
-      };
-      reader.readAsDataURL(this.files[0]);
-    }
-  };
-  input.click();
+function saveProfile() { toast('Profile saved successfully!','success'); }
+
+function changePhoto() { document.getElementById('photo-input').click(); }
+function updatePhoto(input) {
+  if(!input.files||!input.files[0]) return;
+  var r = new FileReader();
+  r.onload = function(e){ document.getElementById('av-img').src = e.target.result; toast('Photo updated!','success'); };
+  r.readAsDataURL(input.files[0]);
 }
 
-function toggleSetting(key, el) {
-  var val = el.checked;
-  localStorage.setItem('pb_setting_' + key, val);
-  showToastMsg((val ? 'Enabled: ' : 'Disabled: ') + key.replace(/_/g,' '), val ? 'success' : 'info');
+function setTheme(t, btn) {
+  document.querySelectorAll('.theme-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  toast('Theme set to '+t,'success');
 }
 
-function saveSetting(key, val) {
-  localStorage.setItem('pb_setting_' + key, val);
-  showToastMsg('Setting saved!', 'success');
+function setTimeFmt(f, btn) {
+  document.querySelectorAll('[onclick*="setTimeFmt"]').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  toast('Time format: '+f,'success');
 }
 
-function setTheme(theme, btn) {
-  document.querySelectorAll('[onclick*="setTheme"]').forEach(function(b) {
-    b.style.borderWidth = '1.5px';
-    b.style.borderColor = '#e4e6eb';
-  });
-  btn.style.borderWidth = '2px';
-  btn.style.borderColor = '#1877F2';
-  localStorage.setItem('pb_theme', theme);
-  showToastMsg('Theme set to ' + theme, 'success');
+function setTextSize(v) {
+  var sz = {sm:'13px',md:'15px',lg:'17px'};
+  document.body.style.fontSize = sz[v]||'15px';
+  toast('Text size updated','success');
 }
 
-function setTextSize(size) {
-  var sizes = {small:'14px', medium:'16px', large:'18px'};
-  document.documentElement.style.fontSize = sizes[size] || '16px';
-  showToastMsg('Text size set to ' + size, 'success');
+function openPwdModal() { document.getElementById('pwd-modal').classList.add('open'); }
+function closePwdModal() { document.getElementById('pwd-modal').classList.remove('open'); }
+function changePwd() {
+  var cur = document.getElementById('pwd-cur').value;
+  var nw = document.getElementById('pwd-new').value;
+  var cf = document.getElementById('pwd-conf').value;
+  if(!cur||!nw||!cf){ toast('Please fill all fields','error'); return; }
+  if(nw.length<8){ toast('Password must be at least 8 characters','error'); return; }
+  if(nw!==cf){ toast('Passwords do not match','error'); return; }
+  closePwdModal();
+  toast('Password updated successfully!','success');
 }
 
-function setLanguage(lang) {
-  localStorage.setItem('pb_language', lang);
-  showToastMsg('Language updated! Restart app to apply.', 'success');
-}
-
-function setTimeFormat(fmt, btn) {
-  document.querySelectorAll('[onclick*="setTimeFormat"]').forEach(function(b) {
-    b.style.borderWidth = '1.5px';
-    b.style.borderColor = '#e4e6eb';
-  });
-  btn.style.borderWidth = '2px';
-  btn.style.borderColor = '#1877F2';
-  localStorage.setItem('pb_timeformat', fmt);
-  showToastMsg('Time format set to ' + fmt, 'success');
-}
-
-function toggle2FA(el) {
-  if(el.checked) {
-    showToastMsg('Two-factor authentication enabled!', 'success');
-  } else {
-    showToastMsg('Two-factor authentication disabled', 'info');
-  }
-}
-
-function showActiveSessions() {
-  showToastMsg('2 active sessions: Chrome Windows and PawBook App iPhone', 'info');
-}
-
-function showBlockedList() {
-  showToastMsg('No blocked users', 'info');
-}
-
-function showChangePassword() {
-  document.getElementById('change-pwd-modal').style.display = 'flex';
-}
-
-function submitPasswordChange() {
-  var cur = document.getElementById('pwd-current').value;
-  var newp = document.getElementById('pwd-new').value;
-  var conf = document.getElementById('pwd-confirm').value;
-  if(!cur || !newp || !conf) { showToastMsg('Please fill all fields', 'error'); return; }
-  if(newp.length < 8) { showToastMsg('Password must be at least 8 characters', 'error'); return; }
-  if(newp !== conf) { showToastMsg('Passwords do not match', 'error'); return; }
-  document.getElementById('change-pwd-modal').style.display = 'none';
-  showToastMsg('Password updated successfully!', 'success');
-}
-
-function confirmDeleteAccount() {
-  if(confirm('Are you sure? This will permanently delete your account and all data.')) {
-    if(confirm('Final confirmation: Delete account permanently?')) {
-      showToastMsg('Account deletion initiated. You will receive a confirmation email.', 'error');
-    }
+function deleteAccount() {
+  if(confirm('Delete your PawBook account permanently? This cannot be undone.')) {
+    toast('Account deletion request sent. Check your email.','error');
   }
 }
 
 function doLogout() {
-  if(confirm('Are you sure you want to log out?')) {
-    localStorage.clear();
-    showToastMsg('Logged out successfully!', 'success');
-    setTimeout(function(){ window.location.href = '01_login.html'; }, 1000);
+  if(confirm('Log out of PawBook?')) {
+    toast('Logging out…','info');
+    setTimeout(function(){ window.location.href='01_login.html'; }, 1000);
   }
 }
 
 function submitReport() {
-  var desc = document.getElementById('report-desc');
-  if(!desc || !desc.value.trim()) { showToastMsg('Please describe the issue', 'error'); return; }
-  desc.value = '';
-  showToastMsg('Report submitted! Our team will review it within 24 hours.', 'success');
-}
-
-function showToastMsg(msg, type) {
-  var t = document.getElementById('settings-toast');
-  if(!t) {
-    t = document.createElement('div');
-    t.id = 'settings-toast';
-    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:#000;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;max-width:90vw;text-align:center';
-    document.body.appendChild(t);
-  }
-  var bg = type==='error'?'#dc2626':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
-  t.style.background=bg; t.textContent=msg;
-  t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)';
-  setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(8px)';},2800);
-}
-
-// Better showSection - insert into content area
-function showSection(id) {
-  var allIds = ['security','privacy','notifications','appearance','language','help','report'];
-  
-  // Hide profile content
-  document.querySelectorAll('.sc-header,.sc-body,.avatar-section').forEach(function(el){
-    el.style.display='none';
-  });
-  
-  // Hide all sections
-  allIds.forEach(function(s){
-    var el=document.getElementById('section-'+s);
-    if(el) el.style.display='none';
-  });
-  
-  // Show target
-  var target=document.getElementById('section-'+id);
-  if(target){ target.style.display='block'; }
-  else { showToastMsg('Coming soon!','info'); }
-  
-  // Update nav active
-  document.querySelectorAll('.sn-item').forEach(function(item){
-    item.classList.remove('active');
-  });
-  event.currentTarget && event.currentTarget.classList.add('active');
+  var txt = document.getElementById('report-text').value.trim();
+  if(!txt){ toast('Please describe the issue','error'); return; }
+  document.getElementById('report-text').value = '';
+  toast('Report submitted! We will review it within 24h.','success');
 }
 </script>
-</body></html>
+</body>
+</html>
