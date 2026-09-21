@@ -146,8 +146,8 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
   <h1>Training &amp; Behavior</h1>
   <p style="opacity:0.85;max-width:480px;margin:0 auto 16px">Expert-guided sessions to build a stronger bond with your pet</p>
   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-    <button class="btn" style="background:#fff;color:#4338ca;padding:10px 20px;font-weight:700" onclick="filterSess(\'basic\',this)">📹 Video Sessions</button>
-    <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterSess(\'advanced\',this)">👨‍🏫 Live Expert</button>
+    <button class="btn" style="background:#fff;color:#4338ca;padding:10px 20px;font-weight:700" onclick="openVideoSessions()">📹 Video Sessions</button>
+    <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="openLiveExpert()">👨‍🏫 Live Expert</button>
   </div>
 </div>
 
@@ -208,7 +208,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="session-meta">⭐ 4.9 · 2.3k completions</div>
           <span class="diff-easy">Easy</span>
         </div>
-        <button class="btn btn-blue btn-sm" onclick="startSession('Sit, Stay & Recall Basics')">Start</button>
+        <button class="btn btn-blue btn-sm" onclick="openVideoPlayer('Sit Stay Recall Basics','https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800','15','Kavita R.','Easy')">Start</button>
       </div>
 
       <div class="session-card" data-level="basic">
@@ -219,7 +219,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="session-meta">⭐ 4.7 · 1.8k completions</div>
           <span class="diff-med">Medium</span>
         </div>
-        <button class="btn btn-blue btn-sm" onclick="startSession('Leash Walking')">Start</button>
+        <button class="btn btn-blue btn-sm" onclick="openVideoPlayer('Leash Walking Without Pulling','https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800','25','Aryan P.','Medium')">Start</button>
       </div>
 
       <div class="session-card" data-level="basic">
@@ -230,7 +230,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="session-meta">⭐ 4.8 · 920 completions</div>
           <span class="diff-med">Medium</span>
         </div>
-        <button class="btn btn-blue btn-sm" onclick="bookSession('Separation Anxiety')">Book</button>
+        <button class="btn btn-blue btn-sm" onclick="openBookingModal('Dr. Neha Malhotra','Separation Anxiety','1199','60 min')">Book</button>
       </div>
 
       <div class="session-card" data-level="advanced">
@@ -241,7 +241,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="session-meta">⭐ 4.6 · 450 completions</div>
           <span class="diff-hard">Advanced</span>
         </div>
-        <button class="btn btn-blue btn-sm" onclick="bookSession('Agility Training')">Book</button>
+        <button class="btn btn-blue btn-sm" onclick="openBookingModal('Kavita Rao','Agility Training','899','45 min')">Book</button>
       </div>
 
       <div class="session-card" data-level="advanced">
@@ -252,7 +252,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
           <div class="session-meta">⭐ 4.9 · 1.1k completions</div>
           <span class="diff-hard">Advanced</span>
         </div>
-        <button class="btn btn-blue btn-sm" onclick="startSession('Recall Mastery')">Start</button>
+        <button class="btn btn-blue btn-sm" onclick="openVideoPlayer('Recall Mastery Advanced','https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800','30','Kavita R.','Advanced')">Start</button>
       </div>
     </div>
   </main>
@@ -268,7 +268,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
             <div style="font-size:11px;color:var(--muted)">Basic &amp; Puppy Training</div>
             <div style="font-size:11px;color:#fbbf24">★★★★★ 4.9</div>
           </div>
-          <button class="btn btn-blue btn-sm" onclick="bookSession('Kavita Rao')">Book</button>
+          <button class="btn btn-blue btn-sm" onclick="openBookingModal('Kavita Rao','Basic Puppy Training','799','45 min')">Book</button>
         </div>
         <div class="expert-card">
           <div class="expert-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80"></div>
@@ -277,7 +277,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
             <div style="font-size:11px;color:var(--muted)">Behaviour Specialist</div>
             <div style="font-size:11px;color:#fbbf24">★★★★☆ 4.7</div>
           </div>
-          <button class="btn btn-blue btn-sm" onclick="bookSession('Dr. Aryan')">Book</button>
+          <button class="btn btn-blue btn-sm" onclick="openBookingModal('Dr. Aryan Patel','Behaviour Specialist','999','60 min')">Book</button>
         </div>
         <div class="expert-card">
           <div class="expert-av"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=80&q=80"></div>
@@ -286,7 +286,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
             <div style="font-size:11px;color:var(--muted)">Anxiety &amp; Aggression</div>
             <div style="font-size:11px;color:#fbbf24">★★★★★ 4.8</div>
           </div>
-          <button class="btn btn-blue btn-sm" onclick="bookSession('Dr. Neha')">Book</button>
+          <button class="btn btn-blue btn-sm" onclick="openBookingModal('Dr. Neha Malhotra','Anxiety Aggression','1199','60 min')">Book</button>
         </div>
       </div>
     </div>
@@ -320,25 +320,313 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
 </div>
 
 <script src="api.js"></script>
+
 <script>
-function startSession(name) {
-  toast('▶️ Starting: ' + name);
+/* ── TOAST ─────────────────────────────────────────── */
+function showToast(msg, type) {
+  var t = document.getElementById('tr-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'tr-toast';
+    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+    document.body.appendChild(t);
+  }
+  t.style.background = type==='success'?'#22c55e':type==='error'?'#dc2626':'#4338ca';
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 3000);
 }
-function bookSession(name) {
-  toast('📅 Booking session with ' + name + '…');
-  setTimeout(() => toast('✅ Session booked! Check your notifications.'), 1500);
-}
+
+/* ── SESSION FILTER ─────────────────────────────────── */
 function filterSess(level, btn) {
-  document.querySelectorAll('.session-card').forEach(c => {
+  document.querySelectorAll('.session-card').forEach(function(c) {
     c.style.display = (level === 'all' || c.dataset.level === level) ? 'flex' : 'none';
   });
-  btn.closest('div').querySelectorAll('button').forEach(b => b.className = 'btn btn-gray btn-sm');
+  btn.closest('div').querySelectorAll('button').forEach(function(b) { b.className = 'btn btn-gray btn-sm'; });
   btn.className = 'btn btn-blue btn-sm';
 }
-function toast(msg) {
-  const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#4338ca;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';
-  t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
+
+/* ── VIDEO PLAYER ───────────────────────────────────── */
+var vp = { playing: false, timer: null, secs: 0, total: 900 };
+
+function openVideoPlayer(title, thumb, duration, trainer, level) {
+  vp.playing = false; vp.secs = 0; vp.total = parseInt(duration) * 60 || 900;
+  clearInterval(vp.timer);
+
+  var modal = document.getElementById('vp-modal');
+  if(!modal) buildVideoModal();
+  document.getElementById('vp-title').textContent = title;
+  document.getElementById('vp-meta').textContent = duration + ' min · Trainer: ' + trainer + ' · ' + level;
+  document.getElementById('vp-img').src = thumb;
+  document.getElementById('vp-progress').style.width = '0%';
+  document.getElementById('vp-cur').textContent = '0:00';
+  document.getElementById('vp-tot').textContent = fmtTime(vp.total);
+  document.getElementById('vp-status').textContent = 'Tap ▶ to start';
+  document.getElementById('vp-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function buildVideoModal() {
+  var m = document.createElement('div');
+  m.id = 'vp-modal';
+  m.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:700;align-items:center;justify-content:center;padding:20px';
+  m.innerHTML =
+    '<div style="background:#111;border-radius:16px;width:100%;max-width:720px;overflow:hidden">' +
+    '<div style="background:#1a1a2e;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">' +
+      '<div><div id="vp-title" style="font-size:16px;font-weight:800;color:#fff"></div>' +
+      '<div id="vp-meta" style="font-size:12px;color:#a0a0c0;margin-top:2px"></div></div>' +
+      '<button onclick="closeVP()" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-size:16px">✕</button>' +
+    '</div>' +
+    '<div style="position:relative;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center">' +
+      '<img id="vp-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45">' +
+      '<div style="position:relative;z-index:2;text-align:center">' +
+        '<button onclick="vpToggle()" id="vp-playbtn" style="width:72px;height:72px;border-radius:50%;border:none;background:#4338ca;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(67,56,202,.6)">▶</button>' +
+        '<div id="vp-status" style="color:#fff;font-size:13px;font-weight:600;margin-top:10px">Tap ▶ to start</div>' +
+      '</div>' +
+      '<div style="position:absolute;bottom:0;left:0;right:0;padding:12px 16px;background:linear-gradient(transparent,rgba(0,0,0,.8))">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<span id="vp-cur" style="color:#fff;font-size:12px;font-weight:700;width:36px">0:00</span>' +
+          '<div onclick="vpSeek(event,this)" style="flex:1;height:4px;background:rgba(255,255,255,.3);border-radius:2px;cursor:pointer">' +
+            '<div id="vp-progress" style="height:100%;background:#4338ca;border-radius:2px;width:0%;transition:width .4s"></div>' +
+          '</div>' +
+          '<span id="vp-tot" style="color:#fff;font-size:12px;width:36px">0:00</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="background:#1a1a2e;padding:12px 18px;display:flex;gap:8px;flex-wrap:wrap">' +
+      '<button onclick="vpToggle()" id="vp-ctrlbtn" style="height:36px;padding:0 16px;border-radius:999px;border:none;background:#4338ca;color:#fff;font-size:13px;font-weight:700;cursor:pointer">▶ Play</button>' +
+      '<button onclick="vpRestart()" style="height:36px;padding:0 16px;border-radius:999px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:#fff;font-size:13px;font-weight:700;cursor:pointer">↺ Restart</button>' +
+      '<button onclick="vpComplete()" style="height:36px;padding:0 16px;border-radius:999px;border:none;background:#22c55e;color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-left:auto">✓ Mark Complete</button>' +
+    '</div>' +
+    '<div style="background:#0a0a1e;padding:12px 18px">' +
+      '<div style="font-size:12px;font-weight:700;color:#a0a0c0;margin-bottom:6px">📝 Session Notes</div>' +
+      '<textarea placeholder="Take notes during this session…" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;resize:none;font-family:Inter,sans-serif;outline:none" rows="2"></textarea>' +
+    '</div>' +
+    '</div>';
+  document.body.appendChild(m);
+}
+
+function vpToggle() {
+  if(vp.playing) {
+    vp.playing = false; clearInterval(vp.timer);
+    document.getElementById('vp-playbtn').textContent = '▶';
+    document.getElementById('vp-ctrlbtn').textContent = '▶ Play';
+    document.getElementById('vp-status').textContent = 'Paused';
+  } else {
+    vp.playing = true;
+    document.getElementById('vp-playbtn').textContent = '⏸';
+    document.getElementById('vp-ctrlbtn').textContent = '⏸ Pause';
+    document.getElementById('vp-status').textContent = 'Session in progress…';
+    vp.timer = setInterval(function() {
+      vp.secs++;
+      document.getElementById('vp-cur').textContent = fmtTime(vp.secs);
+      document.getElementById('vp-progress').style.width = Math.min((vp.secs/vp.total)*100,100) + '%';
+      if(vp.secs >= vp.total) { clearInterval(vp.timer); vpComplete(); }
+    }, 1000);
+  }
+}
+
+function vpRestart() {
+  clearInterval(vp.timer); vp.playing = false; vp.secs = 0;
+  document.getElementById('vp-progress').style.width = '0%';
+  document.getElementById('vp-cur').textContent = '0:00';
+  document.getElementById('vp-playbtn').textContent = '▶';
+  document.getElementById('vp-ctrlbtn').textContent = '▶ Play';
+  document.getElementById('vp-status').textContent = 'Tap ▶ to start';
+}
+
+function vpSeek(e, bar) {
+  var pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
+  vp.secs = Math.floor(pct * vp.total);
+  document.getElementById('vp-cur').textContent = fmtTime(vp.secs);
+  document.getElementById('vp-progress').style.width = (pct*100) + '%';
+}
+
+function vpComplete() {
+  clearInterval(vp.timer); vp.playing = false;
+  document.getElementById('vp-playbtn').textContent = '✓';
+  document.getElementById('vp-status').textContent = '✅ Session Complete!';
+  document.getElementById('vp-progress').style.width = '100%';
+  showToast('🎉 Session complete! Great work!', 'success');
+}
+
+function closeVP() {
+  clearInterval(vp.timer); vp.playing = false;
+  document.getElementById('vp-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function fmtTime(s) {
+  return Math.floor(s/60) + ':' + (s%60<10?'0':'') + (s%60);
+}
+
+/* ── BOOKING MODAL ──────────────────────────────────── */
+function openBookingModal(trainer, spec, price, duration) {
+  var m = document.getElementById('bk-modal');
+  if(!m) buildBookingModal();
+  document.getElementById('bk-trainer').textContent = trainer;
+  document.getElementById('bk-spec').textContent = spec;
+  document.getElementById('bk-price').textContent = '₹' + price + '/session';
+  document.getElementById('bk-dur').textContent = duration;
+  var d = new Date(); d.setDate(d.getDate()+1);
+  document.getElementById('bk-date').value = d.toISOString().split('T')[0];
+  document.getElementById('bk-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function buildBookingModal() {
+  var m = document.createElement('div');
+  m.id = 'bk-modal';
+  m.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:20px';
+  m.onclick = function(e){ if(e.target===m) closeBK(); };
+  m.innerHTML =
+    '<div style="background:#fff;border-radius:16px;width:100%;max-width:440px;box-shadow:0 12px 48px rgba(0,0,0,.2)">' +
+    '<div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between">' +
+      '<div style="font-size:17px;font-weight:800">📅 Book Session</div>' +
+      '<button onclick="closeBK()" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">✕</button>' +
+    '</div>' +
+    '<div style="padding:18px;display:flex;flex-direction:column;gap:14px">' +
+      '<div style="background:#f0f4ff;border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center">' +
+        '<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4338ca,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">👨‍🏫</div>' +
+        '<div><div id="bk-trainer" style="font-size:15px;font-weight:800"></div>' +
+        '<div id="bk-spec" style="font-size:13px;color:#65676b;margin-top:2px"></div>' +
+        '<div style="display:flex;gap:10px;margin-top:4px"><span id="bk-price" style="font-size:13px;font-weight:700;color:#4338ca"></span><span id="bk-dur" style="font-size:13px;color:#65676b"></span></div></div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+        '<div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Date</label>' +
+        '<input type="date" id="bk-date" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;outline:none;font-family:Inter,sans-serif"></div>' +
+        '<div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Time</label>' +
+        '<select id="bk-time" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;outline:none;font-family:Inter,sans-serif;background:#fff;cursor:pointer">' +
+        '<option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option>' +
+        '</select></div>' +
+      '</div>' +
+      '<div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:6px">Session Type</label>' +
+        '<div style="display:flex;gap:8px">' +
+          '<label style="flex:1;border:1.5px solid #4338ca;border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;background:#f0f4ff"><input type="radio" name="bktype" checked style="accent-color:#4338ca"><span style="font-size:13px;font-weight:700">📹 Video Call</span></label>' +
+          '<label style="flex:1;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="bktype" style="accent-color:#4338ca"><span style="font-size:13px;font-weight:700">🏠 In Person</span></label>' +
+        '</div>' +
+      '</div>' +
+      '<div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Select Pet</label>' +
+        '<select style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;outline:none;font-family:Inter,sans-serif;background:#fff;cursor:pointer"><option>🐕 Bruno</option><option>🐈 Luna</option></select>' +
+      '</div>' +
+      '<button onclick="confirmBK()" style="width:100%;height:44px;border-radius:999px;border:none;background:#4338ca;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">✓ Confirm Booking</button>' +
+    '</div></div>';
+  document.body.appendChild(m);
+}
+
+function closeBK() {
+  document.getElementById('bk-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function confirmBK() {
+  var date = document.getElementById('bk-date').value;
+  var time = document.getElementById('bk-time').value;
+  var trainer = document.getElementById('bk-trainer').textContent;
+  if(!date) { showToast('Please select a date', 'error'); return; }
+  closeBK();
+  var d = new Date(date);
+  var ds = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+  showToast('Session booked with ' + trainer + ' on ' + ds + ' at ' + time, 'success');
+}
+
+/* ── VIDEO SESSIONS LIBRARY ─────────────────────────── */
+function openVideoSessions() {
+  var m = document.getElementById('vs-modal');
+  if(!m) {
+    m = document.createElement('div');
+    m.id = 'vs-modal';
+    m.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:20px';
+    m.onclick = function(e){ if(e.target===m) m.style.display='none'; };
+    var DATA = [
+      {title:'Sit Stay Recall Basics',dur:'15',trainer:'Kavita R.',level:'Easy',img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200'},
+      {title:'Leash Walking',dur:'25',trainer:'Aryan P.',level:'Medium',img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200'},
+      {title:'Recall Mastery',dur:'30',trainer:'Kavita R.',level:'Advanced',img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200'},
+      {title:'Socialisation Basics',dur:'20',trainer:'Dr. Neha',level:'Easy',img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200'},
+      {title:'Agility Foundations',dur:'35',trainer:'Aryan P.',level:'Advanced',img:'https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=200'},
+    ];
+    var rows = DATA.map(function(s,i) {
+      return '<div style="display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;border:1px solid #e4e6eb">' +
+        '<img src="'+s.img+'" style="width:72px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0">' +
+        '<div style="flex:1"><div style="font-size:14px;font-weight:700">'+s.title+'</div>' +
+        '<div style="font-size:12px;color:#65676b;margin-top:2px">'+s.dur+' min · '+s.trainer+' · <b style="color:#22c55e">'+s.level+'</b></div></div>' +
+        '<button class="vs-btn" data-i="'+i+'" style="height:32px;padding:0 14px;border-radius:999px;border:none;background:#4338ca;color:#fff;font-size:12px;font-weight:700;cursor:pointer">▶ Start</button>' +
+      '</div>';
+    }).join('');
+    m.innerHTML = '<div style="background:#fff;border-radius:16px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)">' +
+      '<div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0">' +
+        '<div style="font-size:17px;font-weight:800">📹 Video Sessions Library</div>' +
+        '<button class="cls-vs" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">&#x2715;</button>' +
+      '</div>' +
+      '<div style="padding:16px;display:flex;flex-direction:column;gap:10px">' + rows + '</div></div>';
+    m.addEventListener('click', function(e) {
+      if(e.target.closest('.cls-vs')){m.style.display='none';return;}
+      var btn = e.target.closest('.vs-btn');
+      if(!btn) return;
+      var i = parseInt(btn.dataset.i);
+      var s = DATA[i];
+      m.style.display = 'none';
+      openVideoPlayer(s.title, s.img, s.dur, s.trainer, s.level);
+    });
+    m.addEventListener('click', function(e){ if(e.target.closest('.close-vs-modal')) m.style.display='none'; });
+    document.body.appendChild(m);
+  }
+  m.style.display = 'flex';
+}
+
+/* ── LIVE EXPERT ────────────────────────────────────── */
+function openLiveExpert() {
+  var m = document.getElementById('live-modal');
+  if(!m) {
+    m = document.createElement('div');
+    m.id = 'live-modal';
+    m.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:20px';
+    m.onclick = function(e){ if(e.target===m) m.style.display='none'; };
+    var upcoming = [
+      {title:'Leash Training Live',trainer:'Dr. Aryan',date:'Tomorrow',time:'10:00 AM',price:'999'},
+      {title:'Recall Practice',trainer:'Kavita R.',date:'Sat May 25',time:'4:00 PM',price:'799'},
+      {title:'Potty Training Basics',trainer:'Dr. Neha',date:'Sun May 26',time:'10:00 AM',price:'899'},
+    ];
+    var rows = upcoming.map(function(s) {
+      return '<div style="padding:12px;border:1px solid #e4e6eb;border-radius:10px;display:flex;align-items:center;justify-content:space-between">' +
+        '<div><div style="font-size:14px;font-weight:700">'+s.title+'</div>' +
+        '<div style="font-size:12px;color:#65676b;margin-top:2px">'+s.date+' · '+s.time+' · '+s.trainer+'</div></div>' +
+        '<button class="live-bk" data-trainer="'+s.trainer+'" data-title="'+s.title+'" data-price="'+s.price+'" style="height:30px;padding:0 12px;border-radius:999px;border:none;background:#4338ca;color:#fff;font-size:11px;font-weight:700;cursor:pointer">Book</button>' +
+      '</div>';
+    }).join('');
+    m.innerHTML = '<div style="background:#fff;border-radius:16px;width:100%;max-width:480px;box-shadow:0 12px 48px rgba(0,0,0,.2)">' +
+      '<div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between">' +
+        '<div style="font-size:17px;font-weight:800">👨‍🏫 Live Expert Sessions</div>' +
+        '<button class="cls-live" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">&#x2715;</button>' +
+      '</div>' +
+      '<div style="padding:18px;display:flex;flex-direction:column;gap:12px">' +
+        '<div style="background:#fee2e2;border-radius:12px;padding:14px">' +
+          '<div style="font-size:13px;font-weight:700;color:#dc2626;margin-bottom:4px">🔴 Live Now · 42 watching</div>' +
+          '<div style="font-size:15px;font-weight:800">Leash Training Masterclass</div>' +
+          '<div style="font-size:13px;color:#65676b;margin-top:2px">Dr. Aryan Patel</div>' +
+          '<button onclick="joinLive()" style="margin-top:10px;height:36px;padding:0 18px;border-radius:999px;border:none;background:#dc2626;color:#fff;font-size:13px;font-weight:700;cursor:pointer">🔴 Join Live Now</button>' +
+        '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:#65676b">Upcoming:</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px">' + rows + '</div>' +
+      '</div></div>';
+    m.addEventListener('click', function(e) {
+      if(e.target.closest('.cls-live')){m.style.display='none';return;}
+      var btn = e.target.closest('.live-bk');
+      if(!btn) return;
+      m.style.display = 'none';
+      openBookingModal(btn.dataset.trainer, btn.dataset.title, btn.dataset.price + '/session', '60 min');
+    });
+    m.addEventListener('click', function(e){ if(e.target.closest('.close-live-modal')) m.style.display='none'; });
+    document.body.appendChild(m);
+  }
+  m.style.display = 'flex';
+}
+
+function joinLive() {
+  document.getElementById('live-modal').style.display = 'none';
+  showToast('Joining live session… 42 others watching!', 'success');
 }
 </script>
 </body>
