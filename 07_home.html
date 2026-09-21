@@ -673,6 +673,14 @@ input:focus, textarea:focus, select:focus { border-color: #1877F2 !important; ou
 <div class="toast-wrap"></div>
 <script src="api.js"></script>
 <script>
+function fmt(n) {
+  if(!n) return '0';
+  if(n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if(n >= 1000) return (n/1000).toFixed(1) + 'k';
+  return n.toString();
+}
+</script>
+<script>
 // Auth check skipped for demo mode
 const user=(typeof Auth!=='undefined'&&Auth.getUser)?Auth.getUser():null;
 let myPets=[],selTags=[];
@@ -702,7 +710,7 @@ function renderPost(p) {
     ${p.text ? `<div class="post-text">${p.text}</div>` : ''}
     ${imgHtml}
     <div class="post-stats">
-      <span>${p.likes ? `👍 ${fmt(p.likes)} Likes` : ''}</span>
+      <span>${p.likes ? `👍 ${p.likes >= 1000 ? (p.likes/1000).toFixed(1)+'k' : p.likes} Likes` : ''}</span>
       <span>${p.comments||0} Comments · ${p.shares||0} Shares</span>
     </div>
     <div class="post-divider"></div>
