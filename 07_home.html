@@ -231,13 +231,16 @@ input:focus, textarea:focus, select:focus { border-color: #1877F2 !important; ou
 .burger-btn {
   display: none !important;
   width: 38px; height: 38px; border-radius: 50%;
-  border: none; background: rgba(255,255,255,.25);
-  cursor: pointer; color: #fff; font-size: 22px;
+  border: none; background: transparent;
+  cursor: pointer; color: #050505; font-size: 24px;
   align-items: center; justify-content: center;
   flex-shrink: 0; line-height: 1;
-  transition: background .15s;
+  transition: background .15s; font-weight: 700;
 }
-.burger-btn:hover { background: rgba(255,255,255,.35); }
+.burger-btn:hover { background: rgba(0,0,0,.06); }
+/* Blue topnav: white burger */
+.topnav[style*="background: #1"] .burger-btn,
+nav.topnav:not([style]) .burger-btn { color: #fff; }
 @media (max-width: 768px) {
   .burger-btn { display: flex !important; }
   .topnav-tabs { display: none !important; }
@@ -319,7 +322,7 @@ input:focus, textarea:focus, select:focus { border-color: #1877F2 !important; ou
 <body>
 <nav class="topnav">
   <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
-  <button class="burger-btn" onclick="openDrawer()" aria-label="Menu">☰</button>
+  <button class="burger-btn" onclick="openDrawer()" aria-label="Menu" style="width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:#050505;font-size:26px;align-items:center;justify-content:center;flex-shrink:0;font-weight:900;line-height:1;padding:0">☰</button>
   <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search PawBook…"></div>
   <div class="topnav-tabs">
     <button class="topnav-tab active"><i class="ti ti-home"></i></button>
@@ -965,6 +968,25 @@ function closeDrawer() {
   document.getElementById('drawer-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
+</script>
+<script>
+(function(){
+  function showBurgerOnMobile(){
+    var btns = document.querySelectorAll('.burger-btn');
+    var isMobile = window.innerWidth <= 768;
+    btns.forEach(function(b){
+      b.style.display = isMobile ? 'flex' : 'none';
+    });
+    // Also hide topnav-tabs on mobile
+    var tabs = document.querySelector('.topnav-tabs');
+    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
+    // Show bottom nav on mobile
+    var bnav = document.querySelector('.bottomnav');
+    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+  }
+  showBurgerOnMobile();
+  window.addEventListener('resize', showBurgerOnMobile);
+})();
 </script>
 </body>
 </html>
