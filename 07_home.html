@@ -79,7 +79,7 @@ input:focus, textarea:focus, select:focus { border-color: #1877F2 !important; ou
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PawBook — Home</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <link rel="stylesheet" href="style.css">
 <style>
 /* HOME PAGE LAYOUT */
@@ -231,6 +231,7 @@ input:focus, textarea:focus, select:focus { border-color: #1877F2 !important; ou
 <body>
 <nav class="topnav">
   <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <button class="burger-btn" onclick="openDrawer()" aria-label="Menu">☰</button>
   <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search PawBook…"></div>
   <div class="topnav-tabs">
     <button class="topnav-tab active"><i class="ti ti-home"></i></button>
@@ -811,5 +812,63 @@ function closePostModal() {
   <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
   <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
 </nav>
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER PANEL -->
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name">Abhishek Kumar</div>
+      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDrawer() {
+  document.getElementById('drawer-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
 </body>
 </html>
