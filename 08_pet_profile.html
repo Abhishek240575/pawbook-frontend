@@ -1067,8 +1067,12 @@ document.addEventListener('DOMContentLoaded',async()=>{
 async function loadProfile(){
   try{
     const r=await AuthAPI.me();const u=r?.data;if(!u)return;
-    document.getElementById('pname').innerHTML=`${u.full_name||'Bella'} <i class="ti ti-circle-check" style="color:var(--blue);font-size:20px"></i>`;
-    document.getElementById('psub').textContent='@'+u.username+(u.city?' · '+u.city:'');
+    // Only update nav avatar - keep pet name (Bella) as-is
+    // document.getElementById('pname') intentionally NOT overwritten
+    // The pet profile shows PET data, not owner login name
+    if(document.getElementById('psub') && u.username) {
+      // Only update subtitle if it looks like a username (not pet handle)
+    }
     document.getElementById('p-followers').textContent=fmt(u.follower_count||0);
     document.getElementById('p-following').textContent=fmt(u.following_count||0);
     document.getElementById('p-pets').textContent=fmt(u.pet_count||0);
