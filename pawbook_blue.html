@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PawBook — Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+/* ── TOKENS ───────────────────────────────────────── */
+:root {
+  --brand:       #1d4ed8;
+  --brand-dark:  #1e40af;
+  --brand-light: #eff6ff;
+  --accent:      #f59e0b;
+  --danger:      #ef4444;
+  --bg:          #f0f4f8;
+  --card:        #ffffff;
+  --text:        #111827;
+  --muted:       #6b7280;
+  --border:      #e5e7eb;
+  --soft:        #f3f4f6;
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+}
+
+/* ── RESET ────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── TOP NAV ──────────────────────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  height: 58px;
+  background: var(--brand);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-logo { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.8px; }
+.topbar-logo span { color: #a7f3d0; }
+.search-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 20px; padding: 6px 12px;
+  color: rgba(255,255,255,0.85); font-size: 13px; cursor: pointer;
+  border: none;
+}
+.search-pill i { font-size: 15px; }
+.search-pill:hover { background: rgba(255,255,255,0.22); }
+.topbar-right { display: flex; align-items: center; gap: 6px; }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; font-size: 18px; position: relative;
+  transition: background 0.15s;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.28); }
+.badge {
+  position: absolute; top: -1px; right: -1px;
+  background: var(--danger); color: #fff;
+  font-size: 10px; font-weight: 700;
+  border-radius: 10px; min-width: 17px; height: 17px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 4px; border: 2px solid #1d4ed8;
+}
+
+/* ── SUB NAV (desktop tab bar) ────────────────────── */
+.subnav {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: center; gap: 2px;
+  padding: 0 12px;
+}
+.subnav-item {
+  display: flex; align-items: center; gap: 5px;
+  padding: 12px 20px; cursor: pointer; font-size: 14px;
+  font-weight: 500; color: var(--muted); border-radius: 6px 6px 0 0;
+  border-bottom: 3px solid transparent; transition: all 0.15s;
+}
+.subnav-item:hover { background: var(--soft); color: var(--brand); }
+.subnav-item.active { color: var(--brand); border-bottom-color: var(--brand); }
+.subnav-item i { font-size: 19px; }
+
+/* ── PAGE SHELL ───────────────────────────────────── */
+.page {
+  max-width: 1100px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px minmax(0,1fr) 300px;
+  gap: 16px;
+  padding: 16px;
+  align-items: start;
+}
+
+/* ── LEFT SIDEBAR ─────────────────────────────────── */
+.sidebar-left { display: flex; flex-direction: column; gap: 10px; }
+.user-card {
+  background: var(--card); border-radius: var(--radius-md);
+  border: 1px solid var(--border); overflow: hidden;
+}
+.user-cover {
+  height: 64px;
+  background: linear-gradient(120deg, #1d4ed8, #3b82f6);
+}
+.user-body { padding: 0 14px 14px; }
+.user-avatar {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: #fff; border: 3px solid #fff;
+  margin-top: -30px; display: flex; align-items: center;
+  justify-content: center; font-size: 28px;
+}
+.user-name { font-size: 15px; font-weight: 700; margin-top: 8px; }
+.user-sub { font-size: 12px; color: var(--muted); }
+.user-stats {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; margin-top: 12px;
+  border-top: 1px solid var(--border); padding-top: 12px;
+}
+.user-stat { text-align: center; }
+.user-stat-num { font-size: 16px; font-weight: 700; color: var(--brand); }
+.user-stat-lbl { font-size: 11px; color: var(--muted); }
+.sidebar-menu { background: var(--card); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 8px 0; }
+.menu-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; cursor: pointer; font-size: 14px;
+  font-weight: 500; color: var(--text); border-radius: 6px; margin: 0 4px;
+  transition: background 0.12s;
+}
+.menu-item:hover { background:#eff6ff; color: var(--brand); }
+.menu-item.active { background:#eff6ff; color: var(--brand); }
+.menu-item i { font-size: 20px; width: 24px; }
+.menu-item .dot {
+  margin-left: auto; width: 8px; height: 8px;
+  background: var(--danger); border-radius: 50%;
+}
+.menu-divider { height: 1px; background: var(--border); margin: 6px 0; }
+
+/* ── MIDDLE FEED ──────────────────────────────────── */
+.feed-col { display: flex; flex-direction: column; gap: 12px; }
+
+/* Stories */
+.stories-wrap {
+  background: var(--card); border-radius: var(--radius-md);
+  border: 1px solid var(--border); padding: 12px;
+}
+.stories-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
+.stories-row { display: flex; gap: 8px; overflow-x: auto; }
+.stories-row::-webkit-scrollbar { display: none; }
+.story { flex-shrink: 0; width: 84px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; position: relative; }
+.story-img {
+  height: 108px; display: flex; align-items: center;
+  justify-content: center; font-size: 36px;
+  background: #dbeafe;
+}
+.story-add-btn {
+  position: absolute; bottom: 38px; left: 50%;
+  transform: translateX(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--brand); border: 3px solid #fff;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px;
+}
+.story-label { padding: 5px 6px 6px; font-size: 11px; font-weight: 600; text-align: center; color: var(--text); background: #fff; }
+.story-ring { border: 2px solid #1d4ed8; }
+
+/* Post composer */
+.composer {
+  background: var(--card); border-radius: var(--radius-md);
+  border: 1px solid var(--border); padding: 14px;
+}
+.composer-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.composer-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background:#eff6ff; display: flex; align-items: center;
+  justify-content: center; font-size: 20px; flex-shrink: 0;
+}
+.composer-input {
+  flex: 1; height: 40px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--soft);
+  padding: 0 16px; font-size: 14px; color: var(--muted);
+  display: flex; align-items: center; cursor: text;
+  font-family: inherit;
+}
+.composer-divider { height: 1px; background: var(--border); margin: 0 -14px; }
+.composer-actions { display: flex; margin-top: 10px; }
+.composer-action {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  gap: 6px; padding: 7px; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted);
+  transition: background 0.12s;
+}
+.composer-action:hover { background: var(--soft); }
+.composer-action i { font-size: 18px; }
+.ca-photo { color: #22c55e; }
+.ca-video { color: #ef4444; }
+.ca-vet   { color: var(--brand); }
+.ca-live  { color: #f59e0b; }
+
+/* Post card */
+.post-card {
+  background: var(--card); border-radius: var(--radius-md);
+  border: 1px solid var(--border); overflow: hidden;
+}
+.post-header { display: flex; align-items: center; gap: 10px; padding: 14px 14px 0; }
+.post-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+  border: 2px solid var(--brand-light); background: #f0fdf8;
+}
+.post-meta { flex: 1; }
+.post-name { font-size: 14px; font-weight: 700; }
+.post-sub { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-top: 1px; }
+.verified { color: var(--brand); font-size: 13px; }
+.post-more-btn {
+  width: 34px; height: 34px; border-radius: 50%; border: none;
+  background: transparent; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; color: var(--muted); font-size: 18px;
+}
+.post-more-btn:hover { background: var(--soft); }
+.post-text { padding: 10px 14px; font-size: 14px; line-height: 1.6; color: var(--text); }
+.post-photo {
+  width: 100%; aspect-ratio: 4/3;
+  background:#eff6ff; display: flex;
+  align-items: center; justify-content: center; font-size: 72px;
+  position: relative;
+}
+.post-photo-label {
+  position: absolute; bottom: 10px; left: 12px;
+  background: rgba(0,0,0,0.5); color: #fff; border-radius: 6px;
+  padding: 2px 8px; font-size: 12px;
+}
+.post-tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 14px 0; }
+.tag {
+  background:#eff6ff; color: var(--brand);
+  font-size: 12px; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; cursor: pointer;
+}
+.tag:hover { background: #bfdbfe; }
+.post-stats {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; border-top: 1px solid var(--border); margin-top: 8px;
+}
+.stat-left { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--muted); }
+.stat-reacts { display: flex; font-size: 16px; }
+.stat-right { font-size: 13px; color: var(--muted); cursor: pointer; }
+.stat-right:hover { text-decoration: underline; }
+.post-actions { display: flex; border-top: 1px solid var(--border); margin: 0 14px; }
+.post-action {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  gap: 5px; padding: 8px 0; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted);
+  border: none; background: transparent; font-family: inherit;
+  transition: background 0.12s, color 0.12s;
+  margin: 4px 0 6px;
+}
+.post-action:hover { background: var(--soft); }
+.post-action i { font-size: 18px; }
+.action-liked { color: #ef4444; }
+.action-liked i { color: #ef4444; }
+
+/* Vet banner in feed */
+.vet-suggest {
+  margin: 6px 14px 10px;
+  background: #eff6ff; border-radius: 10px;
+  border: 1px solid #bfdbfe; padding: 10px 12px;
+}
+.vet-suggest-head {
+  font-size: 12px; font-weight: 600; color: #1e3a8a;
+  display: flex; align-items: center; gap: 5px; margin-bottom: 4px;
+}
+.vet-suggest-body { font-size: 13px; color: #555; }
+.vet-suggest-link { color: var(--brand); font-weight: 600; cursor: pointer; }
+.vet-suggest-link:hover { text-decoration: underline; }
+
+/* Comment preview */
+.comment-preview { padding: 0 14px 12px; display: flex; flex-direction: column; gap: 8px; }
+.comment { display: flex; gap: 8px; align-items: flex-start; }
+.c-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--soft); display: flex; align-items: center;
+  justify-content: center; font-size: 14px; flex-shrink: 0;
+}
+.c-bubble {
+  background: var(--soft); border-radius: 12px;
+  padding: 6px 10px; font-size: 13px; line-height: 1.4;
+}
+.c-name { font-weight: 600; }
+
+/* ── RIGHT SIDEBAR ────────────────────────────────── */
+.sidebar-right { display: flex; flex-direction: column; gap: 12px; }
+.widget {
+  background: var(--card); border-radius: var(--radius-md);
+  border: 1px solid var(--border); padding: 14px;
+}
+.widget-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.widget-title i { color: var(--brand); font-size: 18px; }
+
+/* Vet card widget */
+.vet-item {
+  display: flex; gap: 10px; padding: 10px 0;
+  border-bottom: 1px solid var(--border); cursor: pointer;
+  transition: background 0.12s; border-radius: 8px;
+  margin: 0 -4px; padding: 8px 4px;
+}
+.vet-item:last-child { border-bottom: none; }
+.vet-item:hover { background: var(--soft); }
+.vet-avatar {
+  width: 48px; height: 48px; border-radius: 12px;
+  background:#eff6ff; display: flex; align-items: center;
+  justify-content: center; font-size: 24px; flex-shrink: 0;
+}
+.vet-meta { flex: 1; }
+.vet-name { font-size: 13px; font-weight: 700; }
+.vet-spec { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.vet-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+.vet-stars { color: var(--accent); font-size: 12px; }
+.vet-price { font-size: 12px; font-weight: 700; color: var(--brand); }
+.vet-btn {
+  margin-top: 4px; padding: 4px 10px;
+  background: var(--brand); color: #fff; border: none;
+  border-radius: 6px; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: background 0.12s; font-family: inherit;
+}
+.vet-btn:hover { background: var(--brand-dark); }
+
+/* Pet groups widget */
+.group-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.group-item:last-child { border-bottom: none; }
+.group-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  flex-shrink: 0;
+}
+.group-name { font-size: 13px; font-weight: 600; }
+.group-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.join-btn {
+  margin-left: auto; padding: 4px 10px;
+  border: 1.5px solid var(--brand); color: var(--brand);
+  background: transparent; border-radius: 6px; font-size: 12px;
+  font-weight: 600; cursor: pointer; white-space: nowrap; font-family: inherit;
+}
+.join-btn.joined { background:#eff6ff; border-color: transparent; }
+
+/* Trending tags */
+.trend-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.trend-item:last-child { border-bottom: none; }
+.trend-tag { font-size: 13px; font-weight: 600; color: var(--brand); }
+.trend-count { font-size: 12px; color: var(--muted); }
+
+/* Online pets */
+.online-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.online-pet {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; cursor: pointer; position: relative;
+}
+.online-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; border: 2px solid #fff;
+}
+.online-dot {
+  position: absolute; bottom: 16px; right: 0;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #22c55e; border: 2px solid #fff;
+}
+.online-name { font-size: 11px; color: var(--muted); }
+
+/* ── BOTTOM NAV (mobile) ──────────────────────────── */
+.bottomnav {
+  display: none; position: sticky; bottom: 0; z-index: 100;
+  background: var(--card); border-top: 1px solid var(--border);
+  padding: 4px 0 8px;
+}
+.nav-items { display: flex; }
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2px; padding: 6px 0; cursor: pointer;
+  color: var(--muted); font-size: 11px; font-weight: 500;
+  border-radius: 8px; transition: color 0.12s;
+  position: relative;
+}
+.nav-item i { font-size: 22px; }
+.nav-item.active { color: var(--brand); }
+.nav-dot {
+  position: absolute; top: 4px; right: calc(50% - 16px);
+  width: 8px; height: 8px; background: var(--danger);
+  border-radius: 50%; border: 2px solid var(--card);
+}
+
+/* ── RESPONSIVENESS ───────────────────────────────── */
+@media (max-width: 1050px) {
+  .page { grid-template-columns: 240px minmax(0,1fr) 260px; }
+}
+@media (max-width: 860px) {
+  .page { grid-template-columns: minmax(0,1fr); padding: 12px 8px 80px; }
+  .sidebar-left, .sidebar-right { display: none; }
+  .subnav { display: none; }
+  .bottomnav { display: block; }
+}
+@media (max-width: 520px) {
+  .topbar { padding: 0 10px; }
+  .topbar-logo { font-size: 21px; }
+  .search-pill { display: none; }
+  .post-text { font-size: 14px; }
+}
+</style>
+<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
+<style id="burger-styles">
+/* BURGER BUTTON */
+.burger-btn { display:flex; width:38px; height:38px; border-radius:50%; border:none; background:transparent; cursor:pointer; color:#1877F2; font-size:28px; align-items:center; justify-content:center; flex-shrink:0; font-weight:900; line-height:1; padding:0; }
+.burger-btn:hover { background: rgba(0,0,0,.06); }
+/* Blue topnav: white burger */
+.topnav[style*="background: #1"] .burger-btn,
+nav.topnav:not([style]) .burger-btn { color: #fff; }
+@media (max-width: 768px) {
+  .burger-btn { display: flex !important; }
+  .topnav-tabs { display: none !important; }
+}
+/* DRAWER OVERLAY */
+.drawer-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.55); z-index: 450;
+  transition: opacity .25s;
+}
+.drawer-overlay.open { display: block; }
+/* DRAWER PANEL */
+.drawer-panel {
+  position: fixed; top: 0; left: -320px; bottom: 0;
+  width: 300px; background: #fff; z-index: 500;
+  overflow-y: auto; transition: left .28s cubic-bezier(.4,0,.2,1);
+  box-shadow: 4px 0 32px rgba(0,0,0,.25);
+  display: flex; flex-direction: column;
+}
+.drawer-panel.open { left: 0; }
+.drawer-header {
+  background: var(--blue, #1a56db);
+  padding: 48px 16px 16px; position: relative;
+  display: flex; align-items: center; gap: 12px;
+}
+.drawer-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,.2);
+  color: #fff; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; flex-shrink: 0; }
+.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
+.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
+.drawer-stats { display: flex; gap: 16px; margin-top: 8px; }
+.drawer-stat-val { font-size: 15px; font-weight: 800; color: #fff; }
+.drawer-stat-label { font-size: 10px; color: rgba(255,255,255,.65); font-weight: 600; }
+.drawer-body { flex: 1; padding: 6px 0; }
+.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
+.drawer-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 18px; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: #1a1a2e;
+  transition: background .12s; text-decoration: none;
+  border: none; background: none; width: 100%;
+  font-family: inherit; text-align: left;
+}
+.drawer-item:hover { background: #eff6ff; color: #1a56db; }
+.drawer-item i { font-size: 20px; width: 24px; flex-shrink: 0; }
+.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
+/* BOTTOM NAV */
+.bottomnav {
+  display: none !important;
+  position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+  background: #fff; border-top: 1px solid #e4e6eb;
+  box-shadow: 0 -2px 8px rgba(0,0,0,.08); z-index: 300;
+  align-items: center; justify-content: space-around;
+}
+@media (max-width: 768px) { .bottomnav { display: flex !important; } }
+.bnav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0;
+  border: none; background: none; font-family: inherit;
+  color: #65676b; text-decoration: none; transition: color .15s;
+}
+.bnav-item i { font-size: 22px; }
+.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.bnav-item.active { color: #1a56db; }
+@media (max-width: 768px) { body { padding-bottom: 72px; } }
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottomnav { padding-bottom: env(safe-area-inset-bottom); height: calc(56px + env(safe-area-inset-bottom)); }
+  body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+}
+</style>
+<style id="mobile-override">
+/* ═══ MOBILE OVERRIDE — forces responsive on all pages ═══ */
+* { box-sizing: border-box !important; }
+img, video, iframe { max-width: 100% !important; height: auto; }
+
+@media (max-width: 768px) {
+  /* Force all containers to full width */
+  body { overflow-x: hidden !important; }
+  
+  /* Override fixed-width containers */
+  .page, .page-wrap, .container, .main-wrap, .app-wrap,
+  [class*="wrap"], [class*="container"], [class*="layout"] {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    padding-bottom: 72px !important;
+  }
+  
+  /* Kill all multi-column grids */
+  [style*="grid-template-columns"],
+  .page, [class*="layout"], [class*="grid"] {
+    grid-template-columns: 1fr !important;
+    display: block !important;
+  }
+  
+  /* Hide sidebars */
+  .left-sidebar, .right-sidebar, aside,
+  [class*="sidebar"], [class*="left-panel"],
+  [class*="right-panel"] {
+    display: none !important;
+  }
+  
+  /* Make main content full width */
+  main, [class*="main"], [class*="feed"],
+  [class*="content"], .center-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  /* Cards full width */
+  .card, [class*="card"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Modals full screen */
+  .modal-box, [class*="modal-box"] {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+  
+  /* Messages layout */
+  .msg-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100vh - 112px) !important;
+  }
+  .msg-panel { display: none !important; }
+  .msg-list { width: 100% !important; border-right: none !important; }
+  
+  /* Settings */
+  .settings-page, .settings-layout {
+    display: block !important;
+  }
+  .settings-nav {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding: 10px !important;
+  }
+  .sn-item {
+    flex: 0 0 auto !important;
+    padding: 7px 12px !important;
+    border-radius: 999px !important;
+    border: 1.5px solid #e4e6eb !important;
+    border-left-color: #e4e6eb !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Topnav tabs hidden */
+  .topnav-tabs, .nav-tabs { display: none !important; }
+  
+  /* Bottom nav */
+  .bottomnav { display: flex !important; }
+  
+  /* Fix padding-top for fixed topnav */
+  body { padding-top: 0 !important; }
+  .page-wrap, .page { padding-top: 64px !important; }
+  
+  /* Horizontal scroll for filter chips */
+  .filter-row, .filter-row1, .filter-row2,
+  [class*="filter"], [class*="chips"] {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Tables scroll */
+  table { display: block !important; overflow-x: auto !important; }
+  
+  /* Three col → one col for home */
+  .home-layout, .three-col {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Post actions smaller */  
+  .post-action { font-size: 11px !important; padding: 6px 2px !important; }
+  
+  /* Cover photo smaller */
+  .cover-photo { height: 160px !important; }
+  
+  /* Discover map stacks */
+  .main-content { flex-direction: column !important; }
+  .left-panel { width: 100% !important; max-height: 55vh !important; }
+  .map-panel { height: 250px !important; flex-shrink: 0 !important; }
+}
+
+@media (max-width: 480px) {
+  .topnav-search, .nav-search { display: none !important; }
+  .topnav { padding: 0 10px !important; }
+  .card-body { padding: 10px !important; }
+  .btn { font-size: 12px !important; padding: 6px 12px !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">Paw<span>Book</span></div>
+    <button class="search-pill"><i class="ti ti-search"></i> Search pets, vets, places…</button>
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn" aria-label="Search" style="display:none" id="mob-search"><i class="ti ti-search"></i></button>
+    <div style="position:relative">
+      <button class="icon-btn" aria-label="Notifications"><i class="ti ti-bell"></i></button>
+      <span class="badge">3</span>
+    </div>
+    <div style="position:relative">
+      <button class="icon-btn" aria-label="Messages"><i class="ti ti-message-circle"></i></button>
+      <span class="badge">1</span>
+    </div>
+    <button class="icon-btn" aria-label="Profile"><i class="ti ti-user-circle"></i></button>
+  </div>
+</header>
+
+<!-- SUB NAV -->
+<nav class="subnav">
+  <div class="subnav-item active"><i class="ti ti-home"></i> Home</div>
+  <div class="subnav-item"><i class="ti ti-users"></i> Community</div>
+  <div class="subnav-item"><i class="ti ti-stethoscope"></i> Vets</div>
+  <div class="subnav-item"><i class="ti ti-heart"></i> Adopt</div>
+  <div class="subnav-item"><i class="ti ti-map-pin"></i> Nearby</div>
+</nav>
+
+<!-- PAGE BODY -->
+<main class="page">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left">
+    <div class="user-card">
+      <div class="user-cover"></div>
+      <div class="user-body">
+        <div class="user-avatar">🐾</div>
+        <div class="user-name">Rohan Kapoor</div>
+        <div class="user-sub">Pet parent · Delhi, India</div>
+        <div class="user-stats">
+          <div class="user-stat">
+            <div class="user-stat-num">3</div>
+            <div class="user-stat-lbl">Pets</div>
+          </div>
+          <div class="user-stat">
+            <div class="user-stat-num">428</div>
+            <div class="user-stat-lbl">Friends</div>
+          </div>
+          <div class="user-stat">
+            <div class="user-stat-num">92</div>
+            <div class="user-stat-lbl">Posts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-menu">
+      <div class="menu-item active"><i class="ti ti-home"></i> Home feed</div>
+      <div class="menu-item"><i class="ti ti-users"></i> My community <span class="dot"></span></div>
+      <div class="menu-item"><i class="ti ti-stethoscope"></i> Find a vet</div>
+      <div class="menu-item"><i class="ti ti-heart"></i> Adopt a pet</div>
+      <div class="menu-item"><i class="ti ti-calendar"></i> Vaccination diary</div>
+      <div class="menu-item"><i class="ti ti-map-pin"></i> Pet-friendly places</div>
+      <div class="menu-divider"></div>
+      <div class="menu-item"><i class="ti ti-alert-triangle"></i> Lost pet alert</div>
+      <div class="menu-item"><i class="ti ti-settings"></i> Settings</div>
+    </div>
+  </aside>
+
+  <!-- MIDDLE FEED -->
+  <section class="feed-col">
+
+    <!-- Stories -->
+    <div class="stories-wrap">
+      <div class="stories-title">Pet stories today</div>
+      <div class="stories-row">
+        <div class="story">
+          <div class="story-img" style="background:#dbeafe; font-size:28px; flex-direction:column; gap:4px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px"><i class="ti ti-plus"></i></div>
+            <span style="font-size:11px;color:var(--brand);font-weight:600">Add story</span>
+          </div>
+          <div class="story-label" style="color:var(--muted)">Your story</div>
+        </div>
+        <div class="story story-ring">
+          <div class="story-img" style="background:#fff3e0">🐶</div>
+          <div class="story-label">Bruno</div>
+        </div>
+        <div class="story story-ring" style="border-color:#f59e0b">
+          <div class="story-img" style="background:#fce4ec">🐱</div>
+          <div class="story-label">Mittens</div>
+        </div>
+        <div class="story story-ring" style="border-color:#8b5cf6">
+          <div class="story-img" style="background:#f3e5f5">🐦</div>
+          <div class="story-label">Kiwi</div>
+        </div>
+        <div class="story story-ring" style="border-color:#3b82f6">
+          <div class="story-img" style="background:#e3f2fd">🐇</div>
+          <div class="story-label">Snowball</div>
+        </div>
+        <div class="story story-ring" style="border-color:#06b6d4">
+          <div class="story-img" style="background:#e0f7fa">🐠</div>
+          <div class="story-label">Nemo</div>
+        </div>
+        <div class="story story-ring" style="border-color:#ec4899">
+          <div class="story-img" style="background:#fdf2f8">🐹</div>
+          <div class="story-label">Biscuit</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Composer -->
+    <div class="composer">
+      <div class="composer-top">
+        <div class="composer-avatar">🐾</div>
+        <div class="composer-input">What is your pet up to today?</div>
+      </div>
+      <div class="composer-divider"></div>
+      <div class="composer-actions">
+        <div class="composer-action"><i class="ti ti-photo ca-photo"></i> Photo</div>
+        <div class="composer-action"><i class="ti ti-video ca-video"></i> Video</div>
+        <div class="composer-action"><i class="ti ti-stethoscope ca-vet"></i> Ask vet</div>
+        <div class="composer-action"><i class="ti ti-live-view ca-live"></i> Go live</div>
+      </div>
+    </div>
+
+    <!-- Post 1: Bruno -->
+    <article class="post-card">
+      <div class="post-header">
+        <div class="post-avatar">🐶</div>
+        <div class="post-meta">
+          <div class="post-name">Bruno the Labrador <span class="verified"><i class="ti ti-circle-check"></i></span></div>
+          <div class="post-sub"><i class="ti ti-map-pin"></i> Connaught Place, Delhi &nbsp;·&nbsp; 2h ago &nbsp;·&nbsp; <i class="ti ti-world"></i></div>
+        </div>
+        <button class="post-more-btn"><i class="ti ti-dots"></i></button>
+      </div>
+      <div class="post-text">Had the best walk in Lodhi Garden this morning! The birds were so interesting to chase — and I made three new doggo friends. Life is good. 🌿</div>
+      <div class="post-photo">
+        🐕
+        <div class="post-photo-label">Lodhi Garden, Delhi</div>
+      </div>
+      <div class="post-tags">
+        <span class="tag">#LabradorLife</span>
+        <span class="tag">#DelhiPets</span>
+        <span class="tag">#MorningWalk</span>
+      </div>
+      <div class="post-stats">
+        <div class="stat-left">
+          <div class="stat-reacts">❤️😍🐾</div>
+          <span>142 reactions</span>
+        </div>
+        <div class="stat-right">38 comments · 12 shares</div>
+      </div>
+      <div class="post-actions">
+        <button class="post-action action-liked"><i class="ti ti-heart"></i> Love</button>
+        <button class="post-action"><i class="ti ti-message-circle"></i> Comment</button>
+        <button class="post-action"><i class="ti ti-share"></i> Share</button>
+        <button class="post-action"><i class="ti ti-send"></i> Send</button>
+      </div>
+      <div class="comment-preview">
+        <div class="comment">
+          <div class="c-avatar">🐱</div>
+          <div class="c-bubble"><span class="c-name">Mittens </span>Woof! Can't wait for our next playdate 🐾</div>
+        </div>
+        <div class="comment">
+          <div class="c-avatar">👤</div>
+          <div class="c-bubble"><span class="c-name">Priya K. </span>Bruno is adorable! What breed mix?</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Vet strip mid-feed -->
+    <div style="background:var(--card);border-radius:var(--radius-md);border:1px solid var(--border);padding:14px">
+      <div class="widget-title"><i class="ti ti-stethoscope"></i> Vets available now</div>
+      <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">
+        <div style="flex-shrink:0;width:150px;border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer">
+          <div style="height:64px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:32px">👨‍⚕️</div>
+          <div style="padding:8px">
+            <div style="font-size:13px;font-weight:700">Dr. Priya Sharma</div>
+            <div style="font-size:11px;color:var(--muted)">Small animals</div>
+            <div style="font-size:11px;color:var(--accent);margin-top:2px">★★★★★ 4.9</div>
+            <button class="vet-btn" style="width:100%;margin-top:6px">Consult — ₹299</button>
+          </div>
+        </div>
+        <div style="flex-shrink:0;width:150px;border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer">
+          <div style="height:64px;background:#fff0f3;display:flex;align-items:center;justify-content:center;font-size:32px">👩‍⚕️</div>
+          <div style="padding:8px">
+            <div style="font-size:13px;font-weight:700">Dr. Arjun Mehta</div>
+            <div style="font-size:11px;color:var(--muted)">Exotic pets</div>
+            <div style="font-size:11px;color:var(--accent);margin-top:2px">★★★★★ 4.8</div>
+            <button class="vet-btn" style="width:100%;margin-top:6px">Consult — ₹399</button>
+          </div>
+        </div>
+        <div style="flex-shrink:0;width:150px;border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer">
+          <div style="height:64px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:32px">🏥</div>
+          <div style="padding:8px">
+            <div style="font-size:13px;font-weight:700">PetCare Clinic</div>
+            <div style="font-size:11px;color:var(--muted)">All animals</div>
+            <div style="font-size:11px;color:var(--accent);margin-top:2px">★★★★ 4.6</div>
+            <button class="vet-btn" style="width:100%;margin-top:6px">Consult — ₹249</button>
+          </div>
+        </div>
+        <div style="flex-shrink:0;width:150px;border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer">
+          <div style="height:64px;background:#fdf4ff;display:flex;align-items:center;justify-content:center;font-size:32px">👨‍⚕️</div>
+          <div style="padding:8px">
+            <div style="font-size:13px;font-weight:700">Dr. Ananya Rao</div>
+            <div style="font-size:11px;color:var(--muted)">Birds & reptiles</div>
+            <div style="font-size:11px;color:var(--accent);margin-top:2px">★★★★★ 5.0</div>
+            <button class="vet-btn" style="width:100%;margin-top:6px">Consult — ₹349</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 2: Mittens -->
+    <article class="post-card">
+      <div class="post-header">
+        <div class="post-avatar" style="background:#fdf2f8;border-color:#fce7f3">🐱</div>
+        <div class="post-meta">
+          <div class="post-name">Mittens the Persian</div>
+          <div class="post-sub"><i class="ti ti-map-pin"></i> Bandra, Mumbai &nbsp;·&nbsp; 5h ago</div>
+        </div>
+        <button class="post-more-btn"><i class="ti ti-dots"></i></button>
+      </div>
+      <div class="post-text">My human took me for my annual vaccination today. All done and feeling purrfect! Dr. Kavita at FurCare Clinic was so gentle with me. Highly recommend her to all cat parents in Mumbai. 🐾✅</div>
+      <div class="post-tags">
+        <span class="tag">#CatMom</span>
+        <span class="tag">#MumbaiPets</span>
+        <span class="tag">#VaccinationDay</span>
+        <span class="tag">#PersianCat</span>
+      </div>
+      <div class="post-stats">
+        <div class="stat-left">
+          <div class="stat-reacts">❤️😂</div>
+          <span>89 reactions</span>
+        </div>
+        <div class="stat-right">21 comments</div>
+      </div>
+      <div class="post-actions">
+        <button class="post-action"><i class="ti ti-heart"></i> Love</button>
+        <button class="post-action"><i class="ti ti-message-circle"></i> Comment</button>
+        <button class="post-action"><i class="ti ti-share"></i> Share</button>
+        <button class="post-action"><i class="ti ti-send"></i> Send</button>
+      </div>
+    </article>
+
+    <!-- Post 3: Kiwi with health alert -->
+    <article class="post-card">
+      <div class="post-header">
+        <div class="post-avatar" style="background:#f5f3ff;border-color:#ede9fe">🐦</div>
+        <div class="post-meta">
+          <div class="post-name">Kiwi the Parrot</div>
+          <div class="post-sub"><i class="ti ti-map-pin"></i> Koramangala, Bengaluru &nbsp;·&nbsp; 8h ago</div>
+        </div>
+        <button class="post-more-btn"><i class="ti ti-dots"></i></button>
+      </div>
+      <div class="post-text">My human is worried — I have been sneezing a lot since yesterday and my feathers look a bit ruffled. Anyone else's bird had this? Should we see an avian vet? 😟</div>
+      <div class="vet-suggest">
+        <div class="vet-suggest-head"><i class="ti ti-stethoscope" style="font-size:14px"></i> PawBook health tip</div>
+        <div class="vet-suggest-body">These symptoms may need attention. <span class="vet-suggest-link">Book an avian vet now →</span></div>
+      </div>
+      <div class="post-tags">
+        <span class="tag">#ParrotParent</span>
+        <span class="tag">#BirdHealth</span>
+        <span class="tag">#HelpNeeded</span>
+      </div>
+      <div class="post-stats">
+        <div class="stat-left">
+          <div class="stat-reacts">😟💙</div>
+          <span>34 reactions</span>
+        </div>
+        <div class="stat-right">17 comments · 2 vet replies</div>
+      </div>
+      <div class="post-actions">
+        <button class="post-action"><i class="ti ti-heart"></i> Support</button>
+        <button class="post-action"><i class="ti ti-message-circle"></i> Comment</button>
+        <button class="post-action"><i class="ti ti-share"></i> Share</button>
+        <button class="post-action"><i class="ti ti-send"></i> Send</button>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-right">
+
+    <!-- Online pets -->
+    <div class="widget">
+      <div class="widget-title"><i class="ti ti-circle-dot"></i> Active now</div>
+      <div class="online-row">
+        <div class="online-pet">
+          <div class="online-avatar" style="background:#fff3e0">🐶</div>
+          <div class="online-dot"></div>
+          <div class="online-name">Bruno</div>
+        </div>
+        <div class="online-pet">
+          <div class="online-avatar" style="background:#fdf2f8">🐱</div>
+          <div class="online-dot"></div>
+          <div class="online-name">Mittens</div>
+        </div>
+        <div class="online-pet">
+          <div class="online-avatar" style="background:#eff6ff">🐠</div>
+          <div class="online-dot"></div>
+          <div class="online-name">Nemo</div>
+        </div>
+        <div class="online-pet">
+          <div class="online-avatar" style="background:#f5f3ff">🐇</div>
+          <div class="online-dot"></div>
+          <div class="online-name">Snow</div>
+        </div>
+        <div class="online-pet">
+          <div class="online-avatar" style="background:#f0fdf4">🦜</div>
+          <div class="online-dot"></div>
+          <div class="online-name">Mango</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vet widget -->
+    <div class="widget">
+      <div class="widget-title"><i class="ti ti-stethoscope"></i> Top vets near you</div>
+      <div class="vet-item">
+        <div class="vet-avatar">👨‍⚕️</div>
+        <div class="vet-meta">
+          <div class="vet-name">Dr. Priya Sharma</div>
+          <div class="vet-spec">Small animals · Online now</div>
+          <div class="vet-footer">
+            <span class="vet-stars">★★★★★</span>
+            <span class="vet-price">₹299</span>
+          </div>
+          <button class="vet-btn">Book consult</button>
+        </div>
+      </div>
+      <div class="vet-item">
+        <div class="vet-avatar" style="background:#fff0f3">👩‍⚕️</div>
+        <div class="vet-meta">
+          <div class="vet-name">Dr. Arjun Mehta</div>
+          <div class="vet-spec">Exotic pets · Online now</div>
+          <div class="vet-footer">
+            <span class="vet-stars">★★★★★</span>
+            <span class="vet-price">₹399</span>
+          </div>
+          <button class="vet-btn">Book consult</button>
+        </div>
+      </div>
+      <div class="vet-item">
+        <div class="vet-avatar" style="background:#fdf4ff">👨‍⚕️</div>
+        <div class="vet-meta">
+          <div class="vet-name">Dr. Ananya Rao</div>
+          <div class="vet-spec">Birds & reptiles</div>
+          <div class="vet-footer">
+            <span class="vet-stars">★★★★★</span>
+            <span class="vet-price">₹349</span>
+          </div>
+          <button class="vet-btn">Book consult</button>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <a style="font-size:13px;color:var(--brand);font-weight:600;cursor:pointer">See all vets →</a>
+      </div>
+    </div>
+
+    <!-- Pet groups -->
+    <div class="widget">
+      <div class="widget-title"><i class="ti ti-users"></i> Groups to join</div>
+      <div class="group-item">
+        <div class="group-icon" style="background:#fff3e0">🐕</div>
+        <div>
+          <div class="group-name">Delhi Dog Parents</div>
+          <div class="group-meta">12.4k members</div>
+        </div>
+        <button class="join-btn">Join</button>
+      </div>
+      <div class="group-item">
+        <div class="group-icon" style="background:#fdf2f8">🐈</div>
+        <div>
+          <div class="group-name">Indian Cat Lovers</div>
+          <div class="group-meta">8.9k members</div>
+        </div>
+        <button class="join-btn joined">Joined</button>
+      </div>
+      <div class="group-item">
+        <div class="group-icon" style="background:#f5f3ff">🦜</div>
+        <div>
+          <div class="group-name">Bird Watchers India</div>
+          <div class="group-meta">4.2k members</div>
+        </div>
+        <button class="join-btn">Join</button>
+      </div>
+      <div class="group-item">
+        <div class="group-icon" style="background:#ecfdf5">🐠</div>
+        <div>
+          <div class="group-name">Aquarium Hobbyists</div>
+          <div class="group-meta">3.1k members</div>
+        </div>
+        <button class="join-btn">Join</button>
+      </div>
+    </div>
+
+    <!-- Trending -->
+    <div class="widget">
+      <div class="widget-title"><i class="ti ti-trending-up"></i> Trending today</div>
+      <div class="trend-item">
+        <span class="trend-tag">#MonsoonPetCare</span>
+        <span class="trend-count">2.4k posts</span>
+      </div>
+      <div class="trend-item">
+        <span class="trend-tag">#DelhiDogWalk</span>
+        <span class="trend-count">1.8k posts</span>
+      </div>
+      <div class="trend-item">
+        <span class="trend-tag">#AdoptDontShop</span>
+        <span class="trend-count">1.2k posts</span>
+      </div>
+      <div class="trend-item">
+        <span class="trend-tag">#VaccinationDrive</span>
+        <span class="trend-count">986 posts</span>
+      </div>
+      <div class="trend-item">
+        <span class="trend-tag">#PawBookIndia</span>
+        <span class="trend-count">754 posts</span>
+      </div>
+    </div>
+
+  </aside>
+</main>
+
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottomnav">
+  <div class="nav-items">
+    <div class="nav-item active"><i class="ti ti-home"></i><span>Home</span></div>
+    <div class="nav-item" style="position:relative"><i class="ti ti-users"></i><span>Community</span><span class="nav-dot"></span></div>
+    <div class="nav-item"><i class="ti ti-stethoscope"></i><span>Vets</span></div>
+    <div class="nav-item"><i class="ti ti-heart"></i><span>Adopt</span></div>
+    <div class="nav-item"><i class="ti ti-user-circle"></i><span>Profile</span></div>
+  </div>
+</nav>
+
+<script>function goTo(p){window.location.href=p;}</script>
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER PANEL -->
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name">Abhishek Kumar</div>
+      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDrawer() {
+  document.getElementById('drawer-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+<script>
+(function(){
+  function showBurgerOnMobile(){
+    var btns = document.querySelectorAll('.burger-btn');
+    var isMobile = window.innerWidth <= 768;
+    btns.forEach(function(b){
+      b.style.display = isMobile ? 'flex' : 'none';
+    });
+    // Also hide topnav-tabs on mobile
+    var tabs = document.querySelector('.topnav-tabs');
+    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
+    // Show bottom nav on mobile
+    var bnav = document.querySelector('.bottomnav');
+    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+  }
+  showBurgerOnMobile();
+  window.addEventListener('resize', showBurgerOnMobile);
+})();
+</script>
+</body>
+</html>

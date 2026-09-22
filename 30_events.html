@@ -464,10 +464,10 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
 ::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
 </style>
 
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PawBook — Events</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
@@ -495,6 +495,219 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
 .create-btn{position:fixed;bottom:70px;right:16px;height:48px;padding:0 20px;border-radius:24px;background:linear-gradient(135deg,#1a4db3,#6366f1);color:#fff;border:none;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(26,77,179,0.4);display:flex;align-items:center;gap:8px;z-index:400}
 </style>
 <link rel="stylesheet" href="mobile.css">
+<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
+<style id="burger-styles">
+/* BURGER BUTTON */
+.burger-btn { display:flex; width:38px; height:38px; border-radius:50%; border:none; background:transparent; cursor:pointer; color:#1877F2; font-size:28px; align-items:center; justify-content:center; flex-shrink:0; font-weight:900; line-height:1; padding:0; }
+.burger-btn:hover { background: rgba(0,0,0,.06); }
+/* Blue topnav: white burger */
+.topnav[style*="background: #1"] .burger-btn,
+nav.topnav:not([style]) .burger-btn { color: #fff; }
+@media (max-width: 768px) {
+  .burger-btn { display: flex !important; }
+  .topnav-tabs { display: none !important; }
+}
+/* DRAWER OVERLAY */
+.drawer-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.55); z-index: 450;
+  transition: opacity .25s;
+}
+.drawer-overlay.open { display: block; }
+/* DRAWER PANEL */
+.drawer-panel {
+  position: fixed; top: 0; left: -320px; bottom: 0;
+  width: 300px; background: #fff; z-index: 500;
+  overflow-y: auto; transition: left .28s cubic-bezier(.4,0,.2,1);
+  box-shadow: 4px 0 32px rgba(0,0,0,.25);
+  display: flex; flex-direction: column;
+}
+.drawer-panel.open { left: 0; }
+.drawer-header {
+  background: var(--blue, #1a56db);
+  padding: 48px 16px 16px; position: relative;
+  display: flex; align-items: center; gap: 12px;
+}
+.drawer-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,.2);
+  color: #fff; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; flex-shrink: 0; }
+.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
+.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
+.drawer-stats { display: flex; gap: 16px; margin-top: 8px; }
+.drawer-stat-val { font-size: 15px; font-weight: 800; color: #fff; }
+.drawer-stat-label { font-size: 10px; color: rgba(255,255,255,.65); font-weight: 600; }
+.drawer-body { flex: 1; padding: 6px 0; }
+.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
+.drawer-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 18px; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: #1a1a2e;
+  transition: background .12s; text-decoration: none;
+  border: none; background: none; width: 100%;
+  font-family: inherit; text-align: left;
+}
+.drawer-item:hover { background: #eff6ff; color: #1a56db; }
+.drawer-item i { font-size: 20px; width: 24px; flex-shrink: 0; }
+.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
+/* BOTTOM NAV */
+.bottomnav {
+  display: none !important;
+  position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+  background: #fff; border-top: 1px solid #e4e6eb;
+  box-shadow: 0 -2px 8px rgba(0,0,0,.08); z-index: 300;
+  align-items: center; justify-content: space-around;
+}
+@media (max-width: 768px) { .bottomnav { display: flex !important; } }
+.bnav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0;
+  border: none; background: none; font-family: inherit;
+  color: #65676b; text-decoration: none; transition: color .15s;
+}
+.bnav-item i { font-size: 22px; }
+.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.bnav-item.active { color: #1a56db; }
+@media (max-width: 768px) { body { padding-bottom: 72px; } }
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottomnav { padding-bottom: env(safe-area-inset-bottom); height: calc(56px + env(safe-area-inset-bottom)); }
+  body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+}
+</style>
+<style id="mobile-override">
+/* ═══ MOBILE OVERRIDE — forces responsive on all pages ═══ */
+* { box-sizing: border-box !important; }
+img, video, iframe { max-width: 100% !important; height: auto; }
+
+@media (max-width: 768px) {
+  /* Force all containers to full width */
+  body { overflow-x: hidden !important; }
+  
+  /* Override fixed-width containers */
+  .page, .page-wrap, .container, .main-wrap, .app-wrap,
+  [class*="wrap"], [class*="container"], [class*="layout"] {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    padding-bottom: 72px !important;
+  }
+  
+  /* Kill all multi-column grids */
+  [style*="grid-template-columns"],
+  .page, [class*="layout"], [class*="grid"] {
+    grid-template-columns: 1fr !important;
+    display: block !important;
+  }
+  
+  /* Hide sidebars */
+  .left-sidebar, .right-sidebar, aside,
+  [class*="sidebar"], [class*="left-panel"],
+  [class*="right-panel"] {
+    display: none !important;
+  }
+  
+  /* Make main content full width */
+  main, [class*="main"], [class*="feed"],
+  [class*="content"], .center-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  /* Cards full width */
+  .card, [class*="card"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Modals full screen */
+  .modal-box, [class*="modal-box"] {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+  
+  /* Messages layout */
+  .msg-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100vh - 112px) !important;
+  }
+  .msg-panel { display: none !important; }
+  .msg-list { width: 100% !important; border-right: none !important; }
+  
+  /* Settings */
+  .settings-page, .settings-layout {
+    display: block !important;
+  }
+  .settings-nav {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding: 10px !important;
+  }
+  .sn-item {
+    flex: 0 0 auto !important;
+    padding: 7px 12px !important;
+    border-radius: 999px !important;
+    border: 1.5px solid #e4e6eb !important;
+    border-left-color: #e4e6eb !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Topnav tabs hidden */
+  .topnav-tabs, .nav-tabs { display: none !important; }
+  
+  /* Bottom nav */
+  .bottomnav { display: flex !important; }
+  
+  /* Fix padding-top for fixed topnav */
+  body { padding-top: 0 !important; }
+  .page-wrap, .page { padding-top: 64px !important; }
+  
+  /* Horizontal scroll for filter chips */
+  .filter-row, .filter-row1, .filter-row2,
+  [class*="filter"], [class*="chips"] {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Tables scroll */
+  table { display: block !important; overflow-x: auto !important; }
+  
+  /* Three col → one col for home */
+  .home-layout, .three-col {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Post actions smaller */  
+  .post-action { font-size: 11px !important; padding: 6px 2px !important; }
+  
+  /* Cover photo smaller */
+  .cover-photo { height: 160px !important; }
+  
+  /* Discover map stacks */
+  .main-content { flex-direction: column !important; }
+  .left-panel { width: 100% !important; max-height: 55vh !important; }
+  .map-panel { height: 250px !important; flex-shrink: 0 !important; }
+}
+
+@media (max-width: 480px) {
+  .topnav-search, .nav-search { display: none !important; }
+  .topnav { padding: 0 10px !important; }
+  .card-body { padding: 10px !important; }
+  .btn { font-size: 12px !important; padding: 6px 12px !important; }
+}
+</style>
 </head>
 <body>
 <nav class="topnav">
@@ -847,6 +1060,92 @@ function applyEventFilters() {
 }
 
 function goTo(p) { window.location.href = p; }
+</script>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottomnav">
+  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
+  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER PANEL -->
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name">Abhishek Kumar</div>
+      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDrawer() {
+  document.getElementById('drawer-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+<script>
+(function(){
+  function showBurgerOnMobile(){
+    var btns = document.querySelectorAll('.burger-btn');
+    var isMobile = window.innerWidth <= 768;
+    btns.forEach(function(b){
+      b.style.display = isMobile ? 'flex' : 'none';
+    });
+    // Also hide topnav-tabs on mobile
+    var tabs = document.querySelector('.topnav-tabs');
+    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
+    // Show bottom nav on mobile
+    var bnav = document.querySelector('.bottomnav');
+    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+  }
+  showBurgerOnMobile();
+  window.addEventListener('resize', showBurgerOnMobile);
+})();
 </script>
 </body>
 </html>
