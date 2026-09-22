@@ -126,24 +126,63 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 /* ═══ MOBILE RESPONSIVE ═══ */
 html,body{overflow-x:hidden}
 @media(max-width:768px){
-  .page-wrap{padding-top:56px!important;height:auto!important;min-height:100vh!important;flex-direction:column!important}
-  .filter-bar{padding:10px!important}
-  .filter-row1,.filter-row2{overflow-x:auto!important;flex-wrap:nowrap!important;scrollbar-width:none!important;padding-bottom:4px!important}
+  .page-wrap{
+    padding-top:56px!important;
+    height:auto!important;
+    min-height:100vh!important;
+    flex-direction:column!important;
+    display:flex!important;
+  }
+  .filter-bar{padding:10px!important;flex-shrink:0!important}
+  .filter-row1,.filter-row2{
+    overflow-x:auto!important;flex-wrap:nowrap!important;
+    scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;
+  }
   .filter-row1::-webkit-scrollbar,.filter-row2::-webkit-scrollbar{display:none!important}
-  .main-content{flex-direction:column!important;overflow:visible!important;height:auto!important}
-  .left-panel{width:100%!important;max-height:60vh!important;overflow-y:auto!important;border-right:none!important;border-bottom:1px solid #e4e6eb!important}
-  .map-panel{display:block!important;height:280px!important;flex-shrink:0!important}
+  .main-content{
+    flex-direction:column!important;
+    overflow:visible!important;
+    flex:1!important;
+    display:flex!important;
+  }
+  /* Map shows FIRST on mobile, then place list below */
+  .map-panel{
+    order:-1!important;
+    display:block!important;
+    height:260px!important;
+    min-height:260px!important;
+    flex-shrink:0!important;
+    width:100%!important;
+    position:relative!important;
+  }
+  #discover-map{
+    width:100%!important;
+    height:260px!important;
+    min-height:260px!important;
+  }
+  .left-panel{
+    width:100%!important;
+    max-height:50vh!important;
+    overflow-y:auto!important;
+    border-right:none!important;
+    border-top:1px solid #e4e6eb!important;
+    flex-shrink:0!important;
+  }
+  .map-overlay-btn{top:6px!important;right:6px!important}
   .place-card{padding:10px 12px!important}
-  .place-img{width:56px!important;height:56px!important}
+  .place-img{width:52px!important;height:52px!important}
   .place-actions{flex-wrap:wrap!important;gap:4px!important}
-  .search-box{width:100%!important}
-  .topnav-tabs{display:none!important}
+  .topnav-tabs,.nav-tabs{display:none!important}
   .bottomnav{display:flex!important}
   body{padding-bottom:72px!important}
   .modal-box{width:calc(100vw - 20px)!important;max-width:calc(100vw - 20px)!important}
+  .search-box{min-width:0!important;flex:1!important}
+  .search-input{min-width:0!important}
 }
 @media(max-width:480px){
   .nav-search{display:none!important}
+  #discover-map{height:220px!important;min-height:220px!important}
+  .map-panel{height:220px!important;min-height:220px!important}
 }</style>
 </head>
 <body>
@@ -368,7 +407,7 @@ var tileLayer = null;
 
 // ── MAP INIT ──────────────────────────────────────────────────
 function initMap() {
-  mapInstance = L.map('discover-map', {zoomControl: true}).setView([20.5937, 78.9629], 5);
+  window.mapInstance = mapInstance = L.map('discover-map', {zoomControl: true}).setView([20.5937, 78.9629], 5);
   tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors', maxZoom: 19
   }).addTo(mapInstance);
@@ -742,6 +781,30 @@ function closeDrawer() {
   showBurgerOnMobile();
   window.addEventListener('resize', showBurgerOnMobile);
 })();
+</script>
+
+<script>
+// Force map to render correctly on mobile
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    if(window.mapInstance) {
+      window.mapInstance.invalidateSize();
+    } else {
+      // Try finding the map instance
+      var mapEl = document.getElementById('discover-map');
+      if(mapEl && mapEl._leaflet_map) {
+        mapEl._leaflet_map.invalidateSize();
+      }
+    }
+  }, 300);
+});
+
+// Also invalidate on resize
+window.addEventListener('resize', function() {
+  setTimeout(function() {
+    if(window.mapInstance) window.mapInstance.invalidateSize();
+  }, 100);
+});
 </script>
 </body>
 </html>
