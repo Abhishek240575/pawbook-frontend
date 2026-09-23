@@ -356,6 +356,17 @@ html, body { overflow-x: hidden !important; }
 </div>
 
 <!-- CATEGORY TABS -->
+<!-- MAIN MARKETPLACE TABS -->
+<div style="background:#fff;border-bottom:2px solid #e4e6eb;display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:56px;z-index:100">
+  <button class="mtab active" onclick="showMTab('browse',this)" style="padding:14px 20px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;border:none;background:transparent;font-family:'Poppins',sans-serif;color:#1a56db;border-bottom:3px solid #1a56db">🛍️ Browse</button>
+  <button class="mtab" onclick="showMTab('mystore',this)" style="padding:14px 20px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;border:none;background:transparent;font-family:'Poppins',sans-serif;color:#65676b;border-bottom:3px solid transparent">🏪 My Store</button>
+  <button class="mtab" onclick="showMTab('sell',this)" style="padding:14px 20px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;border:none;background:transparent;font-family:'Poppins',sans-serif;color:#65676b;border-bottom:3px solid transparent">➕ Sell Item</button>
+  <button class="mtab" onclick="showMTab('orders',this)" style="padding:14px 20px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;border:none;background:transparent;font-family:'Poppins',sans-serif;color:#65676b;border-bottom:3px solid transparent">📦 My Orders</button>
+  <button class="mtab" onclick="showMTab('purchases',this)" style="padding:14px 20px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;border:none;background:transparent;font-family:'Poppins',sans-serif;color:#65676b;border-bottom:3px solid transparent">🛒 Purchases</button>
+</div>
+
+<!-- ══ BROWSE SECTION ══ -->
+<div id="msec-browse" class="msec">
 <div class="cat-tabs">
   <button class="ctab active" onclick="setCat(this)">🐾 Pet Products</button>
   <button class="ctab" onclick="setCat(this)">🩺 Vet Services</button>
@@ -1115,6 +1126,788 @@ function closeDrawer() {
   showBurgerOnMobile();
   window.addEventListener('resize', showBurgerOnMobile);
 })();
+</script>
+
+</div><!-- end msec-browse -->
+
+
+<!-- ══ MY STORE SECTION ══ -->
+<div id="msec-mystore" class="msec" style="display:none;padding:16px;max-width:900px;margin:0 auto">
+
+  <!-- Store not registered state -->
+  <div id="store-unregistered">
+    <div style="background:linear-gradient(135deg,#1a56db,#0d9488);border-radius:16px;padding:28px;text-align:center;margin-bottom:16px;color:#fff">
+      <div style="font-size:48px;margin-bottom:12px">🏪</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:6px">Open Your Pet Store</div>
+      <div style="font-size:14px;opacity:.85;margin-bottom:20px">Sell pet products & services to 10,000+ PawBook users</div>
+      <button onclick="openStoreRegistration()" style="background:#fff;color:#1a56db;border:none;border-radius:999px;padding:12px 32px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif">🚀 Register Your Store</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+      <div style="background:#fff;border-radius:12px;padding:16px;text-align:center;border:1px solid #e4e6eb">
+        <div style="font-size:28px;margin-bottom:8px">📦</div>
+        <div style="font-size:13px;font-weight:700">List Products</div>
+        <div style="font-size:12px;color:#65676b;margin-top:4px">Add unlimited listings</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:16px;text-align:center;border:1px solid #e4e6eb">
+        <div style="font-size:28px;margin-bottom:8px">💰</div>
+        <div style="font-size:13px;font-weight:700">Earn Money</div>
+        <div style="font-size:12px;color:#65676b;margin-top:4px">0% commission first 3 months</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:16px;text-align:center;border:1px solid #e4e6eb">
+        <div style="font-size:28px;margin-bottom:8px">📊</div>
+        <div style="font-size:13px;font-weight:700">Analytics</div>
+        <div style="font-size:12px;color:#65676b;margin-top:4px">Track sales & views</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Store dashboard (shown after registration) -->
+  <div id="store-dashboard" style="display:none">
+    <!-- Store header -->
+    <div style="background:#fff;border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid #e4e6eb;display:flex;gap:16px;align-items:center">
+      <div id="store-logo-display" style="width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#1a56db,#0d9488);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🐾</div>
+      <div style="flex:1">
+        <div id="store-name-display" style="font-size:18px;font-weight:800;color:#1a1a2e">My Pet Store</div>
+        <div id="store-cat-display" style="font-size:13px;color:#65676b;margin-top:2px">Pet Products</div>
+        <div style="display:flex;gap:12px;margin-top:8px">
+          <span style="font-size:12px;font-weight:700;color:#16a34a">✅ Verified Store</span>
+          <span style="font-size:12px;color:#65676b" id="store-since">Since Sep 2026</span>
+        </div>
+      </div>
+      <button onclick="openStoreSettings()" style="height:36px;padding:0 16px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">⚙️ Settings</button>
+    </div>
+
+    <!-- Store stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+      <div style="background:#fff;border-radius:12px;padding:14px;text-align:center;border:1px solid #e4e6eb">
+        <div style="font-size:22px;font-weight:900;color:#1a56db" id="stat-listings">0</div>
+        <div style="font-size:11px;font-weight:700;color:#65676b;margin-top:2px">Listings</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:14px;text-align:center;border:1px solid #e4e6eb">
+        <div style="font-size:22px;font-weight:900;color:#16a34a" id="stat-sales">0</div>
+        <div style="font-size:11px;font-weight:700;color:#65676b;margin-top:2px">Sales</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:14px;text-align:center;border:1px solid #e4e6eb">
+        <div style="font-size:22px;font-weight:900;color:#0d9488" id="stat-revenue">₹0</div>
+        <div style="font-size:11px;font-weight:700;color:#65676b;margin-top:2px">Revenue</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:14px;text-align:center;border:1px solid #e4e6eb">
+        <div style="font-size:22px;font-weight:900;color:#d97706" id="stat-views">0</div>
+        <div style="font-size:11px;font-weight:700;color:#65676b;margin-top:2px">Views</div>
+      </div>
+    </div>
+
+    <!-- My Listings -->
+    <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid #e4e6eb">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:16px;font-weight:800">My Listings</div>
+        <button onclick="showMTab('sell',null)" style="height:34px;padding:0 16px;border-radius:999px;border:none;background:#1a56db;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">+ Add Listing</button>
+      </div>
+      <div id="my-listings-list">
+        <div style="text-align:center;padding:24px;color:#65676b;font-size:13px">No listings yet. Add your first product!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SELL ITEM SECTION ══ -->
+<div id="msec-sell" class="msec" style="display:none;padding:16px;max-width:600px;margin:0 auto">
+  <div style="background:#fff;border-radius:14px;border:1px solid #e4e6eb;overflow:hidden">
+    <div style="background:linear-gradient(135deg,#1a56db,#0d9488);padding:18px;color:#fff">
+      <div style="font-size:18px;font-weight:800">➕ List a Product for Sale</div>
+      <div style="font-size:13px;opacity:.85;margin-top:4px">Fill details to start selling on PawBook</div>
+    </div>
+    <div style="padding:18px;display:flex;flex-direction:column;gap:14px">
+      <!-- Product photos -->
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:8px">Product Photos *</label>
+        <div onclick="document.getElementById('sell-photos').click()" style="border:2px dashed #e4e6eb;border-radius:12px;padding:24px;text-align:center;cursor:pointer;background:#f8fafc" id="photo-upload-area">
+          <div style="font-size:32px;margin-bottom:6px">📷</div>
+          <div style="font-size:13px;font-weight:700;color:#65676b">Click to upload product photos</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px">Up to 5 photos • JPG, PNG</div>
+        </div>
+        <input type="file" id="sell-photos" accept="image/*" multiple style="display:none" onchange="previewSellPhotos(this)">
+        <div id="sell-photo-previews" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+      </div>
+
+      <!-- Name -->
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Product Name *</label>
+        <input id="sell-name" placeholder="e.g. Royal Canin Adult Dog Food 3kg" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+      </div>
+
+      <!-- Category & Condition -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Category *</label>
+          <select id="sell-cat" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#fff;cursor:pointer">
+            <option value="">Select category</option>
+            <option>🐾 Pet Products</option>
+            <option>🍖 Food & Nutrition</option>
+            <option>🩺 Vet Services</option>
+            <option>✂️ Grooming</option>
+            <option>👟 Accessories</option>
+            <option>🏠 Shelter Supplies</option>
+            <option>💊 Medications</option>
+            <option>🧸 Toys & Play</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Condition</label>
+          <select id="sell-condition" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#fff;cursor:pointer">
+            <option>New</option>
+            <option>Like New</option>
+            <option>Good</option>
+            <option>Used</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Price & Stock -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Price (₹) *</label>
+          <input id="sell-price" type="number" placeholder="0.00" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Stock Quantity</label>
+          <input id="sell-stock" type="number" placeholder="1" value="1" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+        </div>
+      </div>
+
+      <!-- MRP & Discount -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">MRP (₹)</label>
+          <input id="sell-mrp" type="number" placeholder="Original price" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Delivery</label>
+          <select id="sell-delivery" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#fff;cursor:pointer">
+            <option>Free Delivery</option>
+            <option>₹40 Delivery</option>
+            <option>₹80 Delivery</option>
+            <option>₹150 Delivery</option>
+            <option>Pickup Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Description *</label>
+        <textarea id="sell-desc" rows="4" placeholder="Describe your product — brand, size, expiry, features..." style="width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;resize:none"></textarea>
+      </div>
+
+      <!-- Tags -->
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Tags</label>
+        <input id="sell-tags" placeholder="e.g. royal canin, dog food, adult" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+        <div style="font-size:11px;color:#94a3b8;margin-top:4px">Separate tags with commas</div>
+      </div>
+
+      <!-- Submit -->
+      <button onclick="submitListing()" style="width:100%;height:48px;border-radius:999px;border:none;background:linear-gradient(135deg,#1a56db,#0d9488);color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif">🚀 List for Sale</button>
+      <div style="text-align:center;font-size:12px;color:#94a3b8">By listing, you agree to PawBook Seller Terms</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MY ORDERS SECTION ══ -->
+<div id="msec-orders" class="msec" style="display:none;padding:16px;max-width:700px;margin:0 auto">
+  <div style="font-size:18px;font-weight:800;margin-bottom:14px;color:#1a1a2e">📦 Orders Received</div>
+  <div style="display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none">
+    <button class="ord-filter active" onclick="filterOrders('all',this)" style="height:34px;padding:0 16px;border-radius:999px;border:2px solid #1a56db;background:#1a56db;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">All</button>
+    <button class="ord-filter" onclick="filterOrders('pending',this)" style="height:34px;padding:0 16px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">Pending</button>
+    <button class="ord-filter" onclick="filterOrders('confirmed',this)" style="height:34px;padding:0 16px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">Confirmed</button>
+    <button class="ord-filter" onclick="filterOrders('shipped',this)" style="height:34px;padding:0 16px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">Shipped</button>
+    <button class="ord-filter" onclick="filterOrders('delivered',this)" style="height:34px;padding:0 16px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">Delivered</button>
+  </div>
+  <div id="orders-list"></div>
+</div>
+
+<!-- ══ PURCHASES SECTION ══ -->
+<div id="msec-purchases" class="msec" style="display:none;padding:16px;max-width:700px;margin:0 auto">
+  <div style="font-size:18px;font-weight:800;margin-bottom:14px;color:#1a1a2e">🛒 Purchase History</div>
+  <div id="purchases-list"></div>
+</div>
+
+<!-- ══ STORE REGISTRATION MODAL ══ -->
+<div id="store-reg-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)">
+    <div style="background:linear-gradient(135deg,#1a56db,#0d9488);padding:18px;border-radius:16px 16px 0 0;color:#fff;position:sticky;top:0;z-index:1">
+      <div style="font-size:18px;font-weight:800">🏪 Register Your Store</div>
+      <div style="font-size:13px;opacity:.85;margin-top:2px">Set up your seller profile on PawBook</div>
+    </div>
+    <div style="padding:18px;display:flex;flex-direction:column;gap:14px">
+      <!-- Store logo -->
+      <div style="text-align:center">
+        <div onclick="document.getElementById('store-logo-input').click()" id="store-logo-preview" style="width:80px;height:80px;border-radius:16px;background:linear-gradient(135deg,#1a56db,#0d9488);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;margin:0 auto 8px">🐾</div>
+        <div style="font-size:12px;color:#65676b;cursor:pointer" onclick="document.getElementById('store-logo-input').click()">Tap to upload store logo</div>
+        <input type="file" id="store-logo-input" accept="image/*" style="display:none" onchange="previewStoreLogo(this)">
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Store Name *</label>
+        <input id="reg-store-name" placeholder="e.g. Bruno's Pet Paradise" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Store Category *</label>
+        <select id="reg-store-cat" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#fff;cursor:pointer">
+          <option value="">Select category</option>
+          <option>Pet Food & Nutrition</option>
+          <option>Pet Accessories</option>
+          <option>Grooming Services</option>
+          <option>Veterinary Services</option>
+          <option>Pet Toys & Entertainment</option>
+          <option>Pet Medications</option>
+          <option>Shelter & Housing</option>
+          <option>Multi-category Store</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Store Description</label>
+        <textarea id="reg-store-desc" rows="3" placeholder="Tell buyers what you sell and why they should choose you..." style="width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;resize:none"></textarea>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">City *</label>
+          <input id="reg-city" placeholder="e.g. New Delhi" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Phone *</label>
+          <input id="reg-phone" type="tel" placeholder="+91 XXXXX XXXXX" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">GST Number (Optional)</label>
+        <input id="reg-gst" placeholder="e.g. 22AAAAA0000A1Z5" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Bank Account for Payouts</label>
+        <input id="reg-bank" placeholder="Account number" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;margin-bottom:8px">
+        <input id="reg-ifsc" placeholder="IFSC Code" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none">
+      </div>
+
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;font-size:13px;color:#15803d">
+        ✅ 0% commission for your first 3 months<br>
+        ✅ Instant payout within 24 hours of delivery<br>
+        ✅ Dedicated seller support team
+      </div>
+
+      <button onclick="registerStore()" style="width:100%;height:48px;border-radius:999px;border:none;background:linear-gradient(135deg,#1a56db,#0d9488);color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif">🚀 Register Store</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ORDER DETAIL MODAL ══ -->
+<div id="order-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)">
+    <div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0">
+      <div style="font-size:17px;font-weight:800">Order Details</div>
+      <button onclick="document.getElementById('order-detail-modal').style.display='none'" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div id="order-detail-body" style="padding:18px"></div>
+  </div>
+</div>
+
+
+<script>
+/* ══════════════════════════════════════════
+   MARKETPLACE EXTENDED FEATURES
+   ══════════════════════════════════════════ */
+
+// ── State ─────────────────────────────────
+var myStore = JSON.parse(localStorage.getItem('pawbook_store') || 'null');
+var myListings = JSON.parse(localStorage.getItem('pawbook_listings') || '[]');
+var myOrders = JSON.parse(localStorage.getItem('pawbook_orders') || 'null') || generateDemoOrders();
+var myPurchases = JSON.parse(localStorage.getItem('pawbook_purchases') || 'null') || generateDemoPurchases();
+
+// ── Tab Switching ──────────────────────────
+function showMTab(id, btn) {
+  document.querySelectorAll('.msec').forEach(function(s){ s.style.display='none'; });
+  var target = document.getElementById('msec-' + id);
+  if(target) target.style.display = 'block';
+
+  document.querySelectorAll('.mtab').forEach(function(b){
+    b.style.color = '#65676b';
+    b.style.borderBottomColor = 'transparent';
+  });
+  if(btn) {
+    btn.style.color = '#1a56db';
+    btn.style.borderBottomColor = '#1a56db';
+  }
+
+  if(id === 'mystore') renderMyStore();
+  if(id === 'orders') renderOrders('all');
+  if(id === 'purchases') renderPurchases();
+}
+
+// ── Store Registration ─────────────────────
+function openStoreRegistration() {
+  document.getElementById('store-reg-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function registerStore() {
+  var name = document.getElementById('reg-store-name').value.trim();
+  var cat = document.getElementById('reg-store-cat').value;
+  var city = document.getElementById('reg-city').value.trim();
+  var phone = document.getElementById('reg-phone').value.trim();
+  if(!name){ mktToast('Please enter your store name','error'); return; }
+  if(!cat){ mktToast('Please select a category','error'); return; }
+  if(!city){ mktToast('Please enter your city','error'); return; }
+  if(!phone){ mktToast('Please enter your phone number','error'); return; }
+
+  myStore = {
+    name: name,
+    category: cat,
+    desc: document.getElementById('reg-store-desc').value,
+    city: city,
+    phone: phone,
+    gst: document.getElementById('reg-gst').value,
+    since: new Date().toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
+    verified: true,
+    sales: 0,
+    revenue: 0,
+    views: 0
+  };
+  localStorage.setItem('pawbook_store', JSON.stringify(myStore));
+
+  document.getElementById('store-reg-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  mktToast('Store registered successfully!','success');
+  renderMyStore();
+}
+
+function renderMyStore() {
+  if(!myStore) {
+    document.getElementById('store-unregistered').style.display = 'block';
+    document.getElementById('store-dashboard').style.display = 'none';
+    return;
+  }
+  document.getElementById('store-unregistered').style.display = 'none';
+  document.getElementById('store-dashboard').style.display = 'block';
+  document.getElementById('store-name-display').textContent = myStore.name;
+  document.getElementById('store-cat-display').textContent = myStore.category;
+  document.getElementById('store-since').textContent = 'Since ' + myStore.since;
+  document.getElementById('stat-listings').textContent = myListings.length;
+  document.getElementById('stat-sales').textContent = myStore.sales || 0;
+  document.getElementById('stat-revenue').textContent = '₹' + (myStore.revenue || 0).toLocaleString('en-IN');
+  document.getElementById('stat-views').textContent = myStore.views || 0;
+  renderMyListings();
+}
+
+function renderMyListings() {
+  var container = document.getElementById('my-listings-list');
+  if(!myListings.length) {
+    container.innerHTML = '<div style="text-align:center;padding:24px;color:#65676b;font-size:13px">No listings yet. Click <b>Add Listing</b> above to start.</div>';
+    return;
+  }
+  container.innerHTML = myListings.map(function(item, i) {
+    return '<div style="display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #f0f2f5">' +
+      '<div style="width:56px;height:56px;border-radius:10px;background:#e7ebf0;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">' + (item.emoji || '📦') + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + item.name + '</div>' +
+        '<div style="font-size:13px;color:#1a56db;font-weight:700;margin-top:2px">₹' + Number(item.price).toLocaleString('en-IN') + '</div>' +
+        '<div style="font-size:11px;color:#65676b;margin-top:2px">Stock: ' + item.stock + ' · ' + item.category + '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">' +
+        '<button onclick="editListing(' + i + ')" style="height:28px;padding:0 10px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:11px;font-weight:700;cursor:pointer">✏️ Edit</button>' +
+        '<button onclick="deleteListing(' + i + ')" style="height:28px;padding:0 10px;border-radius:999px;border:none;background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;cursor:pointer">🗑 Delete</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ── Sell Item ─────────────────────────────
+function previewSellPhotos(input) {
+  var previews = document.getElementById('sell-photo-previews');
+  previews.innerHTML = '';
+  Array.from(input.files).slice(0,5).forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.cssText = 'width:72px;height:72px;border-radius:8px;object-fit:cover;border:2px solid #e4e6eb';
+      previews.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('photo-upload-area').style.borderColor = '#1a56db';
+}
+
+function previewStoreLogo(input) {
+  if(!input.files||!input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var el = document.getElementById('store-logo-preview');
+    el.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;border-radius:16px;object-fit:cover">';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function submitListing() {
+  var name = document.getElementById('sell-name').value.trim();
+  var price = document.getElementById('sell-price').value;
+  var cat = document.getElementById('sell-cat').value;
+  var desc = document.getElementById('sell-desc').value.trim();
+  if(!name){ mktToast('Please enter product name','error'); return; }
+  if(!price||price<=0){ mktToast('Please enter a valid price','error'); return; }
+  if(!cat){ mktToast('Please select a category','error'); return; }
+  if(!desc){ mktToast('Please add a description','error'); return; }
+
+  // Check if store is registered
+  if(!myStore) {
+    mktToast('Please register your store first!','error');
+    setTimeout(function(){ openStoreRegistration(); }, 500);
+    return;
+  }
+
+  var catEmojis = {
+    'Pet Products':'🐾','Food & Nutrition':'🍖','Vet Services':'🩺',
+    'Grooming':'✂️','Accessories':'👟','Shelter Supplies':'🏠',
+    'Medications':'💊','Toys & Play':'🧸'
+  };
+  var emoji = '📦';
+  Object.keys(catEmojis).forEach(function(k){ if(cat.includes(k)) emoji = catEmojis[k]; });
+
+  var listing = {
+    id: Date.now(),
+    name: name,
+    price: parseFloat(price),
+    mrp: parseFloat(document.getElementById('sell-mrp').value||price),
+    category: cat,
+    condition: document.getElementById('sell-condition').value,
+    stock: parseInt(document.getElementById('sell-stock').value||1),
+    desc: desc,
+    tags: document.getElementById('sell-tags').value,
+    delivery: document.getElementById('sell-delivery').value,
+    emoji: emoji,
+    createdAt: new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+    status: 'active'
+  };
+
+  myListings.unshift(listing);
+  localStorage.setItem('pawbook_listings', JSON.stringify(myListings));
+
+  // Reset form
+  ['sell-name','sell-price','sell-mrp','sell-stock','sell-desc','sell-tags'].forEach(function(id){
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('sell-photo-previews').innerHTML = '';
+  document.getElementById('photo-upload-area').style.borderColor = '#e4e6eb';
+
+  mktToast('Product listed successfully!','success');
+  setTimeout(function(){ showMTab('mystore', document.querySelectorAll('.mtab')[1]); }, 800);
+}
+
+function editListing(i) {
+  var item = myListings[i];
+  document.getElementById('sell-name').value = item.name;
+  document.getElementById('sell-price').value = item.price;
+  document.getElementById('sell-mrp').value = item.mrp || '';
+  document.getElementById('sell-stock').value = item.stock;
+  document.getElementById('sell-desc').value = item.desc;
+  document.getElementById('sell-tags').value = item.tags || '';
+  myListings.splice(i, 1);
+  localStorage.setItem('pawbook_listings', JSON.stringify(myListings));
+  showMTab('sell', document.querySelectorAll('.mtab')[2]);
+  mktToast('Edit your listing and resubmit','info');
+}
+
+function deleteListing(i) {
+  if(!confirm('Delete this listing?')) return;
+  myListings.splice(i, 1);
+  localStorage.setItem('pawbook_listings', JSON.stringify(myListings));
+  renderMyListings();
+  mktToast('Listing deleted','info');
+}
+
+// ── Orders Received ────────────────────────
+function generateDemoOrders() {
+  return [
+    {id:'ORD-2024-001',product:'Royal Canin Adult Dog 3kg',buyer:'Priya Sharma',amount:1299,qty:2,status:'pending',date:'22 Sep 2026',address:'Lajpat Nagar, New Delhi',phone:'+91 9876543210'},
+    {id:'ORD-2024-002',product:'Pet Grooming Kit',buyer:'Rahul Dev',amount:599,qty:1,status:'confirmed',date:'21 Sep 2026',address:'Bandra West, Mumbai',phone:'+91 9812345678'},
+    {id:'ORD-2024-003',product:'Cat Litter Premium 5kg',buyer:'Ananya Bose',amount:449,qty:3,status:'shipped',date:'20 Sep 2026',address:'Koramangala, Bangalore',phone:'+91 9756234561'},
+    {id:'ORD-2024-004',product:'Dog Harness Medium',buyer:'Vikram Singh',amount:899,qty:1,status:'delivered',date:'18 Sep 2026',address:'Sector 15, Gurgaon',phone:'+91 9988776655'},
+    {id:'ORD-2024-005',product:'Pedigree Adult Chicken 10kg',buyer:'Meera Pillai',amount:1850,qty:1,status:'delivered',date:'15 Sep 2026',address:'Worli, Mumbai',phone:'+91 9345678901'},
+  ];
+}
+
+function filterOrders(status, btn) {
+  document.querySelectorAll('.ord-filter').forEach(function(b){
+    b.style.background='#fff'; b.style.color='#65676b'; b.style.borderColor='#e4e6eb';
+  });
+  if(btn){ btn.style.background='#1a56db'; btn.style.color='#fff'; btn.style.borderColor='#1a56db'; }
+  renderOrders(status);
+}
+
+function renderOrders(statusFilter) {
+  var list = document.getElementById('orders-list');
+  var filtered = myOrders.filter(function(o){ return statusFilter==='all'||o.status===statusFilter; });
+  list.innerHTML = '';
+  if(!filtered.length) {
+    list.innerHTML = '<div style="text-align:center;padding:32px;color:#65676b;font-size:14px">No orders found</div>';
+    return;
+  }
+  var statusColors = {pending:'#d97706',confirmed:'#1a56db',shipped:'#0d9488',delivered:'#16a34a',cancelled:'#dc2626'};
+  var statusEmoji = {pending:'⏳',confirmed:'✅',shipped:'🚚',delivered:'🎉',cancelled:'❌'};
+  
+  filtered.forEach(function(o) {
+    var col = statusColors[o.status]||'#65676b';
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid #e4e6eb;box-shadow:0 1px 4px rgba(0,0,0,.06)';
+    
+    var header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px';
+    header.innerHTML = '<div><div style="font-size:13px;font-weight:800;color:#1a56db">'+o.id+'</div><div style="font-size:15px;font-weight:700;margin-top:2px">'+o.product+'</div><div style="font-size:12px;color:#65676b;margin-top:2px">Qty: '+o.qty+' · '+o.date+'</div></div>';
+    var badge = document.createElement('span');
+    badge.style.cssText = 'padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;background:'+col+'22;color:'+col+';flex-shrink:0';
+    badge.textContent = (statusEmoji[o.status]||'') + ' ' + o.status.charAt(0).toUpperCase() + o.status.slice(1);
+    header.appendChild(badge);
+    
+    var buyer = document.createElement('div');
+    buyer.style.cssText = 'background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:10px;font-size:13px';
+    buyer.innerHTML = '<div style="font-weight:700">👤 '+o.buyer+'</div><div style="color:#65676b;margin-top:2px">📍 '+o.address+'</div><div style="color:#65676b;margin-top:2px">📞 '+o.phone+'</div>';
+    
+    var footer = document.createElement('div');
+    footer.style.cssText = 'display:flex;align-items:center;justify-content:space-between';
+    var amount = document.createElement('div');
+    amount.style.cssText = 'font-size:16px;font-weight:900;color:#1a1a2e';
+    amount.textContent = '₹' + (o.amount*o.qty).toLocaleString('en-IN');
+    
+    var actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;gap:8px';
+    
+    if(o.status==='pending') {
+      var confirmBtn = document.createElement('button');
+      confirmBtn.style.cssText = 'height:32px;padding:0 12px;border-radius:999px;border:none;background:#1a56db;color:#fff;font-size:12px;font-weight:700;cursor:pointer';
+      confirmBtn.textContent = '✅ Confirm';
+      confirmBtn.onclick = function(){ updateOrderStatus(o.id,'confirmed'); };
+      actions.appendChild(confirmBtn);
+    }
+    if(o.status==='confirmed') {
+      var shipBtn = document.createElement('button');
+      shipBtn.style.cssText = 'height:32px;padding:0 12px;border-radius:999px;border:none;background:#0d9488;color:#fff;font-size:12px;font-weight:700;cursor:pointer';
+      shipBtn.textContent = '🚚 Mark Shipped';
+      shipBtn.onclick = function(){ updateOrderStatus(o.id,'shipped'); };
+      actions.appendChild(shipBtn);
+    }
+    var detailBtn = document.createElement('button');
+    detailBtn.style.cssText = 'height:32px;padding:0 12px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:12px;font-weight:700;cursor:pointer';
+    detailBtn.textContent = 'Details';
+    detailBtn.onclick = function(){ viewOrderDetail(o.id); };
+    actions.appendChild(detailBtn);
+    
+    footer.appendChild(amount);
+    footer.appendChild(actions);
+    card.appendChild(header);
+    card.appendChild(buyer);
+    card.appendChild(footer);
+    list.appendChild(card);
+  });
+}
+
+
+function updateOrderStatus(orderId, newStatus) {
+  myOrders.forEach(function(o){ if(o.id===orderId) o.status=newStatus; });
+  localStorage.setItem('pawbook_orders', JSON.stringify(myOrders));
+  mktToast('Order status updated to ' + newStatus,'success');
+  renderOrders('all');
+  document.querySelectorAll('.ord-filter')[0].click();
+}
+
+function viewOrderDetail(orderId) {
+  var o = myOrders.find(function(x){ return x.id===orderId; });
+  if(!o) return;
+  var statusSteps = ['pending','confirmed','shipped','delivered'];
+  var curStep = statusSteps.indexOf(o.status);
+  var tracker = statusSteps.map(function(s,i) {
+    var done = i <= curStep;
+    var labels = {pending:'Order Placed',confirmed:'Confirmed',shipped:'Shipped',delivered:'Delivered'};
+    return '<div style="display:flex;flex-direction:column;align-items:center;flex:1">' +
+      '<div style="width:32px;height:32px;border-radius:50%;background:' + (done?'#16a34a':'#e4e6eb') + ';color:' + (done?'#fff':'#65676b') + ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">' + (done?'✓':(i+1)) + '</div>' +
+      '<div style="font-size:10px;font-weight:700;color:' + (done?'#16a34a':'#94a3b8') + ';margin-top:4px;text-align:center">' + labels[s] + '</div>' +
+    '</div>';
+  }).join('<div style="flex:1;height:2px;background:#e4e6eb;margin-top:16px;align-self:flex-start"></div>');
+
+  document.getElementById('order-detail-body').innerHTML =
+    '<div style="font-size:13px;font-weight:800;color:#1a56db;margin-bottom:4px">' + o.id + '</div>' +
+    '<div style="font-size:16px;font-weight:800;margin-bottom:14px">' + o.product + '</div>' +
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">' + tracker + '</div>' +
+    '<div style="background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:14px">' +
+      '<div style="font-size:13px;font-weight:700;margin-bottom:8px">Customer Details</div>' +
+      '<div style="font-size:13px;color:#1a1a2e">👤 ' + o.buyer + '</div>' +
+      '<div style="font-size:13px;color:#65676b;margin-top:4px">📍 ' + o.address + '</div>' +
+      '<div style="font-size:13px;color:#65676b;margin-top:4px">📞 ' + o.phone + '</div>' +
+    '</div>' +
+    '<div style="display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid #e4e6eb">' +
+      '<span style="font-size:14px;font-weight:700">Total Amount</span>' +
+      '<span style="font-size:16px;font-weight:900;color:#16a34a">₹' + (o.amount*o.qty).toLocaleString('en-IN') + '</span>' +
+    '</div>';
+  document.getElementById('order-detail-modal').style.display = 'flex';
+}
+
+// ── Purchase History ───────────────────────
+function generateDemoPurchases() {
+  return [
+    {id:'PUR-001',product:'Hill Science Diet Dog 2kg',seller:'PetZone Delhi',amount:1599,qty:1,status:'delivered',date:'20 Sep 2026',img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=100&q=80',rating:0},
+    {id:'PUR-002',product:'Cat Scratching Post',seller:'FurFamily Store',amount:849,qty:1,status:'shipped',date:'21 Sep 2026',img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80',rating:0},
+    {id:'PUR-003',product:'Dog Collar Leather XL',seller:'PawShop Mumbai',amount:349,qty:2,status:'delivered',date:'15 Sep 2026',img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=100&q=80',rating:4},
+    {id:'PUR-004',product:'Aquarium Filter 500L/hr',seller:'AquaWorld',amount:1299,qty:1,status:'confirmed',date:'22 Sep 2026',img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=100&q=80',rating:0},
+  ];
+}
+
+function renderPurchases() {
+  var list = document.getElementById('purchases-list');
+  list.innerHTML = '';
+  if(!myPurchases.length) {
+    list.innerHTML = '<div style="text-align:center;padding:32px;color:#65676b">No purchases yet. Go to Browse to shop!</div>';
+    return;
+  }
+  var statusColors = {pending:'#d97706',confirmed:'#1a56db',shipped:'#0d9488',delivered:'#16a34a'};
+  var statusEmoji = {pending:'⏳',confirmed:'✅',shipped:'🚚',delivered:'🎉'};
+  
+  myPurchases.forEach(function(p) {
+    var col = statusColors[p.status]||'#65676b';
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #e4e6eb;box-shadow:0 1px 4px rgba(0,0,0,.06)';
+    
+    var top = document.createElement('div');
+    top.style.cssText = 'display:flex;gap:12px;align-items:flex-start';
+    var img = document.createElement('img');
+    img.src = p.img; img.style.cssText = 'width:72px;height:72px;border-radius:10px;object-fit:cover;flex-shrink:0';
+    img.onerror = function(){ this.style.display='none'; };
+    
+    var info = document.createElement('div');
+    info.style.cssText = 'flex:1;min-width:0';
+    info.innerHTML = '<div style="font-size:14px;font-weight:700">'+p.product+'</div>' +
+      '<div style="font-size:12px;color:#65676b;margin-top:2px">by '+p.seller+' · '+p.date+'</div>' +
+      '<div style="font-size:15px;font-weight:900;color:#1a1a2e;margin-top:4px">₹'+(p.amount*p.qty).toLocaleString('en-IN')+'</div>' +
+      '<span style="display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:'+col+'22;color:'+col+';margin-top:4px">'+(statusEmoji[p.status]||'')+' '+p.status.charAt(0).toUpperCase()+p.status.slice(1)+'</span>';
+    
+    top.appendChild(img); top.appendChild(info);
+    card.appendChild(top);
+    
+    if(p.status==='delivered') {
+      var ratingDiv = document.createElement('div');
+      ratingDiv.style.cssText = 'margin-top:12px;padding-top:12px;border-top:1px solid #f0f2f5';
+      var rLabel = document.createElement('div');
+      rLabel.style.cssText = 'font-size:12px;font-weight:700;color:#65676b;margin-bottom:4px';
+      rLabel.textContent = p.rating ? 'Your Rating:' : 'Rate this product:';
+      ratingDiv.appendChild(rLabel);
+      
+      var stars = document.createElement('div');
+      for(var i=1;i<=5;i++) {
+        var star = document.createElement('span');
+        star.textContent = '★';
+        star.style.cssText = 'cursor:pointer;font-size:22px;color:'+(i<=p.rating?'#fbbf24':'#e4e6eb');
+        (function(rating, pid) {
+          star.onclick = function(){ ratePurchase(pid, rating); };
+        })(i, p.id);
+        stars.appendChild(star);
+      }
+      ratingDiv.appendChild(stars);
+      
+      var actDiv = document.createElement('div');
+      actDiv.style.cssText = 'display:flex;gap:8px;margin-top:10px';
+      var reordBtn = document.createElement('button');
+      reordBtn.style.cssText = 'height:32px;padding:0 14px;border-radius:999px;border:none;background:#1a56db;color:#fff;font-size:12px;font-weight:700;cursor:pointer';
+      reordBtn.textContent = '🔁 Reorder';
+      reordBtn.onclick = function(){ reorderPurchase(p.id); };
+      var retBtn = document.createElement('button');
+      retBtn.style.cssText = 'height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:12px;font-weight:700;cursor:pointer';
+      retBtn.textContent = '↩️ Return';
+      retBtn.onclick = function(){ returnPurchase(p.id); };
+      actDiv.appendChild(reordBtn); actDiv.appendChild(retBtn);
+      ratingDiv.appendChild(actDiv);
+      card.appendChild(ratingDiv);
+    }
+    list.appendChild(card);
+  });
+}
+
+
+function ratePurchase(id, rating) {
+  myPurchases.forEach(function(p){ if(p.id===id) p.rating=rating; });
+  localStorage.setItem('pawbook_purchases', JSON.stringify(myPurchases));
+  renderPurchases();
+  mktToast('Rating saved! Thank you.','success');
+}
+
+function reorderPurchase(id) {
+  mktToast('Item added to cart!','success');
+}
+
+function returnPurchase(id) {
+  mktToast('Return request submitted. We will contact you within 24 hours.','info');
+}
+
+function openStoreSettings() {
+  mktToast('Store settings opening soon...','info');
+}
+
+// ── Toast ─────────────────────────────────
+function mktToast(msg, type) {
+  var t = document.getElementById('mkt-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'mkt-toast';
+    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;max-width:90vw;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+    document.body.appendChild(t);
+  }
+  t.style.background = type==='success'?'#16a34a':type==='error'?'#dc2626':type==='info'?'#1a56db':'rgba(0,0,0,.88)';
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 3000);
+}
+
+// ── Wire existing "Add to Cart" buttons ───
+document.addEventListener('DOMContentLoaded', function() {
+  // Show browse tab by default
+  document.getElementById('msec-browse').style.display = 'block';
+
+  // Wire add-to-cart buttons that have no onclick
+  document.querySelectorAll('.add-cart-btn:not([onclick])').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var card = btn.closest('.prod-card,.bs-card');
+      var name = card ? (card.querySelector('.prod-name,.bs-name') || {textContent:'Item'}).textContent : 'Item';
+      var priceEl = card ? (card.querySelector('.prod-price,.bs-price') || {textContent:'0'}) : {textContent:'0'};
+      var price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g,'')) || 0;
+      if(typeof cartAdd === 'function') cartAdd(name, price, 1, '');
+      else mktToast(name + ' added to cart!','success');
+    });
+  });
+});
+
+// Event delegation for dynamically created buttons
+document.addEventListener('click', function(e) {
+  var btn = e.target;
+  if(btn.classList.contains('upd-ord-btn')) {
+    updateOrderStatus(btn.dataset.id, btn.dataset.status);
+  }
+  if(btn.classList.contains('view-ord-btn')) {
+    viewOrderDetail(btn.dataset.id);
+  }
+  if(btn.classList.contains('rate-star')) {
+    ratePurchase(btn.dataset.id, parseInt(btn.dataset.r));
+  }
+  if(btn.classList.contains('reord-btn')) {
+    reorderPurchase(btn.dataset.id);
+  }
+  if(btn.classList.contains('ret-btn')) {
+    returnPurchase(btn.dataset.id);
+  }
+});
 </script>
 </body>
 </html>
