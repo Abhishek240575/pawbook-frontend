@@ -1219,6 +1219,26 @@ function closeDrawer() {
 })();
 </script>
 
+
+<!-- ═══ PET FOOD CATALOG (shown when Food tab clicked) ═══ -->
+<div id="food-catalog" style="display:none;padding:0 14px 16px">
+  <div style="font-size:16px;font-weight:800;color:#1a1a2e;margin-bottom:14px;padding-top:8px">🍖 Pet Food — World Brands</div>
+
+  <!-- Category Pills -->
+  <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:16px;padding-bottom:4px">
+    <button class="fpill active" onclick="filterFood('all',this)" style="height:32px;padding:0 14px;border-radius:999px;border:2px solid #1a56db;background:#1a56db;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">All</button>
+    <button class="fpill" onclick="filterFood('dog',this)" style="height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">🐕 Dog</button>
+    <button class="fpill" onclick="filterFood('cat',this)" style="height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">🐈 Cat</button>
+    <button class="fpill" onclick="filterFood('bird',this)" style="height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">🦜 Bird</button>
+    <button class="fpill" onclick="filterFood('fish',this)" style="height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">🐟 Fish</button>
+    <button class="fpill" onclick="filterFood('small',this)" style="height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif">🐹 Small Pets</button>
+  </div>
+
+  <div id="food-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px"></div>
+  <div id="food-load-more" style="text-align:center;margin-top:16px">
+    <button onclick="loadMoreFood()" style="height:40px;padding:0 24px;border-radius:999px;border:1.5px solid #1a56db;background:#fff;color:#1a56db;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">Load More</button>
+  </div>
+</div>
 </div><!-- end msec-browse -->
 
 
@@ -1945,7 +1965,7 @@ function openStoreSettings() {
 }
 
 // ── Toast ─────────────────────────────────
-function mktToast(msg, type) {
+function mktToastOld_DISABLED(msg, type) {
   var t = document.getElementById('mkt-toast');
   if(!t) {
     t = document.createElement('div');
@@ -1998,6 +2018,614 @@ document.addEventListener('click', function(e) {
   if(btn.classList.contains('ret-btn')) {
     returnPurchase(btn.dataset.id);
   }
+});
+</script>
+
+<!-- ═══ CART DRAWER ═══ -->
+<div id="cart-overlay" onclick="closeCart()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:800"></div>
+<div id="cart-drawer" style="position:fixed;top:0;right:-420px;bottom:0;width:400px;max-width:100vw;background:#fff;z-index:900;display:flex;flex-direction:column;box-shadow:-4px 0 32px rgba(0,0,0,.2);transition:right .3s cubic-bezier(.4,0,.2,1)">
+  <!-- Header -->
+  <div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;background:#fff;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">🛒</span>
+      <div>
+        <div style="font-size:17px;font-weight:800;color:#1a1a2e">Your Cart</div>
+        <div id="cart-item-count" style="font-size:12px;color:#65676b">0 items</div>
+      </div>
+    </div>
+    <button onclick="closeCart()" style="width:32px;height:32px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">✕</button>
+  </div>
+
+  <!-- Cart Items -->
+  <div id="cart-items-list" style="flex:1;overflow-y:auto;padding:12px 16px"></div>
+
+  <!-- Price Summary -->
+  <div id="cart-summary" style="padding:14px 18px;border-top:1px solid #e4e6eb;background:#f8fafc;flex-shrink:0;display:none">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;color:#65676b">
+      <span>Subtotal</span><span id="cart-subtotal">₹0</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;color:#65676b">
+      <span>GST (18%)</span><span id="cart-gst">₹0</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;color:#65676b">
+      <span>Delivery</span><span id="cart-delivery" style="color:#16a34a">FREE</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:16px;font-weight:800;color:#1a1a2e;border-top:1px solid #e4e6eb;padding-top:10px;margin-top:10px">
+      <span>Total</span><span id="cart-total">₹0</span>
+    </div>
+    <button onclick="placeOrder()" style="width:100%;height:48px;border-radius:999px;border:none;background:linear-gradient(135deg,#1a56db,#0d9488);color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif;margin-bottom:8px">🛒 Place Order</button>
+    <button onclick="closeCart()" style="width:100%;height:40px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">Cancel</button>
+  </div>
+
+  <!-- Empty State -->
+  <div id="cart-empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center">
+    <div style="font-size:56px;margin-bottom:12px">🛒</div>
+    <div style="font-size:16px;font-weight:800;color:#1a1a2e;margin-bottom:6px">Your cart is empty</div>
+    <div style="font-size:13px;color:#65676b">Add pet food and products to get started</div>
+  </div>
+</div>
+
+<!-- Cart FAB button -->
+<button id="cart-fab" onclick="openCart()" style="position:fixed;bottom:80px;right:16px;width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(135deg,#1a56db,#0d9488);color:#fff;font-size:22px;cursor:pointer;z-index:400;box-shadow:0 4px 16px rgba(26,86,219,.4);display:flex;align-items:center;justify-content:center">
+  🛒<span id="cart-fab-count" style="position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center">0</span>
+</button>
+
+<!-- ═══ PAYMENT MODAL ═══ -->
+<div id="payment-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:20px;width:100%;max-width:480px;max-height:95vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <!-- Payment header -->
+    <div style="background:linear-gradient(135deg,#1a56db,#0d9488);padding:20px 20px 16px;border-radius:20px 20px 0 0;position:relative">
+      <button onclick="closePayment()" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer">✕</button>
+      <div style="font-size:20px;font-weight:800;color:#fff">Secure Payment</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.8);margin-top:2px">🔒 256-bit SSL Encrypted</div>
+      <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+        <span style="color:rgba(255,255,255,.85);font-size:13px">Order Total</span>
+        <span id="pay-total-display" style="color:#fff;font-size:20px;font-weight:900">₹0</span>
+      </div>
+    </div>
+
+    <div style="padding:18px">
+      <!-- Order Summary -->
+      <div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:8px">📦 Order Summary</div>
+        <div id="pay-order-summary" style="font-size:13px;color:#65676b"></div>
+      </div>
+
+      <!-- Delivery Address -->
+      <div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:8px">📍 Delivery Address</div>
+        <input id="pay-name" placeholder="Full Name *" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;margin-bottom:8px">
+        <input id="pay-phone" placeholder="Phone Number *" type="tel" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;margin-bottom:8px">
+        <textarea id="pay-address" rows="2" placeholder="Full delivery address *" style="width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;resize:none;margin-bottom:8px"></textarea>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input id="pay-city" placeholder="City *" style="height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none">
+          <input id="pay-pin" placeholder="PIN Code *" style="height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none">
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:8px">💳 Payment Method</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <label style="border:2px solid #1a56db;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;background:#eff6ff">
+            <input type="radio" name="pay-method" value="upi" checked style="accent-color:#1a56db">
+            <span style="font-size:13px;font-weight:700">📱 UPI</span>
+          </label>
+          <label style="border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="radio" name="pay-method" value="card" style="accent-color:#1a56db">
+            <span style="font-size:13px;font-weight:700">💳 Card</span>
+          </label>
+          <label style="border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="radio" name="pay-method" value="netbanking" style="accent-color:#1a56db">
+            <span style="font-size:13px;font-weight:700">🏦 Net Banking</span>
+          </label>
+          <label style="border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="radio" name="pay-method" value="cod" style="accent-color:#1a56db">
+            <span style="font-size:13px;font-weight:700">💵 Cash on Delivery</span>
+          </label>
+        </div>
+
+        <!-- UPI ID field -->
+        <div id="upi-field">
+          <input id="pay-upi" placeholder="Enter UPI ID (e.g. name@upi)" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none">
+        </div>
+        <!-- Card fields -->
+        <div id="card-fields" style="display:none">
+          <input id="pay-card-num" placeholder="Card Number" maxlength="19" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;margin-bottom:8px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <input id="pay-card-exp" placeholder="MM/YY" maxlength="5" style="height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none">
+            <input id="pay-card-cvv" placeholder="CVV" maxlength="3" type="password" style="height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;font-family:'Poppins',sans-serif;outline:none">
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#15803d">
+        ✅ Free delivery on orders above ₹499 &nbsp;·&nbsp; 🔄 7-day easy returns &nbsp;·&nbsp; ⚡ Delivered in 2-3 days
+      </div>
+
+      <button onclick="confirmPayment()" style="width:100%;height:50px;border-radius:999px;border:none;background:linear-gradient(135deg,#1a56db,#0d9488);color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif">🔒 Pay Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER SUCCESS MODAL -->
+<div id="order-success-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1100;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:20px;width:100%;max-width:380px;padding:32px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="font-size:64px;margin-bottom:12px">🎉</div>
+    <div style="font-size:22px;font-weight:900;color:#1a1a2e;margin-bottom:6px">Order Placed!</div>
+    <div id="success-order-id" style="font-size:13px;color:#1a56db;font-weight:700;margin-bottom:8px"></div>
+    <div style="font-size:13px;color:#65676b;margin-bottom:20px">Your pet food is on its way! You will receive a confirmation SMS shortly.</div>
+    <div style="background:#f0fdf4;border-radius:12px;padding:14px;margin-bottom:20px;text-align:left">
+      <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:6px">📦 Delivery Info</div>
+      <div id="success-delivery" style="font-size:13px;color:#1a1a2e"></div>
+    </div>
+    <button onclick="document.getElementById('order-success-modal').style.display='none';clearCart();" style="width:100%;height:44px;border-radius:999px;border:none;background:linear-gradient(135deg,#1a56db,#0d9488);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif">Continue Shopping</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   PET FOOD CATALOG + CART + PAYMENT SYSTEM
+   ═══════════════════════════════════════════════ */
+
+// ── PET FOOD DATABASE ─────────────────────────
+var PET_FOODS = [
+  // === DOG FOOD ===
+  // Royal Canin
+  {id:'rc001',brand:'Royal Canin',name:'Maxi Adult Dog 4kg',pet:'dog',type:'dry',weight:'4kg',price:1799,mrp:2100,img:'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80',badge:'Best Seller',rating:4.8,desc:'Complete dry food for large breed adult dogs 15 months to 5 years'},
+  {id:'rc002',brand:'Royal Canin',name:'German Shepherd Adult 3kg',pet:'dog',type:'dry',weight:'3kg',price:1499,mrp:1800,img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80',badge:'Breed Specific',rating:4.9,desc:'Tailored nutrition for German Shepherds over 15 months'},
+  {id:'rc003',brand:'Royal Canin',name:'Puppy Medium 4kg',pet:'dog',type:'dry',weight:'4kg',price:1650,mrp:1950,img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'Puppy',rating:4.7,desc:'Complete food for medium breed puppies up to 12 months'},
+  {id:'rc004',brand:'Royal Canin',name:'Mini Sensible 2kg',pet:'dog',type:'dry',weight:'2kg',price:999,mrp:1200,img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&q=80',badge:'Sensitive',rating:4.6,desc:'For small dogs with sensitive digestion'},
+  // Hill's Science Diet
+  {id:'hs001',brand:'Hills Science Diet',name:'Adult Large Breed 12kg',pet:'dog',type:'dry',weight:'12kg',price:4999,mrp:6000,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Vet Recommended',rating:4.9,desc:'Clinically proven antioxidants for a strong immune system'},
+  {id:'hs002',brand:'Hills Science Diet',name:'Puppy Small Paws 1.5kg',pet:'dog',type:'dry',weight:'1.5kg',price:1299,mrp:1599,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Puppy',rating:4.8,desc:'Precise nutrition for small and toy breed puppies'},
+  {id:'hs003',brand:'Hills Science Diet',name:'Senior 7+ Small Bites 6kg',pet:'dog',type:'dry',weight:'6kg',price:2799,mrp:3399,img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'Senior',rating:4.7,desc:'Clinically proven nutrition to support senior dogs'},
+  // Pedigree
+  {id:'pg001',brand:'Pedigree',name:'Adult Chicken & Veg 10kg',pet:'dog',type:'dry',weight:'10kg',price:1299,mrp:1699,img:'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80',badge:'Popular',rating:4.5,desc:'100% complete and balanced nutrition for adult dogs'},
+  {id:'pg002',brand:'Pedigree',name:'Puppy Chicken & Milk 3kg',pet:'dog',type:'dry',weight:'3kg',price:699,mrp:899,img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80',badge:'Puppy',rating:4.4,desc:'Specially formulated for puppies 2–12 months'},
+  {id:'pg003',brand:'Pedigree',name:'Wet Food Chicken 80g Pack of 15',pet:'dog',type:'wet',weight:'80g x15',price:649,mrp:799,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Wet Food',rating:4.3,desc:'Tender chicken chunks in gravy for adult dogs'},
+  // Purina Pro Plan
+  {id:'pp001',brand:'Purina Pro Plan',name:'Sport All Life Stages 14kg',pet:'dog',type:'dry',weight:'14kg',price:5499,mrp:6999,img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'Premium',rating:4.9,desc:'High-performance formula with 30% protein for active dogs'},
+  {id:'pp002',brand:'Purina Pro Plan',name:'Sensitive Skin & Stomach 7kg',pet:'dog',type:'dry',weight:'7kg',price:3499,mrp:4199,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Sensitive',rating:4.8,desc:'Salmon as #1 ingredient for skin and coat health'},
+  {id:'pp003',brand:'Purina Pro Plan',name:'Puppy Large Breed 12kg',pet:'dog',type:'dry',weight:'12kg',price:4299,mrp:5199,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Large Breed',rating:4.8,desc:'DHA from omega-rich fish oil for vision and brain development'},
+  // Orijen
+  {id:'or001',brand:'Orijen',name:'Original Adult Dog 6kg',pet:'dog',type:'dry',weight:'6kg',price:4999,mrp:6000,img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&q=80',badge:'Grain Free',rating:4.9,desc:'Biologically appropriate 85% animal ingredients, 15% fruits & vegetables'},
+  {id:'or002',brand:'Orijen',name:'Regional Red 5.9kg',pet:'dog',type:'dry',weight:'5.9kg',price:5499,mrp:6599,img:'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80',badge:'Grain Free',rating:4.9,desc:'Red meat recipe with beef, boar, lamb and bison'},
+  // Acana
+  {id:'ac001',brand:'Acana',name:'Wild Prairie Dog 6kg',pet:'dog',type:'dry',weight:'6kg',price:3999,mrp:4799,img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80',badge:'Grain Free',rating:4.8,desc:'Free-run chicken and turkey, wild-caught fish, nest-laid eggs'},
+  // Drools
+  {id:'dr001',brand:'Drools',name:'Focus Adult Dog 12kg',pet:'dog',type:'dry',weight:'12kg',price:1899,mrp:2399,img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'Value Pick',rating:4.4,desc:'Complete nutrition with real chicken as first ingredient'},
+  {id:'dr002',brand:'Drools',name:'Puppy Starter 3kg',pet:'dog',type:'dry',weight:'3kg',price:599,mrp:749,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Puppy',rating:4.3,desc:'Formulated with DHA for brain development'},
+  // Taste of the Wild
+  {id:'tw001',brand:'Taste of the Wild',name:'Pacific Stream Adult 12.7kg',pet:'dog',type:'dry',weight:'12.7kg',price:4799,mrp:5799,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Grain Free',rating:4.8,desc:'Smoked salmon as #1 ingredient, grain-free formula'},
+  {id:'tw002',brand:'Taste of the Wild',name:'High Prairie Puppy 12.7kg',pet:'dog',type:'dry',weight:'12.7kg',price:4599,mrp:5599,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Puppy',rating:4.7,desc:'Bison and venison as primary protein sources'},
+  // Farmina
+  {id:'fa001',brand:'Farmina',name:'N&D Pumpkin Adult Medium 12kg',pet:'dog',type:'dry',weight:'12kg',price:5999,mrp:7199,img:'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80',badge:'Premium Italian',rating:4.9,desc:'Chicken and pomegranate, grain-free Italian recipe'},
+  // Eukanuba
+  {id:'eu001',brand:'Eukanuba',name:'Adult Medium Breed 3kg',pet:'dog',type:'dry',weight:'3kg',price:1349,mrp:1649,img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80',badge:'Vet Approved',rating:4.6,desc:'Clinically proven dental health benefits'},
+
+  // === CAT FOOD ===
+  // Whiskas
+  {id:'wk001',brand:'Whiskas',name:'Adult Tuna in Jelly 85g x12',pet:'cat',type:'wet',weight:'85g x12',price:599,mrp:749,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Best Seller',rating:4.5,desc:'Tender tuna pieces in jelly for adult cats'},
+  {id:'wk002',brand:'Whiskas',name:'Kitten Chicken 1.2kg',pet:'cat',type:'dry',weight:'1.2kg',price:499,mrp:649,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Kitten',rating:4.4,desc:'Complete nutrition for kittens from 2–12 months'},
+  {id:'wk003',brand:'Whiskas',name:'Adult Dry Tuna 3kg',pet:'cat',type:'dry',weight:'3kg',price:699,mrp:899,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Popular',rating:4.3,desc:'Complete dry food for cats from 1 year'},
+  // Royal Canin Cat
+  {id:'rcc001',brand:'Royal Canin',name:'Indoor Adult 2kg',pet:'cat',type:'dry',weight:'2kg',price:1099,mrp:1349,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Indoor Cats',rating:4.8,desc:'Specially designed for indoor cats with hairball control'},
+  {id:'rcc002',brand:'Royal Canin',name:'Persian Adult 2kg',pet:'cat',type:'dry',weight:'2kg',price:1199,mrp:1449,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Breed Specific',rating:4.9,desc:'Flat-shaped kibble specially designed for Persian cats'},
+  {id:'rcc003',brand:'Royal Canin',name:'Mother & Babycat 2kg',pet:'cat',type:'dry',weight:'2kg',price:1149,mrp:1399,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Kitten',rating:4.8,desc:'For pregnant queens and weaning kittens up to 4 months'},
+  // Purina ONE Cat
+  {id:'poc001',brand:'Purina ONE',name:'Adult Salmon & Tuna 1.5kg',pet:'cat',type:'dry',weight:'1.5kg',price:849,mrp:1049,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Premium',rating:4.7,desc:'Real salmon as #1 ingredient, strengthens heart health'},
+  {id:'poc002',brand:'Purina ONE',name:'Kitten Chicken 800g',pet:'cat',type:'dry',weight:'800g',price:649,mrp:799,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Kitten',rating:4.6,desc:'DHA for brain and vision development in kittens'},
+  // Hill's Cat
+  {id:'hsc001',brand:'Hills Science Diet',name:'Indoor Cat Adult 2.8kg',pet:'cat',type:'dry',weight:'2.8kg',price:1799,mrp:2199,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Vet Recommended',rating:4.8,desc:'Clinically proven to reduce hairballs'},
+  {id:'hsc002',brand:'Hills Science Diet',name:'Urinary Hairball 1.58kg',pet:'cat',type:'dry',weight:'1.58kg',price:1599,mrp:1999,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Specialized',rating:4.7,desc:'Controls hairballs and supports urinary health'},
+  // Sheba
+  {id:'sh001',brand:'Sheba',name:'Chicken & Tuna in Jelly 85g x6',pet:'cat',type:'wet',weight:'85g x6',price:449,mrp:549,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Gourmet',rating:4.6,desc:'Delicate cuts in jelly for the most discerning cats'},
+  {id:'sh002',brand:'Sheba',name:'Salmon Fillet 85g x12',pet:'cat',type:'wet',weight:'85g x12',price:799,mrp:999,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Premium Wet',rating:4.7,desc:'Premium salmon fillets in light sauce'},
+  // Orijen Cat
+  {id:'orc001',brand:'Orijen',name:'Cat & Kitten 5.4kg',pet:'cat',type:'dry',weight:'5.4kg',price:4799,mrp:5799,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Grain Free',rating:4.9,desc:'Biologically appropriate cat food with 90% animal ingredients'},
+  // Me-O
+  {id:'me001',brand:'Me-O',name:'Adult Ocean Fish 1.5kg',pet:'cat',type:'dry',weight:'1.5kg',price:399,mrp:499,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Value',rating:4.2,desc:'Complete nutrition with ocean fish flavor'},
+
+  // === BIRD FOOD ===
+  {id:'br001',brand:'Taiyo',name:'Budgerigar Mix 1kg',pet:'bird',type:'seed',weight:'1kg',price:199,mrp:249,img:'https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=300&q=80',badge:'Popular',rating:4.4,desc:'Premium seed mix for budgerigars with millet and canary seeds'},
+  {id:'br002',brand:'Versele-Laga',name:'Cockatiel Standard 800g',pet:'bird',type:'seed',weight:'800g',price:399,mrp:499,img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=300&q=80',badge:'Belgian Quality',rating:4.7,desc:'Optimal seed mix for cockatiels with sunflower and safflower'},
+  {id:'br003',brand:'Kaytee',name:'Forti-Diet Pro Parrot 3lb',pet:'bird',type:'pellet',weight:'1.36kg',price:1299,mrp:1599,img:'https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=300&q=80',badge:'Vet Recommended',rating:4.8,desc:'Probiotics and prebiotics for digestive health'},
+  {id:'br004',brand:'Zupreem',name:'Fruit Blend Medium Birds 907g',pet:'bird',type:'pellet',weight:'907g',price:1099,mrp:1399,img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=300&q=80',badge:'Premium Pellet',rating:4.6,desc:'Natural fruit flavors with essential vitamins and minerals'},
+  {id:'br005',brand:'Nutribird',name:'G14 Original Granules 3kg',pet:'bird',type:'pellet',weight:'3kg',price:2499,mrp:2999,img:'https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=300&q=80',badge:'Professional',rating:4.9,desc:'Complete extruded granule feed for large parrots'},
+
+  // === FISH FOOD ===
+  {id:'fi001',brand:'Tetra',name:'TetraMin Flakes 100g',pet:'fish',type:'flake',weight:'100g',price:299,mrp:379,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Classic',rating:4.7,desc:'Complete diet for all tropical fish, patented BioActive formula'},
+  {id:'fi002',brand:'Tetra',name:'TetraPro Colour 100g',pet:'fish',type:'flake',weight:'100g',price:399,mrp:499,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Color Enhancing',rating:4.8,desc:'Advanced nutrition to enhance natural colors of tropical fish'},
+  {id:'fi003',brand:'Hikari',name:'Cichlid Gold Medium 342g',pet:'fish',type:'pellet',weight:'342g',price:899,mrp:1099,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Premium',rating:4.9,desc:'Specially developed for all cichlids needing high protein'},
+  {id:'fi004',brand:'Hikari',name:'Saki-Hikari Fancy Goldfish 500g',pet:'fish',type:'pellet',weight:'500g',price:1199,mrp:1499,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Goldfish',rating:4.8,desc:'Probiotic rich food that supports goldfish health'},
+  {id:'fi005',brand:'Fluval',name:'Bug Bites Tropical Fish 130g',pet:'fish',type:'granule',weight:'130g',price:799,mrp:999,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Insect Protein',rating:4.7,desc:'Black soldier fly larvae as primary ingredient, sustainable protein'},
+  {id:'fi006',brand:'NLS',name:'Thera A Large Fish Formula 500g',pet:'fish',type:'pellet',weight:'500g',price:1399,mrp:1699,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Immune Boost',rating:4.9,desc:'Krill-enhanced formula with immune stimulating compounds'},
+
+  // === SMALL PETS ===
+  {id:'sm001',brand:'Oxbow',name:'Essentials Adult Rabbit 1.8kg',pet:'small',type:'pellet',weight:'1.8kg',price:1499,mrp:1799,img:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&q=80',badge:'Vet Recommended',rating:4.9,desc:'Timothy hay-based pellets for adult rabbits 1 year and older'},
+  {id:'sm002',brand:'Oxbow',name:'Garden Select Hamster 680g',pet:'small',type:'blend',weight:'680g',price:999,mrp:1199,img:'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&q=80',badge:'Premium',rating:4.8,desc:'Whole veggies and botanicals blend for hamsters and gerbils'},
+  {id:'sm003',brand:'Kaytee',name:'Fiesta Hamster & Gerbil 2.5lb',pet:'small',type:'blend',weight:'1.13kg',price:799,mrp:999,img:'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&q=80',badge:'Variety Mix',rating:4.5,desc:'Nutritionally fortified blend with fruits, veggies and grains'},
+  {id:'sm004',brand:'Supreme Petfoods',name:'Science Selective Guinea Pig 1.5kg',pet:'small',type:'pellet',weight:'1.5kg',price:899,mrp:1099,img:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&q=80',badge:'Specialized',rating:4.8,desc:'High-fibre pellets with added Vitamin C for guinea pigs'},
+  {id:'sm005',brand:'Versele-Laga',name:'Cunipic Alpha Pro Rabbit 3kg',pet:'small',type:'pellet',weight:'3kg',price:1299,mrp:1599,img:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&q=80',badge:'Complete',rating:4.7,desc:'Complete extruded food for adult rabbits with prebiotics'},
+];
+
+// ── CART STATE ──────────────────────────────
+var cartItems = JSON.parse(localStorage.getItem('pawbook_cart') || '[]');
+var foodPage = 0;
+var foodPageSize = 12;
+var currentFoodFilter = 'all';
+
+// ── RENDER FOOD CATALOG ─────────────────────
+function renderFoodCatalog(filter) {
+  currentFoodFilter = filter || 'all';
+  foodPage = 0;
+  var grid = document.getElementById('food-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  loadMoreFood();
+}
+
+function filterFood(cat, btn) {
+  document.querySelectorAll('.fpill').forEach(function(b) {
+    b.style.background = '#fff'; b.style.color = '#65676b'; b.style.borderColor = '#e4e6eb';
+    b.style.borderWidth = '1.5px';
+  });
+  if(btn) { btn.style.background='#1a56db'; btn.style.color='#fff'; btn.style.borderColor='#1a56db'; btn.style.borderWidth='2px'; }
+  renderFoodCatalog(cat);
+}
+
+function loadMoreFood() {
+  var filtered = currentFoodFilter === 'all'
+    ? PET_FOODS
+    : PET_FOODS.filter(function(f){ return f.pet === currentFoodFilter; });
+  
+  var start = foodPage * foodPageSize;
+  var end = start + foodPageSize;
+  var slice = filtered.slice(start, end);
+  var grid = document.getElementById('food-grid');
+  
+  slice.forEach(function(food) {
+    var disc = food.mrp > food.price ? Math.round((1 - food.price/food.mrp)*100) : 0;
+    
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e4e6eb;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column';
+    
+    // Image
+    var imgWrap = document.createElement('div');
+    imgWrap.style.cssText = 'position:relative;height:140px;overflow:hidden;background:#f8fafc';
+    var img = document.createElement('img');
+    img.src = food.img; img.alt = food.name;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+    img.onerror = function(){ this.parentElement.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px">🍖</div>'; };
+    var badge = document.createElement('div');
+    badge.style.cssText = 'position:absolute;top:8px;left:8px;background:#1a56db;color:#fff;font-size:10px;font-weight:700;border-radius:6px;padding:3px 8px';
+    badge.textContent = food.badge;
+    if(disc>0){
+      var discBadge = document.createElement('div');
+      discBadge.style.cssText = 'position:absolute;top:8px;right:8px;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:6px;padding:3px 8px';
+      discBadge.textContent = disc+'% OFF';
+      imgWrap.appendChild(discBadge);
+    }
+    imgWrap.appendChild(img); imgWrap.appendChild(badge);
+    
+    // Info
+    var info = document.createElement('div');
+    info.style.cssText = 'padding:10px 12px;display:flex;flex-direction:column;flex:1';
+    
+    var brand = document.createElement('div');
+    brand.style.cssText = 'font-size:10px;font-weight:700;color:#1a56db;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px';
+    brand.textContent = food.brand;
+    
+    var name = document.createElement('div');
+    name.style.cssText = 'font-size:13px;font-weight:700;color:#1a1a2e;line-height:1.3;margin-bottom:4px;flex:1';
+    name.textContent = food.name;
+    
+    var weight = document.createElement('div');
+    weight.style.cssText = 'font-size:11px;color:#65676b;margin-bottom:6px';
+    weight.textContent = '⚖️ ' + food.weight;
+    
+    var stars = document.createElement('div');
+    stars.style.cssText = 'font-size:11px;color:#f59e0b;margin-bottom:6px';
+    var filled = Math.round(food.rating);
+    stars.textContent = '★'.repeat(filled) + '☆'.repeat(5-filled) + ' ' + food.rating;
+    
+    var pricing = document.createElement('div');
+    pricing.style.cssText = 'display:flex;align-items:baseline;gap:6px;margin-bottom:10px';
+    var price = document.createElement('span');
+    price.style.cssText = 'font-size:16px;font-weight:900;color:#1a1a2e';
+    price.textContent = '₹' + food.price.toLocaleString('en-IN');
+    pricing.appendChild(price);
+    if(food.mrp > food.price) {
+      var mrp = document.createElement('span');
+      mrp.style.cssText = 'font-size:11px;color:#94a3b8;text-decoration:line-through';
+      mrp.textContent = '₹' + food.mrp.toLocaleString('en-IN');
+      pricing.appendChild(mrp);
+    }
+    
+    var addBtn = document.createElement('button');
+    addBtn.style.cssText = 'width:100%;height:36px;border-radius:999px;border:none;background:linear-gradient(135deg,#1a56db,#0d9488);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:"Poppins",sans-serif;transition:opacity .15s';
+    addBtn.textContent = '+ Add to Cart';
+    (function(f){ addBtn.onclick = function(){ addToCart(f); this.textContent='✅ Added!'; var self=this; setTimeout(function(){self.textContent='+ Add to Cart';},1500); }; })(food);
+    
+    info.appendChild(brand); info.appendChild(name); info.appendChild(weight);
+    info.appendChild(stars); info.appendChild(pricing); info.appendChild(addBtn);
+    card.appendChild(imgWrap); card.appendChild(info);
+    grid.appendChild(card);
+  });
+  
+  foodPage++;
+  var hasMore = (foodPage * foodPageSize) < filtered.length;
+  var loadMoreBtn = document.getElementById('food-load-more');
+  if(loadMoreBtn) loadMoreBtn.style.display = hasMore ? 'block' : 'none';
+}
+
+// ── CART FUNCTIONS ──────────────────────────
+function addToCart(food) {
+  var existing = cartItems.find(function(i){ return i.id === food.id; });
+  if(existing) {
+    existing.qty++;
+  } else {
+    cartItems.push({id:food.id, name:food.name, brand:food.brand, price:food.price, weight:food.weight, img:food.img, qty:1});
+  }
+  saveCart();
+  updateCartBadge();
+  showCartToast(food.name + ' added to cart!');
+}
+
+function saveCart() {
+  localStorage.setItem('pawbook_cart', JSON.stringify(cartItems));
+}
+
+function updateCartBadge() {
+  var total = cartItems.reduce(function(s,i){ return s+i.qty; }, 0);
+  var fab = document.getElementById('cart-fab-count');
+  if(fab) {
+    fab.textContent = total;
+    fab.style.display = total > 0 ? 'flex' : 'none';
+  }
+  var countEl = document.getElementById('cart-item-count');
+  if(countEl) countEl.textContent = total + ' item' + (total!==1?'s':'');
+}
+
+function openCart() {
+  renderCartItems();
+  document.getElementById('cart-drawer').style.right = '0';
+  document.getElementById('cart-overlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cart-drawer').style.right = '-420px';
+  document.getElementById('cart-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function renderCartItems() {
+  var list = document.getElementById('cart-items-list');
+  var empty = document.getElementById('cart-empty');
+  var summary = document.getElementById('cart-summary');
+  
+  if(!cartItems.length) {
+    list.innerHTML = '';
+    empty.style.display = 'flex';
+    summary.style.display = 'none';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  summary.style.display = 'block';
+  list.innerHTML = '';
+  
+  cartItems.forEach(function(item, idx) {
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #f0f2f5;align-items:flex-start';
+    
+    var img = document.createElement('img');
+    img.src = item.img || '';
+    img.style.cssText = 'width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#f0f2f5';
+    img.onerror = function(){ this.style.display='none'; };
+    
+    var info = document.createElement('div');
+    info.style.cssText = 'flex:1;min-width:0';
+    
+    var brand = document.createElement('div');
+    brand.style.cssText = 'font-size:10px;font-weight:700;color:#1a56db;text-transform:uppercase';
+    brand.textContent = item.brand;
+    
+    var name = document.createElement('div');
+    name.style.cssText = 'font-size:13px;font-weight:700;color:#1a1a2e;margin:2px 0';
+    name.textContent = item.name;
+    
+    var wt = document.createElement('div');
+    wt.style.cssText = 'font-size:11px;color:#65676b;margin-bottom:6px';
+    wt.textContent = item.weight;
+    
+    var controls = document.createElement('div');
+    controls.style.cssText = 'display:flex;align-items:center;gap:8px';
+    
+    var minus = document.createElement('button');
+    minus.textContent = '−';
+    minus.style.cssText = 'width:28px;height:28px;border-radius:50%;border:1.5px solid #e4e6eb;background:#fff;font-size:16px;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center';
+    (function(i){ minus.onclick = function(){ changeQty(i,-1); }; })(idx);
+    
+    var qty = document.createElement('span');
+    qty.style.cssText = 'font-size:14px;font-weight:700;min-width:20px;text-align:center';
+    qty.textContent = item.qty;
+    
+    var plus = document.createElement('button');
+    plus.textContent = '+';
+    plus.style.cssText = 'width:28px;height:28px;border-radius:50%;border:none;background:#1a56db;color:#fff;font-size:16px;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center';
+    (function(i){ plus.onclick = function(){ changeQty(i,1); }; })(idx);
+    
+    var price = document.createElement('div');
+    price.style.cssText = 'font-size:14px;font-weight:900;color:#1a1a2e;margin-left:auto';
+    price.textContent = '₹' + (item.price * item.qty).toLocaleString('en-IN');
+    
+    controls.appendChild(minus); controls.appendChild(qty); controls.appendChild(plus); controls.appendChild(price);
+    
+    var del = document.createElement('button');
+    del.textContent = '🗑';
+    del.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:0;flex-shrink:0;opacity:.6;margin-top:4px';
+    (function(i){ del.onclick = function(){ removeFromCart(i); }; })(idx);
+    
+    info.appendChild(brand); info.appendChild(name); info.appendChild(wt); info.appendChild(controls);
+    row.appendChild(img); row.appendChild(info); row.appendChild(del);
+    list.appendChild(row);
+  });
+  
+  updateCartTotals();
+}
+
+function changeQty(idx, delta) {
+  cartItems[idx].qty += delta;
+  if(cartItems[idx].qty <= 0) cartItems.splice(idx, 1);
+  saveCart(); updateCartBadge(); renderCartItems();
+}
+
+function removeFromCart(idx) {
+  cartItems.splice(idx, 1);
+  saveCart(); updateCartBadge(); renderCartItems();
+}
+
+function clearCart() {
+  cartItems = [];
+  saveCart(); updateCartBadge(); renderCartItems();
+}
+
+function updateCartTotals() {
+  var subtotal = cartItems.reduce(function(s,i){ return s + i.price*i.qty; }, 0);
+  var gst = Math.round(subtotal * 0.18);
+  var delivery = subtotal >= 499 ? 0 : 49;
+  var total = subtotal + gst + delivery;
+  
+  document.getElementById('cart-subtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+  document.getElementById('cart-gst').textContent = '₹' + gst.toLocaleString('en-IN');
+  document.getElementById('cart-delivery').textContent = delivery === 0 ? 'FREE' : '₹' + delivery;
+  document.getElementById('cart-delivery').style.color = delivery === 0 ? '#16a34a' : '#1a1a2e';
+  document.getElementById('cart-total').textContent = '₹' + total.toLocaleString('en-IN');
+  
+  return {subtotal, gst, delivery, total};
+}
+
+// ── PAYMENT FUNCTIONS ───────────────────────
+function placeOrder() {
+  if(!cartItems.length) { showCartToast('Cart is empty!'); return; }
+  
+  // Show payment modal
+  closeCart();
+  
+  var totals = updateCartTotals();
+  var summary = cartItems.map(function(i){
+    return '<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>'+i.name+' x'+i.qty+'</span><span style="font-weight:700">₹'+(i.price*i.qty).toLocaleString('en-IN')+'</span></div>';
+  }).join('') +
+  '<div style="border-top:1px solid #e4e6eb;margin-top:8px;padding-top:8px;display:flex;justify-content:space-between"><span>GST (18%)</span><span>₹'+totals.gst.toLocaleString('en-IN')+'</span></div>' +
+  (totals.delivery > 0 ? '<div style="display:flex;justify-content:space-between"><span>Delivery</span><span>₹'+totals.delivery+'</span></div>' : '<div style="color:#16a34a;font-size:12px">✅ Free delivery</div>');
+  
+  document.getElementById('pay-order-summary').innerHTML = summary;
+  document.getElementById('pay-total-display').textContent = '₹' + totals.total.toLocaleString('en-IN');
+  
+  document.getElementById('payment-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  
+  // Wire payment method toggle
+  document.querySelectorAll('input[name="pay-method"]').forEach(function(radio) {
+    radio.onchange = function() {
+      document.getElementById('upi-field').style.display = this.value==='upi' ? 'block' : 'none';
+      document.getElementById('card-fields').style.display = this.value==='card' ? 'block' : 'none';
+      // Update label borders
+      document.querySelectorAll('input[name="pay-method"]').forEach(function(r){
+        r.parentElement.style.borderColor = r.checked ? '#1a56db' : '#e4e6eb';
+        r.parentElement.style.background = r.checked ? '#eff6ff' : '#fff';
+        r.parentElement.style.borderWidth = r.checked ? '2px' : '1.5px';
+      });
+    };
+  });
+}
+
+function closePayment() {
+  document.getElementById('payment-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function confirmPayment() {
+  var name = document.getElementById('pay-name').value.trim();
+  var phone = document.getElementById('pay-phone').value.trim();
+  var address = document.getElementById('pay-address').value.trim();
+  var city = document.getElementById('pay-city').value.trim();
+  var pin = document.getElementById('pay-pin').value.trim();
+  
+  if(!name){ alert('Please enter your name'); return; }
+  if(!phone){ alert('Please enter your phone number'); return; }
+  if(!address){ alert('Please enter your delivery address'); return; }
+  if(!city){ alert('Please enter your city'); return; }
+  if(!pin){ alert('Please enter your PIN code'); return; }
+  
+  var method = document.querySelector('input[name="pay-method"]:checked');
+  var methodVal = method ? method.value : 'upi';
+  
+  if(methodVal === 'upi') {
+    var upi = document.getElementById('pay-upi').value.trim();
+    if(!upi){ alert('Please enter your UPI ID'); return; }
+  }
+  
+  // Simulate payment processing
+  var btn = document.querySelector('#payment-modal button[onclick="confirmPayment()"]');
+  if(btn){ btn.textContent = '⏳ Processing...'; btn.disabled = true; }
+  
+  setTimeout(function() {
+    closePayment();
+    
+    var orderId = 'PB' + Date.now().toString().slice(-8);
+    document.getElementById('success-order-id').textContent = 'Order #' + orderId;
+    document.getElementById('success-delivery').innerHTML =
+      '<div>📍 ' + address + ', ' + city + ' - ' + pin + '</div>' +
+      '<div style="margin-top:4px">📞 ' + phone + '</div>' +
+      '<div style="margin-top:6px;color:#1a56db;font-weight:700">Expected delivery: 2-3 business days</div>';
+    
+    document.getElementById('order-success-modal').style.display = 'flex';
+    if(btn){ btn.textContent = '🔒 Pay Now'; btn.disabled = false; }
+  }, 2000);
+}
+
+function showCartToast(msg) {
+  var t = document.getElementById('mkt-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'mkt-toast';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(26,86,219,.95);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;max-width:90vw;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 2500);
+}
+
+// ── WIRE FOOD TAB ───────────────────────────
+// Override setCat to show food catalog when food tab clicked
+var _origSetCat = window.setCat;
+window.setCat = function(el) {
+  if(_origSetCat) _origSetCat(el);
+  var txt = el.textContent.toLowerCase();
+  var foodCatalog = document.getElementById('food-catalog');
+  if(txt.includes('food') || txt.includes('nutrition')) {
+    if(foodCatalog) {
+      foodCatalog.style.display = 'block';
+      if(!foodCatalog._rendered) {
+        renderFoodCatalog('all');
+        foodCatalog._rendered = true;
+      }
+    }
+  } else {
+    if(foodCatalog) foodCatalog.style.display = 'none';
+  }
+};
+
+// ── INIT ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  updateCartBadge();
 });
 </script>
 </body>
