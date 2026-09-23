@@ -424,7 +424,7 @@ html, body { overflow-x: hidden !important; }
     <!-- Product grid row 1 (3 cols) -->
     <div class="prod-grid">
       <!-- Plush Squeaky Dog Toys -->
-      <div class="prod-card">
+      <div class="prod-card" data-category="pet-products">
         <div class="prod-img">
           <img src="https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a?w=300&q=80" alt="Dog Toys">
           <div class="prod-badge badge-red">-50%</div>
@@ -437,7 +437,7 @@ html, body { overflow-x: hidden !important; }
         </div>
       </div>
       <!-- Whiskas Cat Food -->
-      <div class="prod-card">
+      <div class="prod-card" data-category="food">
         <div class="prod-img">
           <img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80" alt="Cat Food">
           <div class="prod-badge badge-amber">Verified Sables</div>
@@ -450,7 +450,7 @@ html, body { overflow-x: hidden !important; }
         </div>
       </div>
       <!-- Pet Grooming Package -->
-      <div class="prod-card">
+      <div class="prod-card" data-category="food">
         <div class="prod-img">
           <img src="https://images.unsplash.com/photo-1581888227599-779811939961?w=300&q=80" alt="Grooming">
         </div>
@@ -465,7 +465,7 @@ html, body { overflow-x: hidden !important; }
 
     <!-- Product grid row 2 (2 wide cols) -->
     <div class="prod-grid-wide" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px">
-      <div class="prod-card">
+      <div class="prod-card" data-category="accessories">
         <div class="prod-img" style="height:180px">
           <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&q=80" alt="Dog Food">
         </div>
@@ -476,7 +476,7 @@ html, body { overflow-x: hidden !important; }
           <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
         </div>
       </div>
-      <div class="prod-card">
+      <div class="prod-card" data-category="food">
         <div class="prod-img" style="height:180px">
           <img src="https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=400&q=80" alt="Pet Bed">
         </div>
@@ -494,7 +494,7 @@ html, body { overflow-x: hidden !important; }
       <div class="bs-title">🏆 Best Sellers</div>
       <div class="bs-grid">
         <!-- Royal Canin -->
-        <div class="bs-card">
+        <div class="bs-card" data-category="pet-products">
           <div class="bs-img"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80" alt="Royal Canin"></div>
           <div class="bs-body">
             <div class="bs-name">Royal Canin Puppy Food</div>
@@ -503,7 +503,7 @@ html, body { overflow-x: hidden !important; }
           </div>
         </div>
         <!-- Cat Teaser -->
-        <div class="bs-card">
+        <div class="bs-card" data-category="pet-products">
           <div class="bs-img"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80" alt="Cat Teaser"></div>
           <div class="bs-body">
             <div class="bs-name">Interactive Cat Teaser Wand</div>
@@ -512,7 +512,7 @@ html, body { overflow-x: hidden !important; }
           </div>
         </div>
         <!-- Water Fountain -->
-        <div class="bs-card">
+        <div class="bs-card" data-category="food">
           <div class="bs-img"><img src="https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=300&q=80" alt="Water Fountain"></div>
           <div class="bs-body">
             <div class="bs-name">Pet Water Fountain</div>
@@ -587,6 +587,97 @@ html, body { overflow-x: hidden !important; }
 function setCat(el){
   document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
+  
+  var tabText = el.textContent.trim().toLowerCase();
+  var catMap = {
+    'pet products': 'pet-products',
+    'vet services': 'vet-services',
+    'grooming': 'grooming',
+    'accessories': 'accessories',
+    'food': 'food'
+  };
+  
+  var selectedCat = '';
+  Object.keys(catMap).forEach(function(k) {
+    if(tabText.includes(k)) selectedCat = catMap[k];
+  });
+  
+  // Show/hide product cards
+  document.querySelectorAll('.prod-card, .bs-card, .prod-card-wide').forEach(function(card) {
+    var cardCat = card.getAttribute('data-category') || 'pet-products';
+    if(!selectedCat || cardCat === selectedCat) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+  
+  // Show/hide section titles based on active tab
+  var hasVisible = Array.from(document.querySelectorAll('.prod-card')).some(function(c) {
+    return c.style.display !== 'none';
+  });
+  
+  // If nothing matches, inject demo products for this category
+  if(!hasVisible && selectedCat) {
+    injectDemoProducts(selectedCat);
+  }
+}
+
+var DEMO_PRODUCTS = {
+  'grooming': [
+    {name:'Professional Pet Grooming Kit',price:'₹899',mrp:'₹1,299',img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'35% OFF'},
+    {name:'Herbal Dog Shampoo 500ml',price:'₹349',mrp:'₹499',img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&q=80',badge:'New'},
+    {name:'Electric Pet Nail Trimmer',price:'₹599',mrp:'₹899',img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Top Rated'},
+  ],
+  'vet-services': [
+    {name:'Annual Vaccination Package',price:'₹1,499',mrp:'₹2,000',img:'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&q=80',badge:'Essential'},
+    {name:'Online Vet Consultation',price:'₹299',mrp:'₹500',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&q=80',badge:'Popular'},
+    {name:'Pet Health Checkup Camp',price:'₹799',mrp:'₹1,200',img:'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=300&q=80',badge:'Limited'},
+  ],
+};
+
+var demoInjected = {};
+function injectDemoProducts(cat) {
+  if(demoInjected[cat]) {
+    // Just show them
+    document.querySelectorAll('.prod-card[data-category="'+cat+'"]').forEach(function(c){ c.style.display=''; });
+    return;
+  }
+  var products = DEMO_PRODUCTS[cat];
+  if(!products) {
+    // Show all if no demo
+    document.querySelectorAll('.prod-card, .bs-card').forEach(function(c){ c.style.display=''; });
+    return;
+  }
+  var grid = document.querySelector('.prod-grid');
+  if(!grid) return;
+  products.forEach(function(p) {
+    var card = document.createElement('div');
+    card.className = 'prod-card';
+    card.setAttribute('data-category', cat);
+    
+    var img = document.createElement('img');
+    img.src = p.img; img.alt = p.name;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+    img.onerror = function(){ this.parentElement.style.background='#e7ebf0'; };
+    var imgWrap = document.createElement('div');
+    imgWrap.className = 'prod-img';
+    var badge = document.createElement('div');
+    badge.className = 'prod-badge badge-red';
+    badge.textContent = p.badge;
+    imgWrap.appendChild(img); imgWrap.appendChild(badge);
+    var info = document.createElement('div');
+    info.className = 'prod-info';
+    info.innerHTML = '<div class="prod-name">'+p.name+'</div><div class="prod-pricing"><span class="prod-price">'+p.price+'</span><span class="prod-mrp">'+p.mrp+'</span></div>';
+    var addBtn = document.createElement('button');
+    addBtn.className = 'add-cart-btn';
+    addBtn.textContent = 'Add to Cart';
+    addBtn.onclick = function(){ this.textContent='✅ Added'; var self=this; setTimeout(function(){self.textContent='Add to Cart';},1500); };
+    info.appendChild(addBtn);
+    card.appendChild(imgWrap); card.appendChild(info);
+    grid.appendChild(card);
+  });
+  demoInjected[cat] = true;
 }
 </script>
 <script src="api.js"></script>
