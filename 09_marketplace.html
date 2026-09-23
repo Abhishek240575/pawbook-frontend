@@ -2184,470 +2184,361 @@ document.addEventListener('click', function(e) {
   </div>
 </div>
 
-<script>
-/* ═══════════════════════════════════════════════
-   PET FOOD CATALOG + CART + PAYMENT SYSTEM
-   ═══════════════════════════════════════════════ */
-
-// ── PET FOOD DATABASE ─────────────────────────
+<script id="food-system">
+/* PET FOOD DATABASE - DROPDOWN FORMAT */
 var PET_FOODS = [
-  // === DOG FOOD ===
-  // Royal Canin
-  {id:'rc001',brand:'Royal Canin',name:'Maxi Adult Dog 4kg',pet:'dog',type:'dry',weight:'4kg',price:1799,mrp:2100,img:'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80',badge:'Best Seller',rating:4.8,desc:'Complete dry food for large breed adult dogs 15 months to 5 years'},
-  {id:'rc002',brand:'Royal Canin',name:'German Shepherd Adult 3kg',pet:'dog',type:'dry',weight:'3kg',price:1499,mrp:1800,img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80',badge:'Breed Specific',rating:4.9,desc:'Tailored nutrition for German Shepherds over 15 months'},
-  {id:'rc003',brand:'Royal Canin',name:'Puppy Medium 4kg',pet:'dog',type:'dry',weight:'4kg',price:1650,mrp:1950,img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'Puppy',rating:4.7,desc:'Complete food for medium breed puppies up to 12 months'},
-  {id:'rc004',brand:'Royal Canin',name:'Mini Sensible 2kg',pet:'dog',type:'dry',weight:'2kg',price:999,mrp:1200,img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&q=80',badge:'Sensitive',rating:4.6,desc:'For small dogs with sensitive digestion'},
-  // Hill's Science Diet
-  {id:'hs001',brand:'Hills Science Diet',name:'Adult Large Breed 12kg',pet:'dog',type:'dry',weight:'12kg',price:4999,mrp:6000,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Vet Recommended',rating:4.9,desc:'Clinically proven antioxidants for a strong immune system'},
-  {id:'hs002',brand:'Hills Science Diet',name:'Puppy Small Paws 1.5kg',pet:'dog',type:'dry',weight:'1.5kg',price:1299,mrp:1599,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Puppy',rating:4.8,desc:'Precise nutrition for small and toy breed puppies'},
-  {id:'hs003',brand:'Hills Science Diet',name:'Senior 7+ Small Bites 6kg',pet:'dog',type:'dry',weight:'6kg',price:2799,mrp:3399,img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'Senior',rating:4.7,desc:'Clinically proven nutrition to support senior dogs'},
-  // Pedigree
-  {id:'pg001',brand:'Pedigree',name:'Adult Chicken & Veg 10kg',pet:'dog',type:'dry',weight:'10kg',price:1299,mrp:1699,img:'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80',badge:'Popular',rating:4.5,desc:'100% complete and balanced nutrition for adult dogs'},
-  {id:'pg002',brand:'Pedigree',name:'Puppy Chicken & Milk 3kg',pet:'dog',type:'dry',weight:'3kg',price:699,mrp:899,img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80',badge:'Puppy',rating:4.4,desc:'Specially formulated for puppies 2–12 months'},
-  {id:'pg003',brand:'Pedigree',name:'Wet Food Chicken 80g Pack of 15',pet:'dog',type:'wet',weight:'80g x15',price:649,mrp:799,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Wet Food',rating:4.3,desc:'Tender chicken chunks in gravy for adult dogs'},
-  // Purina Pro Plan
-  {id:'pp001',brand:'Purina Pro Plan',name:'Sport All Life Stages 14kg',pet:'dog',type:'dry',weight:'14kg',price:5499,mrp:6999,img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'Premium',rating:4.9,desc:'High-performance formula with 30% protein for active dogs'},
-  {id:'pp002',brand:'Purina Pro Plan',name:'Sensitive Skin & Stomach 7kg',pet:'dog',type:'dry',weight:'7kg',price:3499,mrp:4199,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Sensitive',rating:4.8,desc:'Salmon as #1 ingredient for skin and coat health'},
-  {id:'pp003',brand:'Purina Pro Plan',name:'Puppy Large Breed 12kg',pet:'dog',type:'dry',weight:'12kg',price:4299,mrp:5199,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Large Breed',rating:4.8,desc:'DHA from omega-rich fish oil for vision and brain development'},
-  // Orijen
-  {id:'or001',brand:'Orijen',name:'Original Adult Dog 6kg',pet:'dog',type:'dry',weight:'6kg',price:4999,mrp:6000,img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=300&q=80',badge:'Grain Free',rating:4.9,desc:'Biologically appropriate 85% animal ingredients, 15% fruits & vegetables'},
-  {id:'or002',brand:'Orijen',name:'Regional Red 5.9kg',pet:'dog',type:'dry',weight:'5.9kg',price:5499,mrp:6599,img:'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80',badge:'Grain Free',rating:4.9,desc:'Red meat recipe with beef, boar, lamb and bison'},
-  // Acana
-  {id:'ac001',brand:'Acana',name:'Wild Prairie Dog 6kg',pet:'dog',type:'dry',weight:'6kg',price:3999,mrp:4799,img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80',badge:'Grain Free',rating:4.8,desc:'Free-run chicken and turkey, wild-caught fish, nest-laid eggs'},
-  // Drools
-  {id:'dr001',brand:'Drools',name:'Focus Adult Dog 12kg',pet:'dog',type:'dry',weight:'12kg',price:1899,mrp:2399,img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',badge:'Value Pick',rating:4.4,desc:'Complete nutrition with real chicken as first ingredient'},
-  {id:'dr002',brand:'Drools',name:'Puppy Starter 3kg',pet:'dog',type:'dry',weight:'3kg',price:599,mrp:749,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Puppy',rating:4.3,desc:'Formulated with DHA for brain development'},
-  // Taste of the Wild
-  {id:'tw001',brand:'Taste of the Wild',name:'Pacific Stream Adult 12.7kg',pet:'dog',type:'dry',weight:'12.7kg',price:4799,mrp:5799,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Grain Free',rating:4.8,desc:'Smoked salmon as #1 ingredient, grain-free formula'},
-  {id:'tw002',brand:'Taste of the Wild',name:'High Prairie Puppy 12.7kg',pet:'dog',type:'dry',weight:'12.7kg',price:4599,mrp:5599,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Puppy',rating:4.7,desc:'Bison and venison as primary protein sources'},
-  // Farmina
-  {id:'fa001',brand:'Farmina',name:'N&D Pumpkin Adult Medium 12kg',pet:'dog',type:'dry',weight:'12kg',price:5999,mrp:7199,img:'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80',badge:'Premium Italian',rating:4.9,desc:'Chicken and pomegranate, grain-free Italian recipe'},
-  // Eukanuba
-  {id:'eu001',brand:'Eukanuba',name:'Adult Medium Breed 3kg',pet:'dog',type:'dry',weight:'3kg',price:1349,mrp:1649,img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80',badge:'Vet Approved',rating:4.6,desc:'Clinically proven dental health benefits'},
-
-  // === CAT FOOD ===
-  // Whiskas
-  {id:'wk001',brand:'Whiskas',name:'Adult Tuna in Jelly 85g x12',pet:'cat',type:'wet',weight:'85g x12',price:599,mrp:749,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Best Seller',rating:4.5,desc:'Tender tuna pieces in jelly for adult cats'},
-  {id:'wk002',brand:'Whiskas',name:'Kitten Chicken 1.2kg',pet:'cat',type:'dry',weight:'1.2kg',price:499,mrp:649,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Kitten',rating:4.4,desc:'Complete nutrition for kittens from 2–12 months'},
-  {id:'wk003',brand:'Whiskas',name:'Adult Dry Tuna 3kg',pet:'cat',type:'dry',weight:'3kg',price:699,mrp:899,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Popular',rating:4.3,desc:'Complete dry food for cats from 1 year'},
-  // Royal Canin Cat
-  {id:'rcc001',brand:'Royal Canin',name:'Indoor Adult 2kg',pet:'cat',type:'dry',weight:'2kg',price:1099,mrp:1349,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Indoor Cats',rating:4.8,desc:'Specially designed for indoor cats with hairball control'},
-  {id:'rcc002',brand:'Royal Canin',name:'Persian Adult 2kg',pet:'cat',type:'dry',weight:'2kg',price:1199,mrp:1449,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Breed Specific',rating:4.9,desc:'Flat-shaped kibble specially designed for Persian cats'},
-  {id:'rcc003',brand:'Royal Canin',name:'Mother & Babycat 2kg',pet:'cat',type:'dry',weight:'2kg',price:1149,mrp:1399,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Kitten',rating:4.8,desc:'For pregnant queens and weaning kittens up to 4 months'},
-  // Purina ONE Cat
-  {id:'poc001',brand:'Purina ONE',name:'Adult Salmon & Tuna 1.5kg',pet:'cat',type:'dry',weight:'1.5kg',price:849,mrp:1049,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Premium',rating:4.7,desc:'Real salmon as #1 ingredient, strengthens heart health'},
-  {id:'poc002',brand:'Purina ONE',name:'Kitten Chicken 800g',pet:'cat',type:'dry',weight:'800g',price:649,mrp:799,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Kitten',rating:4.6,desc:'DHA for brain and vision development in kittens'},
-  // Hill's Cat
-  {id:'hsc001',brand:'Hills Science Diet',name:'Indoor Cat Adult 2.8kg',pet:'cat',type:'dry',weight:'2.8kg',price:1799,mrp:2199,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Vet Recommended',rating:4.8,desc:'Clinically proven to reduce hairballs'},
-  {id:'hsc002',brand:'Hills Science Diet',name:'Urinary Hairball 1.58kg',pet:'cat',type:'dry',weight:'1.58kg',price:1599,mrp:1999,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Specialized',rating:4.7,desc:'Controls hairballs and supports urinary health'},
-  // Sheba
-  {id:'sh001',brand:'Sheba',name:'Chicken & Tuna in Jelly 85g x6',pet:'cat',type:'wet',weight:'85g x6',price:449,mrp:549,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Gourmet',rating:4.6,desc:'Delicate cuts in jelly for the most discerning cats'},
-  {id:'sh002',brand:'Sheba',name:'Salmon Fillet 85g x12',pet:'cat',type:'wet',weight:'85g x12',price:799,mrp:999,img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80',badge:'Premium Wet',rating:4.7,desc:'Premium salmon fillets in light sauce'},
-  // Orijen Cat
-  {id:'orc001',brand:'Orijen',name:'Cat & Kitten 5.4kg',pet:'cat',type:'dry',weight:'5.4kg',price:4799,mrp:5799,img:'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&q=80',badge:'Grain Free',rating:4.9,desc:'Biologically appropriate cat food with 90% animal ingredients'},
-  // Me-O
-  {id:'me001',brand:'Me-O',name:'Adult Ocean Fish 1.5kg',pet:'cat',type:'dry',weight:'1.5kg',price:399,mrp:499,img:'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80',badge:'Value',rating:4.2,desc:'Complete nutrition with ocean fish flavor'},
-
-  // === BIRD FOOD ===
-  {id:'br001',brand:'Taiyo',name:'Budgerigar Mix 1kg',pet:'bird',type:'seed',weight:'1kg',price:199,mrp:249,img:'https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=300&q=80',badge:'Popular',rating:4.4,desc:'Premium seed mix for budgerigars with millet and canary seeds'},
-  {id:'br002',brand:'Versele-Laga',name:'Cockatiel Standard 800g',pet:'bird',type:'seed',weight:'800g',price:399,mrp:499,img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=300&q=80',badge:'Belgian Quality',rating:4.7,desc:'Optimal seed mix for cockatiels with sunflower and safflower'},
-  {id:'br003',brand:'Kaytee',name:'Forti-Diet Pro Parrot 3lb',pet:'bird',type:'pellet',weight:'1.36kg',price:1299,mrp:1599,img:'https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=300&q=80',badge:'Vet Recommended',rating:4.8,desc:'Probiotics and prebiotics for digestive health'},
-  {id:'br004',brand:'Zupreem',name:'Fruit Blend Medium Birds 907g',pet:'bird',type:'pellet',weight:'907g',price:1099,mrp:1399,img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=300&q=80',badge:'Premium Pellet',rating:4.6,desc:'Natural fruit flavors with essential vitamins and minerals'},
-  {id:'br005',brand:'Nutribird',name:'G14 Original Granules 3kg',pet:'bird',type:'pellet',weight:'3kg',price:2499,mrp:2999,img:'https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=300&q=80',badge:'Professional',rating:4.9,desc:'Complete extruded granule feed for large parrots'},
-
-  // === FISH FOOD ===
-  {id:'fi001',brand:'Tetra',name:'TetraMin Flakes 100g',pet:'fish',type:'flake',weight:'100g',price:299,mrp:379,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Classic',rating:4.7,desc:'Complete diet for all tropical fish, patented BioActive formula'},
-  {id:'fi002',brand:'Tetra',name:'TetraPro Colour 100g',pet:'fish',type:'flake',weight:'100g',price:399,mrp:499,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Color Enhancing',rating:4.8,desc:'Advanced nutrition to enhance natural colors of tropical fish'},
-  {id:'fi003',brand:'Hikari',name:'Cichlid Gold Medium 342g',pet:'fish',type:'pellet',weight:'342g',price:899,mrp:1099,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Premium',rating:4.9,desc:'Specially developed for all cichlids needing high protein'},
-  {id:'fi004',brand:'Hikari',name:'Saki-Hikari Fancy Goldfish 500g',pet:'fish',type:'pellet',weight:'500g',price:1199,mrp:1499,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Goldfish',rating:4.8,desc:'Probiotic rich food that supports goldfish health'},
-  {id:'fi005',brand:'Fluval',name:'Bug Bites Tropical Fish 130g',pet:'fish',type:'granule',weight:'130g',price:799,mrp:999,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Insect Protein',rating:4.7,desc:'Black soldier fly larvae as primary ingredient, sustainable protein'},
-  {id:'fi006',brand:'NLS',name:'Thera A Large Fish Formula 500g',pet:'fish',type:'pellet',weight:'500g',price:1399,mrp:1699,img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&q=80',badge:'Immune Boost',rating:4.9,desc:'Krill-enhanced formula with immune stimulating compounds'},
-
-  // === SMALL PETS ===
-  {id:'sm001',brand:'Oxbow',name:'Essentials Adult Rabbit 1.8kg',pet:'small',type:'pellet',weight:'1.8kg',price:1499,mrp:1799,img:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&q=80',badge:'Vet Recommended',rating:4.9,desc:'Timothy hay-based pellets for adult rabbits 1 year and older'},
-  {id:'sm002',brand:'Oxbow',name:'Garden Select Hamster 680g',pet:'small',type:'blend',weight:'680g',price:999,mrp:1199,img:'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&q=80',badge:'Premium',rating:4.8,desc:'Whole veggies and botanicals blend for hamsters and gerbils'},
-  {id:'sm003',brand:'Kaytee',name:'Fiesta Hamster & Gerbil 2.5lb',pet:'small',type:'blend',weight:'1.13kg',price:799,mrp:999,img:'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300&q=80',badge:'Variety Mix',rating:4.5,desc:'Nutritionally fortified blend with fruits, veggies and grains'},
-  {id:'sm004',brand:'Supreme Petfoods',name:'Science Selective Guinea Pig 1.5kg',pet:'small',type:'pellet',weight:'1.5kg',price:899,mrp:1099,img:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&q=80',badge:'Specialized',rating:4.8,desc:'High-fibre pellets with added Vitamin C for guinea pigs'},
-  {id:'sm005',brand:'Versele-Laga',name:'Cunipic Alpha Pro Rabbit 3kg',pet:'small',type:'pellet',weight:'3kg',price:1299,mrp:1599,img:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&q=80',badge:'Complete',rating:4.7,desc:'Complete extruded food for adult rabbits with prebiotics'},
+  {brand:'Acana',name:'Wild Prairie',pet:'dog',weights:[{w:'2kg',price:1899,mrp:2299},{w:'6kg',price:3999,mrp:4799},{w:'11.4kg',price:6999,mrp:8499}],desc:'Free-run chicken and turkey, grain-free.'},
+  {brand:'Acana',name:'Pacifica',pet:'dog',weights:[{w:'2kg',price:1999,mrp:2399},{w:'6kg',price:4199,mrp:5099}],desc:'Five saltwater fish, grain-free, Omega-3 rich.'},
+  {brand:'Acana',name:'Indoor Entree',pet:'cat',weights:[{w:'1.8kg',price:2199,mrp:2699},{w:'4.5kg',price:4499,mrp:5499}],desc:'Free-run chicken for indoor cats, grain-free.'},
+  {brand:'Blue Buffalo',name:'Life Protection Adult Chicken',pet:'dog',weights:[{w:'2.7kg',price:1699,mrp:2099},{w:'6.8kg',price:3499,mrp:4299},{w:'13.6kg',price:5999,mrp:7299}],desc:'Real chicken, wholesome grains, garden veggies.'},
+  {brand:'Blue Buffalo',name:'Wilderness Salmon',pet:'dog',weights:[{w:'2.27kg',price:1899,mrp:2299},{w:'4.5kg',price:3299,mrp:3999}],desc:'Grain-free high-protein salmon recipe.'},
+  {brand:'Blue Buffalo',name:'Indoor Chicken Brown Rice',pet:'cat',weights:[{w:'1.59kg',price:1299,mrp:1599},{w:'3.17kg',price:2299,mrp:2799}],desc:'Hairball control formula for indoor cats.'},
+  {brand:'Drools',name:'Focus Adult Chicken',pet:'dog',weights:[{w:'3kg',price:599,mrp:749},{w:'6kg',price:1099,mrp:1399},{w:'12kg',price:1899,mrp:2399},{w:'20kg',price:2999,mrp:3799}],desc:'Complete nutrition with real chicken.'},
+  {brand:'Drools',name:'Focus Puppy Super Premium',pet:'dog',weights:[{w:'3kg',price:599,mrp:749},{w:'6kg',price:1099,mrp:1399},{w:'12kg',price:1999,mrp:2499}],desc:'DHA for brain development.'},
+  {brand:'Drools',name:'Adult Cat Ocean Fish',pet:'cat',weights:[{w:'1.2kg',price:399,mrp:499},{w:'3kg',price:849,mrp:1099},{w:'7kg',price:1699,mrp:2199}],desc:'Complete balanced cat nutrition.'},
+  {brand:'Eukanuba',name:'Adult Medium Breed',pet:'dog',weights:[{w:'3kg',price:1349,mrp:1649},{w:'7.5kg',price:2999,mrp:3699},{w:'15kg',price:5299,mrp:6499}],desc:'Clinically proven dental health benefits.'},
+  {brand:'Eukanuba',name:'Puppy Medium Breed',pet:'dog',weights:[{w:'3kg',price:1399,mrp:1699},{w:'7.5kg',price:3099,mrp:3799}],desc:'DHA for brain and vision in puppies.'},
+  {brand:'Farmina',name:'N&D Pumpkin Chicken Adult',pet:'dog',weights:[{w:'2.5kg',price:2499,mrp:2999},{w:'7kg',price:5499,mrp:6799},{w:'12kg',price:8499,mrp:10499}],desc:'Italian recipe, chicken & pomegranate, grain-free.'},
+  {brand:'Farmina',name:'N&D Quinoa Skin Coat Cat',pet:'cat',weights:[{w:'1.5kg',price:2199,mrp:2699},{w:'5kg',price:5999,mrp:7299}],desc:'Herring with quinoa for skin and coat.'},
+  {brand:'Fluval',name:'Bug Bites Tropical Fish',pet:'fish',weights:[{w:'45g',price:499,mrp:599},{w:'130g',price:799,mrp:999},{w:'250g',price:1299,mrp:1599}],desc:'Black soldier fly larvae, sustainable protein.'},
+  {brand:'Fluval',name:'Bug Bites Goldfish',pet:'fish',weights:[{w:'45g',price:499,mrp:599},{w:'130g',price:799,mrp:999}],desc:'Krill and fish meal with insect protein.'},
+  {brand:'Fluval',name:'Bug Bites Cichlid',pet:'fish',weights:[{w:'130g',price:899,mrp:1099},{w:'250g',price:1399,mrp:1699}],desc:'Protein-rich formula for cichlids.'},
+  {brand:'Hills Science Diet',name:'Adult Large Breed',pet:'dog',weights:[{w:'3kg',price:1699,mrp:2099},{w:'7.03kg',price:3499,mrp:4299},{w:'12.96kg',price:5499,mrp:6799}],desc:'Clinically proven antioxidants, vet recommended.'},
+  {brand:'Hills Science Diet',name:'Puppy Small Paws',pet:'dog',weights:[{w:'1.5kg',price:1299,mrp:1599},{w:'4.5kg',price:2999,mrp:3699}],desc:'Precise nutrition for small breed puppies.'},
+  {brand:'Hills Science Diet',name:'Senior 7+ Small Bites',pet:'dog',weights:[{w:'1.58kg',price:1199,mrp:1499},{w:'6.35kg',price:3299,mrp:4099}],desc:'Supports energy in senior dogs.'},
+  {brand:'Hills Science Diet',name:'Indoor Adult Cat',pet:'cat',weights:[{w:'1.58kg',price:1299,mrp:1599},{w:'3.17kg',price:2199,mrp:2699},{w:'7.03kg',price:4299,mrp:5299}],desc:'Reduces hairballs, vet recommended.'},
+  {brand:'Hikari',name:'Cichlid Gold Medium',pet:'fish',weights:[{w:'57g',price:399,mrp:499},{w:'342g',price:899,mrp:1099},{w:'1kg',price:2299,mrp:2799}],desc:'High protein for all cichlids.'},
+  {brand:'Hikari',name:'Saki-Hikari Fancy Goldfish',pet:'fish',weights:[{w:'200g',price:699,mrp:849},{w:'500g',price:1199,mrp:1499}],desc:'Probiotic-rich food for goldfish.'},
+  {brand:'Hikari',name:'Tropical Micro Wafers',pet:'fish',weights:[{w:'45g',price:299,mrp:369},{w:'130g',price:649,mrp:799}],desc:'Slowly sinking wafers for tropical fish.'},
+  {brand:'Iams',name:'Proactive Health Adult Medium',pet:'dog',weights:[{w:'1.5kg',price:649,mrp:799},{w:'3kg',price:1099,mrp:1349},{w:'7kg',price:2099,mrp:2599}],desc:'Real chicken, 23 essential nutrients.'},
+  {brand:'Iams',name:'Proactive Health Indoor Cat',pet:'cat',weights:[{w:'1.5kg',price:799,mrp:999},{w:'3kg',price:1399,mrp:1699}],desc:'Healthy weight for indoor cats.'},
+  {brand:'Kaytee',name:'Forti-Diet Pro Parrot',pet:'bird',weights:[{w:'900g',price:999,mrp:1249},{w:'1.8kg',price:1699,mrp:2099}],desc:'Probiotics for digestive health in parrots.'},
+  {brand:'Kaytee',name:'Fiesta Hamster and Gerbil',pet:'small',weights:[{w:'500g',price:499,mrp:619},{w:'1.13kg',price:799,mrp:999}],desc:'Fortified blend with fruits and veggies.'},
+  {brand:'Me-O',name:'Adult Ocean Fish',pet:'cat',weights:[{w:'400g',price:149,mrp:199},{w:'1.2kg',price:399,mrp:499},{w:'3kg',price:849,mrp:1049},{w:'7kg',price:1699,mrp:2099}],desc:'Complete balanced cat food.'},
+  {brand:'Me-O',name:'Kitten Milk and Egg',pet:'cat',weights:[{w:'400g',price:149,mrp:199},{w:'1.2kg',price:399,mrp:499}],desc:'Rich in DHA and taurine for kittens.'},
+  {brand:'NLS',name:'Thera A Large Fish Formula',pet:'fish',weights:[{w:'150g',price:699,mrp:849},{w:'500g',price:1399,mrp:1699},{w:'1kg',price:2499,mrp:2999}],desc:'Krill-enhanced immune stimulating formula.'},
+  {brand:'Nutribird',name:'G14 Original Granules',pet:'bird',weights:[{w:'400g',price:699,mrp:849},{w:'1kg',price:1299,mrp:1599},{w:'3kg',price:2499,mrp:2999}],desc:'Complete extruded feed for large parrots.'},
+  {brand:'Nutribird',name:'B14 Budgerigar',pet:'bird',weights:[{w:'400g',price:499,mrp:619},{w:'1kg',price:999,mrp:1249}],desc:'Complete extruded food for budgerigars.'},
+  {brand:'Orijen',name:'Original Adult Dog',pet:'dog',weights:[{w:'2kg',price:2299,mrp:2799},{w:'6kg',price:4999,mrp:6099},{w:'11.4kg',price:8499,mrp:10299}],desc:'85% animal ingredients, biologically appropriate.'},
+  {brand:'Orijen',name:'Regional Red',pet:'dog',weights:[{w:'2kg',price:2499,mrp:2999},{w:'6kg',price:5499,mrp:6699}],desc:'Beef, boar, lamb and bison recipe.'},
+  {brand:'Orijen',name:'Puppy Large',pet:'dog',weights:[{w:'2kg',price:2399,mrp:2899},{w:'6kg',price:5199,mrp:6299}],desc:'DHA-rich for large breed puppies.'},
+  {brand:'Orijen',name:'Cat and Kitten',pet:'cat',weights:[{w:'1.8kg',price:2999,mrp:3699},{w:'5.4kg',price:4799,mrp:5799}],desc:'90% animal ingredients for cats.'},
+  {brand:'Oxbow',name:'Essentials Adult Rabbit',pet:'small',weights:[{w:'900g',price:899,mrp:1099},{w:'1.8kg',price:1499,mrp:1799},{w:'4.5kg',price:2999,mrp:3699}],desc:'Timothy hay-based pellets for adult rabbits.'},
+  {brand:'Oxbow',name:'Garden Select Hamster',pet:'small',weights:[{w:'340g',price:699,mrp:849},{w:'680g',price:999,mrp:1199}],desc:'Whole veggies and botanicals for hamsters.'},
+  {brand:'Pedigree',name:'Adult Chicken and Vegetables',pet:'dog',weights:[{w:'400g',price:99,mrp:129},{w:'1.2kg',price:249,mrp:319},{w:'3kg',price:529,mrp:679},{w:'10kg',price:1299,mrp:1699},{w:'20kg',price:2299,mrp:2999}],desc:'100% complete balanced nutrition.'},
+  {brand:'Pedigree',name:'Puppy Chicken and Milk',pet:'dog',weights:[{w:'400g',price:99,mrp:129},{w:'1.2kg',price:269,mrp:339},{w:'3kg',price:599,mrp:749}],desc:'For puppies 2-12 months.'},
+  {brand:'Pedigree',name:'Senior Chicken and Rice',pet:'dog',weights:[{w:'1.2kg',price:259,mrp:329},{w:'3kg',price:549,mrp:699}],desc:'Supports joints in senior dogs.'},
+  {brand:'Purina ONE',name:'Adult Salmon and Tuna',pet:'cat',weights:[{w:'800g',price:499,mrp:619},{w:'1.5kg',price:849,mrp:1049},{w:'3kg',price:1499,mrp:1849}],desc:'Real salmon as first ingredient.'},
+  {brand:'Purina ONE',name:'Kitten Chicken',pet:'cat',weights:[{w:'800g',price:449,mrp:549},{w:'1.5kg',price:749,mrp:929}],desc:'DHA for brain and vision in kittens.'},
+  {brand:'Purina ONE',name:'Indoor Advantage Cat',pet:'cat',weights:[{w:'800g',price:479,mrp:589},{w:'1.5kg',price:799,mrp:989},{w:'3kg',price:1399,mrp:1699}],desc:'Hairball control for indoor cats.'},
+  {brand:'Purina Pro Plan',name:'Sport All Life Stages',pet:'dog',weights:[{w:'3kg',price:1799,mrp:2199},{w:'7.5kg',price:3499,mrp:4299},{w:'14kg',price:5499,mrp:6799}],desc:'30% protein for active athletic dogs.'},
+  {brand:'Purina Pro Plan',name:'Sensitive Skin and Stomach Salmon',pet:'dog',weights:[{w:'2.72kg',price:1699,mrp:2099},{w:'7.25kg',price:3299,mrp:4099}],desc:'Salmon as first ingredient, easily digestible.'},
+  {brand:'Purina Pro Plan',name:'Puppy Large Breed Chicken',pet:'dog',weights:[{w:'3kg',price:1799,mrp:2199},{w:'6kg',price:2999,mrp:3699},{w:'12kg',price:4299,mrp:5299}],desc:'DHA from fish oil for puppies.'},
+  {brand:'Purina Pro Plan',name:'Indoor Shorthair Cat',pet:'cat',weights:[{w:'1.59kg',price:1299,mrp:1599},{w:'3.17kg',price:2299,mrp:2799}],desc:'Hairball control, real turkey first ingredient.'},
+  {brand:'Royal Canin',name:'Maxi Adult',pet:'dog',weights:[{w:'1kg',price:599,mrp:729},{w:'4kg',price:1799,mrp:2199},{w:'10kg',price:3799,mrp:4699},{w:'15kg',price:5299,mrp:6499}],desc:'For large breed adult dogs 15m-5 years.'},
+  {brand:'Royal Canin',name:'Mini Adult',pet:'dog',weights:[{w:'800g',price:499,mrp:619},{w:'2kg',price:1099,mrp:1349},{w:'4kg',price:1899,mrp:2299},{w:'8kg',price:3299,mrp:4099}],desc:'For small breed dogs up to 10kg.'},
+  {brand:'Royal Canin',name:'German Shepherd Adult',pet:'dog',weights:[{w:'1kg',price:549,mrp:669},{w:'3kg',price:1499,mrp:1849},{w:'11kg',price:4199,mrp:5199}],desc:'Targeted nutrition for German Shepherds.'},
+  {brand:'Royal Canin',name:'Golden Retriever Adult',pet:'dog',weights:[{w:'3kg',price:1599,mrp:1949},{w:'12kg',price:4499,mrp:5499}],desc:'Tailored for Golden Retrievers.'},
+  {brand:'Royal Canin',name:'Maxi Puppy',pet:'dog',weights:[{w:'1kg',price:599,mrp:739},{w:'4kg',price:1799,mrp:2199},{w:'10kg',price:3899,mrp:4799}],desc:'For large breed puppies up to 15 months.'},
+  {brand:'Royal Canin',name:'Mini Puppy',pet:'dog',weights:[{w:'800g',price:499,mrp:619},{w:'2kg',price:1099,mrp:1349},{w:'4kg',price:1999,mrp:2449}],desc:'For small breed puppies up to 10 months.'},
+  {brand:'Royal Canin',name:'Indoor Adult Cat',pet:'cat',weights:[{w:'400g',price:399,mrp:499},{w:'2kg',price:1099,mrp:1349},{w:'4kg',price:1849,mrp:2299}],desc:'Hairball control for indoor cats.'},
+  {brand:'Royal Canin',name:'Persian Adult Cat',pet:'cat',weights:[{w:'400g',price:449,mrp:549},{w:'2kg',price:1199,mrp:1449},{w:'4kg',price:1999,mrp:2449}],desc:'Flat-shaped kibble for Persian cats.'},
+  {brand:'Royal Canin',name:'Kitten Cat',pet:'cat',weights:[{w:'400g',price:349,mrp:429},{w:'2kg',price:999,mrp:1249},{w:'4kg',price:1699,mrp:2099}],desc:'For kittens up to 12 months.'},
+  {brand:'Sheba',name:'Chicken and Tuna Jelly',pet:'cat',weights:[{w:'85g x6',price:299,mrp:369},{w:'85g x12',price:549,mrp:679},{w:'85g x24',price:999,mrp:1249}],desc:'Delicate cuts in jelly for cats.'},
+  {brand:'Sheba',name:'Salmon Fillet in Sauce',pet:'cat',weights:[{w:'85g x6',price:349,mrp:429},{w:'85g x12',price:649,mrp:799}],desc:'Premium salmon fillets in light sauce.'},
+  {brand:'Supreme Petfoods',name:'Science Selective Guinea Pig',pet:'small',weights:[{w:'800g',price:699,mrp:849},{w:'1.5kg',price:899,mrp:1099},{w:'3kg',price:1499,mrp:1849}],desc:'High-fibre pellets with Vitamin C.'},
+  {brand:'Supreme Petfoods',name:'Science Selective Rabbit',pet:'small',weights:[{w:'850g',price:699,mrp:849},{w:'1.5kg',price:1099,mrp:1349}],desc:'Single component pellet for rabbits.'},
+  {brand:'Taiyo',name:'Budgerigar Mix',pet:'bird',weights:[{w:'500g',price:129,mrp:169},{w:'1kg',price:199,mrp:249},{w:'3kg',price:499,mrp:629}],desc:'Premium seed mix with millet and canary seeds.'},
+  {brand:'Taiyo',name:'Tropical Fish Flakes',pet:'fish',weights:[{w:'25g',price:79,mrp:99},{w:'50g',price:129,mrp:159},{w:'100g',price:199,mrp:249}],desc:'Multi-coloured flakes for tropical fish.'},
+  {brand:'Taiyo',name:'Goldfish Colour Enhancer',pet:'fish',weights:[{w:'50g',price:99,mrp:129},{w:'100g',price:169,mrp:209}],desc:'Enhances natural colour in goldfish.'},
+  {brand:'Taste of the Wild',name:'Pacific Stream Salmon',pet:'dog',weights:[{w:'2.27kg',price:1799,mrp:2199},{w:'6kg',price:3699,mrp:4499},{w:'12.7kg',price:6299,mrp:7699}],desc:'Smoked salmon first ingredient, grain-free.'},
+  {brand:'Taste of the Wild',name:'High Prairie Puppy',pet:'dog',weights:[{w:'2.27kg',price:1749,mrp:2149},{w:'6kg',price:3599,mrp:4399}],desc:'Bison and venison for puppies.'},
+  {brand:'Taste of the Wild',name:'Canyon River Cat Trout',pet:'cat',weights:[{w:'1.81kg',price:1599,mrp:1949},{w:'6.35kg',price:3999,mrp:4899}],desc:'Trout and smoked salmon cat food.'},
+  {brand:'Tetra',name:'TetraMin Tropical Flakes',pet:'fish',weights:[{w:'20g',price:99,mrp:129},{w:'52g',price:199,mrp:249},{w:'100g',price:299,mrp:379},{w:'200g',price:499,mrp:619}],desc:'Classic complete diet for tropical fish.'},
+  {brand:'Tetra',name:'TetraPro Colour Crisps',pet:'fish',weights:[{w:'55g',price:249,mrp:309},{w:'100g',price:399,mrp:499},{w:'250g',price:799,mrp:999}],desc:'Colour-enhancing crisps for tropical fish.'},
+  {brand:'Tetra',name:'Tetra Goldfish Gold Growth',pet:'fish',weights:[{w:'75g',price:199,mrp:249},{w:'250g',price:399,mrp:499}],desc:'Specially formulated sticks for goldfish.'},
+  {brand:'Versele-Laga',name:'Cockatiel Standard',pet:'bird',weights:[{w:'800g',price:299,mrp:379},{w:'4kg',price:999,mrp:1249}],desc:'Optimal seed mix for cockatiels.'},
+  {brand:'Versele-Laga',name:'Cunipic Alpha Pro Rabbit',pet:'small',weights:[{w:'1.75kg',price:899,mrp:1099},{w:'3kg',price:1299,mrp:1599}],desc:'Extruded complete food with prebiotics.'},
+  {brand:'Whiskas',name:'Adult Dry Chicken',pet:'cat',weights:[{w:'450g',price:149,mrp:189},{w:'1.2kg',price:349,mrp:439},{w:'3kg',price:699,mrp:899},{w:'7kg',price:1399,mrp:1749}],desc:'Complete balanced nutrition for adult cats.'},
+  {brand:'Whiskas',name:'Adult Dry Tuna',pet:'cat',weights:[{w:'450g',price:149,mrp:189},{w:'1.2kg',price:349,mrp:439},{w:'3kg',price:699,mrp:899}],desc:'Ocean tuna flavour cat food.'},
+  {brand:'Whiskas',name:'Kitten Chicken',pet:'cat',weights:[{w:'450g',price:149,mrp:189},{w:'1.2kg',price:349,mrp:439}],desc:'Formulated for kittens 2-12 months.'},
+  {brand:'Whiskas',name:'Wet Pouches Tuna in Jelly',pet:'cat',weights:[{w:'85g x6',price:199,mrp:249},{w:'85g x12',price:349,mrp:449},{w:'85g x24',price:649,mrp:799}],desc:'Tender tuna pieces in jelly.'},
+  {brand:'Zupreem',name:'Fruit Blend Medium Birds',pet:'bird',weights:[{w:'454g',price:699,mrp:849},{w:'907g',price:1099,mrp:1349},{w:'1.81kg',price:1799,mrp:2199}],desc:'Natural fruit flavors for parrots.'},
+  {brand:'Zupreem',name:'Natural Blend Cockatiel',pet:'bird',weights:[{w:'454g',price:599,mrp:739},{w:'907g',price:999,mrp:1249}],desc:'Wheat, corn and soybean pellets for cockatiels.'},
 ];
+PET_FOODS.sort(function(a,b){return a.brand.localeCompare(b.brand);});
 
-// ── CART STATE ──────────────────────────────
-var cartItems = JSON.parse(localStorage.getItem('pawbook_cart') || '[]');
-var foodPage = 0;
-var foodPageSize = 12;
-var currentFoodFilter = 'all';
+/* DROPDOWN STATE */
+var selectedFood=null,selectedWeight=null,selectedQty=1,currentPetFilter='all',allFoodRows=[];
+var cartItems=JSON.parse(localStorage.getItem('pawbook_cart')||'[]');
 
-// ── RENDER FOOD CATALOG ─────────────────────
-function renderFoodCatalog(filter) {
-  currentFoodFilter = filter || 'all';
-  foodPage = 0;
-  var grid = document.getElementById('food-grid');
-  if(!grid) return;
-  grid.innerHTML = '';
-  loadMoreFood();
-}
-
-function filterFood(cat, btn) {
-  document.querySelectorAll('.fpill').forEach(function(b) {
-    b.style.background = '#fff'; b.style.color = '#65676b'; b.style.borderColor = '#e4e6eb';
-    b.style.borderWidth = '1.5px';
+/* INIT DROPDOWNS */
+function initFoodDropdowns(pet){
+  currentPetFilter=pet||'all';
+  var filtered=currentPetFilter==='all'?PET_FOODS:PET_FOODS.filter(function(f){return f.pet===currentPetFilter;});
+  var bs=document.getElementById('food-brand-select');
+  var ws=document.getElementById('food-weight-select');
+  if(!bs||!ws)return;
+  bs.innerHTML='<option value="">— Choose Brand / Product —</option>';
+  ws.innerHTML='<option value="">— Select brand first —</option>';
+  ws.disabled=true; ws.style.borderColor='#e4e6eb'; ws.style.background='#f8fafc'; ws.style.cursor='not-allowed';
+  document.getElementById('food-price-box').style.display='none';
+  document.getElementById('food-hint').style.display='block';
+  selectedFood=null; selectedWeight=null; selectedQty=1;
+  var brands={};
+  filtered.forEach(function(f){if(!brands[f.brand])brands[f.brand]=[];brands[f.brand].push(f);});
+  var pe={dog:'🐕',cat:'🐈',bird:'🦜',fish:'🐟',small:'🐹'};
+  Object.keys(brands).sort().forEach(function(brand){
+    var grp=document.createElement('optgroup'); grp.label=brand;
+    brands[brand].forEach(function(food){
+      var opt=document.createElement('option');
+      opt.value=JSON.stringify({brand:food.brand,name:food.name,pet:food.pet});
+      opt.textContent=(pe[food.pet]||'🐾')+' '+food.name;
+      grp.appendChild(opt);
+    });
+    bs.appendChild(grp);
   });
-  if(btn) { btn.style.background='#1a56db'; btn.style.color='#fff'; btn.style.borderColor='#1a56db'; btn.style.borderWidth='2px'; }
-  renderFoodCatalog(cat);
+  renderFoodTable(filtered);
 }
 
-function loadMoreFood() {
-  var filtered = currentFoodFilter === 'all'
-    ? PET_FOODS
-    : PET_FOODS.filter(function(f){ return f.pet === currentFoodFilter; });
-  
-  var start = foodPage * foodPageSize;
-  var end = start + foodPageSize;
-  var slice = filtered.slice(start, end);
-  var grid = document.getElementById('food-grid');
-  
-  slice.forEach(function(food) {
-    var disc = food.mrp > food.price ? Math.round((1 - food.price/food.mrp)*100) : 0;
-    
-    var card = document.createElement('div');
-    card.style.cssText = 'background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e4e6eb;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column';
-    
-    // Image
-    var imgWrap = document.createElement('div');
-    imgWrap.style.cssText = 'position:relative;height:140px;overflow:hidden;background:#f8fafc';
-    var img = document.createElement('img');
-    img.src = food.img; img.alt = food.name;
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover';
-    img.onerror = function(){ this.parentElement.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px">🍖</div>'; };
-    var badge = document.createElement('div');
-    badge.style.cssText = 'position:absolute;top:8px;left:8px;background:#1a56db;color:#fff;font-size:10px;font-weight:700;border-radius:6px;padding:3px 8px';
-    badge.textContent = food.badge;
-    if(disc>0){
-      var discBadge = document.createElement('div');
-      discBadge.style.cssText = 'position:absolute;top:8px;right:8px;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:6px;padding:3px 8px';
-      discBadge.textContent = disc+'% OFF';
-      imgWrap.appendChild(discBadge);
-    }
-    imgWrap.appendChild(img); imgWrap.appendChild(badge);
-    
-    // Info
-    var info = document.createElement('div');
-    info.style.cssText = 'padding:10px 12px;display:flex;flex-direction:column;flex:1';
-    
-    var brand = document.createElement('div');
-    brand.style.cssText = 'font-size:10px;font-weight:700;color:#1a56db;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px';
-    brand.textContent = food.brand;
-    
-    var name = document.createElement('div');
-    name.style.cssText = 'font-size:13px;font-weight:700;color:#1a1a2e;line-height:1.3;margin-bottom:4px;flex:1';
-    name.textContent = food.name;
-    
-    var weight = document.createElement('div');
-    weight.style.cssText = 'font-size:11px;color:#65676b;margin-bottom:6px';
-    weight.textContent = '⚖️ ' + food.weight;
-    
-    var stars = document.createElement('div');
-    stars.style.cssText = 'font-size:11px;color:#f59e0b;margin-bottom:6px';
-    var filled = Math.round(food.rating);
-    stars.textContent = '★'.repeat(filled) + '☆'.repeat(5-filled) + ' ' + food.rating;
-    
-    var pricing = document.createElement('div');
-    pricing.style.cssText = 'display:flex;align-items:baseline;gap:6px;margin-bottom:10px';
-    var price = document.createElement('span');
-    price.style.cssText = 'font-size:16px;font-weight:900;color:#1a1a2e';
-    price.textContent = '₹' + food.price.toLocaleString('en-IN');
-    pricing.appendChild(price);
-    if(food.mrp > food.price) {
-      var mrp = document.createElement('span');
-      mrp.style.cssText = 'font-size:11px;color:#94a3b8;text-decoration:line-through';
-      mrp.textContent = '₹' + food.mrp.toLocaleString('en-IN');
-      pricing.appendChild(mrp);
-    }
-    
-    var addBtn = document.createElement('button');
-    addBtn.style.cssText = 'width:100%;height:36px;border-radius:999px;border:none;background:linear-gradient(135deg,#1a56db,#0d9488);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:"Poppins",sans-serif;transition:opacity .15s';
-    addBtn.textContent = '+ Add to Cart';
-    (function(f){ addBtn.onclick = function(){ addToCart(f); this.textContent='✅ Added!'; var self=this; setTimeout(function(){self.textContent='+ Add to Cart';},1500); }; })(food);
-    
-    info.appendChild(brand); info.appendChild(name); info.appendChild(weight);
-    info.appendChild(stars); info.appendChild(pricing); info.appendChild(addBtn);
-    card.appendChild(imgWrap); card.appendChild(info);
-    grid.appendChild(card);
+function filterFood(pet,btn){
+  document.querySelectorAll('.fpill').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  initFoodDropdowns(pet);
+}
+
+function onBrandSelect(val){
+  var ws=document.getElementById('food-weight-select');
+  document.getElementById('food-price-box').style.display='none';
+  document.getElementById('food-hint').style.display='block';
+  selectedWeight=null;
+  if(!val){ws.innerHTML='<option value="">— Select brand first —</option>';ws.disabled=true;ws.style.borderColor='#e4e6eb';ws.style.background='#f8fafc';ws.style.cursor='not-allowed';selectedFood=null;return;}
+  try{selectedFood=JSON.parse(val);}catch(e){return;}
+  var food=PET_FOODS.find(function(f){return f.brand===selectedFood.brand&&f.name===selectedFood.name;});
+  if(!food)return;
+  ws.innerHTML='<option value="">— Choose Weight / Size —</option>';
+  food.weights.forEach(function(w,i){
+    var disc=w.mrp>w.price?Math.round((1-w.price/w.mrp)*100):0;
+    var opt=document.createElement('option');
+    opt.value=i;
+    opt.textContent=w.w+'  →  ₹'+w.price.toLocaleString('en-IN')+(disc>0?'  ('+disc+'% off)':'');
+    ws.appendChild(opt);
   });
-  
-  foodPage++;
-  var hasMore = (foodPage * foodPageSize) < filtered.length;
-  var loadMoreBtn = document.getElementById('food-load-more');
-  if(loadMoreBtn) loadMoreBtn.style.display = hasMore ? 'block' : 'none';
+  ws.disabled=false; ws.style.borderColor='#1a56db'; ws.style.background='#fff'; ws.style.cursor='pointer';
+  ws.value='';
 }
 
-// ── CART FUNCTIONS ──────────────────────────
-function addToCart(food) {
-  var existing = cartItems.find(function(i){ return i.id === food.id; });
-  if(existing) {
-    existing.qty++;
-  } else {
-    cartItems.push({id:food.id, name:food.name, brand:food.brand, price:food.price, weight:food.weight, img:food.img, qty:1});
-  }
-  saveCart();
-  updateCartBadge();
-  showCartToast(food.name + ' added to cart!');
+function onWeightSelect(val){
+  if(val===''||val===null||val===undefined)return;
+  var food=PET_FOODS.find(function(f){return f.brand===selectedFood.brand&&f.name===selectedFood.name;});
+  if(!food)return;
+  var wObj=food.weights[parseInt(val)];
+  if(!wObj)return;
+  selectedWeight=wObj; selectedQty=1;
+  document.getElementById('food-qty-display').textContent=1;
+  var disc=wObj.mrp>wObj.price?Math.round((1-wObj.price/wObj.mrp)*100):0;
+  var pe={dog:'🐕',cat:'🐈',bird:'🦜',fish:'🐟',small:'🐹'};
+  document.getElementById('food-selected-name').textContent=(pe[food.pet]||'🐾')+' '+food.brand+' '+food.name;
+  document.getElementById('food-selected-weight').textContent='⚖️ '+wObj.w+' · '+food.desc;
+  document.getElementById('food-selected-price').textContent='₹'+wObj.price.toLocaleString('en-IN');
+  document.getElementById('food-selected-mrp').textContent=wObj.mrp>wObj.price?'₹'+wObj.mrp.toLocaleString('en-IN'):'';
+  document.getElementById('food-selected-disc').textContent=disc>0?disc+'% OFF':'';
+  document.getElementById('food-price-box').style.display='block';
+  document.getElementById('food-hint').style.display='none';
 }
 
-function saveCart() {
-  localStorage.setItem('pawbook_cart', JSON.stringify(cartItems));
+function changeSelectedQty(delta){
+  selectedQty=Math.max(1,selectedQty+delta);
+  document.getElementById('food-qty-display').textContent=selectedQty;
 }
 
-function updateCartBadge() {
-  var total = cartItems.reduce(function(s,i){ return s+i.qty; }, 0);
-  var fab = document.getElementById('cart-fab-count');
-  if(fab) {
-    fab.textContent = total;
-    fab.style.display = total > 0 ? 'flex' : 'none';
-  }
-  var countEl = document.getElementById('cart-item-count');
-  if(countEl) countEl.textContent = total + ' item' + (total!==1?'s':'');
+function addSelectedToCart(){
+  if(!selectedFood||!selectedWeight){cartToast('Select a product and weight first','error');return;}
+  var food=PET_FOODS.find(function(f){return f.brand===selectedFood.brand&&f.name===selectedFood.name;});
+  if(!food)return;
+  var itemId=food.brand+'_'+food.name+'_'+selectedWeight.w;
+  var ex=cartItems.find(function(i){return i.id===itemId;});
+  if(ex){ex.qty+=selectedQty;}
+  else{cartItems.push({id:itemId,brand:food.brand,name:food.name,weight:selectedWeight.w,price:selectedWeight.price,mrp:selectedWeight.mrp,pet:food.pet,qty:selectedQty});}
+  saveCart(); updateCartUI();
+  cartToast('Added: '+food.brand+' '+food.name+' ('+selectedWeight.w+')','success');
+  selectedQty=1; document.getElementById('food-qty-display').textContent=1;
 }
 
-function openCart() {
-  renderCartItems();
-  document.getElementById('cart-drawer').style.right = '0';
-  document.getElementById('cart-overlay').style.display = 'block';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeCart() {
-  document.getElementById('cart-drawer').style.right = '-420px';
-  document.getElementById('cart-overlay').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-function renderCartItems() {
-  var list = document.getElementById('cart-items-list');
-  var empty = document.getElementById('cart-empty');
-  var summary = document.getElementById('cart-summary');
-  
-  if(!cartItems.length) {
-    list.innerHTML = '';
-    empty.style.display = 'flex';
-    summary.style.display = 'none';
-    return;
-  }
-  
-  empty.style.display = 'none';
-  summary.style.display = 'block';
-  list.innerHTML = '';
-  
-  cartItems.forEach(function(item, idx) {
-    var row = document.createElement('div');
-    row.style.cssText = 'display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #f0f2f5;align-items:flex-start';
-    
-    var img = document.createElement('img');
-    img.src = item.img || '';
-    img.style.cssText = 'width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#f0f2f5';
-    img.onerror = function(){ this.style.display='none'; };
-    
-    var info = document.createElement('div');
-    info.style.cssText = 'flex:1;min-width:0';
-    
-    var brand = document.createElement('div');
-    brand.style.cssText = 'font-size:10px;font-weight:700;color:#1a56db;text-transform:uppercase';
-    brand.textContent = item.brand;
-    
-    var name = document.createElement('div');
-    name.style.cssText = 'font-size:13px;font-weight:700;color:#1a1a2e;margin:2px 0';
-    name.textContent = item.name;
-    
-    var wt = document.createElement('div');
-    wt.style.cssText = 'font-size:11px;color:#65676b;margin-bottom:6px';
-    wt.textContent = item.weight;
-    
-    var controls = document.createElement('div');
-    controls.style.cssText = 'display:flex;align-items:center;gap:8px';
-    
-    var minus = document.createElement('button');
-    minus.textContent = '−';
-    minus.style.cssText = 'width:28px;height:28px;border-radius:50%;border:1.5px solid #e4e6eb;background:#fff;font-size:16px;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center';
-    (function(i){ minus.onclick = function(){ changeQty(i,-1); }; })(idx);
-    
-    var qty = document.createElement('span');
-    qty.style.cssText = 'font-size:14px;font-weight:700;min-width:20px;text-align:center';
-    qty.textContent = item.qty;
-    
-    var plus = document.createElement('button');
-    plus.textContent = '+';
-    plus.style.cssText = 'width:28px;height:28px;border-radius:50%;border:none;background:#1a56db;color:#fff;font-size:16px;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center';
-    (function(i){ plus.onclick = function(){ changeQty(i,1); }; })(idx);
-    
-    var price = document.createElement('div');
-    price.style.cssText = 'font-size:14px;font-weight:900;color:#1a1a2e;margin-left:auto';
-    price.textContent = '₹' + (item.price * item.qty).toLocaleString('en-IN');
-    
-    controls.appendChild(minus); controls.appendChild(qty); controls.appendChild(plus); controls.appendChild(price);
-    
-    var del = document.createElement('button');
-    del.textContent = '🗑';
-    del.style.cssText = 'background:none;border:none;cursor:pointer;font-size:16px;padding:0;flex-shrink:0;opacity:.6;margin-top:4px';
-    (function(i){ del.onclick = function(){ removeFromCart(i); }; })(idx);
-    
-    info.appendChild(brand); info.appendChild(name); info.appendChild(wt); info.appendChild(controls);
-    row.appendChild(img); row.appendChild(info); row.appendChild(del);
-    list.appendChild(row);
+function renderFoodTable(foods){
+  var tbody=document.getElementById('food-table-body');
+  if(!tbody)return;
+  allFoodRows=[]; tbody.innerHTML='';
+  var pe={dog:'🐕',cat:'🐈',bird:'🦜',fish:'🐟',small:'🐹'};
+  foods.forEach(function(food){
+    food.weights.forEach(function(w){
+      var disc=w.mrp>w.price?Math.round((1-w.price/w.mrp)*100):0;
+      var tr=document.createElement('tr');
+      tr.style.cssText='border-bottom:1px solid #f0f2f5;cursor:pointer';
+      tr.onmouseenter=function(){this.style.background='#f8fafc';};
+      tr.onmouseleave=function(){this.style.background='';};
+      tr.dataset.brand=food.brand.toLowerCase();
+      tr.dataset.name=food.name.toLowerCase();
+      tr.dataset.pet=food.pet;
+      var cells=[
+        ['padding:10px 14px;font-size:12px;font-weight:700;color:#1a56db;white-space:nowrap',food.brand],
+        ['padding:10px 14px;font-size:12px;color:#1a1a2e;max-width:180px',food.name],
+        ['padding:10px 8px;font-size:16px;text-align:center',pe[food.pet]||'🐾'],
+        ['padding:10px 8px;font-size:12px;font-weight:600;color:#65676b;white-space:nowrap',w.w],
+        ['padding:10px 14px;font-size:13px;font-weight:900;text-align:right;white-space:nowrap','₹'+w.price.toLocaleString('en-IN')],
+        ['padding:10px 14px;font-size:11px;color:#94a3b8;text-decoration:line-through;text-align:right;white-space:nowrap',w.mrp>w.price?'₹'+w.mrp.toLocaleString('en-IN'):''],
+      ];
+      cells.forEach(function(c){var td=document.createElement('td');td.style.cssText=c[0];td.textContent=c[1];tr.appendChild(td);});
+      var tdAdd=document.createElement('td');tdAdd.style.cssText='padding:8px 14px;text-align:right';
+      var btn=document.createElement('button');
+      btn.textContent='+ Cart';
+      btn.style.cssText='height:28px;padding:0 10px;border-radius:999px;border:none;background:#1a56db;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:"Poppins",sans-serif';
+      (function(f,wObj){btn.onclick=function(){
+        var id=f.brand+'_'+f.name+'_'+wObj.w;
+        var ex=cartItems.find(function(i){return i.id===id;});
+        if(ex)ex.qty++;else cartItems.push({id:id,brand:f.brand,name:f.name,weight:wObj.w,price:wObj.price,mrp:wObj.mrp,pet:f.pet,qty:1});
+        saveCart();updateCartUI();
+        btn.textContent='Added!';btn.style.background='#16a34a';
+        setTimeout(function(){btn.textContent='+ Cart';btn.style.background='#1a56db';},1500);
+        cartToast(f.brand+' '+f.name+' added!','success');
+      };})(food,w);
+      tdAdd.appendChild(btn); tr.appendChild(tdAdd);
+      tbody.appendChild(tr); allFoodRows.push(tr);
+    });
   });
-  
+}
+
+function searchFood(val){
+  var q=val.toLowerCase();
+  allFoodRows.forEach(function(tr){tr.style.display=(!q||tr.dataset.brand.includes(q)||tr.dataset.name.includes(q))?'':'none';});
+}
+
+/* CART */
+function saveCart(){localStorage.setItem('pawbook_cart',JSON.stringify(cartItems));}
+function updateCartUI(){
+  var tot=cartItems.reduce(function(s,i){return s+i.qty;},0);
+  var fab=document.getElementById('cart-fab-count');
+  if(fab){fab.textContent=tot;fab.style.display=tot>0?'flex':'none';}
+}
+function openCart(){renderCartDrawer();document.getElementById('cart-drawer').style.right='0';document.getElementById('cart-overlay').style.display='block';document.body.style.overflow='hidden';}
+function closeCart(){document.getElementById('cart-drawer').style.right='-420px';document.getElementById('cart-overlay').style.display='none';document.body.style.overflow='';}
+
+function renderCartDrawer(){
+  var list=document.getElementById('cart-items-list');
+  var empty=document.getElementById('cart-empty');
+  var summary=document.getElementById('cart-summary');
+  if(!list)return;
+  if(!cartItems.length){list.innerHTML='';if(empty)empty.style.display='flex';if(summary)summary.style.display='none';return;}
+  if(empty)empty.style.display='none';
+  if(summary)summary.style.display='block';
+  list.innerHTML='';
+  var pe={dog:'🐕',cat:'🐈',bird:'🦜',fish:'🐟',small:'🐹'};
+  cartItems.forEach(function(item,idx){
+    var row=document.createElement('div');
+    row.style.cssText='padding:12px 0;border-bottom:1px solid #f0f2f5';
+    var top=document.createElement('div');top.style.cssText='display:flex;gap:10px;align-items:flex-start';
+    var icon=document.createElement('div');icon.style.cssText='width:44px;height:44px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0';
+    icon.textContent=pe[item.pet]||'🐾';
+    var info=document.createElement('div');info.style.cssText='flex:1;min-width:0';
+    var br=document.createElement('div');br.style.cssText='font-size:10px;font-weight:700;color:#1a56db;text-transform:uppercase';br.textContent=item.brand;
+    var nm=document.createElement('div');nm.style.cssText='font-size:13px;font-weight:700;color:#1a1a2e;line-height:1.3';nm.textContent=item.name;
+    var wt=document.createElement('div');wt.style.cssText='font-size:11px;color:#65676b;margin-top:1px';wt.textContent='⚖️ '+item.weight;
+    info.appendChild(br);info.appendChild(nm);info.appendChild(wt);
+    var del=document.createElement('button');del.textContent='✕';del.style.cssText='background:none;border:none;cursor:pointer;font-size:14px;color:#94a3b8;padding:0;flex-shrink:0';
+    (function(i){del.onclick=function(){cartItems.splice(i,1);saveCart();updateCartUI();renderCartDrawer();};})(idx);
+    top.appendChild(icon);top.appendChild(info);top.appendChild(del);
+    var bot=document.createElement('div');bot.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-left:54px';
+    var ctrl=document.createElement('div');ctrl.style.cssText='display:flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e4e6eb;border-radius:8px;padding:3px 8px';
+    var minus=document.createElement('button');minus.textContent='−';minus.style.cssText='border:none;background:none;font-size:16px;font-weight:700;cursor:pointer;color:#1a56db;width:24px;line-height:1;padding:0';
+    (function(i){minus.onclick=function(){if(cartItems[i].qty>1)cartItems[i].qty--;else cartItems.splice(i,1);saveCart();updateCartUI();renderCartDrawer();};})(idx);
+    var qEl=document.createElement('span');qEl.style.cssText='font-size:14px;font-weight:800;min-width:20px;text-align:center';qEl.textContent=item.qty;
+    var plus=document.createElement('button');plus.textContent='+';plus.style.cssText='border:none;background:none;font-size:16px;font-weight:700;cursor:pointer;color:#1a56db;width:24px;line-height:1;padding:0';
+    (function(i){plus.onclick=function(){cartItems[i].qty++;saveCart();updateCartUI();renderCartDrawer();};})(idx);
+    ctrl.appendChild(minus);ctrl.appendChild(qEl);ctrl.appendChild(plus);
+    var price=document.createElement('div');price.style.cssText='font-size:14px;font-weight:900;color:#1a1a2e';
+    price.textContent='₹'+(item.price*item.qty).toLocaleString('en-IN');
+    bot.appendChild(ctrl);bot.appendChild(price);
+    row.appendChild(top);row.appendChild(bot);list.appendChild(row);
+  });
   updateCartTotals();
 }
 
-function changeQty(idx, delta) {
-  cartItems[idx].qty += delta;
-  if(cartItems[idx].qty <= 0) cartItems.splice(idx, 1);
-  saveCart(); updateCartBadge(); renderCartItems();
+function updateCartTotals(){
+  var sub=cartItems.reduce(function(s,i){return s+i.price*i.qty;},0);
+  var gst=Math.round(sub*0.18);
+  var del=sub>=499?0:49;
+  var tot=sub+gst+del;
+  var g=function(id){return document.getElementById(id);};
+  if(g('cart-subtotal'))g('cart-subtotal').textContent='₹'+sub.toLocaleString('en-IN');
+  if(g('cart-gst'))g('cart-gst').textContent='₹'+gst.toLocaleString('en-IN');
+  if(g('cart-delivery')){g('cart-delivery').textContent=del===0?'FREE':'₹'+del;g('cart-delivery').style.color=del===0?'#16a34a':'#1a1a2e';}
+  if(g('cart-total'))g('cart-total').textContent='₹'+tot.toLocaleString('en-IN');
+  return{sub:sub,gst:gst,del:del,tot:tot};
 }
+function clearCart(){cartItems=[];saveCart();updateCartUI();}
 
-function removeFromCart(idx) {
-  cartItems.splice(idx, 1);
-  saveCart(); updateCartBadge(); renderCartItems();
-}
-
-function clearCart() {
-  cartItems = [];
-  saveCart(); updateCartBadge(); renderCartItems();
-}
-
-function updateCartTotals() {
-  var subtotal = cartItems.reduce(function(s,i){ return s + i.price*i.qty; }, 0);
-  var gst = Math.round(subtotal * 0.18);
-  var delivery = subtotal >= 499 ? 0 : 49;
-  var total = subtotal + gst + delivery;
-  
-  document.getElementById('cart-subtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
-  document.getElementById('cart-gst').textContent = '₹' + gst.toLocaleString('en-IN');
-  document.getElementById('cart-delivery').textContent = delivery === 0 ? 'FREE' : '₹' + delivery;
-  document.getElementById('cart-delivery').style.color = delivery === 0 ? '#16a34a' : '#1a1a2e';
-  document.getElementById('cart-total').textContent = '₹' + total.toLocaleString('en-IN');
-  
-  return {subtotal, gst, delivery, total};
-}
-
-// ── PAYMENT FUNCTIONS ───────────────────────
-function placeOrder() {
-  if(!cartItems.length) { showCartToast('Cart is empty!'); return; }
-  
-  // Show payment modal
+/* PAYMENT */
+function placeOrder(){
+  if(!cartItems.length){cartToast('Cart is empty!','error');return;}
   closeCart();
-  
-  var totals = updateCartTotals();
-  var summary = cartItems.map(function(i){
-    return '<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>'+i.name+' x'+i.qty+'</span><span style="font-weight:700">₹'+(i.price*i.qty).toLocaleString('en-IN')+'</span></div>';
-  }).join('') +
-  '<div style="border-top:1px solid #e4e6eb;margin-top:8px;padding-top:8px;display:flex;justify-content:space-between"><span>GST (18%)</span><span>₹'+totals.gst.toLocaleString('en-IN')+'</span></div>' +
-  (totals.delivery > 0 ? '<div style="display:flex;justify-content:space-between"><span>Delivery</span><span>₹'+totals.delivery+'</span></div>' : '<div style="color:#16a34a;font-size:12px">✅ Free delivery</div>');
-  
-  document.getElementById('pay-order-summary').innerHTML = summary;
-  document.getElementById('pay-total-display').textContent = '₹' + totals.total.toLocaleString('en-IN');
-  
-  document.getElementById('payment-modal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  
-  // Wire payment method toggle
-  document.querySelectorAll('input[name="pay-method"]').forEach(function(radio) {
-    radio.onchange = function() {
-      document.getElementById('upi-field').style.display = this.value==='upi' ? 'block' : 'none';
-      document.getElementById('card-fields').style.display = this.value==='card' ? 'block' : 'none';
-      // Update label borders
-      document.querySelectorAll('input[name="pay-method"]').forEach(function(r){
-        r.parentElement.style.borderColor = r.checked ? '#1a56db' : '#e4e6eb';
-        r.parentElement.style.background = r.checked ? '#eff6ff' : '#fff';
-        r.parentElement.style.borderWidth = r.checked ? '2px' : '1.5px';
-      });
+  var t=updateCartTotals();
+  var sum=cartItems.map(function(i){return '<div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span>'+i.brand+' '+i.name+' '+i.weight+' x'+i.qty+'</span><span style="font-weight:700;margin-left:8px">₹'+(i.price*i.qty).toLocaleString('en-IN')+'</span></div>';}).join('');
+  sum+='<div style="border-top:1px solid #e4e6eb;margin-top:8px;padding-top:8px;font-size:12px;color:#65676b"><div style="display:flex;justify-content:space-between"><span>Subtotal</span><span>₹'+t.sub.toLocaleString('en-IN')+'</span></div><div style="display:flex;justify-content:space-between"><span>GST 18%</span><span>₹'+t.gst.toLocaleString('en-IN')+'</span></div><div style="display:flex;justify-content:space-between"><span>Delivery</span><span style="color:'+(t.del===0?'#16a34a':'inherit')+'">'+(t.del===0?'FREE':'₹'+t.del)+'</span></div></div>';
+  document.getElementById('pay-order-summary').innerHTML=sum;
+  document.getElementById('pay-total-display').textContent='₹'+t.tot.toLocaleString('en-IN');
+  document.getElementById('payment-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+  document.querySelectorAll('input[name="pay-method"]').forEach(function(r){
+    r.onchange=function(){
+      document.getElementById('upi-field').style.display=this.value==='upi'?'block':'none';
+      document.getElementById('card-fields').style.display=this.value==='card'?'block':'none';
+      document.querySelectorAll('input[name="pay-method"]').forEach(function(x){x.parentElement.style.borderColor=x.checked?'#1a56db':'#e4e6eb';x.parentElement.style.background=x.checked?'#eff6ff':'#fff';});
     };
   });
 }
-
-function closePayment() {
-  document.getElementById('payment-modal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-function confirmPayment() {
-  var name = document.getElementById('pay-name').value.trim();
-  var phone = document.getElementById('pay-phone').value.trim();
-  var address = document.getElementById('pay-address').value.trim();
-  var city = document.getElementById('pay-city').value.trim();
-  var pin = document.getElementById('pay-pin').value.trim();
-  
-  if(!name){ alert('Please enter your name'); return; }
-  if(!phone){ alert('Please enter your phone number'); return; }
-  if(!address){ alert('Please enter your delivery address'); return; }
-  if(!city){ alert('Please enter your city'); return; }
-  if(!pin){ alert('Please enter your PIN code'); return; }
-  
-  var method = document.querySelector('input[name="pay-method"]:checked');
-  var methodVal = method ? method.value : 'upi';
-  
-  if(methodVal === 'upi') {
-    var upi = document.getElementById('pay-upi').value.trim();
-    if(!upi){ alert('Please enter your UPI ID'); return; }
-  }
-  
-  // Simulate payment processing
-  var btn = document.querySelector('#payment-modal button[onclick="confirmPayment()"]');
-  if(btn){ btn.textContent = '⏳ Processing...'; btn.disabled = true; }
-  
-  setTimeout(function() {
+function closePayment(){document.getElementById('payment-modal').style.display='none';document.body.style.overflow='';}
+function confirmPayment(){
+  var f=function(id){return document.getElementById(id).value.trim();};
+  if(!f('pay-name')){alert('Please enter your name');return;}
+  if(!f('pay-phone')){alert('Please enter phone number');return;}
+  if(!f('pay-address')){alert('Please enter delivery address');return;}
+  if(!f('pay-city')){alert('Please enter city');return;}
+  if(!f('pay-pin')){alert('Please enter PIN code');return;}
+  var btn=document.querySelector('#payment-modal button[onclick="confirmPayment()"]');
+  if(btn){btn.textContent='Processing...';btn.disabled=true;}
+  setTimeout(function(){
     closePayment();
-    
-    var orderId = 'PB' + Date.now().toString().slice(-8);
-    document.getElementById('success-order-id').textContent = 'Order #' + orderId;
-    document.getElementById('success-delivery').innerHTML =
-      '<div>📍 ' + address + ', ' + city + ' - ' + pin + '</div>' +
-      '<div style="margin-top:4px">📞 ' + phone + '</div>' +
-      '<div style="margin-top:6px;color:#1a56db;font-weight:700">Expected delivery: 2-3 business days</div>';
-    
-    document.getElementById('order-success-modal').style.display = 'flex';
-    if(btn){ btn.textContent = '🔒 Pay Now'; btn.disabled = false; }
-  }, 2000);
+    var oid='PB'+Date.now().toString().slice(-8);
+    document.getElementById('success-order-id').textContent='Order #'+oid;
+    document.getElementById('success-delivery').innerHTML='<div>📍 '+f('pay-address')+', '+f('pay-city')+' - '+f('pay-pin')+'</div><div style="margin-top:4px">📞 '+f('pay-phone')+'</div><div style="margin-top:6px;color:#1a56db;font-weight:700">Estimated delivery: 2-3 business days</div>';
+    document.getElementById('order-success-modal').style.display='flex';
+    if(btn){btn.textContent='🔒 Pay Now';btn.disabled=false;}
+  },2000);
 }
 
-function showCartToast(msg) {
-  var t = document.getElementById('mkt-toast');
-  if(!t) {
-    t = document.createElement('div');
-    t.id = 'mkt-toast';
-    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(26,86,219,.95);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;max-width:90vw;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.2)';
-    document.body.appendChild(t);
-  }
-  t.textContent = msg;
-  t.style.opacity = '1';
-  t.style.transform = 'translateX(-50%) translateY(0)';
-  clearTimeout(t._t);
-  t._t = setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 2500);
+/* TOAST */
+function cartToast(msg,type){
+  var t=document.getElementById('cart-toast-el');
+  if(!t){t=document.createElement('div');t.id='cart-toast-el';t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);color:#fff;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.2);pointer-events:none';document.body.appendChild(t);}
+  t.style.background=type==='error'?'#dc2626':type==='success'?'#16a34a':'rgba(26,86,219,.95)';
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2500);
 }
 
-// ── WIRE FOOD TAB ───────────────────────────
-// Override setCat to show food catalog when food tab clicked
-var _origSetCat = window.setCat;
-window.setCat = function(el) {
-  if(_origSetCat) _origSetCat(el);
-  var txt = el.textContent.toLowerCase();
-  var foodCatalog = document.getElementById('food-catalog');
-  if(txt.includes('food') || txt.includes('nutrition')) {
-    if(foodCatalog) {
-      foodCatalog.style.display = 'block';
-      if(!foodCatalog._rendered) {
-        renderFoodCatalog('all');
-        foodCatalog._rendered = true;
-      }
-    }
-  } else {
-    if(foodCatalog) foodCatalog.style.display = 'none';
-  }
+/* WIRE FOOD TAB */
+var _origSetCat2=window.setCat;
+window.setCat=function(el){
+  if(_origSetCat2)_origSetCat2(el);
+  var txt=el.textContent.toLowerCase();
+  var fc=document.getElementById('food-catalog');
+  if(!fc)return;
+  if(txt.includes('food')||txt.includes('nutrition')){
+    fc.style.display='block';
+    if(!fc._init){initFoodDropdowns('all');fc._init=true;}
+  }else{fc.style.display='none';}
 };
 
-// ── INIT ─────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  updateCartBadge();
-});
+document.addEventListener('DOMContentLoaded',function(){updateCartUI();});
 </script>
 </body>
 </html>
