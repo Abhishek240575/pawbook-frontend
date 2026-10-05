@@ -105,10 +105,11 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 }
 
 /* ── PAGE LAYOUT ── */
-.vet-page{max-width: 100%;margin:0 auto;padding:16px;display:grid;grid-template-columns:1fr 300px;gap:16px}
-@media(max-width:768px){
-  .vet-page { display: block !important; grid-template-columns: 1fr !important; }}
-@media(max-width:900px){.vet-page{grid-template-columns: 1fr}.vet-sidebar{display:none}}
+.vet-page{max-width:1280px;margin:0 auto;padding:16px;display:grid;grid-template-columns:240px 1fr 300px;gap:16px;align-items:start}
+.vet-sidebar{position:sticky;top:72px;max-height:calc(100vh - 80px);overflow-y:auto;scrollbar-width:thin}
+.vet-appt-sidebar{position:sticky;top:72px;max-height:calc(100vh - 80px);overflow-y:auto;scrollbar-width:thin}
+@media(max-width:1100px){.vet-page{grid-template-columns:220px 1fr}.vet-appt-sidebar{display:none}}
+@media(max-width:768px){.vet-page{display:block!important}.vet-sidebar{display:none!important}.vet-appt-sidebar{display:none!important}}
 
 /* ── HERO ── */
 .vet-hero{background:linear-gradient(135deg,#0f172a,#1e3a5f,#0d9488);padding:56px 20px 32px;text-align:center;position:relative;overflow:hidden}
@@ -479,7 +480,7 @@ html, body { overflow-x: hidden !important; }
 
     <!-- ── MY APPOINTMENTS TAB ── -->
     <div id="tab-appointments" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 280px;gap:16px;align-items:start">
+      <div style="display:grid;grid-template-columns:1fr;gap:16px;align-items:start">
         <div>
           <div style="font-size:15px;font-weight:800;margin-bottom:12px">Upcoming</div>
           <div class="appt-card upcoming">
@@ -526,21 +527,6 @@ html, body { overflow-x: hidden !important; }
           </div>
         </div>
 
-        <!-- Calendar -->
-        <div>
-          <div class="filter-section" style="background:#fff">
-            <div class="filter-title">📅 Appointment Calendar</div>
-            <div class="mini-cal" id="appt-calendar"></div>
-            <div style="margin-top:10px">
-              <div style="font-size:12px;font-weight:700;margin-bottom:6px;color:#475569">Legend</div>
-              <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:#64748b">
-                <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--vet-blue);margin-right:4px;vertical-align:middle"></span>Today</span>
-                <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c3aed;margin-right:4px;vertical-align:middle"></span>Selected</span>
-                <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#dcfce7;border:1px solid #16a34a;margin-right:4px;vertical-align:middle"></span>Has Appointment</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -762,6 +748,44 @@ html, body { overflow-x: hidden !important; }
       </div>
     </div>
   </main>
+
+  <!-- RIGHT SIDEBAR — Upcoming + Calendar (always visible on desktop) -->
+  <aside class="vet-appt-sidebar">
+    <!-- Next appointment quick card -->
+    <div class="filter-section" style="margin-bottom:12px">
+      <div class="filter-title">📅 Next Appointment</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=60&q=80" style="width:44px;height:44px;border-radius:12px;object-fit:cover;flex-shrink:0">
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#1e293b">Dr. Priya Sharma</div>
+          <div style="font-size:11px;color:var(--vet-teal);font-weight:700">General Veterinarian</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:6px">📹 Video · Tomorrow, 10:30 AM</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:10px">🐾 Bruno (Beagle) · 30 min</div>
+      <button onclick="openVideoCall({name:'Dr. Priya Sharma',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80'})" style="width:100%;height:38px;border-radius:999px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 8px rgba(124,58,237,.3)"><i class="ti ti-video"></i> Join Video Call</button>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button onclick="openChat({name:'Dr. Priya Sharma',spec:'General Veterinarian',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80',online:true})" class="vbtn vbtn-chat" style="flex:1;justify-content:center"><i class="ti ti-message-circle"></i> Chat</button>
+        <button onclick="openDiagnosisChecklist()" class="vbtn vbtn-outline" style="flex:1;justify-content:center"><i class="ti ti-clipboard-list"></i> Diagnosis</button>
+      </div>
+      <button onclick="cancelAppt(this)" class="vbtn vbtn-outline" style="width:100%;margin-top:6px;justify-content:center;color:#ef4444"><i class="ti ti-x"></i> Cancel</button>
+    </div>
+
+    <!-- Calendar -->
+    <div class="filter-section">
+      <div class="filter-title">📅 Appointment Ca...</div>
+      <div class="mini-cal" id="appt-calendar-sidebar"></div>
+      <div style="margin-top:10px">
+        <div style="font-size:12px;font-weight:700;margin-bottom:6px;color:#475569">Legend</div>
+        <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:#64748b">
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--vet-blue);margin-right:4px;vertical-align:middle"></span>Today</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c3aed;margin-right:4px;vertical-align:middle"></span>Selected</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#dcfce7;border:1px solid #16a34a;margin-right:4px;vertical-align:middle"></span>Has Appointment</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
 </div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
@@ -1005,6 +1029,7 @@ function switchVetTab(tab, btn) {
     if(el) el.style.display = t===tab?'block':'none';
   });
   if(tab==='appointments') renderCalendar('appt-calendar', [16,22,new Date().getDate()+1]);
+  renderCalendar('appt-calendar-sidebar',[new Date().getDate()+1,16,22]);
 }
 
 // ── FILTER & SORT ─────────────────────────────────────────────────────────────
@@ -1562,6 +1587,7 @@ document.querySelectorAll('.modal-overlay').forEach(m=>{
 // ── INIT ──────────────────────────────────────────────────────────────────────
 renderVets(VETS);
 renderCalendar('appt-calendar',[]);
+renderCalendar('appt-calendar-sidebar',[new Date().getDate()+1, 16, 22]);
 
 // Search input live filter
 document.getElementById('vet-search-input').addEventListener('input', ()=>applyFilters());
