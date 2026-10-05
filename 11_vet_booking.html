@@ -187,6 +187,8 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 .ctab i{font-size:20px;display:block;margin-bottom:4px}
 .time-slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
 .time-slot{padding:8px 4px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:11px;font-weight:700;text-align:center;cursor:pointer;transition:all 0.12s;font-family:'Poppins',sans-serif}
+.cancel-reason-btn{padding:8px 10px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:left;transition:all .15s;color:#475569}
+.cancel-reason-btn:hover,.cancel-reason-btn.selected{background:#fef2f2;border-color:#fca5a5;color:#b91c1c}
 .time-slot.available{background:#fff;color:#475569}
 .time-slot.available:hover,.time-slot.selected{background:var(--vet-blue);color:#fff;border-color:var(--vet-blue)}
 .time-slot.booked{background:#f1f5f9;color:#cbd5e1;cursor:not-allowed;text-decoration:line-through}
@@ -505,7 +507,8 @@ html, body { overflow-x: hidden !important; }
               <button onclick="openVideoCall({name:'Dr. Priya Sharma',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80'})" style="height:40px;padding:0 18px;border-radius:999px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(124,58,237,.4)"><i class="ti ti-video"></i> Join Video Call</button>
               <button onclick="openChat({name:'Dr. Priya Sharma',spec:'General Veterinarian',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80',online:true})" class="vbtn vbtn-chat"><i class="ti ti-message-circle"></i> Chat</button>
               <button onclick="openDiagnosisChecklist()" class="vbtn vbtn-outline"><i class="ti ti-clipboard-list"></i> Diagnosis</button>
-              <button onclick="cancelAppt(this)" class="vbtn vbtn-outline" style="color:#ef4444"><i class="ti ti-x"></i> Cancel</button>
+              <button onclick="rescheduleAppt(this,'PB-VET-2024-0921','Dr. Priya Sharma','General Veterinarian','https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80',499)" class="vbtn vbtn-outline"><i class="ti ti-calendar-event"></i> Reschedule</button>
+              <button onclick="cancelAppt(this,'PB-VET-2024-0921','Dr. Priya Sharma','Tomorrow 10:30 AM',499)" class="vbtn vbtn-outline" style="color:#ef4444;border-color:#fca5a5"><i class="ti ti-x"></i> Cancel</button>
             </div>
           </div>
 
@@ -768,7 +771,7 @@ html, body { overflow-x: hidden !important; }
         <button onclick="openChat({name:'Dr. Priya Sharma',spec:'General Veterinarian',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80',online:true})" class="vbtn vbtn-chat" style="flex:1;justify-content:center"><i class="ti ti-message-circle"></i> Chat</button>
         <button onclick="openDiagnosisChecklist()" class="vbtn vbtn-outline" style="flex:1;justify-content:center"><i class="ti ti-clipboard-list"></i> Diagnosis</button>
       </div>
-      <button onclick="cancelAppt(this)" class="vbtn vbtn-outline" style="width:100%;margin-top:6px;justify-content:center;color:#ef4444"><i class="ti ti-x"></i> Cancel</button>
+      <button onclick="cancelAppt(this,'PB-VET-2024-0921','Dr. Priya Sharma','Tomorrow 10:30 AM',499)" class="vbtn vbtn-outline" style="width:100%;margin-top:6px;justify-content:center;color:#ef4444;border-color:#fca5a5"><i class="ti ti-x"></i> Cancel</button>
     </div>
 
     <!-- Calendar -->
@@ -1103,7 +1106,6 @@ function selectConsultType(type,btn){
 
 function confirmBooking(){
   if(!selectedSlot){toast('Please select a time slot','error');return;}
-  if(!document.getElementById('book-reason').value.trim()){toast('Please describe the reason for visit','error');return;}
   closeModal('modal-booking');
   const typeLabel={video:'Video Call',audio:'Audio Call',clinic:'In-Clinic Visit'}[selectedConsultType];
   const bookingId='PB-VET-'+Date.now().toString().slice(-6);
@@ -1557,11 +1559,183 @@ function submitVetRegistration(){
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function openModal(id){document.getElementById(id).style.display='flex';}
 function closeModal(id){document.getElementById(id).style.display='none';}
-function cancelAppt(btn){
-  if(confirm('Cancel this appointment?')){
-    btn.closest('.appt-card').style.opacity='0.5';
-    toast('Appointment cancelled. Refund policy applies.','info');
+/* ── CANCEL / RESCHEDULE ── */
+function cancelAppt(btn, apptId, vetName, apptDate, fee) {
+  // Build cancel modal with refund policy
+  var hoursToAppt = 26; // demo: assume 26h away; real app would compute from date+time
+  var refundPct = hoursToAppt >= 24 ? 100 : hoursToAppt >= 6 ? 50 : 0;
+  var refundAmt = fee ? Math.round((fee * refundPct) / 100) : 0;
+  var refundLabel = refundPct === 100 ? '✅ Full Refund (₹'+refundAmt+')' : refundPct === 50 ? '⚠️ 50% Refund (₹'+refundAmt+')' : '❌ No Refund (less than 6 hrs notice)';
+  var refundColor = refundPct === 100 ? '#16a34a' : refundPct === 50 ? '#d97706' : '#ef4444';
+
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box" style="max-width:420px">
+      <div class="modal-header" style="background:#fef2f2;border-radius:20px 20px 0 0">
+        <div style="color:#991b1b">
+          <div style="font-size:16px;font-weight:900">❌ Cancel Appointment</div>
+          <div style="font-size:11px;opacity:0.75;margin-top:2px">${vetName || 'Dr. Priya Sharma'}</div>
+        </div>
+        <button onclick="this.closest('.modal-overlay').remove()" style="background:rgba(0,0,0,0.08);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
+      </div>
+      <div class="modal-body" style="padding:20px">
+
+        <!-- Refund Policy Box -->
+        <div style="background:#f8faff;border:1.5px solid #c7d2fe;border-radius:14px;padding:16px;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:900;color:#1e293b;margin-bottom:12px">📋 PawBook Refund Policy</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:${hoursToAppt>=24?'#f0fdf4':'#fff'};border:1.5px solid ${hoursToAppt>=24?'#86efac':'#e2e8f0'}">
+              <span style="font-size:18px">✅</span>
+              <div><div style="font-size:12px;font-weight:800;color:#15803d">Cancel 24+ hrs before</div><div style="font-size:11px;color:#64748b">Full refund — 100% of consultation fee</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:${hoursToAppt>=6&&hoursToAppt<24?'#fffbeb':'#fff'};border:1.5px solid ${hoursToAppt>=6&&hoursToAppt<24?'#fcd34d':'#e2e8f0'}">
+              <span style="font-size:18px">⚠️</span>
+              <div><div style="font-size:12px;font-weight:800;color:#b45309">Cancel 6–24 hrs before</div><div style="font-size:11px;color:#64748b">Partial refund — 50% of consultation fee</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:${hoursToAppt<6?'#fef2f2':'#fff'};border:1.5px solid ${hoursToAppt<6?'#fca5a5':'#e2e8f0'}">
+              <span style="font-size:18px">❌</span>
+              <div><div style="font-size:12px;font-weight:800;color:#b91c1c">Cancel less than 6 hrs before</div><div style="font-size:11px;color:#64748b">No refund — slot cannot be reallocated</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Your Refund -->
+        <div style="background:#fff7ed;border-radius:12px;padding:14px;margin-bottom:16px;border:1.5px solid #fed7aa">
+          <div style="font-size:12px;font-weight:800;color:#92400e;margin-bottom:4px">YOUR REFUND ELIGIBILITY</div>
+          <div style="font-size:20px;font-weight:900;color:${refundColor}">${refundLabel}</div>
+          <div style="font-size:11px;color:#64748b;margin-top:4px">Refund processed to original payment method within 5–7 business days</div>
+        </div>
+
+        <!-- Cancel Reason -->
+        <div style="font-size:12px;font-weight:800;color:#475569;margin-bottom:8px">Reason for Cancellation</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px" id="cancel-reason-grid">
+          <button class="cancel-reason-btn" onclick="selectCancelReason(this,'Schedule conflict')">📅 Schedule conflict</button>
+          <button class="cancel-reason-btn" onclick="selectCancelReason(this,'Pet recovered')">🐾 Pet recovered</button>
+          <button class="cancel-reason-btn" onclick="selectCancelReason(this,'Found another vet')">🏥 Found another vet</button>
+          <button class="cancel-reason-btn" onclick="selectCancelReason(this,'Financial reason')">💰 Financial reason</button>
+          <button class="cancel-reason-btn" onclick="selectCancelReason(this,'Emergency')">🚨 Emergency</button>
+          <button class="cancel-reason-btn" onclick="selectCancelReason(this,'Other')">💬 Other</button>
+        </div>
+
+        <div style="display:flex;gap:8px">
+          <button onclick="this.closest('.modal-overlay').remove()" style="flex:1;height:42px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Keep Appointment</button>
+          <button onclick="confirmCancel(this,'${apptId}',${refundPct},${refundAmt},'${vetName}')" style="flex:1;height:42px;border-radius:12px;border:none;background:#ef4444;color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Cancel & Refund</button>
+        </div>
+      </div>
+    </div>`;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+  // store card ref
+  overlay._card = btn ? btn.closest('.appt-card') : null;
+}
+
+function selectCancelReason(btn, reason) {
+  document.querySelectorAll('.cancel-reason-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  btn._reason = reason;
+}
+
+function confirmCancel(btn, apptId, refundPct, refundAmt, vetName) {
+  var overlay = btn.closest('.modal-overlay');
+  // Remove from localStorage
+  if(apptId) {
+    var saved = JSON.parse(localStorage.getItem('pb_appointments')||'[]');
+    saved = saved.filter(function(a){ return a.id !== apptId; });
+    localStorage.setItem('pb_appointments', JSON.stringify(saved));
+    loadSavedAppointments();
   }
+  // Remove card from DOM
+  if(overlay && overlay._card) {
+    overlay._card.style.transition='all .3s';
+    overlay._card.style.opacity='0';
+    overlay._card.style.height='0';
+    overlay._card.style.overflow='hidden';
+    setTimeout(function(){ if(overlay._card) overlay._card.remove(); }, 350);
+  }
+  overlay.remove();
+  // Show cancellation confirmation
+  var msg = refundPct > 0
+    ? '✅ Cancelled! ₹'+refundAmt+' refund initiated (5–7 business days).'
+    : '❌ Cancelled. No refund applicable per policy.';
+  toast(msg, refundPct > 0 ? 'success' : 'error');
+}
+
+function rescheduleAppt(btn, apptId, vetName, vetSpec, vetImg, fee) {
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box" style="max-width:420px">
+      <div class="modal-header" style="background:linear-gradient(135deg,#1e3a8a,#0d9488);border-radius:20px 20px 0 0">
+        <div style="color:#fff">
+          <div style="font-size:16px;font-weight:900">🔄 Reschedule Appointment</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:2px">${vetName || 'Doctor'}</div>
+        </div>
+        <button onclick="this.closest('.modal-overlay').remove()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px">✕</button>
+      </div>
+      <div class="modal-body" style="padding:20px">
+
+        <!-- Reschedule Policy -->
+        <div style="background:#eff6ff;border-radius:12px;padding:12px;margin-bottom:16px;font-size:12px;color:#1e40af;border:1.5px solid #bfdbfe">
+          <strong>🔄 Reschedule Policy:</strong> You can reschedule up to <strong>2 hrs before</strong> your appointment at no extra charge. One free reschedule per booking — subsequent changes may incur a ₹50 admin fee.
+        </div>
+
+        <!-- Vet info -->
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;padding:10px;background:#f8faff;border-radius:10px">
+          <img src="${vetImg||''}" style="width:44px;height:44px;border-radius:10px;object-fit:cover;background:#e2e8f0">
+          <div>
+            <div style="font-size:14px;font-weight:800">${vetName||'Doctor'}</div>
+            <div style="font-size:11px;color:#0d9488;font-weight:700">${vetSpec||''}</div>
+          </div>
+        </div>
+
+        <!-- New date -->
+        <div style="font-size:12px;font-weight:800;color:#475569;margin-bottom:8px">Select New Date *</div>
+        <div id="reschedule-calendar"></div>
+
+        <!-- New time -->
+        <div style="font-size:12px;font-weight:800;color:#475569;margin:12px 0 8px">Select New Time Slot *</div>
+        <div class="time-slots" id="reschedule-slots">
+          ${['9:00 AM','9:30 AM','10:30 AM','11:00 AM','2:00 PM','3:30 PM','4:00 PM','5:00 PM'].map(function(s){
+            return '<button class="time-slot available" onclick="selectRescheduleSlot(this,\''+s+'\')">'+s+'</button>';
+          }).join('')}
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button onclick="this.closest('.modal-overlay').remove()" style="flex:1;height:42px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Keep Original</button>
+          <button onclick="confirmReschedule(this,'${apptId}','${vetName}')" style="flex:2;height:42px;border-radius:12px;border:none;background:linear-gradient(135deg,#1a4db3,#0d9488);color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">✅ Confirm Reschedule</button>
+        </div>
+      </div>
+    </div>`;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+  renderCalendar('reschedule-calendar', []);
+}
+
+var _rescheduleSlot = null;
+function selectRescheduleSlot(btn, slot) {
+  document.querySelectorAll('#reschedule-slots .time-slot').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  _rescheduleSlot = slot;
+}
+
+function confirmReschedule(btn, apptId, vetName) {
+  if(!_rescheduleSlot) { toast('Please select a new time slot','error'); return; }
+  var overlay = btn.closest('.modal-overlay');
+  // Update in localStorage
+  if(apptId) {
+    var saved = JSON.parse(localStorage.getItem('pb_appointments')||'[]');
+    saved = saved.map(function(a){
+      if(a.id === apptId) { a.time = _rescheduleSlot; a.rescheduled = true; }
+      return a;
+    });
+    localStorage.setItem('pb_appointments', JSON.stringify(saved));
+    loadSavedAppointments();
+  }
+  var confirmedSlot = _rescheduleSlot;
+  overlay.remove();
+  _rescheduleSlot = null;
+  toast('✅ Rescheduled to '+confirmedSlot+'! Confirmation sent to you.','success');
 }
 
 function triggerUpload(id){document.getElementById(id).click();}
@@ -1793,7 +1967,8 @@ function loadSavedAppointments() {
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button onclick="sendEmailConfirmation('${a.id}','${a.vet}','${a.date}','${a.time}','${a.type}','${a.fee}')" class="vbtn" style="background:#eff6ff;color:#1a4db3;border:1.5px solid #bfdbfe"><i class="ti ti-mail"></i> Email</button>
             <button onclick="sendWhatsAppConfirmation('${a.id}','${a.vet}','${a.date}','${a.time}','${a.type}','${a.fee}')" class="vbtn" style="background:#f0fdf4;color:#16a34a;border:1.5px solid #bbf7d0"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
-            <button onclick="addToGoogleCalendar('${a.vet}','${a.date}','${a.time}','${a.type}')" class="vbtn vbtn-outline"><i class="ti ti-calendar"></i> Calendar</button>
+            <button onclick="rescheduleAppt(this,'${a.id}','${a.vet}','${a.vetSpec}','${a.vetImg}',${a.fee})" class="vbtn" style="background:#eff6ff;color:#1a4db3;border:1.5px solid #bfdbfe"><i class="ti ti-calendar-event"></i> Reschedule</button>
+            <button onclick="cancelAppt(this,'${a.id}','${a.vet}','${a.date}',${a.fee})" class="vbtn vbtn-outline" style="color:#ef4444;border-color:#fca5a5"><i class="ti ti-x"></i> Cancel</button>
           </div>
         </div>`).join('')}`;
     const firstChild=document.querySelector('#tab-appointments > div > div:first-child');
