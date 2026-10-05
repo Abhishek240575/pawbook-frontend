@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PawMatch - Find Your Pet's Perfect Match</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;padding-top:56px;padding-bottom:72px;overflow-x:hidden}
+
+/* TOPNAV */
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;padding:0 16px;gap:10px;z-index:200;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.topnav-logo{font-size:18px;font-weight:900;color:#1a56db;text-decoration:none;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#1a56db,#0d9488);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.topnav-center{flex:1;text-align:center}
+.topnav-title{font-size:16px;font-weight:800;background:linear-gradient(135deg,#e11d48,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#65676b;position:relative}
+.nav-badge{position:absolute;top:2px;right:2px;width:16px;height:16px;background:#e11d48;color:#fff;border-radius:50%;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+/* TABS */
+.pm-tabs{display:flex;background:#fff;border-bottom:2px solid #e4e6eb;position:sticky;top:56px;z-index:150}
+.pm-tab{flex:1;height:44px;border:none;background:none;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:#65676b;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s}
+.pm-tab.active{color:#e11d48;border-bottom-color:#e11d48}
+
+/* FILTER BAR */
+.filter-bar{padding:10px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;background:#fff;border-bottom:1px solid #e4e6eb}
+.filter-bar::-webkit-scrollbar{display:none}
+.fpill{height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif;flex-shrink:0;transition:all .15s}
+.fpill.active,.fpill:hover{background:#e11d48;color:#fff;border-color:#e11d48}
+
+/* MAIN */
+.match-wrap{max-width:480px;margin:0 auto;padding:16px 16px 80px}
+
+/* CARD STACK */
+.card-stack{position:relative;height:520px;margin-bottom:16px}
+.pet-card{position:absolute;inset:0;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.18);cursor:grab;user-select:none;touch-action:none}
+.pet-card:active{cursor:grabbing}
+.pet-card.is-flying{transition:transform .4s ease,opacity .4s ease}
+.pet-card:nth-child(1){z-index:3}
+.pet-card:nth-child(2){z-index:2;transform:scale(.96) translateY(8px)}
+.pet-card:nth-child(3){z-index:1;transform:scale(.92) translateY(16px)}
+.pet-card:nth-child(n+4){display:none}
+
+/* CARD PHOTO */
+.card-photo{width:100%;height:360px;object-fit:cover;display:block;pointer-events:none;background:#e4e6eb}
+.card-photo-wrap{position:relative}
+.card-like-label{position:absolute;top:24px;left:20px;padding:6px 14px;border:3px solid #16a34a;border-radius:8px;color:#16a34a;font-size:20px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(-15deg);background:rgba(255,255,255,.9);z-index:10;pointer-events:none}
+.card-nope-label{position:absolute;top:24px;right:20px;padding:6px 14px;border:3px solid #e11d48;border-radius:8px;color:#e11d48;font-size:20px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(15deg);background:rgba(255,255,255,.9);z-index:10;pointer-events:none}
+.card-super-label{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);padding:6px 20px;border:3px solid #f59e0b;border-radius:8px;color:#f59e0b;font-size:18px;font-weight:900;letter-spacing:1px;opacity:0;background:rgba(255,255,255,.9);z-index:10;pointer-events:none;white-space:nowrap}
+
+/* CARD INFO */
+.card-info{padding:14px 16px 12px;background:#fff}
+.card-name-row{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.card-name{font-size:22px;font-weight:900;color:#1a1a2e}
+.card-age{font-size:16px;font-weight:700;color:#65676b}
+.card-breed{font-size:13px;font-weight:600;color:#65676b;margin-bottom:6px}
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.card-tag{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#f0f2f5;color:#1a1a2e}
+.card-bio{font-size:13px;color:#444;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-owner{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #f0f2f5}
+.owner-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #e4e6eb;background:#e4e6eb}
+.owner-name{font-size:12px;font-weight:700;color:#65676b}
+.card-dist{margin-left:auto;font-size:11px;color:#94a3b8;font-weight:600}
+
+/* ACTION BUTTONS */
+.action-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:16px}
+.act-btn{border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .15s,box-shadow .15s;background:#fff}
+.act-btn:hover{transform:scale(1.12)}
+.act-btn:active{transform:scale(.95)}
+.act-undo{width:44px;height:44px;color:#f59e0b;font-size:20px}
+.act-nope{width:56px;height:56px;color:#e11d48;font-size:26px}
+.act-super{width:44px;height:44px;color:#3b82f6;font-size:20px}
+.act-like{width:56px;height:56px;color:#16a34a;font-size:26px}
+.act-boost{width:44px;height:44px;color:#a855f7;font-size:20px}
+
+/* MATCH MODAL */
+.match-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:800;display:none;align-items:center;justify-content:center;padding:24px}
+.match-overlay.show{display:flex}
+.match-box{background:linear-gradient(135deg,#e11d48,#f97316);border-radius:24px;padding:28px 24px;text-align:center;max-width:360px;width:100%;position:relative}
+.match-title{font-size:32px;font-weight:900;color:#fff;margin-bottom:4px}
+.match-sub{font-size:14px;color:rgba(255,255,255,.85);margin-bottom:20px}
+.match-avatars{display:flex;align-items:center;justify-content:center;margin-bottom:20px;position:relative;gap:0}
+.match-avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.match-heart{font-size:28px;position:absolute;left:50%;transform:translateX(-50%);z-index:10;animation:hbeat .6s ease infinite alternate}
+@keyframes hbeat{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.25)}}
+.match-pet-names{font-size:15px;font-weight:800;color:#fff;margin-bottom:20px}
+.match-btn-send{width:100%;height:48px;border-radius:999px;border:none;background:#fff;color:#e11d48;font-size:15px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif;margin-bottom:10px}
+.match-btn-skip{width:100%;height:40px;border-radius:999px;border:2px solid rgba(255,255,255,.5);background:transparent;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;border-radius:2px;animation:cfall 1.2s ease forwards;pointer-events:none;z-index:900}
+@keyframes cfall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* MATCHES / LIKED GRID */
+.matches-wrap{display:none;padding:16px}
+.matches-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.match-thumb{border-radius:12px;overflow:hidden;position:relative;aspect-ratio:1;cursor:pointer;background:#e4e6eb}
+.match-thumb img{width:100%;height:100%;object-fit:cover}
+.match-thumb-name{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font-size:11px;font-weight:700}
+
+/* DETAIL OVERLAY */
+.detail-overlay{position:fixed;inset:0;background:#fff;z-index:600;display:none;flex-direction:column;overflow-y:auto}
+.detail-overlay.show{display:flex}
+.detail-header{position:sticky;top:0;background:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #e4e6eb;z-index:10}
+.detail-back{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px}
+.detail-photo{width:100%;height:300px;object-fit:cover;background:#e4e6eb}
+.detail-body{padding:16px}
+.detail-section-title{font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;margin-top:16px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.detail-chip{background:#f8fafc;border-radius:10px;padding:10px 12px}
+.detail-chip-label{font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:2px}
+.detail-chip-val{font-size:13px;font-weight:700;color:#1a1a2e}
+.detail-action-row{display:flex;gap:10px;margin-top:20px}
+.detail-nope{flex:1;height:48px;border-radius:999px;border:2px solid #e11d48;background:#fff;color:#e11d48;font-size:14px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif}
+.detail-like{flex:2;height:48px;border-radius:999px;border:none;background:linear-gradient(135deg,#e11d48,#f97316);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif}
+
+/* TOAST */
+.pm-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(26,22,30,.92);color:#fff;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;pointer-events:none}
+.pm-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state .emoji{font-size:64px;margin-bottom:12px}
+.empty-state h3{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:6px}
+.empty-state p{font-size:13px;color:#65676b;margin-bottom:20px}
+.refresh-btn{height:44px;padding:0 28px;border-radius:999px;border:none;background:linear-gradient(135deg,#e11d48,#f97316);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif}
+
+/* BOTTOM NAV */
+.bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e4e6eb;z-index:300;align-items:center;justify-content:space-around}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:6px 0;border:none;background:none;font-family:'Poppins',sans-serif;color:#65676b;text-decoration:none;transition:color .15s}
+.bnav-item i{font-size:22px}
+.bnav-item span{font-size:9px;font-weight:700;text-transform:uppercase}
+.bnav-item.active{color:#e11d48}
+@media(max-width:768px){.bottomnav{display:flex}}
+
+@media(max-width:480px){
+  .card-stack{height:480px}
+  .card-photo{height:310px}
+  .card-name{font-size:20px}
+  .act-like,.act-nope{width:52px;height:52px;font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPNAV -->
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html">
+    <div class="logo-icon">🐾</div> PawBook
+  </a>
+  <div class="topnav-center">
+    <div class="topnav-title">🐾 PawMatch</div>
+  </div>
+  <button class="nav-icon-btn" onclick="openFilters()" title="Filters"><i class="ti ti-adjustments-horizontal"></i></button>
+  <button class="nav-icon-btn" onclick="showTab('matches')" title="Matches">
+    <i class="ti ti-heart"></i>
+    <span class="nav-badge" id="match-badge" style="display:none">0</span>
+  </button>
+</nav>
+
+<!-- TABS -->
+<div class="pm-tabs">
+  <button class="pm-tab active" id="tab-btn-discover" onclick="showTab('discover')">🔥 Discover</button>
+  <button class="pm-tab" id="tab-btn-matches" onclick="showTab('matches')">💕 Matches</button>
+  <button class="pm-tab" id="tab-btn-liked" onclick="showTab('liked')">⭐ Liked You</button>
+</div>
+
+<!-- FILTER BAR (only shown on discover) -->
+<div class="filter-bar" id="filter-bar">
+  <button class="fpill active" onclick="setFilter('all',this)">All Pets</button>
+  <button class="fpill" onclick="setFilter('dog',this)">🐕 Dogs</button>
+  <button class="fpill" onclick="setFilter('cat',this)">🐈 Cats</button>
+  <button class="fpill" onclick="setFilter('rabbit',this)">🐰 Rabbits</button>
+  <button class="fpill" onclick="setFilter('bird',this)">🦜 Birds</button>
+  <button class="fpill" onclick="setFilter('hamster',this)">🐹 Hamsters</button>
+  <button class="fpill" onclick="setFilter('fish',this)">🐟 Fish</button>
+  <button class="fpill" onclick="setFilter('nearby',this)">📍 Nearby</button>
+  <button class="fpill" onclick="setFilter('playdate',this)">🎾 Playdate</button>
+  <button class="fpill" onclick="setFilter('breeding',this)">🌸 Breeding</button>
+</div>
+
+<!-- DISCOVER TAB -->
+<div id="tab-discover-content" class="match-wrap">
+  <div class="card-stack" id="card-stack"></div>
+  <div class="action-row">
+    <button class="act-btn act-undo" onclick="undoSwipe()" title="Undo"><i class="ti ti-arrow-back-up"></i></button>
+    <button class="act-btn act-nope" onclick="swipeCard('left')" title="Pass"><i class="ti ti-x"></i></button>
+    <button class="act-btn act-super" onclick="swipeCard('super')" title="Super Like"><i class="ti ti-star"></i></button>
+    <button class="act-btn act-like" onclick="swipeCard('right')" title="Like"><i class="ti ti-heart"></i></button>
+    <button class="act-btn act-boost" onclick="boostProfile()" title="Boost"><i class="ti ti-bolt"></i></button>
+  </div>
+</div>
+
+<!-- MATCHES TAB -->
+<div id="tab-matches-content" class="matches-wrap">
+  <div style="font-size:16px;font-weight:800;color:#1a1a2e;margin-bottom:4px">Your Matches 💕</div>
+  <div style="font-size:13px;color:#65676b;margin-bottom:16px">Start a conversation with your matches</div>
+  <div class="matches-grid" id="matches-grid"></div>
+  <div id="no-matches" style="display:none;text-align:center;padding:40px 0;color:#94a3b8;font-size:14px">
+    <div style="font-size:48px;margin-bottom:12px">💔</div>
+    No matches yet. Keep swiping!
+  </div>
+</div>
+
+<!-- LIKED YOU TAB -->
+<div id="tab-liked-content" class="matches-wrap">
+  <div style="font-size:16px;font-weight:800;color:#1a1a2e;margin-bottom:4px">Liked You ⭐</div>
+  <div style="font-size:13px;color:#65676b;margin-bottom:16px">These pets want to meet yours!</div>
+  <div class="matches-grid" id="liked-grid"></div>
+</div>
+
+<!-- MATCH MODAL -->
+<div class="match-overlay" id="match-overlay" onclick="if(event.target===this)closeMatchModal()">
+  <div class="match-box">
+    <div style="font-size:48px;margin-bottom:6px">🎉</div>
+    <div class="match-title">It's a Match!</div>
+    <div class="match-sub">You and <span id="match-pet-name">Buddy</span> liked each other!</div>
+    <div class="match-avatars">
+      <img id="match-my-avatar" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80" class="match-avatar" style="margin-right:-20px;z-index:2">
+      <div class="match-heart">❤️</div>
+      <img id="match-their-avatar" src="" class="match-avatar" style="margin-left:-20px;z-index:1">
+    </div>
+    <div class="match-pet-names" id="match-names-text"></div>
+    <button class="match-btn-send" onclick="sendMessage()">💬 Send a Message</button>
+    <button class="match-btn-skip" onclick="closeMatchModal()">Keep Swiping</button>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-header">
+    <button class="detail-back" onclick="closeDetail()">✕</button>
+    <div style="font-size:16px;font-weight:800" id="detail-header-name">Buddy</div>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="act-btn act-nope" style="width:40px;height:40px;font-size:20px" onclick="closeDetail();swipeCard('left')"><i class="ti ti-x"></i></button>
+      <button class="act-btn act-like" style="width:40px;height:40px;font-size:20px" onclick="closeDetail();swipeCard('right')"><i class="ti ti-heart"></i></button>
+    </div>
+  </div>
+  <img class="detail-photo" id="detail-photo" src="" alt="">
+  <div class="detail-body">
+    <div class="card-name-row">
+      <div class="card-name" id="detail-name"></div>
+      <div class="card-age" id="detail-age"></div>
+      <span id="detail-verified"></span>
+    </div>
+    <div class="card-breed" id="detail-breed"></div>
+    <div class="detail-section-title">About</div>
+    <div style="font-size:13px;color:#444;line-height:1.6" id="detail-bio"></div>
+    <div class="detail-section-title">Details</div>
+    <div class="detail-grid" id="detail-grid"></div>
+    <div class="detail-section-title">Looking for</div>
+    <div class="card-tags" id="detail-tags"></div>
+    <div class="detail-section-title">Owner</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <img id="detail-owner-avatar" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #e4e6eb;background:#e4e6eb">
+      <div>
+        <div style="font-size:14px;font-weight:700" id="detail-owner-name"></div>
+        <div style="font-size:12px;color:#65676b" id="detail-dist"></div>
+      </div>
+    </div>
+    <div class="detail-action-row">
+      <button class="detail-nope" onclick="closeDetail();swipeCard('left')">✕ Pass</button>
+      <button class="detail-like" onclick="closeDetail();swipeCard('right')">❤️ Like</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="pm-toast" id="pm-toast"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottomnav">
+  <a class="bnav-item" href="07_home.html"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" href="03_groups.html"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item active" href="35_pawmatch.html"><i class="ti ti-heart"></i><span>Match</span></a>
+  <a class="bnav-item" href="05_lost_pet.html"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" href="08_pet_profile.html"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+
+<script>
+/* ── PET DATA ── */
+var PETS = [
+  {id:1,name:'Buddy',age:'3 yrs',species:'dog',breed:'Golden Retriever',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'1.2 km',city:'Delhi',lookingFor:['Playdate','Best Friend'],bio:'Hey! I\'m Buddy. I love fetch, belly rubs, and meeting new friends at the park. Super friendly with other dogs and kids!',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80'],owner:'Priya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.8},
+  {id:2,name:'Luna',age:'2 yrs',species:'cat',breed:'Persian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.8 km',city:'Delhi',lookingFor:['Companion','Indoor Play'],bio:'Fluffy Persian who loves sunbeams and slow mornings. I take time to warm up but once I do, I\'m your best cuddle buddy.',photos:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80'],owner:'Rahul Dev',ownerAvatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.6},
+  {id:3,name:'Max',age:'5 yrs',species:'dog',breed:'German Shepherd',gender:'Male',size:'Large',vaccinated:true,neutered:false,distance:'2.3 km',city:'Gurgaon',lookingFor:['Breeding','Playdate'],bio:'Trained GSD who loves jogging, hiking, and protecting my family. Looking for a female GSD for breeding or a running buddy.',photos:['https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=600&q=80'],owner:'Vikram Singh',ownerAvatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80',energy:'Very High',friendly:'Friendly',matchChance:0.7},
+  {id:4,name:'Coco',age:'1 yr',species:'rabbit',breed:'Holland Lop',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'3.1 km',city:'Delhi',lookingFor:['Companion','Playdate'],bio:'Fluffy Holland Lop who binkies when happy! I love fresh veggies, cardboard boxes, and other friendly bunnies. Let\'s hop around!',photos:['https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&q=80'],owner:'Ananya Bose',ownerAvatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',energy:'Medium',friendly:'Very Friendly',matchChance:0.9},
+  {id:5,name:'Tweety',age:'2 yrs',species:'bird',breed:'Cockatiel',gender:'Male',size:'Tiny',vaccinated:false,neutered:false,distance:'1.5 km',city:'Noida',lookingFor:['Companion','Singing Partner'],bio:'I love whistling songs and learning new words! Very social and would love a bird friend or a human who likes serenades.',photos:['https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80'],owner:'Meera Pillai',ownerAvatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80',energy:'High',friendly:'Very Social',matchChance:0.75},
+  {id:6,name:'Bruno',age:'4 yrs',species:'dog',breed:'Labrador',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'0.5 km',city:'Delhi',lookingFor:['Playdate','Swimming Buddy'],bio:'Bruno loves water! Swimming, puddles, or just a water bowl - I\'m in. Looking for an equally adventurous dog for weekend trips.',photos:['https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=600&q=80'],owner:'Arjun Nair',ownerAvatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80',energy:'Very High',friendly:'Very Friendly',matchChance:0.85},
+  {id:7,name:'Whiskers',age:'6 yrs',species:'cat',breed:'Maine Coon',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'4.2 km',city:'Faridabad',lookingFor:['Companion','Lazy Sundays'],bio:'King of the couch. I like feather toys, treats, and occasionally knocking things off shelves. For cats who appreciate the finer things.',photos:['https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&q=80'],owner:'Sunita Kapoor',ownerAvatar:'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.5},
+  {id:8,name:'Nibbles',age:'8 mo',species:'hamster',breed:'Syrian',gender:'Female',size:'Tiny',vaccinated:false,neutered:false,distance:'2.0 km',city:'Delhi',lookingFor:['Companion'],bio:'I run on my wheel at 3am and stuff my cheeks with food for fun. Looking for a fellow hamster friend for supervised playdates.',photos:['https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600&q=80'],owner:'Kabir Ahmed',ownerAvatar:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&q=80',energy:'Nocturnal',friendly:'Shy but Sweet',matchChance:0.65},
+  {id:9,name:'Goldie',age:'1 yr',species:'fish',breed:'Fantail Goldfish',gender:'Female',size:'Tiny',vaccinated:false,neutered:false,distance:'1.1 km',city:'Delhi',lookingFor:['Tank Mate'],bio:'I swim in circles all day and look stunning doing it. Looking for a peaceful tank mate who won\'t eat my fins.',photos:['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80'],owner:'Pooja Iyer',ownerAvatar:'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=80&q=80',energy:'Calm',friendly:'Peaceful',matchChance:0.55},
+  {id:10,name:'Bella',age:'2 yrs',species:'dog',breed:'Beagle',gender:'Female',size:'Medium',vaccinated:true,neutered:true,distance:'1.8 km',city:'Delhi',lookingFor:['Playdate','Sniffing Adventures'],bio:'Bella loves sniffing EVERYTHING. Every walk is a new adventure for my nose. Playful, curious, and great with other dogs!',photos:['https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=600&q=80'],owner:'Deepa Reddy',ownerAvatar:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.88},
+  {id:11,name:'Simba',age:'3 yrs',species:'cat',breed:'Bengal',gender:'Male',size:'Medium',vaccinated:true,neutered:false,distance:'2.7 km',city:'Gurgaon',lookingFor:['Breeding','Companion'],bio:'Bengal with wild markings and wilder energy. I love climbing, chirping at birds, and playing fetch. Looking for a female Bengal.',photos:['https://images.unsplash.com/photo-1518791841217-8f162f1912da?w=600&q=80'],owner:'Rajan Mehta',ownerAvatar:'https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&q=80',energy:'Very High',friendly:'Playful',matchChance:0.7},
+  {id:12,name:'Daisy',age:'1.5 yrs',species:'dog',breed:'Pomeranian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.9 km',city:'Delhi',lookingFor:['Playdate','Fashion Buddy'],bio:'I have a wardrobe and I\'m not ashamed. Love dress-up, photos, and strutting in the park. Looking for a small dog who matches my vibe.',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80'],owner:'Kavya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80',energy:'Medium',friendly:'Very Social',matchChance:0.82}
+];
+
+/* ── STATE ── */
+var deck = [];
+var currentFilter = 'all';
+var matchedPets = [];
+var swipeHistory = [];
+var activePetIdx = 0;
+
+try { matchedPets = JSON.parse(localStorage.getItem('pawmatch_matches') || '[]'); } catch(e) { matchedPets = []; }
+
+/* ── HELPERS ── */
+var EMOJI = {dog:'🐕',cat:'🐈',rabbit:'🐰',bird:'🦜',hamster:'🐹',fish:'🐟'};
+
+function filteredDeck() {
+  if(currentFilter === 'all') return deck;
+  if(['dog','cat','rabbit','bird','hamster','fish'].indexOf(currentFilter) >= 0) {
+    return deck.filter(function(p){ return p.species === currentFilter; });
+  }
+  if(currentFilter === 'nearby') return deck.filter(function(p){ return parseFloat(p.distance) < 2; });
+  if(currentFilter === 'playdate') return deck.filter(function(p){
+    return p.lookingFor.some(function(l){ return l.toLowerCase().indexOf('play') >= 0; });
+  });
+  if(currentFilter === 'breeding') return deck.filter(function(p){
+    return p.lookingFor.some(function(l){ return l.toLowerCase().indexOf('breed') >= 0; });
+  });
+  return deck;
+}
+
+/* ── RENDER DECK ── */
+function renderDeck() {
+  var stack = document.getElementById('card-stack');
+  stack.innerHTML = '';
+  var fd = filteredDeck();
+  activePetIdx = 0;
+
+  if(!fd.length) {
+    stack.innerHTML = '<div class="empty-state"><div class="emoji">🐾</div><h3>No pets found</h3><p>Try a different filter</p><button class="refresh-btn" onclick="resetDeck()">🔄 Reset</button></div>';
+    return;
+  }
+
+  var toShow = fd.slice(0, Math.min(3, fd.length));
+  // Build bottom-to-top
+  for(var i = toShow.length - 1; i >= 0; i--) {
+    stack.appendChild(buildCard(toShow[i], i));
+  }
+}
+
+function buildCard(pet, stackPos) {
+  var card = document.createElement('div');
+  card.className = 'pet-card';
+  card.dataset.petId = pet.id;
+
+  var em = EMOJI[pet.species] || '🐾';
+  var dotsHtml = '';
+
+  card.innerHTML =
+    '<div class="card-photo-wrap">' +
+      '<img class="card-photo" src="' + pet.photos[0] + '" alt="' + pet.name + '">' +
+      '<div class="card-like-label" id="ll-' + pet.id + '">LIKE 💚</div>' +
+      '<div class="card-nope-label" id="nl-' + pet.id + '">NOPE ✕</div>' +
+      '<div class="card-super-label" id="sl-' + pet.id + '">⭐ SUPER LIKE</div>' +
+    '</div>' +
+    '<div class="card-info">' +
+      '<div class="card-name-row">' +
+        '<div class="card-name">' + pet.name + '</div>' +
+        '<div class="card-age">' + pet.age + '</div>' +
+        (pet.vaccinated ? '<span title="Vaccinated">✅</span>' : '') +
+      '</div>' +
+      '<div class="card-breed">' + em + ' ' + pet.breed + ' · ' + pet.gender + ' · ' + pet.size + '</div>' +
+      '<div class="card-tags">' + pet.lookingFor.map(function(t){ return '<span class="card-tag">'+t+'</span>'; }).join('') + '</div>' +
+      '<div class="card-bio">' + pet.bio + '</div>' +
+      '<div class="card-owner">' +
+        '<img class="owner-avatar" src="' + pet.ownerAvatar + '" alt="">' +
+        '<div class="owner-name">👤 ' + pet.owner + '</div>' +
+        '<div class="card-dist">📍 ' + pet.distance + '</div>' +
+      '</div>' +
+    '</div>';
+
+  // Click opens detail (only if not dragging)
+  card.addEventListener('click', function(e) {
+    if(!card._dragged) openDetail(pet);
+    card._dragged = false;
+  });
+
+  attachDrag(card, pet);
+  return card;
+}
+
+/* ── DRAG ── */
+function attachDrag(card, pet) {
+  var sx=0, sy=0, dx=0, dy=0, down=false;
+
+  function start(e) {
+    down = true;
+    card._dragged = false;
+    var pt = e.touches ? e.touches[0] : e;
+    sx = pt.clientX; sy = pt.clientY;
+    dx = 0; dy = 0;
+  }
+
+  function move(e) {
+    if(!down) return;
+    var pt = e.touches ? e.touches[0] : e;
+    dx = pt.clientX - sx;
+    dy = pt.clientY - sy;
+    if(Math.abs(dx) > 5 || Math.abs(dy) > 5) card._dragged = true;
+    if(!card._dragged) return;
+
+    var rot = dx * 0.08;
+    card.style.transform = 'translateX('+dx+'px) translateY('+dy+'px) rotate('+rot+'deg)';
+    card.style.zIndex = 10;
+
+    // Labels
+    var ll = document.getElementById('ll-'+pet.id);
+    var nl = document.getElementById('nl-'+pet.id);
+    var sl = document.getElementById('sl-'+pet.id);
+    if(ll && nl && sl) {
+      ll.style.opacity = dx > 40 ? Math.min(1,(dx-40)/60) : 0;
+      nl.style.opacity = dx < -40 ? Math.min(1,(-dx-40)/60) : 0;
+      sl.style.opacity = dy < -60 ? Math.min(1,(-dy-60)/60) : 0;
+    }
+
+    if(e.cancelable) e.preventDefault();
+  }
+
+  function end() {
+    if(!down) return;
+    down = false;
+
+    var ll = document.getElementById('ll-'+pet.id);
+    var nl = document.getElementById('nl-'+pet.id);
+    var sl = document.getElementById('sl-'+pet.id);
+    if(ll) ll.style.opacity = 0;
+    if(nl) nl.style.opacity = 0;
+    if(sl) sl.style.opacity = 0;
+
+    var threshold = window.innerWidth * 0.28;
+    if(dx > threshold) {
+      flyCard(card, pet, 'right');
+    } else if(dx < -threshold) {
+      flyCard(card, pet, 'left');
+    } else if(dy < -100) {
+      flyCard(card, pet, 'super');
+    } else {
+      card.style.transform = '';
+      card.style.zIndex = '';
+    }
+  }
+
+  card.addEventListener('mousedown', start);
+  card.addEventListener('touchstart', start, {passive:true});
+  window.addEventListener('mousemove', move);
+  window.addEventListener('touchmove', move, {passive:false});
+  window.addEventListener('mouseup', end);
+  window.addEventListener('touchend', end);
+}
+
+function flyCard(card, pet, direction) {
+  swipeHistory.push({pet:pet, direction:direction});
+  card.classList.add('is-flying');
+
+  if(direction === 'right') {
+    card.style.transform = 'translateX(150%) rotate(20deg)';
+    card.style.opacity = '0';
+    handleLike(pet, false);
+  } else if(direction === 'left') {
+    card.style.transform = 'translateX(-150%) rotate(-20deg)';
+    card.style.opacity = '0';
+    pmToast('Passed on ' + pet.name, 'nope');
+  } else {
+    card.style.transform = 'translateY(-150%) scale(.8)';
+    card.style.opacity = '0';
+    handleLike(pet, true);
+    pmToast('⭐ Super Liked ' + pet.name + '!', 'super');
+  }
+
+  // Remove card and replenish after animation
+  setTimeout(function() {
+    card.remove();
+    replenishStack();
+    updateCardScale();
+  }, 420);
+}
+
+function replenishStack() {
+  var fd = filteredDeck();
+  var stack = document.getElementById('card-stack');
+  var existing = stack.querySelectorAll('.pet-card');
+  activePetIdx++;
+
+  // Show next card if we have more
+  var nextIdx = activePetIdx + existing.length;
+  if(nextIdx < fd.length) {
+    var newCard = buildCard(fd[nextIdx], 0);
+    stack.insertBefore(newCard, stack.firstChild);
+  }
+
+  if(!stack.querySelector('.pet-card')) {
+    setTimeout(function() {
+      if(!stack.querySelector('.pet-card')) {
+        stack.innerHTML = '<div class="empty-state"><div class="emoji">🎉</div><h3>You\'ve seen them all!</h3><p>Check your matches or reset</p><button class="refresh-btn" onclick="resetDeck()">🔄 Reset</button></div>';
+      }
+    }, 100);
+  }
+}
+
+function updateCardScale() {
+  var cards = document.querySelectorAll('#card-stack .pet-card');
+  var len = cards.length;
+  // top card = last in DOM
+  for(var i=0; i<len; i++) {
+    var fromTop = len - 1 - i;
+    cards[i].style.transform = fromTop === 0 ? '' : 'scale('+(1-fromTop*0.04)+') translateY('+(fromTop*8)+'px)';
+    cards[i].style.zIndex = len - fromTop;
+  }
+}
+
+/* ── SWIPE CARD (button) ── */
+function swipeCard(direction) {
+  var fd = filteredDeck();
+  if(activePetIdx >= fd.length) return;
+  var topCards = document.querySelectorAll('#card-stack .pet-card');
+  if(!topCards.length) return;
+  var topCard = topCards[topCards.length - 1]; // last = top (z-index highest)
+  var petId = parseInt(topCard.dataset.petId);
+  var pet = PETS.filter(function(p){ return p.id === petId; })[0];
+  if(!pet) return;
+  flyCard(topCard, pet, direction);
+}
+
+function undoSwipe() {
+  if(!swipeHistory.length) { pmToast('Nothing to undo!', 'info'); return; }
+  var last = swipeHistory.pop();
+  // Re-add to deck front and re-render
+  var idx = deck.indexOf(last.pet);
+  if(idx < 0) deck.unshift(last.pet);
+  activePetIdx = Math.max(0, activePetIdx - 1);
+  renderDeck();
+  pmToast('Undone!', 'info');
+}
+
+/* ── LIKE / MATCH ── */
+function handleLike(pet, isSuper) {
+  pmToast((isSuper ? '⭐ Super Liked ' : '❤️ Liked ') + pet.name + '!', 'like');
+  var chance = pet.matchChance + (isSuper ? 0.25 : 0);
+  if(Math.random() < chance) {
+    setTimeout(function() { triggerMatch(pet); }, 550);
+  }
+}
+
+function triggerMatch(pet) {
+  var alreadyMatched = matchedPets.some(function(m){ return m.id === pet.id; });
+  if(!alreadyMatched) {
+    matchedPets.push({id:pet.id, name:pet.name, photo:pet.photos[0], breed:pet.breed, owner:pet.owner, matchedAt:new Date().toISOString(), isNew:true});
+    try { localStorage.setItem('pawmatch_matches', JSON.stringify(matchedPets)); } catch(e){}
+  }
+  updateMatchBadge();
+  document.getElementById('match-their-avatar').src = pet.photos[0];
+  document.getElementById('match-pet-name').textContent = pet.name;
+  document.getElementById('match-names-text').textContent = 'Your pet ❤️ ' + pet.name;
+  document.getElementById('match-overlay').classList.add('show');
+  launchConfetti();
+}
+
+function closeMatchModal() {
+  document.getElementById('match-overlay').classList.remove('show');
+}
+
+function sendMessage() {
+  closeMatchModal();
+  pmToast('💬 Message sent! Check your inbox.', 'like');
+}
+
+function launchConfetti() {
+  var colors = ['#e11d48','#f97316','#f59e0b','#16a34a','#3b82f6','#a855f7','#fff'];
+  for(var i=0; i<60; i++) {
+    (function(i) {
+      var p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = (Math.random()*100) + 'vw';
+      p.style.background = colors[Math.floor(Math.random()*colors.length)];
+      p.style.width = (6+Math.random()*8) + 'px';
+      p.style.height = (6+Math.random()*8) + 'px';
+      p.style.animationDelay = (Math.random()*0.5) + 's';
+      p.style.animationDuration = (0.9+Math.random()*0.6) + 's';
+      document.body.appendChild(p);
+      setTimeout(function(){ if(p.parentNode) p.parentNode.removeChild(p); }, 1500);
+    })(i);
+  }
+}
+
+/* ── TABS ── */
+function showTab(tab) {
+  var tabs = ['discover','matches','liked'];
+  tabs.forEach(function(t) {
+    var content = document.getElementById('tab-'+t+'-content');
+    var btn = document.getElementById('tab-btn-'+t);
+    if(content) content.style.display = t === tab ? 'block' : 'none';
+    if(btn) btn.classList.toggle('active', t === tab);
+  });
+  var filterBar = document.getElementById('filter-bar');
+  if(filterBar) filterBar.style.display = tab === 'discover' ? 'flex' : 'none';
+  if(tab === 'matches') renderMatchesGrid();
+  if(tab === 'liked') renderLikedGrid();
+}
+
+function updateMatchBadge() {
+  var badge = document.getElementById('match-badge');
+  var newCount = matchedPets.filter(function(m){ return m.isNew; }).length;
+  badge.textContent = newCount;
+  badge.style.display = newCount > 0 ? 'flex' : 'none';
+}
+
+/* ── MATCHES GRID ── */
+function renderMatchesGrid() {
+  var grid = document.getElementById('matches-grid');
+  var noEl = document.getElementById('no-matches');
+  grid.innerHTML = '';
+  if(!matchedPets.length) { noEl.style.display = 'block'; return; }
+  noEl.style.display = 'none';
+  matchedPets.forEach(function(m) {
+    m.isNew = false;
+    var div = document.createElement('div');
+    div.className = 'match-thumb';
+    div.innerHTML = '<img src="'+m.photo+'" alt="'+m.name+'"><div class="match-thumb-name">'+m.name+'</div>';
+    div.onclick = function(){ pmToast('💬 Opening chat with '+m.name+'...','like'); };
+    grid.appendChild(div);
+  });
+  try { localStorage.setItem('pawmatch_matches', JSON.stringify(matchedPets)); } catch(e){}
+  updateMatchBadge();
+}
+
+function renderLikedGrid() {
+  var grid = document.getElementById('liked-grid');
+  grid.innerHTML = '';
+  var likers = PETS.filter(function(p,i){ return i%2===0; }).slice(0,6);
+  likers.forEach(function(pet) {
+    var div = document.createElement('div');
+    div.className = 'match-thumb';
+    div.innerHTML =
+      '<img src="'+pet.photos[0]+'" alt="'+pet.name+'" style="filter:blur(7px)">' +
+      '<div class="match-thumb-name">'+pet.name+'</div>' +
+      '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">' +
+        '<button style="background:linear-gradient(135deg,#e11d48,#f97316);color:#fff;border:none;border-radius:999px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:Poppins,sans-serif" onclick="pmToast(\'Upgrade to PawMatch Pro to see who liked you!\',\'info\')">See Who</button>' +
+      '</div>';
+    grid.appendChild(div);
+  });
+}
+
+/* ── DETAIL ── */
+function openDetail(pet) {
+  var em = EMOJI[pet.species] || '🐾';
+  document.getElementById('detail-overlay').classList.add('show');
+  document.getElementById('detail-header-name').textContent = pet.name + ' ' + em;
+  document.getElementById('detail-photo').src = pet.photos[0];
+  document.getElementById('detail-name').textContent = pet.name;
+  document.getElementById('detail-age').textContent = pet.age;
+  document.getElementById('detail-verified').textContent = pet.vaccinated ? '✅' : '';
+  document.getElementById('detail-breed').textContent = em + ' ' + pet.breed + ' · ' + pet.gender + ' · ' + pet.size + ' · ' + pet.city;
+  document.getElementById('detail-bio').textContent = pet.bio;
+  document.getElementById('detail-owner-avatar').src = pet.ownerAvatar;
+  document.getElementById('detail-owner-name').textContent = pet.owner;
+  document.getElementById('detail-dist').textContent = '📍 ' + pet.distance + ' away';
+  document.getElementById('detail-grid').innerHTML =
+    '<div class="detail-chip"><div class="detail-chip-label">Energy</div><div class="detail-chip-val">'+pet.energy+'</div></div>' +
+    '<div class="detail-chip"><div class="detail-chip-label">Friendliness</div><div class="detail-chip-val">'+pet.friendly+'</div></div>' +
+    '<div class="detail-chip"><div class="detail-chip-label">Vaccinated</div><div class="detail-chip-val">'+(pet.vaccinated?'✅ Yes':'❌ No')+'</div></div>' +
+    '<div class="detail-chip"><div class="detail-chip-label">Neutered</div><div class="detail-chip-val">'+(pet.neutered?'✅ Yes':'❌ No')+'</div></div>';
+  document.getElementById('detail-tags').innerHTML = pet.lookingFor.map(function(t){ return '<span class="card-tag">'+t+'</span>'; }).join('');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('show');
+}
+
+/* ── MISC ── */
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.fpill').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  deck = PETS.slice();
+  activePetIdx = 0;
+  renderDeck();
+}
+
+function resetDeck() {
+  deck = PETS.slice();
+  activePetIdx = 0;
+  renderDeck();
+}
+
+function boostProfile() {
+  pmToast('⚡ Profile Boosted! Visible to 10x more pets near you.', 'super');
+}
+
+function openFilters() {
+  pmToast('Advanced filters: age, breed, distance, purpose', 'info');
+}
+
+function pmToast(msg, type) {
+  var t = document.getElementById('pm-toast');
+  t.textContent = msg;
+  t.style.background = type==='like' ? '#16a34a' : type==='nope' ? '#e11d48' : type==='super' ? '#3b82f6' : 'rgba(26,22,30,.92)';
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', function() {
+  deck = PETS.slice();
+  renderDeck();
+  updateMatchBadge();
+  document.getElementById('tab-matches-content').style.display = 'none';
+  document.getElementById('tab-liked-content').style.display = 'none';
+});
+</script>
+</body>
+</html>
