@@ -282,7 +282,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
 
 <script>
 /* ── PET DATA ── */
-var PETS = [
+var DEMO_PETS = [
   {id:1,name:'Buddy',age:'3 yrs',species:'dog',breed:'Golden Retriever',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'1.2 km',city:'Delhi',lookingFor:['Playdate','Best Friend'],bio:'Hey! I\'m Buddy. I love fetch, belly rubs, and meeting new friends at the park. Super friendly with other dogs and kids!',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80'],owner:'Priya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.8},
   {id:2,name:'Luna',age:'2 yrs',species:'cat',breed:'Persian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.8 km',city:'Delhi',lookingFor:['Companion','Indoor Play'],bio:'Fluffy Persian who loves sunbeams and slow mornings. I take time to warm up but once I do, I\'m your best cuddle buddy.',photos:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80'],owner:'Rahul Dev',ownerAvatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.6},
   {id:3,name:'Max',age:'5 yrs',species:'dog',breed:'German Shepherd',gender:'Male',size:'Large',vaccinated:true,neutered:false,distance:'2.3 km',city:'Gurgaon',lookingFor:['Breeding','Playdate'],bio:'Trained GSD who loves jogging, hiking, and protecting my family. Looking for a female GSD for breeding or a running buddy.',photos:['https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=600&q=80'],owner:'Vikram Singh',ownerAvatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80',energy:'Very High',friendly:'Friendly',matchChance:0.7},
@@ -296,6 +296,51 @@ var PETS = [
   {id:11,name:'Simba',age:'3 yrs',species:'cat',breed:'Bengal',gender:'Male',size:'Medium',vaccinated:true,neutered:false,distance:'2.7 km',city:'Gurgaon',lookingFor:['Breeding','Companion'],bio:'Bengal with wild markings and wilder energy. I love climbing, chirping at birds, and playing fetch. Looking for a female Bengal.',photos:['https://images.unsplash.com/photo-1518791841217-8f162f1912da?w=600&q=80'],owner:'Rajan Mehta',ownerAvatar:'https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&q=80',energy:'Very High',friendly:'Playful',matchChance:0.7},
   {id:12,name:'Daisy',age:'1.5 yrs',species:'dog',breed:'Pomeranian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.9 km',city:'Delhi',lookingFor:['Playdate','Fashion Buddy'],bio:'I have a wardrobe and I\'m not ashamed. Love dress-up, photos, and strutting in the park. Looking for a small dog who matches my vibe.',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80'],owner:'Kavya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80',energy:'Medium',friendly:'Very Social',matchChance:0.82}
 ];
+
+/* ── LOAD REAL PETS FROM localStorage (saved by 08_pet_profile.html) ── */
+function loadRealPets(){
+  try{
+    var stored = JSON.parse(localStorage.getItem('pawmatch_mypets')||'[]');
+    var enabled = JSON.parse(localStorage.getItem('pawmatch_enabled')||'{}');
+    // Filter to only pets the user enabled (all enabled by default)
+    var real = stored.filter(function(p){ return enabled[p.id]!==false; });
+    if(real.length){
+      // Normalise to PETS schema
+      return real.map(function(p,i){
+        return {
+          id: p.id||('real_'+i),
+          name: p.name||'Pet',
+          age: p.age||'',
+          species: (p.species||'dog').toLowerCase(),
+          breed: p.breed||p.species||'',
+          gender: p.gender||'',
+          size: p.size||'',
+          vaccinated: p.vaccinated||false,
+          neutered: p.neutered||false,
+          distance: p.location||'Nearby',
+          city: p.city||'',
+          lookingFor: p.lookingFor||['Playdate'],
+          bio: p.bio||'Hi, I am '+p.name+'! 🐾',
+          photos: [p.photo||'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80'],
+          owner: p.owner||'',
+          ownerAvatar: '',
+          energy: p.energy||'',
+          friendly: p.friendly||'',
+          matchChance: p.matchChance||0.6
+        };
+      });
+    }
+  }catch(e){}
+  return null;
+}
+
+var _realPets = loadRealPets();
+// Merge: real pets first, then demo pets (filtered to exclude same species if real exist)
+var PETS = _realPets && _realPets.length
+  ? _realPets.concat(DEMO_PETS.filter(function(d){
+      return !_realPets.some(function(r){ return r.name===d.name; });
+    }))
+  : DEMO_PETS;
 
 /* ── STATE ── */
 var deck = [];

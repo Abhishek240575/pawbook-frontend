@@ -1125,20 +1125,73 @@ async function loadFeed(){
   }
 }
 
+// ── PAWMATCH SYNC ─────────────────────────────────────────────────────────────
+// Reads which pets the user has toggled ON for PawMatch
+function pawmatchEnabled(petId){ try{return JSON.parse(localStorage.getItem('pawmatch_enabled')||'{}')[petId]!==false;}catch{return true;} }
+function setPawmatchEnabled(petId,val){
+  try{
+    const m=JSON.parse(localStorage.getItem('pawmatch_enabled')||'{}');
+    m[petId]=val;
+    localStorage.setItem('pawmatch_enabled',JSON.stringify(m));
+  }catch{}
+}
+function syncPetsToLocalStorage(pets){
+  // Save all pets as PawMatch candidates (with matchChance 0.6 by default)
+  const pmPets=pets.map(p=>({
+    id:p.pet_id||p.id||p.name,
+    name:p.name,
+    species:p.species||'Dog',
+    breed:p.breed||'',
+    age:p.age_years!=null?p.age_years+'y':'',
+    photo:p.profile_photo||p.photo||'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80',
+    bio:p.bio||p.about||'Hey! I am '+p.name+' 🐾',
+    location:p.location||'Nearby',
+    matchChance:0.6,
+    owner:user?user.full_name||user.username:'You'
+  }));
+  localStorage.setItem('pawmatch_mypets',JSON.stringify(pmPets));
+}
+
+function togglePawMatch(petId,btn){
+  const on=pawmatchEnabled(petId);
+  setPawmatchEnabled(petId,!on);
+  btn.innerHTML=!on
+    ?'<i class="ti ti-heart-filled" style="color:#ec4899"></i> In PawMatch'
+    :'<i class="ti ti-heart" style="color:#8a8d91"></i> Add to PawMatch';
+  btn.style.background=!on?'#fdf2f8':'var(--bg)';
+  btn.style.color=!on?'#ec4899':'var(--text2)';
+  toast(!on?p.name+' is now on PawMatch 🐾':'Removed from PawMatch','info');
+  // re-sync so localStorage reflects toggle
+  syncPetsToLocalStorage(myPets);
+}
+
 async function loadMyPets(){
   try{
     const r=await PetAPI.mine();myPets=r?.data||[];
     const el=document.getElementById('pet-info-list');
     if(!myPets.length)return;
-    el.innerHTML=myPets.map(p=>`
-      <div class="info-row" style="cursor:pointer" onclick="goTo('10_vaccination.html')">
-        <div class="info-icon" style="background:var(--blue-xlight)">${speciesEmoji(p.species)}</div>
-        <div>
-          <div class="info-val">${p.name}</div>
-          <div class="info-label">${p.breed||p.species}${p.age_years!=null?' · '+p.age_years+' yr':''}</div>
+    // Sync to localStorage for PawMatch
+    syncPetsToLocalStorage(myPets);
+    el.innerHTML=myPets.map(p=>{
+      const pid=p.pet_id||p.id||p.name;
+      const on=pawmatchEnabled(pid);
+      return `
+      <div class="info-row" style="cursor:pointer;flex-wrap:wrap;gap:6px" onclick="">
+        <div style="display:flex;align-items:center;gap:10px;flex:1" onclick="goTo('10_vaccination.html')">
+          <div class="info-icon" style="background:var(--blue-xlight)">${speciesEmoji(p.species)}</div>
+          <div>
+            <div class="info-val">${p.name}</div>
+            <div class="info-label">${p.breed||p.species}${p.age_years!=null?' · '+p.age_years+' yr':''}</div>
+          </div>
+          <i class="ti ti-chevron-right" style="margin-left:auto;color:var(--muted);font-size:15px"></i>
         </div>
-        <i class="ti ti-chevron-right" style="margin-left:auto;color:var(--muted);font-size:15px"></i>
-      </div>`).join('')+
+        <button onclick="event.stopPropagation();togglePawMatch('${pid}',this)" style="
+          margin-left:32px;border:none;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+          background:${on?'#fdf2f8':'var(--bg)'};color:${on?'#ec4899':'var(--text2)'};transition:all .2s">
+          ${on?'<i class="ti ti-heart-filled" style="color:#ec4899"></i> In PawMatch':'<i class="ti ti-heart" style="color:#8a8d91"></i> Add to PawMatch'}
+        </button>
+      </div>`;
+    }).join('')+
       `<button class="btn btn-gray btn-full btn-sm" style="margin-top:10px" onclick="addPet()"><i class="ti ti-plus"></i> Add a Pet</button>`;
     document.getElementById('vacc-section').style.display='block';
   }catch{}
