@@ -46,7 +46,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
 
 /* CARD PHOTO */
 .card-photo{width:100%;height:360px;object-fit:cover;display:block;pointer-events:none;background:#e4e6eb}
-.card-photo-wrap{position:relative}
+.card-photo-wrap{position:relative;overflow:hidden}
 .card-like-label{position:absolute;top:24px;left:20px;padding:6px 14px;border:3px solid #16a34a;border-radius:8px;color:#16a34a;font-size:20px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(-15deg);background:rgba(255,255,255,.9);z-index:10;pointer-events:none}
 .card-nope-label{position:absolute;top:24px;right:20px;padding:6px 14px;border:3px solid #e11d48;border-radius:8px;color:#e11d48;font-size:20px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(15deg);background:rgba(255,255,255,.9);z-index:10;pointer-events:none}
 .card-super-label{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);padding:6px 20px;border:3px solid #f59e0b;border-radius:8px;color:#f59e0b;font-size:18px;font-weight:900;letter-spacing:1px;opacity:0;background:rgba(255,255,255,.9);z-index:10;pointer-events:none;white-space:nowrap}
@@ -416,8 +416,7 @@ function buildCard(pet, stackPos) {
     ? '<div class="card-photo-dots">' + pet.photos.map(function(_,i){ return '<span class="cpd'+(i===0?' cpd-active':'')+'" data-idx="'+i+'"></span>'; }).join('') + '</div>'
     : '';
   var photoTapZones = pet.photos.length > 1
-    ? '<div class="card-tap-left" onclick="cycleCardPhoto(event,\''+pet.id+'\',\'prev\')"></div>' +
-      '<div class="card-tap-right" onclick="cycleCardPhoto(event,\''+pet.id+'\',\'next\')"></div>'
+    ? '<div class="card-tap-left"></div><div class="card-tap-right"></div>'
     : '';
 
   card.innerHTML =
@@ -492,7 +491,7 @@ function attachDrag(card, pet) {
     if(e.cancelable) e.preventDefault();
   }
 
-  function end() {
+  function end(e) {
     if(!down) return;
     down = false;
 
@@ -513,6 +512,27 @@ function attachDrag(card, pet) {
     } else {
       card.style.transform = '';
       card.style.zIndex = '';
+      // Short tap on photo area → cycle photo
+      if(!card._dragged && pet.photos && pet.photos.length > 1) {
+        var pt = e && e.changedTouches ? e.changedTouches[0] : null;
+        var clientX = pt ? pt.clientX : sx;
+        var photo = document.getElementById('cphoto-'+pet.id);
+        if(photo && clientX) {
+          var rect = photo.getBoundingClientRect();
+          // Only if tap was in the photo area (not card-info below)
+          if(pt && pt.clientY < rect.bottom) {
+            var relX = clientX - rect.left;
+            var w = rect.width;
+            if(relX < w * 0.38) {
+              cycleCardPhoto(null, pet.id, 'prev');
+              card._dragged = true; // suppress openDetail
+            } else if(relX > w * 0.62) {
+              cycleCardPhoto(null, pet.id, 'next');
+              card._dragged = true; // suppress openDetail
+            }
+          }
+        }
+      }
     }
   }
 
@@ -520,8 +540,8 @@ function attachDrag(card, pet) {
   card.addEventListener('touchstart', start, {passive:true});
   window.addEventListener('mousemove', move);
   window.addEventListener('touchmove', move, {passive:false});
-  window.addEventListener('mouseup', end);
-  window.addEventListener('touchend', end);
+  window.addEventListener('mouseup', function(e){ end(e); });
+  window.addEventListener('touchend', function(e){ end(e); });
 }
 
 function flyCard(card, pet, direction) {
