@@ -189,6 +189,10 @@ html,body{overflow-x:hidden}
     <button class="my-loc-btn" onclick="useMyLocation()">
       <i class="ti ti-current-location"></i> My Location
     </button>
+    <!-- Register Business -->
+    <a href="27_register_business.html" style="height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #22c55e;background:#f0fdf4;color:#16a34a;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;text-decoration:none;flex-shrink:0">
+      <i class="ti ti-plus"></i> List Your Business
+    </a>
     <!-- Sort -->
     <select class="filter-select" onchange="sortPlaces(this.value)" id="sort-select">
       <option value="distance">📍 Nearest First</option>
@@ -537,18 +541,83 @@ function processOverpassData(data, lat, city) {
   return places;
 }
 
-function finishSearch(places, city, centerLat) {
-  if(!places.length) {
-    document.getElementById('places-list').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div style="font-size:15px;font-weight:700">No pet places found in '+city+'</div><div style="font-size:13px;margin-top:6px;color:#65676b">OSM data may be sparse here. Try a larger city nearby.</div></div>';
-    document.getElementById('results-count').textContent = '0 places found';
-    return;
-  }
-  allPlaces = places;
-  currentCat = 'all';
-  document.querySelectorAll('.cat-chip').forEach(function(c){ c.classList.remove('active'); });
-  document.querySelectorAll('.cat-chip')[0].classList.add('active');
-  applyFilters();
-  showToast(places.length + ' places found in ' + city + '!', 'success');
+// ── FETCH DB LISTINGS ─────────────────────────────────────────
+function fetchDbListings(city, lat, lng, callback) {
+  var API_BASE = (typeof window.API_BASE !== 'undefined') ? window.API_BASE : 'https://pawbook-api-cquc.onrender.com/api/v1';
+  var url = API_BASE + '/businesses?city=' + encodeURIComponent(city);
+  if(lat && lng) url += '&lat=' + lat + '&lng=' + lng + '&radius=50';
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var dbPlaces = (data.businesses || []).map(function(b, i) {
+        var catMap = {vet:'vet', shelter:'shelter', zoo:'zoo', aquarium:'aquarium',
+          grooming:'grooming', breeding:'grooming', petshop:'petshop', emergency:'emergency'};
+        return {
+          id: 'db_' + b.business_id,
+          name: b.name,
+          cat: catMap[b.category] || 'vet',
+          address: [b.address, b.city, b.country].filter(Boolean).join(', '),
+          city: b.city,
+          phone: b.phone || '',
+          website: b.website || '',
+          hours: b.opening_hours || '',
+          open: null,
+          rating: 0,
+          lat: parseFloat(b.lat) || lat,
+          lng: parseFloat(b.lng) || lng,
+          img: b.photo_url || '',
+          source: 'db',
+          verified: b.verified,
+          services: b.services || [],
+          accepts_walk_ins: b.accepts_walk_ins,
+          emergency_24h: b.emergency_24h,
+          _dist: 0, dist: ''
+        };
+      });
+      callback(null, dbPlaces);
+    })
+    .catch(function(err) { callback(err, []); });
+}
+
+function finishSearch(osmPlaces, city, lat, lng) {
+  // Merge DB listings with OSM results
+  fetchDbListings(city, lat, lng, function(err, dbPlaces) {
+    // Deduplicate by name similarity to avoid double-listing
+    var names = osmPlaces.map(function(p){ return p.name.toLowerCase(); });
+    var unique = dbPlaces.filter(function(p) {
+      return !names.includes(p.name.toLowerCase());
+    });
+
+    // Compute distance for DB places
+    unique.forEach(function(p) {
+      var dlat = p.lat - lat, dlng = p.lng - lng;
+      p._dist = Math.sqrt(dlat*dlat + dlng*dlng) * 111;
+      p.dist = p._dist.toFixed(1) + ' km';
+    });
+
+    // DB listings first (verified/user-submitted), then OSM
+    var places = unique.concat(osmPlaces);
+    places.sort(function(a,b){ return a._dist - b._dist; });
+
+    if(!places.length) {
+      document.getElementById('places-list').innerHTML =
+        '<div class="empty-state"><div class="empty-icon">🔍</div>'+
+        '<div style="font-size:15px;font-weight:700">No pet places found in '+city+'</div>'+
+        '<div style="font-size:13px;margin-top:6px;color:#65676b">OSM data may be sparse here. Try a larger city nearby.</div>'+
+        '<div style="margin-top:14px"><a href="27_register_business.html" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;background:#1877F2;color:#fff;font-size:13px;font-weight:700;text-decoration:none"><i class="ti ti-plus"></i> Add Your Business</a></div></div>';
+      document.getElementById('results-count').textContent = '0 places found';
+      return;
+    }
+
+    allPlaces = places;
+    currentCat = 'all';
+    document.querySelectorAll('.cat-chip').forEach(function(c){ c.classList.remove('active'); });
+    document.querySelectorAll('.cat-chip')[0].classList.add('active');
+    applyFilters();
+    var dbCount = unique.length;
+    var osmCount = osmPlaces.length;
+    showToast(places.length + ' places in ' + city + (dbCount ? ' (' + dbCount + ' PawBook-listed)' : ''), 'success');
+  });
 }
 
 function fetchOverpass(url, query, timeout) {
@@ -628,7 +697,7 @@ function searchPlaces() {
             p.dist = p._dist.toFixed(1) + ' km';
           });
           places.sort(function(a,b){ return a._dist - b._dist; });
-          finishSearch(places, city, lat);
+          finishSearch(places, city, lat, lng);
         })
         .catch(function(err) {
           if(cancelled) return;
@@ -702,8 +771,8 @@ function renderPlaces() {
     return '<div class="place-card" id="card-'+p.id+'" onclick="selectPlace('+p.id+')">' +
       '<img class="place-img" src="'+p.img+'" alt="'+p.name+'" onerror="this.style.display=\'none\'">' +
       '<div class="place-info">' +
-        '<div class="place-name">'+p.name+'</div>' +
-        '<span class="place-type" style="background:'+col+'22;color:'+col+'">'+label+'</span>' +
+        '<div class="place-name">'+p.name+(p.verified?' <span title="Verified by PawBook" style="color:#1877F2;font-size:13px">✓</span>':'')+'</div>' +
+        '<span class="place-type" style="background:'+col+'22;color:'+col+'">'+label+'</span>'+(p.source==='db'?' <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0">PawBook Listed</span>':'')+
         '<div class="place-addr"><i class="ti ti-map-pin" style="font-size:11px;color:#1877F2"></i>'+p.addr+'</div>' +
         '<div class="place-meta">' +
           '<span class="place-rating">'+starsHtml+' '+p.rating+'</span>' +
