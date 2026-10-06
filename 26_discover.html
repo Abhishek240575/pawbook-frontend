@@ -89,8 +89,8 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:an
 .empty-icon{font-size:48px;margin-bottom:12px}
 
 /* MAP */
-.map-panel{flex:1;position:relative}
-#discover-map{position:absolute;top:0;left:0;width:100%;height:100%;min-height:400px;background:#e8eaed}
+.map-panel{flex:1;position:relative;min-height:0}
+#discover-map{width:100%;height:calc(100vh - 160px);min-height:400px;display:block}
 .map-overlay-btn{position:absolute;top:10px;right:10px;z-index:100;display:flex;flex-direction:column;gap:6px}
 .map-ol-btn{height:36px;padding:0 14px;border-radius:999px;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
 .map-ol-btn:hover{background:#f0f2f5}
@@ -375,7 +375,8 @@ function initMap() {
   tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors', maxZoom: 19
   }).addTo(mapInstance);
-  mapInstance.invalidateSize(true);
+  setTimeout(function(){ mapInstance.invalidateSize(true); }, 200);
+  setTimeout(function(){ mapInstance.invalidateSize(true); }, 600);
 }
 
 function toggleMapStyle() {
@@ -757,19 +758,6 @@ function showToast(msg, type) {
 
 // ── INIT ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  // Set explicit pixel height on map panel BEFORE Leaflet init
-  // so Leaflet sees a real container size
-  var panel = document.getElementById('map-panel');
-  var filterBar = document.querySelector('.filter-bar');
-  var navH = 56;
-  var filterH = filterBar ? filterBar.offsetHeight : 80;
-  var mapH = window.innerHeight - navH - filterH;
-  if(mapH < 300) mapH = 300;
-  panel.style.height = mapH + 'px';
-
-  var mapDiv = document.getElementById('discover-map');
-  mapDiv.style.height = mapH + 'px';
-
   initMap();
   document.getElementById('city-search').value = 'Delhi';
   searchPlaces();
