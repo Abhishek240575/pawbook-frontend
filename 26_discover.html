@@ -569,8 +569,7 @@ function showLocalData(city, lat, lng) {
 function searchPlaces() {
   var city = document.getElementById('city-search').value.trim();
   if(!city) { showToast('Please enter a city name', 'error'); return; }
-  if(_osmSearchActive) return;
-  _osmSearchActive = true;
+  _osmSearchActive = false; // always reset so repeated searches work
   currentCity = city.toLowerCase();
 
   // STEP 1: Show local data immediately (no waiting)
@@ -582,8 +581,11 @@ function searchPlaces() {
       '<div style="margin-top:8px;font-size:13px;color:#65676b">Searching OpenStreetMap…</div></div>';
   }
 
-  // STEP 2: Get coordinates
-  var known = CITY_COORDS[city.toLowerCase()] || CITY_COORDS[city.toLowerCase().split(' ')[0]];
+  // STEP 2: Get coordinates and move map immediately
+  var _key = city.toLowerCase();
+  _key = CITY_ALIASES[_key] || _key;
+  var known = CITY_COORDS[_key] || CITY_COORDS[_key.split(' ')[0]] || CITY_COORDS[city.toLowerCase()] || CITY_COORDS[city.toLowerCase().split(' ')[0]];
+  if(known && mapInstance) { mapInstance.setView([known[0],known[1]],13); setTimeout(function(){mapInstance.invalidateSize();},200); }
   function afterGeo(lat, lng) {
     if(mapInstance){ mapInstance.setView([lat,lng],13); setTimeout(function(){mapInstance.invalidateSize();},200); }
 
