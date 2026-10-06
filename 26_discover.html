@@ -30,7 +30,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:an
 .nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
 /* LAYOUT */
-.page-wrap{padding-top:56px;height:100vh;display:flex;flex-direction:column}
+.page-wrap{padding-top:56px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* FILTER BAR */
 .filter-bar{background:#fff;border-bottom:1px solid #e4e6eb;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
@@ -53,10 +53,10 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:an
 .my-loc-btn:hover{background:#dbeafe}
 
 /* MAIN CONTENT */
-.main-content{display:flex;flex:1;overflow:hidden}
+.main-content{display:flex;flex:1;overflow:hidden;min-height:0}
 
 /* LEFT PANEL */
-.left-panel{width:360px;flex-shrink:0;overflow-y:auto;border-right:1px solid #e4e6eb;background:#fff}
+.left-panel{width:360px;flex-shrink:0;overflow-y:auto;border-right:1px solid #e4e6eb;background:#fff;min-height:0}
 .results-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f2f5}
 .results-count{font-size:14px;font-weight:700;color:#050505}
 .sort-select{height:30px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;background:#fff}
@@ -89,8 +89,8 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:an
 .empty-icon{font-size:48px;margin-bottom:12px}
 
 /* MAP */
-.map-panel{flex:1;position:relative}
-#discover-map{width:100%;height:100%}
+.map-panel{flex:1;position:relative;min-height:400px}
+#discover-map{width:100%;height:100%;min-height:400px}
 .map-overlay-btn{position:absolute;top:10px;right:10px;z-index:100;display:flex;flex-direction:column;gap:6px}
 .map-ol-btn{height:36px;padding:0 14px;border-radius:999px;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
 .map-ol-btn:hover{background:#f0f2f5}
@@ -663,21 +663,36 @@ function showToast(msg, type) {
 
 // ── INIT ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  // Give browser time to apply CSS and set heights before init
+  // Wait for layout to settle before init
   setTimeout(function() {
+    // Force map container to have explicit pixel height before Leaflet init
+    var mapEl = document.getElementById('discover-map');
+    var mapPanel = mapEl.parentElement;
+    var h = mapPanel.offsetHeight || window.innerHeight - 200;
+    if(h < 200) h = window.innerHeight - 200;
+    mapEl.style.height = h + 'px';
+    
     initMap();
-    // Force map to fill container
-    if(mapInstance) {
-      mapInstance.invalidateSize(true);
-    }
+    
+    setTimeout(function(){
+      if(mapInstance) mapInstance.invalidateSize(true);
+    }, 200);
+    
     document.getElementById('city-search').value = 'Delhi';
     searchPlaces();
-  }, 100);
+  }, 150);
 });
 
 // Re-invalidate on resize
 window.addEventListener('resize', function() {
-  if(mapInstance) setTimeout(function(){ mapInstance.invalidateSize(true); }, 150);
+  if(mapInstance) {
+    var mapEl = document.getElementById('discover-map');
+    var mapPanel = mapEl.parentElement;
+    var h = mapPanel.offsetHeight || window.innerHeight - 200;
+    if(h < 200) h = window.innerHeight - 200;
+    mapEl.style.height = h + 'px';
+    setTimeout(function(){ mapInstance.invalidateSize(true); }, 150);
+  }
 });
 </script>
 <!-- DRAWER OVERLAY -->
