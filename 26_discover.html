@@ -439,22 +439,39 @@ function geocodeCity(cityName, callback) {
 
 // ── OVERPASS QUERY ────────────────────────────────────────────
 function buildOverpassQuery(lat, lng, radiusKm) {
-  var r = (radiusKm || 10) * 1000;
-  return '[out:json][timeout:25];(' +
-    'node["amenity"="veterinary"](around:'+r+','+lat+','+lng+');' +
-    'node["amenity"="animal_shelter"](around:'+r+','+lat+','+lng+');' +
-    'node["tourism"="zoo"](around:'+r+','+lat+','+lng+');' +
-    'node["tourism"="aquarium"](around:'+r+','+lat+','+lng+');' +
-    'node["shop"="pet"](around:'+r+','+lat+','+lng+');' +
-    'node["shop"="pet_shop"](around:'+r+','+lat+','+lng+');' +
-    'node["amenity"="animal_boarding"](around:'+r+','+lat+','+lng+');' +
-    'node["amenity"="animal_grooming"](around:'+r+','+lat+','+lng+');' +
-    'way["amenity"="veterinary"](around:'+r+','+lat+','+lng+');' +
-    'way["amenity"="animal_shelter"](around:'+r+','+lat+','+lng+');' +
-    'way["tourism"="zoo"](around:'+r+','+lat+','+lng+');' +
-    'way["tourism"="aquarium"](around:'+r+','+lat+','+lng+');' +
-    'way["shop"="pet"](around:'+r+','+lat+','+lng+');' +
-    ');out center;';
+  var r = (radiusKm || 25) * 1000; // 25km radius
+  var q = '[out:json][timeout:60];(';
+  var tags = [
+    ['node','amenity','veterinary'],
+    ['way','amenity','veterinary'],
+    ['relation','amenity','veterinary'],
+    ['node','amenity','animal_shelter'],
+    ['way','amenity','animal_shelter'],
+    ['node','amenity','animal_boarding'],
+    ['way','amenity','animal_boarding'],
+    ['node','amenity','animal_grooming'],
+    ['way','amenity','animal_grooming'],
+    ['node','amenity','animal_hospital'],
+    ['way','amenity','animal_hospital'],
+    ['node','tourism','zoo'],
+    ['way','tourism','zoo'],
+    ['relation','tourism','zoo'],
+    ['node','tourism','aquarium'],
+    ['way','tourism','aquarium'],
+    ['node','shop','pet'],
+    ['way','shop','pet'],
+    ['node','shop','pet_shop'],
+    ['way','shop','pet_shop'],
+    ['node','shop','agrarian'],
+    ['node','amenity','clinic'],
+    ['node','healthcare','veterinary'],
+    ['way','healthcare','veterinary'],
+  ];
+  tags.forEach(function(t) {
+    q += t[0]+'["'+t[1]+'"="'+t[2]+'"](around:'+r+','+lat+','+lng+');';
+  });
+  q += ');out center;';
+  return q;
 }
 
 function osmElementToPlace(el, idx) {
@@ -465,10 +482,13 @@ function osmElementToPlace(el, idx) {
 
   // Determine category
   var cat = 'vet';
-  if(tags.amenity) cat = OSM_CAT_MAP[tags.amenity] || 'vet';
-  if(tags.tourism === 'zoo') cat = 'zoo';
-  if(tags.tourism === 'aquarium') cat = 'aquarium';
-  if(tags.shop === 'pet' || tags.shop === 'pet_shop') cat = 'petshop';
+  if(tags.amenity === 'veterinary' || tags.amenity === 'animal_hospital' || tags.healthcare === 'veterinary') cat = 'vet';
+  else if(tags.amenity === 'animal_shelter' || tags.amenity === 'animal_boarding') cat = 'shelter';
+  else if(tags.amenity === 'animal_grooming') cat = 'grooming';
+  else if(tags.tourism === 'zoo') cat = 'zoo';
+  else if(tags.tourism === 'aquarium') cat = 'aquarium';
+  else if(tags.shop === 'pet' || tags.shop === 'pet_shop' || tags.shop === 'agrarian') cat = 'petshop';
+  else if(tags.amenity) cat = OSM_CAT_MAP[tags.amenity] || 'vet';
 
   var name = tags.name || tags['name:en'] || (CAT_LABELS[cat] || 'Place') + ' ' + (idx+1);
   var addr = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']]
