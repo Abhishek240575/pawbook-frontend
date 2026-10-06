@@ -513,7 +513,7 @@ function searchPlaces() {
     }
 
     var query = buildOverpassQuery(lat, lng, 10);
-    fetch('https://overpass-api.de/api/interpreter', {
+    fetch('https://overpass.kumi.systems/api/interpreter', {
       method: 'POST',
       body: query,
       headers: {'Content-Type': 'text/plain'}
@@ -550,9 +550,46 @@ function searchPlaces() {
       showToast(places.length + ' places found in ' + city + '!', 'success');
     })
     .catch(function(err) {
-      console.error(err);
-      showToast('Could not load places. Check your connection.', 'error');
-      document.getElementById('places-list').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div>Could not load places. Try again.</div></div>';
+      console.error('Overpass error:', err);
+      // Fallback to second mirror
+      var query2 = buildOverpassQuery(lat, lng, 10);
+      fetch('https://overpass.private.coffee/api/interpreter', {
+        method: 'POST',
+        body: query2,
+        headers: {'Content-Type': 'text/plain'}
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        var elements = data.elements || [];
+        var places = [];
+        elements.forEach(function(el, i) {
+          var p = osmElementToPlace(el, i);
+          if(p) places.push(p);
+        });
+        places.forEach(function(p) {
+          var dlat = p.lat - lat, dlng = p.lng - lng;
+          var d = Math.sqrt(dlat*dlat + dlng*dlng) * 111;
+          p.dist = d.toFixed(1) + ' km';
+          p._dist = d;
+        });
+        places.sort(function(a,b){ return a._dist - b._dist; });
+        if(!places.length) {
+          document.getElementById('places-list').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div style="font-size:15px;font-weight:700">No pet places found</div><div style="font-size:13px;margin-top:6px">Try a nearby city</div></div>';
+          document.getElementById('results-count').textContent = '0 places found';
+          return;
+        }
+        allPlaces = places;
+        currentCat = 'all';
+        document.querySelectorAll('.cat-chip').forEach(function(c){ c.classList.remove('active'); });
+        document.querySelectorAll('.cat-chip')[0].classList.add('active');
+        applyFilters();
+        showToast(places.length + ' places found!', 'success');
+      })
+      .catch(function() {
+        showToast('Could not load places. Try again later.', 'error');
+        document.getElementById('places-list').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div>Could not load places. Check connection.</div></div>';
+        document.getElementById('results-count').textContent = 'Error loading places';
+      });
     });
   });
 }
