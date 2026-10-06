@@ -397,50 +397,143 @@ function toggleMapStyle() {
 }
 
 // ── SEARCH ────────────────────────────────────────────────────
-function searchPlaces() {
-  var city = document.getElementById('city-search').value.trim().toLowerCase();
-  if(!city) { showToast('Please enter a city name', 'error'); return; }
+// ── OSM CAT CONFIG ────────────────────────────────────────────
+var CAT_IMGS = {
+  vet:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80',
+  shelter:'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=400&q=80',
+  zoo:'https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=400&q=80',
+  aquarium:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&q=80',
+  petshop:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&q=80',
+  grooming:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80',
+  emergency:'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=400&q=80',
+};
+var _osmSearchActive = false;
 
-  currentCity = city;
-  var places = PLACES_DB[city] || PLACES_DB[city.split(' ')[0]];
-
-  if(!places || !places.length) {
-    // Generate generic places for any city
-    var coords = CITY_COORDS[city] || [28.6139, 77.2090];
-    places = generateGenericPlaces(city, coords);
-  }
-
-  allPlaces = places;
-  currentCat = 'all';
-
-  // Reset category chips
-  document.querySelectorAll('.cat-chip').forEach(function(c){ c.classList.remove('active'); });
-  document.querySelectorAll('.cat-chip')[0].classList.add('active');
-
-  applyFilters();
-
-  // Center map
-  var coords = CITY_COORDS[city];
-  if(!coords) {
-    for(var key in CITY_COORDS) {
-      if(city.includes(key) || key.includes(city)) { coords = CITY_COORDS[key]; break; }
-    }
-  }
-  if(!coords && places.length) coords = [places[0].lat, places[0].lng];
-  if(coords && mapInstance) {
-    mapInstance.setView(coords, 13);
-    setTimeout(function(){ mapInstance.invalidateSize(); }, 100);
-  }
+function osmElementToPlace(el, idx) {
+  var tags = el.tags || {};
+  var lat = el.lat || (el.center && el.center.lat);
+  var lng = el.lon || (el.center && el.center.lon);
+  if(!lat || !lng) return null;
+  var nm = (tags.name || '').toLowerCase();
+  var cat = 'vet';
+  if(tags.amenity==='veterinary'||tags.amenity==='animal_hospital'||tags.healthcare==='veterinary')
+    cat = (tags.opening_hours||'').indexOf('24')!==-1||nm.indexOf('emergency')!==-1?'emergency':'vet';
+  else if(tags.amenity==='animal_shelter'||tags.amenity==='animal_boarding'||tags.emergency==='animal_rescue'||
+    (tags.amenity==='social_facility'&&(nm.indexOf('animal')!==-1||nm.indexOf('pet')!==-1||nm.indexOf('rescue')!==-1||nm.indexOf('shelter')!==-1)))
+    cat='shelter';
+  else if(tags.tourism==='zoo'||tags.leisure==='nature_reserve') cat='zoo';
+  else if(tags.tourism==='aquarium') cat='aquarium';
+  else if(tags.shop==='pet') cat='petshop';
+  else if(tags.shop==='grooming'||tags.shop==='pet_grooming'||tags.amenity==='animal_grooming') cat='grooming';
+  else if(tags.amenity==='emergency_service') cat='emergency';
+  else if(!tags.name) return null;
+  var name = tags.name || tags['name:en'] || ('Pet Place '+(idx+1));
+  var addr = [tags['addr:street'],tags['addr:city']].filter(Boolean).join(', ') || tags['addr:full'] || '';
+  return {
+    id:'osm_'+el.type+'_'+el.id,
+    name:name, cat:cat, addr:addr,
+    rating: 4.0 + Math.random()*0.9,
+    open: !tags.opening_hours || tags.opening_hours.toLowerCase().indexOf('24')!==-1,
+    hours: tags.opening_hours || '',
+    phone: tags.phone||tags['contact:phone']||'',
+    website: tags.website||tags['contact:website']||'',
+    desc: tags.description || name + ' — found via OpenStreetMap.',
+    img: CAT_IMGS[cat] || CAT_IMGS.vet,
+    lat: lat, lng: lng, source:'osm'
+  };
 }
 
-function generateGenericPlaces(city, coords) {
-  var cityName = city.charAt(0).toUpperCase() + city.slice(1);
-  return [
-    {id:Math.random(),name:cityName + ' Veterinary Hospital',cat:'vet',addr:'City Center, ' + cityName,rating:4.5,dist:'1.0 km',open:true,hours:'9 AM - 6 PM',phone:'Emergency: 112',desc:'General veterinary care and consultation.',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80',lat:coords[0]+0.01,lng:coords[1]+0.01},
-    {id:Math.random(),name:cityName + ' Animal Shelter',cat:'shelter',addr:'Main Road, ' + cityName,rating:4.3,dist:'2.0 km',open:true,hours:'9 AM - 5 PM',phone:'Local Animal Control',desc:'Animal rescue, adoption and rehabilitation.',img:'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=400&q=80',lat:coords[0]-0.01,lng:coords[1]-0.01},
-    {id:Math.random(),name:cityName + ' Pet Shop',cat:'petshop',addr:'Shopping District, ' + cityName,rating:4.2,dist:'1.5 km',open:true,hours:'10 AM - 8 PM',phone:'Call for info',desc:'Pet food, accessories and supplies.',img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&q=80',lat:coords[0]+0.005,lng:coords[1]-0.005},
-    {id:Math.random(),name:cityName + ' Emergency Vet',cat:'emergency',addr:'Hospital Road, ' + cityName,rating:4.7,dist:'3.0 km',open:true,hours:'Open 24/7',phone:'Emergency: 112',desc:'24/7 emergency veterinary services.',img:'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=400&q=80',lat:coords[0]-0.005,lng:coords[1]+0.005},
+function buildOsmQuery(lat, lng) {
+  var r = 25000;
+  var tags = [
+    ['node','amenity','veterinary'],['way','amenity','veterinary'],
+    ['node','amenity','animal_hospital'],['way','amenity','animal_hospital'],
+    ['node','healthcare','veterinary'],
+    ['node','amenity','animal_shelter'],['way','amenity','animal_shelter'],
+    ['node','amenity','animal_boarding'],
+    ['node','amenity','social_facility'],['way','amenity','social_facility'],
+    ['node','emergency','animal_rescue'],['way','emergency','animal_rescue'],
+    ['node','tourism','zoo'],['way','tourism','zoo'],
+    ['node','tourism','aquarium'],['way','tourism','aquarium'],
+    ['node','leisure','nature_reserve'],['way','leisure','nature_reserve'],
+    ['node','shop','pet'],['way','shop','pet'],
+    ['node','shop','grooming'],['node','shop','pet_grooming'],
+    ['node','amenity','animal_grooming'],
+    ['node','amenity','emergency_service'],
   ];
+  var q = '[out:json][timeout:60];(';
+  tags.forEach(function(t){
+    q += t[0]+'["'+t[1]+'"="'+t[2]+'"](around:'+r+','+lat+','+lng+');';
+  });
+  q += ');out center tags 150;';
+  return q;
+}
+
+function searchPlaces() {
+  var city = document.getElementById('city-search').value.trim();
+  if(!city) { showToast('Please enter a city name', 'error'); return; }
+  if(_osmSearchActive) return;
+  _osmSearchActive = true;
+
+  currentCity = city.toLowerCase();
+  document.getElementById('results-count').textContent = 'Searching ' + city + '…';
+  document.getElementById('places-list').innerHTML =
+    '<div class="empty-state"><div class="empty-icon" style="font-size:36px">⏳</div>'+
+    '<div style="margin-top:10px;font-size:13px;color:#65676b">Loading real places from OpenStreetMap…<br><small>Takes 5–20 seconds</small></div></div>';
+
+  // Geocode
+  var known = CITY_COORDS[city.toLowerCase()] || CITY_COORDS[city.toLowerCase().split(' ')[0]];
+  function afterGeo(lat, lng) {
+    if(mapInstance){ mapInstance.setView([lat,lng],13); setTimeout(function(){mapInstance.invalidateSize();},200); }
+    var query = buildOsmQuery(lat, lng);
+    var PBASE = (typeof window.API_BASE!=='undefined'?window.API_BASE:'https://pawbook-api-cquc.onrender.com/api/v1');
+    var mirrors = ['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter'];
+
+    function handleData(data) {
+      _osmSearchActive = false;
+      var elements = data.elements || [];
+      var places = [];
+      elements.forEach(function(el,i){ var p=osmElementToPlace(el,i); if(p){ var dx=p.lat-lat,dy=p.lng-lng; p._dist=Math.sqrt(dx*dx+dy*dy)*111; p.dist=p._dist.toFixed(1)+' km'; places.push(p); } });
+      places.sort(function(a,b){return a._dist-b._dist;});
+      if(!places.length){
+        document.getElementById('results-count').textContent='No places found';
+        document.getElementById('places-list').innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div style="font-size:13px;margin-top:8px">No pet places found in '+city+'.<br>Try a larger city nearby.</div></div>';
+        return;
+      }
+      allPlaces = places; currentCat = 'all';
+      document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active');});
+      var firstChip = document.querySelectorAll('.cat-chip')[0]; if(firstChip) firstChip.classList.add('active');
+      applyFilters();
+    }
+
+    function tryMirror(idx) {
+      if(idx>=mirrors.length){
+        _osmSearchActive=false;
+        document.getElementById('results-count').textContent='Failed to load';
+        document.getElementById('places-list').innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div style="font-size:13px;margin-top:8px">Could not load places.<br>OSM servers busy — try again.</div></div>';
+        showToast('Could not load places. Try again.','error'); return;
+      }
+      fetch(mirrors[idx],{method:'POST',headers:{'Content-Type':'text/plain'},body:query})
+        .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+        .then(handleData)
+        .catch(function(e){console.warn('Mirror failed:',mirrors[idx],e.message);tryMirror(idx+1);});
+    }
+
+    // Try backend proxy first
+    fetch(PBASE+'/overpass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:query})})
+      .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+      .then(handleData)
+      .catch(function(e){console.warn('Proxy failed:',e.message);tryMirror(0);});
+  }
+
+  if(known) { afterGeo(known[0],known[1]); return; }
+  fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(city)+'&format=json&limit=1',{headers:{'Accept-Language':'en'}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d||!d.length){_osmSearchActive=false;showToast('City not found. Try another name.','error');return;}
+      afterGeo(parseFloat(d[0].lat),parseFloat(d[0].lon));
+    })
+    .catch(function(){_osmSearchActive=false;showToast('Could not find city.','error');});
 }
 
 // ── FILTERS ───────────────────────────────────────────────────
