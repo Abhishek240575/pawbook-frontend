@@ -6,8 +6,8 @@
 <title>PawBook — Discover</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
 <link rel="stylesheet" href="style.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -90,7 +90,29 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:an
 
 /* MAP */
 .map-panel{flex:1;position:relative;min-height:0}
-#discover-map{width:100%;height:calc(100vh - 160px);min-height:400px;display:block}
+#discover-map{width:100%;height:500px;min-height:400px;display:block}
+
+/* BUSINESS LISTING */
+.list-biz-btn{height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #22c55e;background:#f0fdf4;color:#16a34a;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;font-family:'Inter',sans-serif;flex-shrink:0}
+.list-biz-btn:hover{background:#dcfce7}
+.biz-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+.biz-modal-bg.open{display:flex}
+.biz-modal-box{background:#fff;border-radius:16px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)}
+.biz-modal-head{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.biz-modal-title{font-size:18px;font-weight:800;color:#050505}
+.biz-modal-body{padding:16px 20px 20px;display:flex;flex-direction:column;gap:12px}
+.biz-field label{display:block;font-size:12px;font-weight:700;color:#65676b;margin-bottom:4px}
+.biz-field input,.biz-field select,.biz-field textarea{width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.biz-field input:focus,.biz-field select:focus,.biz-field textarea:focus{border-color:#1877F2}
+.biz-field textarea{resize:vertical;min-height:80px}
+.biz-row{display:flex;gap:10px}
+.biz-row .biz-field{flex:1}
+.biz-submit{width:100%;height:42px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px}
+.biz-submit:hover{background:#0d65d9}
+.biz-success{text-align:center;padding:32px 20px;display:none}
+.biz-success-icon{font-size:56px;margin-bottom:12px}
+.biz-success-title{font-size:18px;font-weight:800;color:#16a34a;margin-bottom:6px}
+.biz-success-sub{font-size:13px;color:#65676b;line-height:1.6}
 .map-overlay-btn{position:absolute;top:10px;right:10px;z-index:100;display:flex;flex-direction:column;gap:6px}
 .map-ol-btn{height:36px;padding:0 14px;border-radius:999px;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
 .map-ol-btn:hover{background:#f0f2f5}
@@ -187,6 +209,10 @@ html,body{overflow-x:hidden}
     <!-- My Location -->
     <button class="my-loc-btn" onclick="useMyLocation()">
       <i class="ti ti-current-location"></i> My Location
+    </button>
+    <!-- List Your Business -->
+    <button class="list-biz-btn" onclick="openBizModal()">
+      <i class="ti ti-building-store"></i> List Your Business
     </button>
     <!-- Sort -->
     <select class="filter-select" onchange="sortPlaces(this.value)" id="sort-select">
@@ -446,29 +472,32 @@ function osmElementToPlace(el, idx) {
 }
 
 function buildOsmQuery(lat, lng) {
-  var r = 25000;
-  var tags = [
-    ['node','amenity','veterinary'],['way','amenity','veterinary'],
-    ['node','amenity','animal_hospital'],['way','amenity','animal_hospital'],
-    ['node','healthcare','veterinary'],
-    ['node','amenity','animal_shelter'],['way','amenity','animal_shelter'],
-    ['node','amenity','animal_boarding'],
-    ['node','amenity','social_facility'],['way','amenity','social_facility'],
-    ['node','emergency','animal_rescue'],['way','emergency','animal_rescue'],
-    ['node','tourism','zoo'],['way','tourism','zoo'],
-    ['node','tourism','aquarium'],['way','tourism','aquarium'],
-    ['node','leisure','nature_reserve'],['way','leisure','nature_reserve'],
-    ['node','shop','pet'],['way','shop','pet'],
-    ['node','shop','grooming'],['node','shop','pet_grooming'],
-    ['node','amenity','animal_grooming'],
-    ['node','amenity','emergency_service'],
-  ];
-  var q = '[out:json][timeout:60];(';
-  tags.forEach(function(t){
-    q += t[0]+'["'+t[1]+'"="'+t[2]+'"](around:'+r+','+lat+','+lng+');';
-  });
-  q += ');out center tags 150;';
+  // Compact query using 'nwr' (node/way/relation) union — shorter, under 2000 chars
+  var r = 20000;
+  var q = '[out:json][timeout:45];(\n';
+  q += '  nwr["amenity"~"veterinary|animal_hospital|animal_shelter|animal_boarding|animal_grooming"](around:'+r+','+lat+','+lng+');\n';
+  q += '  nwr["healthcare"="veterinary"](around:'+r+','+lat+','+lng+');\n';
+  q += '  nwr["tourism"~"zoo|aquarium"](around:'+r+','+lat+','+lng+');\n';
+  q += '  nwr["shop"~"pet|pet_grooming|grooming"](around:'+r+','+lat+','+lng+');\n';
+  q += '  nwr["emergency"="animal_rescue"](around:'+r+','+lat+','+lng+');\n';
+  q += '  nwr["leisure"="nature_reserve"](around:'+r+','+lat+','+lng+');\n';
+  q += ');out center tags 200;\n';
   return q;
+}
+
+function showLocalData(city, lat, lng) {
+  var key = city.toLowerCase();
+  var fallback = PLACES_DB[key] || PLACES_DB[key.split(' ')[0]] || [];
+  if(fallback.length) {
+    allPlaces = fallback.map(function(p){ return Object.assign({},p); });
+    currentCat = 'all';
+    document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active');});
+    var fc = document.querySelectorAll('.cat-chip')[0]; if(fc) fc.classList.add('active');
+    applyFilters();
+    document.getElementById('results-count').textContent = fallback.length + ' places in ' + city.charAt(0).toUpperCase()+city.slice(1) + ' · Loading more…';
+    return true;
+  }
+  return false;
 }
 
 function searchPlaces() {
@@ -476,66 +505,83 @@ function searchPlaces() {
   if(!city) { showToast('Please enter a city name', 'error'); return; }
   if(_osmSearchActive) return;
   _osmSearchActive = true;
-
   currentCity = city.toLowerCase();
-  document.getElementById('results-count').textContent = 'Searching ' + city + '…';
-  document.getElementById('places-list').innerHTML =
-    '<div class="empty-state"><div class="empty-icon" style="font-size:36px">⏳</div>'+
-    '<div style="margin-top:10px;font-size:13px;color:#65676b">Loading real places from OpenStreetMap…<br><small>Takes 5–20 seconds</small></div></div>';
 
-  // Geocode
+  // STEP 1: Show local data immediately (no waiting)
+  var hasLocal = showLocalData(city, null, null);
+  if(!hasLocal) {
+    document.getElementById('results-count').textContent = 'Searching ' + city + '…';
+    document.getElementById('places-list').innerHTML =
+      '<div class="empty-state"><div class="empty-icon" style="font-size:32px">⏳</div>'+
+      '<div style="margin-top:8px;font-size:13px;color:#65676b">Searching OpenStreetMap…</div></div>';
+  }
+
+  // STEP 2: Get coordinates
   var known = CITY_COORDS[city.toLowerCase()] || CITY_COORDS[city.toLowerCase().split(' ')[0]];
   function afterGeo(lat, lng) {
     if(mapInstance){ mapInstance.setView([lat,lng],13); setTimeout(function(){mapInstance.invalidateSize();},200); }
-    var query = buildOsmQuery(lat, lng);
-    var PBASE = (typeof window.API_BASE!=='undefined'?window.API_BASE:'https://pawbook-api-cquc.onrender.com/api/v1');
-    var mirrors = ['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter'];
 
-    function handleData(data) {
+    // STEP 3: Try backend proxy (with 15s timeout)
+    var PROXY = 'https://pawbook-api-cquc.onrender.com/api/v1/overpass';
+    var query = buildOsmQuery(lat, lng);
+    var _osmDone = false;
+    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 15000);
+
+    function handleOsmData(data) {
+      if(_osmDone) return; _osmDone=true;
+      clearTimeout(timer);
       _osmSearchActive = false;
       var elements = data.elements || [];
       var places = [];
-      elements.forEach(function(el,i){ var p=osmElementToPlace(el,i); if(p){ var dx=p.lat-lat,dy=p.lng-lng; p._dist=Math.sqrt(dx*dx+dy*dy)*111; p.dist=p._dist.toFixed(1)+' km'; places.push(p); } });
+      elements.forEach(function(el,i){
+        var p = osmElementToPlace(el,i);
+        if(p){ var dx=p.lat-lat,dy=p.lng-lng; p._dist=Math.sqrt(dx*dx+dy*dy)*111; p.dist=p._dist.toFixed(1)+' km'; places.push(p); }
+      });
       places.sort(function(a,b){return a._dist-b._dist;});
-      if(!places.length){
-        document.getElementById('results-count').textContent='No places found';
-        document.getElementById('places-list').innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div style="font-size:13px;margin-top:8px">No pet places found in '+city+'.<br>Try a larger city nearby.</div></div>';
-        return;
+      if(places.length) {
+        allPlaces = places; currentCat='all';
+        document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active');});
+        var fc=document.querySelectorAll('.cat-chip')[0]; if(fc) fc.classList.add('active');
+        applyFilters();
+        showToast('Loaded ' + places.length + ' real places from OpenStreetMap ✓', 'success');
+      } else if(!hasLocal) {
+        document.getElementById('results-count').textContent='No places found in '+city;
+        document.getElementById('places-list').innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div style="font-size:13px;margin-top:8px">No pet places found.<br>Try a larger city nearby.</div></div>';
+      } else {
+        document.getElementById('results-count').textContent = allPlaces.length + ' places in ' + city.charAt(0).toUpperCase()+city.slice(1);
       }
-      allPlaces = places; currentCat = 'all';
-      document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active');});
-      var firstChip = document.querySelectorAll('.cat-chip')[0]; if(firstChip) firstChip.classList.add('active');
-      applyFilters();
     }
 
-    function tryMirror(idx) {
-      if(idx>=mirrors.length){
-        _osmSearchActive=false;
-        document.getElementById('results-count').textContent='Failed to load';
-        document.getElementById('places-list').innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div style="font-size:13px;margin-top:8px">Could not load places.<br>OSM servers busy — try again.</div></div>';
-        showToast('Could not load places. Try again.','error'); return;
+    function osmFailed() {
+      if(_osmDone) return; _osmDone=true;
+      clearTimeout(timer);
+      _osmSearchActive = false;
+      if(hasLocal) {
+        document.getElementById('results-count').textContent = allPlaces.length + ' places in ' + city.charAt(0).toUpperCase()+city.slice(1);
+      } else {
+        document.getElementById('results-count').textContent = 'Could not load places';
+        document.getElementById('places-list').innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div style="font-size:13px;margin-top:8px">No data available for this city.<br>Try Delhi, Mumbai or London.</div></div>';
       }
-      fetch(mirrors[idx],{method:'POST',headers:{'Content-Type':'text/plain'},body:query})
-        .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
-        .then(handleData)
-        .catch(function(e){console.warn('Mirror failed:',mirrors[idx],e.message);tryMirror(idx+1);});
     }
 
-    // Try backend proxy first
-    fetch(PBASE+'/overpass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:query})})
-      .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
-      .then(handleData)
-      .catch(function(e){console.warn('Proxy failed:',e.message);tryMirror(0);});
+    fetch(PROXY, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({query:query})
+    })
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(handleOsmData)
+    .catch(function(e){ console.warn('Proxy failed:',e.message); osmFailed(); });
   }
 
   if(known) { afterGeo(known[0],known[1]); return; }
   fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(city)+'&format=json&limit=1',{headers:{'Accept-Language':'en'}})
     .then(function(r){return r.json();})
     .then(function(d){
-      if(!d||!d.length){_osmSearchActive=false;showToast('City not found. Try another name.','error');return;}
+      if(!d||!d.length){_osmSearchActive=false;showToast('City not found.','error');return;}
       afterGeo(parseFloat(d[0].lat),parseFloat(d[0].lon));
     })
-    .catch(function(){_osmSearchActive=false;showToast('Could not find city.','error');});
+    .catch(function(){ _osmSearchActive=false; osmFailed&&osmFailed(); });
 }
 
 // ── FILTERS ───────────────────────────────────────────────────
@@ -746,6 +792,78 @@ function useMyLocation() {
   });
 }
 
+// ── BUSINESS LISTING ──────────────────────────────────────────
+function openBizModal() {
+  document.getElementById('biz-modal').classList.add('open');
+  document.getElementById('biz-form-area').style.display = 'flex';
+  document.getElementById('biz-success').style.display = 'none';
+  document.body.style.overflow = 'hidden';
+}
+function closeBizModal() {
+  document.getElementById('biz-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function submitBizListing() {
+  var name = document.getElementById('biz-name').value.trim();
+  var cat = document.getElementById('biz-cat').value;
+  var city = document.getElementById('biz-city').value.trim();
+  var addr = document.getElementById('biz-addr').value.trim();
+  var email = document.getElementById('biz-email').value.trim();
+
+  if(!name) { showToast('Please enter your business name', 'error'); return; }
+  if(!cat) { showToast('Please select a category', 'error'); return; }
+  if(!city) { showToast('Please enter the city', 'error'); return; }
+  if(!addr) { showToast('Please enter the full address', 'error'); return; }
+  if(!email || !email.includes('@')) { showToast('Please enter a valid email', 'error'); return; }
+
+  var payload = {
+    name: name,
+    category: cat,
+    city: city,
+    address: addr,
+    phone: document.getElementById('biz-phone').value.trim(),
+    hours: document.getElementById('biz-hours').value.trim(),
+    website: document.getElementById('biz-website').value.trim(),
+    email: email,
+    description: document.getElementById('biz-desc').value.trim(),
+    submitted_at: new Date().toISOString()
+  };
+
+  // Save to backend or localStorage as fallback
+  var PBASE = 'https://pawbook-api-cquc.onrender.com/api/v1';
+  fetch(PBASE + '/listings', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')},
+    body: JSON.stringify(payload)
+  }).catch(function(){
+    // Fallback: save locally
+    var saved = JSON.parse(localStorage.getItem('pb_biz_submissions') || '[]');
+    saved.push(payload);
+    localStorage.setItem('pb_biz_submissions', JSON.stringify(saved));
+  });
+
+  // Show success
+  document.getElementById('biz-form-area').style.display = 'none';
+  document.getElementById('biz-success').style.display = 'block';
+  document.getElementById('biz-success-email').textContent = email;
+  showToast('Business listing submitted! 🎉', 'success');
+
+  // Add to current map results immediately as a preview
+  var col = CAT_COLORS[cat] || '#1877F2';
+  var newPlace = {
+    id: 'biz_' + Date.now(),
+    name: name, cat: cat, addr: addr + ', ' + city,
+    rating: 4.5, dist: '—',
+    open: true, hours: payload.hours || 'Contact for hours',
+    phone: payload.phone, website: payload.website,
+    desc: payload.description || name + ' — Listed on PawBook.',
+    img: CAT_IMGS[cat] || CAT_IMGS.vet,
+    lat: null, lng: null, source: 'listing'
+  };
+  allPlaces.unshift(newPlace);
+  applyFilters();
+}
+
 // ── TOAST ─────────────────────────────────────────────────────
 function showToast(msg, type) {
   var t = document.getElementById('pb-toast');
@@ -757,10 +875,35 @@ function showToast(msg, type) {
 }
 
 // ── INIT ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
+function startApp() {
+  var mapDiv = document.getElementById('discover-map');
+  var h = window.innerHeight - 56 - 90;
+  mapDiv.style.height = Math.max(h, 400) + 'px';
   initMap();
   document.getElementById('city-search').value = 'Delhi';
+
+  // Ping backend to wake Render from sleep BEFORE user searches
+  var PBASE2 = 'https://pawbook-api-cquc.onrender.com/api/v1';
+  fetch(PBASE2 + '/health', {method:'GET'}).catch(function(){});
+
   searchPlaces();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if(typeof L !== 'undefined') {
+    startApp();
+  } else {
+    // Leaflet not loaded yet — wait for it
+    var tries = 0;
+    var t = setInterval(function() {
+      tries++;
+      if(typeof L !== 'undefined') { clearInterval(t); startApp(); }
+      else if(tries > 40) { // 4 seconds max
+        clearInterval(t);
+        document.getElementById('discover-map').innerHTML = '<div style="padding:40px;text-align:center;color:#dc2626">Map failed to load. Please refresh.</div>';
+      }
+    }, 100);
+  }
 });
 
 // Re-invalidate on resize
@@ -768,6 +911,87 @@ window.addEventListener('resize', function() {
   if(mapInstance) setTimeout(function(){ mapInstance.invalidateSize(true); }, 150);
 });
 </script>
+<!-- BUSINESS LISTING MODAL -->
+<div class="biz-modal-bg" id="biz-modal" onclick="if(event.target===this)closeBizModal()">
+  <div class="biz-modal-box">
+    <div class="biz-modal-head">
+      <div>
+        <div class="biz-modal-title">🏪 List Your Business</div>
+        <div style="font-size:12px;color:#65676b;margin-top:2px">Get discovered by pet owners near you</div>
+      </div>
+      <button class="modal-close" onclick="closeBizModal()">✕</button>
+    </div>
+    <!-- Form -->
+    <div class="biz-modal-body" id="biz-form-area">
+      <div class="biz-field">
+        <label>Business Name *</label>
+        <input id="biz-name" placeholder="e.g. Happy Paws Vet Clinic" maxlength="100">
+      </div>
+      <div class="biz-row">
+        <div class="biz-field">
+          <label>Category *</label>
+          <select id="biz-cat">
+            <option value="">Select category…</option>
+            <option value="vet">🏥 Veterinary Clinic</option>
+            <option value="shelter">🏠 Animal Shelter</option>
+            <option value="zoo">🦁 Zoo / Wildlife Park</option>
+            <option value="aquarium">🐠 Aquarium</option>
+            <option value="petshop">🛍️ Pet Shop</option>
+            <option value="grooming">✂️ Grooming Center</option>
+            <option value="emergency">🚨 Emergency / 24hr Vet</option>
+            <option value="breeding">🐾 Breeding Center</option>
+            <option value="training">🎓 Training Center</option>
+            <option value="boarding">🛏️ Pet Boarding / Hotel</option>
+          </select>
+        </div>
+        <div class="biz-field">
+          <label>City *</label>
+          <input id="biz-city" placeholder="e.g. Delhi, Mumbai">
+        </div>
+      </div>
+      <div class="biz-field">
+        <label>Full Address *</label>
+        <input id="biz-addr" placeholder="Street, area, city, state">
+      </div>
+      <div class="biz-row">
+        <div class="biz-field">
+          <label>Phone Number</label>
+          <input id="biz-phone" placeholder="+91 98765 00000" type="tel">
+        </div>
+        <div class="biz-field">
+          <label>Opening Hours</label>
+          <input id="biz-hours" placeholder="9 AM – 8 PM / 24/7">
+        </div>
+      </div>
+      <div class="biz-field">
+        <label>Website / Social Link</label>
+        <input id="biz-website" placeholder="https://yoursite.com" type="url">
+      </div>
+      <div class="biz-field">
+        <label>Owner / Contact Email *</label>
+        <input id="biz-email" placeholder="you@email.com" type="email">
+      </div>
+      <div class="biz-field">
+        <label>Business Description</label>
+        <textarea id="biz-desc" placeholder="Tell pet owners what makes you special — services, specialties, experience…"></textarea>
+      </div>
+      <div style="font-size:11px;color:#8a8d91;line-height:1.5">
+        ✅ Your listing will be reviewed and added within 24 hours. Free forever for pet businesses on PawBook.
+      </div>
+      <button class="biz-submit" onclick="submitBizListing()">
+        <i class="ti ti-send"></i> Submit Listing
+      </button>
+    </div>
+    <!-- Success state -->
+    <div class="biz-success" id="biz-success">
+      <div class="biz-success-icon">🎉</div>
+      <div class="biz-success-title">Listing Submitted!</div>
+      <div class="biz-success-sub">Thanks! Your business will appear on PawBook within 24 hours.<br>We'll email you at <span id="biz-success-email" style="font-weight:700;color:#1877F2"></span> once it's live.</div>
+      <button class="biz-submit" style="margin-top:20px;max-width:200px;margin-left:auto;margin-right:auto" onclick="closeBizModal()">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- DRAWER OVERLAY -->
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
 
