@@ -687,12 +687,33 @@ function searchPlaces() {
   function afterGeo(lat, lng) {
     if(mapInstance){ mapInstance.setView([lat,lng],13); setTimeout(function(){mapInstance.invalidateSize();},200); }
 
-    // STEP 3: Try backend proxy (with 15s timeout)
-    var PROXY = 'https://pawbook-api-cquc.onrender.com/api/v1/overpass';
+    // STEP 3: Query Overpass directly (CORS supported), fallback to backend proxy
+    var OVERPASS_MIRRORS = [
+      'https://overpass-api.de/api/interpreter',
+      'https://overpass.kumi.systems/api/interpreter',
+      'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
+    ];
     var query = buildOsmQuery(lat, lng);
     var _osmDone = false;
     document.getElementById('results-count').textContent = (allPlaces.length ? allPlaces.length + ' local results · ' : '') + 'Loading live data from OpenStreetMap…';
-    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 45000);
+    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 60000);
+
+    function tryOverpass(mirrors, idx) {
+      if(idx >= mirrors.length) {
+        // All mirrors failed — try backend proxy as last resort
+        fetch('https://pawbook-api-cquc.onrender.com/api/v1/overpass', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({query:query})
+        }).then(function(r){ if(!r.ok) throw new Error('proxy '+r.status); return r.json(); })
+          .then(handleOsmData).catch(function(){ osmFailed(); });
+        return;
+      }
+      var url = mirrors[idx] + '?data=' + encodeURIComponent(query);
+      fetch(url)
+        .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+        .then(handleOsmData)
+        .catch(function(){ tryOverpass(mirrors, idx+1); });
+    }
 
     function handleOsmData(data) {
       if(_osmDone) return; _osmDone=true;
@@ -739,14 +760,7 @@ function searchPlaces() {
       }
     }
 
-    fetch(PROXY, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({query:query})
-    })
-    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-    .then(handleOsmData)
-    .catch(function(e){ console.warn('Proxy failed:',e.message); osmFailed(); });
+    tryOverpass(OVERPASS_MIRRORS, 0);
   }
 
   if(known) { afterGeo(known[0],known[1]); return; }
