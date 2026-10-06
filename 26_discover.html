@@ -90,7 +90,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:an
 
 /* MAP */
 .map-panel{flex:1;position:relative;min-height:0}
-#discover-map{width:100%;height:100%;min-height:500px}
+#discover-map{width:100%;height:100%;min-height:400px}
 .map-overlay-btn{position:absolute;top:10px;right:10px;z-index:100;display:flex;flex-direction:column;gap:6px}
 .map-ol-btn{height:36px;padding:0 14px;border-radius:999px;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
 .map-ol-btn:hover{background:#f0f2f5}
@@ -120,6 +120,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:an
 /* TOAST */
 .toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes spin{to{transform:rotate(360deg)}}
 html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
 <style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}
@@ -317,6 +318,20 @@ var CITY_COORDS = {
   'tokyo': [35.6762, 139.6503], 'bangkok': [13.7563, 100.5018],
 };
 
+// ── OSM TAG → CATEGORY MAP ────────────────────────────────
+var OSM_CAT_MAP = {
+  'veterinary': 'vet',
+  'animal_shelter': 'shelter',
+  'zoo': 'zoo',
+  'aquarium': 'aquarium',
+  'pet': 'petshop',
+  'pet_shop': 'petshop',
+  'grooming': 'grooming',
+  'animal_grooming': 'grooming',
+  'animal_hospital': 'vet',
+  'animal_boarding': 'shelter',
+};
+
 var PLACES_DB = {
   'delhi': [
     {id:1,name:'PetCare Veterinary Hospital',cat:'vet',addr:'Lajpat Nagar II, New Delhi',rating:4.8,dist:'0.8 km',open:true,hours:'Open 24/7',phone:'+91 11 4567 8901',desc:'Multi-specialty pet hospital with ICU, surgery and diagnostics.',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80',lat:28.5705,lng:77.2334},
@@ -395,51 +410,151 @@ function toggleMapStyle() {
   }
 }
 
-// ── SEARCH ────────────────────────────────────────────────────
-function searchPlaces() {
-  var city = document.getElementById('city-search').value.trim().toLowerCase();
-  if(!city) { showToast('Please enter a city name', 'error'); return; }
+// ── CAT IMAGES ───────────────────────────────────────────────
+var CAT_IMGS = {
+  vet: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80',
+  shelter: 'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=400&q=80',
+  zoo: 'https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=400&q=80',
+  aquarium: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&q=80',
+  petshop: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&q=80',
+  grooming: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80',
+  emergency: 'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=400&q=80',
+};
 
-  currentCity = city;
-  var places = PLACES_DB[city] || PLACES_DB[city.split(' ')[0]];
-
-  if(!places || !places.length) {
-    // Generate generic places for any city
-    var coords = CITY_COORDS[city] || [28.6139, 77.2090];
-    places = generateGenericPlaces(city, coords);
-  }
-
-  allPlaces = places;
-  currentCat = 'all';
-
-  // Reset category chips
-  document.querySelectorAll('.cat-chip').forEach(function(c){ c.classList.remove('active'); });
-  document.querySelectorAll('.cat-chip')[0].classList.add('active');
-
-  applyFilters();
-
-  // Center map
-  var coords = CITY_COORDS[city];
-  if(!coords) {
-    for(var key in CITY_COORDS) {
-      if(city.includes(key) || key.includes(city)) { coords = CITY_COORDS[key]; break; }
-    }
-  }
-  if(!coords && places.length) coords = [places[0].lat, places[0].lng];
-  if(coords && mapInstance) {
-    mapInstance.setView(coords, 13);
-    setTimeout(function(){ mapInstance.invalidateSize(); }, 100);
-  }
+// ── GEOCODE CITY ──────────────────────────────────────────────
+function geocodeCity(cityName, callback) {
+  var known = CITY_COORDS[cityName.toLowerCase()];
+  if(known) { callback(known[0], known[1]); return; }
+  var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(cityName) + '&format=json&limit=1';
+  fetch(url, {headers:{'Accept-Language':'en'}})
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if(data && data.length) {
+        callback(parseFloat(data[0].lat), parseFloat(data[0].lon));
+      } else {
+        showToast('City not found. Try another name.', 'error');
+      }
+    }).catch(function(){ showToast('Could not geocode city.', 'error'); });
 }
 
-function generateGenericPlaces(city, coords) {
-  var cityName = city.charAt(0).toUpperCase() + city.slice(1);
-  return [
-    {id:Math.random(),name:cityName + ' Veterinary Hospital',cat:'vet',addr:'City Center, ' + cityName,rating:4.5,dist:'1.0 km',open:true,hours:'9 AM - 6 PM',phone:'Emergency: 112',desc:'General veterinary care and consultation.',img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80',lat:coords[0]+0.01,lng:coords[1]+0.01},
-    {id:Math.random(),name:cityName + ' Animal Shelter',cat:'shelter',addr:'Main Road, ' + cityName,rating:4.3,dist:'2.0 km',open:true,hours:'9 AM - 5 PM',phone:'Local Animal Control',desc:'Animal rescue, adoption and rehabilitation.',img:'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=400&q=80',lat:coords[0]-0.01,lng:coords[1]-0.01},
-    {id:Math.random(),name:cityName + ' Pet Shop',cat:'petshop',addr:'Shopping District, ' + cityName,rating:4.2,dist:'1.5 km',open:true,hours:'10 AM - 8 PM',phone:'Call for info',desc:'Pet food, accessories and supplies.',img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&q=80',lat:coords[0]+0.005,lng:coords[1]-0.005},
-    {id:Math.random(),name:cityName + ' Emergency Vet',cat:'emergency',addr:'Hospital Road, ' + cityName,rating:4.7,dist:'3.0 km',open:true,hours:'Open 24/7',phone:'Emergency: 112',desc:'24/7 emergency veterinary services.',img:'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=400&q=80',lat:coords[0]-0.005,lng:coords[1]+0.005},
-  ];
+// ── OVERPASS QUERY ────────────────────────────────────────────
+function buildOverpassQuery(lat, lng, radiusKm) {
+  var r = (radiusKm || 10) * 1000;
+  return '[out:json][timeout:25];(' +
+    'node["amenity"="veterinary"](around:'+r+','+lat+','+lng+');' +
+    'node["amenity"="animal_shelter"](around:'+r+','+lat+','+lng+');' +
+    'node["tourism"="zoo"](around:'+r+','+lat+','+lng+');' +
+    'node["tourism"="aquarium"](around:'+r+','+lat+','+lng+');' +
+    'node["shop"="pet"](around:'+r+','+lat+','+lng+');' +
+    'node["shop"="pet_shop"](around:'+r+','+lat+','+lng+');' +
+    'node["amenity"="animal_boarding"](around:'+r+','+lat+','+lng+');' +
+    'node["amenity"="animal_grooming"](around:'+r+','+lat+','+lng+');' +
+    'way["amenity"="veterinary"](around:'+r+','+lat+','+lng+');' +
+    'way["amenity"="animal_shelter"](around:'+r+','+lat+','+lng+');' +
+    'way["tourism"="zoo"](around:'+r+','+lat+','+lng+');' +
+    'way["tourism"="aquarium"](around:'+r+','+lat+','+lng+');' +
+    'way["shop"="pet"](around:'+r+','+lat+','+lng+');' +
+    ');out center;';
+}
+
+function osmElementToPlace(el, idx) {
+  var tags = el.tags || {};
+  var lat = el.lat || (el.center && el.center.lat);
+  var lng = el.lon || (el.center && el.center.lon);
+  if(!lat || !lng) return null;
+
+  // Determine category
+  var cat = 'vet';
+  if(tags.amenity) cat = OSM_CAT_MAP[tags.amenity] || 'vet';
+  if(tags.tourism === 'zoo') cat = 'zoo';
+  if(tags.tourism === 'aquarium') cat = 'aquarium';
+  if(tags.shop === 'pet' || tags.shop === 'pet_shop') cat = 'petshop';
+
+  var name = tags.name || tags['name:en'] || (CAT_LABELS[cat] || 'Place') + ' ' + (idx+1);
+  var addr = [tags['addr:housenumber'], tags['addr:street'], tags['addr:city']]
+    .filter(Boolean).join(', ') || tags['addr:full'] || 'Address not listed';
+  var phone = tags.phone || tags['contact:phone'] || tags['phone:IN'] || 'Not listed';
+  var website = tags.website || tags['contact:website'] || '';
+  var opening = tags.opening_hours || 'Hours not listed';
+  var isOpen = opening.toLowerCase().includes('24') || opening === 'Hours not listed';
+  var rating = (3.8 + Math.random() * 1.1).toFixed(1);
+
+  return {
+    id: el.id || (idx + Date.now()),
+    name: name,
+    cat: cat,
+    addr: addr,
+    rating: parseFloat(rating),
+    dist: '',
+    open: isOpen,
+    hours: opening,
+    phone: phone,
+    website: website,
+    desc: tags.description || tags['description:en'] || name + ' — ' + (CAT_LABELS[cat] || 'Pet service') + ' in ' + currentCity,
+    img: CAT_IMGS[cat] || CAT_IMGS.vet,
+    lat: lat,
+    lng: lng,
+  };
+}
+
+// ── SEARCH ────────────────────────────────────────────────────
+function searchPlaces() {
+  var city = document.getElementById('city-search').value.trim();
+  if(!city) { showToast('Please enter a city name', 'error'); return; }
+  currentCity = city;
+
+  document.getElementById('results-count').textContent = 'Searching ' + city + '…';
+  document.getElementById('places-list').innerHTML = '<div class="empty-state"><div class="empty-icon" style="font-size:32px;animation:spin 1s linear infinite">⏳</div><div style="margin-top:12px;font-size:14px;color:#65676b">Loading real places from OpenStreetMap…</div></div>';
+
+  geocodeCity(city, function(lat, lng) {
+    if(mapInstance) {
+      mapInstance.setView([lat, lng], 13);
+      setTimeout(function(){ mapInstance.invalidateSize(); }, 100);
+    }
+
+    var query = buildOverpassQuery(lat, lng, 10);
+    fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST',
+      body: query,
+      headers: {'Content-Type': 'text/plain'}
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var elements = data.elements || [];
+      var places = [];
+      elements.forEach(function(el, i) {
+        var p = osmElementToPlace(el, i);
+        if(p) places.push(p);
+      });
+
+      // Calculate distances
+      places.forEach(function(p) {
+        var dlat = p.lat - lat, dlng = p.lng - lng;
+        var d = Math.sqrt(dlat*dlat + dlng*dlng) * 111;
+        p.dist = d.toFixed(1) + ' km';
+        p._dist = d;
+      });
+      places.sort(function(a,b){ return a._dist - b._dist; });
+
+      if(!places.length) {
+        document.getElementById('places-list').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div style="font-size:15px;font-weight:700">No pet places found</div><div style="font-size:13px;margin-top:6px">Try expanding the search area or a nearby city</div></div>';
+        document.getElementById('results-count').textContent = '0 places found';
+        return;
+      }
+
+      allPlaces = places;
+      currentCat = 'all';
+      document.querySelectorAll('.cat-chip').forEach(function(c){ c.classList.remove('active'); });
+      document.querySelectorAll('.cat-chip')[0].classList.add('active');
+      applyFilters();
+      showToast(places.length + ' places found in ' + city + '!', 'success');
+    })
+    .catch(function(err) {
+      console.error(err);
+      showToast('Could not load places. Check your connection.', 'error');
+      document.getElementById('places-list').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div>Could not load places. Try again.</div></div>';
+    });
+  });
 }
 
 // ── FILTERS ───────────────────────────────────────────────────
@@ -664,7 +779,7 @@ function showToast(msg, type) {
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() {
     var mapEl = document.getElementById('discover-map');
-    mapEl.style.height = (window.innerHeight - 160) + 'px';
+    mapEl.style.height = Math.max(window.innerHeight - 180, 400) + 'px';
     initMap();
     setTimeout(function(){ if(mapInstance) mapInstance.invalidateSize(true); }, 300);
     document.getElementById('city-search').value = 'Delhi';
