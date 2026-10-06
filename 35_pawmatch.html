@@ -46,7 +46,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
 
 /* CARD PHOTO */
 .card-photo{width:100%;height:360px;object-fit:cover;display:block;pointer-events:none;background:#e4e6eb}
-.card-photo-wrap{position:relative;overflow:hidden}
+.card-photo-wrap{position:relative}
 .card-like-label{position:absolute;top:24px;left:20px;padding:6px 14px;border:3px solid #16a34a;border-radius:8px;color:#16a34a;font-size:20px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(-15deg);background:rgba(255,255,255,.9);z-index:10;pointer-events:none}
 .card-nope-label{position:absolute;top:24px;right:20px;padding:6px 14px;border:3px solid #e11d48;border-radius:8px;color:#e11d48;font-size:20px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(15deg);background:rgba(255,255,255,.9);z-index:10;pointer-events:none}
 .card-super-label{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);padding:6px 20px;border:3px solid #f59e0b;border-radius:8px;color:#f59e0b;font-size:18px;font-weight:900;letter-spacing:1px;opacity:0;background:rgba(255,255,255,.9);z-index:10;pointer-events:none;white-space:nowrap}
@@ -135,21 +135,6 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
 .bnav-item span{font-size:9px;font-weight:700;text-transform:uppercase}
 .bnav-item.active{color:#e11d48}
 @media(max-width:768px){.bottomnav{display:flex}}
-
-/* PHOTO CAROUSEL DOTS */
-.card-photo-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:8;pointer-events:none}
-.cpd{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);transition:background .2s,transform .2s}
-.cpd-active{background:#fff;transform:scale(1.25)}
-
-/* PHOTO TAP ZONES */
-.card-tap-left{position:absolute;top:0;left:0;width:38%;height:100%;z-index:7;cursor:pointer}
-.card-tap-right{position:absolute;top:0;right:0;width:38%;height:100%;z-index:7;cursor:pointer}
-
-/* DETAIL PHOTO STRIP */
-.detail-photo-strip{display:flex;gap:6px;padding:8px 16px;overflow-x:auto;scrollbar-width:none;background:#000}
-.detail-photo-strip::-webkit-scrollbar{display:none}
-.detail-strip-thumb{width:72px;height:72px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid transparent;flex-shrink:0;opacity:.7;transition:opacity .15s,border-color .15s}
-.detail-strip-thumb.active{border-color:#e11d48;opacity:1}
 
 @media(max-width:480px){
   .card-stack{height:480px}
@@ -255,7 +240,6 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
     </div>
   </div>
   <img class="detail-photo" id="detail-photo" src="" alt="">
-  <div class="detail-photo-strip" id="detail-photo-strip" style="display:none"></div>
   <div class="detail-body">
     <div class="card-name-row">
       <div class="card-name" id="detail-name"></div>
@@ -298,65 +282,20 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
 
 <script>
 /* ── PET DATA ── */
-var DEMO_PETS = [
-  {id:1,name:'Buddy',age:'3 yrs',species:'dog',breed:'Golden Retriever',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'1.2 km',city:'Delhi',lookingFor:['Playdate','Best Friend'],bio:'Hey! I\'m Buddy. I love fetch, belly rubs, and meeting new friends at the park. Super friendly with other dogs and kids!',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80','https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80','https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=600&q=80'],owner:'Priya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.8},
-  {id:2,name:'Luna',age:'2 yrs',species:'cat',breed:'Persian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.8 km',city:'Delhi',lookingFor:['Companion','Indoor Play'],bio:'Fluffy Persian who loves sunbeams and slow mornings. I take time to warm up but once I do, I\'m your best cuddle buddy.',photos:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80','https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&q=80','https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&q=80'],owner:'Rahul Dev',ownerAvatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.6},
-  {id:3,name:'Max',age:'5 yrs',species:'dog',breed:'German Shepherd',gender:'Male',size:'Large',vaccinated:true,neutered:false,distance:'2.3 km',city:'Gurgaon',lookingFor:['Breeding','Playdate'],bio:'Trained GSD who loves jogging, hiking, and protecting my family. Looking for a female GSD for breeding or a running buddy.',photos:['https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=600&q=80','https://images.unsplash.com/photo-1568572933382-74d440642117?w=600&q=80','https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=600&q=80'],owner:'Vikram Singh',ownerAvatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80',energy:'Very High',friendly:'Friendly',matchChance:0.7},
-  {id:4,name:'Coco',age:'1 yr',species:'rabbit',breed:'Holland Lop',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'3.1 km',city:'Delhi',lookingFor:['Companion','Playdate'],bio:'Fluffy Holland Lop who binkies when happy! I love fresh veggies, cardboard boxes, and other friendly bunnies. Let\'s hop around!',photos:['https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&q=80','https://images.unsplash.com/photo-1518715308788-3005759c61d4?w=600&q=80','https://images.unsplash.com/photo-1452857297128-d9c29adba80b?w=600&q=80'],owner:'Ananya Bose',ownerAvatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',energy:'Medium',friendly:'Very Friendly',matchChance:0.9},
-  {id:5,name:'Tweety',age:'2 yrs',species:'bird',breed:'Cockatiel',gender:'Male',size:'Tiny',vaccinated:false,neutered:false,distance:'1.5 km',city:'Noida',lookingFor:['Companion','Singing Partner'],bio:'I love whistling songs and learning new words! Very social and would love a bird friend or a human who likes serenades.',photos:['https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80','https://images.unsplash.com/photo-1544923246-3433ef1bfe7e?w=600&q=80','https://images.unsplash.com/photo-1522858547137-f1dcec554f55?w=600&q=80'],owner:'Meera Pillai',ownerAvatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80',energy:'High',friendly:'Very Social',matchChance:0.75},
-  {id:6,name:'Bruno',age:'4 yrs',species:'dog',breed:'Labrador',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'0.5 km',city:'Delhi',lookingFor:['Playdate','Swimming Buddy'],bio:'Bruno loves water! Swimming, puddles, or just a water bowl - I\'m in. Looking for an equally adventurous dog for weekend trips.',photos:['https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=600&q=80','https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&q=80','https://images.unsplash.com/photo-1583511655826-05700d52f4d9?w=600&q=80'],owner:'Arjun Nair',ownerAvatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80',energy:'Very High',friendly:'Very Friendly',matchChance:0.85},
-  {id:7,name:'Whiskers',age:'6 yrs',species:'cat',breed:'Maine Coon',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'4.2 km',city:'Faridabad',lookingFor:['Companion','Lazy Sundays'],bio:'King of the couch. I like feather toys, treats, and occasionally knocking things off shelves. For cats who appreciate the finer things.',photos:['https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&q=80','https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?w=600&q=80','https://images.unsplash.com/photo-1472491235688-bdc81a63246e?w=600&q=80'],owner:'Sunita Kapoor',ownerAvatar:'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.5},
-  {id:8,name:'Nibbles',age:'8 mo',species:'hamster',breed:'Syrian',gender:'Female',size:'Tiny',vaccinated:false,neutered:false,distance:'2.0 km',city:'Delhi',lookingFor:['Companion'],bio:'I run on my wheel at 3am and stuff my cheeks with food for fun. Looking for a fellow hamster friend for supervised playdates.',photos:['https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600&q=80','https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=600&q=80','https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=600&q=80'],owner:'Kabir Ahmed',ownerAvatar:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&q=80',energy:'Nocturnal',friendly:'Shy but Sweet',matchChance:0.65},
-  {id:9,name:'Goldie',age:'1 yr',species:'fish',breed:'Fantail Goldfish',gender:'Female',size:'Tiny',vaccinated:false,neutered:false,distance:'1.1 km',city:'Delhi',lookingFor:['Tank Mate'],bio:'I swim in circles all day and look stunning doing it. Looking for a peaceful tank mate who won\'t eat my fins.',photos:['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80','https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600&q=80','https://images.unsplash.com/photo-1485431142439-206ba3a9383e?w=600&q=80'],owner:'Pooja Iyer',ownerAvatar:'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=80&q=80',energy:'Calm',friendly:'Peaceful',matchChance:0.55},
-  {id:10,name:'Bella',age:'2 yrs',species:'dog',breed:'Beagle',gender:'Female',size:'Medium',vaccinated:true,neutered:true,distance:'1.8 km',city:'Delhi',lookingFor:['Playdate','Sniffing Adventures'],bio:'Bella loves sniffing EVERYTHING. Every walk is a new adventure for my nose. Playful, curious, and great with other dogs!',photos:['https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=600&q=80','https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=600&q=80','https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=600&q=80'],owner:'Deepa Reddy',ownerAvatar:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.88},
-  {id:11,name:'Simba',age:'3 yrs',species:'cat',breed:'Bengal',gender:'Male',size:'Medium',vaccinated:true,neutered:false,distance:'2.7 km',city:'Gurgaon',lookingFor:['Breeding','Companion'],bio:'Bengal with wild markings and wilder energy. I love climbing, chirping at birds, and playing fetch. Looking for a female Bengal.',photos:['https://images.unsplash.com/photo-1518791841217-8f162f1912da?w=600&q=80','https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=600&q=80','https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=600&q=80'],owner:'Rajan Mehta',ownerAvatar:'https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&q=80',energy:'Very High',friendly:'Playful',matchChance:0.7},
-  {id:12,name:'Daisy',age:'1.5 yrs',species:'dog',breed:'Pomeranian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.9 km',city:'Delhi',lookingFor:['Playdate','Fashion Buddy'],bio:'I have a wardrobe and I\'m not ashamed. Love dress-up, photos, and strutting in the park. Looking for a small dog who matches my vibe.',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80','https://images.unsplash.com/photo-1581888227599-779811939961?w=600&q=80','https://images.unsplash.com/photo-1591160690555-5debfba289f0?w=600&q=80'],owner:'Kavya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80',energy:'Medium',friendly:'Very Social',matchChance:0.82}
+var PETS = [
+  {id:1,name:'Buddy',age:'3 yrs',species:'dog',breed:'Golden Retriever',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'1.2 km',city:'Delhi',lookingFor:['Playdate','Best Friend'],bio:'Hey! I\'m Buddy. I love fetch, belly rubs, and meeting new friends at the park. Super friendly with other dogs and kids!',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80'],owner:'Priya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.8},
+  {id:2,name:'Luna',age:'2 yrs',species:'cat',breed:'Persian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.8 km',city:'Delhi',lookingFor:['Companion','Indoor Play'],bio:'Fluffy Persian who loves sunbeams and slow mornings. I take time to warm up but once I do, I\'m your best cuddle buddy.',photos:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80'],owner:'Rahul Dev',ownerAvatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.6},
+  {id:3,name:'Max',age:'5 yrs',species:'dog',breed:'German Shepherd',gender:'Male',size:'Large',vaccinated:true,neutered:false,distance:'2.3 km',city:'Gurgaon',lookingFor:['Breeding','Playdate'],bio:'Trained GSD who loves jogging, hiking, and protecting my family. Looking for a female GSD for breeding or a running buddy.',photos:['https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=600&q=80'],owner:'Vikram Singh',ownerAvatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80',energy:'Very High',friendly:'Friendly',matchChance:0.7},
+  {id:4,name:'Coco',age:'1 yr',species:'rabbit',breed:'Holland Lop',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'3.1 km',city:'Delhi',lookingFor:['Companion','Playdate'],bio:'Fluffy Holland Lop who binkies when happy! I love fresh veggies, cardboard boxes, and other friendly bunnies. Let\'s hop around!',photos:['https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&q=80'],owner:'Ananya Bose',ownerAvatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',energy:'Medium',friendly:'Very Friendly',matchChance:0.9},
+  {id:5,name:'Tweety',age:'2 yrs',species:'bird',breed:'Cockatiel',gender:'Male',size:'Tiny',vaccinated:false,neutered:false,distance:'1.5 km',city:'Noida',lookingFor:['Companion','Singing Partner'],bio:'I love whistling songs and learning new words! Very social and would love a bird friend or a human who likes serenades.',photos:['https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80'],owner:'Meera Pillai',ownerAvatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80',energy:'High',friendly:'Very Social',matchChance:0.75},
+  {id:6,name:'Bruno',age:'4 yrs',species:'dog',breed:'Labrador',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'0.5 km',city:'Delhi',lookingFor:['Playdate','Swimming Buddy'],bio:'Bruno loves water! Swimming, puddles, or just a water bowl - I\'m in. Looking for an equally adventurous dog for weekend trips.',photos:['https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=600&q=80'],owner:'Arjun Nair',ownerAvatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80',energy:'Very High',friendly:'Very Friendly',matchChance:0.85},
+  {id:7,name:'Whiskers',age:'6 yrs',species:'cat',breed:'Maine Coon',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'4.2 km',city:'Faridabad',lookingFor:['Companion','Lazy Sundays'],bio:'King of the couch. I like feather toys, treats, and occasionally knocking things off shelves. For cats who appreciate the finer things.',photos:['https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&q=80'],owner:'Sunita Kapoor',ownerAvatar:'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.5},
+  {id:8,name:'Nibbles',age:'8 mo',species:'hamster',breed:'Syrian',gender:'Female',size:'Tiny',vaccinated:false,neutered:false,distance:'2.0 km',city:'Delhi',lookingFor:['Companion'],bio:'I run on my wheel at 3am and stuff my cheeks with food for fun. Looking for a fellow hamster friend for supervised playdates.',photos:['https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600&q=80'],owner:'Kabir Ahmed',ownerAvatar:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&q=80',energy:'Nocturnal',friendly:'Shy but Sweet',matchChance:0.65},
+  {id:9,name:'Goldie',age:'1 yr',species:'fish',breed:'Fantail Goldfish',gender:'Female',size:'Tiny',vaccinated:false,neutered:false,distance:'1.1 km',city:'Delhi',lookingFor:['Tank Mate'],bio:'I swim in circles all day and look stunning doing it. Looking for a peaceful tank mate who won\'t eat my fins.',photos:['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80'],owner:'Pooja Iyer',ownerAvatar:'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=80&q=80',energy:'Calm',friendly:'Peaceful',matchChance:0.55},
+  {id:10,name:'Bella',age:'2 yrs',species:'dog',breed:'Beagle',gender:'Female',size:'Medium',vaccinated:true,neutered:true,distance:'1.8 km',city:'Delhi',lookingFor:['Playdate','Sniffing Adventures'],bio:'Bella loves sniffing EVERYTHING. Every walk is a new adventure for my nose. Playful, curious, and great with other dogs!',photos:['https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=600&q=80'],owner:'Deepa Reddy',ownerAvatar:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.88},
+  {id:11,name:'Simba',age:'3 yrs',species:'cat',breed:'Bengal',gender:'Male',size:'Medium',vaccinated:true,neutered:false,distance:'2.7 km',city:'Gurgaon',lookingFor:['Breeding','Companion'],bio:'Bengal with wild markings and wilder energy. I love climbing, chirping at birds, and playing fetch. Looking for a female Bengal.',photos:['https://images.unsplash.com/photo-1518791841217-8f162f1912da?w=600&q=80'],owner:'Rajan Mehta',ownerAvatar:'https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&q=80',energy:'Very High',friendly:'Playful',matchChance:0.7},
+  {id:12,name:'Daisy',age:'1.5 yrs',species:'dog',breed:'Pomeranian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.9 km',city:'Delhi',lookingFor:['Playdate','Fashion Buddy'],bio:'I have a wardrobe and I\'m not ashamed. Love dress-up, photos, and strutting in the park. Looking for a small dog who matches my vibe.',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80'],owner:'Kavya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80',energy:'Medium',friendly:'Very Social',matchChance:0.82}
 ];
-
-/* ── LOAD REAL PETS FROM localStorage (saved by 08_pet_profile.html) ── */
-function loadRealPets(){
-  try{
-    var stored = JSON.parse(localStorage.getItem('pawmatch_mypets')||'[]');
-    var enabled = JSON.parse(localStorage.getItem('pawmatch_enabled')||'{}');
-    // Filter to only pets the user enabled (all enabled by default)
-    var real = stored.filter(function(p){ return enabled[p.id]!==false; });
-    if(real.length){
-      // Normalise to PETS schema
-      return real.map(function(p,i){
-        return {
-          id: p.id||('real_'+i),
-          name: p.name||'Pet',
-          age: p.age||'',
-          species: (p.species||'dog').toLowerCase(),
-          breed: p.breed||p.species||'',
-          gender: p.gender||'',
-          size: p.size||'',
-          vaccinated: p.vaccinated||false,
-          neutered: p.neutered||false,
-          distance: p.location||'Nearby',
-          city: p.city||'',
-          lookingFor: p.lookingFor||['Playdate'],
-          bio: p.bio||'Hi, I am '+p.name+'! 🐾',
-          photos: [p.photo||'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80'],
-          owner: p.owner||'',
-          ownerAvatar: '',
-          energy: p.energy||'',
-          friendly: p.friendly||'',
-          matchChance: p.matchChance||0.6
-        };
-      });
-    }
-  }catch(e){}
-  return null;
-}
-
-var _realPets = loadRealPets();
-// Merge: real pets first, then demo pets (filtered to exclude same species if real exist)
-var PETS = _realPets && _realPets.length
-  ? _realPets.concat(DEMO_PETS.filter(function(d){
-      return !_realPets.some(function(r){ return r.name===d.name; });
-    }))
-  : DEMO_PETS;
 
 /* ── STATE ── */
 var deck = [];
@@ -412,18 +351,9 @@ function buildCard(pet, stackPos) {
   var em = EMOJI[pet.species] || '🐾';
   var dotsHtml = '';
 
-  var photoDots = pet.photos.length > 1
-    ? '<div class="card-photo-dots">' + pet.photos.map(function(_,i){ return '<span class="cpd'+(i===0?' cpd-active':'')+'" data-idx="'+i+'"></span>'; }).join('') + '</div>'
-    : '';
-  var photoTapZones = pet.photos.length > 1
-    ? '<div class="card-tap-left"></div><div class="card-tap-right"></div>'
-    : '';
-
   card.innerHTML =
     '<div class="card-photo-wrap">' +
-      '<img class="card-photo" id="cphoto-' + pet.id + '" src="' + pet.photos[0] + '" alt="' + pet.name + '" data-idx="0" data-count="' + pet.photos.length + '" data-photos=\'' + JSON.stringify(pet.photos) + '\'>' +
-      photoDots +
-      photoTapZones +
+      '<img class="card-photo" src="' + pet.photos[0] + '" alt="' + pet.name + '">' +
       '<div class="card-like-label" id="ll-' + pet.id + '">LIKE 💚</div>' +
       '<div class="card-nope-label" id="nl-' + pet.id + '">NOPE ✕</div>' +
       '<div class="card-super-label" id="sl-' + pet.id + '">⭐ SUPER LIKE</div>' +
@@ -491,7 +421,7 @@ function attachDrag(card, pet) {
     if(e.cancelable) e.preventDefault();
   }
 
-  function end(e) {
+  function end() {
     if(!down) return;
     down = false;
 
@@ -512,27 +442,6 @@ function attachDrag(card, pet) {
     } else {
       card.style.transform = '';
       card.style.zIndex = '';
-      // Short tap on photo area → cycle photo
-      if(!card._dragged && pet.photos && pet.photos.length > 1) {
-        var pt = e && e.changedTouches ? e.changedTouches[0] : null;
-        var clientX = pt ? pt.clientX : sx;
-        var photo = document.getElementById('cphoto-'+pet.id);
-        if(photo && clientX) {
-          var rect = photo.getBoundingClientRect();
-          // Only if tap was in the photo area (not card-info below)
-          if(pt && pt.clientY < rect.bottom) {
-            var relX = clientX - rect.left;
-            var w = rect.width;
-            if(relX < w * 0.38) {
-              cycleCardPhoto(null, pet.id, 'prev');
-              card._dragged = true; // suppress openDetail
-            } else if(relX > w * 0.62) {
-              cycleCardPhoto(null, pet.id, 'next');
-              card._dragged = true; // suppress openDetail
-            }
-          }
-        }
-      }
     }
   }
 
@@ -540,8 +449,8 @@ function attachDrag(card, pet) {
   card.addEventListener('touchstart', start, {passive:true});
   window.addEventListener('mousemove', move);
   window.addEventListener('touchmove', move, {passive:false});
-  window.addEventListener('mouseup', function(e){ end(e); });
-  window.addEventListener('touchend', function(e){ end(e); });
+  window.addEventListener('mouseup', end);
+  window.addEventListener('touchend', end);
 }
 
 function flyCard(card, pet, direction) {
@@ -737,45 +646,11 @@ function renderLikedGrid() {
 }
 
 /* ── DETAIL ── */
-/* ── PHOTO CAROUSEL ── */
-function cycleCardPhoto(e, petId, dir) {
-  if(e) { e.stopPropagation(); }
-  var img = document.getElementById('cphoto-' + petId);
-  if(!img) return;
-  var idx = parseInt(img.dataset.idx) || 0;
-  var count = parseInt(img.dataset.count) || 1;
-  var photos;
-  try { photos = JSON.parse(img.dataset.photos); } catch(err) { return; }
-  if(dir === 'next') idx = (idx + 1) % count;
-  else idx = (idx - 1 + count) % count;
-  img.src = photos[idx];
-  img.dataset.idx = idx;
-  // Update dots
-  var card = img.closest('.pet-card');
-  if(card) {
-    card.querySelectorAll('.cpd').forEach(function(dot, i){
-      dot.classList.toggle('cpd-active', i === idx);
-    });
-  }
-}
-
 function openDetail(pet) {
   var em = EMOJI[pet.species] || '🐾';
   document.getElementById('detail-overlay').classList.add('show');
   document.getElementById('detail-header-name').textContent = pet.name + ' ' + em;
-  // Build photo strip if multiple photos
-  var strip = document.getElementById('detail-photo-strip');
-  if(strip) {
-    if(pet.photos && pet.photos.length > 1) {
-      strip.innerHTML = pet.photos.map(function(ph, i){
-        return '<img class="detail-strip-thumb'+(i===0?' active':'')+'" src="'+ph+'" data-idx="'+i+'" onclick="detailSetPhoto(this,\''+ph+'\')">';
-      }).join('');
-      strip.style.display = 'flex';
-    } else {
-      strip.style.display = 'none';
-    }
-  }
-  document.getElementById('detail-photo').src = pet.photos ? pet.photos[0] : '';
+  document.getElementById('detail-photo').src = pet.photos[0];
   document.getElementById('detail-name').textContent = pet.name;
   document.getElementById('detail-age').textContent = pet.age;
   document.getElementById('detail-verified').textContent = pet.vaccinated ? '✅' : '';
@@ -790,12 +665,6 @@ function openDetail(pet) {
     '<div class="detail-chip"><div class="detail-chip-label">Vaccinated</div><div class="detail-chip-val">'+(pet.vaccinated?'✅ Yes':'❌ No')+'</div></div>' +
     '<div class="detail-chip"><div class="detail-chip-label">Neutered</div><div class="detail-chip-val">'+(pet.neutered?'✅ Yes':'❌ No')+'</div></div>';
   document.getElementById('detail-tags').innerHTML = pet.lookingFor.map(function(t){ return '<span class="card-tag">'+t+'</span>'; }).join('');
-}
-
-function detailSetPhoto(thumb, src) {
-  document.getElementById('detail-photo').src = src;
-  document.querySelectorAll('.detail-strip-thumb').forEach(function(t){ t.classList.remove('active'); });
-  thumb.classList.add('active');
 }
 
 function closeDetail() {
