@@ -675,37 +675,53 @@ function searchPlaces() {
   function afterGeo(lat, lng) {
     if(mapInstance){ mapInstance.setView([lat,lng],13); setTimeout(function(){mapInstance.invalidateSize();},200); }
 
-    // STEP 3: Query Overpass directly (CORS supported), fallback to backend proxy
-    var OVERPASS_MIRRORS = [
-      'https://overpass.private.coffee/api/interpreter',
-      'https://overpass.kumi.systems/api/interpreter',
-      'https://overpass-api.de/api/interpreter'
-    ];
+    // STEP 3: Query Overpass via multiple mirrors (CORS-enabled public instances)
     var query = buildOsmQuery(lat, lng);
     var _osmDone = false;
-    document.getElementById('results-count').textContent = (allPlaces.length ? allPlaces.length + ' local results · ' : '') + 'Loading live data from OpenStreetMap…';
-    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 60000);
+    var countEl = document.getElementById('results-count');
+    countEl.textContent = (allPlaces.length ? allPlaces.length + ' local results · ' : '') + 'Loading live places from OpenStreetMap…';
+    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 90000);
 
-    function tryOverpass(mirrors, idx) {
-      if(idx >= mirrors.length) { osmFailed(); return; }
-      var body = 'data=' + encodeURIComponent(query);
-      fetch(mirrors[idx], {
+    // These mirrors support CORS for browser POST requests
+    var MIRRORS = [
+      'https://overpass.private.coffee/api/interpreter',
+      'https://overpass.kumi.systems/api/interpreter',
+      'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+      'https://overpass-api.de/api/interpreter'
+    ];
+
+    function tryMirror(idx) {
+      if(idx >= MIRRORS.length) {
+        // All mirrors failed — try backend proxy as last resort
+        var PROXY = 'https://pawbook-api-cquc.onrender.com/api/v1/overpass';
+        countEl.textContent = (allPlaces.length ? allPlaces.length + ' local · ' : '') + 'Trying server proxy…';
+        fetch(PROXY, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({query:query})})
+          .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+          .then(function(d){ if(!_osmDone && d && Array.isArray(d.elements)) handleOsmData(d); else if(!_osmDone) osmFailed(); })
+          .catch(function(e){ console.warn('Proxy also failed:',e.message); if(!_osmDone) osmFailed(); });
+        return;
+      }
+      var url = MIRRORS[idx];
+      countEl.textContent = (allPlaces.length ? allPlaces.length + ' local · ' : '') + 'Searching OpenStreetMap (attempt '+(idx+1)+')…';
+      fetch(url, {
         method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'},
-        body: body
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:'data='+encodeURIComponent(query)
       })
       .then(function(r){
-        if(r.status === 429 || r.status === 503) { setTimeout(function(){ tryOverpass(mirrors, idx+1); }, 1000); return null; }
+        if(r.status === 429 || r.status === 503) { console.warn('Mirror',idx,'rate-limited, trying next'); setTimeout(function(){ tryMirror(idx+1); }, 800); return null; }
         if(!r.ok) throw new Error('HTTP '+r.status);
         return r.json();
       })
       .then(function(d){
         if(!d) return;
-        if(d && Array.isArray(d.elements)) handleOsmData(d);
-        else tryOverpass(mirrors, idx+1);
+        if(d && Array.isArray(d.elements) && d.elements.length > 0) { handleOsmData(d); }
+        else { console.warn('Mirror',idx,'returned no elements, trying next'); tryMirror(idx+1); }
       })
-      .catch(function(e){ console.warn('Mirror',idx,'failed:',e.message); tryOverpass(mirrors, idx+1); });
+      .catch(function(e){ console.warn('Mirror',idx,'('+url+') failed:',e.message); tryMirror(idx+1); });
     }
+
+    tryMirror(0);
 
     function handleOsmData(data) {
       if(_osmDone) return; _osmDone=true;
@@ -752,7 +768,6 @@ function searchPlaces() {
       }
     }
 
-    tryOverpass(OVERPASS_MIRRORS, 0);
   }
 
   if(known) { afterGeo(known[0],known[1]); return; }
