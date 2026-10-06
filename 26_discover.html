@@ -824,7 +824,8 @@ function renderPlaces() {
     var fullStars = Math.floor(p.rating);
     for(var i=0;i<5;i++) starsHtml += (i<fullStars?'★':'☆');
 
-    return '<div class="place-card" id="card-'+p.id+'" onclick="selectPlace('+p.id+')">' +
+    var eid = JSON.stringify(p.id);
+    return '<div class="place-card" id="card-'+p.id+'" onclick="selectPlace('+eid+')">' +
       '<img class="place-img" src="'+p.img+'" alt="'+p.name+'" onerror="this.style.display=\'none\'">' +
       '<div class="place-info">' +
         '<div class="place-name">'+p.name+'</div>' +
@@ -836,8 +837,8 @@ function renderPlaces() {
           '<span class="place-hours '+(p.open?'hours-open':'hours-closed')+'">'+p.hours+'</span>' +
         '</div>' +
         '<div class="place-actions">' +
-          '<button class="place-btn pbtn-blue" onclick="event.stopPropagation();showPlaceModal('+p.id+')"><i class="ti ti-info-circle"></i> Details</button>' +
-          '<button class="place-btn pbtn-gray" onclick="event.stopPropagation();navigateToPlace('+p.id+')"><i class="ti ti-navigation"></i> Directions</button>' +
+          '<button class="place-btn pbtn-blue" onclick="event.stopPropagation();showPlaceModal('+eid+')"><i class="ti ti-info-circle"></i> Details</button>' +
+          '<button class="place-btn pbtn-gray" onclick="event.stopPropagation();navigateToPlace('+eid+')"><i class="ti ti-navigation"></i> Directions</button>' +
           (p.cat==='vet'||p.cat==='emergency'?'<button class="place-btn pbtn-green" onclick="event.stopPropagation();goTo(\'11_vet_booking.html\')"><i class="ti ti-calendar-plus"></i> Book</button>':'') +
         '</div>' +
       '</div>' +
