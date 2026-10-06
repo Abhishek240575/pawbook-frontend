@@ -262,6 +262,8 @@ html, body { overflow-x: hidden !important; }
 
 <script src="api.js"></script>
 <script>
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
 function goTo(p){location.href=p;}
 let isFollowing = false;
 
@@ -295,6 +297,10 @@ function fmt(n){
 }
 
 function toggleFollow() {
+  var uid=new URLSearchParams(location.search).get("user")||"";
+  var isF=document.querySelector(".follow-btn")&&document.querySelector(".follow-btn").textContent.includes("Following");
+  if(uid){fetch(API_BASE+'/api/v1/users/'+uid+(isF?'/unfollow':'/follow'),{method:'POST',headers:authHeaders()}).catch(function(){});}
+
   isFollowing = !isFollowing;
   const btn = document.getElementById('follow-btn');
   btn.textContent = isFollowing ? '✓ Following' : 'Follow';

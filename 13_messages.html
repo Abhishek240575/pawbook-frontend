@@ -299,12 +299,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </script>
 <script>
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
 function goTo(p){window.location.href=p;}
 function newMessage(){toast('💬 New message composer coming soon','info');}
 function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
 </script>
 <script>
 function sendMessage() {
+  var inp=document.getElementById("msg-input")||document.querySelector(".msg-input");
+  var txt=inp?inp.value.trim():"";
+  var convId=localStorage.getItem("pb_active_conv_id")||"";
+  if(txt&&convId){fetch(API_BASE+'/api/v1/messages',{method:'POST',headers:authHeaders(),body:JSON.stringify({conversation_id:convId,content:txt})}).catch(function(){});}
+
   var input = document.getElementById('chat-input');
   if(!input) input = document.querySelector('.chat-input');
   var text = input ? input.value.trim() : '';

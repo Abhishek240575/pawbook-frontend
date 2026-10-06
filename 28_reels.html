@@ -161,6 +161,14 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 ═══════════════════════════════════════════════ */
 
 // ── NAVIGATION ────────────────────────────────
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
+(function(){
+  fetch(API_BASE+'/api/v1/reels',{headers:authHeaders()})
+    .then(function(r){return r.json();})
+    .then(function(d){if(d&&d.data)localStorage.setItem('pb_reels',JSON.stringify(d.data));})
+    .catch(function(){});
+})();
 function goTo(p){window.location.href=p;}
 
 function pbNavBar(activePage) {

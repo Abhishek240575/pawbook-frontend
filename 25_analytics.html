@@ -349,6 +349,14 @@ document.getElementById('engagement-chart').innerHTML = engData.map((d,i)=>`
     <div class="bar-label">${d.d}</div>
   </div>`).join('');
 
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
+(function(){
+  fetch(API_BASE+'/api/v1/analytics/summary',{headers:authHeaders()})
+    .then(function(r){return r.json();})
+    .then(function(d){if(d&&d.data)localStorage.setItem('pb_analytics',JSON.stringify(d.data));})
+    .catch(function(){});
+})();
 function setPeriod(p, btn) {
   document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');

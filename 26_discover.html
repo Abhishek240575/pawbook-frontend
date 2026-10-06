@@ -368,6 +368,8 @@ var satelliteMode = false;
 var tileLayer = null;
 
 // ── MAP INIT ──────────────────────────────────────────────────
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
 function initMap() {
   mapInstance = L.map('discover-map', {zoomControl: true}).setView([20.5937, 78.9629], 5);
   tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

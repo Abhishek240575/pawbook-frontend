@@ -331,6 +331,8 @@ html, body { overflow-x: hidden !important; }
 
 <script src="api.js"></script>
 <script>
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
 function showTab(id, navEl) {
   // Hide all panels
   document.querySelectorAll('.sec-panel').forEach(function(p){ p.classList.remove('active'); });
@@ -352,7 +354,7 @@ function toast(msg, type) {
   t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
 }
 
-function saveProfile() { toast('Profile saved successfully!','success'); }
+function saveProfile() { toast('Profile saved successfully!','success'); var name=(document.getElementById('set-name')||{}).value||''; var bio=(document.getElementById('set-bio')||{}).value||''; fetch(API_BASE+'/api/v1/users/me',{method:'PATCH',headers:authHeaders(),body:JSON.stringify({full_name:name,bio:bio})}).catch(function(){}); }
 
 function changePhoto() { document.getElementById('photo-input').click(); }
 function updatePhoto(input) {

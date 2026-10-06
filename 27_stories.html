@@ -342,6 +342,14 @@ html, body { overflow-x: hidden !important; }
 <body>
 
 <script>
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
+(function(){
+  fetch(API_BASE+'/api/v1/stories',{headers:authHeaders()})
+    .then(function(r){return r.json();})
+    .then(function(d){if(d&&d.data)localStorage.setItem('pb_stories',JSON.stringify(d.data));})
+    .catch(function(){});
+})();
 function goTo(p){window.location.href=p;}
 function toast(msg,type){
   var bg=type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a';

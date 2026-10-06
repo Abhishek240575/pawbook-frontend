@@ -356,6 +356,14 @@ const ALL_IMGS=[
 ];
 let lbIdx=0;
 
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
+(function(){
+  fetch(API_BASE+'/api/v1/media/gallery',{headers:authHeaders()})
+    .then(function(r){return r.json();})
+    .then(function(d){if(d&&d.data)localStorage.setItem('pb_gallery',JSON.stringify(d.data));})
+    .catch(function(){});
+})();
 function renderPhotoGrid(gridId,imgs){
   const grid=document.getElementById(gridId);
   if(!grid)return;
