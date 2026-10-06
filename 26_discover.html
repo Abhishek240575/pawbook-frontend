@@ -628,16 +628,21 @@ function osmElementToPlace(el, idx) {
 }
 
 function buildOsmQuery(lat, lng) {
-  // Compact query using 'nwr' (node/way/relation) union — 50km radius for global coverage
   var r = 50000;
-  var q = '[out:json][timeout:60];(\n';
-  q += '  nwr["amenity"~"veterinary|animal_hospital|animal_shelter|animal_boarding|animal_grooming"](around:'+r+','+lat+','+lng+');\n';
-  q += '  nwr["healthcare"="veterinary"](around:'+r+','+lat+','+lng+');\n';
-  q += '  nwr["tourism"~"zoo|aquarium"](around:'+r+','+lat+','+lng+');\n';
-  q += '  nwr["shop"~"pet|pet_grooming|grooming"](around:'+r+','+lat+','+lng+');\n';
-  q += '  nwr["emergency"="animal_rescue"](around:'+r+','+lat+','+lng+');\n';
-  q += '  nwr["leisure"="nature_reserve"](around:'+r+','+lat+','+lng+');\n';
-  q += ');out center tags 500;\n';
+  // Use union of all pet-related tags — Overpass returns up to 1000 elements
+  var q = '[out:json][timeout:90];(\n';
+  q += '  node["amenity"~"veterinary|animal_hospital|animal_shelter|animal_boarding|animal_grooming"](around:'+r+','+lat+','+lng+');\n';
+  q += '  way["amenity"~"veterinary|animal_hospital|animal_shelter|animal_boarding|animal_grooming"](around:'+r+','+lat+','+lng+');\n';
+  q += '  node["healthcare"="veterinary"](around:'+r+','+lat+','+lng+');\n';
+  q += '  way["healthcare"="veterinary"](around:'+r+','+lat+','+lng+');\n';
+  q += '  node["tourism"~"zoo|aquarium"](around:'+r+','+lat+','+lng+');\n';
+  q += '  way["tourism"~"zoo|aquarium"](around:'+r+','+lat+','+lng+');\n';
+  q += '  node["shop"~"pet|pet_grooming|grooming"](around:'+r+','+lat+','+lng+');\n';
+  q += '  way["shop"~"pet|pet_grooming|grooming"](around:'+r+','+lat+','+lng+');\n';
+  q += '  node["emergency"="animal_rescue"](around:'+r+','+lat+','+lng+');\n';
+  q += '  node["leisure"="nature_reserve"](around:'+r+','+lat+','+lng+');\n';
+  q += '  way["leisure"="nature_reserve"](around:'+r+','+lat+','+lng+');\n';
+  q += ');out center tags 1000;\n';
   return q;
 }
 
@@ -686,7 +691,8 @@ function searchPlaces() {
     var PROXY = 'https://pawbook-api-cquc.onrender.com/api/v1/overpass';
     var query = buildOsmQuery(lat, lng);
     var _osmDone = false;
-    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 30000);
+    document.getElementById('results-count').textContent = (allPlaces.length ? allPlaces.length + ' local results · ' : '') + 'Loading live data from OpenStreetMap…';
+    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 45000);
 
     function handleOsmData(data) {
       if(_osmDone) return; _osmDone=true;
@@ -700,11 +706,19 @@ function searchPlaces() {
       });
       places.sort(function(a,b){return a._dist-b._dist;});
       if(places.length) {
-        allPlaces = places; currentCat='all';
+        // Merge OSM results with local DB — deduplicate by name proximity
+        var localPlaces = allPlaces.filter(function(p){ return !p.source; });
+        var merged = places.slice();
+        localPlaces.forEach(function(lp){
+          var dup = merged.some(function(op){ return op.name && lp.name && op.name.toLowerCase().indexOf(lp.name.toLowerCase().substring(0,8))!==-1; });
+          if(!dup) merged.push(lp);
+        });
+        merged.sort(function(a,b){ return (a._dist||0)-(b._dist||0); });
+        allPlaces = merged; currentCat='all';
         document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active');});
         var fc=document.querySelectorAll('.cat-chip')[0]; if(fc) fc.classList.add('active');
         applyFilters();
-        showToast('Loaded ' + places.length + ' real places from OpenStreetMap ✓', 'success');
+        showToast('Loaded ' + places.length + ' live places from OpenStreetMap ✓', 'success');
       } else if(!hasLocal) {
         document.getElementById('results-count').textContent='No places found in '+city;
         document.getElementById('places-list').innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div style="font-size:13px;margin-top:8px">No pet places found.<br>Try a larger city nearby.</div></div>';
