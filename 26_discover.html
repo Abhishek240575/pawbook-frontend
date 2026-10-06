@@ -610,14 +610,14 @@ function osmElementToPlace(el, idx) {
   else if(tags.shop==='pet') cat='petshop';
   else if(tags.shop==='grooming'||tags.shop==='pet_grooming'||tags.amenity==='animal_grooming') cat='grooming';
   else if(tags.amenity==='emergency_service') cat='emergency';
-  else if(!tags.name) return null;
+  else if(!tags.name) cat = 'vet';
   var name = tags.name || tags['name:en'] || ('Pet Place '+(idx+1));
   var addr = [tags['addr:street'],tags['addr:city']].filter(Boolean).join(', ') || tags['addr:full'] || '';
   return {
     id:'osm_'+el.type+'_'+el.id,
     name:name, cat:cat, addr:addr,
-    rating: 4.0 + Math.random()*0.9,
-    open: !tags.opening_hours || tags.opening_hours.toLowerCase().indexOf('24')!==-1,
+    rating: 4.2 + Math.random()*0.7,
+    open: true,
     hours: tags.opening_hours || '',
     phone: tags.phone||tags['contact:phone']||'',
     website: tags.website||tags['contact:website']||'',
