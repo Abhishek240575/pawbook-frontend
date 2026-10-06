@@ -673,17 +673,6 @@ function finishSearch(osmPlaces, city, lat, lng) {
   });
 }
 
-function fetchOverpass(url, query, timeout) {
-  var ctrl = new AbortController();
-  var timer = setTimeout(function(){ ctrl.abort(); }, timeout || 25000);
-  return fetch(url, {
-    method: 'POST',
-    body: query,
-    headers: {'Content-Type': 'text/plain'},
-    signal: ctrl.signal
-  }).finally(function(){ clearTimeout(timer); });
-}
-
 function searchPlaces() {
   var city = document.getElementById('city-search').value.trim();
   if(!city) { showToast('Please enter a city name', 'error'); return; }
@@ -705,61 +694,53 @@ function searchPlaces() {
       setTimeout(function(){ mapInstance.invalidateSize(); }, 100);
     }
 
-    var RADIUS = 40; // km — covers full metro areas like Delhi NCR, Mumbai MMR
+    var RADIUS = 40; // km — covers full metro areas
     var query = buildOverpassQuery(lat, lng, RADIUS);
+    var API_BASE = (typeof window.API_BASE !== 'undefined') ? window.API_BASE : 'https://pawbook-api-cquc.onrender.com/api/v1';
 
-    // Try mirrors in sequence: main API → kumi → private.coffee
-    var MIRRORS = [
-      'https://overpass-api.de/api/interpreter',
-      'https://overpass.kumi.systems/api/interpreter',
-      'https://overpass.private.coffee/api/interpreter'
-    ];
+    document.getElementById('results-count').textContent = 'Loading places in ' + city + '…';
 
-    function tryMirror(idx) {
+    // ── Route through our backend proxy (no CORS issues, works globally) ──
+    var ctrl = new AbortController();
+    var timer = setTimeout(function(){ ctrl.abort(); }, 40000);
+
+    fetch(API_BASE + '/overpass', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ query: query }),
+      signal: ctrl.signal
+    })
+    .finally(function(){ clearTimeout(timer); })
+    .then(function(r) {
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
       if(cancelled) return;
-      if(idx >= MIRRORS.length) {
-        document.getElementById('places-list').innerHTML =
-          '<div class="empty-state"><div class="empty-icon">⚠️</div>'+
-          '<div style="font-size:14px;font-weight:700">Could not load places</div>'+
-          '<div style="font-size:12px;margin-top:6px;color:#65676b">OpenStreetMap servers are busy. Please try again in a minute.</div></div>';
-        document.getElementById('results-count').textContent = 'Failed to load';
-        showToast('All OSM servers timed out. Try again.', 'error');
-        return;
-      }
-
-      document.getElementById('results-count').textContent =
-        'Trying server ' + (idx+1) + '/3… (' + city + ')';
-
-      fetchOverpass(MIRRORS[idx], query, 28000)
-        .then(function(r) {
-          if(!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
-        })
-        .then(function(data) {
-          if(cancelled) return;
-          var elements = data.elements || [];
-          var places = [];
-          elements.forEach(function(el, i) {
-            var p = osmElementToPlace(el, i);
-            if(p) places.push(p);
-          });
-          // compute distance
-          places.forEach(function(p) {
-            var dlat = p.lat - lat, dlng = p.lng - lng;
-            p._dist = Math.sqrt(dlat*dlat + dlng*dlng) * 111;
-            p.dist = p._dist.toFixed(1) + ' km';
-          });
-          places.sort(function(a,b){ return a._dist - b._dist; });
-          finishSearch(places, city, lat, lng);
-        })
-        .catch(function(err) {
-          if(cancelled) return;
-          console.warn('Mirror ' + MIRRORS[idx] + ' failed:', err.message);
-          tryMirror(idx + 1);
-        });
-    }
-
-    tryMirror(0);
+      var elements = data.elements || [];
+      var places = [];
+      elements.forEach(function(el, i) {
+        var p = osmElementToPlace(el, i);
+        if(p) places.push(p);
+      });
+      places.forEach(function(p) {
+        var dlat = p.lat - lat, dlng = p.lng - lng;
+        p._dist = Math.sqrt(dlat*dlat + dlng*dlng) * 111;
+        p.dist = p._dist.toFixed(1) + ' km';
+      });
+      places.sort(function(a,b){ return a._dist - b._dist; });
+      finishSearch(places, city, lat, lng);
+    })
+    .catch(function(err) {
+      if(cancelled) return;
+      console.error('Overpass proxy error:', err);
+      document.getElementById('places-list').innerHTML =
+        '<div class="empty-state"><div class="empty-icon">⚠️</div>'+
+        '<div style="font-size:14px;font-weight:700">Could not load places</div>'+
+        '<div style="font-size:12px;margin-top:6px;color:#65676b">OSM servers may be busy. Please try again.</div></div>';
+      document.getElementById('results-count').textContent = 'Failed to load';
+      showToast('Could not load places. Try again.', 'error');
+    });
   });
 }
 
