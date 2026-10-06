@@ -443,38 +443,73 @@ function geocodeCity(cityName, callback) {
 
 // ── OVERPASS QUERY ────────────────────────────────────────────
 function buildOverpassQuery(lat, lng, radiusKm) {
-  var r = (radiusKm || 25) * 1000; // 25km radius
-  var q = '[out:json][timeout:60];(';
+  var r = (radiusKm || 25) * 1000;
+  var q = '[out:json][timeout:90];(';
   var tags = [
+    // ── VETS ──────────────────────────────────────────────────
     ['node','amenity','veterinary'],
     ['way','amenity','veterinary'],
     ['relation','amenity','veterinary'],
-    ['node','amenity','animal_shelter'],
-    ['way','amenity','animal_shelter'],
-    ['node','amenity','animal_boarding'],
-    ['way','amenity','animal_boarding'],
-    ['node','amenity','animal_grooming'],
-    ['way','amenity','animal_grooming'],
     ['node','amenity','animal_hospital'],
     ['way','amenity','animal_hospital'],
+    ['node','healthcare','veterinary'],
+    ['way','healthcare','veterinary'],
+    ['node','amenity','clinic'],        // catches many Indian vet clinics
+
+    // ── SHELTERS (broad — India uses many tags) ────────────────
+    ['node','amenity','animal_shelter'],
+    ['way','amenity','animal_shelter'],
+    ['relation','amenity','animal_shelter'],
+    ['node','amenity','animal_boarding'],
+    ['way','amenity','animal_boarding'],
+    ['node','amenity','social_facility'],  // NGO shelters in India
+    ['way','amenity','social_facility'],
+    ['node','amenity','rescue_station'],
+    ['way','amenity','rescue_station'],
+
+    // ── GROOMING (key Indian tags) ─────────────────────────────
+    ['node','amenity','animal_grooming'],
+    ['way','amenity','animal_grooming'],
+    ['node','shop','grooming'],          // most common worldwide
+    ['way','shop','grooming'],
+    ['node','shop','pet_grooming'],
+    ['node','shop','beauty'],            // some grooming salons tagged this
+    ['node','leisure','dog_park'],       // bonus: dog parks
+
+    // ── EMERGENCY / 24h VETS ──────────────────────────────────
+    ['node','amenity','emergency_service'],
+    ['way','amenity','emergency_service'],
+    ['node','emergency','animal_rescue'],
+    ['way','emergency','animal_rescue'],
+
+    // ── ZOO / SAFARI ──────────────────────────────────────────
     ['node','tourism','zoo'],
     ['way','tourism','zoo'],
     ['relation','tourism','zoo'],
+    ['node','tourism','safari'],
+    ['way','tourism','safari'],
+    ['node','leisure','nature_reserve'],
+
+    // ── AQUARIUM ──────────────────────────────────────────────
     ['node','tourism','aquarium'],
     ['way','tourism','aquarium'],
+    ['relation','tourism','aquarium'],
+
+    // ── PET SHOPS ─────────────────────────────────────────────
     ['node','shop','pet'],
     ['way','shop','pet'],
     ['node','shop','pet_shop'],
     ['way','shop','pet_shop'],
-    ['node','shop','agrarian'],
-    ['node','amenity','clinic'],
-    ['node','healthcare','veterinary'],
-    ['way','healthcare','veterinary'],
+    ['node','shop','pet_food'],
+    ['node','shop','aquarium'],         // fish shops
   ];
+
+  // Build query — skip the malformed 24h tag (it's a note, remove it)
   tags.forEach(function(t) {
+    if(t.length === 2) return; // skip malformed entries
     q += t[0]+'["'+t[1]+'"="'+t[2]+'"](around:'+r+','+lat+','+lng+');';
   });
-  q += ');out center;';
+  q += ');out center tags;';
   return q;
 }
 
@@ -486,12 +521,30 @@ function osmElementToPlace(el, idx) {
 
   // Determine category
   var cat = 'vet';
-  if(tags.amenity === 'veterinary' || tags.amenity === 'animal_hospital' || tags.healthcare === 'veterinary') cat = 'vet';
-  else if(tags.amenity === 'animal_shelter' || tags.amenity === 'animal_boarding') cat = 'shelter';
-  else if(tags.amenity === 'animal_grooming') cat = 'grooming';
-  else if(tags.tourism === 'zoo') cat = 'zoo';
-  else if(tags.tourism === 'aquarium') cat = 'aquarium';
-  else if(tags.shop === 'pet' || tags.shop === 'pet_shop' || tags.shop === 'agrarian') cat = 'petshop';
+  var nm = (tags.name || '').toLowerCase();
+
+  if(tags.amenity === 'veterinary' || tags.amenity === 'animal_hospital' || tags.healthcare === 'veterinary' || tags.amenity === 'clinic') {
+    // Check if it's actually an emergency/24h vet
+    var hrs = (tags.opening_hours || '').toLowerCase();
+    var isEmergency = hrs.indexOf('24') !== -1 || nm.indexOf('emergency') !== -1 || nm.indexOf('trauma') !== -1;
+    cat = isEmergency ? 'emergency' : 'vet';
+  }
+  else if(tags.amenity === 'animal_shelter' || tags.amenity === 'animal_boarding' ||
+          tags.amenity === 'rescue_station' || tags.emergency === 'animal_rescue' ||
+          (tags.amenity === 'social_facility' && (nm.indexOf('animal') !== -1 || nm.indexOf('pet') !== -1 || nm.indexOf('rescue') !== -1 || nm.indexOf('shelter') !== -1 || nm.indexOf('stray') !== -1))) {
+    cat = 'shelter';
+  }
+  else if(tags.amenity === 'emergency_service' || tags.emergency === 'animal_rescue') {
+    cat = 'emergency';
+  }
+  else if(tags.amenity === 'animal_grooming' || tags.shop === 'grooming' || tags.shop === 'pet_grooming' ||
+          (tags.shop === 'beauty' && (nm.indexOf('pet') !== -1 || nm.indexOf('dog') !== -1 || nm.indexOf('cat') !== -1 || nm.indexOf('groom') !== -1))) {
+    cat = 'grooming';
+  }
+  else if(tags.tourism === 'zoo' || tags.tourism === 'safari' || tags.leisure === 'nature_reserve') cat = 'zoo';
+  else if(tags.tourism === 'aquarium' || tags.shop === 'aquarium') cat = 'aquarium';
+  else if(tags.shop === 'pet' || tags.shop === 'pet_shop' || tags.shop === 'pet_food' || tags.shop === 'agrarian') cat = 'petshop';
+  else if(tags.leisure === 'dog_park') cat = 'shelter'; // dog parks shown under shelter tab
   else if(tags.amenity) cat = OSM_CAT_MAP[tags.amenity] || 'vet';
 
   var name = tags.name || tags['name:en'] || (CAT_LABELS[cat] || 'Place') + ' ' + (idx+1);
@@ -652,7 +705,7 @@ function searchPlaces() {
       setTimeout(function(){ mapInstance.invalidateSize(); }, 100);
     }
 
-    var RADIUS = 25; // km
+    var RADIUS = 40; // km — covers full metro areas like Delhi NCR, Mumbai MMR
     var query = buildOverpassQuery(lat, lng, RADIUS);
 
     // Try mirrors in sequence: main API → kumi → private.coffee
