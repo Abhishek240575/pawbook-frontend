@@ -629,21 +629,9 @@ function osmElementToPlace(el, idx) {
 
 function buildOsmQuery(lat, lng) {
   var r = 50000;
-  // Use union of all pet-related tags — Overpass returns up to 1000 elements
-  var q = '[out:json][timeout:90];(\n';
-  q += '  node["amenity"~"veterinary|animal_hospital|animal_shelter|animal_boarding|animal_grooming"](around:'+r+','+lat+','+lng+');\n';
-  q += '  way["amenity"~"veterinary|animal_hospital|animal_shelter|animal_boarding|animal_grooming"](around:'+r+','+lat+','+lng+');\n';
-  q += '  node["healthcare"="veterinary"](around:'+r+','+lat+','+lng+');\n';
-  q += '  way["healthcare"="veterinary"](around:'+r+','+lat+','+lng+');\n';
-  q += '  node["tourism"~"zoo|aquarium"](around:'+r+','+lat+','+lng+');\n';
-  q += '  way["tourism"~"zoo|aquarium"](around:'+r+','+lat+','+lng+');\n';
-  q += '  node["shop"~"pet|pet_grooming|grooming"](around:'+r+','+lat+','+lng+');\n';
-  q += '  way["shop"~"pet|pet_grooming|grooming"](around:'+r+','+lat+','+lng+');\n';
-  q += '  node["emergency"="animal_rescue"](around:'+r+','+lat+','+lng+');\n';
-  q += '  node["leisure"="nature_reserve"](around:'+r+','+lat+','+lng+');\n';
-  q += '  way["leisure"="nature_reserve"](around:'+r+','+lat+','+lng+');\n';
-  q += ');out center tags 1000;\n';
-  return q;
+  var a = '(around:'+r+','+lat+','+lng+')';
+  // Single-line query — no newlines so URL encoding stays clean
+  return '[out:json][timeout:60];(nwr["amenity"~"veterinary|animal_hospital|animal_shelter|animal_boarding|animal_grooming"]'+a+';nwr["healthcare"="veterinary"]'+a+';nwr["tourism"~"zoo|aquarium"]'+a+';nwr["shop"~"pet|pet_grooming|grooming"]'+a+';);out center tags 1000;';
 }
 
 var CITY_ALIASES = {'bengaluru':'bangalore','new delhi':'delhi','bombay':'mumbai','calcutta':'kolkata','madras':'chennai','bangaluru':'bangalore'};
@@ -689,9 +677,9 @@ function searchPlaces() {
 
     // STEP 3: Query Overpass directly (CORS supported), fallback to backend proxy
     var OVERPASS_MIRRORS = [
-      'https://overpass-api.de/api/interpreter',
+      'https://overpass.private.coffee/api/interpreter',
       'https://overpass.kumi.systems/api/interpreter',
-      'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
+      'https://overpass-api.de/api/interpreter'
     ];
     var query = buildOsmQuery(lat, lng);
     var _osmDone = false;
@@ -699,20 +687,24 @@ function searchPlaces() {
     var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 60000);
 
     function tryOverpass(mirrors, idx) {
-      if(idx >= mirrors.length) {
-        // All mirrors failed — try backend proxy as last resort
-        fetch('https://pawbook-api-cquc.onrender.com/api/v1/overpass', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({query:query})
-        }).then(function(r){ if(!r.ok) throw new Error('proxy '+r.status); return r.json(); })
-          .then(handleOsmData).catch(function(){ osmFailed(); });
-        return;
-      }
-      var url = mirrors[idx] + '?data=' + encodeURIComponent(query);
-      fetch(url)
-        .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-        .then(handleOsmData)
-        .catch(function(){ tryOverpass(mirrors, idx+1); });
+      if(idx >= mirrors.length) { osmFailed(); return; }
+      var body = 'data=' + encodeURIComponent(query);
+      fetch(mirrors[idx], {
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'},
+        body: body
+      })
+      .then(function(r){
+        if(r.status === 429 || r.status === 503) { setTimeout(function(){ tryOverpass(mirrors, idx+1); }, 1000); return null; }
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      })
+      .then(function(d){
+        if(!d) return;
+        if(d && Array.isArray(d.elements)) handleOsmData(d);
+        else tryOverpass(mirrors, idx+1);
+      })
+      .catch(function(e){ console.warn('Mirror',idx,'failed:',e.message); tryOverpass(mirrors, idx+1); });
     }
 
     function handleOsmData(data) {
