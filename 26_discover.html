@@ -628,9 +628,9 @@ function osmElementToPlace(el, idx) {
 }
 
 function buildOsmQuery(lat, lng) {
-  var r = 30000;
+  var r = 10000;
   var a = '(around:'+r+','+lat+','+lng+')';
-  return '[out:json][timeout:30];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';node["tourism"~"zoo|aquarium"]'+a+';node["shop"~"pet|pet_grooming|grooming"]'+a+';way["amenity"~"veterinary|animal_shelter"]'+a+';way["shop"~"pet|grooming"]'+a+';);out center tags 600;';
+  return '[out:json][timeout:20];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';node["shop"~"pet|grooming"]'+a+';);out tags 200;';
 }
 
 var CITY_ALIASES = {'bengaluru':'bangalore','new delhi':'delhi','bombay':'mumbai','calcutta':'kolkata','madras':'chennai','bangaluru':'bangalore'};
