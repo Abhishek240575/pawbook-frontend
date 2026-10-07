@@ -678,8 +678,14 @@ function searchPlaces() {
     var query = buildOsmQuery(lat, lng);
     var _osmDone = false;
     var countEl = document.getElementById('results-count');
-    countEl.textContent = (allPlaces.length ? allPlaces.length + ' local results · ' : '') + 'Loading live places from OpenStreetMap…';
-    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 90000);
+    var _dotCount = 0;
+    var _loadingTimer = setInterval(function(){
+      if(_osmDone){ clearInterval(_loadingTimer); return; }
+      _dotCount = (_dotCount+1)%4;
+      var dots = '.'.repeat(_dotCount);
+      countEl.innerHTML = (allPlaces.length ? '<span style="color:#1877F2">'+allPlaces.length+' local</span> · ' : '') + '🔍 Fetching live places from OpenStreetMap'+dots;
+    }, 500);
+    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; clearInterval(_loadingTimer); osmFailed(); } }, 90000);
 
     // Try backend proxy first, then fall back to direct Overpass mirrors
     var MIRRORS = [
@@ -722,7 +728,7 @@ function searchPlaces() {
     .catch(function(e){ console.warn('Backend proxy failed:', e.message, '— trying direct mirrors'); tryDirectMirror(0); });
 
     function handleOsmData(data) {
-      if(_osmDone) return; _osmDone=true;
+      if(_osmDone) return; _osmDone=true; clearInterval(_loadingTimer);
       clearTimeout(timer);
       _osmSearchActive = false;
       var elements = data.elements || [];
