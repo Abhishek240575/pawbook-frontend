@@ -628,9 +628,9 @@ function osmElementToPlace(el, idx) {
 }
 
 function buildOsmQuery(lat, lng) {
-  var r = 50000;
+  var r = 30000;
   var a = '(around:'+r+','+lat+','+lng+')';
-  return '[out:json][timeout:60];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';node["tourism"~"zoo|aquarium"]'+a+';node["shop"~"pet|pet_grooming|grooming"]'+a+';way["amenity"~"veterinary|animal_shelter"]'+a+';way["shop"~"pet|grooming"]'+a+';);out center tags 1000;';
+  return '[out:json][timeout:30];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';node["tourism"~"zoo|aquarium"]'+a+';node["shop"~"pet|pet_grooming|grooming"]'+a+';way["amenity"~"veterinary|animal_shelter"]'+a+';way["shop"~"pet|grooming"]'+a+';);out center tags 600;';
 }
 
 var CITY_ALIASES = {'bengaluru':'bangalore','new delhi':'delhi','bombay':'mumbai','calcutta':'kolkata','madras':'chennai','bangaluru':'bangalore'};
@@ -681,8 +681,31 @@ function searchPlaces() {
     countEl.textContent = (allPlaces.length ? allPlaces.length + ' local results · ' : '') + 'Loading live places from OpenStreetMap…';
     var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 90000);
 
-    // Use backend proxy — no CORS/timeout issues, tries multiple Overpass mirrors server-side
+    // Try backend proxy first, then fall back to direct Overpass mirrors
+    var MIRRORS = [
+      'https://overpass.kumi.systems/api/interpreter',
+      'https://overpass.private.coffee/api/interpreter',
+      'https://overpass-api.de/api/interpreter'
+    ];
     countEl.textContent = (allPlaces.length ? allPlaces.length + ' local · ' : '') + 'Searching OpenStreetMap…';
+
+    function tryDirectMirror(idx) {
+      if(idx >= MIRRORS.length) { osmFailed(); return; }
+      var url = MIRRORS[idx] + '?data=' + encodeURIComponent(query);
+      fetch(url)
+      .then(function(r){
+        if(r.status === 429 || r.status === 503 || r.status === 504) { setTimeout(function(){ tryDirectMirror(idx+1); }, 600); return null; }
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      })
+      .then(function(d){
+        if(!d) return;
+        if(d && Array.isArray(d.elements) && d.elements.length > 0) { handleOsmData(d); }
+        else { tryDirectMirror(idx+1); }
+      })
+      .catch(function(e){ console.warn('Mirror',idx,'failed:',e.message); tryDirectMirror(idx+1); });
+    }
+
     fetch('https://pawbook-api-cquc.onrender.com/api/v1/overpass', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -694,9 +717,9 @@ function searchPlaces() {
     })
     .then(function(d){
       if(d && Array.isArray(d.elements) && d.elements.length > 0) { handleOsmData(d); }
-      else { console.warn('Proxy returned no elements'); osmFailed(); }
+      else { console.warn('Proxy returned no elements, trying direct mirrors'); tryDirectMirror(0); }
     })
-    .catch(function(e){ console.warn('Backend proxy failed:', e.message); osmFailed(); });
+    .catch(function(e){ console.warn('Backend proxy failed:', e.message, '— trying direct mirrors'); tryDirectMirror(0); });
 
     function handleOsmData(data) {
       if(_osmDone) return; _osmDone=true;
