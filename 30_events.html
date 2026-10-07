@@ -166,7 +166,28 @@ function authHeaders(){return {'Content-Type':'application/json','Authorization'
 (function(){
   fetch(API_BASE+'/api/v1/events',{headers:authHeaders()})
     .then(function(r){return r.json();})
-    .then(function(d){if(d&&d.data)localStorage.setItem('pb_events',JSON.stringify(d.data));})
+    .then(function(d){
+      if(d&&d.data&&d.data.length){
+        EVENTS = d.data.map(function(e){
+          return {
+            id: e.event_id,
+            type: e.event_type||'meetup',
+            title: e.title,
+            date: new Date(e.event_date).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+            location: e.location,
+            description: e.description||'',
+            img: e.cover_image||'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=85',
+            attendees: parseInt(e.going_count)||0,
+            interested: parseInt(e.interested_count)||0,
+            organizer: e.organizer_name||'PawBook',
+            free: !e.entry_fee || e.entry_fee.toLowerCase()==='free',
+            price: e.entry_fee||'Free',
+            going: false
+          };
+        });
+        renderEvents(currentFilter);
+      }
+    })
     .catch(function(){});
 })();
 function goTo(p){window.location.href=p;}
@@ -710,8 +731,15 @@ function filterEvents(type, el) {
 }
 
 function toggleGoing(id, btn) {
-  if(goingEvents.has(id)) { goingEvents.delete(id); btn.textContent='Going'; btn.classList.remove('active'); showToast('Removed from going'); }
-  else { goingEvents.add(id); btn.textContent='✓ Going'; btn.classList.add('active'); showToast('✅ You\'re going!'); }
+  var isGoing = goingEvents.has(id);
+  var newStatus = isGoing ? 'none' : 'going';
+  fetch(API_BASE+'/api/v1/events/'+id+'/rsvp',{method:'POST',headers:authHeaders(),body:JSON.stringify({status:newStatus})})
+    .then(function(r){return r.json();})
+    .then(function(){
+      if(isGoing){ goingEvents.delete(id); btn.textContent='Going'; btn.classList.remove('active'); showToast('Removed from going'); }
+      else { goingEvents.add(id); btn.textContent='✓ Going'; btn.classList.add('active'); showToast('✅ You\'re going!'); }
+    })
+    .catch(function(){ showToast('Network error','error'); });
 }
 function toggleInterested(id, btn) {
   btn.textContent = btn.textContent==='Interested'?'★ Interested':'Interested';
@@ -817,36 +845,31 @@ function submitCreateEvent() {
   if(!name){alert('Please enter an event name');document.getElementById('ce-name').focus();return;}
   if(!date){alert('Please select a date');return;}
   if(!location){alert('Please enter a location');return;}
-  
-  // Format date nicely
-  var d = new Date(date + 'T' + (time||'09:00'));
-  var dateStr = d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}) + (time ? ' · ' + d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '');
-  
-  // Add to events list
-  var newEvent = {
-    id: Date.now(),
+
+  var eventDate = date + 'T' + (time||'09:00') + ':00';
+  var fee = document.getElementById('ce-fee').value.trim();
+  var body = {
     title: name,
+    event_date: eventDate,
     location: location,
-    date: dateStr,
-    category: document.getElementById('ce-category').value,
-    attendees: 1,
-    free: !document.getElementById('ce-fee').value || document.getElementById('ce-fee').value.toLowerCase() === 'free',
-    price: document.getElementById('ce-fee').value || 'Free',
-    description: document.getElementById('ce-desc').value || 'Join us for this amazing event!',
-    img: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=85'
+    event_type: document.getElementById('ce-category').value,
+    description: document.getElementById('ce-desc').value||'',
+    max_attendees: document.getElementById('ce-max').value||null,
+    entry_fee: fee||'Free'
   };
-  
-  EVENTS = EVENTS || [];
-  EVENTS.unshift(newEvent);
-  renderEvents(EVENTS);
-  closeCreateEvent();
-  
-  // Show success toast
-  var t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap';
-  t.textContent = 'Event created successfully!';
-  document.body.appendChild(t);
-  setTimeout(function(){t.remove();}, 2600);
+
+  fetch(API_BASE+'/api/v1/events',{method:'POST',headers:authHeaders(),body:JSON.stringify(body)})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.success){
+        closeCreateEvent();
+        showToast('🎉 Event created!','success');
+        setTimeout(function(){ location.reload(); }, 1000);
+      } else {
+        showToast(d.message||'Failed to create event','error');
+      }
+    })
+    .catch(function(){ showToast('Network error','error'); });
 }
 
 function filterByLocation(val) {
