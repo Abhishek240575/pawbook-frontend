@@ -312,7 +312,7 @@ async function api(path, opts={}){
 }
 
 if(!tok()){ location.href='01_login.html'; }
-fetch('navbar.html').then(r=>r.text()).then(h=>document.getElementById('nav-ph').innerHTML=h).catch(()=>{});
+fetch('navbar.html').then(r=>{ if(!r.ok) return; return r.text(); }).then(h=>{ if(h) document.getElementById('nav-ph').innerHTML=h; }).catch(()=>{});
 
 // ══════════════════════════════════════════════════════════
 // STATE
@@ -348,23 +348,30 @@ function setP2Tab(t){
 async function loadPeople(q=''){
   const el = document.getElementById('people-pane');
   el.innerHTML = '<div class="ld"><i class="ti ti-loader-2"></i></div>';
-  // Try new endpoint, fall back to search
   let users = [];
   if(q){
-    const r = await api('/messages/search-users?q='+encodeURIComponent(q));
-    users = r.success ? (r.data||[]) : [];
+    // Try dedicated search endpoint first, fall back to user search
+    let r = await api('/messages/search-users?q='+encodeURIComponent(q));
+    if(!r.success) r = await api('/users/search?q='+encodeURIComponent(q)+'&limit=50');
+    users = r.success ? (r.data||r.users||[]) : [];
   } else {
-    const r = await api('/messages/users');
+    // Try new endpoint first
+    let r = await api('/messages/users');
     if(r.success){
       users = r.data||[];
     } else {
-      // endpoint not yet deployed — show hint
-      el.innerHTML = `<div class="emsg" style="padding:24px">
-        <i class="ti ti-users" style="font-size:32px;color:#bcc0c4;display:block;margin-bottom:10px"></i>
-        <strong>Search to find people</strong><br>
-        <span style="font-size:12px;color:var(--muted)">Type a name above to find users</span>
-      </div>`;
-      return;
+      // Fall back to existing users/search with empty query to get all users
+      r = await api('/users/search?q=%20&limit=100');
+      if(r.success){
+        users = r.data||r.users||[];
+      } else {
+        el.innerHTML = `<div class="emsg" style="padding:24px">
+          <i class="ti ti-users" style="font-size:32px;color:#bcc0c4;display:block;margin-bottom:10px"></i>
+          <strong>No users found</strong><br>
+          <span style="font-size:12px;color:var(--muted)">Try searching by name above</span>
+        </div>`;
+        return;
+      }
     }
   }
   renderPeople(users, el);
