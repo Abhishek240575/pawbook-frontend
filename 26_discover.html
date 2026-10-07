@@ -674,39 +674,7 @@ function searchPlaces() {
   function afterGeo(lat, lng) {
     if(mapInstance){ mapInstance.setView([lat,lng],13); setTimeout(function(){mapInstance.invalidateSize();},200); }
 
-    // STEP 3a: Fetch PawBook-listed businesses instantly
-    fetch(PBASE + '/businesses?lat='+lat+'&lng='+lng+'&radius=30')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if(d && Array.isArray(d.businesses) && d.businesses.length > 0) {
-        d.businesses.forEach(function(b){
-          if(!b.lat || !b.lng) return;
-          var existing = allPlaces.find(function(p){ return p.id === 'pb_'+b.business_id; });
-          if(existing) return;
-          var catMap = {vet:'vet',pet_shop:'shop',grooming:'grooming',shelter:'shelter',boarding:'boarding',training:'training',insurance:'insurance'};
-          allPlaces.unshift({
-            id: 'pb_'+b.business_id,
-            name: b.name,
-            cat: catMap[b.category] || 'vet',
-            addr: (b.address||'') + (b.city ? ', '+b.city : ''),
-            rating: 4.8, dist: '—',
-            open: true,
-            hours: b.opening_hours || 'Contact for hours',
-            phone: b.phone, website: b.website,
-            desc: b.description || b.name + ' — Listed on PawBook.',
-            img: CAT_IMGS[catMap[b.category]] || CAT_IMGS.vet,
-            lat: parseFloat(b.lat), lng: parseFloat(b.lng),
-            source: 'pawbook',
-            verified: b.verified
-          });
-        });
-        applyFilters();
-        showToast('🐾 ' + d.businesses.length + ' PawBook-listed businesses found!', 'success');
-      }
-    })
-    .catch(function(){});
-
-    // STEP 3b: Query Overpass via multiple mirrors (CORS-enabled public instances)
+    // STEP 3: Query Overpass via multiple mirrors (CORS-enabled public instances)
     var query = buildOsmQuery(lat, lng);
     var _osmDone = false;
     var countEl = document.getElementById('results-count');
@@ -878,7 +846,7 @@ function renderPlaces() {
     return '<div class="place-card" id="card-'+p.id+'" onclick="selectPlace('+eid+')">' +
       '<img class="place-img" src="'+p.img+'" alt="'+p.name+'" onerror="this.style.display=\'none\'">' +
       '<div class="place-info">' +
-        '<div class="place-name">'+p.name+(p.source==='pawbook'?'&nbsp;<span style="font-size:10px;background:#1877F2;color:#fff;border-radius:4px;padding:1px 5px;vertical-align:middle">'+(p.verified?'✓ ':'')+'PawBook</span>':'')+'</div>' +
+        '<div class="place-name">'+p.name+'</div>' +
         '<span class="place-type" style="background:'+col+'22;color:'+col+'">'+label+'</span>' +
         '<div class="place-addr"><i class="ti ti-map-pin" style="font-size:11px;color:#1877F2"></i>'+p.addr+'</div>' +
         '<div class="place-meta">' +
