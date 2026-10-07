@@ -231,9 +231,9 @@ html, body { overflow-x: hidden !important; }
 var API_BASE='https://pawbook-api-cquc.onrender.com/api/v1';
 function goTo(p){window.location.href=p;}
 function toast(msg,type){var t=document.getElementById('pb-toast');t.textContent=msg;t.style.background=type==='error'?'#dc2626':type==='info'?'#2563eb':'#0d1117';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
-function apiToken(){try{return JSON.parse(localStorage.getItem('pawbook_user')||'{}').token||'';}catch(e){return '';}}
+function apiToken(){try{return localStorage.getItem('pb_token')||'';}catch(e){return '';}}
 function isLoggedIn(){return !!apiToken();}
-function currentUser(){try{return JSON.parse(localStorage.getItem('pawbook_user')||'{}');}catch(e){return {};}}
+function currentUser(){try{return JSON.parse(localStorage.getItem('pb_user')||'{}');}catch(e){return {};}}
 async function apiFetch(path,opts){
   var url=API_BASE+path;
   var headers={'Content-Type':'application/json'};
