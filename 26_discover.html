@@ -628,9 +628,9 @@ function osmElementToPlace(el, idx) {
 }
 
 function buildOsmQuery(lat, lng) {
-  var r = 5000;
+  var r = 30000;
   var a = '(around:'+r+','+lat+','+lng+')';
-  return '[out:json][timeout:25];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';node["tourism"~"zoo|aquarium"]'+a+';node["shop"~"pet|pet_grooming|grooming"]'+a+';way["amenity"~"veterinary|animal_shelter"]'+a+';way["shop"~"pet|grooming"]'+a+';);out center tags 400;';
+  return '[out:json][timeout:30];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';node["tourism"~"zoo|aquarium"]'+a+';node["shop"~"pet|pet_grooming|grooming"]'+a+';way["amenity"~"veterinary|animal_shelter"]'+a+';way["shop"~"pet|grooming"]'+a+';);out center tags 600;';
 }
 
 var CITY_ALIASES = {'bengaluru':'bangalore','new delhi':'delhi','bombay':'mumbai','calcutta':'kolkata','madras':'chennai','bangaluru':'bangalore'};
@@ -678,14 +678,8 @@ function searchPlaces() {
     var query = buildOsmQuery(lat, lng);
     var _osmDone = false;
     var countEl = document.getElementById('results-count');
-    var _dotCount = 0;
-    var _loadingTimer = setInterval(function(){
-      if(_osmDone){ clearInterval(_loadingTimer); return; }
-      _dotCount = (_dotCount+1)%4;
-      var dots = '.'.repeat(_dotCount);
-      countEl.innerHTML = (allPlaces.length ? '<span style="color:#1877F2">'+allPlaces.length+' local</span> · ' : '') + '🔍 Fetching live places from OpenStreetMap'+dots;
-    }, 500);
-    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; clearInterval(_loadingTimer); osmFailed(); } }, 90000);
+    countEl.textContent = (allPlaces.length ? allPlaces.length + ' local results · ' : '') + 'Loading live places from OpenStreetMap…';
+    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 90000);
 
     // Try backend proxy first, then fall back to direct Overpass mirrors
     var MIRRORS = [
@@ -728,7 +722,7 @@ function searchPlaces() {
     .catch(function(e){ console.warn('Backend proxy failed:', e.message, '— trying direct mirrors'); tryDirectMirror(0); });
 
     function handleOsmData(data) {
-      if(_osmDone) return; _osmDone=true; clearInterval(_loadingTimer);
+      if(_osmDone) return; _osmDone=true;
       clearTimeout(timer);
       _osmSearchActive = false;
       var elements = data.elements || [];
