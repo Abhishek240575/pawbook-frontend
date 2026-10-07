@@ -627,10 +627,13 @@ function osmElementToPlace(el, idx) {
   };
 }
 
-function buildOsmQuery(lat, lng) {
-  var r = 30000;
+function buildOsmQueries(lat, lng) {
+  var r = 25000;
   var a = '(around:'+r+','+lat+','+lng+')';
-  return '[out:json][timeout:30];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';node["tourism"~"zoo|aquarium"]'+a+';node["shop"~"pet|pet_grooming|grooming"]'+a+';way["amenity"~"veterinary|animal_shelter"]'+a+';way["shop"~"pet|grooming"]'+a+';);out center tags 600;';
+  // Split into 2 parallel queries: medical/shelter + shops/tourism
+  var q1 = '[out:json][timeout:20];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';way["amenity"~"veterinary|animal_shelter"]'+a+';);out center tags 300;';
+  var q2 = '[out:json][timeout:20];(node["shop"~"pet|pet_grooming|grooming"]'+a+';node["tourism"~"zoo|aquarium"]'+a+';way["shop"~"pet|grooming"]'+a+';);out center tags 300;';
+  return [q1, q2];
 }
 
 var CITY_ALIASES = {'bengaluru':'bangalore','new delhi':'delhi','bombay':'mumbai','calcutta':'kolkata','madras':'chennai','bangaluru':'bangalore'};
@@ -674,56 +677,53 @@ function searchPlaces() {
   function afterGeo(lat, lng) {
     if(mapInstance){ mapInstance.setView([lat,lng],13); setTimeout(function(){mapInstance.invalidateSize();},200); }
 
-    // STEP 3: Query Overpass via multiple mirrors (CORS-enabled public instances)
-    var query = buildOsmQuery(lat, lng);
+    // STEP 3: Two parallel Overpass queries with per-request timeouts
+    var queries = buildOsmQueries(lat, lng);
     var _osmDone = false;
     var countEl = document.getElementById('results-count');
-    countEl.textContent = (allPlaces.length ? allPlaces.length + ' local results · ' : '') + 'Loading live places from OpenStreetMap…';
-    var timer = setTimeout(function(){ if(!_osmDone){ _osmDone=true; osmFailed(); } }, 90000);
+    countEl.textContent = (allPlaces.length ? allPlaces.length + ' local · ' : '') + 'Fetching live places⠦';
+    var dotTimer = setInterval(function(){
+      var t = countEl.textContent;
+      var dots = ['⠦','⠧','⠇','⠏','⠋','⠙'];
+      var cur = dots.indexOf(t.slice(-1)); countEl.textContent = t.slice(0,-1) + dots[(cur+1)%dots.length];
+    }, 300);
+    var globalTimer = setTimeout(function(){ if(!_osmDone){ clearInterval(dotTimer); _osmDone=true; osmFailed(); } }, 45000);
 
-    // Try backend proxy first, then fall back to direct Overpass mirrors
     var MIRRORS = [
       'https://overpass-api.de/api/interpreter',
       'https://overpass.private.coffee/api/interpreter',
       'https://overpass.kumi.systems/api/interpreter'
     ];
-    countEl.textContent = (allPlaces.length ? allPlaces.length + ' local · ' : '') + 'Searching OpenStreetMap…';
 
-    function tryDirectMirror(idx) {
-      if(idx >= MIRRORS.length) { osmFailed(); return; }
-      var url = MIRRORS[idx] + '?data=' + encodeURIComponent(query);
-      fetch(url)
-      .then(function(r){
-        if(r.status === 429 || r.status === 503 || r.status === 504) { setTimeout(function(){ tryDirectMirror(idx+1); }, 600); return null; }
-        if(!r.ok) throw new Error('HTTP '+r.status);
-        return r.json();
-      })
-      .then(function(d){
-        if(!d) return;
-        if(d && Array.isArray(d.elements) && d.elements.length > 0) { handleOsmData(d); }
-        else { tryDirectMirror(idx+1); }
-      })
-      .catch(function(e){ console.warn('Mirror',idx,'failed:',e.message); tryDirectMirror(idx+1); });
+    // fetchWithTimeout: tries each mirror with a 15s abort per attempt
+    function fetchWithTimeout(query, mirrorIdx) {
+      if(mirrorIdx >= MIRRORS.length) return Promise.reject(new Error('all mirrors failed'));
+      var ctrl = new AbortController();
+      var t = setTimeout(function(){ ctrl.abort(); }, 15000);
+      return fetch(MIRRORS[mirrorIdx]+'?data='+encodeURIComponent(query), {signal:ctrl.signal})
+        .then(function(r){ clearTimeout(t); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+        .catch(function(e){ clearTimeout(t); console.warn('Mirror',mirrorIdx,'failed:',e.message); return fetchWithTimeout(query, mirrorIdx+1); });
     }
 
-    fetch('https://pawbook-api-cquc.onrender.com/api/v1/overpass', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: query })
-    })
-    .then(function(r){
-      if(!r.ok) throw new Error('Proxy HTTP ' + r.status);
-      return r.json();
-    })
-    .then(function(d){
-      if(d && Array.isArray(d.elements) && d.elements.length > 0) { handleOsmData(d); }
-      else { console.warn('Proxy returned no elements, trying direct mirrors'); tryDirectMirror(0); }
-    })
-    .catch(function(e){ console.warn('Backend proxy failed:', e.message, '— trying direct mirrors'); tryDirectMirror(0); });
+    // Fire both queries in parallel
+    var p1 = fetchWithTimeout(queries[0], 0);
+    var p2 = fetchWithTimeout(queries[1], 0);
+
+    // Show results as each arrives
+    var partial = [];
+    function mergePartial(els){ partial = partial.concat(els||[]); if(!_osmDone && partial.length) handleOsmData({elements: partial}); }
+    p1.then(function(d){ if(!_osmDone && d && d.elements) mergePartial(d.elements); }).catch(function(){});
+    p2.then(function(d){ if(!_osmDone && d && d.elements) mergePartial(d.elements); }).catch(function(){});
+    Promise.allSettled([p1,p2]).then(function(results){
+      if(!_osmDone){
+        clearInterval(dotTimer); clearTimeout(globalTimer); _osmDone=true;
+        var all=[];
+        results.forEach(function(r){ if(r.status==='fulfilled'&&r.value&&r.value.elements) all=all.concat(r.value.elements); });
+        if(all.length) handleOsmData({elements:all}); else osmFailed();
+      }
+    });
 
     function handleOsmData(data) {
-      if(_osmDone) return; _osmDone=true;
-      clearTimeout(timer);
       _osmSearchActive = false;
       var elements = data.elements || [];
       var places = [];
@@ -755,8 +755,7 @@ function searchPlaces() {
     }
 
     function osmFailed() {
-      if(_osmDone) return; _osmDone=true;
-      clearTimeout(timer);
+      clearInterval(dotTimer);
       _osmSearchActive = false;
       if(hasLocal) {
         document.getElementById('results-count').textContent = allPlaces.length + ' places in ' + city.charAt(0).toUpperCase()+city.slice(1);
