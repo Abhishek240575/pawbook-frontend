@@ -600,17 +600,19 @@ function osmElementToPlace(el, idx) {
   if(!lat || !lng) return null;
   var nm = (tags.name || '').toLowerCase();
   var cat = 'vet';
-  if(tags.amenity==='veterinary'||tags.amenity==='animal_hospital'||tags.healthcare==='veterinary')
+  var shopVal = tags.shop||''; var amenVal = tags.amenity||''; var tourVal = tags.tourism||''; var leisVal = tags.leisure||'';
+  if(amenVal==='veterinary'||amenVal==='animal_hospital'||tags.healthcare==='veterinary'||shopVal==='veterinary')
     cat = (tags.opening_hours||'').indexOf('24')!==-1||nm.indexOf('emergency')!==-1?'emergency':'vet';
-  else if(tags.amenity==='animal_shelter'||tags.amenity==='animal_boarding'||tags.emergency==='animal_rescue'||
-    (tags.amenity==='social_facility'&&(nm.indexOf('animal')!==-1||nm.indexOf('pet')!==-1||nm.indexOf('rescue')!==-1||nm.indexOf('shelter')!==-1)))
+  else if(amenVal==='animal_shelter'||amenVal==='animal_boarding'||tags.emergency==='animal_rescue'||
+    nm.indexOf('rescue')!==-1||nm.indexOf('shelter')!==-1||nm.indexOf('spca')!==-1||nm.indexOf('rspca')!==-1||nm.indexOf('aspca')!==-1)
     cat='shelter';
-  else if(tags.tourism==='zoo'||tags.leisure==='nature_reserve') cat='zoo';
-  else if(tags.tourism==='aquarium') cat='aquarium';
-  else if(tags.shop==='pet') cat='petshop';
-  else if(tags.shop==='grooming'||tags.shop==='pet_grooming'||tags.amenity==='animal_grooming') cat='grooming';
-  else if(tags.amenity==='emergency_service') cat='emergency';
-  else if(!tags.name) cat = 'vet';
+  else if(tourVal==='zoo'||tourVal==='wildlife_park'||tourVal==='safari_park'||tourVal==='bird_park'||leisVal==='nature_reserve'||nm.indexOf('safari')!==-1||nm.indexOf('wildlife')!==-1) cat='zoo';
+  else if(tourVal==='aquarium'||shopVal==='aquarium'||nm.indexOf('aquarium')!==-1) cat='aquarium';
+  else if(shopVal==='pet'||shopVal==='pet_care'||nm.indexOf('pet shop')!==-1||nm.indexOf('pet store')!==-1||nm.indexOf('pets at home')!==-1) cat='petshop';
+  else if(shopVal==='grooming'||shopVal==='pet_grooming'||amenVal==='animal_grooming'||amenVal==='pet_grooming'||nm.indexOf('groo')!==-1||nm.indexOf('salon')!==-1||nm.indexOf('spa')!==-1) cat='grooming';
+  else if(leisVal==='dog_park'||nm.indexOf('dog park')!==-1||nm.indexOf('dog run')!==-1) cat='shelter';
+  else if(amenVal==='emergency_service'||nm.indexOf('emergency')!==-1) cat='emergency';
+  else if(!tags.name) return null;
   var name = tags.name || tags['name:en'] || ('Pet Place '+(idx+1));
   var addr = [tags['addr:street'],tags['addr:city']].filter(Boolean).join(', ') || tags['addr:full'] || '';
   return {
@@ -630,9 +632,26 @@ function osmElementToPlace(el, idx) {
 function buildOsmQueries(lat, lng) {
   var r = 25000;
   var a = '(around:'+r+','+lat+','+lng+')';
-  // Split into 2 parallel queries: medical/shelter + shops/tourism
-  var q1 = '[out:json][timeout:20];(node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';node["healthcare"="veterinary"]'+a+';way["amenity"~"veterinary|animal_shelter"]'+a+';);out center tags 300;';
-  var q2 = '[out:json][timeout:20];(node["shop"~"pet|pet_grooming|grooming"]'+a+';node["tourism"~"zoo|aquarium"]'+a+';way["shop"~"pet|grooming"]'+a+';);out center tags 300;';
+  // Q1: vets, shelters, boarding — nodes + ways (Western cities map as ways/polygons)
+  var q1 = '[out:json][timeout:20];('+
+    'node["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';'+
+    'node["healthcare"="veterinary"]'+a+';'+
+    'node["amenity"="pet_grooming"]'+a+';'+
+    'way["amenity"~"veterinary|animal_shelter|animal_boarding|animal_grooming"]'+a+';'+
+    'way["healthcare"="veterinary"]'+a+';'+
+    'relation["amenity"~"veterinary|animal_shelter"]'+a+';'+
+  ');out center tags 300;';
+  // Q2: pet shops, grooming, zoos, aquariums — broader tags used in Western cities
+  var q2 = '[out:json][timeout:20];('+
+    'node["shop"~"pet|pet_grooming|grooming|pet_care|aquarium|veterinary"]'+a+';'+
+    'node["tourism"~"zoo|aquarium|wildlife_park|safari_park|bird_park"]'+a+';'+
+    'node["leisure"~"dog_park|wildlife_hide|bird_hide"]'+a+';'+
+    'node["craft"="taxidermist"]'+a+';'+
+    'way["shop"~"pet|pet_grooming|grooming|pet_care|aquarium"]'+a+';'+
+    'way["tourism"~"zoo|aquarium|wildlife_park|safari_park"]'+a+';'+
+    'way["leisure"="dog_park"]'+a+';'+
+    'relation["tourism"~"zoo|aquarium|wildlife_park"]'+a+';'+
+  ');out center tags 300;';
   return [q1, q2];
 }
 
