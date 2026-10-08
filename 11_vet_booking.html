@@ -212,7 +212,7 @@
       <div class="filter-title">Consultation Type</div>
       <button class="filter-chip active" onclick="filterChip(this,'type','')">All</button>
       <button class="filter-chip" onclick="filterChip(this,'type','Video')">📹 Video</button>
-      <button class="filter-chip" onclick="filterChip(this,'type','Audio')">📞 Audio</button>
+      <button class="filter-chip" onclick="filterChip(this,'type','Chat')">💬 Chat</button>
       <button class="filter-chip" onclick="filterChip(this,'type','In-Clinic')">🏥 In-Clinic</button>
     </div>
     <div class="filter-section">
@@ -420,7 +420,7 @@
           <div class="form-field"><label>Consultation Types Offered</label>
             <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px" id="consult-chips">
               <button type="button" class="filter-chip active" onclick="this.classList.toggle('active')">📹 Video</button>
-              <button type="button" class="filter-chip active" onclick="this.classList.toggle('active')">📞 Audio</button>
+              <button type="button" class="filter-chip active" onclick="this.classList.toggle('active')">💬 Chat</button>
               <button type="button" class="filter-chip" onclick="this.classList.toggle('active')">🏥 In-Clinic</button>
             </div>
           </div>
@@ -458,7 +458,7 @@
       <div style="font-size:13px;font-weight:700;margin-bottom:8px">Consultation Type</div>
       <div class="consult-tabs" id="bm-ctabs">
         <button class="ctab active" onclick="selectConsultType('Video',this)"><i class="ti ti-video"></i>Video</button>
-        <button class="ctab" onclick="selectConsultType('Audio',this)"><i class="ti ti-phone"></i>Audio</button>
+        <button class="ctab" onclick="selectConsultType('Chat',this)"><i class="ti ti-message-circle"></i>Chat</button>
         <button class="ctab" onclick="selectConsultType('In-Clinic',this)"><i class="ti ti-building-hospital"></i>In-Clinic</button>
       </div>
       <div class="form-field">
@@ -642,7 +642,7 @@ function vetCard(v) {
   const name = 'Dr. ' + v.first_name + ' ' + v.last_name;
   const types = (v.consult_types || []);
   const stars = '★'.repeat(Math.round(v.rating || 0)) + '☆'.repeat(5 - Math.round(v.rating || 0));
-  const typeIcons = types.map(t => t === 'Video' ? '📹' : t === 'Audio' ? '📞' : '🏥').join(' ');
+  const typeIcons = types.map(t => t === 'Video' ? '📹' : t === 'Chat' ? '💬' : '🏥').join(' ');
   const vd = JSON.stringify(v).replace(/"/g, '&quot;');
   return `
   <div class="vet-card" onclick="openBooking(${vd})">
@@ -672,7 +672,7 @@ function vetCard(v) {
       <div class="vet-fee">₹${v.consultation_fee} <span>/ consult</span></div>
       <div class="vet-actions" onclick="event.stopPropagation()">
         ${types.includes('Video') ? `<button class="vbtn vbtn-video" onclick="openBooking(${vd},'Video')"><i class="ti ti-video"></i> Video</button>` : ''}
-        ${types.includes('Audio') ? `<button class="vbtn vbtn-audio" onclick="openBooking(${vd},'Audio')"><i class="ti ti-phone"></i> Audio</button>` : ''}
+        ${types.includes('Chat') ? `<button class="vbtn vbtn-chat" onclick="openBooking(${vd},'Chat')"><i class="ti ti-message-circle"></i> Chat</button>` : ''}
         ${types.includes('In-Clinic') ? `<button class="vbtn vbtn-primary" onclick="openBooking(${vd},'In-Clinic')"><i class="ti ti-building-hospital"></i> Clinic</button>` : ''}
       </div>
     </div>
@@ -707,7 +707,7 @@ function openBooking(v, defaultType) {
   document.getElementById('bm-vet-spec').textContent = _currentVet.primary_specialty || '';
   document.getElementById('bm-fee').textContent = _currentVet.consultation_fee || '—';
   // Set available consult types
-  const types = _currentVet.consult_types || ['Video','Audio','In-Clinic'];
+  const types = _currentVet.consult_types || ['Video','Chat','In-Clinic'];
   document.querySelectorAll('#bm-ctabs .ctab').forEach(btn => {
     const t = btn.textContent.trim();
     const available = types.some(x => btn.textContent.includes(x.split(' ')[0]) || btn.querySelector('i')?.className.includes(t));
@@ -845,7 +845,7 @@ function apptCard(a) {
       <img src="${a.vet_avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(a.vet_name) + '&background=1a4db3&color=fff'}" style="width:48px;height:48px;border-radius:12px;object-fit:cover" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(a.vet_name)}&background=1a4db3&color=fff'">
     </div>
     <div style="font-size:12px;color:#64748b;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:12px">
-      <span>${a.consult_type === 'Video' ? '📹' : a.consult_type === 'Audio' ? '📞' : '🏥'} ${a.consult_type}</span>
+      <span>${a.consult_type === 'Video' ? '📹' : a.consult_type === 'Chat' ? '💬' : '🏥'} ${a.consult_type}</span>
       <span>📅 ${a.appt_date} ${(a.appt_time || '').slice(0,5)}</span>
       ${a.pet_name ? '<span>🐾 ' + a.pet_name + '</span>' : ''}
     </div>
