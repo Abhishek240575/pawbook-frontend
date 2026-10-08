@@ -700,7 +700,9 @@ function _searchDebounce() {
 
 // ── BOOKING MODAL ────────────────────────────────────────────────────────────
 function openBooking(v, defaultType) {
+  if (!localStorage.getItem('pb_token')) { alert('Please log in first to book an appointment'); return; }
   _currentVet = typeof v === 'string' ? JSON.parse(v) : v;
+  console.log('Booking vet object:', _currentVet);
   _selectedSlot = null;
   _selectedSlotId = null;
   document.getElementById('bm-vet-name').textContent = 'Dr. ' + _currentVet.first_name + ' ' + _currentVet.last_name;
@@ -770,31 +772,49 @@ function selectSlot(el, time, slotId) {
 
 async function loadPets() {
   try {
-    const pets = await apiFetch('/pets');
+    const token = localStorage.getItem('pb_token');
+    if (!token) {
+      document.getElementById('bm-pet').innerHTML = '<option value="">Please log in to select a pet</option>';
+      return;
+    }
+    const pets = await apiFetch('/pets/my');
     const sel = document.getElementById('bm-pet');
-    sel.innerHTML = '<option value="">No specific pet</option>' +
-      (Array.isArray(pets) ? pets : pets.items || []).map(p => `<option value="${p.id}">${p.name} (${p.species})</option>`).join('');
-  } catch { document.getElementById('bm-pet').innerHTML = '<option value="">Could not load pets</option>'; }
+    const list = Array.isArray(pets) ? pets : (pets.items || pets.data || []);
+    if (!list.length) {
+      sel.innerHTML = '<option value="">No pets added yet</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">Select a pet (optional)</option>' +
+      list.map(p => `<option value="${p.id || p.pet_id}">${p.name} (${p.species})</option>`).join('');
+  } catch(e) {
+    document.getElementById('bm-pet').innerHTML = '<option value="">Could not load pets</option>';
+    console.error('loadPets error:', e.message);
+  }
 }
 
 async function confirmBooking() {
+  if (!localStorage.getItem('pb_token')) { alert('Please log in to book an appointment'); return; }
   if (!_selectedSlot) { alert('Please select a time slot'); return; }
   const date = document.getElementById('bm-date').value;
   if (!date) { alert('Please select a date'); return; }
   const btn = document.getElementById('confirm-book-btn');
   btn.disabled = true; btn.textContent = 'Booking…';
+  // vet_id may be stored as vet_id, id, or user_id depending on API response
+  const vetId = _currentVet.vet_id || _currentVet.id || _currentVet.user_id;
+  const petVal = document.getElementById('bm-pet').value;
+  const payload = {
+    vet_id: vetId,
+    appt_date: date,
+    appt_time: _selectedSlot,
+    consult_type: _selectedConsultType,
+    reason: document.getElementById('bm-reason')?.value || ''
+  };
+  if (petVal) payload.pet_id = petVal;
+  if (_selectedSlotId) payload.slot_id = _selectedSlotId;
   try {
     await apiFetch('/appointments', {
       method: 'POST', json: true,
-      body: JSON.stringify({
-        vet_id: _currentVet.vet_id,
-        pet_id: document.getElementById('bm-pet').value || null,
-        slot_id: _selectedSlotId,
-        appt_date: date,
-        appt_time: _selectedSlot,
-        consult_type: _selectedConsultType,
-        reason: document.getElementById('bm-reason').value
-      })
+      body: JSON.stringify(payload)
     });
     closeBooking();
     alert('✅ Appointment booked! Check My Appointments.');
