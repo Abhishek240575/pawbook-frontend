@@ -580,13 +580,22 @@ function switchVetTab(tab, btn) {
 }
 
 // ── Fetch helpers ─────────────────────────────────────────────────────────────
-var VET_API = (API_BASE.endsWith('/api/v1') ? API_BASE : API_BASE + '/api/v1');
+var VET_API = (typeof API_BASE !== 'undefined'
+  ? (API_BASE.endsWith('/api/v1') ? API_BASE : API_BASE + '/api/v1')
+  : 'https://pawbook-api-cquc.onrender.com/api/v1');
+
+function vetAuthHeaders(json) {
+  var token = localStorage.getItem('pb_token') || '';
+  var h = { 'Authorization': 'Bearer ' + token };
+  if (json) h['Content-Type'] = 'application/json';
+  return h;
+}
+
 async function apiFetch(path, opts) {
-  var baseHeaders = authHeaders();                          // api.js signature: no args
-  if (opts && opts.json) baseHeaders['Content-Type'] = 'application/json';
   var fetchOpts = Object.assign({}, opts);
-  delete fetchOpts.json;                                    // not a real fetch option
-  fetchOpts.headers = baseHeaders;
+  var isJson = fetchOpts.json;
+  delete fetchOpts.json;
+  fetchOpts.headers = vetAuthHeaders(isJson);
   const r = await fetch(VET_API + path, fetchOpts);
   const j = await r.json();
   if (!r.ok) throw new Error(j.message || 'API error');
