@@ -550,16 +550,7 @@
 
 <script src="api.js"></script>
 <script>
-// ── API helpers (fallback if api.js doesn't define these) ─────────────────────
-if (typeof API_BASE === 'undefined') {
-  var API_BASE = 'https://pawbook-api-cquc.onrender.com/api/v1';
-}
-if (typeof authHeaders === 'undefined') {
-  function authHeaders(extra) {
-    var h = { 'Authorization': 'Bearer ' + (localStorage.getItem('pb_token') || '') };
-    return Object.assign(h, extra || {});
-  }
-}
+// ── Resolve API base (api.js may declare API_BASE with or without /api/v1) ────
 
 // ── State ─────────────────────────────────────────────────────────────────────
 var _vets = [];
@@ -591,7 +582,12 @@ function switchVetTab(tab, btn) {
 // ── Fetch helpers ─────────────────────────────────────────────────────────────
 var VET_API = (API_BASE.endsWith('/api/v1') ? API_BASE : API_BASE + '/api/v1');
 async function apiFetch(path, opts) {
-  const r = await fetch(VET_API + path, { ...opts, headers: authHeaders(opts && opts.json ? { 'Content-Type': 'application/json' } : {}) });
+  var baseHeaders = authHeaders();                          // api.js signature: no args
+  if (opts && opts.json) baseHeaders['Content-Type'] = 'application/json';
+  var fetchOpts = Object.assign({}, opts);
+  delete fetchOpts.json;                                    // not a real fetch option
+  fetchOpts.headers = baseHeaders;
+  const r = await fetch(VET_API + path, fetchOpts);
   const j = await r.json();
   if (!r.ok) throw new Error(j.message || 'API error');
   return j.data !== undefined ? j.data : j;
