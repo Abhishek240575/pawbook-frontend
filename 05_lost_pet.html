@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+#r-state:not([disabled]),#r-city:not([disabled]){opacity:1!important}
+</style>
 <link rel="stylesheet" href="style.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -363,7 +366,35 @@ function toast(msg,type){
         <div class="form-group"><label class="form-label">Colour</label><input class="form-input" id="r-color" placeholder="Golden, white patch"></div>
         <div class="form-group"><label class="form-label">Age</label><input class="form-input" id="r-age" placeholder="3 years"></div>
       </div>
-      <div class="form-group"><label class="form-label">Last seen location *</label><input class="form-input" id="r-location" placeholder="Lodhi Garden, New Delhi"></div>
+      <!-- Location: Country → State → City → Locality + Mini Map -->
+      <div class="form-group">
+        <label class="form-label">Country *</label>
+        <select class="form-select" id="r-country" onchange="rOnCountry()">
+          <option value="">— Select Country —</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label class="form-label">State / Province *</label>
+          <select class="form-select" id="r-state" disabled onchange="rOnState()" style="opacity:.5">
+            <option value="">— State —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">City *</label>
+          <select class="form-select" id="r-city" disabled onchange="rOnCity()" style="opacity:.5">
+            <option value="">— City —</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" style="position:relative">
+        <label class="form-label">Locality / Area</label>
+        <input class="form-input" id="r-locality" placeholder="Type area name…" autocomplete="off" oninput="rOnLocality()">
+        <div id="r-suggest" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #1877F2;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:700;max-height:160px;overflow-y:auto"></div>
+      </div>
+      <div id="r-map" style="width:100%;height:220px;border-radius:10px;border:1.5px solid #e4e6eb;margin-bottom:12px;z-index:1"></div>
+      <div id="r-coord" style="display:none;font-size:11px;color:#1877F2;font-weight:600;margin-bottom:10px;background:#eff6ff;padding:6px 10px;border-radius:8px">📍 <span id="r-coord-txt"></span></div>
+      <input type="hidden" id="r-location" value="India">
       <div class="form-group"><label class="form-label">Date & Time Lost</label><input class="form-input" type="datetime-local" id="r-time"></div>
       <div class="form-group"><label class="form-label">Description / Identifying marks</label><textarea class="form-textarea" id="r-desc" rows="3" placeholder="Any unique features, collar colour, microchip info…"></textarea></div>
       <div class="form-group"><label class="form-label">Contact Number *</label><input class="form-input" id="r-phone" type="tel" placeholder="+91 98765 43210"></div>
@@ -758,6 +789,192 @@ document.addEventListener('DOMContentLoaded', function(){
     </div>
   </div>
 </div>
+
+<script>
+// ── LOST PET FORM: GEO DATA + MAP ─────────────────────────────
+var RGEO = {
+  "India":{lat:20.59,lng:78.96,states:{
+    "Maharashtra":{lat:19.75,lng:75.71,cities:{"Mumbai":{lat:19.076,lng:72.877},"Pune":{lat:18.52,lng:73.856},"Nagpur":{lat:21.145,lng:79.088},"Nashik":{lat:20.011,lng:73.79}}},
+    "Delhi":{lat:28.704,lng:77.102,cities:{"New Delhi":{lat:28.613,lng:77.209},"Dwarka":{lat:28.592,lng:77.046},"Rohini":{lat:28.738,lng:77.068},"Lajpat Nagar":{lat:28.565,lng:77.243}}},
+    "Karnataka":{lat:15.317,lng:75.714,cities:{"Bengaluru":{lat:12.972,lng:77.594},"Mysuru":{lat:12.296,lng:76.639},"Hubli":{lat:15.362,lng:75.124},"Mangaluru":{lat:12.914,lng:74.856}}},
+    "Tamil Nadu":{lat:11.127,lng:78.657,cities:{"Chennai":{lat:13.083,lng:80.27},"Coimbatore":{lat:11.017,lng:76.955},"Madurai":{lat:9.925,lng:78.119},"Salem":{lat:11.664,lng:78.146}}},
+    "Gujarat":{lat:22.259,lng:71.193,cities:{"Ahmedabad":{lat:23.022,lng:72.571},"Surat":{lat:21.17,lng:72.831},"Vadodara":{lat:22.307,lng:73.181},"Rajkot":{lat:22.303,lng:70.802}}},
+    "Rajasthan":{lat:27.024,lng:74.218,cities:{"Jaipur":{lat:26.912,lng:75.787},"Jodhpur":{lat:26.292,lng:73.017},"Udaipur":{lat:24.585,lng:73.712},"Kota":{lat:25.182,lng:75.864}}},
+    "West Bengal":{lat:22.987,lng:87.855,cities:{"Kolkata":{lat:22.572,lng:88.363},"Howrah":{lat:22.588,lng:88.298},"Durgapur":{lat:23.48,lng:87.32},"Siliguri":{lat:26.727,lng:88.432}}},
+    "Uttar Pradesh":{lat:26.846,lng:80.946,cities:{"Lucknow":{lat:26.846,lng:80.946},"Varanasi":{lat:25.317,lng:82.973},"Agra":{lat:27.176,lng:78.008},"Kanpur":{lat:26.449,lng:80.331}}},
+    "Telangana":{lat:18.112,lng:79.016,cities:{"Hyderabad":{lat:17.385,lng:78.487},"Warangal":{lat:17.977,lng:79.598},"Nizamabad":{lat:18.674,lng:78.094}}},
+    "Kerala":{lat:10.85,lng:76.27,cities:{"Thiruvananthapuram":{lat:8.524,lng:76.936},"Kochi":{lat:9.931,lng:76.267},"Kozhikode":{lat:11.259,lng:75.78},"Thrissur":{lat:10.527,lng:76.214}}}
+  }},
+  "USA":{lat:37.09,lng:-95.71,states:{
+    "California":{lat:36.78,lng:-119.42,cities:{"Los Angeles":{lat:34.052,lng:-118.244},"San Francisco":{lat:37.774,lng:-122.419},"San Diego":{lat:32.715,lng:-117.157}}},
+    "New York":{lat:43.0,lng:-75.0,cities:{"New York City":{lat:40.713,lng:-74.006},"Buffalo":{lat:42.886,lng:-78.879},"Albany":{lat:42.652,lng:-73.756}}},
+    "Texas":{lat:31.97,lng:-99.9,cities:{"Houston":{lat:29.76,lng:-95.369},"Dallas":{lat:32.776,lng:-96.797},"Austin":{lat:30.267,lng:-97.743}}}
+  }},
+  "UK":{lat:55.37,lng:-3.44,states:{
+    "England":{lat:52.36,lng:-1.17,cities:{"London":{lat:51.507,lng:-0.128},"Manchester":{lat:53.483,lng:-2.244},"Birmingham":{lat:52.486,lng:-1.89}}},
+    "Scotland":{lat:56.49,lng:-4.2,cities:{"Edinburgh":{lat:55.953,lng:-3.188},"Glasgow":{lat:55.864,lng:-4.252}}},
+    "Wales":{lat:52.13,lng:-3.78,cities:{"Cardiff":{lat:51.483,lng:-3.176},"Swansea":{lat:51.621,lng:-3.944}}}
+  }},
+  "Australia":{lat:-25.27,lng:133.78,states:{
+    "New South Wales":{lat:-32.16,lng:147.02,cities:{"Sydney":{lat:-33.868,lng:151.209},"Newcastle":{lat:-32.927,lng:151.777}}},
+    "Victoria":{lat:-36.86,lng:144.28,cities:{"Melbourne":{lat:-37.814,lng:144.963},"Geelong":{lat:-38.147,lng:144.36}}},
+    "Queensland":{lat:-20.92,lng:142.7,cities:{"Brisbane":{lat:-27.47,lng:153.021},"Gold Coast":{lat:-28.017,lng:153.4}}}
+  }},
+  "Canada":{lat:56.13,lng:-106.35,states:{
+    "Ontario":{lat:51.25,lng:-85.32,cities:{"Toronto":{lat:43.651,lng:-79.383},"Ottawa":{lat:45.424,lng:-75.695}}},
+    "British Columbia":{lat:53.73,lng:-127.65,cities:{"Vancouver":{lat:49.246,lng:-123.116},"Victoria":{lat:48.428,lng:-123.365}}},
+    "Quebec":{lat:53.0,lng:-70.0,cities:{"Montreal":{lat:45.508,lng:-73.587},"Quebec City":{lat:46.813,lng:-71.208}}}
+  }},
+  "Singapore":{lat:1.352,lng:103.82,states:{"Central Region":{lat:1.352,lng:103.82,cities:{"Singapore":{lat:1.352,lng:103.82}}}}},
+  "UAE":{lat:23.42,lng:53.85,states:{"Dubai":{lat:25.204,lng:55.27,cities:{"Dubai":{lat:25.204,lng:55.27},"Deira":{lat:25.269,lng:55.307}}},"Abu Dhabi":{lat:24.466,lng:54.366,cities:{"Abu Dhabi":{lat:24.466,lng:54.366}}}}}
+};
+
+var rMap=null, rMarker=null, rLat=null, rLng=null, rLocTimer=null;
+
+function rInitMap(){
+  if(rMap) return;
+  try {
+    rMap = L.map('r-map',{zoomControl:true}).setView([20.59,78.96],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'© OpenStreetMap',maxZoom:19
+    }).addTo(rMap);
+    rMap.on('click',function(e){ rPin(e.latlng.lat,e.latlng.lng); rRevGeo(e.latlng.lat,e.latlng.lng); });
+    setTimeout(function(){ rMap.invalidateSize(); },300);
+  } catch(e){ console.warn('mini map failed',e); }
+}
+
+function rPin(lat,lng){
+  if(!rMap) return;
+  rLat=lat; rLng=lng;
+  var icon=L.divIcon({html:'<div style="font-size:30px;line-height:1">🐾</div>',iconSize:[30,30],iconAnchor:[15,30],className:''});
+  if(rMarker) rMarker.setLatLng([lat,lng]);
+  else { rMarker=L.marker([lat,lng],{icon:icon,draggable:true}).addTo(rMap); rMarker.on('dragend',function(e){ var p=e.target.getLatLng(); rLat=p.lat; rLng=p.lng; rShowCoord(); rRevGeo(p.lat,p.lng); }); }
+  rMap.setView([lat,lng],14);
+  rShowCoord();
+}
+
+function rShowCoord(){
+  if(rLat===null) return;
+  document.getElementById('r-coord').style.display='block';
+  document.getElementById('r-coord-txt').textContent=rLat.toFixed(5)+', '+rLng.toFixed(5);
+}
+
+function rRevGeo(lat,lng){
+  fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng,{headers:{'Accept-Language':'en','User-Agent':'PawBook/1.0'}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var loc = d.address ? (d.address.suburb||d.address.neighbourhood||d.address.village||d.address.town||d.address.city||'') : '';
+      if(loc && !document.getElementById('r-locality').value) document.getElementById('r-locality').value = loc;
+    }).catch(function(){});
+}
+
+function rOnLocality(){
+  clearTimeout(rLocTimer);
+  var q = document.getElementById('r-locality').value.trim();
+  var city = document.getElementById('r-city').value;
+  var sug = document.getElementById('r-suggest');
+  if(q.length < 3){ sug.style.display='none'; return; }
+  var searchQ = q + (city ? ', '+city : '');
+  rLocTimer = setTimeout(function(){
+    fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(searchQ)+'&limit=5',{headers:{'Accept-Language':'en','User-Agent':'PawBook/1.0'}})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(!data.length){ sug.style.display='none'; return; }
+        sug.innerHTML = data.map(function(d){
+          return '<div style="padding:9px 12px;font-size:13px;cursor:pointer;border-bottom:1px solid #f0f2f5;font-family:Inter,sans-serif" onmousedown="rPickSug('+d.lat+','+d.lon+',\''+d.display_name.replace(/'/g,'')+'\')">'+d.display_name+'</div>';
+        }).join('');
+        sug.style.display='block';
+      }).catch(function(){ sug.style.display='none'; });
+  }, 420);
+}
+
+function rPickSug(lat,lng,name){
+  document.getElementById('r-locality').value = name.split(',')[0];
+  document.getElementById('r-suggest').style.display='none';
+  rPin(parseFloat(lat),parseFloat(lng));
+}
+
+function rOnCountry(){
+  var c = document.getElementById('r-country').value;
+  var ss = document.getElementById('r-state');
+  var cs = document.getElementById('r-city');
+  ss.innerHTML='<option value="">— State —</option>';
+  cs.innerHTML='<option value="">— City —</option>';
+  ss.disabled=true; ss.style.opacity='0.5';
+  cs.disabled=true; cs.style.opacity='0.5';
+  if(!c||!RGEO[c]) return;
+  Object.keys(RGEO[c].states).sort().forEach(function(s){
+    var o=document.createElement('option'); o.value=s; o.textContent=s; ss.appendChild(o);
+  });
+  ss.disabled=false; ss.style.opacity='1';
+  if(rMap) rMap.setView([RGEO[c].lat,RGEO[c].lng],5);
+}
+
+function rOnState(){
+  var c = document.getElementById('r-country').value;
+  var s = document.getElementById('r-state').value;
+  var cs = document.getElementById('r-city');
+  cs.innerHTML='<option value="">— City —</option>';
+  cs.disabled=true; cs.style.opacity='0.5';
+  if(!s||!RGEO[c]||!RGEO[c].states[s]) return;
+  Object.keys(RGEO[c].states[s].cities).sort().forEach(function(ci){
+    var o=document.createElement('option'); o.value=ci; o.textContent=ci; cs.appendChild(o);
+  });
+  cs.disabled=false; cs.style.opacity='1';
+  var st=RGEO[c].states[s]; if(rMap) rMap.setView([st.lat,st.lng],9);
+}
+
+function rOnCity(){
+  var c = document.getElementById('r-country').value;
+  var s = document.getElementById('r-state').value;
+  var ci = document.getElementById('r-city').value;
+  if(!ci||!RGEO[c]||!RGEO[c].states[s]) return;
+  var cityObj=RGEO[c].states[s].cities[ci];
+  rPin(cityObj.lat,cityObj.lng);
+}
+
+// Init dropdowns + map when modal opens — patch openModal
+var _origOpenModal = window.openModal;
+window.openModal = function(id){
+  _origOpenModal(id);
+  if(id==='report-modal'){
+    // Fill countries if empty
+    var cSel=document.getElementById('r-country');
+    if(cSel.options.length<=1){
+      Object.keys(RGEO).sort().forEach(function(c){
+        var o=document.createElement('option'); o.value=c; o.textContent=c; cSel.appendChild(o);
+      });
+      cSel.value='India';
+      rOnCountry();
+    }
+    setTimeout(function(){ rInitMap(); if(rMap) rMap.invalidateSize(); },200);
+  }
+};
+
+// Update submitReport to include lat/lng in location string
+var _origSubmitReport = window.submitReport;
+window.submitReport = function(type){
+  if(type==='lost'){
+    // Build location from dropdowns
+    var parts=[];
+    var loc=document.getElementById('r-locality').value.trim();
+    var city=document.getElementById('r-city').value;
+    var state=document.getElementById('r-state').value;
+    var country=document.getElementById('r-country').value;
+    if(loc) parts.push(loc);
+    if(city) parts.push(city);
+    if(state) parts.push(state);
+    if(country) parts.push(country);
+    if(parts.length) document.getElementById('r-location') || (function(){
+      // create hidden input if not exists
+      var inp=document.createElement('input'); inp.id='r-location'; inp.style.display='none'; document.body.appendChild(inp);
+    })();
+    var locEl=document.getElementById('r-location');
+    if(locEl && parts.length) locEl.value=parts.join(', ');
+  }
+  _origSubmitReport(type);
+};
+</script>
 
 <script>
 function openDrawer() {
