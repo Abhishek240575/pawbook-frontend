@@ -714,6 +714,8 @@ html, body { overflow-x: hidden !important; }
 <!-- MAIN PAGE -->
 <div class="vacc-page">
   <main>
+  <!-- SCHEDULE SECTION (default visible) -->
+  <div id="schedule-section">
     <!-- Next Due Vaccine -->
     <div class="next-due">
       <div class="nd-left">
@@ -829,7 +831,8 @@ html, body { overflow-x: hidden !important; }
         </div>
       </div>
     </div>
-  
+  </div><!-- /#schedule-section -->
+
   <!-- UPCOMING SECTION -->
   <div id="upcoming-section" style="display:none">
     <div style="background:#fff;border-radius:12px;border:1px solid #e4e6eb;padding:16px;margin-bottom:12px">
@@ -1020,30 +1023,26 @@ function setPetTab(el){
 function setStab(el){
   document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  const label = el.textContent.trim().toLowerCase();
+  var label = el.textContent.trim().toLowerCase();
 
-  // Get all main sections
-  const nd = document.querySelector('.next-due');
-  const timeline = document.querySelector('.card');
-  const upcoming = document.getElementById('upcoming-section');
-  const history = document.getElementById('history-section');
-  const reminders = document.getElementById('reminders-section');
+  // Use IDs for reliable targeting — no class-based guessing
+  var nd       = document.getElementById('schedule-section');
+  var upcoming = document.getElementById('upcoming-section');
+  var history  = document.getElementById('history-section');
+  var reminders= document.getElementById('reminders-section');
 
-  // Hide all
-  [nd, timeline, upcoming, history, reminders].forEach(s => { if(s) s.style.display='none'; });
+  // Hide all sections
+  [nd, upcoming, history, reminders].forEach(function(s){ if(s) s.style.display='none'; });
 
+  // Show the right one
   if(label.includes('schedule') || label.includes('vaccinating')) {
     if(nd) nd.style.display='';
-    if(timeline) timeline.style.display='';
   } else if(label.includes('upcoming')) {
     if(upcoming) upcoming.style.display='';
-    else { if(nd) nd.style.display=''; if(timeline) timeline.style.display=''; }
   } else if(label.includes('history')) {
     if(history) history.style.display='';
-    else { if(nd) nd.style.display=''; if(timeline) timeline.style.display=''; }
   } else if(label.includes('reminder')) {
     if(reminders) reminders.style.display='';
-    else showRemindersSection();
   }
 }
 
