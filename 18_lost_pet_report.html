@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>PawBook â€” Report Lost Pet</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>PawBook – Report Lost Pet</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link rel="stylesheet" href="style.css">
@@ -7,16 +7,22 @@
 .form-section-title{font-size:16px;font-weight:800;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .field-label{font-size:13px;font-weight:700;color:#333;display:block;margin-bottom:6px}
-.field-input{width:100%;height:46px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa}
+.field-input{width:100%;height:46px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;box-sizing:border-box}
 .field-input:focus{border-color:var(--blue);background:#fff}
 .field-select{width:100%;height:46px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;cursor:pointer}
 .upload-box{border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:border-color 0.15s;background:#fafafa}
 .upload-box:hover{border-color:var(--blue);background:#f0f4ff}
+#photo-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#photo-preview img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+.submit-btn{flex:1;padding:16px;font-size:16px;font-weight:800;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'Poppins',sans-serif}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed}
 </style>
 <link rel="stylesheet" href="mobile.css">
 </head><body>
-<nav class="topnav"><a class="topnav-logo" href="07_home.html"><div class="logo-icon">ðŸ¾</div> PawBook</a>
-<div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Searchâ€¦"></div>
+<script>function goTo(p){window.location.href=p;}</script>
+
+<nav class="topnav"><a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+<div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search…"></div>
 <div class="topnav-tabs">
   <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
   <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
@@ -28,57 +34,191 @@
 
 <div style="max-width:760px;margin:20px auto;padding:0 16px">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-    <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#4338ca,#6d28d9);display:flex;align-items:center;justify-content:center;font-size:24px">ðŸš¨</div>
+    <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#4338ca,#6d28d9);display:flex;align-items:center;justify-content:center;font-size:24px">🚨</div>
     <div><div style="font-size:22px;font-weight:900">Report a Lost Pet</div><div style="font-size:14px;color:var(--muted)">We'll alert the community and help you find your pet</div></div>
   </div>
 
+  <!-- Pet Information -->
   <div class="form-section">
     <div class="form-section-title"><i class="ti ti-paw"></i> Pet Information</div>
     <div class="form-grid">
-      <div><label class="field-label">Pet Name *</label><input class="field-input" placeholder="e.g. Bruno"></div>
-      <div><label class="field-label">Species *</label><select class="field-select"><option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option></select></div>
-      <div><label class="field-label">Breed</label><input class="field-input" placeholder="e.g. Beagle, Labrador"></div>
-      <div><label class="field-label">Age</label><input class="field-input" placeholder="e.g. 3 years"></div>
-      <div><label class="field-label">Color / Markings</label><input class="field-input" placeholder="e.g. Brown & white"></div>
-      <div><label class="field-label">Collar / ID Tag</label><input class="field-input" placeholder="e.g. Blue collar with tag"></div>
+      <div><label class="field-label">Pet Name *</label><input id="lp-name" class="field-input" placeholder="e.g. Bruno"></div>
+      <div><label class="field-label">Species *</label>
+        <select id="lp-species" class="field-select">
+          <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
+        </select>
+      </div>
+      <div><label class="field-label">Breed</label><input id="lp-breed" class="field-input" placeholder="e.g. Beagle, Labrador"></div>
+      <div><label class="field-label">Age</label><input id="lp-age" class="field-input" placeholder="e.g. 3 years"></div>
+      <div><label class="field-label">Color / Markings</label><input id="lp-color" class="field-input" placeholder="e.g. Brown & white"></div>
+      <div><label class="field-label">Collar / ID Tag</label><input id="lp-collar" class="field-input" placeholder="e.g. Blue collar with tag"></div>
     </div>
     <div style="margin-top:14px"><label class="field-label">Additional Description</label>
-    <textarea class="field-input" style="height:80px;padding:12px 14px;resize:none" placeholder="Any distinctive markings, scars, behaviour patternsâ€¦"></textarea></div>
+      <textarea id="lp-desc" class="field-input" style="height:80px;padding:12px 14px;resize:none" placeholder="Any distinctive markings, scars, behaviour patterns…"></textarea>
+    </div>
   </div>
 
+  <!-- Last Known Location -->
   <div class="form-section">
     <div class="form-section-title"><i class="ti ti-map-pin"></i> Last Known Location</div>
     <div class="form-grid">
-      <div><label class="field-label">Area / Locality *</label><input class="field-input" placeholder="e.g. Lodhi Garden, New Delhi"></div>
-      <div><label class="field-label">Date Last Seen *</label><input class="field-input" type="date"></div>
-      <div><label class="field-label">Time Last Seen</label><input class="field-input" type="time"></div>
-      <div><label class="field-label">Alert Radius</label><select class="field-select"><option>1 km</option><option selected>2 km</option><option>5 km</option><option>10 km</option><option>City-wide</option></select></div>
+      <div><label class="field-label">Area / Locality *</label><input id="lp-area" class="field-input" placeholder="e.g. Lodhi Garden, New Delhi"></div>
+      <div><label class="field-label">Date Last Seen *</label><input id="lp-date" class="field-input" type="date"></div>
+      <div><label class="field-label">Time Last Seen</label><input id="lp-time" class="field-input" type="time"></div>
+      <div><label class="field-label">Alert Radius</label>
+        <select id="lp-radius" class="field-select">
+          <option>1 km</option><option selected>2 km</option><option>5 km</option><option>10 km</option><option>City-wide</option>
+        </select>
+      </div>
     </div>
   </div>
 
+  <!-- Upload Photos -->
   <div class="form-section">
     <div class="form-section-title"><i class="ti ti-photo"></i> Upload Pet Photos</div>
-    <div class="upload-box">
-      <div style="font-size:40px;margin-bottom:8px">ðŸ“¸</div>
+    <div class="upload-box" onclick="document.getElementById('lp-photo-input').click()">
+      <div style="font-size:40px;margin-bottom:8px">📸</div>
       <div style="font-weight:700;margin-bottom:4px">Click to upload or drag & drop</div>
-      <div style="font-size:13px;color:var(--muted)">PNG, JPG up to 10MB each Â· Upload up to 5 photos</div>
+      <div style="font-size:13px;color:var(--muted)">PNG, JPG up to 10MB each · Upload up to 5 photos</div>
     </div>
+    <input id="lp-photo-input" type="file" accept="image/*" multiple style="display:none" onchange="previewPhotos(this)">
+    <div id="photo-preview"></div>
   </div>
 
+  <!-- Contact Information -->
   <div class="form-section">
     <div class="form-section-title"><i class="ti ti-phone"></i> Contact Information</div>
     <div class="form-grid">
-      <div><label class="field-label">Your Name *</label><input class="field-input" placeholder="Full name" value="Abhishek"></div>
-      <div><label class="field-label">Phone Number *</label><input class="field-input" placeholder="+91 XXXXXXXXXX"></div>
-      <div style="grid-column:1/-1"><label class="field-label">Email</label><input class="field-input" placeholder="your@email.com" value="abhishek@pawbook.app"></div>
+      <div><label class="field-label">Your Name *</label><input id="lp-contact-name" class="field-input" placeholder="Full name"></div>
+      <div><label class="field-label">Phone Number *</label><input id="lp-phone" class="field-input" placeholder="+91 XXXXXXXXXX" type="tel"></div>
+      <div style="grid-column:1/-1"><label class="field-label">Email</label><input id="lp-email" class="field-input" placeholder="your@email.com" type="email"></div>
     </div>
   </div>
 
   <div style="display:flex;gap:12px;margin-bottom:30px">
-    <button class="btn btn-blue" style="flex:1;padding:16px;font-size:16px;font-weight:800" onclick="alert('Alert posted! Your community has been notified.')">ðŸš¨ Post Lost Pet Alert</button>
+    <button id="submit-btn" class="submit-btn" onclick="submitLostPetReport()">🚨 Post Lost Pet Alert</button>
     <button class="btn btn-gray" style="padding:16px 24px" onclick="goTo('05_lost_pet.html')">Cancel</button>
   </div>
 </div>
-<script src="api.js"></script><script>function goTo(p){window.location.href=p;}</script>
-</body></html>
 
+<script src="api.js"></script>
+<script>
+var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+function authHeaders(){ return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')}; }
+
+// Pre-fill user info from localStorage
+(function prefill(){
+  var user = JSON.parse(localStorage.getItem('pb_user') || '{}');
+  var nameEl  = document.getElementById('lp-contact-name');
+  var emailEl = document.getElementById('lp-email');
+  if (nameEl && user.name)  nameEl.value  = user.name;
+  if (emailEl && user.email) emailEl.value = user.email;
+  // Default date to today
+  var dateEl = document.getElementById('lp-date');
+  if (dateEl) dateEl.value = new Date().toISOString().split('T')[0];
+})();
+
+// Photo preview
+var selectedPhotos = [];
+function previewPhotos(input) {
+  var preview = document.getElementById('photo-preview');
+  preview.innerHTML = '';
+  selectedPhotos = [];
+  var files = Array.from(input.files).slice(0, 5);
+  files.forEach(function(file) {
+    selectedPhotos.push(file);
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = document.createElement('img');
+      img.src = e.target.result;
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Submit report
+function submitLostPetReport() {
+  var petName     = document.getElementById('lp-name').value.trim();
+  var species     = document.getElementById('lp-species').value;
+  var breed       = document.getElementById('lp-breed').value.trim();
+  var age         = document.getElementById('lp-age').value.trim();
+  var color       = document.getElementById('lp-color').value.trim();
+  var collar      = document.getElementById('lp-collar').value.trim();
+  var description = document.getElementById('lp-desc').value.trim();
+  var area        = document.getElementById('lp-area').value.trim();
+  var dateSeen    = document.getElementById('lp-date').value;
+  var timeSeen    = document.getElementById('lp-time').value;
+  var radius      = document.getElementById('lp-radius').value;
+  var contactName = document.getElementById('lp-contact-name').value.trim();
+  var phone       = document.getElementById('lp-phone').value.trim();
+  var email       = document.getElementById('lp-email').value.trim();
+
+  // Validate required fields
+  if (!petName)     { showToast('Please enter pet name', 'error'); return; }
+  if (!area)        { showToast('Please enter last known area', 'error'); return; }
+  if (!dateSeen)    { showToast('Please enter date last seen', 'error'); return; }
+  if (!contactName) { showToast('Please enter your name', 'error'); return; }
+  if (!phone)       { showToast('Please enter your phone number', 'error'); return; }
+
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Posting alert…';
+
+  // Save to localStorage immediately (offline fallback)
+  var localRec = {
+    id: Date.now(), pet_name: petName, species: species, breed: breed,
+    age: age, color: color, collar: collar, description: description,
+    area: area, date_last_seen: dateSeen, time_last_seen: timeSeen,
+    alert_radius: radius, contact_name: contactName, contact_phone: phone,
+    contact_email: email, status: 'lost', created_at: new Date().toISOString()
+  };
+  var reports = JSON.parse(localStorage.getItem('pb_lost_reports') || '[]');
+  reports.unshift(localRec);
+  localStorage.setItem('pb_lost_reports', JSON.stringify(reports));
+
+  // POST to API
+  fetch(API_BASE + '/api/lost-pets', {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({
+      pet_name: petName, species: species,
+      breed: breed || null, age: age || null,
+      color: color || null, collar: collar || null,
+      description: description || null,
+      area: area, date_last_seen: dateSeen,
+      time_last_seen: timeSeen || null, alert_radius: radius,
+      contact_name: contactName, contact_phone: phone,
+      contact_email: email || null,
+      photos: []
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d) {
+    if (d.success) {
+      showToast('🚨 Alert posted! Community has been notified.', 'success');
+      setTimeout(function(){ goTo('05_lost_pet.html'); }, 1800);
+    } else {
+      showToast(d.error || 'Could not post alert', 'error');
+      btn.disabled = false;
+      btn.textContent = '🚨 Post Lost Pet Alert';
+    }
+  })
+  .catch(function() {
+    // Offline — alert was saved locally, redirect anyway
+    showToast('🚨 Alert saved! Will sync when online.', 'success');
+    setTimeout(function(){ goTo('05_lost_pet.html'); }, 1800);
+  });
+}
+
+function showToast(msg, type) {
+  if (typeof toast === 'function') { toast(msg, type || 'success'); return; }
+  var t = document.createElement('div');
+  var bg = type === 'error' ? '#dc2626' : '#16a34a';
+  t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+bg+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 2800);
+}
+</script>
+</body></html>
