@@ -1130,16 +1130,94 @@ function toast(msg,type='success'){const t=document.createElement('div');t.style
 var API_BASE = 'https://pawbook-api-cquc.onrender.com';
 function authHeaders(){ return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')}; }
 
-function goTo(p){window.location.href=p;}
-function closeInfoTip(){var m=document.getElementById('info-tip-modal');if(m){m.style.display='none';document.body.style.overflow='';}}
-function goToVetBooking(){window.location.href="11_vet_booking.html";}
-function closeReminderModal(){var m=document.getElementById('set-reminder-modal');if(m){m.style.display='none';document.body.style.overflow='';}}
+// ── Load real vaccination records from API on page open ──────
+(function loadVaccinations() {
+  var myPets = JSON.parse(localStorage.getItem('pb_my_pets') || '[]');
 
+  // Populate pet selector in Add modal dynamically if we have pets
+  var sel = document.getElementById('av-pet');
+  if (sel && myPets.length) {
+    sel.innerHTML = myPets.map(function(p){
+      return '<option value="'+p.id+'" data-name="'+p.name+'">'+p.name+' ('+(p.breed||p.species||'Pet')+')</option>';
+    }).join('');
+  }
+
+  var token = localStorage.getItem('pb_token');
+  if (!token || !myPets.length) return;
+
+  var activePet = myPets[0];
+  if (!activePet || !activePet.id) return;
+
+  fetch(API_BASE + '/api/vaccinations/' + activePet.id, { headers: authHeaders() })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (!data.vaccinations || !data.vaccinations.length) return;
+      renderVaccinationTimeline(data.vaccinations);
+      renderNextDue(data.vaccinations);
+    })
+    .catch(function(){
+      // Silent fallback — page shows hardcoded demo data for new users
+    });
+})();
+
+// ── Render API records into the timeline grid ────────────────
+function renderVaccinationTimeline(records) {
+  var grid = document.querySelector('.tl-grid');
+  if (!grid) return;
+  // Remove any previously injected API cards to avoid duplication
+  grid.querySelectorAll('.api-record').forEach(function(c){ c.remove(); });
+
+  records.forEach(function(rec) {
+    var dateStr = rec.given_date ? new Date(rec.given_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '';
+    var dueStr  = rec.next_due_date ? new Date(rec.next_due_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '';
+    var icons = {'Rabies':'🦠','DHPP':'💉','Leptospirosis':'🧫','Bordetella':'🫁','FVRCP':'🐱','FeLV':'🐈','Canine Influenza':'🌬️','Lyme Disease':'🦟'};
+    var icon = icons[rec.vaccine_name] || '💉';
+    var card = document.createElement('div');
+    card.className = 'tl-card api-record';
+    card.style.cssText = 'background:#fff;border-radius:12px;border:1px solid #e4e6eb;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);position:relative';
+    card.innerHTML =
+      '<div style="height:80px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:36px">'+icon+'</div>'+
+      '<div style="padding:10px 12px">'+
+        '<div style="font-size:13px;font-weight:800;color:#1e293b;margin-bottom:3px">'+rec.vaccine_name+'</div>'+
+        '<div style="font-size:11px;color:#65676b;margin-bottom:2px">📅 '+dateStr+'</div>'+
+        (dueStr ? '<div style="font-size:11px;color:#1877F2;font-weight:600">Next: '+dueStr+'</div>' : '')+
+        (rec.vet_name ? '<div style="font-size:10px;color:#8a8d91;margin-top:2px">🩺 '+rec.vet_name+'</div>' : '')+
+        '<div style="margin-top:6px;display:inline-block;background:#dcfce7;color:#16a34a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">✅ Verified</div>'+
+        '<button onclick="deleteVaccRecord('+rec.id+',this)" style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(255,255,255,.85);font-size:12px;cursor:pointer">✕</button>'+
+      '</div>';
+    grid.insertBefore(card, grid.firstChild);
+  });
+}
+
+// ── Render "Next Due" banner ─────────────────────────────────
+function renderNextDue(records) {
+  var upcoming = records.filter(function(r){ return r.next_due_date && new Date(r.next_due_date) >= new Date(); });
+  if (!upcoming.length) return;
+  upcoming.sort(function(a,b){ return new Date(a.next_due_date)-new Date(b.next_due_date); });
+  var next = upcoming[0];
+  var due = new Date(next.next_due_date);
+  var daysLeft = Math.ceil((due - new Date()) / 86400000);
+  var dateStr = due.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  var duEl = document.querySelector('.next-due .nd-due');
+  if (duEl) duEl.textContent = 'Due: '+dateStr+' ('+daysLeft+' days)';
+  var nameEl = document.querySelector('.next-due .nd-name');
+  if (nameEl) nameEl.textContent = next.vaccine_name+' 🚨';
+}
+
+// ── Delete vaccination record ────────────────────────────────
+function deleteVaccRecord(id, btn) {
+  if (!confirm('Remove this vaccination record?')) return;
+  var card = btn.closest('.tl-card');
+  fetch(API_BASE + '/api/vaccinations/' + id, { method: 'DELETE', headers: authHeaders() })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if (d.success && card) card.remove(); })
+    .catch(function(){ if (card) card.remove(); });
+}
+
+// ── Open / Close Add Vaccine modal ───────────────────────────
 function openAddVaccine(){
-  // Set today's date as default
   var today = new Date().toISOString().split('T')[0];
   document.getElementById('av-date').value = today;
-  // Set next due 1 year from now as default
   var nextYear = new Date();
   nextYear.setFullYear(nextYear.getFullYear()+1);
   document.getElementById('av-due').value = nextYear.toISOString().split('T')[0];
@@ -1152,81 +1230,82 @@ function closeAddVaccine(){
   document.body.style.overflow='';
 }
 
+// ── Save Vaccination Record (API + localStorage) ─────────────
 function saveVaccineRecord(){
-  var petName = document.getElementById('av-pet').value;
+  var petSel     = document.getElementById('av-pet');
+  var petId      = petSel ? parseInt(petSel.value) : null;
+  var petName    = petSel ? (petSel.selectedOptions[0].getAttribute('data-name') || petSel.value) : '';
   var vaccineName = document.getElementById('av-name').value;
-  var dateGiven = document.getElementById('av-date').value;
-  var duoDate = document.getElementById('av-due').value;
-  var vetName = document.getElementById('av-vet').value || 'Unknown Vet';
-  var reminder = document.getElementById('av-reminder').checked;
+  var dateGiven  = document.getElementById('av-date').value;
+  var duoDate    = document.getElementById('av-due').value;
+  var vetName    = document.getElementById('av-vet').value || 'Unknown Vet';
+  var batchNum   = document.getElementById('av-batch').value;
+  var notes      = document.getElementById('av-notes').value;
+  var reminder   = document.getElementById('av-reminder').checked;
 
-  if(!dateGiven){
-    showToast('Please enter the date vaccine was given','error');
-    return;
-  }
+  if (!dateGiven) { showToast('Please enter the date vaccine was given', 'error'); return; }
 
+  // Save to localStorage immediately (offline fallback)
   var rec = {
-    id: Date.now(),
-    pet: petName,
-    vaccine: vaccineName,
-    date: dateGiven,
-    due: duoDate,
-    vet: vetName,
-    batch: document.getElementById('av-batch').value,
-    notes: document.getElementById('av-notes').value,
-    reminder: reminder,
-    addedAt: new Date().toISOString()
+    id: Date.now(), pet: petName, pet_id: petId,
+    vaccine: vaccineName, date: dateGiven, due: duoDate,
+    vet: vetName, batch: batchNum, notes: notes,
+    reminder: reminder, addedAt: new Date().toISOString()
   };
+  var stored = JSON.parse(localStorage.getItem('pb_vacc_records') || '[]');
+  stored.push(rec);
+  localStorage.setItem('pb_vacc_records', JSON.stringify(stored));
 
-  // Save to localStorage immediately
-  var records = JSON.parse(localStorage.getItem('pb_vacc_records')||'[]');
-  records.push(rec);
-  localStorage.setItem('pb_vacc_records', JSON.stringify(records));
-
-  // Sync to API (fire-and-forget)
-  var myPets = JSON.parse(localStorage.getItem('pb_my_pets')||'[]');
-  var matchPet = myPets.filter(function(p){ return p.name===petName; })[0];
-  if(matchPet && matchPet.id) {
-    fetch(API_BASE+'/api/vaccinations', {
+  // Sync to API
+  if (petId) {
+    fetch(API_BASE + '/api/vaccinations', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
-        pet_id: matchPet.id,
+        pet_id: petId,
         vaccine_name: vaccineName,
         given_date: dateGiven,
         next_due_date: duoDate || null,
         vet_name: vetName,
-        batch_number: rec.batch || null,
-        notes: rec.notes || null
+        batch_number: batchNum || null,
+        notes: notes || null,
+        reminder_set: reminder
       })
-    }).catch(function(){});
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      // Update delete button with real DB id if we got one back
+      if (d.vaccination && d.vaccination.id) {
+        var cards = document.querySelectorAll('.tl-card.api-record');
+        if (cards.length) {
+          var btn = cards[0].querySelector('button[onclick^="deleteVaccRecord"]');
+          if (btn) btn.setAttribute('onclick', 'deleteVaccRecord('+d.vaccination.id+',this)');
+        }
+      }
+    })
+    .catch(function(){});
   }
 
   closeAddVaccine();
-
-  // Add a new record card to the timeline
-  addRecordToTimeline({
-    pet: petName, vaccine: vaccineName, date: dateGiven,
-    due: duoDate, vet: vetName
-  });
-
-  if(reminder) showToast('✅ Record saved! Reminder set for next due date.');
-  else showToast('✅ Vaccination record saved!');
+  addRecordToTimeline({ pet: petName, vaccine: vaccineName, date: dateGiven, due: duoDate, vet: vetName });
+  showToast(reminder ? '✅ Record saved! Reminder set for next due date.' : '✅ Vaccination record saved!');
 }
 
 function addRecordToTimeline(rec){
   var grid = document.querySelector('.tl-grid');
   if(!grid) return;
+  var icons = {'Rabies':'🦠','DHPP':'💉','Leptospirosis':'🧫','Bordetella':'🫁','FVRCP':'🐱','FeLV':'🐈'};
+  var icon = icons[rec.vaccine] || '💉';
   var card = document.createElement('div');
-  card.className = 'tl-card';
+  card.className = 'tl-card api-record';
   card.style.cssText = 'background:#fff;border-radius:12px;border:1px solid #e4e6eb;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)';
   card.innerHTML =
-    '<div style="height:80px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:36px">💉</div>' +
-    '<div style="padding:10px 12px">' +
-      '<div style="font-size:13px;font-weight:800;color:#1e293b;margin-bottom:3px">'+rec.vaccine+'</div>' +
-      '<div style="font-size:11px;color:#65676b;margin-bottom:2px">📅 '+rec.date+'</div>' +
-      (rec.due?'<div style="font-size:11px;color:#1877F2;font-weight:600">Next: '+rec.due+'</div>':'') +
-      '<div style="margin-top:6px;display:inline-block;background:#dcfce7;color:#16a34a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">✅ Recorded</div>' +
+    '<div style="height:80px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:36px">'+icon+'</div>'+
+    '<div style="padding:10px 12px">'+
+      '<div style="font-size:13px;font-weight:800;color:#1e293b;margin-bottom:3px">'+rec.vaccine+'</div>'+
+      '<div style="font-size:11px;color:#65676b;margin-bottom:2px">📅 '+rec.date+'</div>'+
+      (rec.due?'<div style="font-size:11px;color:#1877F2;font-weight:600">Next: '+rec.due+'</div>':'')+
+      '<div style="margin-top:6px;display:inline-block;background:#dcfce7;color:#16a34a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">✅ Recorded</div>'+
     '</div>';
   grid.insertBefore(card, grid.firstChild);
 }
@@ -1234,11 +1313,11 @@ function addRecordToTimeline(rec){
 function showToast(msg, type){
   if(typeof toast === 'function'){ toast(msg, type||'success'); return; }
   var t=document.createElement('div');
-  var bg = type==='error'?'#dc2626':'#16a34a';
-  t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+bg+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
-  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);
+  t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},2600);
 }
 </script>
+
 <script>
 // ── INFO TIP MODAL ──────────────────────────────────────────
 function openInfoTip(el) {
