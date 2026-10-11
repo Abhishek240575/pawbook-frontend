@@ -235,20 +235,22 @@ function getPawIcon(){
 }
 
 window.addEventListener('load', function(){
-  map = L.map('lost-map',{zoomControl:true}).setView([20.59,78.96],5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    attribution:'&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:19
-  }).addTo(map);
-
-  map.on('click',function(e){ pinMap(e.latlng.lat,e.latlng.lng); reverseGeo(e.latlng.lat,e.latlng.lng); });
-
-  // Fill countries
+  // Fill countries FIRST — independent of map
   var cSel = document.getElementById('lp-country');
   Object.keys(GEO).sort().forEach(function(c){
     var o=document.createElement('option'); o.value=c; o.textContent=c; cSel.appendChild(o);
   });
   cSel.value='India';
   onCountryChange();
+
+  // Init map (safe — dropdowns already filled above)
+  try {
+    map = L.map('lost-map',{zoomControl:true}).setView([20.59,78.96],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:19
+    }).addTo(map);
+    map.on('click',function(e){ pinMap(e.latlng.lat,e.latlng.lng); reverseGeo(e.latlng.lat,e.latlng.lng); });
+  } catch(e){ console.warn('Map failed to load:',e); }
 
   // Prefill user
   var u = JSON.parse(localStorage.getItem('pb_user')||'{}');
@@ -257,7 +259,7 @@ window.addEventListener('load', function(){
   document.getElementById('lp-date').value = new Date().toISOString().split('T')[0];
 });
 
-function pinMap(lat,lng){
+function pinMap(lat,lng){ if(!map) return;
   if(marker) map.removeLayer(marker);
   marker = L.marker([lat,lng],{icon:getPawIcon(),draggable:true}).addTo(map);
   marker.on('dragend',function(e){
