@@ -151,21 +151,67 @@
 .modal-inquire { flex:1; padding:11px; border-radius:10px; background:var(--blue); color:#fff; font-size:14px; font-weight:800; border:none; cursor:pointer; font-family:'Poppins',sans-serif; }
 .modal-adopt { flex:1; padding:11px; border-radius:10px; background:var(--green); color:#fff; font-size:14px; font-weight:800; border:none; cursor:pointer; font-family:'Poppins',sans-serif; }
 
-/* ── Inquiry modal ────────────────────────────────────────── */
-.inq-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:700; align-items:center; justify-content:center; padding:20px; }
+/* ── Declaration / Inquiry modal ─────────────────────────── */
+.inq-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:700; align-items:center; justify-content:center; padding:16px; }
 .inq-modal.open { display:flex; }
-.inq-box { background:#fff; border-radius:16px; width:100%; max-width:440px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
-.inq-title { font-size:18px; font-weight:800; color:#1a1a2e; margin-bottom:4px; }
-.inq-sub { font-size:13px; color:#65676b; margin-bottom:16px; }
-.inq-field { margin-bottom:12px; }
+.inq-box { background:#fff; border-radius:16px; width:100%; max-width:520px; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.35); }
+.inq-header { background:linear-gradient(135deg,#16a34a,#15803d); color:#fff; padding:18px 20px; border-radius:16px 16px 0 0; }
+.inq-title { font-size:18px; font-weight:800; margin-bottom:2px; }
+.inq-sub { font-size:12px; opacity:0.85; }
+.inq-body { padding:20px; }
+.inq-section { font-size:11px; font-weight:800; color:#16a34a; text-transform:uppercase; letter-spacing:.6px; margin:16px 0 8px; padding-bottom:6px; border-bottom:2px solid #dcfce7; }
+.inq-field { margin-bottom:10px; }
 .inq-label { font-size:12px; font-weight:700; color:#374151; display:block; margin-bottom:4px; }
-.inq-input { width:100%; height:40px; border:1.5px solid #e4e6eb; border-radius:8px; padding:0 12px; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box; }
-.inq-input:focus { border-color:#1877F2; }
-.inq-textarea { width:100%; min-height:80px; border:1.5px solid #e4e6eb; border-radius:8px; padding:10px 12px; font-size:13px; font-family:'Poppins',sans-serif; outline:none; resize:vertical; box-sizing:border-box; }
-.inq-textarea:focus { border-color:#1877F2; }
-.inq-actions { display:flex; gap:8px; margin-top:16px; }
+.inq-label .req { color:#dc2626; }
+.inq-input { width:100%; height:38px; border:1.5px solid #e4e6eb; border-radius:8px; padding:0 12px; font-size:13px; font-family:'Poppins',sans-serif; outline:none; box-sizing:border-box; }
+.inq-input:focus { border-color:#16a34a; }
+.inq-select { width:100%; height:38px; border:1.5px solid #e4e6eb; border-radius:8px; padding:0 12px; font-size:13px; font-family:'Poppins',sans-serif; outline:none; background:#fff; cursor:pointer; box-sizing:border-box; }
+.inq-select:focus { border-color:#16a34a; }
+.inq-textarea { width:100%; min-height:72px; border:1.5px solid #e4e6eb; border-radius:8px; padding:10px 12px; font-size:13px; font-family:'Poppins',sans-serif; outline:none; resize:vertical; box-sizing:border-box; }
+.inq-textarea:focus { border-color:#16a34a; }
+.inq-radio-group { display:flex; gap:10px; flex-wrap:wrap; }
+.inq-radio { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13px; font-weight:600; color:#374151; }
+.inq-radio input { accent-color:#16a34a; width:15px; height:15px; }
+.inq-conditional { background:#fef9c3; border:1.5px solid #fbbf24; border-radius:8px; padding:10px; margin-top:8px; display:none; }
+.inq-conditional.show { display:block; }
+.declaration-box { background:#f0fdf4; border:2px solid #16a34a; border-radius:10px; padding:14px; margin:14px 0; }
+.declaration-box p { font-size:12px; color:#374151; line-height:1.6; margin:0 0 10px; }
+.declaration-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; }
+.declaration-check input { accent-color:#16a34a; width:16px; height:16px; margin-top:2px; flex-shrink:0; }
+.declaration-check span { font-size:12px; font-weight:700; color:#15803d; line-height:1.5; }
+.inq-actions { display:flex; gap:8px; padding:0 20px 20px; }
 .inq-cancel { flex:1; padding:11px; border-radius:10px; border:1.5px solid #e4e6eb; background:#fff; font-size:14px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; }
-.inq-submit { flex:2; padding:11px; border-radius:10px; background:var(--blue); color:#fff; font-size:14px; font-weight:800; border:none; cursor:pointer; font-family:'Poppins',sans-serif; }
+.inq-submit { flex:2; padding:11px; border-radius:10px; background:linear-gradient(135deg,#16a34a,#15803d); color:#fff; font-size:14px; font-weight:800; border:none; cursor:pointer; font-family:'Poppins',sans-serif; }
+
+/* ── Shelter pets panel (in sidebar) ─────────────────────── */
+.sh-pets-panel { background:#fff; border:1.5px solid #1877F2; border-radius:12px; padding:14px; margin-bottom:12px; display:none; }
+.sh-pets-panel.open { display:block; }
+.sh-pets-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.sh-pets-title { font-size:13px; font-weight:800; color:#1a1a2e; }
+.sh-pets-close { width:24px; height:24px; border-radius:50%; border:none; background:#f0f2f5; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; }
+.sh-pets-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; max-height:340px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#cbd5e1 transparent; }
+.sh-pet-thumb { border-radius:8px; overflow:hidden; border:1px solid #e4e6eb; cursor:pointer; position:relative; }
+.sh-pet-thumb img { width:100%; height:80px; object-fit:cover; display:block; }
+.sh-pet-thumb-body { padding:6px 8px; }
+.sh-pet-thumb-name { font-size:11px; font-weight:800; color:#1a1a2e; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sh-pet-thumb-meta { font-size:10px; color:#65676b; }
+.sh-pet-thumb-badge { position:absolute; top:4px; left:4px; font-size:9px; font-weight:800; padding:2px 6px; border-radius:4px; color:#fff; }
+.sh-pet-adopt-btn { width:100%; padding:5px; border-radius:5px; background:#16a34a; color:#fff; font-size:10px; font-weight:800; border:none; cursor:pointer; font-family:'Poppins',sans-serif; margin-top:5px; }
+
+/* ── Adopted pets tab ─────────────────────────────────────── */
+.adopted-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.adopted-card { border-radius:10px; overflow:hidden; background:#fff; box-shadow:var(--shadow); border:1px solid var(--border); }
+.adopted-img-wrap { position:relative; height:150px; overflow:hidden; }
+.adopted-img-wrap img { width:100%; height:100%; object-fit:cover; filter:brightness(0.85); }
+.adopted-badge { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.adopted-stamp { background:rgba(22,163,74,0.88); color:#fff; font-size:11px; font-weight:900; padding:6px 14px; border-radius:20px; letter-spacing:1px; display:flex; align-items:center; gap:5px; }
+.adopted-body { padding:10px 12px; }
+.adopted-name { font-size:14px; font-weight:800; color:#1a1a2e; }
+.adopted-meta { font-size:12px; color:#65676b; margin:2px 0 6px; }
+.adopted-owner { font-size:12px; color:#16a34a; font-weight:700; margin-bottom:4px; }
+.adopted-date { font-size:11px; color:#94a3b8; }
+.adopted-doc { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; color:#1877F2; margin-top:6px; text-decoration:none; }
+.adopted-doc:hover { text-decoration:underline; }
 
 /* ── Toast ────────────────────────────────────────────────── */
 .toast-wrap { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
@@ -247,6 +293,7 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
       <button class="atab active" onclick="switchTab('Adopt',this)">Adopt</button>
       <button class="atab" onclick="switchTab('Sponsor',this)">Sponsor</button>
       <button class="atab" onclick="switchTab('Donate',this)">Donate</button>
+      <button class="atab" onclick="switchTab('Adopted',this)" style="background:rgba(255,255,255,0.85);color:#16a34a">✅ Adopted</button>
     </div>
   </div>
 </div>
@@ -355,6 +402,22 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
       </div>
     </div>
 
+    <!-- ── ADOPTED TAB ─────────────────────────────────────── -->
+    <div id="tab-adopted" class="tab-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <div style="font-size:18px;font-weight:800;color:#1a1a2e">✅ Successfully Adopted Pets</div>
+          <div style="font-size:13px;color:#65676b;margin-top:2px">Pets that found their forever home through PawBook</div>
+        </div>
+      </div>
+      <div class="adopted-grid" id="adopted-grid">
+        <div style="text-align:center;padding:40px;color:#65676b;grid-column:1/-1">🐾 Loading adopted pets…</div>
+      </div>
+      <div id="adopted-more-wrap" style="text-align:center;margin-top:16px;display:none">
+        <button onclick="loadMoreAdopted()" style="padding:10px 28px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">Load More</button>
+      </div>
+    </div>
+
     <!-- ── DONATE TAB ──────────────────────────────────────── -->
     <div id="tab-donate" class="tab-panel">
       <div class="donate-section">
@@ -401,6 +464,18 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 
   <!-- RIGHT SIDEBAR -->
   <aside style="position:sticky;top:72px">
+    <!-- SHELTER PETS PANEL — shown when user clicks "View Pets" on a shelter -->
+    <div class="sh-pets-panel" id="sh-pets-panel">
+      <div class="sh-pets-header">
+        <div class="sh-pets-title" id="sh-pets-title">Pets at shelter</div>
+        <button class="sh-pets-close" onclick="closeShPets()">✕</button>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap" id="sh-species-tabs"></div>
+      <div class="sh-pets-grid" id="sh-pets-grid">
+        <div style="text-align:center;padding:20px;color:#65676b;font-size:12px;grid-column:1/-1">Loading…</div>
+      </div>
+    </div>
+
     <div class="shelter-card">
       <div class="shelter-title">🌟 Shelter Spotlight:</div>
       <div class="shelter-name">Hopeful Tails Shelter ✅</div>
@@ -516,18 +591,103 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
   </div>
 </div>
 
-<!-- INQUIRY MODAL -->
+<!-- ADOPTION DECLARATION MODAL -->
 <div id="inq-modal" class="inq-modal" onclick="if(event.target===this)closeInqModal()">
   <div class="inq-box">
-    <div class="inq-title">📋 Adoption Inquiry</div>
-    <div class="inq-sub" id="inq-sub">Inquiring about a pet</div>
-    <div class="inq-field"><label class="inq-label">Your Name *</label><input id="inq-name" class="inq-input" placeholder="Full name" type="text"></div>
-    <div class="inq-field"><label class="inq-label">Email *</label><input id="inq-email" class="inq-input" placeholder="your@email.com" type="email"></div>
-    <div class="inq-field"><label class="inq-label">Phone</label><input id="inq-phone" class="inq-input" placeholder="+91 xxxxxxxxxx" type="tel"></div>
-    <div class="inq-field"><label class="inq-label">Message</label><textarea id="inq-message" class="inq-textarea" placeholder="Tell us about yourself and why you'd like to adopt this pet…"></textarea></div>
+    <div class="inq-header">
+      <div class="inq-title">🐾 Adoption Application</div>
+      <div class="inq-sub" id="inq-sub">Please fill all details truthfully. False information may result in rejection.</div>
+    </div>
+    <div class="inq-body">
+
+      <!-- SECTION 1: Personal Info -->
+      <div class="inq-section">👤 Personal Information</div>
+      <div class="inq-field"><label class="inq-label">Full Name <span class="req">*</span></label><input id="inq-name" class="inq-input" placeholder="As on government ID" type="text"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="inq-field"><label class="inq-label">Email <span class="req">*</span></label><input id="inq-email" class="inq-input" placeholder="your@email.com" type="email"></div>
+        <div class="inq-field"><label class="inq-label">Phone <span class="req">*</span></label><input id="inq-phone" class="inq-input" placeholder="+91 xxxxxxxxxx" type="tel"></div>
+      </div>
+
+      <!-- SECTION 2: Purpose -->
+      <div class="inq-section">🏠 Purpose & Living Situation</div>
+      <div class="inq-field">
+        <label class="inq-label">Purpose of Adoption <span class="req">*</span></label>
+        <select id="inq-purpose" class="inq-select">
+          <option value="">Select purpose…</option>
+          <option value="companion">Companion / Family Pet</option>
+          <option value="guard">Guard / Security</option>
+          <option value="therapy">Therapy / Emotional Support</option>
+          <option value="breeding">Breeding (registered)</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">Living Situation <span class="req">*</span></label>
+        <select id="inq-living" class="inq-select">
+          <option value="">Select…</option>
+          <option value="house">Independent House with Yard</option>
+          <option value="apartment">Apartment / Flat</option>
+          <option value="farm">Farm / Rural Property</option>
+          <option value="rented">Rented Property (landlord allows pets)</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">Prior Pet Experience</label>
+        <select id="inq-experience" class="inq-select">
+          <option value="none">No prior pet experience</option>
+          <option value="some">Had pets before (no longer)</option>
+          <option value="current">Currently have other pets</option>
+          <option value="professional">Professional pet handler</option>
+        </select>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">Why do you want to adopt this specific pet? <span class="req">*</span></label>
+        <textarea id="inq-reason" class="inq-textarea" placeholder="Describe your reason and how you plan to care for this pet…"></textarea>
+      </div>
+
+      <!-- SECTION 3: Legal Declaration -->
+      <div class="inq-section">⚖️ Legal Declaration (Mandatory)</div>
+      <div class="inq-field">
+        <label class="inq-label">Do you have any animal cruelty record or conviction? <span class="req">*</span></label>
+        <div class="inq-radio-group">
+          <label class="inq-radio"><input type="radio" name="cruelty" value="no" checked onchange="toggleConditional('cruelty-detail','no')"> No</label>
+          <label class="inq-radio"><input type="radio" name="cruelty" value="yes" onchange="toggleConditional('cruelty-detail','yes')"> Yes</label>
+        </div>
+        <div class="inq-conditional" id="cruelty-detail">
+          <label class="inq-label">Please provide full details: <span class="req">*</span></label>
+          <textarea id="inq-cruelty-details" class="inq-textarea" placeholder="Describe the record, date, and outcome…" style="min-height:60px"></textarea>
+        </div>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">Has any complaint been filed against you for animal abuse or neglect? <span class="req">*</span></label>
+        <div class="inq-radio-group">
+          <label class="inq-radio"><input type="radio" name="complaint" value="no" checked onchange="toggleConditional('complaint-detail','no')"> No</label>
+          <label class="inq-radio"><input type="radio" name="complaint" value="yes" onchange="toggleConditional('complaint-detail','yes')"> Yes</label>
+        </div>
+        <div class="inq-conditional" id="complaint-detail">
+          <label class="inq-label">Please provide full details: <span class="req">*</span></label>
+          <textarea id="inq-complaint-details" class="inq-textarea" placeholder="Describe the complaint, who filed it, and outcome…" style="min-height:60px"></textarea>
+        </div>
+      </div>
+      <div class="inq-field">
+        <label class="inq-label">Additional Message to Shelter</label>
+        <textarea id="inq-message" class="inq-textarea" placeholder="Anything else you'd like the shelter to know…" style="min-height:56px"></textarea>
+      </div>
+
+      <!-- DECLARATION -->
+      <div class="declaration-box">
+        <p>I solemnly declare that all information provided above is true, accurate and complete. I understand that providing false information will result in immediate rejection of my adoption application and may be reported to relevant authorities. I agree to allow the shelter to verify my background before adoption is approved.</p>
+        <label class="declaration-check">
+          <input type="checkbox" id="inq-declaration">
+          <span>✅ I accept full responsibility and declare all above information is true and accurate</span>
+        </label>
+      </div>
+
+    </div><!-- /inq-body -->
     <div class="inq-actions">
       <button class="inq-cancel" onclick="closeInqModal()">Cancel</button>
-      <button class="inq-submit" onclick="submitInquiry()">Send Inquiry 📨</button>
+      <button class="inq-submit" onclick="submitInquiry()">🐾 Submit Adoption Request</button>
     </div>
   </div>
 </div>
@@ -602,6 +762,8 @@ function switchTab(name, btn) {
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   var panel = document.getElementById('tab-' + name.toLowerCase());
   if (panel) panel.classList.add('active');
+  // Lazy-load adopted pets tab
+  if (name === 'Adopted') { adoptedOffset = 0; loadAdoptedPets(false); }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -743,7 +905,7 @@ function renderFeatured(pets) {
       '<div class="feat-name">' + p.name + '</div>' +
       '<div class="feat-meta">' + (p.age||'') + ' · ' + (p.gender||'') + ' · ' + (p.breed||p.species||'') + '</div>' +
       '<div class="feat-avail">' + (p.location_city||'') + '</div>' +
-      '<button class="feat-adopt-btn" onclick="event.stopPropagation();openInqModal(' + p.id + ')">Adopt Me</button>' +
+      '<button class="feat-adopt-btn" onclick="event.stopPropagation();openInqModal(' + p.id + ',\'' + p.name.replace(/'/g,"\\'") + '\')">Adopt Me</button>' +
       '</div></div>';
   }).join('');
 }
@@ -767,7 +929,7 @@ function renderAvailable(pets) {
       '<div class="avail-meta">' + (p.age||'') + ' · ' + (p.gender||'') + ' · ' + (p.breed||p.species||'') + '</div>' +
       '<div class="avail-btns">' +
       '<button class="a-details" onclick="event.stopPropagation();openPetModal(' + p.id + ')">Details</button>' +
-      '<button class="a-inquire" onclick="event.stopPropagation();openInqModal(' + p.id + ')">Inquire</button>' +
+      '<button class="a-inquire" onclick="event.stopPropagation();openInqModal(' + p.id + ',\'' + p.name.replace(/'/g,"\\'") + '\')">Inquire</button>' +
       '</div></div></div>';
   }).join('');
 }
@@ -801,8 +963,8 @@ async function openPetModal(petId) {
     }
     document.getElementById('modal-desc').textContent =
       p.description || 'A wonderful pet looking for a loving forever home. Please inquire below to learn more.';
-    document.getElementById('modal-inquire-btn').onclick = function() { closePetModal(); openInqModal(p.id); };
-    document.getElementById('modal-adopt-btn').onclick = function() { closePetModal(); openInqModal(p.id); };
+    document.getElementById('modal-inquire-btn').onclick = function() { closePetModal(); openInqModal(p.id, p.name); };
+    document.getElementById('modal-adopt-btn').onclick = function() { closePetModal(); openInqModal(p.id, p.name); };
   } catch(e) {
     document.getElementById('modal-name').textContent = 'Could not load pet details.';
   }
@@ -813,27 +975,71 @@ function closePetModal() { document.getElementById('pet-modal').classList.remove
    INQUIRY MODAL
 ═══════════════════════════════════════════════════════════ */
 var activePetId = null;
-function openInqModal(petId) {
+var activePetName = '';
+function openInqModal(petId, petName) {
   activePetId = petId;
+  activePetName = petName || '';
+  // Find pet in state or use provided name
   var pet = state.pets.find(function(p) { return p.id == petId; });
-  document.getElementById('inq-sub').textContent = pet ? 'Inquiring about ' + pet.name + ' (' + (pet.breed||pet.species||'') + ')' : 'Adoption inquiry';
+  var displayName = petName || (pet ? pet.name + ' (' + (pet.breed||pet.species||'') + ')' : 'a pet');
+  document.getElementById('inq-sub').textContent = 'Applying to adopt ' + displayName;
+  // Reset form
+  ['inq-name','inq-email','inq-phone','inq-reason','inq-message','inq-cruelty-details','inq-complaint-details'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.querySelectorAll('input[name="cruelty"]')[0].checked = true;
+  document.querySelectorAll('input[name="complaint"]')[0].checked = true;
+  document.getElementById('cruelty-detail').classList.remove('show');
+  document.getElementById('complaint-detail').classList.remove('show');
+  document.getElementById('inq-declaration').checked = false;
   document.getElementById('inq-modal').classList.add('open');
 }
 function closeInqModal() {
   document.getElementById('inq-modal').classList.remove('open');
   activePetId = null;
 }
+function toggleConditional(divId, val) {
+  var el = document.getElementById(divId);
+  if (val === 'yes') el.classList.add('show');
+  else el.classList.remove('show');
+}
 async function submitInquiry() {
-  var name    = document.getElementById('inq-name').value.trim();
-  var email   = document.getElementById('inq-email').value.trim();
-  var phone   = document.getElementById('inq-phone').value.trim();
-  var message = document.getElementById('inq-message').value.trim();
-  if (!name || !email) { showToast('Please enter your name and email.','error'); return; }
+  var name     = document.getElementById('inq-name').value.trim();
+  var email    = document.getElementById('inq-email').value.trim();
+  var phone    = document.getElementById('inq-phone').value.trim();
+  var purpose  = document.getElementById('inq-purpose').value;
+  var living   = document.getElementById('inq-living').value;
+  var exp      = document.getElementById('inq-experience').value;
+  var reason   = document.getElementById('inq-reason').value.trim();
+  var message  = document.getElementById('inq-message').value.trim();
+  var hasCruelty   = document.querySelector('input[name="cruelty"]:checked').value === 'yes';
+  var hasComplaint = document.querySelector('input[name="complaint"]:checked').value === 'yes';
+  var crueltyDet   = document.getElementById('inq-cruelty-details').value.trim();
+  var complaintDet = document.getElementById('inq-complaint-details').value.trim();
+  var declared = document.getElementById('inq-declaration').checked;
+
+  // Validation
+  if (!name || !email || !phone) { showToast('Name, email and phone are required.','error'); return; }
+  if (!purpose) { showToast('Please select purpose of adoption.','error'); return; }
+  if (!living)  { showToast('Please select your living situation.','error'); return; }
+  if (!reason)  { showToast('Please explain why you want to adopt this pet.','error'); return; }
+  if (hasCruelty && !crueltyDet)   { showToast('Please provide details of your cruelty record.','error'); return; }
+  if (hasComplaint && !complaintDet){ showToast('Please provide details of the complaint.','error'); return; }
+  if (!declared) { showToast('You must accept the declaration to proceed.','error'); return; }
+
   var btn = document.querySelector('.inq-submit');
-  btn.textContent = 'Sending…'; btn.disabled = true;
+  btn.textContent = 'Submitting…'; btn.disabled = true;
   try {
     var token = localStorage.getItem('pb_token');
-    var body = { pet_id: activePetId, applicant_name: name, applicant_email: email, applicant_phone: phone, message: message };
+    var body = {
+      pet_id: activePetId,
+      applicant_name: name, applicant_email: email, applicant_phone: phone,
+      purpose: purpose, reason: reason,
+      living_situation: living, prior_pet_experience: exp,
+      has_cruelty_record: hasCruelty, cruelty_details: crueltyDet||null,
+      has_complaints: hasComplaint, complaint_details: complaintDet||null,
+      declaration_accepted: true, message: message||null
+    };
     var r = await fetch(API + '/adoptions/inquire', {
       method: 'POST',
       headers: { 'Content-Type':'application/json', 'Authorization': token ? 'Bearer '+token : '' },
@@ -841,16 +1047,128 @@ async function submitInquiry() {
     });
     var json = await r.json();
     if (json.success || r.ok) {
-      showToast('✅ Inquiry sent! The shelter will contact you soon.', 'success');
+      showToast('✅ ' + (json.message || 'Adoption request submitted! The shelter will contact you.'), 'success');
       closeInqModal();
     } else {
-      showToast(json.message || 'Could not send inquiry.', 'error');
+      showToast(json.message || 'Could not submit request.', 'error');
     }
   } catch(e) {
     showToast('Network error. Please try again.', 'error');
   }
-  btn.textContent = 'Send Inquiry 📨'; btn.disabled = false;
+  btn.textContent = '🐾 Submit Adoption Request'; btn.disabled = false;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   SHELTER PETS PANEL
+═══════════════════════════════════════════════════════════ */
+var activeShelter = null;
+async function openShPets(shelterId, shelterName) {
+  activeShelter = shelterId;
+  var panel = document.getElementById('sh-pets-panel');
+  panel.classList.add('open');
+  document.getElementById('sh-pets-title').textContent = '🏠 ' + shelterName;
+  document.getElementById('sh-species-tabs').innerHTML = '';
+  document.getElementById('sh-pets-grid').innerHTML =
+    '<div style="text-align:center;padding:20px;color:#65676b;font-size:12px;grid-column:1/-1">Loading pets…</div>';
+  try {
+    var r = await fetch(API + '/adoptions/shelters/' + shelterId + '/pets');
+    var json = await r.json();
+    var pets = Array.isArray(json.data) ? json.data : [];
+    // Species tabs
+    var speciesSet = {};
+    pets.forEach(function(p) { speciesSet[p.species] = (speciesSet[p.species]||0)+1; });
+    var tabsEl = document.getElementById('sh-species-tabs');
+    var allBtn = document.createElement('button');
+    allBtn.textContent = '🐾 All (' + pets.length + ')';
+    allBtn.style.cssText = 'padding:4px 10px;border-radius:20px;border:1.5px solid #1877F2;background:#1877F2;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:"Poppins",sans-serif';
+    allBtn.onclick = function() { renderShPets(pets); };
+    tabsEl.appendChild(allBtn);
+    Object.keys(speciesSet).forEach(function(sp) {
+      var btn = document.createElement('button');
+      var emoji = sp.toLowerCase().includes('dog')?'🐕':sp.toLowerCase().includes('cat')?'🐈':sp.toLowerCase().includes('rabbit')?'🐇':'🐾';
+      btn.textContent = emoji + ' ' + sp + ' (' + speciesSet[sp] + ')';
+      btn.style.cssText = 'padding:4px 10px;border-radius:20px;border:1.5px solid #e4e6eb;background:#fff;color:#374151;font-size:11px;font-weight:700;cursor:pointer;font-family:"Poppins",sans-serif';
+      btn.onclick = function() { renderShPets(pets.filter(function(p){ return p.species===sp; })); };
+      tabsEl.appendChild(btn);
+    });
+    renderShPets(pets);
+  } catch(e) {
+    document.getElementById('sh-pets-grid').innerHTML =
+      '<div style="text-align:center;padding:20px;color:#dc2626;font-size:12px;grid-column:1/-1">⚠️ Could not load pets</div>';
+  }
+}
+function renderShPets(pets) {
+  var grid = document.getElementById('sh-pets-grid');
+  if (!pets.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:20px;color:#65676b;font-size:12px;grid-column:1/-1">No pets available in this filter</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  pets.forEach(function(p, i) {
+    var img = p.photo_url || PET_IMGS[i % PET_IMGS.length];
+    var urgentColor = p.status==='urgent'?'#dc2626':'#16a34a';
+    var urgentLabel = p.status==='urgent'?'URGENT':'AVAILABLE';
+    var card = document.createElement('div');
+    card.className = 'sh-pet-thumb';
+    card.innerHTML =
+      '<img src="'+img+'" alt="'+p.name+'" onerror="this.src=\''+PET_IMGS[i%PET_IMGS.length]+'\'">' +
+      '<div class="sh-pet-thumb-badge" style="background:'+urgentColor+'">'+urgentLabel+'</div>' +
+      '<div class="sh-pet-thumb-body">' +
+        '<div class="sh-pet-thumb-name">'+p.name+'</div>' +
+        '<div class="sh-pet-thumb-meta">'+(p.breed||p.species||'')+' · '+(p.age||'')+'</div>' +
+        '<button class="sh-pet-adopt-btn" onclick="openInqModal('+p.id+',\''+p.name.replace(/'/g,"\\'")+'\')" >❤️ Adopt</button>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+function closeShPets() {
+  document.getElementById('sh-pets-panel').classList.remove('open');
+  activeShelter = null;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADOPTED PETS
+═══════════════════════════════════════════════════════════ */
+var adoptedOffset = 0;
+var adoptedTotal  = 0;
+async function loadAdoptedPets(append) {
+  if (!append) { adoptedOffset = 0; }
+  try {
+    var r = await fetch(API + '/adoptions/adopted?limit=9&offset=' + adoptedOffset);
+    var json = await r.json();
+    var pets = Array.isArray(json.data) ? json.data : [];
+    var grid = document.getElementById('adopted-grid');
+    if (!append) grid.innerHTML = '';
+    if (!pets.length && !append) {
+      grid.innerHTML = '<div style="text-align:center;padding:40px;color:#65676b;grid-column:1/-1"><div style="font-size:40px;margin-bottom:10px">🐾</div><div style="font-size:16px;font-weight:700">No adopted pets yet</div><div style="font-size:13px;margin-top:4px">Be the first to give a pet a forever home!</div></div>';
+      return;
+    }
+    pets.forEach(function(p, i) {
+      var img = p.photo_url || PET_IMGS[i % PET_IMGS.length];
+      var adoptedDate = p.adopted_at ? new Date(p.adopted_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '';
+      var card = document.createElement('div');
+      card.className = 'adopted-card';
+      card.innerHTML =
+        '<div class="adopted-img-wrap">' +
+          '<img src="'+img+'" alt="'+p.name+'" onerror="this.src=\''+PET_IMGS[i%PET_IMGS.length]+'\'">' +
+          '<div class="adopted-badge"><div class="adopted-stamp">✅ ADOPTED</div></div>' +
+        '</div>' +
+        '<div class="adopted-body">' +
+          '<div class="adopted-name">'+p.name+'</div>' +
+          '<div class="adopted-meta">'+(p.breed||p.species||'')+' · '+(p.shelter_city||'')+'</div>' +
+          '<div class="adopted-owner">🏡 Owner: '+(p.adopted_by_name||'Happy family')+'</div>' +
+          (adoptedDate ? '<div class="adopted-date">📅 Adopted on '+adoptedDate+'</div>' : '') +
+          (p.adoption_doc_url ? '<a class="adopted-doc" href="'+p.adoption_doc_url+'" target="_blank">📄 Adoption Certificate</a>' : '<div class="adopted-date" style="color:#94a3b8;margin-top:4px">📄 Certificate pending</div>') +
+        '</div>';
+      grid.appendChild(card);
+    });
+    adoptedOffset += pets.length;
+    document.getElementById('adopted-more-wrap').style.display = pets.length === 9 ? 'block' : 'none';
+  } catch(e) {
+    console.error('adoptedPets error', e);
+  }
+}
+function loadMoreAdopted() { loadAdoptedPets(true); }
 
 /* ═══════════════════════════════════════════════════════════
    SPONSOR MODAL
@@ -1017,7 +1335,15 @@ async function shShowShelters() {
         mb.textContent = "🗺 Map";
         (function(n, a) { mb.onclick = function() { window.open("https://www.google.com/maps/search/"+encodeURIComponent(n+" "+a),"_blank"); }; })(s.name, s.address||s.city||"");
         btns.appendChild(mb);
-        card.appendChild(row1); card.appendChild(addr); card.appendChild(meta); card.appendChild(btns);
+        /* row 5: view pets button */
+        var vrow = document.createElement("div");
+        vrow.style.cssText = "margin-top:5px";
+        var vpBtn = document.createElement("button");
+        vpBtn.style.cssText = "width:100%;height:28px;border-radius:7px;border:none;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;letter-spacing:0.3px";
+        vpBtn.textContent = "🐾 View Pets Available";
+        (function(sid, sname) { vpBtn.onclick = function() { openShPets(sid, sname); }; })(s.id, s.name);
+        vrow.appendChild(vpBtn);
+        card.appendChild(row1); card.appendChild(addr); card.appendChild(meta); card.appendChild(btns); card.appendChild(vrow);
         list.appendChild(card);
       });
     }
