@@ -422,7 +422,16 @@ function toast(msg,type){
     </div>
     <div class="modal-body">
       <div class="form-group"><label class="form-label">Pet Description *</label><input class="form-input" id="f-desc" placeholder="Brown dog, medium size, no collar"></div>
-      <div class="form-group"><label class="form-label">Where found *</label><input class="form-input" id="f-location" placeholder="Connaught Place, Delhi"></div>
+      <!-- Found location dropdowns -->
+      <div class="form-group">
+        <label class="form-label">Country *</label>
+        <select class="form-select" id="f-country" onchange="gOnCountry('f')"><option value="">— Country —</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label class="form-label">State *</label><select class="form-select" id="f-state" disabled onchange="gOnState('f')" style="opacity:.5"><option value="">— State —</option></select></div>
+        <div class="form-group"><label class="form-label">City *</label><select class="form-select" id="f-city" disabled onchange="gOnCity('f')" style="opacity:.5"><option value="">— City —</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Locality / Area *</label><input class="form-input" id="f-location" placeholder="e.g. Connaught Place"></div>
       <div class="form-group"><label class="form-label">Current location of pet *</label><input class="form-input" id="f-current" placeholder="With me / Nearby shelter / etc."></div>
       <div class="form-group"><label class="form-label">Your Contact *</label><input class="form-input" id="f-phone" type="tel" placeholder="+91 98765 43210"></div>
       <div class="form-group">
@@ -451,7 +460,16 @@ function toast(msg,type){
         📢 Seen a lost pet? Report its location — the owner will be notified instantly!
       </div>
       <div class="form-group"><label class="form-label">Pet description</label><input class="form-input" id="s-desc" placeholder="Brown dog, limping, near metro"></div>
-      <div class="form-group"><label class="form-label">Location *</label><input class="form-input" id="s-location" placeholder="Exact location or landmark"></div>
+      <!-- Sighting location dropdowns -->
+      <div class="form-group">
+        <label class="form-label">Country *</label>
+        <select class="form-select" id="s-country" onchange="gOnCountry('s')"><option value="">— Country —</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label class="form-label">State *</label><select class="form-select" id="s-state" disabled onchange="gOnState('s')" style="opacity:.5"><option value="">— State —</option></select></div>
+        <div class="form-group"><label class="form-label">City *</label><select class="form-select" id="s-city" disabled onchange="gOnCity('s')" style="opacity:.5"><option value="">— City —</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Exact Location / Landmark *</label><input class="form-input" id="s-location" placeholder="e.g. Near metro station, Lodhi Garden"></div>
       <div class="form-group"><label class="form-label">When did you see it?</label><input class="form-input" type="datetime-local" id="s-time"></div>
       <div class="form-group"><label class="form-label">Your name (optional)</label><input class="form-input" id="s-name" placeholder="Helpful samaritan"></div>
       <div class="form-group"><label class="form-label">Contact (optional)</label><input class="form-input" id="s-phone" type="tel" placeholder="+91…"></div>
@@ -933,22 +951,67 @@ function rOnCity(){
   rPin(cityObj.lat,cityObj.lng);
 }
 
+// ── Generic dropdown helpers (prefix = 'r', 'f', or 's') ──────
+function gFillCountries(prefix){
+  var cSel=document.getElementById(prefix+'-country');
+  if(!cSel||cSel.options.length>1) return;
+  Object.keys(RGEO).sort().forEach(function(c){
+    var o=document.createElement('option'); o.value=c; o.textContent=c; cSel.appendChild(o);
+  });
+  cSel.value='India';
+  gOnCountry(prefix);
+}
+function gOnCountry(prefix){
+  var c=document.getElementById(prefix+'-country').value;
+  var ss=document.getElementById(prefix+'-state');
+  var cs=document.getElementById(prefix+'-city');
+  ss.innerHTML='<option value="">— State —</option>';
+  cs.innerHTML='<option value="">— City —</option>';
+  ss.disabled=true; ss.style.opacity='0.5';
+  cs.disabled=true; cs.style.opacity='0.5';
+  if(!c||!RGEO[c]) return;
+  Object.keys(RGEO[c].states).sort().forEach(function(s){
+    var o=document.createElement('option'); o.value=s; o.textContent=s; ss.appendChild(o);
+  });
+  ss.disabled=false; ss.style.opacity='1';
+  if(prefix==='r'&&rMap) rMap.setView([RGEO[c].lat,RGEO[c].lng],5);
+}
+function gOnState(prefix){
+  var c=document.getElementById(prefix+'-country').value;
+  var s=document.getElementById(prefix+'-state').value;
+  var cs=document.getElementById(prefix+'-city');
+  cs.innerHTML='<option value="">— City —</option>';
+  cs.disabled=true; cs.style.opacity='0.5';
+  if(!s||!RGEO[c]||!RGEO[c].states[s]) return;
+  Object.keys(RGEO[c].states[s].cities).sort().forEach(function(ci){
+    var o=document.createElement('option'); o.value=ci; o.textContent=ci; cs.appendChild(o);
+  });
+  cs.disabled=false; cs.style.opacity='1';
+  var st=RGEO[c].states[s]; if(prefix==='r'&&rMap) rMap.setView([st.lat,st.lng],9);
+}
+function gOnCity(prefix){
+  var c=document.getElementById(prefix+'-country').value;
+  var s=document.getElementById(prefix+'-state').value;
+  var ci=document.getElementById(prefix+'-city').value;
+  if(!ci||!RGEO[c]||!RGEO[c].states[s]) return;
+  var cityObj=RGEO[c].states[s].cities[ci];
+  if(prefix==='r') rPin(cityObj.lat,cityObj.lng);
+}
+// Keep old r* handlers pointing to generic ones
+function rOnCountry(){ gOnCountry('r'); }
+function rOnState(){ gOnState('r'); }
+function rOnCity(){ gOnCity('r'); }
+
 // Init dropdowns + map when modal opens — patch openModal
 var _origOpenModal = window.openModal;
 window.openModal = function(id){
   _origOpenModal(id);
   if(id==='report-modal'){
-    // Fill countries if empty
-    var cSel=document.getElementById('r-country');
-    if(cSel.options.length<=1){
-      Object.keys(RGEO).sort().forEach(function(c){
-        var o=document.createElement('option'); o.value=c; o.textContent=c; cSel.appendChild(o);
-      });
-      cSel.value='India';
-      rOnCountry();
-    }
+    gFillCountries('r');
     setTimeout(function(){ rInitMap(); if(rMap) rMap.invalidateSize(); },200);
   }
+  if(id==='found-modal')   gFillCountries('f');
+  if(id==='sighting-modal') gFillCountries('s');
 };
 
 // Update submitReport to include lat/lng in location string
