@@ -229,43 +229,6 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
   </div>
 </nav>
 
-<!-- SHELTER FINDER -->
-<div style="background:#fff;border-bottom:1px solid #e4e6eb;padding:14px 16px">
-  <div style="font-size:14px;font-weight:800;color:#050505;margin-bottom:10px">🏠 Find Adoption Shelters Near You</div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
-    <div style="flex:1;min-width:120px">
-      <label style="font-size:11px;font-weight:700;color:#65676b;display:block;margin-bottom:4px">Country</label>
-      <select id="sh-country" onchange="shUpdateStates()" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;outline:none;background:#fff;cursor:pointer">
-        <option value="">Select Country</option>
-        <option value="India">India</option>
-        <option value="USA">USA</option>
-        <option value="UK">UK</option>
-        <option value="Australia">Australia</option>
-        <option value="Canada">Canada</option>
-        <option value="UAE">UAE</option>
-        <option value="Singapore">Singapore</option>
-      </select>
-    </div>
-    <div style="flex:1;min-width:120px">
-      <label style="font-size:11px;font-weight:700;color:#65676b;display:block;margin-bottom:4px">State</label>
-      <select id="sh-state" disabled onchange="shUpdateCities()" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;outline:none;background:#f0f2f5;cursor:not-allowed">
-        <option value="">Select country first</option>
-      </select>
-    </div>
-    <div style="flex:1;min-width:120px">
-      <label style="font-size:11px;font-weight:700;color:#65676b;display:block;margin-bottom:4px">City</label>
-      <select id="sh-city" disabled onchange="shShowShelters()" style="width:100%;height:40px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:13px;outline:none;background:#f0f2f5;cursor:not-allowed">
-        <option value="">Select state first</option>
-      </select>
-    </div>
-    <button onclick="shShowShelters()" style="height:40px;padding:0 20px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Find Shelters</button>
-  </div>
-  <div id="sh-results" style="margin-top:12px;display:none">
-    <div style="font-size:12px;font-weight:700;color:#65676b;margin-bottom:8px" id="sh-title"></div>
-    <div id="sh-list" style="display:flex;flex-direction:column;gap:8px"></div>
-  </div>
-</div>
-
 <!-- HERO -->
 <div class="adopt-hero">
   <img class="adopt-hero-img" src="https://images.unsplash.com/photo-1444212477490-ca407925329e?w=1400&q=85" alt="Adopt">
@@ -449,6 +412,37 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
         <button class="s-donate" onclick="switchTab('Donate')">Donate</button>
       </div>
     </div>
+    <!-- SHELTER FINDER SIDEBAR CARD -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body" style="padding:12px">
+        <div class="card-title" style="font-size:13px;margin-bottom:10px">🏠 Find Shelters City-Wise</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <select id="sh-country" onchange="shUpdateStates()" style="width:100%;height:34px;border:1.5px solid #e4e6eb;border-radius:8px;padding:0 10px;font-size:12px;outline:none;background:#fff;cursor:pointer;font-family:'Poppins',sans-serif">
+            <option value="">🌍 Select Country</option>
+            <option value="India">🇮🇳 India</option>
+            <option value="USA">🇺🇸 USA</option>
+            <option value="UK">🇬🇧 UK</option>
+            <option value="Australia">🇦🇺 Australia</option>
+            <option value="Canada">🇨🇦 Canada</option>
+            <option value="UAE">🇦🇪 UAE</option>
+            <option value="Singapore">🇸🇬 Singapore</option>
+          </select>
+          <select id="sh-state" disabled onchange="shUpdateCities()" style="width:100%;height:34px;border:1.5px solid #e4e6eb;border-radius:8px;padding:0 10px;font-size:12px;outline:none;background:#f0f2f5;cursor:not-allowed;font-family:'Poppins',sans-serif">
+            <option value="">Select country first</option>
+          </select>
+          <select id="sh-city" disabled onchange="shShowShelters()" style="width:100%;height:34px;border:1.5px solid #e4e6eb;border-radius:8px;padding:0 10px;font-size:12px;outline:none;background:#f0f2f5;cursor:not-allowed;font-family:'Poppins',sans-serif">
+            <option value="">Select state first</option>
+          </select>
+          <button onclick="shShowShelters()" style="height:34px;border-radius:8px;border:none;background:#1877F2;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">🔍 Find Shelters</button>
+        </div>
+        <!-- RESULTS: scrollable list -->
+        <div id="sh-results" style="margin-top:10px;display:none">
+          <div id="sh-title" style="font-size:11px;font-weight:700;color:#65676b;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #e4e6eb"></div>
+          <div id="sh-list" style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="card" style="margin-bottom:12px">
       <div class="card-body">
         <div class="card-title">🤝 How You Can Help</div>
@@ -980,40 +974,50 @@ async function shShowShelters() {
     title.textContent = shelters.length + " shelter(s) near " + locationLabel;
     list.innerHTML = "";
     if (!shelters.length) {
-      list.innerHTML = '<div style="text-align:center;padding:20px;color:#65676b;font-size:13px;background:#f8fafc;border-radius:10px;border:1px dashed #e4e6eb"><div style="font-size:28px;margin-bottom:8px">🏠</div><strong>No shelters found in ' + (city||st||country) + '</strong><br><span style="font-size:12px">We\'re growing our network. Check back soon.</span></div>';
+      list.innerHTML = '<div style="text-align:center;padding:14px 8px;color:#65676b;font-size:12px;background:#f8fafc;border-radius:8px;border:1px dashed #e4e6eb"><div style="font-size:22px;margin-bottom:6px">🏠</div><strong>No shelters found</strong><br><span style="font-size:11px">in ' + (city||st||country) + '</span></div>';
     } else {
       shelters.forEach(function(s) {
         var card = document.createElement("div");
-        card.style.cssText = "display:flex;align-items:flex-start;gap:12px;padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e4e6eb";
+        card.style.cssText = "background:#f8fafc;border-radius:8px;border:1px solid #e4e6eb;padding:9px 10px";
+        /* row 1: icon + name */
+        var row1 = document.createElement("div");
+        row1.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:5px";
         var icon = document.createElement("div");
-        icon.style.cssText = "width:42px;height:42px;border-radius:10px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0";
+        icon.style.cssText = "width:28px;height:28px;border-radius:7px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0";
         icon.textContent = "🏠";
-        var info = document.createElement("div"); info.style.cssText = "flex:1;min-width:0";
-        var nm = document.createElement("div"); nm.style.cssText = "font-size:14px;font-weight:700;color:#050505";
+        var nm = document.createElement("div");
+        nm.style.cssText = "font-size:12px;font-weight:700;color:#050505;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";
         nm.textContent = s.name + (s.is_verified ? " ✅" : "");
-        var addr = document.createElement("div"); addr.style.cssText = "font-size:12px;color:#65676b;margin-top:2px";
+        nm.title = s.name;
+        row1.appendChild(icon); row1.appendChild(nm);
+        /* row 2: address */
+        var addr = document.createElement("div");
+        addr.style.cssText = "font-size:11px;color:#65676b;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";
         addr.textContent = "📍 " + (s.address || [s.city, s.state, s.country].filter(Boolean).join(", "));
-        var animals = document.createElement("div"); animals.style.cssText = "font-size:12px;color:#1877F2;font-weight:600;margin-top:2px";
-        animals.textContent = "🐾 " + (s.animals_accepted || "All animals");
-        var extra = document.createElement("div"); extra.style.cssText = "font-size:11px;color:#94a3b8;margin-top:3px";
-        if (s.rating) extra.innerHTML += "⭐ " + s.rating;
-        if (s.adoptions_this_month) extra.innerHTML += " · " + s.adoptions_this_month + " adoptions/month";
-        info.appendChild(nm); info.appendChild(addr); info.appendChild(animals);
-        if (s.rating || s.adoptions_this_month) info.appendChild(extra);
-        var btns = document.createElement("div"); btns.style.cssText = "display:flex;flex-direction:column;gap:6px;flex-shrink:0";
+        addr.title = s.address || "";
+        /* row 3: meta */
+        var meta = document.createElement("div");
+        meta.style.cssText = "font-size:11px;color:#1877F2;font-weight:600;margin-bottom:6px";
+        var metaParts = [];
+        if (s.animals_accepted) metaParts.push("🐾 " + s.animals_accepted);
+        if (s.rating) metaParts.push("⭐ " + s.rating);
+        meta.textContent = metaParts.join("  ·  ") || "🐾 All animals";
+        /* row 4: buttons */
+        var btns = document.createElement("div");
+        btns.style.cssText = "display:flex;gap:5px";
         if (s.phone) {
           var cb = document.createElement("button");
-          cb.style.cssText = "height:30px;padding:0 12px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:11px;font-weight:700;cursor:pointer";
+          cb.style.cssText = "flex:1;height:26px;border-radius:6px;border:none;background:#1877F2;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif";
           cb.textContent = "📞 Call";
           (function(ph) { cb.onclick = function() { window.open("tel:"+ph); }; })(s.phone);
           btns.appendChild(cb);
         }
         var mb = document.createElement("button");
-        mb.style.cssText = "height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#050505;font-size:11px;font-weight:700;cursor:pointer";
+        mb.style.cssText = "flex:1;height:26px;border-radius:6px;border:1.5px solid #e4e6eb;background:#fff;color:#050505;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif";
         mb.textContent = "🗺 Map";
         (function(n, a) { mb.onclick = function() { window.open("https://www.google.com/maps/search/"+encodeURIComponent(n+" "+a),"_blank"); }; })(s.name, s.address||s.city||"");
         btns.appendChild(mb);
-        card.appendChild(icon); card.appendChild(info); card.appendChild(btns);
+        card.appendChild(row1); card.appendChild(addr); card.appendChild(meta); card.appendChild(btns);
         list.appendChild(card);
       });
     }
