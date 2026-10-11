@@ -279,7 +279,7 @@ html, body { overflow-x: hidden !important; }
       <div class="map-container">
         <div class="map-loading" id="map-loading">
           <div class="map-loading-spinner"></div>
-          <div style="font-size:13px;font-weight:600;color:#65676b">Detecting your location…</div>
+          <div style="font-size:13px;font-weight:600;color:#65676b">Loading map…</div>
         </div>
         <div id="clinic-map"></div>
       </div>
@@ -473,12 +473,11 @@ function renderClinics(elements, userLat, userLng) {
   var pinColors = ['#dc2626','#0e7490','#1a56db','#d97706','#7c3aed'];
 
   if (!elements.length) {
-    // No results — show Google Maps link
     list.innerHTML = '<div style="padding:14px 16px;display:flex;align-items:center;gap:12px">' +
       '<span style="font-size:22px">🔍</span>' +
-      '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#0f2057">No clinics found in OpenStreetMap nearby</div>' +
-      '<div style="font-size:12px;color:#65676b;margin-top:2px">Try Google Maps for more results</div></div>' +
-      '<button onclick="findNearestClinic()" style="padding:8px 16px;border-radius:8px;background:#1a56db;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer">Search</button></div>';
+      '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#0f2057">Allow location access to see clinics near you</div>' +
+      '<div style="font-size:12px;color:#65676b;margin-top:2px">Or search on Google Maps</div></div>' +
+      '<button onclick="window.open(\'https://www.google.com/maps/search/veterinary+clinic+near+me\',\'_blank\')" style="padding:8px 16px;border-radius:8px;background:#1a56db;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;flex-shrink:0">Google Maps</button></div>';
     return;
   }
 
@@ -522,22 +521,28 @@ function renderClinics(elements, userLat, userLng) {
   } catch(e){}
 }
 
-// Auto-load on page open
+// Auto-load on page open — always show map, update if location granted
 (function(){
   setTimeout(function(){
-    if (!navigator.geolocation) {
-      document.getElementById('map-loading').innerHTML = '<div style="font-size:13px;color:#dc2626;font-weight:600">Location not supported by your browser</div>';
-      return;
+    // Always init map with India default so it's never blank
+    var DEFAULT_LAT = 20.5937, DEFAULT_LNG = 78.9629;
+    initClinicMap(DEFAULT_LAT, DEFAULT_LNG);
+
+    // Then try to get real location and refine
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(pos){
+          // Got real location — re-center and fetch real clinics
+          initClinicMap(pos.coords.latitude, pos.coords.longitude);
+        },
+        function(){
+          // Location denied — map still shows, just show a small notice
+          showEmToast('📍 Enable location for nearby clinics, or search manually', 'info');
+        },
+        {timeout:8000, maximumAge:60000}
+      );
     }
-    navigator.geolocation.getCurrentPosition(
-      function(pos){ initClinicMap(pos.coords.latitude, pos.coords.longitude); },
-      function(){
-        // Fallback: default to India
-        document.getElementById('map-loading').innerHTML = '<div style="font-size:12px;color:#65676b;text-align:center">Location access denied.<br><button onclick="findNearestClinic()" style="margin-top:8px;padding:7px 18px;border-radius:8px;background:#1a56db;color:#fff;font-weight:700;border:none;cursor:pointer">Open Google Maps</button></div>';
-      },
-      {timeout:8000, maximumAge:60000}
-    );
-  }, 300);
+  }, 400);
 })();
 </script>
 <script>
