@@ -650,7 +650,7 @@ async function shShowShelters() {
 
     var r = await fetch(SH_API + "/adoptions/shelters?" + params.toString());
     var json = await r.json();
-    var shelters = (json && json.data && json.data.shelters) ? json.data.shelters : [];
+    var shelters = (json && json.data) ? (Array.isArray(json.data) ? json.data : (json.data.shelters || [])) : [];
 
     var locationLabel = [city, state, country].filter(Boolean).join(", ");
     title.textContent = shelters.length + " shelter(s) near " + locationLabel;
