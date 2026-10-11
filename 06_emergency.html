@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -58,18 +58,11 @@ body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size
 .card-head-title{font-size:16px;font-weight:800;color:#0f2057}
 
 /* ── MAP ─────────────────────────────────────────────────── */
-.map-container{
-  position:relative;height:220px;overflow:hidden;
-  background:linear-gradient(160deg,#8bc34a 0%,#689f38 40%,#7cb342 70%,#558b2f 100%);
-}
-.road-h{position:absolute;left:0;right:0;height:14px;background:rgba(200,160,60,0.6)}
-.road-v{position:absolute;top:0;bottom:0;width:14px;background:rgba(200,160,60,0.6)}
-.pond{position:absolute;border-radius:50%;background:rgba(70,150,200,0.55)}
-.m-tree{position:absolute;font-size:18px}
-/* Clinic pins */
-.clinic-pin{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;z-index:3}
-.pin-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);border:3px solid #fff}
-.pin-label{font-size:9px;font-weight:800;color:#fff;background:rgba(0,0,0,0.6);padding:1px 5px;border-radius:4px;margin-top:2px}
+.map-container{position:relative;height:280px;overflow:hidden;}
+#clinic-map{width:100%;height:100%;}
+.map-loading{position:absolute;inset:0;background:#e8f4f8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:2}
+.map-loading-spinner{width:36px;height:36px;border:3px solid #dde1e7;border-top-color:#1a56db;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* Clinic list */
 .clinic-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
@@ -147,6 +140,8 @@ body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size
 .call-btn{width:100%;padding:11px;border-radius:8px;background:#0f2057;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
 html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="mobile.css">
 <style class="pb-mobile-pad">@media(max-width:768px){
   .emer-page { display: block !important; grid-template-columns: 1fr !important; }body{padding-bottom:72px}}</style>
@@ -280,64 +275,17 @@ html, body { overflow-x: hidden !important; }
     <!-- Find Nearest Clinic -->
     <div class="card">
       <div class="card-head"><div class="card-head-title">📍 Find Nearest Clinic</div></div>
-      <!-- CSS Map -->
+      <!-- Real Leaflet Map -->
       <div class="map-container">
-        <div class="road-h" style="top:38%"></div>
-        <div class="road-h" style="top:62%"></div>
-        <div class="road-v" style="left:25%"></div>
-        <div class="road-v" style="left:55%"></div>
-        <div class="road-v" style="left:78%"></div>
-        <div class="pond" style="width:70px;height:45px;top:12%;left:8%;opacity:0.7"></div>
-        <div class="pond" style="width:50px;height:32px;bottom:15%;right:6%;opacity:0.5"></div>
-        <div class="m-tree" style="top:8%;left:38%">🌳</div>
-        <div class="m-tree" style="top:12%;right:18%">🌲</div>
-        <div class="m-tree" style="bottom:12%;left:15%">🌳</div>
-        <div class="m-tree" style="bottom:10%;right:28%">🌲</div>
-        <!-- Clinic pins -->
-        <div class="clinic-pin" style="top:20%;left:18%">
-          <div class="pin-circle" style="background:#0e7490"><i class="ti ti-paw" style="font-size:18px"></i></div>
-          <div class="pin-label">VET</div>
+        <div class="map-loading" id="map-loading">
+          <div class="map-loading-spinner"></div>
+          <div style="font-size:13px;font-weight:600;color:#65676b">Detecting your location…</div>
         </div>
-        <div class="clinic-pin" style="top:28%;left:38%">
-          <div class="pin-circle" style="background:#dc2626;font-size:13px;font-weight:900">ER</div>
-          <div class="pin-label">EMERGENCY</div>
-        </div>
-        <div class="clinic-pin" style="top:18%;left:55%">
-          <div class="pin-circle" style="background:#d97706;font-size:11px;font-weight:900">24/7</div>
-          <div class="pin-label">24/7 OPEN</div>
-        </div>
-        <div class="clinic-pin" style="top:22%;left:72%">
-          <div class="pin-circle" style="background:#1a56db;font-size:13px;font-weight:900">AR</div>
-          <div class="pin-label">ANIMAL</div>
-        </div>
-        <div class="clinic-pin" style="top:14%;right:8%">
-          <div class="pin-circle" style="background:#1a56db;font-size:11px;font-weight:900">ER</div>
-        </div>
+        <div id="clinic-map"></div>
       </div>
-      <!-- Clinic list -->
-      <div class="clinic-item">
-        <div class="clinic-dot" style="background:#16a34a"></div>
-        <div style="flex:1">
-          <div class="clinic-name">Greenfield Vet Hospital <span class="clinic-stars">★★★★☆</span></div>
-          <div class="clinic-meta">1.5 km Navigate</div>
-        </div>
-        <button class="nav-btn" onclick="navigateToClinic(this)">Navigate</button>
-      </div>
-      <div class="clinic-item">
-        <div class="clinic-dot" style="background:#dc2626"></div>
-        <div style="flex:1">
-          <div class="clinic-name" style="color:#dc2626">City Pet Emergency <span class="clinic-stars">★★★★☆</span></div>
-          <div class="clinic-meta">Open Now · 3 mgata</div>
-        </div>
-        <button class="nav-btn" style="background:#0369a1">Navigate</button>
-      </div>
-      <div class="clinic-item">
-        <div class="clinic-dot" style="background:#1a56db"></div>
-        <div style="flex:1">
-          <div class="clinic-name">Paws &amp; Claws Specialty Care</div>
-          <div class="clinic-meta">4.2m Now · 4.2 mgata</div>
-        </div>
-        <button class="nav-btn" onclick="navigateToClinic(this)">Navigate</button>
+      <!-- Clinic list (dynamically filled) -->
+      <div id="clinic-list">
+        <div style="padding:18px;text-align:center;color:#65676b;font-size:13px">Loading nearby clinics…</div>
       </div>
     </div>
 
@@ -477,6 +425,122 @@ html, body { overflow-x: hidden !important; }
 
 <script>function goTo(p){window.location.href=p;}</script>
 <script>
+/* ── REAL CLINIC MAP ─────────────────────────────────────── */
+var clinicMap = null, userMarker = null;
+
+function initClinicMap(lat, lng) {
+  document.getElementById('map-loading').style.display = 'none';
+
+  if (!clinicMap) {
+    clinicMap = L.map('clinic-map', {zoomControl: true}).setView([lat, lng], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors', maxZoom: 19
+    }).addTo(clinicMap);
+  } else {
+    clinicMap.setView([lat, lng], 14);
+  }
+
+  // User location marker (blue dot)
+  var userIcon = L.divIcon({
+    html: '<div style="width:16px;height:16px;border-radius:50%;background:#1a56db;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>',
+    className: '', iconSize: [16,16], iconAnchor: [8,8]
+  });
+  if (userMarker) userMarker.setLatLng([lat, lng]);
+  else userMarker = L.marker([lat, lng], {icon: userIcon}).addTo(clinicMap).bindPopup('<b>📍 You are here</b>');
+
+  fetchNearbyClinics(lat, lng);
+}
+
+function fetchNearbyClinics(lat, lng) {
+  var radius = 5000; // 5km
+  var query = '[out:json][timeout:10];(node["amenity"="veterinary"](around:' + radius + ',' + lat + ',' + lng + ');node["amenity"="animal_shelter"](around:' + radius + ',' + lat + ',' + lng + '););out body 10;';
+  var url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(data){ renderClinics(data.elements || [], lat, lng); })
+    .catch(function(){ renderClinics([], lat, lng); });
+}
+
+function haversine(lat1, lng1, lat2, lng2) {
+  var R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
+  var a = Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function renderClinics(elements, userLat, userLng) {
+  var list = document.getElementById('clinic-list');
+  var pinColors = ['#dc2626','#0e7490','#1a56db','#d97706','#7c3aed'];
+
+  if (!elements.length) {
+    // No results — show Google Maps link
+    list.innerHTML = '<div style="padding:14px 16px;display:flex;align-items:center;gap:12px">' +
+      '<span style="font-size:22px">🔍</span>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#0f2057">No clinics found in OpenStreetMap nearby</div>' +
+      '<div style="font-size:12px;color:#65676b;margin-top:2px">Try Google Maps for more results</div></div>' +
+      '<button onclick="findNearestClinic()" style="padding:8px 16px;border-radius:8px;background:#1a56db;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer">Search</button></div>';
+    return;
+  }
+
+  // Sort by distance
+  elements.sort(function(a,b){
+    return haversine(userLat,userLng,a.lat,a.lon) - haversine(userLat,userLng,b.lat,b.lon);
+  });
+
+  var html = '';
+  elements.slice(0,5).forEach(function(el, i) {
+    var name = el.tags && (el.tags.name || el.tags['name:en']) ? (el.tags.name || el.tags['name:en']) : 'Vet Clinic';
+    var dist = haversine(userLat, userLng, el.lat, el.lon);
+    var distStr = dist < 1 ? Math.round(dist*1000) + ' m' : dist.toFixed(1) + ' km';
+    var phone = el.tags && el.tags.phone ? el.tags.phone : '';
+    var color = pinColors[i % pinColors.length];
+    var isVet = el.tags && el.tags.amenity === 'veterinary';
+
+    // Add map marker
+    var vetIcon = L.divIcon({
+      html: '<div style="width:34px;height:34px;border-radius:50%;background:' + color + ';border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 3px 10px rgba(0,0,0,0.35)">' + (isVet ? '🐾' : '🏠') + '</div>',
+      className: '', iconSize: [34,34], iconAnchor: [17,17]
+    });
+    var popup = '<b>' + name + '</b><br>' + distStr + ' away' + (phone ? '<br>📞 <a href="tel:' + phone + '">' + phone + '</a>' : '');
+    L.marker([el.lat, el.lon], {icon: vetIcon}).addTo(clinicMap).bindPopup(popup);
+
+    html += '<div class="clinic-item" style="cursor:default">' +
+      '<div class="clinic-dot" style="background:' + color + '"></div>' +
+      '<div style="flex:1">' +
+        '<div class="clinic-name">' + name + (isVet ? '' : ' <span style="font-size:10px;background:#e0f2fe;color:#0369a1;padding:1px 5px;border-radius:4px;font-weight:700">SHELTER</span>') + '</div>' +
+        '<div class="clinic-meta">' + distStr + ' away' + (phone ? ' · ' + phone : '') + '</div>' +
+      '</div>' +
+      '<button class="nav-btn" onclick="window.open(\'https://www.google.com/maps/dir/?api=1&destination=' + el.lat + ',' + el.lon + '\',\'_blank\')" style="flex-shrink:0">Navigate</button>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+
+  // Fit map to show all markers
+  try {
+    var pts = [[userLat,userLng]].concat(elements.slice(0,5).map(function(e){ return [e.lat,e.lon]; }));
+    clinicMap.fitBounds(pts, {padding:[30,30]});
+  } catch(e){}
+}
+
+// Auto-load on page open
+(function(){
+  setTimeout(function(){
+    if (!navigator.geolocation) {
+      document.getElementById('map-loading').innerHTML = '<div style="font-size:13px;color:#dc2626;font-weight:600">Location not supported by your browser</div>';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      function(pos){ initClinicMap(pos.coords.latitude, pos.coords.longitude); },
+      function(){
+        // Fallback: default to India
+        document.getElementById('map-loading').innerHTML = '<div style="font-size:12px;color:#65676b;text-align:center">Location access denied.<br><button onclick="findNearestClinic()" style="margin-top:8px;padding:7px 18px;border-radius:8px;background:#1a56db;color:#fff;font-weight:700;border:none;cursor:pointer">Open Google Maps</button></div>';
+      },
+      {timeout:8000, maximumAge:60000}
+    );
+  }, 300);
+})();
+</script>
+<script>
 var EMD = {
   India: {
     "All India": [["Animal Welfare Board","1962","govt"],["PETA India","+91-9820122602","ngo"]],
@@ -600,7 +664,17 @@ function goTo(p) { window.location.href = p; }
 function findNearestClinic() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      function(p) { window.open("https://www.google.com/maps/search/vet+clinic/@" + p.coords.latitude + "," + p.coords.longitude + ",14z", "_blank"); },
+      function(p) {
+        if (clinicMap) {
+          clinicMap.setView([p.coords.latitude, p.coords.longitude], 14);
+          fetchNearbyClinics(p.coords.latitude, p.coords.longitude);
+        } else {
+          initClinicMap(p.coords.latitude, p.coords.longitude);
+        }
+        // Scroll to map
+        var mapEl = document.querySelector('.map-container');
+        if (mapEl) mapEl.scrollIntoView({behavior:'smooth', block:'center'});
+      },
       function() { window.open("https://www.google.com/maps/search/veterinary+clinic+near+me", "_blank"); }
     );
   } else { window.open("https://www.google.com/maps/search/veterinary+clinic+near+me", "_blank"); }
