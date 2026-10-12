@@ -98,7 +98,6 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-@keyframes shimmer{0%{background:#f0f0f0}50%{background:#e0e0e0}100%{background:#f0f0f0}}
 body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size:14px}
 
 /* ── TOPNAV ───────────────────────────────────────────────── */
@@ -389,11 +388,108 @@ html, body { overflow-x: hidden !important; }
 <!-- MAIN PAGE -->
 <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 260px;gap:0;padding:0 14px 14px;align-items:start">
 
-  <!-- LEFT: Products — dynamically loaded from API -->
+  <!-- LEFT: Products -->
   <div>
-    <div id="products-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0;margin-bottom:20px">
-      <!-- skeleton placeholders while loading -->
-      <div style="background:#f0f0f0;border-radius:12px;height:200px;animation:shimmer 1.5s infinite"></div><div style="background:#f0f0f0;border-radius:12px;height:200px;animation:shimmer 1.5s infinite"></div><div style="background:#f0f0f0;border-radius:12px;height:200px;animation:shimmer 1.5s infinite"></div><div style="background:#f0f0f0;border-radius:12px;height:200px;animation:shimmer 1.5s infinite"></div><div style="background:#f0f0f0;border-radius:12px;height:200px;animation:shimmer 1.5s infinite"></div><div style="background:#f0f0f0;border-radius:12px;height:200px;animation:shimmer 1.5s infinite"></div>
+    <!-- Product grid row 1 (3 cols) -->
+    <div class="prod-grid">
+      <!-- Plush Squeaky Dog Toys -->
+      <div class="prod-card" data-category="pet-products">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a?w=300&q=80" alt="Dog Toys">
+          <div class="prod-badge badge-red">-50%</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-name">Plush Squeaky Dog Toys</div>
+          <div class="prod-stars">★★★½☆</div>
+          <div class="prod-price">$9.99</div>
+          <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
+        </div>
+      </div>
+      <!-- Whiskas Cat Food -->
+      <div class="prod-card" data-category="food">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80" alt="Cat Food">
+          <div class="prod-badge badge-amber">Verified Sables</div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-name">Whiskas Cat Food</div>
+          <div class="prod-stars">★★★★☆</div>
+          <div class="prod-price">$14.99</div>
+          <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
+        </div>
+      </div>
+      <!-- Pet Grooming Package -->
+      <div class="prod-card" data-category="food">
+        <div class="prod-img">
+          <img src="https://images.unsplash.com/photo-1581888227599-779811939961?w=300&q=80" alt="Grooming">
+        </div>
+        <div class="prod-body">
+          <div class="prod-name">Pet Grooming Package</div>
+          <div class="prod-stars">★★★★☆</div>
+          <div class="prod-price">$39.99</div>
+          <button class="book-now-btn" onclick="location.href='11_vet_booking.html'">Book Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product grid row 2 (2 wide cols) -->
+    <div class="prod-grid-wide" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px">
+      <div class="prod-card" data-category="accessories">
+        <div class="prod-img" style="height:180px">
+          <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&q=80" alt="Dog Food">
+        </div>
+        <div class="prod-body">
+          <div class="prod-name">Premium Dog Food Bowl</div>
+          <div class="prod-stars">★★★★★</div>
+          <div class="prod-price">$22.99</div>
+          <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
+        </div>
+      </div>
+      <div class="prod-card" data-category="food">
+        <div class="prod-img" style="height:180px">
+          <img src="https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=400&q=80" alt="Pet Bed">
+        </div>
+        <div class="prod-body">
+          <div class="prod-name">Cosy Orthopedic Pet Bed</div>
+          <div class="prod-stars">★★★★½</div>
+          <div class="prod-price">$49.99</div>
+          <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Best Sellers -->
+    <div style="background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e4e6eb">
+      <div class="bs-title">🏆 Best Sellers</div>
+      <div class="bs-grid">
+        <!-- Royal Canin -->
+        <div class="bs-card" data-category="pet-products">
+          <div class="bs-img"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=300&q=80" alt="Royal Canin"></div>
+          <div class="bs-body">
+            <div class="bs-name">Royal Canin Puppy Food</div>
+            <div class="bs-price">$32.99</div>
+            <button class="bs-btn">Add to Cart</button>
+          </div>
+        </div>
+        <!-- Cat Teaser -->
+        <div class="bs-card" data-category="pet-products">
+          <div class="bs-img"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80" alt="Cat Teaser"></div>
+          <div class="bs-body">
+            <div class="bs-name">Interactive Cat Teaser Wand</div>
+            <div class="bs-price">$8.99</div>
+            <button class="bs-btn">Add to Cart</button>
+          </div>
+        </div>
+        <!-- Water Fountain -->
+        <div class="bs-card" data-category="food">
+          <div class="bs-img"><img src="https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=300&q=80" alt="Water Fountain"></div>
+          <div class="bs-body">
+            <div class="bs-name">Pet Water Fountain</div>
+            <div class="bs-price">$27.59</div>
+            <button class="bs-btn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -405,48 +501,39 @@ html, body { overflow-x: hidden !important; }
       <div class="brands-title">🌟 Top Brands</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
         <div onclick="setCatAndSearch('Royal Canin')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiNDODEwMkUiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UkM8L3RleHQ+Cjwvc3ZnPg==" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#d00;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;text-align:center;line-height:1.1">RC</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#C8102E;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;text-align:center;line-height:1.1">RC</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Royal Canin</div>
         </div>
         <div onclick="setCatAndSearch('Pedigree')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiMwMDNEQTUiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNSIgZmlsbD0iI0ZGRDcwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UEVESUdSRUU8L3RleHQ+Cjwvc3ZnPg==" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#fbbf24;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#1a1a2e;text-align:center">PED</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#003DA5;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#FFD700;text-align:center;line-height:1.1">PEDI<br>GREE</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Pedigree</div>
         </div>
         <div onclick="setCatAndSearch('Whiskas')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiM1QjBFQTYiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+V0hJU0tBUzwvdGV4dD4KPC9zdmc+" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#7c3aed;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;text-align:center">WSK</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#5B0EA6;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#fff;text-align:center">WHISKAS</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Whiskas</div>
         </div>
         <div onclick="setCatAndSearch('Orijen')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiMyQzU1MzAiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI0Y1Qzg0MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+T1JJSkVOPC90ZXh0Pgo8L3N2Zz4=" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#16a34a;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;text-align:center">ORI</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#2C5530;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#F5C842;text-align:center">ORIJEN</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Orijen</div>
         </div>
         <div onclick="setCatAndSearch('Purina Pro Plan')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiNFNDAwMkIiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxMSIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UFVSSU5BPC90ZXh0PgogIDx0ZXh0IHg9IjQwIiB5PSIzNCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLEFyaWFsIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjEwIiBmaWxsPSIjRkZENzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QUk8gUExBTjwvdGV4dD4KPC9zdmc+" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#e4002b;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;text-align:center;line-height:1.1">PRO PLAN</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#E4002B;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#fff;text-align:center;line-height:1.2">PURINA<br>PRO</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Purina Pro Plan</div>
         </div>
         <div onclick="setCatAndSearch('Hills Science Diet')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiMwMDU3QTgiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SElMTCYjMzk7UzwvdGV4dD4KICA8dGV4dCB4PSI0MCIgeT0iMzQiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI4IiBmaWxsPSIjQThENUZGIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TQ0lFTkNFIERJRVQ8L3RleHQ+Cjwvc3ZnPg==" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#0072ce;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;text-align:center;line-height:1.1">HILL&apos;S</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#0057A8;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#fff;text-align:center;line-height:1.2">HILL'S<br>SCI</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Hill&apos;s Science</div>
         </div>
         <div onclick="setCatAndSearch('Drools')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiNGOTczMTYiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RFJPT0xTPC90ZXh0Pgo8L3N2Zz4=" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#f97316;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;text-align:center">DRL</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#F97316;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;text-align:center">DROOLS</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Drools</div>
         </div>
         <div onclick="setCatAndSearch('Farmina')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiMxQjRGNzIiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RkFSTUlOQTwvdGV4dD4KPC9zdmc+" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#1a56db;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;text-align:center">FAR</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#1B4F72;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;text-align:center">FARMINA</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Farmina</div>
         </div>
         <div onclick="setCatAndSearch('Acana')" style="cursor:pointer;border:1.5px solid #e4e6eb;border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .15s;background:#fff" onmouseenter="this.style.borderColor='#1a56db'" onmouseleave="this.style.borderColor='#e4e6eb'">
-          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9IndpZHRoOjQ4cHg7aGVpZ2h0OjQwcHgiPgogIDxyZWN0IHdpZHRoPSI4MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiM3QjM0MUUiLz4KICA8dGV4dCB4PSI0MCIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI0ZGRDcwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QUNBTkE8L3RleHQ+Cjwvc3ZnPg==" style="width:48px;height:40px;object-fit:contain;border-radius:8px">
-          <div style="display:none;width:48px;height:48px;border-radius:8px;background:#92400e;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;text-align:center">ACA</div>
+          <div style="display:flex;width:48px;height:48px;border-radius:8px;background:#7B341E;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#FFD700;text-align:center">ACANA</div>
           <div style="font-size:10px;font-weight:700;color:#1a1a2e;text-align:center">Acana</div>
         </div>
       </div>
@@ -508,7 +595,6 @@ function setCat(el){
     'vet services': 'vet-services',
     'grooming': 'grooming',
     'accessories': 'accessories',
-    'food & nutrition': 'food',
     'food': 'food'
   };
   
@@ -604,125 +690,70 @@ function authHeaders(){ return {'Content-Type':'application/json','Authorization
 
   let cartCount = 0;
 
-  // Demo products — shown immediately, replaced by live API data when available
-  var DEMO_PRODUCTS = [
-    {id:'d1',title:'Royal Canin Adult Dog Food',brand:'Royal Canin',category:'food',price:1299,compare_price:1599,image_urls:['https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80'],stars:5},
-    {id:'d2',title:'Pedigree Puppy Chicken & Milk',brand:'Pedigree',category:'food',price:849,compare_price:999,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:4},
-    {id:'d3',title:'Whiskas Adult Cat Food Tuna',brand:'Whiskas',category:'food',price:599,compare_price:699,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:4},
-    {id:'d4',title:'Orijen Original Dry Dog Food',brand:'Orijen',category:'food',price:4999,compare_price:5999,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:5},
-    {id:'d5',title:'Purina Pro Plan Adult Chicken',brand:'Purina',category:'food',price:2499,compare_price:2999,image_urls:['https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80'],stars:4},
-    {id:'d6',title:"Hill's Science Diet Adult",brand:"Hill's",category:'food',price:3199,compare_price:3799,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:5},
-    {id:'d7',title:'Drools Focus Adult Dog Food',brand:'Drools',category:'food',price:749,compare_price:899,image_urls:['https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80'],stars:4},
-    {id:'d8',title:'Farmina N&D Grain Free Chicken',brand:'Farmina',category:'food',price:3699,compare_price:4299,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:5},
-    {id:'d9',title:'Acana Heritage Meats Dog Food',brand:'Acana',category:'food',price:4499,compare_price:5199,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:5},
-    {id:'d10',title:'Adjustable Pet Collar — Nylon',brand:'PawBook',category:'accessories',price:299,compare_price:499,image_urls:['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&q=80'],stars:4},
-    {id:'d11',title:'Retractable Dog Leash 5m',brand:'PawBook',category:'accessories',price:699,compare_price:999,image_urls:['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80'],stars:4},
-    {id:'d12',title:'Orthopedic Pet Bed — Large',brand:'ComfyPaws',category:'accessories',price:1499,compare_price:1999,image_urls:['https://images.unsplash.com/photo-1601758003122-53c40e686a19?w=300&q=80'],stars:5},
-    {id:'d13',title:'Stainless Steel Dog Bowls Set',brand:'PawBook',category:'accessories',price:449,compare_price:599,image_urls:['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80'],stars:4},
-    {id:'d14',title:'Cat Scratcher Post Tower',brand:'FelineFun',category:'accessories',price:1199,compare_price:1599,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:4},
-    {id:'d15',title:'Automatic Pet Water Fountain',brand:'AquaPet',category:'accessories',price:1899,compare_price:2499,image_urls:['https://images.unsplash.com/photo-1601758003122-53c40e686a19?w=300&q=80'],stars:5},
-    {id:'d16',title:'Interactive Feather Wand Cat Toy',brand:'KittyPlay',category:'accessories',price:249,compare_price:399,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:4},
-    {id:'d17',title:'Dog Puzzle Treat Dispenser',brand:'SmartPaws',category:'accessories',price:799,compare_price:1099,image_urls:['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&q=80'],stars:5},
-    {id:'d18',title:'Pet Travel Carrier Bag',brand:'TravelPet',category:'accessories',price:1699,compare_price:2299,image_urls:['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80'],stars:4},
-    {id:'d19',title:'Professional Pet Grooming Kit',brand:'GroomPro',category:'grooming',price:1299,compare_price:1799,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:5},
-    {id:'d20',title:'Medicated Anti-Tick Dog Shampoo',brand:'PetShield',category:'grooming',price:449,compare_price:599,image_urls:['https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80'],stars:4},
-    {id:'d21',title:'Cat Grooming Deshedding Brush',brand:'GroomPro',category:'grooming',price:699,compare_price:899,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:5},
-    {id:'d22',title:'Dog Nail Clipper with Safety Guard',brand:'SafeClip',category:'grooming',price:349,compare_price:499,image_urls:['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&q=80'],stars:4},
-    {id:'d23',title:'Pet Cologne & Deodorizer Spray',brand:'FreshPet',category:'grooming',price:299,compare_price:399,image_urls:['https://images.unsplash.com/photo-1601758003122-53c40e686a19?w=300&q=80'],stars:4},
-    {id:'d24',title:'Flea & Tick Prevention Collar',brand:'PetShield',category:'grooming',price:899,compare_price:1199,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:5},
-    {id:'d25',title:'Dental Chews for Dogs — 30pcs',brand:'DentaPaw',category:'pet-products',price:599,compare_price:799,image_urls:['https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80'],stars:4},
-    {id:'d26',title:'Multivitamin Supplement for Dogs',brand:'VitaPet',category:'pet-products',price:849,compare_price:1099,image_urls:['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80'],stars:5},
-    {id:'d27',title:'Omega-3 Fish Oil Capsules for Pets',brand:'VitaPet',category:'pet-products',price:699,compare_price:899,image_urls:['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&q=80'],stars:4},
-    {id:'d28',title:'Joint Care Chewable Tablets',brand:'VitaPet',category:'pet-products',price:999,compare_price:1299,image_urls:['https://images.unsplash.com/photo-1601758003122-53c40e686a19?w=300&q=80'],stars:5},
-    {id:'d29',title:'Pet First Aid Kit — Complete',brand:'SafePet',category:'pet-products',price:1199,compare_price:1599,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:5},
-    {id:'d30',title:'Calming Drops for Anxious Pets',brand:'CalmPet',category:'pet-products',price:799,compare_price:999,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:4},
-    {id:'d31',title:'General Health Check-up',brand:'VetCare',category:'vet-services',price:499,compare_price:799,image_urls:['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80'],stars:5},
-    {id:'d32',title:'Vaccination Package — Annual',brand:'VetCare',category:'vet-services',price:1299,compare_price:1799,image_urls:['https://images.unsplash.com/photo-1601758003122-53c40e686a19?w=300&q=80'],stars:5},
-    {id:'d33',title:'Online Vet Consultation — 30 min',brand:'VetConnect',category:'vet-services',price:299,compare_price:499,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:4},
-    {id:'d34',title:'Dental Cleaning & Polishing',brand:'VetCare',category:'vet-services',price:1999,compare_price:2999,image_urls:['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&q=80'],stars:5},
-    {id:'d35',title:'Spay / Neuter Surgery',brand:'VetCare',category:'vet-services',price:3499,compare_price:4999,image_urls:['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80'],stars:5},
-    {id:'d36',title:'X-Ray & Diagnostic Scan',brand:'VetCare',category:'vet-services',price:1499,compare_price:2199,image_urls:['https://images.unsplash.com/photo-1601758003122-53c40e686a19?w=300&q=80'],stars:4},
-    {id:'d37',title:'Royal Canin Kitten Food 2kg',brand:'Royal Canin',category:'food',price:999,compare_price:1299,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:5},
-    {id:'d38',title:'Pedigree Adult Beef & Veg 3kg',brand:'Pedigree',category:'food',price:699,compare_price:899,image_urls:['https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80'],stars:4},
-    {id:'d39',title:'GPS Pet Tracker — Waterproof',brand:'TrackPaw',category:'accessories',price:2499,compare_price:3499,image_urls:['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&q=80'],stars:5},
-    {id:'d40',title:'Automatic Dog Feeder 6L',brand:'AutoFeed',category:'accessories',price:2999,compare_price:3999,image_urls:['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80'],stars:4},
-    {id:'d41',title:'Dog Rain Jacket — Medium',brand:'PawWear',category:'accessories',price:899,compare_price:1299,image_urls:['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&q=80'],stars:4},
-    {id:'d42',title:'Cat Litter Box — Self-Cleaning',brand:'CleanPaws',category:'accessories',price:3999,compare_price:5499,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:5},
-    {id:'d43',title:'Probiotic Supplement for Cats',brand:'VitaPet',category:'pet-products',price:749,compare_price:999,image_urls:['https://images.unsplash.com/photo-1601758003122-53c40e686a19?w=300&q=80'],stars:4},
-    {id:'d44',title:'Dog Harness — No-Pull Design',brand:'PawBook',category:'accessories',price:799,compare_price:1199,image_urls:['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&q=80'],stars:5},
-    {id:'d45',title:'Medicated Ear Cleaning Solution',brand:'PetShield',category:'grooming',price:349,compare_price:499,image_urls:['https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80'],stars:4},
-    {id:'d46',title:'Whiskas Temptations Cat Treats',brand:'Whiskas',category:'food',price:199,compare_price:249,image_urls:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'],stars:5},
-    {id:'d47',title:'Pet Camera with 2-Way Audio',brand:'WatchPet',category:'pet-products',price:3499,compare_price:4999,image_urls:['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&q=80'],stars:4},
-    {id:'d48',title:'Blood Test & Full Panel Check',brand:'VetCare',category:'vet-services',price:899,compare_price:1299,image_urls:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80'],stars:4}
-  ];
-
-  function _renderProducts(products, grid) {
-    grid.innerHTML = products.map(p => {
-      const price = p.price || p.price_inr || 0;
-      const compare = p.compare_price || p.compare_price_inr || 0;
-      const discount = compare && price ? Math.round((1 - price / compare) * 100) : 0;
-      const img = (p.image_urls?.[0]) || 'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80';
-      const pid = p.id || p.product_id || '';
-      const isSvc = (p.category||'') === 'vet-services';
-      const stars = '★'.repeat(p.stars||4) + '☆'.repeat(5-(p.stars||4));
-      return `
-        <div class="prod-card" data-category="${p.category||''}">
-          <div class="prod-img">
-            <img src="${img}" alt="${p.title||p.name||''}" loading="lazy"
-              onerror="this.src='https://placehold.co/300x160?text=PawBook'">
-            ${discount>0 ? `<div class="prod-badge badge-red">-${discount}%</div>` : ''}
-          </div>
-          <div class="prod-body">
-            ${p.brand ? `<div style="font-size:10px;color:#1a56db;font-weight:700;text-transform:uppercase;margin-bottom:2px">${p.brand}</div>` : ''}
-            <div class="prod-name">${p.title||p.name||''}</div>
-            <div class="prod-stars">${stars}</div>
-            <div class="prod-price">₹${Number(price).toLocaleString('en-IN')}
-              ${compare ? `<span style="font-size:11px;color:#94a3b8;font-weight:400;text-decoration:line-through;margin-left:4px">₹${Number(compare).toLocaleString('en-IN')}</span>` : ''}
-            </div>
-            ${isSvc
-              ? `<button class="book-now-btn" onclick="location.href='11_vet_booking.html'">Book Now</button>`
-              : `<button class="add-cart-btn" onclick="pbAddToCart('${pid}',this)">🛒 Add to Cart</button>`
-            }
-          </div>
-        </div>`;
-    }).join('');
-  }
-
   async function loadProducts(params = {}) {
-    const grid = document.getElementById('products-grid');
-    if (!grid) return;
+    let grid = document.getElementById('pb-products-grid');
+    if (!grid) {
+      // Create a new section below existing static content
+      grid = document.createElement('div');
+      grid.id = 'pb-products-grid';
+      grid.style.cssText = 'padding:0 14px 16px';
+      // Insert after the second prod-grid
+      const grids = document.querySelectorAll('.prod-grid, .prod-grid-wide');
+      const lastGrid = grids[grids.length - 1];
+      if (lastGrid) lastGrid.after(grid);
+      else document.body.appendChild(grid);
+    }
 
-    // 1. Show demo products immediately (no loading delay)
-    var q = (params.q||'').toLowerCase();
-    var cat = params.category||'';
-    var demo = DEMO_PRODUCTS.filter(p => {
-      if(cat && p.category !== cat) return false;
-      if(q && !(p.title.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q))) return false;
-      return true;
-    });
-    _renderProducts(demo, grid);
+    grid.innerHTML = `<div style="font-size:14px;font-weight:800;color:#1e293b;margin-bottom:12px">More Products from Database</div>` +
+      [1,2,3,4,5,6].map(() => `<div style="background:#f0f0f0;border-radius:12px;height:180px;
+        display:inline-block;width:calc(33% - 8px);margin:4px;
+        animation:shimmer 1.5s infinite"></div>`).join('');
 
-    // 2. Try to replace with live API data in background
     try {
-      let products = [];
-      try {
-        var res = await MarketAPI.products({ limit: 48, ...params });
-        products = res?.data || res?.listings || (Array.isArray(res) ? res : []);
-      } catch(e1) {}
-      if (!products.length) {
-        const qp = new URLSearchParams({ limit: 48, ...params }).toString();
-        const r2 = await fetch(API_BASE + '/api/marketplace/listings?' + qp, { headers: authHeaders() });
-        if (r2.ok) {
-          const d2 = await r2.json();
-          products = d2?.listings || d2?.data || (Array.isArray(d2) ? d2 : []);
-        }
-      }
-      if (Array.isArray(products) && products.length) {
-        _renderProducts(products, grid);
-      }
+      const res = await MarketAPI.products({ limit: 12, sort: 'popular', ...params });
+      const products = res?.data || [];
+      if (!products.length) { grid.innerHTML = ''; return; }
+
+      grid.innerHTML = `
+        <div style="font-size:14px;font-weight:800;color:#1e293b;margin-bottom:12px">
+          Live Products (${res.meta?.total || products.length})
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          ${products.map(p => {
+            const discount = p.compare_price_inr
+              ? Math.round((1 - p.price_inr / p.compare_price_inr) * 100) : 0;
+            const img = p.image_urls?.[0] || 'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80';
+            return `
+              <div style="background:#fff;border-radius:12px;overflow:hidden;
+                   box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e4e6eb">
+                <div style="position:relative;height:120px;overflow:hidden">
+                  <img src="${img}" style="width:100%;height:100%;object-fit:cover"
+                    onerror="this.src='https://placehold.co/300x120?text=PawBook'">
+                  ${discount > 0 ? `<div style="position:absolute;top:6px;left:6px;
+                    background:#dc2626;color:#fff;font-size:10px;font-weight:900;
+                    padding:2px 7px;border-radius:20px">-${discount}%</div>` : ''}
+                </div>
+                <div style="padding:10px">
+                  <div style="font-size:10px;color:#1a56db;font-weight:700;text-transform:uppercase">${p.brand || ''}</div>
+                  <div style="font-size:12px;font-weight:700;color:#1e293b;margin:2px 0;
+                    overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${p.name}</div>
+                  <div style="font-size:14px;font-weight:900;color:#1a56db;margin-bottom:8px">
+                    ₹${Number(p.price_inr).toLocaleString('en-IN')}
+                    ${p.compare_price_inr ? `<span style="font-size:11px;color:#94a3b8;
+                      font-weight:400;text-decoration:line-through;margin-left:4px">
+                      ₹${Number(p.compare_price_inr).toLocaleString('en-IN')}</span>` : ''}
+                  </div>
+                  <button onclick="pbAddToCart('${p.product_id}',this)"
+                    style="width:100%;padding:8px;border-radius:8px;background:#1a56db;
+                    color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;
+                    font-family:'Poppins',sans-serif">🛒 Add to Cart</button>
+                </div>
+              </div>`;
+          }).join('')}
+        </div>`;
     } catch (e) {
-      // Demo products already displayed, just log
-      console.log('API unavailable, showing demo products');
+      grid.innerHTML = `<div style="color:#dc2626;padding:12px;font-size:13px">
+        ⚠️ Could not load live products — is the API running at localhost:4000?</div>`;
     }
   }
 
@@ -766,11 +797,11 @@ function authHeaders(){ return {'Content-Type':'application/json','Authorization
 
   // Category tabs wire
   const catMap = {
-    'pet products': 'pet-products',
-    'vet services': 'vet-services',
+    'pet products': 'pet_products',
+    'vet services': 'vet_services',
     'grooming': 'grooming',
     'accessories': 'accessories',
-    'food & nutrition': 'food'
+    'food & nutrition': 'food_nutrition'
   };
   document.querySelectorAll('.ctab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -1624,23 +1655,7 @@ function registerStore() {
   renderMyStore();
 }
 
-async function renderMyStore() {
-  // Try to load from API first
-  try {
-    var res = await fetch(API_BASE+'/api/marketplace/store/me', {headers: authHeaders()});
-    if(res.ok) {
-      var data = await res.json();
-      myStore = data.store || data;
-      localStorage.setItem('pawbook_store', JSON.stringify(myStore));
-      // Also load real listings
-      var lr = await fetch(API_BASE+'/api/marketplace/listings?mine=true', {headers: authHeaders()});
-      if(lr.ok) {
-        var ld = await lr.json();
-        myListings = ld.listings || ld.data || ld || [];
-        localStorage.setItem('pawbook_listings', JSON.stringify(myListings));
-      }
-    }
-  } catch(e) { /* use cached */ }
+function renderMyStore() {
   if(!myStore) {
     document.getElementById('store-unregistered').style.display = 'block';
     document.getElementById('store-dashboard').style.display = 'none';
@@ -1707,7 +1722,7 @@ function previewStoreLogo(input) {
   reader.readAsDataURL(input.files[0]);
 }
 
-async function submitListing() {
+function submitListing() {
   var name = document.getElementById('sell-name').value.trim();
   var price = document.getElementById('sell-price').value;
   var cat = document.getElementById('sell-cat').value;
@@ -1748,21 +1763,6 @@ async function submitListing() {
     status: 'active'
   };
 
-  // Save to real API
-  try {
-    var catVal = cat.includes('Food')||cat.includes('Nutrition') ? 'food' :
-                 cat.includes('Vet') ? 'vet-services' :
-                 cat.includes('Groom') ? 'grooming' :
-                 cat.includes('Accessor') ? 'accessories' : 'pet-products';
-    var apiRes = await fetch(API_BASE+'/api/marketplace/listings', {
-      method:'POST', headers: authHeaders(),
-      body: JSON.stringify({title:name, description:desc, price:price, compare_price:mrp||null, category:catVal, stock:stock||50, brand:brand||null})
-    });
-    if(apiRes.ok) {
-      var apiData = await apiRes.json();
-      listing.id = (apiData.listing||apiData).id || listing.id;
-    }
-  } catch(e) {}
   myListings.unshift(listing);
   localStorage.setItem('pawbook_listings', JSON.stringify(myListings));
 
@@ -1818,29 +1818,7 @@ function filterOrders(status, btn) {
   renderOrders(status);
 }
 
-async function _loadOrdersFromAPI() {
-  try {
-    var res = await fetch(API_BASE+'/api/marketplace/orders/seller', {headers: authHeaders()});
-    if(res.ok) {
-      var data = await res.json();
-      var orders = data.orders || data.data || data || [];
-      if(Array.isArray(orders) && orders.length) {
-        myOrders = orders.map(function(o) {
-          return {
-            id: 'ORD-'+o.id, product: (o.items||[{title:'Order'}])[0]?.title||'Order',
-            buyer: o.shipping_name||'Customer', amount: o.total_amount||0, qty:1,
-            status: o.status||'pending', date: new Date(o.placed_at||Date.now()).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
-            address: [o.shipping_address, o.shipping_city, o.shipping_state].filter(Boolean).join(', '),
-            phone: o.shipping_phone||'', _raw: o
-          };
-        });
-        localStorage.setItem('pawbook_orders', JSON.stringify(myOrders));
-      }
-    }
-  } catch(e) {}
-}
-async function renderOrders(statusFilter) {
-  await _loadOrdersFromAPI();
+function renderOrders(statusFilter) {
   var list = document.getElementById('orders-list');
   var filtered = myOrders.filter(function(o){ return statusFilter==='all'||o.status===statusFilter; });
   list.innerHTML = '';
@@ -1907,16 +1885,7 @@ async function renderOrders(statusFilter) {
 }
 
 
-async function updateOrderStatus(orderId, newStatus) {
-  // orderId is 'ORD-123', extract numeric part
-  var numId = String(orderId).replace(/[^0-9]/g,'');
-  try {
-    var res = await fetch(API_BASE+'/api/marketplace/orders/'+numId+'/status', {
-      method:'PATCH', headers: authHeaders(),
-      body: JSON.stringify({status: newStatus})
-    });
-    if(!res.ok) throw new Error('API error');
-  } catch(e) {}
+function updateOrderStatus(orderId, newStatus) {
   myOrders.forEach(function(o){ if(o.id===orderId) o.status=newStatus; });
   localStorage.setItem('pawbook_orders', JSON.stringify(myOrders));
   mktToast('Order status updated to ' + newStatus,'success');
@@ -1965,28 +1934,7 @@ function generateDemoPurchases() {
   ];
 }
 
-async function renderPurchases() {
-  try {
-    var res = await fetch(API_BASE+'/api/marketplace/orders', {headers: authHeaders()});
-    if(res.ok) {
-      var data = await res.json();
-      var orders = data.orders || data.data || data || [];
-      if(Array.isArray(orders) && orders.length) {
-        myPurchases = orders.map(function(o) {
-          var item = (o.items||[])[0]||{};
-          return {
-            id: 'PUR-'+o.id, product: item.title||'Order',
-            seller: 'PawBook Store', amount: o.total_amount||0, qty:1,
-            status: o.status||'pending',
-            date: new Date(o.placed_at||Date.now()).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
-            img: item.image_url||'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=100&q=80',
-            rating:0, _raw: o
-          };
-        });
-        localStorage.setItem('pawbook_purchases', JSON.stringify(myPurchases));
-      }
-    }
-  } catch(e) {}
+function renderPurchases() {
   var list = document.getElementById('purchases-list');
   list.innerHTML = '';
   if(!myPurchases.length) {
@@ -2633,23 +2581,38 @@ document.addEventListener('DOMContentLoaded',function(){updateCartUI();});
 
 <script>
 function setCatAndSearch(brand) {
-  // Switch to browse tab and search by brand
-  var browseTab = document.querySelector('.mtab');
-  if(browseTab) showMTab('browse', browseTab);
-  // Reset category tabs
-  document.querySelectorAll('.ctab').forEach(function(t){ t.classList.remove('active'); });
-  document.querySelectorAll('.ctab')[0]?.classList.add('active');
-  // Search by brand in product grid
-  if(typeof loadProducts === 'function') {
-    loadProducts({ q: brand });
-    // Also update search bar
-    var sb = document.querySelector('.search-bar input');
-    if(sb) sb.value = brand;
+  // Switch to Food & Nutrition tab
+  var foodTab = null;
+  document.querySelectorAll('.ctab').forEach(function(t) {
+    if(t.textContent.toLowerCase().includes('food') || t.textContent.toLowerCase().includes('nutrition')) {
+      foodTab = t;
+    }
+  });
+  if(foodTab) {
+    setCat(foodTab);
+    // Switch to browse main tab
+    var browseTab = document.querySelector('.mtab');
+    if(browseTab) showMTab('browse', browseTab);
   }
-  // Scroll to products
-  setTimeout(function(){
-    document.getElementById('products-grid')?.scrollIntoView({behavior:'smooth'});
-  }, 200);
+  // After food catalog renders, filter the table
+  setTimeout(function() {
+    var searchBox = document.getElementById('food-search');
+    if(searchBox) {
+      searchBox.value = brand;
+      searchFood(brand);
+    }
+    // Also pre-select the brand in dropdown
+    var brandSel = document.getElementById('food-brand-select');
+    if(brandSel) {
+      Array.from(brandSel.options).forEach(function(opt) {
+        if(opt.textContent.toLowerCase().includes(brand.toLowerCase().split(' ')[0])) {
+          brandSel.value = opt.value;
+          onBrandSelect(opt.value);
+          return;
+        }
+      });
+    }
+  }, 300);
 }
 </script>
 </body>
