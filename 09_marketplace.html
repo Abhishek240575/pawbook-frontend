@@ -720,8 +720,8 @@ function authHeaders(){ return {'Content-Type':'application/json','Authorization
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
           ${products.map(p => {
-            const discount = p.compare_price_inr
-              ? Math.round((1 - p.price_inr / p.compare_price_inr) * 100) : 0;
+            const discount = p.compare_price
+              ? Math.round((1 - p.price / p.compare_price) * 100) : 0;
             const img = p.image_urls?.[0] || 'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?w=300&q=80';
             return `
               <div style="background:#fff;border-radius:12px;overflow:hidden;
@@ -736,14 +736,14 @@ function authHeaders(){ return {'Content-Type':'application/json','Authorization
                 <div style="padding:10px">
                   <div style="font-size:10px;color:#1a56db;font-weight:700;text-transform:uppercase">${p.brand || ''}</div>
                   <div style="font-size:12px;font-weight:700;color:#1e293b;margin:2px 0;
-                    overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${p.name}</div>
+                    overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${p.title || p.name || ''}</div>
                   <div style="font-size:14px;font-weight:900;color:#1a56db;margin-bottom:8px">
-                    ₹${Number(p.price_inr).toLocaleString('en-IN')}
-                    ${p.compare_price_inr ? `<span style="font-size:11px;color:#94a3b8;
+                    ₹${Number(p.price).toLocaleString('en-IN')}
+                    ${p.compare_price ? `<span style="font-size:11px;color:#94a3b8;
                       font-weight:400;text-decoration:line-through;margin-left:4px">
-                      ₹${Number(p.compare_price_inr).toLocaleString('en-IN')}</span>` : ''}
+                      ₹${Number(p.compare_price).toLocaleString('en-IN')}</span>` : ''}
                   </div>
-                  <button onclick="pbAddToCart('${p.product_id}',this)"
+                  <button onclick="pbAddToCart('${p.id || p.product_id}',this)"
                     style="width:100%;padding:8px;border-radius:8px;background:#1a56db;
                     color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;
                     font-family:'Poppins',sans-serif">🛒 Add to Cart</button>
@@ -797,11 +797,11 @@ function authHeaders(){ return {'Content-Type':'application/json','Authorization
 
   // Category tabs wire
   const catMap = {
-    'pet products': 'pet_products',
-    'vet services': 'vet_services',
+    'pet products': 'pet-products',
+    'vet services': 'vet-services',
     'grooming': 'grooming',
     'accessories': 'accessories',
-    'food & nutrition': 'food_nutrition'
+    'food & nutrition': 'food'
   };
   document.querySelectorAll('.ctab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -993,7 +993,7 @@ function submitReview(productId, productName){
   reviews.unshift({name,text,petName,rating:writeReviewRating,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
   localStorage.setItem('pb_reviews_'+productId,JSON.stringify(reviews));
   // Sync to API (fire-and-forget)
-  fetch(API_BASE+'/api/reviews', {method:'POST',headers:authHeaders(),body:JSON.stringify({product_id:productId,rating:writeReviewRating,title:name,body:text})}).catch(function(){});
+  fetch(API_BASE+'/api/marketplace/listings/'+productId+'/reviews', {method:'POST',headers:authHeaders(),body:JSON.stringify({rating:writeReviewRating,body:text})}).catch(function(){});
   document.getElementById('write-review-overlay')?.remove();
   // Update star display on product card
   updateProductStars(productId, reviews);
@@ -1070,7 +1070,7 @@ function submitReview(productId, productName){
   reviews.unshift({name,text,petName,rating:writeReviewRating,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
   localStorage.setItem('pb_reviews_'+productId,JSON.stringify(reviews));
   // Sync to API (fire-and-forget)
-  fetch(API_BASE+'/api/reviews', {method:'POST',headers:authHeaders(),body:JSON.stringify({product_id:productId,rating:writeReviewRating,title:name,body:text})}).catch(function(){});
+  fetch(API_BASE+'/api/marketplace/listings/'+productId+'/reviews', {method:'POST',headers:authHeaders(),body:JSON.stringify({rating:writeReviewRating,body:text})}).catch(function(){});
   document.getElementById('write-review-overlay')?.remove();
   // Update star display on product card
   updateProductStars(productId, reviews);
@@ -1614,7 +1614,7 @@ function showMTab(id, btn) {
   }
 
   if(id === 'mystore') renderMyStore();
-  if(id === 'orders') renderOrders('all');
+  if(id === 'orders') loadSellerOrders();
   if(id === 'purchases') renderPurchases();
 }
 
@@ -1634,13 +1634,35 @@ function registerStore() {
   if(!city){ mktToast('Please enter your city','error'); return; }
   if(!phone){ mktToast('Please enter your phone number','error'); return; }
 
+  var storeData = {
+    name: name,
+    category: cat,
+    description: document.getElementById('reg-store-desc').value,
+    city: city,
+    phone: phone
+  };
+
+  // Try real API first
+  fetch(API_BASE+'/api/marketplace/store', {
+    method:'POST', headers: authHeaders(),
+    body: JSON.stringify(storeData)
+  }).then(function(r){ return r.json(); }).then(function(res){
+    if(res && res.data) {
+      myStore = Object.assign({}, res.data, {
+        since: new Date(res.data.created_at||Date.now()).toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
+        verified: true, sales: 0, revenue: 0, views: 0
+      });
+    }
+  }).catch(function(){
+    // API unavailable — keep local store
+  });
+
   myStore = {
     name: name,
     category: cat,
-    desc: document.getElementById('reg-store-desc').value,
+    desc: storeData.description,
     city: city,
     phone: phone,
-    gst: document.getElementById('reg-gst').value,
     since: new Date().toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
     verified: true,
     sales: 0,
@@ -1656,6 +1678,31 @@ function registerStore() {
 }
 
 function renderMyStore() {
+  // Try loading from API first
+  if(typeof Auth !== 'undefined' && Auth.getToken && Auth.getToken()) {
+    fetch(API_BASE+'/api/marketplace/store/me', { headers: authHeaders() })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if(res && res.data && res.data.id) {
+          myStore = Object.assign({}, res.data, {
+            category: res.data.category || 'pet-products',
+            desc: res.data.description,
+            since: new Date(res.data.created_at).toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
+            verified: true, sales: 0, revenue: 0, views: 0
+          });
+          localStorage.setItem('pawbook_store', JSON.stringify(myStore));
+          myListings = []; // will be loaded separately
+          _renderMyStoreDom();
+        } else {
+          _renderMyStoreDom();
+        }
+      }).catch(function(){ _renderMyStoreDom(); });
+    return;
+  }
+  _renderMyStoreDom();
+}
+
+function _renderMyStoreDom() {
   if(!myStore) {
     document.getElementById('store-unregistered').style.display = 'block';
     document.getElementById('store-dashboard').style.display = 'none';
@@ -1766,6 +1813,24 @@ function submitListing() {
   myListings.unshift(listing);
   localStorage.setItem('pawbook_listings', JSON.stringify(myListings));
 
+  // Sync to API (fire-and-forget)
+  var catApiMap = {
+    '🐾 Pet Products':'pet-products','🍖 Food & Nutrition':'food',
+    '🩺 Vet Services':'vet-services','✂️ Grooming':'grooming',
+    '👟 Accessories':'accessories'
+  };
+  fetch(API_BASE+'/api/marketplace/listings', {
+    method:'POST', headers: authHeaders(),
+    body: JSON.stringify({
+      title: listing.name,
+      description: listing.desc,
+      price: listing.price,
+      compare_price: listing.mrp !== listing.price ? listing.mrp : undefined,
+      category: catApiMap[cat] || 'pet-products',
+      stock_qty: listing.stock
+    })
+  }).catch(function(){});
+
   // Reset form
   ['sell-name','sell-price','sell-mrp','sell-stock','sell-desc','sell-tags'].forEach(function(id){
     document.getElementById(id).value = '';
@@ -1800,6 +1865,34 @@ function deleteListing(i) {
 }
 
 // ── Orders Received ────────────────────────
+function loadSellerOrders() {
+  // Try real API, fall back to demo orders
+  if(!Auth || !Auth.getToken()) { renderOrders('all'); return; }
+  fetch(API_BASE+'/api/marketplace/orders/seller', { headers: authHeaders() })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(res && res.data && Array.isArray(res.data) && res.data.length) {
+        // Map API shape to local shape
+        myOrders = res.data.map(function(o){
+          var firstItem = (o.items||[])[0] || {};
+          return {
+            id: o.id,
+            product: firstItem.listing_title || firstItem.title || 'Order #'+o.id.slice(-6),
+            buyer: o.buyer_name || o.buyer_id || 'Customer',
+            amount: parseFloat(o.total_amount||0),
+            qty: firstItem.quantity || 1,
+            status: o.status,
+            date: new Date(o.placed_at||o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+            address: [o.shipping_address, o.shipping_city].filter(Boolean).join(', ') || 'Not provided',
+            phone: o.shipping_phone || ''
+          };
+        });
+      }
+      renderOrders('all');
+    })
+    .catch(function(){ renderOrders('all'); });
+}
+
 function generateDemoOrders() {
   return [
     {id:'ORD-2024-001',product:'Royal Canin Adult Dog 3kg',buyer:'Priya Sharma',amount:1299,qty:2,status:'pending',date:'22 Sep 2026',address:'Lajpat Nagar, New Delhi',phone:'+91 9876543210'},
@@ -1886,6 +1979,12 @@ function renderOrders(statusFilter) {
 
 
 function updateOrderStatus(orderId, newStatus) {
+  // Try real API
+  fetch(API_BASE+'/api/marketplace/orders/'+orderId+'/status', {
+    method:'PATCH', headers: authHeaders(),
+    body: JSON.stringify({status: newStatus})
+  }).catch(function(){});
+  // Update local state
   myOrders.forEach(function(o){ if(o.id===orderId) o.status=newStatus; });
   localStorage.setItem('pawbook_orders', JSON.stringify(myOrders));
   mktToast('Order status updated to ' + newStatus,'success');
