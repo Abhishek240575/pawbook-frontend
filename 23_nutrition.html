@@ -307,10 +307,9 @@ html, body { overflow-x: hidden !important; }
 <script src="api.js"></script>
 <script>function goTo(page){ window.location.href = page; }</script>
 <script>
-var API_BASE = 'https://pawbook-api-cquc.onrender.com';
 function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
 (function(){
-  fetch(API_BASE+'/api/v1/nutrition/plans',{headers:authHeaders()})
+  fetch(API_BASE+'/nutrition/plans',{headers:authHeaders()})
     .then(function(r){return r.json();})
     .then(function(d){if(d&&d.data)localStorage.setItem('pb_nutrition_plans',JSON.stringify(d.data));})
     .catch(function(){});
