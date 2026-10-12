@@ -202,49 +202,21 @@ html, body { overflow-x: hidden !important; }
 <div class="nutr-page">
   <main>
     <!-- Daily Meal Plan -->
-    <div class="card" style="margin-bottom:14px">
+    <div class="card" style="margin-bottom:14px" id="meal-plan-card">
       <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:16px;font-weight:800">🍽 Bruno's Daily Meal Plan</div>
-        <div style="font-size:13px;color:var(--muted)">Beagle · 3 yrs · 12kg</div>
+        <div style="font-size:16px;font-weight:800" id="plan-title">🍽 Loading plan…</div>
+        <div style="font-size:13px;color:var(--muted)" id="plan-meta"></div>
       </div>
-      <div class="card-body">
-        <div class="meal-slot">
-          <div class="meal-time">🌅 Morning (7:00 AM)</div>
-          <div class="meal-item"><div class="meal-dot"></div> Royal Canin Adult — 80g</div>
-          <div class="meal-item"><div class="meal-dot"></div> Boiled egg (1 whole)</div>
-          <div class="meal-item"><div class="meal-dot"></div> Fresh water — unlimited</div>
-        </div>
-        <div class="meal-slot">
-          <div class="meal-time">☀️ Afternoon (1:00 PM)</div>
-          <div class="meal-item"><div class="meal-dot"></div> Cooked chicken — 50g</div>
-          <div class="meal-item"><div class="meal-dot"></div> Brown rice — 30g</div>
-          <div class="meal-item"><div class="meal-dot"></div> Steamed carrots — 20g</div>
-        </div>
-        <div class="meal-slot" style="margin-bottom:0">
-          <div class="meal-time">🌙 Evening (7:00 PM)</div>
-          <div class="meal-item"><div class="meal-dot"></div> Royal Canin Adult — 80g</div>
-          <div class="meal-item"><div class="meal-dot"></div> Dog probiotic supplement</div>
-        </div>
+      <div class="card-body" id="meal-slots-container">
+        <div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>
       </div>
     </div>
 
     <!-- Recommended Foods -->
     <div class="card" style="margin-bottom:14px">
       <div style="padding:14px 16px;border-bottom:1px solid var(--border)"><div style="font-size:16px;font-weight:800">✅ Recommended Foods</div></div>
-      <div class="food-item">
-        <div class="food-img"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=100&q=80"></div>
-        <div style="flex:1"><div class="food-name">Royal Canin Medium Adult</div><div class="food-cal">320 kcal/100g · High Protein</div><div class="food-bar"><div class="food-bar-fill" style="width:85%"></div></div></div>
-        <div style="font-size:13px;font-weight:700;color:#059669">★ 4.9</div>
-      </div>
-      <div class="food-item">
-        <div class="food-img"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=100&q=80"></div>
-        <div style="flex:1"><div class="food-name">Boiled Chicken Breast</div><div class="food-cal">165 kcal/100g · Lean Protein</div><div class="food-bar"><div class="food-bar-fill" style="width:92%"></div></div></div>
-        <div style="font-size:13px;font-weight:700;color:#059669">★ 5.0</div>
-      </div>
-      <div class="food-item" style="border-bottom:none">
-        <div class="food-img"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=100&q=80"></div>
-        <div style="flex:1"><div class="food-name">Pedigree Adult Dry Food</div><div class="food-cal">295 kcal/100g · Balanced</div><div class="food-bar"><div class="food-bar-fill" style="width:75%"></div></div></div>
-        <div style="font-size:13px;font-weight:700;color:#059669">★ 4.7</div>
+      <div id="foods-container">
+        <div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>
       </div>
     </div>
 
@@ -270,19 +242,19 @@ html, body { overflow-x: hidden !important; }
       <div class="card-body">
         <div class="card-title">📊 Daily Macro Targets</div>
         <div style="margin:12px 0">
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Protein</span><span style="color:#059669">68% ✓</span></div>
-          <div class="food-bar"><div class="food-bar-fill" style="width:68%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Protein</span><span style="color:#059669" id="macro-protein-lbl">—</span></div>
+          <div class="food-bar"><div class="food-bar-fill" id="macro-protein-bar" style="width:0%"></div></div>
         </div>
         <div style="margin:12px 0">
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Fat</span><span style="color:#d97706">45%</span></div>
-          <div class="food-bar"><div class="food-bar-fill" style="width:45%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Fat</span><span style="color:#d97706" id="macro-fat-lbl">—</span></div>
+          <div class="food-bar"><div class="food-bar-fill" id="macro-fat-bar" style="width:0%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
         </div>
         <div style="margin:12px 0">
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Carbs</span><span style="color:var(--blue)">52%</span></div>
-          <div class="food-bar"><div class="food-bar-fill" style="width:52%;background:linear-gradient(90deg,var(--blue),#60a5fa)"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Carbs</span><span style="color:var(--blue)" id="macro-carbs-lbl">—</span></div>
+          <div class="food-bar"><div class="food-bar-fill" id="macro-carbs-bar" style="width:0%;background:linear-gradient(90deg,var(--blue),#60a5fa)"></div></div>
         </div>
         <div style="background:#e7f3ff;border-radius:8px;padding:10px;margin-top:10px;text-align:center">
-          <div style="font-size:24px;font-weight:900;color:var(--blue)">780</div>
+          <div style="font-size:24px;font-weight:900;color:var(--blue)" id="macro-kcal">—</div>
           <div style="font-size:12px;color:var(--muted)">kcal / day target</div>
         </div>
       </div>
@@ -308,14 +280,66 @@ html, body { overflow-x: hidden !important; }
 <script>function goTo(page){ window.location.href = page; }</script>
 <script>
 function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
-(function(){
-  fetch(API_BASE+'/nutrition/plans',{headers:authHeaders()})
+
+function renderPlan(plan) {
+  if (!plan) return;
+  // Header
+  var petLabel = {dog:'🐕 Dog',cat:'🐈 Cat',rabbit:'🐰 Rabbit',bird:'🐦 Bird'}[plan.pet_type] || plan.pet_type;
+  document.getElementById('plan-title').textContent = '🍽 ' + plan.title;
+  document.getElementById('plan-meta').textContent = petLabel + (plan.breed ? ' · ' + plan.breed : '') + (plan.weight_kg ? ' · ' + plan.weight_kg + 'kg' : '');
+  // Macros
+  if (plan.daily_kcal) document.getElementById('macro-kcal').textContent = plan.daily_kcal;
+  if (plan.protein_pct) { document.getElementById('macro-protein-lbl').textContent = plan.protein_pct + '%'; document.getElementById('macro-protein-bar').style.width = plan.protein_pct + '%'; }
+  if (plan.fat_pct)     { document.getElementById('macro-fat-lbl').textContent = plan.fat_pct + '%';     document.getElementById('macro-fat-bar').style.width = plan.fat_pct + '%'; }
+  if (plan.carbs_pct)   { document.getElementById('macro-carbs-lbl').textContent = plan.carbs_pct + '%'; document.getElementById('macro-carbs-bar').style.width = plan.carbs_pct + '%'; }
+  // Meals
+  var container = document.getElementById('meal-slots-container');
+  if (plan.meals && plan.meals.length) {
+    container.innerHTML = plan.meals.map(function(m, i) {
+      var items = (m.items || []).map(function(it) {
+        return '<div class="meal-item"><div class="meal-dot"></div> ' + it.name + (it.quantity_g ? ' — ' + it.quantity_g + (it.unit || 'g') : (it.unit ? ' — ' + it.unit : '')) + '</div>';
+      }).join('');
+      return '<div class="meal-slot"' + (i === plan.meals.length-1 ? ' style="margin-bottom:0"' : '') + '>' +
+        '<div class="meal-time">' + (m.time_label || m.meal_time) + '</div>' + items + '</div>';
+    }).join('');
+  } else {
+    container.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:13px">No meal schedule available for this plan.</div>';
+  }
+}
+
+function loadFoods(petType) {
+  fetch(API_BASE + '/nutrition/foods?pet_type=' + petType + '&is_recommended=true&limit=3')
     .then(function(r){return r.json();})
-    .then(function(d){if(d&&d.data)localStorage.setItem('pb_nutrition_plans',JSON.stringify(d.data));})
+    .then(function(d){
+      if (!d || !d.data || !d.data.length) return;
+      var html = d.data.map(function(f, i) {
+        var bar = Math.round((f.rating / 5) * 100);
+        return '<div class="food-item"' + (i===d.data.length-1?' style="border-bottom:none"':'') + '>' +
+          (f.image_url ? '<div class="food-img"><img src="' + f.image_url + '"></div>' : '') +
+          '<div style="flex:1"><div class="food-name">' + f.name + '</div>' +
+          '<div class="food-cal">' + (f.kcal_per_100g||'?') + ' kcal/100g</div>' +
+          '<div class="food-bar"><div class="food-bar-fill" style="width:' + bar + '%"></div></div></div>' +
+          '<div style="font-size:13px;font-weight:700;color:#059669">★ ' + f.rating + '</div></div>';
+      }).join('');
+      document.getElementById('foods-container').innerHTML = html;
+    }).catch(function(){});
+}
+
+function loadPlansForType(petType) {
+  fetch(API_BASE + '/nutrition/plans?pet_type=' + petType)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if (d && d.data && d.data.length) {
+        // Load full plan with meals
+        return fetch(API_BASE + '/nutrition/plans/' + d.data[0].id);
+      }
+    })
+    .then(function(r){ if(r) return r.json(); })
+    .then(function(d){ if(d && d.data) renderPlan(d.data); })
     .catch(function(){});
-})();
+}
+
 function filterPet(type, btn) {
-  // visual highlight
   btn.closest('div').querySelectorAll('button').forEach(function(b) {
     b.style.background = 'rgba(255,255,255,0.2)';
     b.style.color = '#fff';
@@ -324,21 +348,15 @@ function filterPet(type, btn) {
   btn.style.background = '#fff';
   btn.style.color = '#059669';
   btn.style.border = 'none';
-
-  // fetch filtered plans from API
-  fetch(API_BASE + '/nutrition/plans?pet_type=' + type)
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d && d.data) {
-        localStorage.setItem('pb_nutrition_plans', JSON.stringify(d.data));
-        var label = {dog:'Dogs', cat:'Cats', rabbit:'Rabbits'}[type] || type;
-        toast('Showing ' + d.data.length + ' ' + label + ' plans', 'success');
-      }
-    })
-    .catch(function() {
-      toast('Showing ' + type + ' nutrition plans', 'info');
-    });
+  loadPlansForType(type);
+  loadFoods(type);
+  var label = {dog:'Dogs', cat:'Cats', rabbit:'Rabbits'}[type] || type;
+  toast('Showing ' + label + ' nutrition plan', 'success');
 }
+
+// Initial load — dogs selected by default
+loadPlansForType('dog');
+loadFoods('dog');
 </script>
 
 <!-- BOTTOM NAV (mobile) -->
