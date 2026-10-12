@@ -192,9 +192,9 @@ html, body { overflow-x: hidden !important; }
     <h1>Nutrition Planner</h1>
     <p style="color:rgba(255,255,255,0.85)">Personalised diet plans crafted by veterinary nutritionists</p>
     <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
-      <button class="btn" style="background:#fff;color:#059669;padding:10px 20px;font-weight:700" onclick="filterPet(\'dogs\',this)">🐕 Dogs</button>
-      <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterPet(\'cats\',this)">🐈 Cats</button>
-      <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterPet(\'rabbits\',this)">🐰 Rabbits</button>
+      <button class="btn" style="background:#fff;color:#059669;padding:10px 20px;font-weight:700" onclick="filterPet('dog',this)">🐕 Dogs</button>
+      <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterPet('cat',this)">🐈 Cats</button>
+      <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterPet('rabbit',this)">🐰 Rabbits</button>
     </div>
   </div>
 </div>
@@ -315,10 +315,30 @@ function authHeaders(){return {'Content-Type':'application/json','Authorization'
     .then(function(d){if(d&&d.data)localStorage.setItem('pb_nutrition_plans',JSON.stringify(d.data));})
     .catch(function(){});
 })();
-function filterPet(type,btn){
-  btn.closest('div').querySelectorAll('button').forEach(b=>{ b.style.background='rgba(255,255,255,0.2)'; b.style.color='#fff'; });
-  btn.style.background='#fff'; btn.style.color='#059669';
-  toast('Showing ' + type + ' nutrition plans','info');
+function filterPet(type, btn) {
+  // visual highlight
+  btn.closest('div').querySelectorAll('button').forEach(function(b) {
+    b.style.background = 'rgba(255,255,255,0.2)';
+    b.style.color = '#fff';
+    b.style.border = '1.5px solid rgba(255,255,255,0.5)';
+  });
+  btn.style.background = '#fff';
+  btn.style.color = '#059669';
+  btn.style.border = 'none';
+
+  // fetch filtered plans from API
+  fetch(API_BASE + '/api/v1/nutrition/plans?pet_type=' + type)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d.data) {
+        localStorage.setItem('pb_nutrition_plans', JSON.stringify(d.data));
+        var label = {dog:'Dogs', cat:'Cats', rabbit:'Rabbits'}[type] || type;
+        toast('Showing ' + d.data.length + ' ' + label + ' plans', 'success');
+      }
+    })
+    .catch(function() {
+      toast('Showing ' + type + ' nutrition plans', 'info');
+    });
 }
 </script>
 
