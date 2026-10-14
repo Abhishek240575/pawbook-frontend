@@ -385,58 +385,87 @@ function fillUpcoming(rows){
   }).join('');
 }
 
+/* ── default data (always shown first) ── */
+var DEF_WALK = [{day:'Mon',km:3.2},{day:'Tue',km:4.8},{day:'Wed',km:2.1},{day:'Thu',km:5.3},{day:'Fri',km:4.1},{day:'Sat',km:6.0},{day:'Sun',km:5.5}];
+var DEF_ENG  = [{week:'W1',reactions:28},{week:'W2',reactions:45},{week:'W3',reactions:60},{week:'W4',reactions:101}];
+var DEF_RECENT = [
+  {type:'vet',    label:'Vet appointment', detail:'booked for May 20',              ts: new Date(Date.now()-7200000).toISOString()},
+  {type:'walk',   label:'Morning walk',    detail:'5.2 km completed',               ts: new Date(Date.now()-21600000).toISOString()},
+  {type:'post',   label:'Post',            detail:'received 23 reactions',          ts: new Date(Date.now()-86400000).toISOString()},
+  {type:'vaccination',label:'Vaccination', detail:'record updated',                 ts: new Date(Date.now()-172800000).toISOString()},
+  {type:'walk',   label:'New follower',    detail:'Dr. Priya Sharma',               ts: new Date(Date.now()-259200000).toISOString()},
+];
+var DEF_UPCOMING = [
+  {type:'vaccination', label:'Leptospirosis Booster', due: new Date(Date.now()+604800000).toISOString()},
+  {type:'vet',         label:'Vet Appointment',       due: new Date(Date.now()+864000000).toISOString()},
+];
+
+function showDefaults(){
+  drawBars('activity-chart', DEF_WALK, 'day', 'km', ['#1a4db3','#6366f1','#8b5cf6','#a78bfa','#c4b5fd','#1a4db3','#6366f1']);
+  drawBars('engagement-chart', DEF_ENG, 'week', 'reactions', '#8b5cf6');
+  document.getElementById('walk-avg').textContent = '4.4 km/day';
+  document.getElementById('eng-note').innerHTML = 'Best post: <strong style="color:#8b5cf6">Bruno\'s park walk 🐾</strong>';
+
+  var defs = {s_walk:'4.2 km', s_followers:'248', s_engage:'234', s_vet:'6'};
+  var cols  = {s_walk:'#1a4db3', s_followers:'#10b981', s_engage:'#8b5cf6', s_vet:'#f59e0b'};
+  ['s-walk','s-followers','s-engage','s-vet'].forEach(function(id){
+    var el = document.getElementById(id);
+    el.className = 'stat-val';
+    el.style.cssText = 'color:'+cols[id.replace('-','_')];
+    el.textContent = defs[id.replace('-','_')];
+  });
+  document.getElementById('s-walk-tr').innerHTML    = '<i class="ti ti-trending-up" style="font-size:14px"></i> +0.5 km vs last month';
+  document.getElementById('s-foll-tr').innerHTML    = '<i class="ti ti-trending-up" style="font-size:14px"></i> +12 this month';
+  document.getElementById('s-eng-tr').innerHTML     = '<i class="ti ti-trending-up" style="font-size:14px"></i> +32% this month';
+  document.getElementById('s-vet-tr').innerHTML     = '<i class="ti ti-check" style="font-size:14px"></i> On track for annual target';
+  document.getElementById('soc-followers').textContent = '248';
+  document.getElementById('soc-posts').textContent     = '19';
+  document.getElementById('soc-react').textContent     = '1.2K';
+  document.getElementById('soc-train').textContent     = '5 sessions';
+  document.getElementById('soc-train-bar').style.width = '50%';
+  fillRecent(DEF_RECENT);
+  fillUpcoming(DEF_UPCOMING);
+}
+
 /* ── main load ── */
 function loadAnalytics(){
-  var token = localStorage.getItem('pb_token');
-  if(!token){
-    // not logged in — show defaults already in HTML
-    drawBars('activity-chart',
-      [{day:'Mon',km:3.2},{day:'Tue',km:4.8},{day:'Wed',km:2.1},{day:'Thu',km:5.3},{day:'Fri',km:4.1},{day:'Sat',km:6.0},{day:'Sun',km:5.5}],
-      'day','km',['#1a4db3','#6366f1','#8b5cf6','#a78bfa','#c4b5fd','#1a4db3','#6366f1']);
-    drawBars('engagement-chart',
-      [{week:'W1',reactions:28},{week:'W2',reactions:45},{week:'W3',reactions:60},{week:'W4',reactions:101}],
-      'week','reactions','#8b5cf6');
-    document.getElementById('walk-avg').textContent='4.4 km/day';
-    document.getElementById('eng-note').innerHTML='Sign in to see your real data';
-    fillRecent([]);fillUpcoming([]);
-    ['s-walk','s-followers','s-engage','s-vet'].forEach(function(id){
-      var el=document.getElementById(id);
-      el.className='stat-val';
-      el.textContent=id==='s-walk'?'4.2 km':id==='s-followers'?'248':id==='s-engage'?'234':'6';
-      el.style.cssText='color:'+(id==='s-walk'?'#1a4db3':id==='s-followers'?'#10b981':id==='s-engage'?'#8b5cf6':'#f59e0b');
-    });
-    document.getElementById('soc-followers').textContent='248';
-    document.getElementById('soc-posts').textContent='19';
-    document.getElementById('soc-react').textContent='1.2K';
-    return;
-  }
+  // Always render defaults immediately
+  showDefaults();
 
-  fetch(API_BASE+'/analytics/summary',{headers:authHeaders()})
+  // Then try to overlay real data if logged in
+  var token = localStorage.getItem('pb_token');
+  if(!token) return;
+
+  fetch(API_BASE+'/analytics/summary', {headers:authHeaders()})
     .then(function(r){return r.json();})
     .then(function(resp){
-      if(!resp.success||!resp.data) return;
+      if(!resp.success || !resp.data) return;
       var d = resp.data;
-      fillStats(d);
 
-      var walkRows = d.walk_chart&&d.walk_chart.length ? d.walk_chart :
-        [{day:'Mon',km:0},{day:'Tue',km:0},{day:'Wed',km:0},{day:'Thu',km:0},{day:'Fri',km:0},{day:'Sat',km:0},{day:'Sun',km:0}];
-      drawBars('activity-chart', walkRows, 'day', 'km',
-        ['#1a4db3','#6366f1','#8b5cf6','#a78bfa','#c4b5fd','#1a4db3','#6366f1']);
+      // Stats — only overwrite if API has real values
+      if(d.stats){
+        fillStats(d);
+      }
 
-      var total = walkRows.reduce(function(a,r){return a+parseFloat(r.km||0);},0);
-      document.getElementById('walk-avg').textContent = (total/walkRows.length).toFixed(1)+' km/day';
+      // Walk chart
+      if(d.walk_chart && d.walk_chart.length){
+        drawBars('activity-chart', d.walk_chart, 'day', 'km',
+          ['#1a4db3','#6366f1','#8b5cf6','#a78bfa','#c4b5fd','#1a4db3','#6366f1']);
+        var total = d.walk_chart.reduce(function(a,r){return a+parseFloat(r.km||0);},0);
+        document.getElementById('walk-avg').textContent = (total/d.walk_chart.length).toFixed(1)+' km/day';
+      }
 
-      var engRows = d.engagement_chart&&d.engagement_chart.length ? d.engagement_chart :
-        [{week:'W1',reactions:0},{week:'W2',reactions:0},{week:'W3',reactions:0},{week:'W4',reactions:0}];
-      drawBars('engagement-chart', engRows, 'week', 'reactions', '#8b5cf6');
-      document.getElementById('eng-note').innerHTML = 'Posts: <strong style="color:#8b5cf6">'+(d.stats.posts||0)+'</strong>';
+      // Engagement chart
+      if(d.engagement_chart && d.engagement_chart.length){
+        drawBars('engagement-chart', d.engagement_chart, 'week', 'reactions', '#8b5cf6');
+        document.getElementById('eng-note').innerHTML = 'Posts: <strong style="color:#8b5cf6">'+(d.stats.posts||0)+'</strong>';
+      }
 
-      fillRecent(d.recent);
-      fillUpcoming(d.upcoming);
+      // Recent & upcoming — only overwrite if API returned rows
+      if(d.recent  && d.recent.length)   fillRecent(d.recent);
+      if(d.upcoming && d.upcoming.length) fillUpcoming(d.upcoming);
     })
-    .catch(function(){
-      // API error — defaults already shown
-    });
+    .catch(function(){}); // silently keep defaults on error
 }
 
 loadAnalytics();
