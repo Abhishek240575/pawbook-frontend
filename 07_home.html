@@ -772,78 +772,12 @@ async function submitPost(){
 }
 </script>
 <script>
-function previewPostImg(input) {
-  if(!input.files||!input.files[0]) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById("post-img-el").src = e.target.result;
-    document.getElementById("post-img-preview").style.display = "block";
-  };
-  reader.readAsDataURL(input.files[0]);
-}
-
-function removePostImg() {
-  document.getElementById("post-img-preview").style.display = "none";
-  document.getElementById("post-file").value = "";
-}
-
-function showFeelingPicker() {
-  var fp = document.getElementById("feeling-picker");
-  if(fp) fp.style.display = fp.style.display==="flex" ? "none" : "flex";
-}
-
-function addFeeling(btn, feeling) {
-  var ta = document.getElementById("post-text");
-  if(ta && !ta.value.includes("feeling")) ta.value += " — feeling " + feeling;
-  document.getElementById("feeling-picker").style.display = "none";
-}
-
-function tagVet() {
-  var ta = document.getElementById("post-text");
-  if(ta) ta.value += " @DrPriyaSharma";
-  ta.focus();
-}
-
-function submitPost() {
-  var text = document.getElementById("post-text").value.trim();
-  if(!text) { alert("Write something first!"); return; }
-  var imgEl = document.getElementById("post-img-el");
-  var hasImg = document.getElementById("post-img-preview").style.display !== "none";
-  var newPost = {
-    user:"Abhishek Kumar", handle:"@abhishek", time:"Just now",
-    verified:false, av:"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80",
-    text:text, img: hasImg ? imgEl.src : "",
-    likes:0, comments:0, shares:0
-  };
-  var feed = document.getElementById("feed");
-  if(feed) feed.insertAdjacentHTML("afterbegin", renderPost(newPost));
-  document.getElementById("post-text").value = "";
-  removePostImg();
-  closePostModal();
-}
-</script>
-<script>
 function pbLike(btn) {
   var liked = btn.dataset.liked === "1";
   btn.dataset.liked = liked ? "0" : "1";
   btn.style.color = liked ? "#65676b" : "#1877F2";
   btn.style.fontWeight = liked ? "700" : "800";
   btn.textContent = liked ? "👍 Like" : "👍 Liked";
-}
-
-function openPostModal() {
-  var m = document.getElementById("post-modal");
-  if (m) { m.style.display = "flex"; document.body.style.overflow = "hidden"; }
-  else {
-    // Show inline composer
-    var composer = document.getElementById("post-composer-area");
-    if (composer) composer.style.display = "block";
-  }
-}
-
-function closePostModal() {
-  var m = document.getElementById("post-modal");
-  if (m) { m.style.display = "none"; document.body.style.overflow = ""; }
 }
 </script>
 
