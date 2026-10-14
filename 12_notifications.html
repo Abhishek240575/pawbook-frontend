@@ -176,7 +176,7 @@ function showToast(msg,type){
 </nav>
 
 <script>
-var API_BASE = 'https://pawbook-api-cquc.onrender.com';
+
 function authHeaders(){ return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')}; }
 
 var NOTIFS = [
@@ -280,7 +280,7 @@ function markOneRead(id) {
     n.unread = false;
     // Sync to API if this is a real API notification (numeric id from API)
     if(n.api_id) {
-      fetch(API_BASE+'/api/notifications/'+n.api_id+'/read', {method:'PATCH', headers:authHeaders()}).catch(function(){});
+      fetch(API_BASE+'/notifications/'+n.api_id+'/read', {method:'PATCH', headers:authHeaders()}).catch(function(){});
     }
   }
   var el = document.getElementById('notif-' + id);
@@ -294,7 +294,7 @@ function markOneRead(id) {
 function markAllRead() {
   NOTIFS.forEach(function(n){ n.unread = false; });
   // Sync to API
-  fetch(API_BASE+'/api/notifications/read-all', {method:'PATCH', headers:authHeaders()}).catch(function(){});
+  fetch(API_BASE+'/notifications/read-all', {method:'PATCH', headers:authHeaders()}).catch(function(){});
   renderNotifs();
   showToast('All notifications marked as read', 'success');
 }
@@ -321,7 +321,7 @@ function followBack(id, btn) {
 
 // Init — sync real notifications from API, then render
 (function initNotifications(){
-  fetch(API_BASE+'/api/notifications', {headers:authHeaders()})
+  fetch(API_BASE+'/notifications', {headers:authHeaders()})
     .then(function(r){ return r.ok ? r.json() : null; })
     .catch(function(){ return null; })
     .then(function(data){
