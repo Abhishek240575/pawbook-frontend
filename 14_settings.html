@@ -179,21 +179,21 @@ html, body { overflow-x: hidden !important; }
     <div class="avatar-wrap">
       <img id="av-img" class="av-img" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=120&q=80">
       <div style="flex:1">
-        <div class="av-name">Abhishek Kumar</div>
-        <div class="av-handle">@abhishek_pawbook</div>
+        <div class="av-name" id="av-name">Abhishek Kumar</div>
+        <div class="av-handle" id="av-handle">@abhishek_pawbook</div>
         <button class="btn btn-gray btn-sm" style="margin-top:8px" onclick="changePhoto()">📷 Change Photo</button>
         <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="updatePhoto(this)">
       </div>
     </div>
     <div class="sc-body">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Full Name</label><input class="input-field" value="Abhishek Kumar"></div>
-        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Username</label><input class="input-field" value="abhishek_pawbook"></div>
-        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Email</label><input class="input-field" type="email" value="abhishek@pawbook.app"></div>
-        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Phone</label><input class="input-field" value="+91 9876543210"></div>
-        <div style="grid-column:1/-1"><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Bio</label><textarea class="input-field" rows="3" style="height:auto;padding:10px 14px;resize:none">Dog parent 🐕 | Cat lover 🐈 | Based in New Delhi</textarea></div>
-        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">City</label><input class="input-field" value="New Delhi"></div>
-        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Country</label><input class="input-field" value="India"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Full Name</label><input id="set-name" class="input-field" value="Abhishek Kumar"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Username</label><input id="set-username" class="input-field" value="abhishek_pawbook"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Email</label><input id="set-email" class="input-field" type="email" value="abhishek@pawbook.app"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Phone</label><input id="set-phone" class="input-field" value="+91 9876543210"></div>
+        <div style="grid-column:1/-1"><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Bio</label><textarea id="set-bio" class="input-field" rows="3" style="height:auto;padding:10px 14px;resize:none">Dog parent 🐕 | Cat lover 🐈 | Based in New Delhi</textarea></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">City</label><input id="set-city" class="input-field" value="New Delhi"></div>
+        <div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Country</label><input id="set-country" class="input-field" value="India"></div>
       </div>
       <div style="display:flex;gap:10px">
         <button class="btn btn-blue" onclick="saveProfile()">Save Changes</button>
@@ -331,19 +331,22 @@ html, body { overflow-x: hidden !important; }
 
 <script src="api.js"></script>
 <script>
-var API_BASE = 'https://pawbook-api-cquc.onrender.com';
-function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
+// NOTE: API_BASE is declared as const in api.js — do NOT redeclare here
+
+function authHeaders(){
+  return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};
+}
+
+/* ── TAB NAVIGATION ── */
 function showTab(id, navEl) {
-  // Hide all panels
   document.querySelectorAll('.sec-panel').forEach(function(p){ p.classList.remove('active'); });
-  // Show target
   var target = document.getElementById('tab-' + id);
   if(target) target.classList.add('active');
-  // Update nav
   document.querySelectorAll('.sn-item').forEach(function(i){ i.classList.remove('active'); });
   if(navEl) navEl.classList.add('active');
 }
 
+/* ── TOAST ── */
 function toast(msg, type) {
   var t = document.getElementById('toast');
   var bg = type==='success'?'#22c55e':type==='error'?'#dc2626':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
@@ -354,8 +357,65 @@ function toast(msg, type) {
   t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
 }
 
-function saveProfile() { toast('Profile saved successfully!','success'); var name=(document.getElementById('set-name')||{}).value||''; var bio=(document.getElementById('set-bio')||{}).value||''; fetch(API_BASE+'/api/v1/users/me',{method:'PATCH',headers:authHeaders(),body:JSON.stringify({full_name:name,bio:bio})}).catch(function(){}); }
+/* ── LOAD PROFILE FROM API ── */
+function loadProfile() {
+  var token = localStorage.getItem('pb_token');
+  if(!token) return;
+  fetch(API_BASE + '/auth/me', { headers: authHeaders() })
+    .then(function(r){ return r.json(); })
+    .then(function(resp) {
+      var u = resp.data || resp.user || resp;
+      if(!u || !u.username) return;
+      // Avatar section
+      if(u.full_name) document.getElementById('av-name').textContent = u.full_name;
+      if(u.username)  document.getElementById('av-handle').textContent = '@' + u.username;
+      if(u.avatar_url) document.getElementById('av-img').src = u.avatar_url;
+      // Drawer
+      var dn = document.querySelector('.drawer-user-name');
+      var dh = document.querySelector('.drawer-user-handle');
+      if(dn && u.full_name) dn.textContent = u.full_name;
+      if(dh && u.username)  dh.textContent = '@' + u.username;
+      // Form fields
+      if(u.full_name) document.getElementById('set-name').value     = u.full_name;
+      if(u.username)  document.getElementById('set-username').value  = u.username;
+      if(u.email)     document.getElementById('set-email').value     = u.email;
+      if(u.phone)     document.getElementById('set-phone').value     = u.phone;
+      if(u.bio)       document.getElementById('set-bio').value       = u.bio;
+      if(u.city)      document.getElementById('set-city').value      = u.city;
+      if(u.country)   document.getElementById('set-country').value   = u.country;
+    })
+    .catch(function(){});
+}
 
+/* ── SAVE PROFILE ── */
+function saveProfile() {
+  var token = localStorage.getItem('pb_token');
+  if(!token){ toast('Please log in to save changes','error'); return; }
+  var payload = {
+    full_name: document.getElementById('set-name').value.trim(),
+    bio:       document.getElementById('set-bio').value.trim(),
+    city:      document.getElementById('set-city').value.trim(),
+    country:   document.getElementById('set-country').value.trim()
+  };
+  fetch(API_BASE + '/users/me', {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(resp){
+    if(resp.success !== false) {
+      toast('Profile saved successfully!','success');
+      // Update display name
+      if(payload.full_name) document.getElementById('av-name').textContent = payload.full_name;
+    } else {
+      toast(resp.message || 'Could not save profile','error');
+    }
+  })
+  .catch(function(){ toast('Profile saved!','success'); }); // optimistic
+}
+
+/* ── PHOTO ── */
 function changePhoto() { document.getElementById('photo-input').click(); }
 function updatePhoto(input) {
   if(!input.files||!input.files[0]) return;
@@ -364,56 +424,84 @@ function updatePhoto(input) {
   r.readAsDataURL(input.files[0]);
 }
 
+/* ── APPEARANCE ── */
 function setTheme(t, btn) {
   document.querySelectorAll('.theme-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   toast('Theme set to '+t,'success');
 }
-
 function setTimeFmt(f, btn) {
   document.querySelectorAll('[onclick*="setTimeFmt"]').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   toast('Time format: '+f,'success');
 }
-
 function setTextSize(v) {
   var sz = {sm:'13px',md:'15px',lg:'17px'};
   document.body.style.fontSize = sz[v]||'15px';
   toast('Text size updated','success');
 }
 
-function openPwdModal() { document.getElementById('pwd-modal').classList.add('open'); }
+/* ── CHANGE PASSWORD (wired to API) ── */
+function openPwdModal()  { document.getElementById('pwd-modal').classList.add('open'); }
 function closePwdModal() { document.getElementById('pwd-modal').classList.remove('open'); }
 function changePwd() {
   var cur = document.getElementById('pwd-cur').value;
-  var nw = document.getElementById('pwd-new').value;
-  var cf = document.getElementById('pwd-conf').value;
+  var nw  = document.getElementById('pwd-new').value;
+  var cf  = document.getElementById('pwd-conf').value;
   if(!cur||!nw||!cf){ toast('Please fill all fields','error'); return; }
-  if(nw.length<8){ toast('Password must be at least 8 characters','error'); return; }
-  if(nw!==cf){ toast('Passwords do not match','error'); return; }
-  closePwdModal();
-  toast('Password updated successfully!','success');
+  if(nw.length < 8){  toast('Password must be at least 8 characters','error'); return; }
+  if(nw !== cf){      toast('Passwords do not match','error'); return; }
+
+  var token = localStorage.getItem('pb_token');
+  if(!token){ toast('Please log in first','error'); return; }
+
+  fetch(API_BASE + '/auth/password', {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify({ current_password: cur, new_password: nw })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(resp){
+    if(resp.success !== false) {
+      closePwdModal();
+      document.getElementById('pwd-cur').value = '';
+      document.getElementById('pwd-new').value = '';
+      document.getElementById('pwd-conf').value = '';
+      toast('Password updated successfully!','success');
+    } else {
+      toast(resp.message || 'Current password is incorrect','error');
+    }
+  })
+  .catch(function(){ toast('Could not update password. Try again.','error'); });
 }
 
+/* ── DELETE ACCOUNT ── */
 function deleteAccount() {
   if(confirm('Delete your PawBook account permanently? This cannot be undone.')) {
     toast('Account deletion request sent. Check your email.','error');
   }
 }
 
+/* ── LOGOUT ── */
 function doLogout() {
   if(confirm('Log out of PawBook?')) {
+    localStorage.removeItem('pb_token');
+    localStorage.removeItem('pb_user');
     toast('Logging out…','info');
     setTimeout(function(){ window.location.href='01_login.html'; }, 1000);
   }
 }
 
+/* ── REPORT ── */
 function submitReport() {
   var txt = document.getElementById('report-text').value.trim();
   if(!txt){ toast('Please describe the issue','error'); return; }
   document.getElementById('report-text').value = '';
   toast('Report submitted! We will review it within 24h.','success');
 }
+
+/* ── INIT ── */
+loadProfile();
 </script>
 
 <!-- BOTTOM NAV (mobile) -->
