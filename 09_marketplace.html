@@ -93,6 +93,10 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
 
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Marketplace</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -669,8 +673,6 @@ function injectDemoProducts(cat) {
 </script>
 <script src="api.js"></script>
 <script>
-var API_BASE = 'https://pawbook-api-cquc.onrender.com';
-function authHeaders(){ return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')}; }
 (async function wireMarketplace() {
   // Auth check skipped for demo mode
 
@@ -979,7 +981,7 @@ function submitReview(productId, productName){
   reviews.unshift({name,text,petName,rating:writeReviewRating,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
   localStorage.setItem('pb_reviews_'+productId,JSON.stringify(reviews));
   // Sync to API (fire-and-forget)
-  fetch(API_BASE+'/api/marketplace/listings/'+productId+'/reviews', {method:'POST',headers:authHeaders(),body:JSON.stringify({rating:writeReviewRating,body:text})}).catch(function(){});
+  fetch(API_BASE+'/marketplace/listings/'+productId+'/reviews', {method:'POST',headers:authHeaders(),body:JSON.stringify({rating:writeReviewRating,body:text})}).catch(function(){});
   document.getElementById('write-review-overlay')?.remove();
   // Update star display on product card
   updateProductStars(productId, reviews);
@@ -1056,7 +1058,7 @@ function submitReview(productId, productName){
   reviews.unshift({name,text,petName,rating:writeReviewRating,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
   localStorage.setItem('pb_reviews_'+productId,JSON.stringify(reviews));
   // Sync to API (fire-and-forget)
-  fetch(API_BASE+'/api/marketplace/listings/'+productId+'/reviews', {method:'POST',headers:authHeaders(),body:JSON.stringify({rating:writeReviewRating,body:text})}).catch(function(){});
+  fetch(API_BASE+'/marketplace/listings/'+productId+'/reviews', {method:'POST',headers:authHeaders(),body:JSON.stringify({rating:writeReviewRating,body:text})}).catch(function(){});
   document.getElementById('write-review-overlay')?.remove();
   // Update star display on product card
   updateProductStars(productId, reviews);
@@ -1629,7 +1631,7 @@ function registerStore() {
   };
 
   // Try real API first
-  fetch(API_BASE+'/api/marketplace/store', {
+  fetch(API_BASE+'/marketplace/store', {
     method:'POST', headers: authHeaders(),
     body: JSON.stringify(storeData)
   }).then(function(r){ return r.json(); }).then(function(res){
@@ -1666,7 +1668,7 @@ function registerStore() {
 function renderMyStore() {
   // Try loading from API first
   if(typeof Auth !== 'undefined' && Auth.getToken && Auth.getToken()) {
-    fetch(API_BASE+'/api/marketplace/store/me', { headers: authHeaders() })
+    fetch(API_BASE+'/marketplace/store/me', { headers: authHeaders() })
       .then(function(r){ return r.json(); })
       .then(function(res){
         if(res && res.data && res.data.id) {
@@ -1805,7 +1807,7 @@ function submitListing() {
     '🩺 Vet Services':'vet-services','✂️ Grooming':'grooming',
     '👟 Accessories':'accessories'
   };
-  fetch(API_BASE+'/api/marketplace/listings', {
+  fetch(API_BASE+'/marketplace/listings', {
     method:'POST', headers: authHeaders(),
     body: JSON.stringify({
       title: listing.name,
@@ -1854,7 +1856,7 @@ function deleteListing(i) {
 function loadSellerOrders() {
   // Try real API, fall back to demo orders
   if(!Auth || !Auth.getToken()) { renderOrders('all'); return; }
-  fetch(API_BASE+'/api/marketplace/orders/seller', { headers: authHeaders() })
+  fetch(API_BASE+'/marketplace/orders/seller', { headers: authHeaders() })
     .then(function(r){ return r.json(); })
     .then(function(res){
       if(res && res.data && Array.isArray(res.data) && res.data.length) {
@@ -1966,7 +1968,7 @@ function renderOrders(statusFilter) {
 
 function updateOrderStatus(orderId, newStatus) {
   // Try real API
-  fetch(API_BASE+'/api/marketplace/orders/'+orderId+'/status', {
+  fetch(API_BASE+'/marketplace/orders/'+orderId+'/status', {
     method:'PATCH', headers: authHeaders(),
     body: JSON.stringify({status: newStatus})
   }).catch(function(){});
@@ -2698,6 +2700,15 @@ function setCatAndSearch(brand) {
       });
     }
   }, 300);
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
 }
 </script>
 </body>

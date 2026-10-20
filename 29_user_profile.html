@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — User Profile</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -262,8 +266,6 @@ html, body { overflow-x: hidden !important; }
 
 <script src="api.js"></script>
 <script>
-var API_BASE = 'https://pawbook-api-cquc.onrender.com';
-function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};}
 function goTo(p){location.href=p;}
 let isFollowing = false;
 
@@ -274,7 +276,7 @@ const userId = params.get('user');
 async function loadProfile() {
   if(!userId) return;
   try {
-    const res = await fetch(`http://localhost:4000/api/v1/users/${userId}/profile`,{headers:{Authorization:'Bearer '+Auth.getToken()}});
+    const res = await fetch(API_BASE+'/users/'+userId+'/profile',{headers:authHeaders()});
     const data = await res.json();
     if(data?.data) {
       const u = data.data;
@@ -299,7 +301,7 @@ function fmt(n){
 function toggleFollow() {
   var uid=new URLSearchParams(location.search).get("user")||"";
   var isF=document.querySelector(".follow-btn")&&document.querySelector(".follow-btn").textContent.includes("Following");
-  if(uid){fetch(API_BASE+'/api/v1/users/'+uid+(isF?'/unfollow':'/follow'),{method:'POST',headers:authHeaders()}).catch(function(){});}
+  if(uid){fetch(API_BASE+'/users/'+uid+(isF?'/unfollow':'/follow'),{method:'POST',headers:authHeaders()}).catch(function(){});}
 
   isFollowing = !isFollowing;
   const btn = document.getElementById('follow-btn');
@@ -471,6 +473,15 @@ function closeDrawer() {
   showBurgerOnMobile();
   window.addEventListener('resize', showBurgerOnMobile);
 })();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
 </script>
 </body>
 </html>

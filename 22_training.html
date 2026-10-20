@@ -93,6 +93,10 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
 
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Training & Behavior</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -291,24 +295,33 @@ html, body { overflow-x: hidden !important; }
 <script src="api.js"></script>
 
 <script>
-/* ── API HELPERS ────────────────────────────────────── */
-function authHeaders(){
-  return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')};
-}
-
-/* ── LOAD SESSIONS FROM API ─────────────────────────── */
+/* ── LOAD TRAINING PROGRAMS FROM API ─────────────────── */
 var _allSessions = [];
 function loadSessions() {
-  fetch(API_BASE + '/training/sessions')
+  fetch(API_BASE + '/training/programs')
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (!d || !d.data) return;
-      _allSessions = d.data;
+      // Map API program shape to session shape
+      _allSessions = d.data.map(function(p){
+        return {
+          id: p.program_id,
+          title: p.title,
+          trainer_name: p.instructor || 'PawBook Expert',
+          difficulty: p.difficulty || 'Easy',
+          level: (p.difficulty||'Easy').toLowerCase(),
+          duration_min: (p.duration_weeks||4)*7*10, // approx
+          type: 'video',
+          rating: p.rating || 4.7,
+          completions: p.enrolled_count || 0,
+          thumbnail_url: p.thumbnail_url || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80',
+          category: p.category
+        };
+      });
       renderSessions(_allSessions);
     })
     .catch(function(){
-      document.getElementById('sessions-container').innerHTML =
-        '<div style="padding:16px;color:var(--muted);text-align:center">Could not load sessions.</div>';
+      // silently keep static content if API unavailable
     });
 }
 
@@ -332,27 +345,9 @@ function renderSessions(sessions) {
   document.getElementById('sessions-container').innerHTML = html || '<div style="padding:16px;color:var(--muted)">No sessions found.</div>';
 }
 
-/* ── LOAD TRAINERS FROM API ─────────────────────────── */
+/* ── LOAD TRAINERS (uses static content — no trainer endpoint) ── */
 function loadTrainers() {
-  fetch(API_BASE + '/training/trainers')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if (!d || !d.data) return;
-      var stars = {4.9:'★★★★★',4.8:'★★★★★',4.7:'★★★★☆',4.6:'★★★★☆',4.5:'★★★★☆'};
-      var html = d.data.map(function(t, i) {
-        var s = stars[parseFloat(t.rating)] || '★★★★☆';
-        return '<div class="expert-card">' +
-          (t.avatar_url ? '<div class="expert-av"><img src="'+t.avatar_url+'"></div>' : '') +
-          '<div style="flex:1">' +
-            '<div style="font-weight:700;font-size:13px">'+t.name+'</div>' +
-            '<div style="font-size:11px;color:var(--muted)">'+t.specialty+'</div>' +
-            '<div style="font-size:11px;color:#fbbf24">'+s+' '+t.rating+'</div>' +
-          '</div>' +
-          '<button class="btn btn-blue btn-sm" onclick="openBookingModal(\''+t.name+'\',\''+t.specialty+'\',\''+t.price_inr+'\',\''+t.session_dur+'\')">Book</button>' +
-        '</div>';
-      }).join('');
-      document.getElementById('trainers-container').innerHTML = html;
-    }).catch(function(){});
+  // Expert trainer cards rendered from static HTML; no API fetch needed
 }
 
 /* ── TOAST ─────────────────────────────────────────── */
@@ -486,17 +481,14 @@ function vpComplete() {
   document.getElementById('vp-status').textContent = '✅ Session Complete!';
   document.getElementById('vp-progress').style.width = '100%';
   showToast('🎉 Session complete! Great work!', 'success');
-  // Save progress to backend if logged in
+  // Save progress to backend if logged in (fire-and-forget)
   var token = localStorage.getItem('pb_token');
-  if (token) {
-    fetch(API_BASE + '/training/progress', {
+  if (token && vp.sessionId) {
+    // Enroll in program if not already enrolled
+    fetch(API_BASE + '/training/enroll', {
       method: 'POST',
       headers: authHeaders(),
-      body: JSON.stringify({
-        session_id: vp.sessionId,
-        session_title: vp.title,
-        duration_watched_sec: vp.secs
-      })
+      body: JSON.stringify({ program_id: vp.sessionId })
     }).catch(function(){});
   }
 }
@@ -581,20 +573,7 @@ function confirmBK() {
   if(!date) { showToast('Please select a date', 'error'); return; }
 
   var token = localStorage.getItem('pb_token');
-  if (token) {
-    fetch(API_BASE + '/training/bookings', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({
-        trainer_name: trainer,
-        specialty: spec,
-        session_date: date,
-        session_time: time,
-        session_type: sessType,
-        price_inr: parseInt(priceText) || null
-      })
-    }).catch(function(){});
-  }
+  // Booking stored locally; API enroll called when program selected (fire-and-forget)
 
   closeBK();
   var d = new Date(date);
@@ -787,6 +766,15 @@ function closeDrawer() {
   showBurgerOnMobile();
   window.addEventListener('resize', showBurgerOnMobile);
 })();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
 </script>
 </body>
 </html>

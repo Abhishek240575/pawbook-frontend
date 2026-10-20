@@ -93,6 +93,10 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
 
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Pet Insurance</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -349,17 +353,76 @@ function choosePlan(name, price) {
   document.body.appendChild(overlay);
 }
 
+// Plan name → plan_id map (populated from /insurance/plans API)
+var _insurancePlans = {};
+
 function activatePlan(name, price, btn) {
   const pet = document.getElementById('ins-pet')?.value;
   const owner = document.getElementById('ins-name')?.value?.trim();
   const phone = document.getElementById('ins-phone')?.value?.trim();
   if (!pet || !owner || !phone) { toast('Please fill all fields','error'); return; }
   btn.textContent = 'Activating…'; btn.disabled = true;
-  setTimeout(() => {
+
+  // Find plan_id from loaded plans or fall back to first match by name
+  var plan_id = _insurancePlans[name.toLowerCase()] || null;
+
+  var token = localStorage.getItem('pb_token');
+  var doActivate = function() {
     btn.closest('div[style*="fixed"]').remove();
-    toast(`✅ ${name} plan activated for ${pet}! Policy sent to your email.`);
-  }, 1200);
+    toast('✅ ' + name + ' plan activated for ' + pet + '! Policy sent to your email.');
+  };
+
+  if (token && plan_id) {
+    fetch(API_BASE + '/insurance/subscribe', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ plan_id: plan_id })
+    }).then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res && res.data && res.data.policy_no) {
+          toast('✅ Policy activated! Policy no: ' + res.data.policy_no);
+        } else {
+          doActivate();
+        }
+      })
+      .catch(function(){ doActivate(); });
+  } else {
+    setTimeout(doActivate, 1200);
+  }
 }
+
+// Load real insurance plans from API and overlay on static cards
+(function loadInsurancePlans() {
+  fetch(API_BASE + '/insurance/plans')
+    .then(function(r){ return r.json(); })
+    .then(function(resp) {
+      if (!resp.success || !resp.data) return;
+      resp.data.forEach(function(plan) {
+        _insurancePlans[plan.name.toLowerCase()] = plan.plan_id;
+      });
+    })
+    .catch(function(){});
+
+  // Load user's active subscriptions if logged in
+  var token = localStorage.getItem('pb_token');
+  if (!token) return;
+  fetch(API_BASE + '/insurance/my', { headers: authHeaders() })
+    .then(function(r){ return r.json(); })
+    .then(function(resp) {
+      if (!resp.success || !resp.data || !resp.data.length) return;
+      // Mark active plans visually
+      resp.data.forEach(function(sub) {
+        document.querySelectorAll('.choose-btn').forEach(function(btn) {
+          if (btn.textContent.toLowerCase().includes(sub.name.toLowerCase())) {
+            btn.textContent = '✅ Active — Policy: ' + (sub.policy_no || 'Active');
+            btn.style.background = '#16a34a';
+            btn.disabled = true;
+          }
+        });
+      });
+    })
+    .catch(function(){});
+})();
 
 function addOn(name, price) {
   toast(`➕ ${name} add-on (₹${parseInt(price).toLocaleString('en-IN')}) added to cart!`);
@@ -469,6 +532,15 @@ function closeDrawer() {
   showBurgerOnMobile();
   window.addEventListener('resize', showBurgerOnMobile);
 })();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
 </script>
 </body>
 </html>

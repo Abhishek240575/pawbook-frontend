@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>PawBook – Report Lost Pet</title>
+<!DOCTYPE html><html lang="en"><head>
+<link rel="manifest" href="manifest.json"><meta charset="UTF-8"><title>PawBook – Report Lost Pet</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -443,6 +444,15 @@ function showToast(msg,type){
   var t=document.createElement('div');
   t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
   t.textContent=msg; document.body.appendChild(t); setTimeout(function(){t.remove();},2800);
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
 }
 </script>
 </body></html>
