@@ -265,6 +265,7 @@ html, body { overflow-x: hidden !important; }
 </div>
 
 <script src="api.js"></script>
+<script src="upload.js"></script>
 <script>
 function goTo(p){location.href=p;}
 let isFollowing = false;
@@ -387,6 +388,82 @@ function showToast(msg) {
 loadProfile();
 renderPostsGrid();
 renderReelsGrid();
+
+// ── Avatar & Cover photo upload ─────────────────────────────────
+function initAvatarUpload() {
+  const avatarImg = document.getElementById('profile-av');
+  const avatarInput = document.getElementById('avatarInput');
+  if (!avatarImg || !avatarInput) return;
+
+  avatarInput.accept = 'image/jpeg,image/png,image/gif,image/webp';
+
+  // Click avatar to open file picker
+  avatarImg.style.cursor = 'pointer';
+  avatarImg.title = 'Click to change profile photo';
+  avatarImg.addEventListener('click', () => avatarInput.click());
+
+  avatarInput.addEventListener('change', async () => {
+    const file = avatarInput.files[0];
+    if (!file) return;
+    showToast('Uploading photo…');
+    try {
+      const res = await uploadToCloudinaryDirect(file);
+      const url = res.secure_url;
+      // Optimistic UI
+      avatarImg.src = url;
+      // Persist to backend
+      await fetch(API_BASE + '/users/me', {
+        method: 'PATCH',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profile_picture: url })
+      });
+      showToast('Profile photo updated! 🐾');
+    } catch (e) {
+      showToast('Upload failed: ' + e.message);
+    } finally {
+      avatarInput.value = '';
+    }
+  });
+}
+
+function initCoverUpload() {
+  const coverImg = document.getElementById('cover-img');
+  const coverInput = document.getElementById('coverInput');
+  if (!coverImg || !coverInput) return;
+
+  coverInput.accept = 'image/jpeg,image/png,image/gif,image/webp';
+
+  // Click cover to open file picker
+  coverImg.style.cursor = 'pointer';
+  coverImg.title = 'Click to change cover photo';
+  coverImg.addEventListener('click', () => coverInput.click());
+
+  coverInput.addEventListener('change', async () => {
+    const file = coverInput.files[0];
+    if (!file) return;
+    showToast('Uploading cover…');
+    try {
+      const res = await uploadToCloudinaryDirect(file);
+      const url = res.secure_url;
+      // Optimistic UI
+      coverImg.src = url;
+      // Persist to backend
+      await fetch(API_BASE + '/users/me', {
+        method: 'PATCH',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cover_photo: url })
+      });
+      showToast('Cover photo updated! 📸');
+    } catch (e) {
+      showToast('Upload failed: ' + e.message);
+    } finally {
+      coverInput.value = '';
+    }
+  });
+}
+
+initAvatarUpload();
+initCoverUpload();
 </script>
 
 <!-- BOTTOM NAV (mobile) -->
@@ -483,5 +560,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<input type="file" id="avatarInput" style="display:none">
+<input type="file" id="coverInput" style="display:none">
 </body>
 </html>

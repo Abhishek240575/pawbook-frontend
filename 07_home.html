@@ -403,7 +403,7 @@ html, body { overflow-x: hidden !important; }
         </div>
         <div class="divider" style="margin:0 -14px"></div>
         <div class="composer-actions">
-          <button class="composer-action" onclick="openPostModal()"><i class="ti ti-photo ca-photo"></i> Photo/Video</button>
+          <button class="composer-action" onclick="openPostModal();setTimeout(()=>document.getElementById('postImageInput').click(),150)"><i class="ti ti-photo ca-photo"></i> Photo/Video</button>
           <button class="composer-action" onclick="openPostModal()"><i class="ti ti-mood-smile" style="color:var(--amber)"></i> Feeling</button>
           <button class="composer-action" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope ca-vet"></i> Ask Vet</button>
           <button class="composer-action" onclick="openPostModal()"><i class="ti ti-live-view ca-live"></i> Live</button>
@@ -609,6 +609,8 @@ html, body { overflow-x: hidden !important; }
       </div>
       <div id="post-err" style="background:#fee2e2;color:var(--red);padding:10px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:10px;display:none"></div>
       <textarea id="post-body" style="width:100%;min-height:120px;border:none;font-size:16px;font-family:'Poppins',sans-serif;outline:none;resize:none;color:var(--text)" placeholder="What's on your mind? Share a pet moment 🐾"></textarea>
+      <input type="file" id="postImageInput" accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/quicktime" multiple style="display:none">
+	  <div id="postMediaPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;padding:8px 0"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
         <span onclick="toggleTag(this,'PetLife')" style="background:#f0f2f5;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">#PetLife</span>
         <span onclick="toggleTag(this,'DogMom')" style="background:#f0f2f5;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">#DogMom</span>
@@ -623,6 +625,7 @@ html, body { overflow-x: hidden !important; }
 
 <div class="toast-wrap"></div>
 <script src="api.js"></script>
+<script src="upload.js"></script>
 <script>
 function fmt(n) {
   if(!n) return '0';
@@ -763,14 +766,70 @@ function toggleTag(el,tag){
   if(selTags2.includes(tag)){selTags2=selTags2.filter(t=>t!==tag);el.style.background='#f0f2f5';el.style.color='var(--muted)';}
   else{selTags2.push(tag);el.style.background='var(--blue)';el.style.color='#fff';}
 }
+// ── Media upload state ──────────────────────────────────────────
+let pendingMediaUrls = [];
+
+(function wirePostMedia() {
+  const inp = document.getElementById('postImageInput');
+  if (!inp) return;
+  inp.addEventListener('change', async () => {
+    const preview = document.getElementById('postMediaPreview');
+    const btn = document.getElementById('post-submit');
+    const files = Array.from(inp.files);
+    if (!files.length) return;
+
+    // Show skeleton placeholders
+    preview.style.display = 'grid';
+    files.forEach(() => {
+      const ph = document.createElement('div');
+      ph.style.cssText = 'background:#e2e8f0;border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:22px;animation:pulse 1s infinite';
+      ph.textContent = '⏳';
+      preview.appendChild(ph);
+    });
+
+    btn.disabled = true;
+    try {
+      const uploads = await Promise.all(files.map(f => uploadToCloudinaryDirect(f)));
+      pendingMediaUrls = uploads.map(u => u.secure_url);
+
+      // Replace placeholders with real previews
+      preview.innerHTML = '';
+      pendingMediaUrls.forEach(url => {
+        const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(url);
+        const el = isVideo
+          ? Object.assign(document.createElement('video'), { src: url, muted: true, loop: true, autoplay: true })
+          : Object.assign(document.createElement('img'), { src: url });
+        el.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:2px solid var(--blue-light)';
+        preview.appendChild(el);
+      });
+    } catch (err) {
+      preview.innerHTML = '<span style="color:red;font-size:13px">Upload failed: ' + err.message + '</span>';
+      pendingMediaUrls = [];
+    } finally {
+      btn.disabled = false;
+      inp.value = '';
+    }
+  });
+})();
+
 async function submitPost(){
   const body=document.getElementById('post-body').value.trim();
   const vis=document.getElementById('post-visibility').value;
   const err=document.getElementById('post-err');const btn=document.getElementById('post-submit');
   err.style.display='none';
-  if(!body){err.textContent='Please write something!';err.style.display='block';return;}
+  if(!body && pendingMediaUrls.length === 0){err.textContent='Please write something or add a photo/video!';err.style.display='block';return;}
   setLoading(btn,true);
-  try{await PostAPI.create({body,visibility:vis,hashtags:selTags2,pet_id:myPets[0]?.pet_id||null});closePostModal();document.getElementById('post-body').value='';selTags2=[];toast('Posted! 🐾','success');await loadFeed();}
+  try{
+    await PostAPI.create({body,visibility:vis,hashtags:selTags2,pet_id:myPets[0]?.pet_id||null,media_urls:pendingMediaUrls});
+    closePostModal();
+    document.getElementById('post-body').value='';
+    document.getElementById('postMediaPreview').innerHTML='';
+    document.getElementById('postMediaPreview').style.display='none';
+    pendingMediaUrls=[];
+    selTags2=[];
+    toast('Posted! 🐾','success');
+    await loadFeed();
+  }
   catch(e){err.textContent=e.message;err.style.display='block';}
   finally{setLoading(btn,false,'Post');}
 }
