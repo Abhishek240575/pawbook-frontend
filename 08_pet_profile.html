@@ -1046,6 +1046,7 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 <script src="api.js"></script>
+<script src="upload.js"></script>
 <script>
 // auth soft
 const user=(typeof Auth!=='undefined'&&Auth.getUser)?Auth.getUser():null;
@@ -1585,6 +1586,70 @@ if ('serviceWorker' in navigator) {
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
 }
+// ══════════════════════════════════════════════════════════════════════
+// ADD this JS block inside 06_pet_profile.html (in the <script> section)
+// Handles: pet avatar / photo upload
+// Requires: upload.js loaded before this runs
+// ══════════════════════════════════════════════════════════════════════
+
+function initPetPhotoUpload(petId) {
+  const petImg   = document.getElementById('petAvatar');       // <img id="petAvatar">
+  const petInput = document.getElementById('petPhotoInput');   // hidden <input type="file" id="petPhotoInput">
+
+  if (!petImg || !petInput) return;
+
+  petImg.style.cursor = 'pointer';
+  petImg.title = 'Click to change pet photo';
+  petImg.addEventListener('click', () => petInput.click());
+  petInput.accept = 'image/jpeg,image/png,image/gif,image/webp';
+
+  petInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const err = validateImageFile(file, 5);
+    if (err) { showToast(err, 'error'); return; }
+
+    const prevSrc = petImg.src;
+    petImg.src = URL.createObjectURL(file);
+    petImg.style.opacity = '0.6';
+
+    try {
+      showToast('Uploading pet photo…', 'info');
+      const result = await uploadToCloudinaryDirect(file);
+
+      const res = await fetch(`${API_BASE}/pets/${petId}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ profile_picture: result.url }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        petImg.style.opacity = '1';
+        petImg.title = 'Click to change pet photo';
+        showToast('Pet photo updated! 🐾', 'success');
+      } else {
+        petImg.src = prevSrc;
+        petImg.style.opacity = '1';
+        showToast(data.message || 'Could not save photo.', 'error');
+      }
+    } catch (err) {
+      petImg.src = prevSrc;
+      petImg.style.opacity = '1';
+      showToast('Upload failed. Try again.', 'error');
+      console.error('[pet photo upload]', err);
+    }
+
+    e.target.value = '';
+  });
+}
+
+// Call once you have the petId from the URL or page data, e.g.:
+// const petId = new URLSearchParams(location.search).get('id');
+// initPetPhotoUpload(petId);
+
 </script>
+<input type="file" id="petPhotoInput">
 </body>
 </html>
