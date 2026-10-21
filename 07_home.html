@@ -723,27 +723,33 @@ async function loadProfile(){
     // Composer modal name
     const mn=document.getElementById('modal-name');
     if(mn) mn.textContent=u.full_name||u.username||'';
-    // Stats — fetch counts from dedicated endpoints
-    loadStats(u.user_id||u.id);
+    // Stats — returned directly from /auth/me now
+    document.getElementById('s-friends').textContent=fmt(u.follower_count||0);
+    document.getElementById('s-pets').textContent=fmt(u.pet_count||0);
+    document.getElementById('s-posts').textContent=fmt(u.post_count||0);
   }catch(e){console.warn('loadProfile',e);}
 }
 
 async function loadStats(userId){
-  // Posts count — use feed pagination total for current user's posts
+  // Use /posts/feed with user filter for post count; skip followers route (may not exist)
   try{
     const token=localStorage.getItem('pb_token')||localStorage.getItem('token')||'';
-    // Parallel: followers count + posts count
-    const [flwResp, postsResp] = await Promise.allSettled([
-      fetch(API_BASE+'/users/'+userId+'/followers?limit=1',{headers:{Authorization:'Bearer '+token}}).then(r=>r.json()),
-      fetch(API_BASE+'/users/'+userId+'/posts?limit=1',{headers:{Authorization:'Bearer '+token}}).then(r=>r.json())
-    ]);
-    if(flwResp.status==='fulfilled'){
-      const total=flwResp.value?.pagination?.total??flwResp.value?.total??0;
-      document.getElementById('s-friends').textContent=fmt(total);
-    }
-    if(postsResp.status==='fulfilled'){
-      const total=postsResp.value?.pagination?.total??postsResp.value?.total??0;
+    const postsResp = await fetch(
+      API_BASE+'/posts?user_id='+userId+'&limit=1',
+      {headers:{Authorization:'Bearer '+token}}
+    ).then(r=>r.json()).catch(()=>null);
+    if(postsResp){
+      const total=postsResp?.pagination?.total??postsResp?.total??0;
       document.getElementById('s-posts').textContent=fmt(total);
+    }
+    // Followers — try, silently ignore if route doesn't exist
+    const flwResp = await fetch(
+      API_BASE+'/follows/counts?user_id='+userId,
+      {headers:{Authorization:'Bearer '+token}}
+    ).then(r=>r.ok?r.json():null).catch(()=>null);
+    if(flwResp){
+      const total=flwResp?.data?.followers??flwResp?.followers??flwResp?.total??0;
+      document.getElementById('s-friends').textContent=fmt(total);
     }
   }catch(e){console.warn('loadStats',e);}
 }
