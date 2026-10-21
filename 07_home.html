@@ -189,7 +189,7 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 
   /* Post cards — edge to edge */
   .card{border-radius:0!important;margin-bottom:8px!important;border-left:none!important;border-right:none!important}
-  .post-header{padding:10px 14px!important;display:flex!important;align-items:center!important;gap:10px!important}
+  .post-header{padding:10px 14px!important;display:flex!important;align-items:flex-start!important;gap:10px!important}
   .post-text{font-size:14px!important;padding:4px 14px 8px!important}
   .post-img-wrap img{max-height:320px!important}
   .post-stats{padding:6px 14px!important;font-size:12px!important}
@@ -655,9 +655,9 @@ function renderPost(p) {
   return `<div class="card post" id="post-${p.post_id||Math.random()}">
     <div class="post-header">
       <div class="post-av"><img src="${p.av}" alt="${p.user}" onerror="this.parentElement.style.background='#1877F2';this.style.display='none'"></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px">${p.user} ${verBadge}</div>
-        <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px"><i class="ti ti-clock" style="font-size:11px"></i>${p.time} · <i class="ti ti-world" style="font-size:11px"></i></div>
+      <div style="flex:1;min-width:0;padding-top:2px">
+        <div style="font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px;line-height:1.3">${p.user} ${verBadge}</div>
+        <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:2px"><i class="ti ti-clock" style="font-size:11px"></i>${p.time} · <i class="ti ti-world" style="font-size:11px"></i></div>
       </div>
       <button class="post-more" onclick="void(0)"><i class="ti ti-dots"></i></button>
     </div>
