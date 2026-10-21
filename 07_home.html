@@ -825,7 +825,7 @@ async function submitPost(){
   const err=document.getElementById('post-err');const btn=document.getElementById('post-submit');
   err.style.display='none';
   if(!body && pendingMediaUrls.length === 0){err.textContent='Please write something or add a photo/video!';err.style.display='block';return;}
-  setLoading(btn,true);
+  btn.disabled=true;btn.textContent='Posting…';
   try{
     await PostAPI.create({body,visibility:vis,hashtags:selTags2,pet_id:myPets[0]?.pet_id||null,media_urls:pendingMediaUrls});
     closePostModal();
@@ -838,7 +838,7 @@ async function submitPost(){
     await loadFeed();
   }
   catch(e){err.textContent=e.message;err.style.display='block';}
-  finally{setLoading(btn,false,'Post');}
+  finally{btn.disabled=false;btn.textContent='Post';}
 }
 </script>
 <script>
