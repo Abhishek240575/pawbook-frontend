@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -154,16 +154,11 @@ img{max-width:100%;display:block}
 
 html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
+<script src="api.js"></script>
+<script src="upload.js"></script>
 <script>
-/* ═══════════════════════════════════════════════
-   PAWBOOK SHARED UTILITIES
-   Include after api.js on every page
-═══════════════════════════════════════════════ */
-
-// ── NAVIGATION ────────────────────────────────
-;}
 (function(){
-  fetch(API_BASE+'/api/v1/events',{headers:authHeaders()})
+  fetch(API_BASE+'/events',{headers:authHeaders()})
     .then(function(r){return r.json();})
     .then(function(d){
       if(d&&d.data&&d.data.length){
@@ -653,9 +648,8 @@ html, body { overflow-x: hidden !important; }
   <button onclick="location.href='08_pet_profile.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-user" style="font-size:20px"></i>Profile</button>
 </div>
 
-<script src="api.js"></script>
 <script>
-const EVENTS = [
+let EVENTS = [
   { id:1, type:'meetup', title:'Delhi Dog Park Meetup 🐕', date:'Sun, Sep 15 · 7:00 AM', location:'Lodhi Garden, New Delhi', description:'Monthly dog meetup! All breeds welcome. Bring water and treats.', img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&q=80', attendees:234, interested:567, organizer:'Delhi Dog Club', free:true, going:false },
   { id:2, type:'adoption', title:'Adoption Drive — 50 Pets Need Homes 🏠', date:'Sat, Sep 14 · 10:00 AM - 5:00 PM', location:'Connaught Place, New Delhi', description:'Hopeful Tails Shelter is hosting a mega adoption event. Meet dogs, cats, rabbits, and more!', img:'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=600&q=80', attendees:89, interested:1234, organizer:'Hopeful Tails Shelter', free:true, going:false },
   { id:3, type:'vet', title:'Free Vaccination Camp 💉', date:'Sat, Sep 14 · 9:00 AM - 1:00 PM', location:'Sanjay Gandhi Animal Care, GK-1', description:'Free rabies + distemper vaccination for all pets. Bring health records.', img:'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=600&q=80', attendees:156, interested:892, organizer:'Delhi SPCA', free:true, going:false },
@@ -736,7 +730,7 @@ function filterEvents(type, el) {
 function toggleGoing(id, btn) {
   var isGoing = goingEvents.has(id);
   var newStatus = isGoing ? 'none' : 'going';
-  fetch(API_BASE+'/api/v1/events/'+id+'/rsvp',{method:'POST',headers:authHeaders(),body:JSON.stringify({status:newStatus})})
+  fetch(API_BASE+'/events/'+id+'/rsvp',{method:'POST',headers:authHeaders(),body:JSON.stringify({status:newStatus})})
     .then(function(r){return r.json();})
     .then(function(){
       if(isGoing){ goingEvents.delete(id); btn.textContent='Going'; btn.classList.remove('active'); showToast('Removed from going'); }
@@ -861,7 +855,7 @@ function submitCreateEvent() {
     entry_fee: fee||'Free'
   };
 
-  fetch(API_BASE+'/api/v1/events',{method:'POST',headers:authHeaders(),body:JSON.stringify(body)})
+  fetch(API_BASE+'/events',{method:'POST',headers:authHeaders(),body:JSON.stringify(body)})
     .then(function(r){return r.json();})
     .then(function(d){
       if(d&&d.success){

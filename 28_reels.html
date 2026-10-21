@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -154,16 +154,11 @@ img{max-width:100%;display:block}
 
 html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
+<script src="api.js"></script>
+<script src="upload.js"></script>
 <script>
-/* ═══════════════════════════════════════════════
-   PAWBOOK SHARED UTILITIES
-   Include after api.js on every page
-═══════════════════════════════════════════════ */
-
-// ── NAVIGATION ────────────────────────────────
-;}
 (function(){
-  fetch(API_BASE+'/api/v1/reels',{headers:authHeaders()})
+  fetch(API_BASE+'/reels',{headers:authHeaders()})
     .then(function(r){return r.json();})
     .then(function(d){if(d&&d.data)localStorage.setItem('pb_reels',JSON.stringify(d.data));})
     .catch(function(){});
@@ -620,9 +615,8 @@ html, body { overflow-x: hidden !important; }
   <button class="bn-item" onclick="location.href='08_pet_profile.html'"><i class="ti ti-user"></i>Profile</button>
 </div>
 
-<script src="api.js"></script>
 <script>
-const REELS = [
+let REELS = [
   { id:1, user:'Bruno_Daily', avatar:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80', img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80', caption:'Watch Bruno learn his new trick! 🎾 Best boy ever #DogLife #Beagle', likes:4821, comments:234, shares:89, sound:'Original Audio · Bruno_Daily' },
   { id:2, user:'CatMomDelhi', avatar:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80', img:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&q=80', caption:'Luna discovered the sunbeam spot 😸☀️ #CatLife #Lazy #Feline', likes:12.4e3, comments:567, shares:234, sound:'Chill Vibes · Spotify' },
   { id:3, user:'BirdLoverMumbai', avatar:'https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=80&q=80', img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80', caption:'Polly learned 5 new words this week! 🦜🎤 #Parrot #TalkingBird', likes:8934, comments:421, shares:156, sound:'Original Audio · BirdLoverMumbai' },
@@ -815,7 +809,7 @@ function removeVideo() {
   selectedVideoSrc = '';
 }
 
-function publishReel() {
+async function publishReel() {
   var caption = document.getElementById('ru-caption').value.trim();
   var category = document.getElementById('ru-category').value;
   var audio = document.getElementById('ru-audio').value.trim();
@@ -827,40 +821,64 @@ function publishReel() {
   var btn = document.getElementById('ru-publish-btn');
   btn.textContent = 'Publishing…'; btn.disabled = true;
 
-  // Simulate upload progress
   var prog = document.getElementById('ru-progress');
   var fill = document.getElementById('ru-prog-fill');
   prog.style.display = 'block';
+
+  var videoUrl = selectedVideoSrc;
+  var thumbUrl = selectedVideoSrc || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80';
+
+  // Simulate progress while uploading
   var pct = 0;
-  var interval = setInterval(function() {
-    pct += Math.random() * 15;
-    if (pct >= 100) { pct = 100; clearInterval(interval); }
-    fill.style.width = pct + '%';
-    document.getElementById('ru-prog-label').textContent = Math.round(pct) + '%';
-    if (pct === 100) {
-      setTimeout(function() {
-        // Add reel to top of list
-        var newReel = {
-          id: Date.now(),
-          user: 'You',
-          username: '@abhishek',
-          avatar: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80',
-          caption: caption || 'New Reel 🐾',
-          category: category,
-          audio: audio || '🎵 Original Audio',
-          likes: 0, comments: 0, shares: 0,
-          liked: false, bookmarked: false,
-          video: selectedVideoSrc,
-          thumb: selectedVideoSrc || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80',
-        };
-        REELS.unshift(newReel);
-        renderReels();
-        closeUpload();
-        btn.textContent = 'Publish Reel'; btn.disabled = false;
-        showToast('✅ Reel published!');
-      }, 600);
+  var progInterval = setInterval(function() {
+    if (pct < 85) { pct += Math.random() * 8; fill.style.width = Math.min(pct,85) + '%'; document.getElementById('ru-prog-label').textContent = Math.round(Math.min(pct,85)) + '%'; }
+  }, 200);
+
+  // Real Cloudinary upload if a file was selected
+  var fileInp = document.getElementById('ru-file-input') || document.querySelector('[accept*="video"]');
+  if (fileInp && fileInp.files && fileInp.files[0] && typeof uploadToCloudinaryDirect === 'function') {
+    try {
+      var result = await uploadToCloudinaryDirect(fileInp.files[0]);
+      videoUrl = result.secure_url;
+      thumbUrl = result.secure_url.replace(/\.[^.]+$/, '.jpg'); // auto thumbnail
+    } catch(e) { console.warn('Video upload failed:', e); }
+  }
+
+  clearInterval(progInterval);
+  fill.style.width = '100%';
+  document.getElementById('ru-prog-label').textContent = '100%';
+
+  setTimeout(function() {
+    var user = (Auth && Auth.getUser && Auth.getUser()) || {};
+    var newReel = {
+      id: Date.now(),
+      user: user.full_name || 'You',
+      username: user.username ? '@'+user.username : '@me',
+      avatar: user.avatar_url || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80',
+      caption: caption || 'New Reel 🐾',
+      category: category,
+      audio: audio || '🎵 Original Audio',
+      likes: 0, comments: 0, shares: 0,
+      liked: false, bookmarked: false,
+      video: videoUrl,
+      thumb: thumbUrl
+    };
+    REELS.unshift(newReel);
+    renderReels();
+    closeUpload();
+    btn.textContent = 'Publish Reel'; btn.disabled = false;
+    showToast('✅ Reel published!');
+
+    // Sync to backend
+    var token = getToken ? getToken() : localStorage.getItem('pb_token');
+    if (token) {
+      fetch(API_BASE + '/reels', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ caption: caption||'New Reel 🐾', category: category, video_url: videoUrl, audio_title: audio||'Original Audio' })
+      }).catch(function(){});
     }
-  }, 150);
+  }, 400);
 }
 
 function triggerRecord() {

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -345,10 +345,11 @@ html, body { overflow-x: hidden !important; }
 </head>
 <body>
 
+<script src="api.js"></script>
+<script src="upload.js"></script>
 <script>
-;}
 (function(){
-  fetch(API_BASE+'/api/v1/stories',{headers:authHeaders()})
+  fetch(API_BASE+'/stories',{headers:authHeaders()})
     .then(function(r){return r.json();})
     .then(function(d){if(d&&d.data)localStorage.setItem('pb_stories',JSON.stringify(d.data));})
     .catch(function(){});
@@ -591,17 +592,45 @@ function previewC(input) {
   };
   reader.readAsDataURL(input.files[0]);
 }
-function publishStory() {
+async function publishStory() {
   var cap = document.getElementById('pb-ccap').value.trim() || 'New story 🐾';
+  var fileInp = document.getElementById('pb-cfile');
+  var btn = document.querySelector('[onclick="publishStory()"]');
+  if(btn){btn.textContent='Sharing…';btn.disabled=true;}
+
+  var mediaUrl = newImg || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=90';
+  var mediaType = 'image';
+
+  // Upload to Cloudinary if a file was selected
+  if(fileInp && fileInp.files && fileInp.files[0] && typeof uploadToCloudinaryDirect === 'function'){
+    try{
+      var result = await uploadToCloudinaryDirect(fileInp.files[0]);
+      mediaUrl = result.secure_url;
+      mediaType = fileInp.files[0].type.startsWith('video') ? 'video' : 'image';
+    }catch(e){ console.warn('Cloudinary upload failed, using preview URL'); }
+  }
+
+  // Add to local display immediately
   STORIES.unshift({
     user:'You', seen:false, time:'Just now',
-    avatar:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80',
-    img: newImg || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=90',
+    avatar: (Auth&&Auth.getUser&&Auth.getUser()&&Auth.getUser().avatar_url) || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80',
+    img: mediaUrl,
     caption: cap
   });
   closeCreate();
   renderAll();
+  if(btn){btn.textContent='Share Story';btn.disabled=false;}
   toast('✅ Story shared!', 'success');
+
+  // Sync to backend
+  var token = getToken ? getToken() : localStorage.getItem('pb_token');
+  if(token){
+    fetch(API_BASE+'/stories', {
+      method:'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ caption: cap, media_url: mediaUrl, media_type: mediaType })
+    }).catch(function(){});
+  }
 }
 
 // ── INIT ───────────────────────────────────────────────────────────────────────

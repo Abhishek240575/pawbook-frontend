@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -154,16 +154,11 @@ img{max-width:100%;display:block}
 
 html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
+<script src="api.js"></script>
+<script src="upload.js"></script>
 <script>
-/* ═══════════════════════════════════════════════
-   PAWBOOK SHARED UTILITIES
-   Include after api.js on every page
-═══════════════════════════════════════════════ */
-
-// ── NAVIGATION ────────────────────────────────
-;}
 (function(){
-  fetch(API_BASE+'/api/v1/saved',{headers:authHeaders()})
+  fetch(API_BASE+'/saved',{headers:authHeaders()})
     .then(function(r){return r.json();})
     .then(function(d){if(d&&d.data)localStorage.setItem('pb_saved',JSON.stringify(d.data));})
     .catch(function(){});
@@ -913,7 +908,7 @@ function loadSavedPosts() {
     'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=300&q=80'
   ];
 
-  fetch(API_BASE+'/api/v1/saved', {headers: authHeaders()})
+  fetch(API_BASE+'/saved', {headers: authHeaders()})
     .then(function(r){ return r.json(); })
     .then(function(d) {
       var items = (d && d.data) ? d.data : [];
@@ -956,7 +951,7 @@ function clearSaved() {
 
 // ── FUNDRAISING TAB ───────────────────────────────────────
 function loadFundraising() {
-  fetch(API_BASE+'/api/v1/fundraising', {headers: authHeaders()})
+  fetch(API_BASE+'/fundraising', {headers: authHeaders()})
     .then(function(r){ return r.json(); })
     .then(function(d) {
       var items = (d && d.data) ? d.data : [];
@@ -1034,7 +1029,7 @@ function submitDonate() {
   if(!amount || amount <= 0) { showToast('Please select or enter an amount.','error'); return; }
 
   if(_donateCampaignId) {
-    fetch(API_BASE+'/api/v1/fundraising/'+_donateCampaignId+'/donate', {
+    fetch(API_BASE+'/fundraising/'+_donateCampaignId+'/donate', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({amount: amount})
@@ -1056,7 +1051,7 @@ function submitDonate() {
 
 // ── MEMORY TAB ────────────────────────────────────────────
 function loadMemories() {
-  fetch(API_BASE+'/api/v1/memories', {headers: authHeaders()})
+  fetch(API_BASE+'/memories', {headers: authHeaders()})
     .then(function(r){ return r.json(); })
     .then(function(d) {
       var items = (d && d.data) ? d.data : [];
@@ -1107,7 +1102,7 @@ function loadMemories() {
 
 // ── ACTIVITY TAB ──────────────────────────────────────────
 function loadActivity() {
-  fetch(API_BASE+'/api/v1/activity', {headers: authHeaders()})
+  fetch(API_BASE+'/activity', {headers: authHeaders()})
     .then(function(r){ return r.json(); })
     .then(function(d) {
       var items = (d && d.data) ? d.data : [];
@@ -1136,7 +1131,7 @@ function loadActivity() {
 
 // ── BIRTHDAYS TAB ─────────────────────────────────────────
 function loadBirthdays() {
-  fetch(API_BASE+'/api/v1/birthdays', {headers: authHeaders()})
+  fetch(API_BASE+'/birthdays', {headers: authHeaders()})
     .then(function(r){ return r.json(); })
     .then(function(d) {
       var items = (d && d.data) ? d.data : [];

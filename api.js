@@ -19,6 +19,14 @@ function clearToken() {
   localStorage.removeItem('pb_user');
 }
 
+// ── authHeaders — used by pages that call fetch() directly ────
+function authHeaders() {
+  var h = { 'Content-Type': 'application/json' };
+  var t = getToken();
+  if (t) h['Authorization'] = 'Bearer ' + t;
+  return h;
+}
+
 async function request(method, path, body, auth = true) {
   const headers = { 'Content-Type': 'application/json' };
   if (auth && getToken()) {
