@@ -1000,7 +1000,7 @@ function renderRxModal(rx) {
 // ── VET CHATS ─────────────────────────────────────────────────────────────────
 async function loadVetChats() {
   try {
-    const chats = await apiFetch('/vets/chats');
+    const chats = []; // /vets/chats not available - use 13_messages.html for messaging
     if (!chats.length) {
       document.getElementById('vet-chat-list').innerHTML = '<div style="padding:20px;color:#94a3b8;font-size:13px;text-align:center">Book an appointment to chat with a vet</div>';
       return;
@@ -1164,6 +1164,37 @@ if ('serviceWorker' in navigator) {
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
 }
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
 </script>
 </body>
 </html>

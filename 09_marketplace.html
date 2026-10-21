@@ -749,7 +749,7 @@ function injectDemoProducts(cat) {
     const orig = btn.textContent;
     btn.disabled = true; btn.style.opacity = '0.7';
     try {
-      await MarketAPI.addToCart(product_id, 1);
+      await MarketAPI.addCart(product_id, 1);
       cartCount++;
       btn.textContent = '✓ Added!';
       btn.style.background = '#16a34a';
@@ -813,7 +813,7 @@ function injectDemoProducts(cat) {
 
   // ── Update cart badge on load ──────────────────────────────────────────
   try {
-    const cartRes = await MarketAPI.getCart();
+    const cartRes = await MarketAPI.cart();
     const count = cartRes?.data?.item_count || 0;
     if (count > 0) {
       const badge = document.getElementById('cart-badge');
@@ -838,7 +838,7 @@ async function cartQty(cart_id, qty) {
 async function cartRemove(cart_id) {
   try {
     document.getElementById('cart-item-' + cart_id)?.remove();
-    await MarketAPI.removeFromCart(cart_id);
+    await MarketAPI.removeCart(cart_id);
     await openCart();
   } catch(e) { alert(e.message || 'Failed to remove'); }
 }
@@ -1129,7 +1129,7 @@ document.querySelectorAll('.prod-stars').forEach((el, i)=>{
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
     <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
     <div>
-      <div class="drawer-user-name">Abhishek Kumar</div>
+      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
       <div class="drawer-user-handle">@abhishek_pawbook</div>
       <div class="drawer-stats">
         <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
@@ -2710,6 +2710,37 @@ if ('serviceWorker' in navigator) {
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
 }
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
 </script>
 </body>
 </html>

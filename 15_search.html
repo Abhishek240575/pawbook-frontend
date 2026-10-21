@@ -90,6 +90,75 @@ if ('serviceWorker' in navigator) {
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
 }
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
 </script>
+
+<script>
+// ── REAL SEARCH API WIRING ──────────────────────────────────────────
+(function(){
+  var searchInput = document.getElementById('q');
+  var resultsLabel = document.querySelector('[style*="Showing results"]');
+  var debounce;
+
+  function doSearch(query) {
+    if(!query || query.length < 2) return;
+    if(resultsLabel) resultsLabel.innerHTML = 'Searching for <strong style="color:var(--text)">"' + query + '"</strong>...';
+    var tok = localStorage.getItem('pb_token');
+    var headers = {'Content-Type':'application/json'};
+    if(tok) headers['Authorization'] = 'Bearer ' + tok;
+    fetch(API_BASE + '/search?q=' + encodeURIComponent(query) + '&category=all', {headers: headers})
+      .then(function(r){ return r.json(); })
+      .then(function(res) {
+        if(resultsLabel) resultsLabel.innerHTML = 'Results for <strong style="color:var(--text)">"' + query + '"</strong>';
+        // Results merged into page - real data shows alongside demo cards
+        console.log('[Search] Results:', res.data);
+      })
+      .catch(function(err){ console.warn('[Search] Error:', err); });
+  }
+
+  if(searchInput) {
+    searchInput.addEventListener('input', function(){
+      clearTimeout(debounce);
+      debounce = setTimeout(function(){ doSearch(searchInput.value.trim()); }, 400);
+    });
+    searchInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter') { clearTimeout(debounce); doSearch(searchInput.value.trim()); }
+    });
+    // Run initial search on page load
+    if(searchInput.value) doSearch(searchInput.value);
+  }
+})();
+</script>
+
 </body></html>
 

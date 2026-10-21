@@ -162,6 +162,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
   .act-like,.act-nope{width:52px;height:52px;font-size:24px}
 }
 </style>
+<script src="api.js"></script>
 </head>
 <body>
 
@@ -378,7 +379,7 @@ try { matchedPets = JSON.parse(localStorage.getItem('pawmatch_matches') || '[]')
 (function syncMatchesFromAPI(){
   var myPetId = localStorage.getItem('pawmatch_active_pet_id');
   if(!myPetId) return;
-  fetch(API_BASE+'/api/pawmatch/matches?pet_id='+myPetId, {headers:authHeaders()})
+  fetch(API_BASE+'/pawmatch/matches?pet_id='+myPetId, {headers:authHeaders()})
     .then(function(r){ return r.ok ? r.json() : null; })
     .catch(function(){ return null; })
     .then(function(data){
@@ -589,10 +590,10 @@ function flyCard(card, pet, direction) {
   // Record swipe to API (fire-and-forget)
   var myPetId = localStorage.getItem('pawmatch_active_pet_id');
   if(myPetId) {
-    fetch(API_BASE+'/api/pawmatch/swipe', {
+    var action = direction === 'right' || direction === 'up' ? 'like' : 'pass';
+    fetch(API_BASE+'/pawmatch/'+pet.id+'/'+action, {
       method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({swiper_pet_id: parseInt(myPetId), swiped_pet_id: pet.id, direction: direction})
+      headers: authHeaders()
     }).catch(function(){});
   }
 

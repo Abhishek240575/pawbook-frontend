@@ -710,7 +710,7 @@ function searchPlaces() {
       .catch(function(e){ console.warn('Mirror',idx,'failed:',e.message); tryDirectMirror(idx+1); });
     }
 
-    fetch('https://pawbook-api-cquc.onrender.com/api/v1/overpass', {
+    fetch('https://overpass-api.de/api/interpreter', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: query })
@@ -1030,7 +1030,7 @@ function submitBizListing() {
 
   // Save to backend or localStorage as fallback
   var PBASE = 'https://pawbook-api-cquc.onrender.com/api/v1';
-  fetch(PBASE + '/listings', {
+  fetch(PBASE + '/marketplace/listings', {
     method: 'POST',
     headers: {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')},
     body: JSON.stringify(payload)
@@ -1200,7 +1200,7 @@ window.addEventListener('resize', function() {
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
     <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
     <div>
-      <div class="drawer-user-name">Abhishek Kumar</div>
+      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
       <div class="drawer-user-handle">@abhishek_pawbook</div>
       <div class="drawer-stats">
         <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
@@ -1276,6 +1276,37 @@ if ('serviceWorker' in navigator) {
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
 }
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
 </script>
 </body>
 </html>

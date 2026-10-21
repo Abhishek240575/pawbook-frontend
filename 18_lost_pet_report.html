@@ -424,7 +424,7 @@ function submitReport(){
   var recs=JSON.parse(localStorage.getItem('pb_lost_reports')||'[]');
   recs.unshift(rec); localStorage.setItem('pb_lost_reports',JSON.stringify(recs));
 
-  fetch(API_BASE+'/api/lost-pets',{method:'POST',headers:authHdr(),body:JSON.stringify({
+  fetch(API_BASE+'/lost-pets',{method:'POST',headers:authHdr(),body:JSON.stringify({
     pet_name:petName,species,breed:breed||null,age:age||null,color:color||null,collar:collar||null,
     description:desc||null,area,date_last_seen:dateSeen,time_last_seen:timeSeen||null,
     alert_radius:radius,contact_name:cname,contact_phone:phone,contact_email:email||null,
@@ -453,5 +453,36 @@ if ('serviceWorker' in navigator) {
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
 }
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
 </script>
 </body></html>
