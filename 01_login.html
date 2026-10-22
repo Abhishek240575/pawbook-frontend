@@ -373,9 +373,9 @@ html, body { overflow-x: hidden !important; }
   <div class="or-row">Or</div>
 
   <!-- Social -->
-  <button class="social-btn">
+  <button class="social-btn" id="google-btn" onclick="triggerGoogleLogin()">
     <div class="g-logo"></div>
-    Continue with <strong>Google</strong>
+    <span id="google-btn-text">Continue with <strong>Google</strong></span>
   </button>
   <button class="social-btn facebook">
     <i class="ti ti-brand-facebook" style="font-size:22px"></i>
@@ -619,6 +619,119 @@ function socialLogin(provider) {
 }
 function goTo(p){window.location.href=p;}
 function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+</script>
+
+<!-- ── GOOGLE SIGN-IN SDK ─────────────────────────────────────────────────── -->
+<!-- Replace YOUR_GOOGLE_CLIENT_ID below with the actual Client ID from Google Cloud Console -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<!-- Hidden Google One-Tap div (renders Google's own button off-screen; we trigger it via our styled button) -->
+<div id="g_id_onload"
+  data-client_id="282204357720-l6abvmbjcspr87i3cp1dk60srqippgnd.apps.googleusercontent.com"
+  data-callback="handleGoogleCredential"
+  data-auto_prompt="false"
+  style="display:none">
+</div>
+<div class="g_id_signin"
+  data-type="standard"
+  data-shape="rectangular"
+  data-theme="outline"
+  data-text="continue_with"
+  data-size="large"
+  style="display:none">
+</div>
+
+<script>
+// ── GOOGLE SIGN-IN ─────────────────────────────────────────────────────────────
+
+const GOOGLE_CLIENT_ID = '282204357720-l6abvmbjcspr87i3cp1dk60srqippgnd.apps.googleusercontent.com'; 
+// ← replace this
+
+function triggerGoogleLogin() {
+  if (typeof google === 'undefined' || !google.accounts) {
+    showLoginErr('Google Sign-In not loaded yet. Please refresh and try again.');
+    return;
+  }
+
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true,
+  });
+
+  // Use renderButton approach — more reliable than prompt()
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;padding:20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2)';
+  container.id = 'google-popup-container';
+
+  const closeBtn = document.createElement('div');
+  closeBtn.textContent = '✕';
+  closeBtn.style.cssText = 'text-align:right;cursor:pointer;font-size:18px;color:#666;margin-bottom:8px';
+  closeBtn.onclick = () => container.remove();
+
+  const btnDiv = document.createElement('div');
+  container.appendChild(closeBtn);
+  container.appendChild(btnDiv);
+  document.body.appendChild(container);
+
+  google.accounts.id.renderButton(btnDiv, {
+    theme: 'outline',
+    size: 'large',
+    text: 'continue_with',
+    width: 280,
+  });
+
+  // Auto-click the rendered button
+  setTimeout(() => {
+    const gBtn = btnDiv.querySelector('div[role="button"]');
+    if (gBtn) gBtn.click();
+  }, 100);
+}
+
+async function handleGoogleCredential(response) {
+  const btn = document.getElementById('google-btn');
+  const txt = document.getElementById('google-btn-text');
+  const err = document.getElementById('login-err');
+  btn.disabled = true;
+  txt.innerHTML = 'Signing in…';
+  err.style.display = 'none';
+
+  try {
+    const API_BASE = 'https://pawbook-api-cquc.onrender.com/api/v1';
+
+    const res = await fetch(`${API_BASE}/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id_token: response.credential }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // Store auth (same way as normal login via AuthAPI)
+      localStorage.setItem('token',   data.data.token);
+      localStorage.setItem('refresh', data.data.refresh);
+      localStorage.setItem('user',    JSON.stringify(data.data.user));
+      location.href = '07_home.html';
+    } else {
+      err.textContent = data.message || 'Google sign-in failed. Please try again.';
+      err.style.display = 'block';
+    }
+  } catch (e) {
+    err.textContent = 'Network error during Google sign-in. Please try again.';
+    err.style.display = 'block';
+  } finally {
+    txt.innerHTML = 'Continue with <strong>Google</strong>';
+    btn.disabled = false;
+  }
+}
+
+function showLoginErr(msg) {
+  const err = document.getElementById('login-err');
+  err.textContent = msg;
+  err.style.display = 'block';
+}
 </script>
 
 <!-- BOTTOM NAV (mobile) -->
