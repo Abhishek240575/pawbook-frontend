@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#2563eb">
-<title>Legal — PawBook</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal & Policies — PawBook by Deemona</title>
+<meta name="description" content="Terms of Service, Privacy Policy, Copyright Policy, Usage Policy, Child Safety, and Grievance Officer information for PawBook by Deemona Global Solutions.">
+<meta name="robots" content="index, follow">
 <style>
   :root {
     --brand: #2563eb;
@@ -15,172 +16,234 @@
     --border: #e2e8f0;
     --bg: #f1f5f9;
     --card: #ffffff;
-    --radius: 14px;
-    --nav-h: 56px;
-    --tab-h: 48px;
+    --radius: 12px;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: var(--bg); color: var(--text);
-    font-size: 14px; line-height: 1.75;
+    font-size: 15px; line-height: 1.75;
     min-height: 100vh;
+    display: flex; flex-direction: column;
   }
 
-  /* ── TOP NAV ── */
-  .topbar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-    height: var(--nav-h);
+  /* ══ SITE HEADER ══ */
+  .site-header {
     background: #fff; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px; flex-shrink: 0;
+    position: sticky; top: 0; z-index: 100;
   }
-  .back-btn {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--bg); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; color: var(--text); flex-shrink: 0;
-    text-decoration: none;
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: var(--text);
   }
-  .back-btn:hover { background: var(--border); }
-  .topbar-title {
-    font-weight: 700; font-size: 17px; color: var(--text); flex: 1;
+  .logo-icon { font-size: 28px; }
+  .logo-name { font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+  .logo-name span { color: var(--brand); }
+  .header-tag {
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 12px;
   }
-  .topbar-logo { font-size: 22px; }
 
-  /* ── SCROLLABLE TAB NAV ── */
+  /* ══ PAGE HERO ══ */
+  .hero {
+    background: linear-gradient(135deg, var(--brand) 0%, #3b82f6 100%);
+    color: #fff; text-align: center;
+    padding: 48px 24px 40px;
+  }
+  .hero h1 { font-size: clamp(24px, 4vw, 36px); font-weight: 800; margin-bottom: 8px; }
+  .hero p { font-size: 15px; opacity: .85; max-width: 520px; margin: 0 auto; }
+
+  /* ══ TAB NAV ══ */
+  .tab-wrap {
+    background: #fff; border-bottom: 1px solid var(--border);
+    position: sticky; top: 64px; z-index: 99;
+  }
   .tab-nav {
-    position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 199;
-    height: var(--tab-h);
-    background: #fff; border-bottom: 2px solid var(--border);
-    display: flex; overflow-x: auto; padding: 0 4px;
+    display: flex; overflow-x: auto;
+    padding: 0 16px;
+    max-width: 900px; margin: 0 auto;
     -webkit-overflow-scrolling: touch; scrollbar-width: none;
   }
   .tab-nav::-webkit-scrollbar { display: none; }
   .tab-btn {
     flex-shrink: 0;
     border: none; background: none; cursor: pointer;
-    padding: 0 16px; height: 100%;
-    font-size: 13px; font-weight: 600; color: var(--muted);
+    padding: 14px 18px;
+    font-size: 14px; font-weight: 600; color: var(--muted);
     white-space: nowrap;
-    border-bottom: 2px solid transparent; margin-bottom: -2px;
+    border-bottom: 3px solid transparent;
     transition: color .15s, border-color .15s;
   }
+  .tab-btn:hover { color: var(--text); }
   .tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
 
-  /* ── CONTENT AREA ── */
-  .scroll-area {
-    margin-top: calc(var(--nav-h) + var(--tab-h));
-    padding: 20px 16px 80px;
-    max-width: 680px; margin-left: auto; margin-right: auto;
-    margin-top: calc(var(--nav-h) + var(--tab-h));
+  /* ══ CONTENT ══ */
+  .content-wrap {
+    flex: 1;
+    max-width: 760px; width: 100%;
+    margin: 0 auto; padding: 32px 24px 60px;
   }
   .page { display: none; }
   .page.active { display: block; }
 
-  /* ── CARDS ── */
-  .page-header { padding: 8px 0 20px; }
-  .page-header h1 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-  .page-header .meta { font-size: 12px; color: var(--muted); }
+  /* ══ CARDS ══ */
+  .page-header { padding-bottom: 24px; }
+  .page-header h1 { font-size: clamp(20px, 3vw, 28px); font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .page-header .meta { font-size: 13px; color: var(--muted); }
 
   .card {
     background: var(--card); border-radius: var(--radius);
     border: 1px solid var(--border);
-    padding: 20px; margin-bottom: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    padding: 22px 24px; margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
   }
   .card-title {
     font-size: 13px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .5px; color: var(--brand); margin-bottom: 10px;
+    letter-spacing: .6px; color: var(--brand); margin-bottom: 12px;
   }
-  .card p  { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+  .card p  { color: var(--muted); font-size: 15px; margin-bottom: 10px; }
   .card p:last-child { margin-bottom: 0; }
-  .card ul { padding-left: 18px; color: var(--muted); font-size: 14px; }
-  .card ul li { margin-bottom: 6px; }
-  .card a  { color: var(--brand); }
-  .card h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 14px 0 6px; }
+  .card ul { padding-left: 20px; color: var(--muted); font-size: 15px; }
+  .card ul li { margin-bottom: 8px; }
+  .card a  { color: var(--brand); text-decoration: underline; text-decoration-color: transparent; transition: text-decoration-color .15s; }
+  .card a:hover { text-decoration-color: var(--brand); }
+  .card h3 { font-size: 14px; font-weight: 700; color: var(--text); margin: 16px 0 8px; }
 
   .highlight {
-    background: var(--brand-light); border-left: 3px solid var(--brand);
-    border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;
-    font-size: 14px; color: var(--text); line-height: 1.6;
+    background: var(--brand-light); border-left: 4px solid var(--brand);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;
+    font-size: 15px; color: var(--text); line-height: 1.65;
   }
 
-  /* ── CONTACT ROWS (Grievance) ── */
+  /* ══ CONTACT ROWS ══ */
   .contact-block {
     background: var(--card); border-radius: var(--radius);
     border: 1px solid var(--border); overflow: hidden;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.05);
   }
   .contact-block .block-header {
     background: var(--brand); color: #fff;
-    padding: 14px 20px; font-weight: 700; font-size: 15px;
+    padding: 16px 24px; font-weight: 700; font-size: 16px;
   }
   .contact-row {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
   }
   .contact-row:last-child { border-bottom: none; }
-  .c-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
-  .c-label { font-size: 11px; color: var(--muted); margin-bottom: 1px; }
-  .c-value { font-size: 14px; font-weight: 600; color: var(--text); }
+  .c-icon { font-size: 22px; width: 36px; text-align: center; flex-shrink: 0; }
+  .c-label { font-size: 11px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .4px; }
+  .c-value { font-size: 15px; font-weight: 600; color: var(--text); }
   .c-value a { color: var(--brand); font-weight: 500; }
 
-  /* ── TIMELINE (Grievance steps) ── */
+  /* ══ STEPS ══ */
   .steps { list-style: none; padding: 0; }
   .step-item {
-    display: flex; gap: 14px; padding: 14px 0;
+    display: flex; gap: 16px; padding: 16px 0;
     border-bottom: 1px solid var(--border);
   }
   .step-item:last-child { border: none; padding-bottom: 0; }
   .step-num {
-    width: 30px; height: 30px; border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     background: var(--brand); color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    font-size: 14px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
   }
-  .step-body strong { display: block; font-size: 14px; color: var(--text); margin-bottom: 3px; }
-  .step-body span { font-size: 13px; color: var(--muted); }
+  .step-body strong { display: block; font-size: 15px; color: var(--text); margin-bottom: 4px; }
+  .step-body span { font-size: 14px; color: var(--muted); }
 
   .badge {
     display: inline-block; background: #dcfce7; color: #166534;
-    border-radius: 20px; padding: 3px 10px;
-    font-size: 11px; font-weight: 700; letter-spacing: .3px;
-    margin-bottom: 14px;
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 12px; font-weight: 700; letter-spacing: .3px;
+    margin-bottom: 16px;
   }
 
-  /* ── FOOTER NOTE ── */
   .footer-note {
-    text-align: center; font-size: 12px; color: var(--muted);
-    padding: 16px 0 0; margin-top: 8px;
+    text-align: center; font-size: 13px; color: var(--muted);
+    padding: 20px 0 0; margin-top: 8px;
+    border-top: 1px solid var(--border);
   }
   .footer-note a { color: var(--brand); }
+
+  /* ══ SITE FOOTER ══ */
+  .site-footer {
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    flex-shrink: 0;
+  }
+  .footer-inner {
+    max-width: 900px; margin: 0 auto;
+  }
+  .footer-logo {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .footer-logo-icon { font-size: 24px; }
+  .footer-logo-name { font-size: 16px; font-weight: 800; }
+  .footer-logo-name span { color: var(--brand); }
+  .footer-links {
+    display: flex; flex-wrap: wrap; gap: 8px 20px;
+    margin-bottom: 20px;
+  }
+  .footer-links a {
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    transition: color .15s;
+  }
+  .footer-links a:hover { color: var(--brand); }
+  .footer-copy {
+    font-size: 12px; color: var(--muted);
+    border-top: 1px solid var(--border); padding-top: 16px;
+  }
+
+  /* ══ RESPONSIVE ══ */
+  @media (max-width: 600px) {
+    .site-header { padding: 0 16px; }
+    .content-wrap { padding: 20px 16px 48px; }
+    .card { padding: 16px 18px; }
+    .contact-row { padding: 14px 18px; }
+    .contact-block .block-header { padding: 14px 18px; }
+    .hero { padding: 32px 16px 28px; }
+    .header-tag { display: none; }
+  }
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<nav class="topbar">
-  <a class="back-btn" href="07_home.html">←</a>
-  <span class="topbar-logo">🐾</span>
-  <span class="topbar-title">Legal &amp; Policies</span>
-</nav>
+<!-- ══ SITE HEADER ══ -->
+<header class="site-header">
+  <a class="logo" href="index.html">
+    <span class="logo-icon">🐾</span>
+    <span class="logo-name">Paw<span>Book</span></span>
+  </a>
+  <span class="header-tag">Legal &amp; Policies</span>
+</header>
 
-<!-- TAB NAV -->
-<div class="tab-nav" id="tabNav">
-  <button class="tab-btn active" onclick="show('terms',this)">Terms of Service</button>
-  <button class="tab-btn" onclick="show('privacy',this)">Privacy Policy</button>
-  <button class="tab-btn" onclick="show('copyright',this)">Copyright Policy</button>
-  <button class="tab-btn" onclick="show('usage',this)">Usage Policy</button>
-  <button class="tab-btn" onclick="show('childsafety',this)">Child Safety</button>
-  <button class="tab-btn" onclick="show('grievance',this)">Grievance Officer</button>
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <h1>Legal &amp; Policies</h1>
+  <p>Transparency is at the heart of PawBook. Everything you need to know about how we operate.</p>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     TERMS OF SERVICE
-══════════════════════════════════════════════ -->
-<div class="scroll-area">
-<div class="page active" id="terms">
+<!-- ══ TAB NAV ══ -->
+<div class="tab-wrap">
+  <nav class="tab-nav" id="tabNav" role="tablist">
+    <button class="tab-btn active" onclick="show('terms',this)" role="tab">Terms of Service</button>
+    <button class="tab-btn" onclick="show('privacy',this)" role="tab">Privacy Policy</button>
+    <button class="tab-btn" onclick="show('copyright',this)" role="tab">Copyright Policy</button>
+    <button class="tab-btn" onclick="show('usage',this)" role="tab">Usage Policy</button>
+    <button class="tab-btn" onclick="show('childsafety',this)" role="tab">Child Safety</button>
+    <button class="tab-btn" onclick="show('grievance',this)" role="tab">Grievance Officer</button>
+  </nav>
+</div>
+
+<!-- ══ PAGE CONTENT ══ -->
+<main class="content-wrap">
+<div class="page" id="terms">
   <div class="page-header">
     <h1>Terms of Service</h1>
     <p class="meta">Effective: 1 Oct 2026 · Last updated: 22 Oct 2026</p>
@@ -788,28 +851,56 @@
   </div>
 </div>
 
-</div><!-- /scroll-area -->
+
+</main>
+
+<!-- ══ SITE FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <span class="footer-logo-icon">🐾</span>
+      <span class="footer-logo-name">Paw<span>Book</span></span>
+    </div>
+    <div class="footer-links">
+      <a href="legal.html#terms">Terms of Service</a>
+      <a href="legal.html#privacy">Privacy Policy</a>
+      <a href="legal.html#copyright">Copyright Policy</a>
+      <a href="legal.html#usage">Usage Policy</a>
+      <a href="legal.html#childsafety">Child Safety</a>
+      <a href="legal.html#grievance">Grievance Officer</a>
+    </div>
+    <div class="footer-copy">
+      &copy; 2026 Deemona Global Solutions, New Delhi 110075, India &nbsp;&middot;&nbsp;
+      <a href="mailto:legal@deemona.com" style="color:var(--brand);">legal@deemona.com</a> &nbsp;&middot;&nbsp;
+      <a href="tel:+919654135922" style="color:var(--brand);">+91 96541 35922</a>
+    </div>
+  </div>
+</footer>
 
 <script>
 function show(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if (btn) {
-    btn.classList.add('active');
-    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  btn.classList.add('active');
+  btn.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' });
+  // Update hash without scroll jump
+  history.replaceState(null, '', '#' + id);
 }
 
-// Hash navigation: legal.html#privacy etc.
-const hash = location.hash.replace('#','');
-if (hash && document.getElementById(hash)) {
-  const btn = [...document.querySelectorAll('.tab-btn')]
-    .find(b => b.getAttribute('onclick')?.includes("'"+hash+"'"));
-  show(hash, btn);
-}
+// Activate tab from URL hash on load
+(function() {
+  var hash = location.hash.replace('#', '');
+  var validIds = ['terms','privacy','copyright','usage','childsafety','grievance'];
+  if (hash && validIds.includes(hash)) {
+    var btn = document.querySelector('.tab-btn[onclick*="\'' + hash + '\'"]');
+    if (btn) show(hash, btn);
+  } else {
+    // Show terms by default
+    document.getElementById('terms').classList.add('active');
+    document.querySelector('.tab-btn').classList.add('active');
+  }
+})();
 </script>
 </body>
 </html>
-PATCH_NEEDED
