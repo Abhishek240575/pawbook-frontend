@@ -1,11 +1,11 @@
-/* ══════════════════════════════════════════════════════════════════
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PAWBOOK API CLIENT  v2
    Backend: https://pawbook-api-cquc.onrender.com/api/v1
-══════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 const API_BASE = 'https://pawbook-api-cquc.onrender.com/api/v1';
 
-// ── HELPERS ──────────────────────────────────────────────────────
+// â”€â”€ HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function getToken() { return localStorage.getItem('pb_token') || ''; }
 function setToken(t) { localStorage.setItem('pb_token', t); }
 function clearToken() {
@@ -42,7 +42,7 @@ const post = (path, body, auth) => request('POST',   path, body, auth);
 const patch= (path, body)       => request('PATCH',  path, body);
 const del  = (path)             => request('DELETE', path, null);
 
-// ── AUTH ─────────────────────────────────────────────────────────
+// â”€â”€ AUTH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const Auth = {
   isLoggedIn() { return !!getToken(); },
   async login(email, password) {
@@ -69,7 +69,7 @@ const Auth = {
   }
 };
 
-// ── AUTH API (alias) ──────────────────────────────────────────────
+// â”€â”€ AUTH API (alias) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AuthAPI = {
   login:          (email, password) => Auth.login(email, password),
   register:       (data)            => Auth.register(data),
@@ -81,7 +81,7 @@ const AuthAPI = {
   resetPassword:  (email, otp, password) => post('/auth/reset-password', { email, otp, new_password: password }, false),
 };
 
-// ── USER API ──────────────────────────────────────────────────────
+// â”€â”€ USER API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const UserAPI = {
   search:         (q, page)   => get(`/users/search?q=${encodeURIComponent(q)}&page=${page||1}`),
   profile:        (username)  => get(`/users/${username}/profile`, false),
@@ -95,9 +95,10 @@ const UserAPI = {
   deactivate:     ()          => del('/users/me'),
 };
 
-// ── PET API ───────────────────────────────────────────────────────
+// â”€â”€ PET API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const PetAPI = {
-  myPets:         ()          => get('/pets/my'),
+  myPets: ()  => get('/pets/my'),
+  mine:    ()          => get('/pets/my'),
   get:            (id)        => get(`/pets/${id}`, false),
   create:         (data)      => post('/pets', data),
   update:         (id, d)     => patch(`/pets/${id}`, d),
@@ -107,7 +108,7 @@ const PetAPI = {
   addVaccination: (id, d)     => post(`/pets/${id}/vaccinations`, d),
 };
 
-// ── POST API ──────────────────────────────────────────────────────
+// â”€â”€ POST API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const PostAPI = {
   feed:      (page, limit) => get(`/posts/feed?page=${page||1}&limit=${limit||15}`),
   get:       (id)          => get(`/posts/${id}`, false),
@@ -117,13 +118,14 @@ const PostAPI = {
   delete:    (id)          => del(`/posts/${id}`),
   react:     (id, type)    => post(`/posts/${id}/react`, { reaction_type: type||'love' }),
   comments:  (id, page)    => get(`/posts/${id}/comments?page=${page||1}`),
-  comment:   (id, text)    => post(`/posts/${id}/comments`, { body: text }),
+  addComment: (id, text) => post(/posts/+id+/comments, {content:text}, true),
+  comment: (id, text) => post(`/posts/${id}/comments`, { body: text }),
   deleteComment: (cid)     => del(`/posts/comments/${cid}`),
   save:      (id)          => post(`/saved/${id}`),
   unsave:    (id)          => del(`/saved/${id}`),
 };
 
-// ── VET API ───────────────────────────────────────────────────────
+// â”€â”€ VET API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const VetAPI = {
   list:       (params)    => get(`/vets?${new URLSearchParams(params||{})}`),
   get:        (id)        => get(`/vets/${id}`, false),
@@ -137,7 +139,7 @@ const VetAPI = {
   register:   (data)      => post('/vets/register', data),
 };
 
-// ── NOTIFICATION API ──────────────────────────────────────────────
+// â”€â”€ NOTIFICATION API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const NotifAPI = {
   list:       (page)      => get(`/notifications?page=${page||1}`),
   markAll:    ()          => patch('/notifications/read-all'),
@@ -145,7 +147,7 @@ const NotifAPI = {
   delete:     (id)        => del(`/notifications/${id}`),
 };
 
-// ── MESSAGE API ───────────────────────────────────────────────────
+// â”€â”€ MESSAGE API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const MsgAPI = {
   users:          ()          => get('/messages/users'),
   searchUsers:    (q)         => get(`/messages/search-users?q=${encodeURIComponent(q)}`),
@@ -161,14 +163,14 @@ const MsgAPI = {
   sendGroup:      (gid, text) => post(`/group-conversations/${gid}/messages`, { content: text }),
 };
 
-// ── SAVED API ─────────────────────────────────────────────────────
+// â”€â”€ SAVED API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SavedAPI = {
   list:   (page) => get(`/saved?page=${page||1}`),
   save:   (id)   => post(`/saved/${id}`),
   unsave: (id)   => del(`/saved/${id}`),
 };
 
-// ── MEDIA API ─────────────────────────────────────────────────────
+// â”€â”€ MEDIA API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const MediaAPI = {
   gallery:    (page)   => get(`/media/gallery?page=${page||1}`),
   highlights: ()       => get('/media/highlights'),
@@ -189,7 +191,7 @@ const MediaAPI = {
   },
 };
 
-// ── GROUP API ─────────────────────────────────────────────────────
+// â”€â”€ GROUP API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const GroupAPI = {
   list:   (params) => get(`/groups?${new URLSearchParams(params||{})}`),
   get:    (id)     => get(`/groups/${id}`, false),
@@ -199,7 +201,7 @@ const GroupAPI = {
   posts:  (id, p)  => get(`/groups/${id}/posts?page=${p||1}`),
 };
 
-// ── LOST PET API ──────────────────────────────────────────────────
+// â”€â”€ LOST PET API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const LostPetAPI = {
   list:     (params) => get(`/lost-pets?${new URLSearchParams(params||{})}`),
   get:      (id)     => get(`/lost-pets/${id}`, false),
@@ -208,7 +210,7 @@ const LostPetAPI = {
   sighting: (id, d)  => post(`/lost-pets/${id}/sightings`, d),
 };
 
-// ── ADOPTION API ──────────────────────────────────────────────────
+// â”€â”€ ADOPTION API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AdoptionAPI = {
   pets:       (params) => get(`/adoptions/pets?${new URLSearchParams(params||{})}`),
   pet:        (id)     => get(`/adoptions/pets/${id}`, false),
@@ -217,7 +219,7 @@ const AdoptionAPI = {
   myInquiries:()       => get('/adoptions/my-inquiries'),
 };
 
-// ── MARKETPLACE API ───────────────────────────────────────────────
+// â”€â”€ MARKETPLACE API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const MarketAPI = {
   products:       (params) => get(`/marketplace/products?${new URLSearchParams(params||{})}`),
   product:        (id)     => get(`/marketplace/products/${id}`, false),
@@ -239,7 +241,7 @@ const MarketAPI = {
   createStore:    (data)   => post('/marketplace/store', data),
 };
 
-// ── EVENTS API ────────────────────────────────────────────────────
+// â”€â”€ EVENTS API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const EventAPI = {
   list:   (page)  => get(`/events?page=${page||1}`),
   get:    (id)    => get(`/events/${id}`),
@@ -248,7 +250,7 @@ const EventAPI = {
   delete: (id)    => del(`/events/${id}`),
 };
 
-// ── TRAINING API ──────────────────────────────────────────────────
+// â”€â”€ TRAINING API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TrainingAPI = {
   programs:   ()          => get('/training/programs', false),
   lessons:    (id)        => get(`/training/programs/${id}/lessons`, false),
@@ -257,7 +259,7 @@ const TrainingAPI = {
   progress:   (id, data)  => patch(`/training/progress/${id}`, data),
 };
 
-// ── INSURANCE API ─────────────────────────────────────────────────
+// â”€â”€ INSURANCE API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const InsuranceAPI = {
   plans:      ()      => get('/insurance/plans', false),
   my:         ()      => get('/insurance/my'),
@@ -265,7 +267,7 @@ const InsuranceAPI = {
   cancel:     (id)    => del(`/insurance/${id}`),
 };
 
-// ── NUTRITION API ─────────────────────────────────────────────────
+// â”€â”€ NUTRITION API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const NutritionAPI = {
   plans:      ()      => get('/nutrition/plans', false),
   plan:       (id)    => get(`/nutrition/plans/${id}`, false),
@@ -276,12 +278,12 @@ const NutritionAPI = {
   removePlan: (id)    => del(`/nutrition/my-plans/${id}`),
 };
 
-// ── ANALYTICS API ─────────────────────────────────────────────────
+// â”€â”€ ANALYTICS API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AnalyticsAPI = {
   me: () => get('/analytics/me'),
 };
 
-// ── TRAVEL API ────────────────────────────────────────────────────
+// â”€â”€ TRAVEL API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TravelAPI = {
   destinations: ()      => get('/travel/destinations', false),
   destination:  (id)    => get(`/travel/destinations/${id}`, false),
@@ -290,7 +292,7 @@ const TravelAPI = {
   unsave:       (id)    => del(`/travel/save/${id}`),
 };
 
-// ── FUNDRAISING API ───────────────────────────────────────────────
+// â”€â”€ FUNDRAISING API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const FundraisingAPI = {
   list:     (page)  => get(`/fundraising?page=${page||1}`),
   get:      (id)    => get(`/fundraising/${id}`),
@@ -298,24 +300,24 @@ const FundraisingAPI = {
   donate:   (id, d) => post(`/fundraising/${id}/donate`, d),
 };
 
-// ── ACTIVITY API ──────────────────────────────────────────────────
+// â”€â”€ ACTIVITY API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ActivityAPI = {
   list: (page) => get(`/activity?page=${page||1}`),
   log:  (data) => post('/activity', data),
 };
 
-// ── MEMORIES API ──────────────────────────────────────────────────
+// â”€â”€ MEMORIES API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const MemoriesAPI = {
   memories:  () => get('/memories'),
   birthdays: () => get('/birthdays'),
 };
 
-// ── SEARCH ────────────────────────────────────────────────────────
+// â”€â”€ SEARCH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SearchAPI = {
   all: (q, category) => get(`/search?q=${encodeURIComponent(q)}&category=${category||'all'}`),
 };
 
-// ── PAWMATCH API ──────────────────────────────────────────────────
+// â”€â”€ PAWMATCH API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const PawMatchAPI = {
   candidates: (params) => get(`/pawmatch?${new URLSearchParams(params||{})}`),
   like:       (id)     => post(`/pawmatch/${id}/like`),
@@ -323,7 +325,7 @@ const PawMatchAPI = {
   matches:    ()       => get('/pawmatch/matches'),
 };
 
-// ── HEALTH CHECK ──────────────────────────────────────────────────
+// â”€â”€ HEALTH CHECK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function checkAPIHealth() {
   try {
     const res = await fetch(API_BASE + '/health');
@@ -336,3 +338,6 @@ async function checkAPIHealth() {
   }
 }
 checkAPIHealth();
+
+
+
