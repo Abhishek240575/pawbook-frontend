@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+html,body{overflow-x:hidden!important;max-width:100%!important}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="/manifest.json">
+<title>PawBook — Bella's Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── Cover ─────────────────────────────────────────────────── */
+.cover-section {
+  width:100%; height:340px; position:relative; overflow:hidden;
+}
+.cover-section img.cover-img {
+  width:100%; height:100%; object-fit:cover; object-position:center 30%;
+}
+.cover-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.35) 100%);
+}
+/* fairy lights strip */
+.fairy-lights {
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff,#c77dff,#ff6b6b);
+}
+.cover-edit-btn {
+  position:absolute; bottom:14px; right:16px;
+  background:rgba(255,255,255,0.22); backdrop-filter:blur(8px);
+  color:#fff; border:1.5px solid rgba(255,255,255,0.4);
+  border-radius:8px; padding:7px 14px; font-size:13px; font-weight:600;
+  cursor:pointer; display:flex; align-items:center; gap:6px;
+  font-family:'Poppins',sans-serif;
+}
+
+/* ── Profile bar ────────────────────────────────────────────── */
+.profile-bar {
+  background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.10);
+  position:relative; z-index:10;
+}
+.profile-bar-inner {
+  max-width:1100px; margin:0 auto; padding:0 24px;
+}
+.profile-top {
+  display:flex; align-items:flex-end;
+  justify-content:space-between; padding-bottom:12px;
+}
+
+/* Avatar */
+.profile-av-wrap { position:relative; margin-top:-54px; }
+.profile-av {
+  width:148px; height:148px; border-radius:50%;
+  border:5px solid #fff; box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  overflow:hidden; background:#fff3e0;
+  display:flex; align-items:center; justify-content:center;
+}
+.profile-av img { width:100%; height:100%; object-fit:cover; }
+.profile-av-badge {
+  position:absolute; bottom:12px; right:12px;
+  width:26px; height:26px; border-radius:50%;
+  background:#31a24c; border:3px solid #fff;
+}
+.profile-av-edit {
+  position:absolute; bottom:12px; right:12px;
+  width:28px; height:28px; border-radius:50%;
+  background:var(--blue); border:3px solid #fff;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:#fff; font-size:13px;
+}
+
+/* Name block */
+.profile-name-block { padding-bottom:12px; }
+.profile-fullname {
+  font-size:26px; font-weight:900; color:#1a1a2e;
+  display:flex; align-items:center; gap:8px;
+}
+.profile-breed-sub { font-size:14px; color:#65676b; margin-top:2px; }
+.active-pill {
+  font-size:13px; color:#31a24c; font-weight:600;
+  display:flex; align-items:center; gap:4px;
+}
+.active-dot { width:8px; height:8px; border-radius:50%; background:#31a24c; }
+
+/* Stats */
+.profile-stats { display:flex; gap:24px; margin-top:8px; }
+.pstat { cursor:pointer; }
+.pstat-num { font-size:17px; font-weight:800; color:#1a1a2e; }
+.pstat-lbl { font-size:13px; color:#65676b; }
+
+/* Action buttons */
+.profile-action-btns { display:flex; gap:8px; align-items:flex-end; padding-bottom:12px; }
+.pac-btn {
+  height:38px; border-radius:8px; padding:0 16px;
+  font-size:13px; font-weight:700; cursor:pointer;
+  font-family:'Poppins',sans-serif;
+  display:flex; align-items:center; gap:7px; border:none;
+  transition:filter 0.15s;
+}
+.pac-btn:hover { filter:brightness(0.92); }
+.pac-follow   { background:#e4e6eb; color:#1a1a2e; }
+.pac-message  { background:#e4e6eb; color:#1a1a2e; }
+.pac-share    { background:#e4e6eb; color:#1a1a2e; }
+.pac-bookvet  { background:var(--blue); color:#fff; }
+.pac-donate   { background:#e4e6eb; color:#dc2626; }
+
+/* Tabs */
+.profile-tabs { display:flex; border-top:1px solid #e4e6eb; }
+.ptab {
+  padding:14px 20px; font-size:14px; font-weight:600;
+  color:#65676b; cursor:pointer; border-bottom:3px solid transparent;
+  margin-bottom:-1px; white-space:nowrap; transition:all 0.15s;
+}
+.ptab:hover { color:var(--blue); background:#f0f2f5; }
+.ptab.active { color:var(--blue); border-bottom-color:var(--blue); }
+
+/* ── 3-col layout ────────────────────────────────────────────── */
+.profile-page {
+  max-width: 100%; margin: 0;
+  display:grid; grid-template-columns:240px 1fr 260px;
+  gap:14px; padding:0 16px;
+}
+@media(max-width:768px){}
+
+/* ── Left sidebar ────────────────────────────────────────────── */
+.info-row {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 0; border-bottom:1px solid #e4e6eb;
+  font-size:13px;
+}
+.info-row:last-child { border-bottom:none; }
+.info-icon {
+  width:32px; height:32px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0;
+}
+.info-val   { font-weight:700; color:#1a1a2e; }
+.info-label { font-size:12px; color:#65676b; }
+.rec-vet {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 0; border-bottom:1px solid #e4e6eb; cursor:pointer;
+}
+.rec-vet:last-child { border-bottom:none; }
+.rec-vet-av {
+  width:44px; height:44px; border-radius:10px;
+  overflow:hidden; flex-shrink:0;
+}
+.rec-vet-av img { width:100%; height:100%; object-fit:cover; object-position:top; }
+
+/* ── Middle column ───────────────────────────────────────────── */
+/* Reminder bar */
+.reminder-bar {
+  background:#fff; border-radius:10px; padding:11px 16px;
+  margin-bottom:12px; display:flex; align-items:center;
+  justify-content:space-between; box-shadow:var(--shadow);
+  border-left:4px solid var(--amber); cursor:pointer;
+}
+/* Sub-tabs inside timeline */
+.timeline-subtabs {
+  display:flex; gap:6px; padding:12px 14px;
+  border-bottom:1px solid #e4e6eb; background:#fff;
+  overflow-x:auto; scrollbar-width:none;
+}
+.timeline-subtabs::-webkit-scrollbar { display:none; }
+.tstab {
+  padding:7px 14px; border-radius:20px; font-size:13px;
+  font-weight:700; cursor:pointer; border:none;
+  font-family:'Poppins',sans-serif; white-space:nowrap;
+  transition:all 0.15s;
+}
+.tstab.active { background:var(--blue); color:#fff; }
+.tstab:not(.active) { background:#e4e6eb; color:#65676b; }
+
+/* Story highlights */
+.hl-row {
+  display:flex; gap:8px; overflow-x:auto; padding:12px 14px;
+  scrollbar-width:none;
+}
+.hl-row::-webkit-scrollbar { display:none; }
+.hl-card {
+  flex-shrink:0; width:110px; height:180px;
+  border-radius:10px; overflow:hidden; position:relative;
+  cursor:pointer; border:2px solid var(--blue);
+}
+.hl-card img { width:100%; height:100%; object-fit:cover; }
+.hl-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(transparent 40%,rgba(0,0,0,0.7));
+}
+.hl-label {
+  position:absolute; bottom:8px; left:0; right:0;
+  color:#fff; font-size:12px; font-weight:700;
+  text-align:center; padding:0 6px;
+}
+.hl-add {
+  flex-shrink:0; width:110px; height:180px;
+  border-radius:10px; overflow:hidden; position:relative;
+  cursor:pointer; border:2px dashed var(--border); background:#f8f9fa;
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:flex-end; padding-bottom:12px;
+}
+.hl-add-circle {
+  width:40px; height:40px; border-radius:50%;
+  background:var(--blue); color:#fff; font-size:20px;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:8px;
+}
+
+/* Composer */
+.composer-row { display:flex; align-items:center; gap:10px; padding:12px 14px; }
+.composer-av-img {
+  width:42px; height:42px; border-radius:50%; overflow:hidden;
+  flex-shrink:0; border:2px solid var(--blue-light);
+}
+.composer-av-img img { width:100%; height:100%; object-fit:cover; }
+.composer-box {
+  flex:1; height:42px; border-radius:20px; background:#f0f2f5;
+  border:1px solid var(--border); display:flex; align-items:center;
+  padding:0 16px; font-size:14px; color:var(--muted);
+  cursor:pointer; font-family:'Poppins',sans-serif; font-weight:500;
+}
+.composer-box:hover { background:#e4e6eb; }
+.composer-acts {
+  display:flex; border-top:1px solid var(--border);
+  padding:4px 8px;
+}
+.c-act {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  gap:6px; padding:8px; border-radius:8px; cursor:pointer;
+  font-size:13px; font-weight:600; color:var(--muted);
+  border:none; background:transparent; font-family:'Poppins',sans-serif;
+}
+.c-act:hover { background:#f0f2f5; }
+
+/* Post cards */
+.post { background:#fff; margin-bottom:10px; border-radius:12px; box-shadow:var(--shadow); border:1px solid var(--border); overflow:hidden; }
+.post-hd { display:flex; align-items:center; gap:10px; padding:12px 14px 0; }
+.post-av-img { width:42px; height:42px; border-radius:50%; overflow:hidden; flex-shrink:0; border:2px solid var(--blue-light); }
+.post-av-img img { width:100%; height:100%; object-fit:cover; }
+.post-body-text { padding:8px 14px; font-size:14px; line-height:1.6; color:#1a1a2e; }
+.post-photo { width:100%; overflow:hidden; }
+.post-photo img { width:100%; max-height:420px; object-fit:cover; display:block; }
+.post-stats { display:flex; justify-content:space-between; padding:8px 14px; font-size:13px; color:#65676b; border-top:1px solid #e4e6eb; border-bottom:1px solid #e4e6eb; margin-top:8px; }
+.post-actions { display:flex; padding:4px 8px; }
+.p-act { flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:8px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; color:#65676b; border:none; background:transparent; font-family:'Poppins',sans-serif; }
+.p-act:hover { background:#f0f2f5; }
+.p-act.liked { color:var(--red); }
+
+/* Vaccination table */
+.vacc-item {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px; border-bottom:1px solid #e4e6eb; font-size:13px;
+}
+.vacc-item:last-child { border-bottom:none; }
+.vacc-check { font-size:18px; }
+
+/* ── Right sidebar ───────────────────────────────────────────── */
+.milestone-grid { display:flex; flex-wrap:wrap; gap:10px; padding:4px 0; }
+.mbadge { font-size:34px; cursor:pointer; title:attr(title); }
+.donation-img { width:100%; height:100px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
+.adopt-img { width:100%; height:90px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
+</style>
+<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}
+/* ═══ MOBILE RESPONSIVE ═══ */
+html,body{overflow-x:hidden}
+@media(max-width:768px){
+  .profile-page{display:block!important;padding:64px 0 72px!important;max-width:100%!important}
+  .profile-page>div:last-child{display:none!important}
+  .profile-page>div:first-child{display:none!important}
+  .profile-page>div:nth-child(2){display:block!important;width:100%!important}
+  .cover-photo{height:180px!important}
+  .profile-header{padding:0 12px!important}
+  .profile-tabs{overflow-x:auto!important;white-space:nowrap!important;display:flex!important}
+  .profile-tab{display:inline-flex!important;flex-shrink:0!important}
+  .tab-content{padding:10px!important}
+  .post-actions{flex-wrap:nowrap!important}
+  .topnav-tabs{display:none!important}
+  .bottomnav{display:flex!important}
+  body{padding-bottom:72px!important}
+  [style*="display:grid"],[style*="display: grid"]{display:block!important}
+  [style*="grid-template-columns"]{grid-template-columns:1fr!important}
+}</style>
+
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <button class="burger-btn" onclick="openDrawer()" aria-label="Menu" style="width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:#1877F2;font-size:28px;align-items:center;justify-content:center;flex-shrink:0;font-weight:900;line-height:1;padding:0;display:flex">☰</button>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search PawBook…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-user"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn"><i class="ti ti-grid-dots"></i></button>
+    <button class="nav-icon-btn"><i class="ti ti-message-circle"></i></button>
+    <button class="nav-icon-btn" style="position:relative"><i class="ti ti-bell"></i><span style="position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--blue)"></span></button>
+    <div class="nav-avatar" id="nav-av">A</div>
+  </div>
+</nav>
+
+<!-- COVER PHOTO -->
+<div class="cover-section">
+  <img class="cover-img" src="https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=1400&q=85" alt="Bella cover">
+  <div class="cover-overlay"></div>
+  <div class="fairy-lights"></div>
+  <button class="cover-edit-btn"><i class="ti ti-camera"></i> Edit Cover Photo</button>
+</div>
+
+<!-- PROFILE BAR -->
+<div class="profile-bar">
+  <div class="profile-bar-inner">
+    <div class="profile-top">
+      <!-- Avatar + name -->
+      <div style="display:flex;align-items:flex-end;gap:16px">
+        <div class="profile-av-wrap" style="position:relative;cursor:pointer" onclick="document.getElementById('avatar-upload').click()" title="Change profile photo">
+          <div class="profile-av">
+            <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=85" alt="Bella" id="profile-av-img">
+          </div>
+          <div class="profile-av-badge"></div>
+          <!-- Avatar edit overlay -->
+          <div style="position:absolute;bottom:2px;right:2px;width:28px;height:28px;border-radius:50%;background:var(--blue,#1877F2);border:2px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.25)">
+            <i class="ti ti-camera" style="font-size:13px;color:#fff"></i>
+          </div>
+        </div>
+        <!-- Hidden avatar file input -->
+        <input type="file" id="avatar-upload" accept="image/*" style="display:none">
+        <div class="profile-name-block">
+          <div class="profile-fullname" id="pname">
+            Bella
+            <i class="ti ti-circle-check" style="color:var(--blue);font-size:20px"></i>
+          </div>
+          <div class="profile-breed-sub" id="psub">Golden Retriever · Female · 4 Years Old</div>
+          <div class="active-pill"><div class="active-dot"></div> Active now ▾</div>
+          <div class="profile-stats">
+            <div class="pstat"><span class="pstat-num" id="p-followers">0</span> <span class="pstat-lbl">Followers</span></div>
+            <div class="pstat"><span class="pstat-num" id="p-following">0</span> <span class="pstat-lbl">Following</span></div>
+            <div class="pstat"><span class="pstat-num" id="p-pets">0</span> <span class="pstat-lbl">Pets</span></div>
+            <div class="pstat"><span class="pstat-num" id="p-posts">0</span> <span class="pstat-lbl">Posts</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- Action buttons -->
+      <div class="profile-action-btns">
+        <button class="pac-btn pac-follow" id="follow-btn" onclick="toggleFollowUser(this)"><i class="ti ti-users"></i> Follow</button>
+        <button class="pac-btn pac-message" onclick="goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Message</button>
+        <button class="pac-btn pac-share" onclick="shareProfile()"><i class="ti ti-share"></i> Share</button>
+        <button class="pac-btn pac-bookvet" onclick="goTo('11_vet_booking.html')"><i class="ti ti-star-filled"></i> Book Vet</button>
+        <button class="pac-btn pac-donate" onclick="goTo('04_adoption.html')"><i class="ti ti-heart-filled"></i> Donate</button>
+        <button class="pac-btn pac-follow btn-icon" onclick="toast('Logged out','info');Auth.logout();goTo('01_login.html')" title="Log Out" style="padding:0 10px"><i class="ti ti-logout"></i></button>
+      </div>
+    </div>
+    <!-- Profile tabs -->
+    <div class="profile-tabs">
+      <div class="ptab active" onclick="setTab(this)">Timeline</div>
+      <div class="ptab" onclick="setTab(this)">Health Records</div>
+      <div class="ptab" onclick="setTab(this)">Friends</div>
+      <div class="ptab" onclick="setTab(this)">Achievements</div>
+      <div class="ptab" onclick="goTo('09_marketplace.html')">Marketplace</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3-COLUMN LAYOUT -->
+<div class="profile-page">
+
+  <!-- ── LEFT SIDEBAR ─────────────────────────────────────── -->
+  <div>
+    <!-- Pet Info -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div style="font-size:16px;font-weight:800;margin-bottom:10px">Pet Info</div>
+        <div id="pet-info-list">
+          <div class="info-row">
+            <div class="info-icon" style="background:#dbeafe">➕</div>
+            <div><div class="info-val">Age: 4 Years</div></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" style="background:#f0f2f5">⚖️</div>
+            <div><div class="info-val">Weight: 28 kg</div></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" style="background:#dcfce7">💚</div>
+            <div><div class="info-val">Health Score: <span style="color:var(--green)">Excellent</span></div></div>
+          </div>
+        </div>
+        <button class="btn btn-gray btn-full btn-sm" style="margin-top:10px" onclick="addPet()"><i class="ti ti-plus"></i> Add a Pet</button>
+      </div>
+    </div>
+
+    <!-- Recommended Vets -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div style="font-size:14px;font-weight:800;margin-bottom:10px">Recommended Vets</div>
+        <div class="rec-vet" onclick="goTo('11_vet_booking.html')">
+          <div class="rec-vet-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&q=80" alt="Dr. Amit Mehta"></div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--blue)">Dr. Amit Mehta</div>
+            <div style="font-size:12px;color:var(--muted)">Veterinary Clinic</div>
+            <div style="font-size:12px;color:var(--muted)">Nearby</div>
+          </div>
+        </div>
+        <div class="rec-vet" onclick="goTo('11_vet_booking.html')">
+          <div class="rec-vet-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&q=80" alt="Dr. Priya Sharma"></div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--blue)">Dr. Priya Sharma</div>
+            <div style="font-size:12px;color:var(--muted)">Pet Health Clinic</div>
+            <div style="font-size:12px;color:var(--muted)">2.1 km away</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="card">
+      <div class="card-body">
+        <div style="font-size:14px;font-weight:800;margin-bottom:10px">Upcoming Events</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer">
+          <div style="width:44px;height:44px;border-radius:10px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🐕</div>
+          <div><div style="font-size:13px;font-weight:700">Dog Park Meetup</div><div style="font-size:12px;color:var(--muted)">Sat, May 25</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer">
+          <div style="width:44px;height:44px;border-radius:10px;background:#fce4ec;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">❤️</div>
+          <div><div style="font-size:13px;font-weight:700">Adoption Fair</div><div style="font-size:12px;color:var(--muted)">Sun, May 26</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MIDDLE COLUMN ──────────────────────────────────────── -->
+  <div>
+    <!-- Reminder bar -->
+    <div class="reminder-bar" onclick="goTo('10_vaccination.html')">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:22px">🔔</span>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--amber)" id="rem-title">📅 Next Vet Visit: May 20, 2024 — Lepto Vaccine Reminder set!</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px">⚙️</button>
+        <button class="btn btn-sm" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px" onclick="showToast('Added to favorites!','success')">⭐</button>
+      </div>
+    </div>
+
+    <!-- Sub tabs (Posts / Health Records / Friends / Achievements) -->
+    <div class="card" style="margin-bottom:10px">
+      <div class="timeline-subtabs">
+        <button class="tstab active" onclick="setSubTab(this)"><i class="ti ti-users" style="font-size:14px"></i> Posts</button>
+        <button class="tstab" onclick="setSubTab(this)"><i class="ti ti-vaccine" style="font-size:14px"></i> Health Records</button>
+        <button class="tstab" onclick="setSubTab(this)"><i class="ti ti-users" style="font-size:14px"></i> Friends</button>
+        <button class="tstab" onclick="setSubTab(this)"><i class="ti ti-trophy" style="font-size:14px"></i> Achievements</button>
+      </div>
+
+      <!-- Story highlights -->
+      <div class="hl-row">
+        <div class="hl-add" onclick="openPostModal()">
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.4)">
+          <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center">
+            <div class="hl-add-circle"><i class="ti ti-plus"></i></div>
+            <div style="color:#fff;font-size:11px;font-weight:700">Add Story</div>
+          </div>
+        </div>
+        <div class="hl-card">
+          <img src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=200&q=80" alt="Birthday Fun">
+          <div class="hl-overlay"></div>
+          <div class="hl-label">Birthday Fun</div>
+        </div>
+        <div class="hl-card">
+          <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Park Adventures">
+          <div class="hl-overlay"></div>
+          <div class="hl-label">Park Adventures</div>
+        </div>
+        <div class="hl-card">
+          <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=200&q=80" alt="Vet Visits">
+          <div class="hl-overlay"></div>
+          <div class="hl-label">Vet Visits</div>
+        </div>
+        <div class="hl-card">
+          <img src="https://images.unsplash.com/photo-1568572933382-74d440642117?w=200&q=80" alt="Swimming">
+          <div class="hl-overlay"></div>
+          <div class="hl-label">Swimming</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post composer -->
+    <div class="card" style="margin-bottom:10px">
+      <div class="composer-row">
+        <div class="composer-av-img">
+          <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80" alt="You">
+        </div>
+        <div class="composer-box" onclick="openPostModal()">What is your pet up to today? 🐾</div>
+      </div>
+      <div class="composer-acts">
+        <button class="c-act" onclick="openPostModal('photo')"><i class="ti ti-photo" style="color:#45bd62;font-size:18px"></i> Photo/Video</button>
+        <button class="c-act" onclick="openPostModal('feeling')"><i class="ti ti-mood-smile" style="color:var(--amber);font-size:18px"></i> Feeling</button>
+        <button class="c-act" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope" style="color:var(--blue);font-size:18px"></i> Ask Vet</button>
+      </div>
+    </div>
+
+    <!-- Posts feed -->
+    <div id="feed">
+      <div class="post" style="text-align:center;padding:32px">
+        <div style="font-size:36px;margin-bottom:8px">🐾</div>
+        <div style="font-weight:700;font-size:15px">Loading posts…</div>
+      </div>
+    </div>
+
+    <!-- Vaccination Records -->
+    <div class="card" id="vacc-section" style="display:none;margin-top:10px">
+      <div class="card-body" style="border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px"><i class="ti ti-vaccine" style="color:var(--blue)"></i> Vaccination Records</div>
+          <a style="font-size:13px;color:var(--blue);font-weight:600;cursor:pointer" onclick="goTo('10_vaccination.html')">View all</a>
+        </div>
+      </div>
+      <div id="vacc-list">
+        <div class="vacc-item">
+          <div class="vacc-check">✅</div>
+          <div style="flex:1"><span style="font-weight:700">Rabies Vaccine</span></div>
+          <div style="color:var(--blue);font-weight:600;font-size:13px">Apr 10, 2024</div>
+          <i class="ti ti-check" style="color:var(--green);font-size:18px"></i>
+        </div>
+        <div class="vacc-item">
+          <div class="vacc-check">⚠️</div>
+          <div style="flex:1"><span style="font-weight:700">Upcoming: Leptospirosis Vaccine</span></div>
+          <div style="color:var(--amber);font-weight:600;font-size:13px">May 20, 2024</div>
+        </div>
+      </div>
+      <div style="padding:12px 14px">
+        <button class="btn btn-blue btn-full btn-sm" onclick="goTo('10_vaccination.html')">📅 Set Reminder</button>
+      </div>
+    </div>
+  
+    <!-- Friends Section -->
+    <div id="friends-section" style="display:none;margin-top:10px">
+      <div class="card">
+        <div style="padding:14px 16px;font-size:15px;font-weight:800;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:8px">
+          <i class="ti ti-users" style="color:var(--blue)"></i> Friends (248)
+        </div>
+        <div style="display:grid;grid-template-columns:1fr;gap:0">
+          <div style="padding:14px;border-bottom:1px solid #f1f5f9;border-right:1px solid #f1f5f9">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover">
+              <div><div style="font-size:13px;font-weight:700">Priya Sharma</div><div style="font-size:11px;color:#64748b">Luna 🐈 · 3 mutual</div></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="goTo('29_user_profile.html')" style="flex:1;height:28px;border-radius:6px;border:none;background:var(--blue);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">View</button>
+              <button onclick="goTo('13_messages.html')" style="flex:1;height:28px;border-radius:6px;border:1.5px solid #e2e8f0;background:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">Message</button>
+            </div>
+          </div>
+          <div style="padding:14px;border-bottom:1px solid #f1f5f9">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <img src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=60&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover">
+              <div><div style="font-size:13px;font-weight:700">Rahul Dev</div><div style="font-size:11px;color:#64748b">Max 🐕 · 5 mutual</div></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="goTo('29_user_profile.html')" style="flex:1;height:28px;border-radius:6px;border:none;background:var(--blue);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">View</button>
+              <button onclick="goTo('13_messages.html')" style="flex:1;height:28px;border-radius:6px;border:1.5px solid #e2e8f0;background:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">Message</button>
+            </div>
+          </div>
+          <div style="padding:14px;border-bottom:1px solid #f1f5f9;border-right:1px solid #f1f5f9">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover">
+              <div><div style="font-size:13px;font-weight:700">Ananya Bose</div><div style="font-size:11px;color:#64748b">Milo 🐇 · 2 mutual</div></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="goTo('29_user_profile.html')" style="flex:1;height:28px;border-radius:6px;border:none;background:var(--blue);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">View</button>
+              <button onclick="goTo('13_messages.html')" style="flex:1;height:28px;border-radius:6px;border:1.5px solid #e2e8f0;background:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">Message</button>
+            </div>
+          </div>
+          <div style="padding:14px;border-bottom:1px solid #f1f5f9">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=60&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover">
+              <div><div style="font-size:13px;font-weight:700">Dr. Arjun Mehta</div><div style="font-size:11px;color:#64748b">Vet 🩺 · 8 mutual</div></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="goTo('29_user_profile.html')" style="flex:1;height:28px;border-radius:6px;border:none;background:var(--blue);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">View</button>
+              <button onclick="goTo('13_messages.html')" style="flex:1;height:28px;border-radius:6px;border:1.5px solid #e2e8f0;background:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif">Message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievements Section -->
+    <div id="achievements-section" style="display:none;margin-top:10px">
+      <div class="card">
+        <div style="padding:14px 16px;font-size:15px;font-weight:800;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:8px">
+          <i class="ti ti-trophy" style="color:#f59e0b"></i> Achievements
+        </div>
+        <div style="display:grid;grid-template-columns:1fr;gap:12px;padding:16px">
+          <div style="background:#fffbeb;border-radius:12px;padding:14px;border:1.5px solid #fde68a;text-align:center"><div style="font-size:32px">🥇</div><div style="font-size:13px;font-weight:800;margin-top:4px">First Post</div><div style="font-size:11px;color:#64748b">Mar 2024</div></div>
+          <div style="background:#f0fdf4;border-radius:12px;padding:14px;border:1.5px solid #bbf7d0;text-align:center"><div style="font-size:32px">🐾</div><div style="font-size:13px;font-weight:800;margin-top:4px">Pet Parent</div><div style="font-size:11px;color:#64748b">Mar 2024</div></div>
+          <div style="background:#eff6ff;border-radius:12px;padding:14px;border:1.5px solid #bfdbfe;text-align:center"><div style="font-size:32px">💉</div><div style="font-size:13px;font-weight:800;margin-top:4px">Health Hero</div><div style="font-size:11px;color:#64748b">Jun 2024</div></div>
+          <div style="background:#fdf4ff;border-radius:12px;padding:14px;border:1.5px solid #e9d5ff;text-align:center"><div style="font-size:32px">👥</div><div style="font-size:13px;font-weight:800;margin-top:4px">Social Paw</div><div style="font-size:11px;color:#64748b">Aug 2024</div></div>
+          <div style="background:#f0fdf4;border-radius:12px;padding:14px;border:1.5px solid #bbf7d0;text-align:center"><div style="font-size:32px">🏥</div><div style="font-size:13px;font-weight:800;margin-top:4px">Vet Regular</div><div style="font-size:11px;color:#64748b">Sep 2024</div></div>
+          <div style="background:#f8fafc;border-radius:12px;padding:14px;border:1.5px solid #e2e8f0;text-align:center;opacity:0.5"><div style="font-size:32px">🔒</div><div style="font-size:13px;font-weight:800;margin-top:4px;color:#94a3b8">Top Star</div><div style="font-size:11px;color:#94a3b8">Locked</div></div>
+        </div>
+      </div>
+    </div>
+</div>
+
+  <!-- ── RIGHT SIDEBAR ──────────────────────────────────────── -->
+  <div>
+    <!-- Milestones -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div style="font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-award" style="color:var(--amber)"></i> Milestones & Badges</div>
+        <div class="milestone-grid">
+          <span class="mbadge" title="First Post">⭐</span>
+          <span class="mbadge" title="Vaccinated">💉</span>
+          <span class="mbadge" title="Community">🏅</span>
+          <span class="mbadge" title="Pet Lover">❤️</span>
+          <span class="mbadge" title="Verified">🥇</span>
+          <span class="mbadge" title="Adopter">🏠</span>
+        </div>
+        <div style="margin-top:8px">
+          <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:40%"></div></div>
+          <div style="font-size:12px;color:var(--muted)">40% profile complete — unlock more badges!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Donation Campaign -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div style="font-size:14px;font-weight:800;color:var(--red);margin-bottom:10px">❤️ Donation Campaign</div>
+        <img src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=400&q=80" class="donation-img" alt="Shelter Pets">
+        <div style="font-size:15px;font-weight:800;margin-bottom:4px">Help Local Shelter Pets</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Supporting animals in need near you</div>
+        <div class="progress-bar progress-green" style="margin-bottom:6px">
+          <div class="progress-fill" style="width:62%;background:var(--green)"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:12px">
+          <span style="font-weight:800;color:var(--green)">₹12,500 raised</span>
+          <span style="color:var(--muted)">₹20,000 goal</span>
+        </div>
+        <button class="btn btn-blue btn-full" onclick="goTo('04_adoption.html')">Donate Now</button>
+      </div>
+    </div>
+
+    <!-- Adoption Event -->
+    <div class="card">
+      <div class="card-body">
+        <div style="font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-circle-check" style="color:var(--blue)"></i> Adoption Event</div>
+        <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80" class="adopt-img" alt="Adoption Event">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px">Interested in the pet fair this Sunday?</div>
+        <div style="display:flex;gap:14px;font-size:13px;margin-bottom:12px">
+          <span><span style="color:#31a24c;font-weight:700">●</span> 168 Interested</span>
+          <span style="color:var(--muted)">45 Comments</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm" style="background:var(--blue-xlight);color:var(--blue);flex:1" onclick="goTo('04_adoption.html')">Interested</button>
+          <button class="btn btn-sm btn-gray" style="flex:1">Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Post Modal -->
+<!-- Post Modal -->
+<div class="modal-overlay" id="post-modal" style="display:none" onclick="if(event.target===this)closePostModal()">
+  <div class="modal-box" style="width:520px;max-width:100%">
+    <div class="modal-header">
+      <div class="modal-title" id="post-modal-title">Create Post</div>
+      <button class="modal-close" onclick="closePostModal()">✕</button>
+    </div>
+    <div class="modal-body" style="padding:16px">
+      <!-- User row -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0">
+          <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:700">Abhishek Kumar</div>
+          <select id="post-vis" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:3px 10px;font-size:12px;font-family:'Poppins',sans-serif;outline:none;margin-top:2px">
+            <option value="public">🌍 Public</option>
+            <option value="followers">👥 Friends only</option>
+            <option value="private">🔒 Only me</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Feeling bar (shown when feeling mode) -->
+      <div id="feeling-bar" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:700;width:100%;color:#475569">How is Bruno feeling?</div>
+        <button onclick="selectFeeling(this,'😊 Happy')" style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif">😊 Happy</button>
+        <button onclick="selectFeeling(this,'🤒 Unwell')" style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif">🤒 Unwell</button>
+        <button onclick="selectFeeling(this,'😴 Sleepy')" style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif">😴 Sleepy</button>
+        <button onclick="selectFeeling(this,'🎉 Excited')" style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif">🎉 Excited</button>
+        <button onclick="selectFeeling(this,'😢 Sad')" style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif">😢 Sad</button>
+        <button onclick="selectFeeling(this,'💪 Energetic')" style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif">💪 Energetic</button>
+        <button onclick="selectFeeling(this,'😍 Playful')" style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif">😍 Playful</button>
+        <button onclick="selectFeeling(this,'🏥 At Vet')" style="padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif">🏥 At Vet</button>
+      </div>
+
+      <!-- Text area -->
+      <textarea id="post-body" style="width:100%;min-height:100px;border:none;font-size:15px;font-family:'Poppins',sans-serif;outline:none;resize:none;color:#1e293b" placeholder="What's Bruno up to today? 🐾"></textarea>
+
+      <!-- Selected feeling tag -->
+      <div id="feeling-tag" style="display:none;background:#fef3c7;border-radius:20px;padding:4px 14px;font-size:13px;font-weight:700;color:#d97706;display:inline-block;margin-bottom:8px"></div>
+
+      <!-- Photo preview -->
+      <div id="photo-preview" style="display:none;border-radius:12px;overflow:hidden;margin-bottom:10px;position:relative">
+        <img id="preview-img" style="width:100%;max-height:240px;object-fit:cover;display:block">
+        <button onclick="removePhoto()" style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,0.5);color:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">✕</button>
+      </div>
+
+      <!-- Bottom actions -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9">
+        <div style="display:flex;gap:6px">
+          <button onclick="triggerPhotoSelect()" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:12px;font-weight:700;font-family:'Poppins',sans-serif;color:#16a34a">
+            <i class="ti ti-photo" style="font-size:16px"></i> Photo
+          </button>
+          <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+          <button onclick="toggleFeelingBar()" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:12px;font-weight:700;font-family:'Poppins',sans-serif;color:#d97706">
+            <i class="ti ti-mood-smile" style="font-size:16px"></i> Feeling
+          </button>
+          <button onclick="addLocation()" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-size:12px;font-weight:700;font-family:'Poppins',sans-serif;color:#ef4444">
+            <i class="ti ti-map-pin" style="font-size:16px"></i> Location
+          </button>
+        </div>
+        <button onclick="submitPost()" id="post-submit-btn" style="height:38px;padding:0 20px;border-radius:10px;border:none;background:#1a4db3;color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Post</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap"></div>
+<script>
+// ── CORE FUNCTIONS (always available, no api.js dependency) ──────────────────
+function goTo(p){window.location.href=p;}
+function toast(msg,type){
+  var t=document.createElement('div');
+  var bg=(!type||type==='success')?'#16a34a':(type==='error'?'#dc2626':'#6366f1');
+  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+bg+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap;max-width:90vw;text-align:center';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},2500);
+}
+
+// ── TAB FUNCTIONS ─────────────────────────────────────────────────────────────
+function setTab(el){
+  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  var label=el.textContent.trim().toLowerCase();
+  if(label.indexOf('health')>=0) showSection('vacc-section');
+  else if(label.indexOf('friend')>=0) showSection('friends-section');
+  else if(label.indexOf('achiev')>=0) showSection('achievements-section');
+  else showSection('feed');
+  // Also sync sub-tabs
+  document.querySelectorAll('.tstab').forEach(function(t){
+    t.classList.remove('active');
+    var tl=t.textContent.trim().toLowerCase();
+    if((label.indexOf('health')>=0&&tl.indexOf('health')>=0)||
+       (label.indexOf('friend')>=0&&tl.indexOf('friend')>=0)||
+       (label.indexOf('achiev')>=0&&tl.indexOf('achiev')>=0)||
+       (label.indexOf('health')<0&&label.indexOf('friend')<0&&label.indexOf('achiev')<0&&(tl.indexOf('post')>=0||tl===document.querySelector('.tstab').textContent.trim().toLowerCase())))
+      t.classList.add('active');
+  });
+}
+
+function setSubTab(el){
+  document.querySelectorAll('.tstab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  var label=el.textContent.trim().toLowerCase();
+  if(label.indexOf('health')>=0) showSection('vacc-section');
+  else if(label.indexOf('friend')>=0) showSection('friends-section');
+  else if(label.indexOf('achiev')>=0) showSection('achievements-section');
+  else showSection('feed');
+}
+
+function showSection(targetId){
+  var ids=['feed','vacc-section','friends-section','achievements-section'];
+  for(var i=0;i<ids.length;i++){
+    var s=document.getElementById(ids[i]);
+    if(s) s.style.display='none';
+  }
+  var target=document.getElementById(targetId);
+  if(target) target.style.display='block';
+  else toast(targetId+' section not found','error');
+}
+
+// ── PROFILE ACTION BUTTONS ────────────────────────────────────────────────────
+function toggleFollowUser(btn){
+  var f=btn.classList.contains('following');
+  btn.classList.toggle('following');
+  btn.innerHTML=f?'<i class="ti ti-users"></i> Follow':'<i class="ti ti-user-check"></i> Following ✓';
+  btn.style.background=f?'':'#1a4db3';
+  btn.style.color=f?'':'#fff';
+  toast(f?'Unfollowed':'Now following!',f?'info':'success');
+}
+function shareProfile(){
+  if(navigator.clipboard)navigator.clipboard.writeText(location.href);
+  toast('Profile link copied!','success');
+}
+function editCover(){
+  // Trigger the hidden cover-upload input
+  var inp = document.getElementById('cover-upload');
+  if(inp) inp.click();
+}
+function addPet(){goTo('02_onboarding.html');}
+
+// ── POST MODAL ────────────────────────────────────────────────────────────────
+var selectedFeeling='';
+
+function openPostModal(mode){
+  var modal=document.getElementById('post-modal');
+  if(!modal)return;
+  modal.style.display='flex';
+  document.getElementById('post-body').value='';
+  document.getElementById('feeling-tag').style.display='none';
+  document.getElementById('photo-preview').style.display='none';
+  selectedFeeling='';
+  if(mode==='photo'){
+    document.getElementById('post-modal-title').textContent='📷 Add Photo/Video';
+    document.getElementById('feeling-bar').style.display='none';
+    setTimeout(function(){document.getElementById('photo-input').click();},300);
+  } else if(mode==='feeling'){
+    document.getElementById('post-modal-title').textContent='😊 How is Bruno feeling?';
+    document.getElementById('feeling-bar').style.display='flex';
+  } else {
+    document.getElementById('post-modal-title').textContent='Create Post';
+    document.getElementById('feeling-bar').style.display='none';
+  }
+  setTimeout(function(){document.getElementById('post-body').focus();},100);
+}
+
+function closePostModal(){
+  var modal=document.getElementById('post-modal');
+  if(modal) modal.style.display='none';
+}
+
+function selectFeeling(btn,feeling){
+  selectedFeeling=feeling;
+  document.querySelectorAll('#feeling-bar button').forEach(function(b){
+    b.style.background='#fff';b.style.borderColor='#e2e8f0';b.style.color='';
+  });
+  btn.style.background='#fef3c7';btn.style.borderColor='#f59e0b';btn.style.color='#d97706';
+  var tag=document.getElementById('feeling-tag');
+  tag.textContent='Feeling '+feeling;
+  tag.style.display='inline-block';
+  document.getElementById('post-body').focus();
+}
+
+function toggleFeelingBar(){
+  var bar=document.getElementById('feeling-bar');
+  bar.style.display=bar.style.display==='flex'?'none':'flex';
+}
+
+function triggerPhotoSelect(){
+  document.getElementById('photo-input').click();
+}
+
+function previewPhoto(input){
+  if(!input.files||!input.files[0])return;
+  var file=input.files[0];
+  // Show local preview immediately
+  var preview=document.getElementById('photo-preview');
+  var img=document.getElementById('preview-img');
+  img.src=URL.createObjectURL(file);
+  preview.style.display='block';
+  // Upload to Cloudinary in background
+  window._pendingPostImageUrl=null;
+  if(typeof uploadToCloudinary==='function'){
+    uploadToCloudinary(file,'post').then(function(r){
+      window._pendingPostImageUrl=r.url;
+    }).catch(function(err){
+      console.error('[upload] post photo',err);
+      if(typeof toast==='function') toast('Photo upload failed','error');
+    });
+  }
+}
+
+function removePhoto(){
+  document.getElementById('photo-preview').style.display='none';
+  document.getElementById('photo-input').value='';
+}
+
+function addLocation(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var txt=document.getElementById('post-body');
+      txt.value+=(txt.value?' ':'')+'📍 Delhi, India';
+      toast('📍 Location added','success');
+    },function(){toast('Could not get location','error');});
+  }
+}
+
+function submitPost(){
+  var body=document.getElementById('post-body').value.trim();
+  var hasPhoto=document.getElementById('photo-preview').style.display!=='none';
+  if(!body&&!hasPhoto){toast('Write something or add a photo first','error');return;}
+  
+  var btn=document.getElementById('post-submit-btn');
+  btn.textContent='Posting...';btn.disabled=true;
+
+  // Use Cloudinary URL if available, otherwise fall back to local preview src
+  var finalPhotoUrl = null;
+  if(hasPhoto){
+    finalPhotoUrl = window._pendingPostImageUrl || document.getElementById('preview-img').src;
+  }
+
+  // Try real API post first
+  if(typeof PostAPI!=='undefined'){
+    var payload={body:body+(selectedFeeling?' — feeling '+selectedFeeling:'')};
+    if(finalPhotoUrl) payload.image_url=finalPhotoUrl;
+    PostAPI.create(payload).then(function(){
+      closePostModal();btn.textContent='Post';btn.disabled=false;
+      toast('✅ Post shared!','success');
+      loadFeed();
+    }).catch(function(e){
+      console.warn('[post] API error, falling back to demo',e);
+      renderDemoPost(body,selectedFeeling,finalPhotoUrl);
+      closePostModal();btn.textContent='Post';btn.disabled=false;
+    });
+    return;
+  }
+
+  // Demo fallback
+  setTimeout(function(){
+    renderDemoPost(body,selectedFeeling,finalPhotoUrl);
+    closePostModal();
+    btn.textContent='Post';btn.disabled=false;
+    toast('✅ Post shared!','success');
+  },800);
+}
+
+function renderDemoPost(body,feeling,photoUrl){
+    var feed=document.getElementById('feed');
+    var postText=body+(feeling?' — feeling '+feeling:'');
+    var photoHTML='';
+    if(photoUrl){
+      photoHTML='<div style="margin:0 -16px"><img src="'+photoUrl+'" style="width:100%;max-height:400px;object-fit:cover;display:block"></div>';
+    }
+    var now=new Date();
+    var timeStr=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+' · Just now';
+    var newPost=document.createElement('div');
+    newPost.className='post';
+    newPost.style.cssText='background:#fff;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:12px;overflow:hidden';
+    newPost.innerHTML=
+      '<div style="padding:14px 16px;display:flex;align-items:center;gap:10px">'+
+        '<div style="width:40px;height:40px;border-radius:50%;overflow:hidden"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80" style="width:100%;height:100%;object-fit:cover"></div>'+
+        '<div><div style="font-size:14px;font-weight:700">Abhishek Kumar</div><div style="font-size:11px;color:#64748b">'+timeStr+'</div></div>'+
+      '</div>'+
+      (postText?'<div style="padding:0 16px 12px;font-size:14px;line-height:1.6;color:#1e293b">'+postText+'</div>':'')+
+      photoHTML+
+      '<div style="padding:10px 16px;display:flex;gap:16px;border-top:1px solid #f1f5f9">'+
+        '<button onclick="pbHeart(this)" style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;display:flex;align-items:center;gap:5px"><i class="ti ti-heart"></i> Like</button>'+
+        '<button style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;display:flex;align-items:center;gap:5px"><i class="ti ti-message-circle"></i> Comment</button>'+
+        '<button style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;display:flex;align-items:center;gap:5px"><i class="ti ti-share"></i> Share</button>'+
+      '</div>';
+    
+    // Insert at top of feed
+    if(feed.firstChild) feed.insertBefore(newPost,feed.firstChild);
+    else feed.appendChild(newPost);
+    toast('✅ Post shared!','success');
+}
+
+// ── DEMO FEED (shown when API not available) ──────────────────────────────────
+function loadDemoFeed(){
+  var feed=document.getElementById('feed');
+  if(!feed)return;
+  var DEMO=[
+    {img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=80',text:'Bruno had the best time at the park today! 🐾 Running, playing, and making new friends. This little guy never fails to bring a smile 😊',time:'2 hours ago',likes:24,comments:8},
+    {img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=80',text:'Vaccination done! 💉 Bruno was such a brave boy at the vet today. Dr. Priya said he is in perfect health. So proud of him! 🏥',time:'3 days ago',likes:47,comments:12},
+    {img:'https://images.unsplash.com/photo-1568572933382-74d440642117?w=800&q=80',text:'Lazy Sunday mornings with Bruno are my favourite 🌅 Nothing beats cuddles with your pup!',time:'1 week ago',likes:62,comments:19},
+  ];
+  feed.innerHTML=DEMO.map(function(p){
+    return '<div class="post" style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:12px;overflow:hidden">'+
+      '<div style="padding:14px 16px;display:flex;align-items:center;gap:10px">'+
+        '<div style="width:40px;height:40px;border-radius:50%;overflow:hidden"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80" style="width:100%;height:100%;object-fit:cover"></div>'+
+        '<div><div style="font-size:14px;font-weight:700">Abhishek Kumar</div><div style="font-size:11px;color:#64748b">'+p.time+'</div></div>'+
+      '</div>'+
+      '<div style="padding:0 16px 12px;font-size:14px;line-height:1.6;color:#1e293b">'+p.text+'</div>'+
+      '<div style="margin:0 0 12px"><img src="'+p.img+'" style="width:100%;max-height:360px;object-fit:cover;display:block"></div>'+
+      '<div style="padding:6px 16px;font-size:12px;color:#64748b;border-top:1px solid #f8fafc;border-bottom:1px solid #f8fafc">'+p.likes+' likes · '+p.comments+' comments</div>'+
+      '<div style="padding:4px 8px;display:flex;gap:4px">'+
+        '<button onclick="pbHeart(this)" style="flex:1;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;padding:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-heart"></i> Like</button>'+
+        '<button style="flex:1;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;padding:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-message-circle"></i> Comment</button>'+
+        '<button onclick="pbShare()" style="flex:1;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#65676b;font-family:Poppins,sans-serif;padding:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:5px"><i class="ti ti-share"></i> Share</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+// Run on load
+document.addEventListener('DOMContentLoaded',function(){
+  loadDemoFeed();
+});
+</script>
+<script src="api.js"></script>
+<script src="upload.js"></script>
+<script>
+// auth soft
+const user=(typeof Auth!=='undefined'&&Auth.getUser)?Auth.getUser():null;
+let myPets=[];
+
+const petPostImgs=[
+  'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=80',
+  'https://images.unsplash.com/photo-1568572933382-74d440642117?w=800&q=80',
+  'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=800&q=80',
+  'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&q=80',
+  'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=80',
+  'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=800&q=80',
+];
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  if(user){
+    document.getElementById('nav-av').textContent=(user.full_name||user.username||'A')[0].toUpperCase();
+    document.getElementById('modal-name').textContent=user.full_name||user.username;
+  }
+  await Promise.all([loadProfile(),loadFeed(),loadMyPets(),loadVaccDue()]);
+});
+
+async function loadProfile(){
+  try{
+    const r=await AuthAPI.me();const u=r?.data;if(!u)return;
+    // Only update nav avatar - keep pet name (Bella) as-is
+    // document.getElementById('pname') intentionally NOT overwritten
+    // The pet profile shows PET data, not owner login name
+    if(document.getElementById('psub') && u.username) {
+      // Only update subtitle if it looks like a username (not pet handle)
+    }
+    document.getElementById('p-followers').textContent=fmt(u.follower_count||0);
+    document.getElementById('p-following').textContent=fmt(u.following_count||0);
+    document.getElementById('p-pets').textContent=fmt(u.pet_count||0);
+    document.getElementById('p-posts').textContent=fmt(u.post_count||0);
+    document.getElementById('modal-name').textContent=u.full_name||u.username;
+  }catch{}
+}
+
+async function loadFeed(){
+  const feed=document.getElementById('feed');
+  try{
+    const r=await PostAPI.feed(1,6);const posts=r?.data||[];
+    if(!posts.length){
+      feed.innerHTML=`<div class="post" style="text-align:center;padding:36px">
+        <img src="https://images.unsplash.com/photo-1444212477490-ca407925329e?w=300&q=80" style="width:180px;height:140px;object-fit:cover;border-radius:12px;margin-bottom:14px">
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px">No posts yet!</div>
+        <div style="color:var(--muted);margin-bottom:16px">Share your first moment with the PawBook community</div>
+        <button class="btn btn-blue" onclick="openPostModal()">Create First Post</button>
+      </div>`;
+      return;
+    }
+    feed.innerHTML=posts.map((p,i)=>`
+    <div class="post" id="post-${p.post_id}">
+      <div class="post-hd">
+        <div class="post-av-img"><img src="${petPostImgs[i%petPostImgs.length]}" alt="${p.pet_name||'Pet'}"></div>
+        <div style="flex:1">
+          <div class="post-name">${p.pet_name||p.author_name||'You'}</div>
+          <div class="post-sub">${formatDate(p.created_at)} · <i class="ti ti-world" style="font-size:11px"></i></div>
+        </div>
+        <button class="post-more" onclick="pmenu('${p.post_id}','${p.author_id}')"><i class="ti ti-dots"></i></button>
+      </div>
+      ${p.body?`<div class="post-body-text">${p.body}</div>`:''}
+      ${(p.hashtags||[]).length?`<div style="padding:0 14px 6px">${(p.hashtags||[]).map(h=>`<span class="post-tag">#${h}</span>`).join('')}</div>`:''}
+      <div class="post-photo"><img src="${petPostImgs[i%petPostImgs.length]}" alt="Post photo" loading="lazy"></div>
+      <div class="post-stats">
+        <span>❤️🐾 ${fmt(p.reaction_count||0)} reactions</span>
+        <div style="display:flex;gap:14px"><span style="cursor:pointer">${fmt(p.comment_count||0)} Comments</span><span>${fmt(p.share_count||0)} Shares</span></div>
+      </div>
+      <div class="post-actions">
+        <button class="p-act" id="r-${p.post_id}" onclick="doReact('${p.post_id}')"><i class="ti ti-heart"></i> Like</button>
+        <button class="p-act" onclick="doComment('${p.post_id}')"><i class="ti ti-message-circle"></i> Comment</button>
+        <button class="p-act" onclick="doShare('${p.post_id}')"><i class="ti ti-share"></i> Share</button>
+      </div>
+    </div>`).join('');
+  }catch(e){
+    feed.innerHTML=`<div class="post" style="text-align:center;padding:24px">
+      <div style="color:var(--red);font-weight:700;margin-bottom:8px">${e.message}</div>
+      <button class="btn btn-blue btn-sm" onclick="loadFeed()">Retry</button>
+    </div>`;
+  }
+}
+
+// ── PAWMATCH SYNC ─────────────────────────────────────────────────────────────
+// Reads which pets the user has toggled ON for PawMatch
+function pawmatchEnabled(petId){ try{return JSON.parse(localStorage.getItem('pawmatch_enabled')||'{}')[petId]!==false;}catch{return true;} }
+function setPawmatchEnabled(petId,val){
+  try{
+    const m=JSON.parse(localStorage.getItem('pawmatch_enabled')||'{}');
+    m[petId]=val;
+    localStorage.setItem('pawmatch_enabled',JSON.stringify(m));
+  }catch{}
+}
+function syncPetsToLocalStorage(pets){
+  // Save all pets as PawMatch candidates (with matchChance 0.6 by default)
+  const pmPets=pets.map(p=>({
+    id:p.pet_id||p.id||p.name,
+    name:p.name,
+    species:p.species||'Dog',
+    breed:p.breed||'',
+    age:p.age_years!=null?p.age_years+'y':'',
+    photo:p.profile_photo||p.photo||'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80',
+    bio:p.bio||p.about||'Hey! I am '+p.name+' 🐾',
+    location:p.location||'Nearby',
+    matchChance:0.6,
+    owner:user?user.full_name||user.username:'You'
+  }));
+  localStorage.setItem('pawmatch_mypets',JSON.stringify(pmPets));
+}
+
+function togglePawMatch(petId,btn){
+  const on=pawmatchEnabled(petId);
+  setPawmatchEnabled(petId,!on);
+  btn.innerHTML=!on
+    ?'<i class="ti ti-heart-filled" style="color:#ec4899"></i> In PawMatch'
+    :'<i class="ti ti-heart" style="color:#8a8d91"></i> Add to PawMatch';
+  btn.style.background=!on?'#fdf2f8':'var(--bg)';
+  btn.style.color=!on?'#ec4899':'var(--text2)';
+  toast(!on?p.name+' is now on PawMatch 🐾':'Removed from PawMatch','info');
+  // re-sync so localStorage reflects toggle
+  syncPetsToLocalStorage(myPets);
+}
+
+async function loadMyPets(){
+  try{
+    const r=await PetAPI.myPets();myPets=r?.data||[];
+    const el=document.getElementById('pet-info-list');
+    if(!myPets.length)return;
+    // Sync to localStorage for PawMatch
+    syncPetsToLocalStorage(myPets);
+    el.innerHTML=myPets.map(p=>{
+      const pid=p.pet_id||p.id||p.name;
+      const on=pawmatchEnabled(pid);
+      return `
+      <div class="info-row" style="cursor:pointer;flex-wrap:wrap;gap:6px" onclick="">
+        <div style="display:flex;align-items:center;gap:10px;flex:1" onclick="goTo('10_vaccination.html')">
+          <div class="info-icon" style="background:var(--blue-xlight)">${speciesEmoji(p.species)}</div>
+          <div>
+            <div class="info-val">${p.name}</div>
+            <div class="info-label">${p.breed||p.species}${p.age_years!=null?' · '+p.age_years+' yr':''}</div>
+          </div>
+          <i class="ti ti-chevron-right" style="margin-left:auto;color:var(--muted);font-size:15px"></i>
+        </div>
+        <button onclick="event.stopPropagation();togglePawMatch('${pid}',this)" style="
+          margin-left:32px;border:none;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+          background:${on?'#fdf2f8':'var(--bg)'};color:${on?'#ec4899':'var(--text2)'};transition:all .2s">
+          ${on?'<i class="ti ti-heart-filled" style="color:#ec4899"></i> In PawMatch':'<i class="ti ti-heart" style="color:#8a8d91"></i> Add to PawMatch'}
+        </button>
+      </div>`;
+    }).join('')+
+      `<button class="btn btn-gray btn-full btn-sm" style="margin-top:10px" onclick="addPet()"><i class="ti ti-plus"></i> Add a Pet</button>`;
+    document.getElementById('vacc-section').style.display='block';
+  }catch{}
+}
+
+async function loadVaccDue(){
+  try{
+    const r=await PetAPI.vaccinationsDue();const dues=r?.data||[];
+    if(dues.length){
+      const n=dues[0];
+      document.getElementById('rem-title').textContent=`📅 ${n.pet_name}: ${n.vaccine_name} ${n.urgency_label==='overdue'?'— OVERDUE! Book vet now.':'due in '+n.days_until_due+' days — Reminder set!'}`;
+      document.getElementById('vacc-list').innerHTML=dues.slice(0,3).map(v=>`
+        <div class="vacc-item">
+          <div class="vacc-check">${v.urgency_label==='overdue'?'⚠️':'✅'}</div>
+          <div style="flex:1;font-weight:700">${v.urgency_label==='overdue'?'Upcoming: ':''} ${v.vaccine_name}</div>
+          <div style="color:${v.urgency_label==='overdue'?'var(--amber)':'var(--blue)'};font-weight:600;font-size:13px">${new Date(v.next_due_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+        </div>`).join('');
+    }else{
+      document.getElementById('rem-title').textContent='✅ All vaccinations up to date! Great job keeping your pet healthy.';
+    }
+  }catch{}
+}
+
+async function addPet(){
+  const name=prompt('Pet name:');if(!name?.trim())return;
+  const species=(prompt('Species (dog/cat/bird/rabbit):')||'dog').toLowerCase();
+  const breed=prompt('Breed (optional):')||null;
+  try{await PetAPI.create({name:name.trim(),species,breed});toast(name+' added! 🐾','success');await loadMyPets();await loadProfile();}
+  catch(e){toast(e.message,'error');}
+}
+
+async function doReact(id){const b=document.getElementById('r-'+id);try{const r=await PostAPI.react(id,'love');const v=r?.data?.reacted;b.className='p-act'+(v?' liked':'');b.innerHTML=`<i class="ti ti-heart"></i> ${v?'Loved':'Like'}`;toast(v?'❤️ Loved!':'Removed','success',1500);}catch(e){toast(e.message,'error');}}
+async function doComment(id){const b=prompt('Write a comment:');if(!b?.trim())return;try{await PostAPI.addComment(id,b.trim());toast('Comment posted!','success');loadFeed();}catch(e){toast(e.message,'error');}}
+function doShare(id){navigator.clipboard?.writeText(location.href+'#post-'+id).then(()=>toast('Link copied!','success'));}
+function pmenu(id,aid){if(aid===user?.user_id&&confirm('Delete post?')){PostAPI.delete(id).then(()=>{toast('Deleted','success');loadFeed();}).catch(e=>toast(e.message,'error'));}}
+
+
+function setTab(el) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const label = el.textContent.trim().toLowerCase();
+
+  // Use setSubTab logic to show correct section
+  // Find the matching tstab and click it
+  if(label.includes('timeline') || label.includes('post') || label.includes('time')) {
+    const postsTab = document.querySelector('.tstab:first-child');
+    if(postsTab) setSubTab(postsTab);
+  } else if(label.includes('health')) {
+    const healthTab = [...document.querySelectorAll('.tstab')].find(t=>t.textContent.toLowerCase().includes('health'));
+    if(healthTab) setSubTab(healthTab);
+  } else if(label.includes('friend')) {
+    const friendTab = [...document.querySelectorAll('.tstab')].find(t=>t.textContent.toLowerCase().includes('friend'));
+    if(friendTab) setSubTab(friendTab);
+  } else if(label.includes('achieve')) {
+    const achTab = [...document.querySelectorAll('.tstab')].find(t=>t.textContent.toLowerCase().includes('achieve'));
+    if(achTab) setSubTab(achTab);
+  }
+}
+
+function setSubTab(el) {
+  document.querySelectorAll('.tstab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const label = el.textContent.trim().toLowerCase();
+
+  // Hide all sections first
+  const sections = ['feed','vacc-section','friends-section','achievements-section'];
+  sections.forEach(id => {
+    const s = document.getElementById(id);
+    if(s) s.style.display = 'none';
+  });
+
+  // Show the right section
+  if(label.includes('post') || label.includes('timeline')) {
+    const el = document.getElementById('feed');
+    if(el) el.style.display = 'block';
+  } else if(label.includes('health') || label.includes('vacc')) {
+    const el = document.getElementById('vacc-section');
+    if(el) el.style.display = 'block';
+  } else if(label.includes('friend')) {
+    const el = document.getElementById('friends-section');
+    if(el) el.style.display = 'block';
+    else { document.getElementById('feed').style.display='block'; toast('Friends tab loading...','info'); }
+  } else if(label.includes('achieve')) {
+    const el = document.getElementById('achievements-section');
+    if(el) el.style.display = 'block';
+    else { document.getElementById('feed').style.display='block'; toast('Achievements tab loading...','info'); }
+  }
+}
+
+// ── DEMO DATA SECTIONS ──────────────────────────────────────────────────────
+function showHealthRecords() {
+  const container = document.querySelector('.timeline-section, .tab-content, #tab-timeline, .main-content');
+  if(!container) return;
+  container.innerHTML = `
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden;margin-bottom:12px">
+      <div style="padding:14px 16px;font-size:16px;font-weight:800;border-bottom:1px solid #f1f5f9">🏥 Health Records — Bruno</div>
+      <div style="padding:14px 16px">
+        ${[
+          {icon:'💉',title:'Rabies Vaccination',date:'Sep 2, 2026',status:'✅ Done',color:'#dcfce7',tc:'#16a34a'},
+          {icon:'💉',title:'DHPP Booster',date:'Aug 15, 2026',status:'✅ Done',color:'#dcfce7',tc:'#16a34a'},
+          {icon:'🩺',title:'Annual Checkup',date:'Jul 20, 2026',status:'✅ Done',color:'#dcfce7',tc:'#16a34a'},
+          {icon:'💊',title:'Deworming',date:'Jun 10, 2026',status:'✅ Done',color:'#dcfce7',tc:'#16a34a'},
+          {icon:'💉',title:'Leptospirosis Booster',date:'Oct 15, 2026',status:'⚠️ Due Soon',color:'#fef3c7',tc:'#d97706'},
+        ].map(r => `
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f8fafc">
+            <div style="width:40px;height:40px;border-radius:10px;background:${r.color};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${r.icon}</div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700">${r.title}</div>
+              <div style="font-size:12px;color:#64748b">${r.date}</div>
+            </div>
+            <span style="font-size:11px;font-weight:700;color:${r.tc};background:${r.color};padding:3px 10px;border-radius:12px">${r.status}</span>
+          </div>`).join('')}
+        <button onclick="goTo('10_vaccination.html')" style="width:100%;height:40px;margin-top:12px;border-radius:10px;border:none;background:#1a4db3;color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">📋 Full Vaccination Diary</button>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:800;margin-bottom:12px">⚖️ Health Stats</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px">
+        ${[['Weight','12 kg','Normal ✓','#dcfce7','#16a34a'],['Age','3 years','Adult','#dbeafe','#1a4db3'],['Breed','Beagle','Medium','#f3e8ff','#7c3aed'],['Status','Healthy','Active','#dcfce7','#16a34a']].map(([l,v,s,bg,c])=>`
+        <div style="background:${bg};border-radius:10px;padding:12px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:#64748b">${l}</div>
+          <div style="font-size:18px;font-weight:900;color:${c}">${v}</div>
+          <div style="font-size:10px;color:#64748b">${s}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function showFriends() {
+  const container = document.querySelector('.timeline-section, .tab-content, #tab-timeline, .main-content');
+  if(!container) return;
+  const friends = [
+    {name:'Priya Sharma',pet:'Luna 🐈',mutual:3,img:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80'},
+    {name:'Rahul Dev',pet:'Max 🐕',mutual:5,img:'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=80&q=80'},
+    {name:'Ananya Bose',pet:'Milo 🐇',mutual:2,img:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80'},
+    {name:'Dr. Arjun Mehta',pet:'Exotic Vet 🩺',mutual:8,img:'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80'},
+    {name:'Sneha Kapoor',pet:'Bella 🐩',mutual:1,img:'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80'},
+    {name:'Vikram Patel',pet:'Rocky 🦮',mutual:4,img:'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80'},
+  ];
+  const container2 = document.querySelector('.timeline-section, .tab-content, #tab-timeline, .main-content');
+  container2.innerHTML = `
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+      <div style="padding:14px 16px;font-size:16px;font-weight:800;border-bottom:1px solid #f1f5f9">👥 Friends (${friends.length})</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:0">
+        ${friends.map(f => `
+          <div style="padding:14px;border-bottom:1px solid #f1f5f9;border-right:1px solid #f1f5f9">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+              <img src="${f.img}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #e2e8f0">
+              <div>
+                <div style="font-size:13px;font-weight:700">${f.name}</div>
+                <div style="font-size:11px;color:#64748b">${f.pet}</div>
+                <div style="font-size:10px;color:#94a3b8">${f.mutual} mutual friends</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="goTo('29_user_profile.html')" style="flex:1;height:30px;border-radius:8px;border:none;background:#1a4db3;color:#fff;font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;cursor:pointer">View</button>
+              <button onclick="toast('💬 Opening chat...','info');goTo('13_messages.html')" style="flex:1;height:30px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;cursor:pointer">Message</button>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function showAchievements() {
+  const container = document.querySelector('.timeline-section, .tab-content, #tab-timeline, .main-content');
+  if(!container) return;
+  const badges = [
+    {icon:'🥇',title:'First Post',desc:'Posted your first update',earned:true,date:'Mar 2024'},
+    {icon:'🐾',title:'Pet Parent',desc:'Added your first pet',earned:true,date:'Mar 2024'},
+    {icon:'💉',title:'Health Hero',desc:'Completed vaccination diary',earned:true,date:'Jun 2024'},
+    {icon:'👥',title:'Social Paw',desc:'Reached 100 followers',earned:true,date:'Aug 2024'},
+    {icon:'🏥',title:'Vet Regular',desc:'Booked 5 vet appointments',earned:true,date:'Sep 2024'},
+    {icon:'🎉',title:'Community Star',desc:'Joined 3 groups',earned:true,date:'Sep 2024'},
+    {icon:'🔒',title:'Top Contributor',desc:'Get 500 post reactions',earned:false,date:'In progress'},
+    {icon:'🔒',title:'Rescue Hero',desc:'Complete an adoption',earned:false,date:'Locked'},
+  ];
+  container.innerHTML = `
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+      <div style="padding:14px 16px;font-size:16px;font-weight:800;border-bottom:1px solid #f1f5f9">🏆 Achievements (${badges.filter(b=>b.earned).length}/${badges.length})</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:12px;padding:16px">
+        ${badges.map(b => `
+          <div style="background:${b.earned?'#f8f9ff':'#f8fafc'};border-radius:12px;padding:14px;border:1.5px solid ${b.earned?'#c7d2fe':'#e2e8f0'};opacity:${b.earned?1:0.6};text-align:center">
+            <div style="font-size:36px;margin-bottom:6px">${b.icon}</div>
+            <div style="font-size:13px;font-weight:800;color:${b.earned?'#1e293b':'#94a3b8'}">${b.title}</div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px">${b.desc}</div>
+            <div style="font-size:10px;font-weight:700;color:${b.earned?'#1a4db3':'#94a3b8'};margin-top:6px">${b.date}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// Follow / Message / Share buttons on profile header
+function toggleFollowUser(btn) {
+  const following = btn.classList.contains('following');
+  if(following) {
+    btn.classList.remove('following');
+    btn.innerHTML = '<i class="ti ti-users"></i> Follow';
+    btn.style.background = '';
+    btn.style.color = '';
+    toast('Unfollowed', 'info');
+  } else {
+    btn.classList.add('following');
+    btn.innerHTML = '<i class="ti ti-user-check"></i> Following ✓';
+    btn.style.background = '#1a4db3';
+    btn.style.color = '#fff';
+    toast('✅ Now following!', 'success');
+  }
+}
+
+function followUser(btn) {
+  const following = btn.textContent.includes('Following');
+  btn.textContent = following ? '+ Follow' : '✓ Following';
+  btn.style.background = following ? '' : '#e7f3ff';
+  btn.style.color = following ? '' : '#1a4db3';
+  toast(following ? 'Unfollowed' : '✓ Now following!', 'success');
+}
+function messageUser() { goTo('13_messages.html'); }
+function shareProfile() { navigator.clipboard?.writeText(location.href); toast('🔗 Profile link copied!', 'success'); }
+function addPet() {
+  toast('🐾 Add Pet feature — go to onboarding', 'info');
+  setTimeout(() => goTo('02_onboarding.html'), 1500);
+}
+
+</script>
+<script>
+function goTo(p){window.location.href=p;}
+function toast(msg,type='success'){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap;max-width:90vw;text-align:center';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+</script>
+<input type="file" id="cover-upload" accept="image/*" style="display:none" onchange="updateCover(this)">
+<script>
+function editPet(petId) {
+  var modal = document.getElementById('edit-pet-modal');
+  if(modal) { modal.style.display='flex'; document.body.style.overflow='hidden'; }
+  else { showToast('Edit pet feature coming soon!','info'); }
+}
+
+function addVaccination(petId) {
+  var modal = document.getElementById('vacc-modal');
+  if(modal) { modal.style.display='flex'; document.body.style.overflow='hidden'; }
+  else { goTo('10_vaccination.html'); }
+}
+
+function bookVet() { goTo('11_vet_booking.html'); }
+
+function openModal(id) {
+  var m = document.getElementById(id);
+  if(m) { m.style.display='flex'; document.body.style.overflow='hidden'; }
+}
+function closeModal(id) {
+  var m = document.getElementById(id);
+  if(m) { m.style.display='none'; document.body.style.overflow=''; }
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('pb-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'pb-toast';
+    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:#000;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;max-width:90vw;text-align:center';
+    document.body.appendChild(t);
+  }
+  var bg = type==='error'?'#ef4444':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
+  t.style.background = bg;
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 2600);
+}
+
+function updateCover(input) {
+  if(!input.files||!input.files[0]) return;
+  var file = input.files[0];
+  // Immediate local preview
+  var cover = document.querySelector('.profile-cover, .cover-photo, [class*="cover"]');
+  if(cover) cover.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
+  showToast('Uploading cover photo…','info');
+  // Upload to Cloudinary
+  if(typeof uploadCover === 'function'){
+    uploadCover(file).then(function(r){
+      // Update with real Cloudinary URL
+      if(cover) cover.style.backgroundImage = 'url(' + r.url + ')';
+      // Persist to user profile
+      if(typeof AuthAPI !== 'undefined'){
+        AuthAPI.updateProfile({cover_url: r.url}).catch(function(){});
+      }
+      showToast('Cover photo updated! 🎨','success');
+    }).catch(function(err){
+      showToast('Upload failed: '+(err&&err.message||err),'error');
+    });
+  } else {
+    showToast('Cover photo updated!','success');
+  }
+  input.value='';
+}
+</script>
+<script>function pbHeart(btn){btn.style.color=btn.style.color==="#ef4444"?"#65676b":"#ef4444";}</script>
+<script>
+function pbHeart(btn) {
+  var liked = btn.dataset.liked === "1";
+  btn.dataset.liked = liked ? "0" : "1";
+  btn.style.color = liked ? "#65676b" : "#ef4444";
+  var icon = btn.querySelector("i");
+  if(icon) icon.className = liked ? "ti ti-heart" : "ti ti-heart-filled";
+}
+function pbShare() {
+  if(navigator.clipboard) navigator.clipboard.writeText(location.href);
+  showToast("Link copied!", "success");
+}
+function goTo(p) { window.location.href = p; }
+</script>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottomnav">
+  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
+  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER PANEL -->
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
+      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDrawer() {
+  document.getElementById('drawer-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+<script>
+(function(){
+  function showBurgerOnMobile(){
+    var btns = document.querySelectorAll('.burger-btn');
+    var isMobile = window.innerWidth <= 768;
+    btns.forEach(function(b){
+      b.style.display = isMobile ? 'flex' : 'none';
+    });
+    // Also hide topnav-tabs on mobile
+    var tabs = document.querySelector('.topnav-tabs');
+    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
+    // Show bottom nav on mobile
+    var bnav = document.querySelector('.bottomnav');
+    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+  }
+  showBurgerOnMobile();
+  window.addEventListener('resize', showBurgerOnMobile);
+})();
+</script>
+<script>
+// ── AVATAR UPLOAD ─────────────────────────────────────────────────────────────
+(function(){
+  var avatarInput = document.getElementById('avatar-upload');
+  if(!avatarInput) return;
+  avatarInput.addEventListener('change', function(){
+    var file = this.files[0];
+    if(!file) return;
+    // Local preview immediately
+    var avImg = document.getElementById('profile-av-img');
+    if(avImg) avImg.src = URL.createObjectURL(file);
+    showToast('Uploading profile photo…','info');
+    if(typeof uploadAvatar === 'function'){
+      uploadAvatar(file).then(function(r){
+        if(avImg) avImg.src = r.url;
+        // Update nav avatar too
+        var navAv = document.getElementById('nav-av');
+        if(navAv) navAv.innerHTML = '<img src="'+r.url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+        // Persist to drawer
+        var da = document.getElementById('drawer-av');
+        if(da){ da.src = r.url; da.style.display='block'; }
+        // Persist in localStorage
+        try{
+          var u=JSON.parse(localStorage.getItem('pb_user')||'null');
+          if(u){ u.avatar_url=r.url; localStorage.setItem('pb_user',JSON.stringify(u)); }
+        }catch(e){}
+        showToast('Profile photo updated! 🐾','success');
+      }).catch(function(err){
+        showToast('Upload failed: '+(err&&err.message||err),'error');
+      });
+    } else {
+      showToast('Profile photo updated!','success');
+    }
+    this.value='';
+  });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
+// ══════════════════════════════════════════════════════════════════════
+// ADD this JS block inside 06_pet_profile.html (in the <script> section)
+// Handles: pet avatar / photo upload
+// Requires: upload.js loaded before this runs
+// ══════════════════════════════════════════════════════════════════════
+
+function initPetPhotoUpload(petId) {
+  const petImg   = document.getElementById('petAvatar');       // <img id="petAvatar">
+  const petInput = document.getElementById('petPhotoInput');   // hidden <input type="file" id="petPhotoInput">
+
+  if (!petImg || !petInput) return;
+
+  petImg.style.cursor = 'pointer';
+  petImg.title = 'Click to change pet photo';
+  petImg.addEventListener('click', () => petInput.click());
+  petInput.accept = 'image/jpeg,image/png,image/gif,image/webp';
+
+  petInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const err = validateImageFile(file, 5);
+    if (err) { showToast(err, 'error'); return; }
+
+    const prevSrc = petImg.src;
+    petImg.src = URL.createObjectURL(file);
+    petImg.style.opacity = '0.6';
+
+    try {
+      showToast('Uploading pet photo…', 'info');
+      const result = await uploadToCloudinaryDirect(file);
+
+      const res = await fetch(`${API_BASE}/pets/${petId}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ profile_picture: result.url }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        petImg.style.opacity = '1';
+        petImg.title = 'Click to change pet photo';
+        showToast('Pet photo updated! 🐾', 'success');
+      } else {
+        petImg.src = prevSrc;
+        petImg.style.opacity = '1';
+        showToast(data.message || 'Could not save photo.', 'error');
+      }
+    } catch (err) {
+      petImg.src = prevSrc;
+      petImg.style.opacity = '1';
+      showToast('Upload failed. Try again.', 'error');
+      console.error('[pet photo upload]', err);
+    }
+
+    e.target.value = '';
+  });
+}
+
+// Call once you have the petId from the URL or page data, e.g.:
+// const petId = new URLSearchParams(location.search).get('id');
+// initPetPhotoUpload(petId);
+
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
+</script>
+<input type="file" id="petPhotoInput">
+</body>
+</html>

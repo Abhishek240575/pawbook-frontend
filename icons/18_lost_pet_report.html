@@ -1,0 +1,488 @@
+﻿<!DOCTYPE html><html lang="en"><head>
+<link rel="manifest" href="/manifest.json"><meta charset="UTF-8"><title>PawBook – Report Lost Pet</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+<style>
+.form-section{background:#fff;border-radius:14px;padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:16px}
+.form-section-title{font-size:16px;font-weight:800;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field-label{font-size:13px;font-weight:700;color:#333;display:block;margin-bottom:6px}
+.field-input{width:100%;height:46px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;box-sizing:border-box}
+.field-input:focus{border-color:var(--blue);background:#fff}
+.field-select{width:100%;height:46px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;cursor:pointer;box-sizing:border-box}
+.field-select:disabled{opacity:0.45;cursor:not-allowed}
+.upload-box{border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:border-color .15s;background:#fafafa}
+.upload-box:hover{border-color:var(--blue);background:#f0f4ff}
+#photo-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#photo-preview img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+#lost-map{width:100%;height:290px;border-radius:12px;border:1.5px solid var(--border);margin-top:14px;z-index:1}
+.loc-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.loc-hint{font-size:12px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:5px}
+.coord-badge{display:inline-flex;align-items:center;gap:5px;background:#f0f4ff;border:1px solid #c7d7fc;border-radius:8px;padding:6px 12px;font-size:12px;color:#1a56db;font-weight:600;margin-top:8px}
+.suggest-box{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--blue);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:500;max-height:180px;overflow-y:auto}
+.suggest-box div{padding:10px 14px;font-size:13px;cursor:pointer;font-family:'Poppins',sans-serif}
+.suggest-box div:hover{background:#f0f4ff;color:var(--blue);font-weight:700}
+.submit-btn{flex:1;padding:16px;font-size:16px;font-weight:800;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'Poppins',sans-serif}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed}
+@media(max-width:600px){.loc-row{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head><body>
+<script>function goTo(p){window.location.href=p;}</script>
+
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-map-pin"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right"><div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div></div>
+</nav>
+
+<div style="max-width:760px;margin:20px auto;padding:0 16px 40px">
+
+  <!-- Header -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+    <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#4338ca,#6d28d9);display:flex;align-items:center;justify-content:center;font-size:24px">🚨</div>
+    <div>
+      <div style="font-size:22px;font-weight:900">Report a Lost Pet</div>
+      <div style="font-size:14px;color:var(--muted)">We'll alert the community and help you find your pet</div>
+    </div>
+  </div>
+
+  <!-- ── Pet Information ── -->
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-paw"></i> Pet Information</div>
+    <div class="form-grid">
+      <div><label class="field-label">Pet Name *</label><input id="lp-name" class="field-input" placeholder="e.g. Bruno"></div>
+      <div><label class="field-label">Species *</label>
+        <select id="lp-species" class="field-select">
+          <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
+        </select>
+      </div>
+      <div><label class="field-label">Breed</label><input id="lp-breed" class="field-input" placeholder="e.g. Beagle, Labrador"></div>
+      <div><label class="field-label">Age</label><input id="lp-age" class="field-input" placeholder="e.g. 3 years"></div>
+      <div><label class="field-label">Color / Markings</label><input id="lp-color" class="field-input" placeholder="e.g. Brown &amp; white"></div>
+      <div><label class="field-label">Collar / ID Tag</label><input id="lp-collar" class="field-input" placeholder="e.g. Blue collar with tag"></div>
+    </div>
+    <div style="margin-top:14px">
+      <label class="field-label">Additional Description</label>
+      <textarea id="lp-desc" class="field-input" style="height:80px;padding:12px 14px;resize:none" placeholder="Distinctive markings, scars, behaviour patterns…"></textarea>
+    </div>
+  </div>
+
+  <!-- ── Last Known Location ── -->
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-map-pin"></i> Last Known Location</div>
+
+    <!-- Country / State / City row -->
+    <div class="loc-row">
+      <div>
+        <label class="field-label">Country *</label>
+        <select id="lp-country" class="field-select" onchange="onCountryChange()">
+          <option value="">— Country —</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">State / Province *</label>
+        <select id="lp-state" class="field-select" disabled onchange="onStateChange()">
+          <option value="">— State —</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">City *</label>
+        <select id="lp-city" class="field-select" disabled onchange="onCityChange()">
+          <option value="">— City —</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Locality search -->
+    <div style="margin-bottom:14px;position:relative">
+      <label class="field-label">Locality / Area * <span style="font-weight:400;color:var(--muted)">(type to search or click map)</span></label>
+      <input id="lp-locality" class="field-input" placeholder="e.g. Lodhi Garden, Connaught Place…"
+        autocomplete="off" oninput="onLocalityInput()" onblur="setTimeout(closeS,250)">
+      <div id="lp-suggest" class="suggest-box" style="display:none"></div>
+      <div id="coord-badge" class="coord-badge" style="display:none">
+        <i class="ti ti-map-pin" style="font-size:13px"></i>
+        <span id="coord-txt"></span>
+        <span style="color:#65676b;font-weight:400;margin-left:4px">· pinned</span>
+      </div>
+    </div>
+
+    <!-- Date / Time / Radius / GPS row -->
+    <div class="form-grid" style="margin-bottom:0">
+      <div><label class="field-label">Date Last Seen *</label><input id="lp-date" class="field-input" type="date"></div>
+      <div><label class="field-label">Time Last Seen</label><input id="lp-time" class="field-input" type="time"></div>
+      <div><label class="field-label">Alert Radius</label>
+        <select id="lp-radius" class="field-select">
+          <option>1 km</option><option selected>2 km</option><option>5 km</option><option>10 km</option><option>City-wide</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Use My GPS</label>
+        <button type="button" onclick="useGPS()"
+          style="width:100%;height:46px;border-radius:8px;border:1.5px solid var(--blue);background:#f0f4ff;color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+          <i class="ti ti-current-location"></i> Detect Location
+        </button>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <div id="lost-map"></div>
+    <div class="loc-hint"><i class="ti ti-hand-click" style="font-size:14px"></i> Click or drag the 🐾 pin to exact spot</div>
+  </div>
+
+  <!-- ── Upload Photos ── -->
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-photo"></i> Upload Pet Photos</div>
+    <div class="upload-box" onclick="document.getElementById('lp-photos').click()">
+      <div style="font-size:40px;margin-bottom:8px">📸</div>
+      <div style="font-weight:700;margin-bottom:4px">Click to upload or drag &amp; drop</div>
+      <div style="font-size:13px;color:var(--muted)">PNG, JPG up to 10 MB · max 5 photos</div>
+    </div>
+    <input id="lp-photos" type="file" accept="image/*" multiple style="display:none" onchange="previewPhotos(this)">
+    <div id="photo-preview"></div>
+  </div>
+
+  <!-- ── Contact ── -->
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-phone"></i> Contact Information</div>
+    <div class="form-grid">
+      <div><label class="field-label">Your Name *</label><input id="lp-cname" class="field-input" placeholder="Full name"></div>
+      <div><label class="field-label">Phone *</label><input id="lp-phone" class="field-input" type="tel" placeholder="+91 XXXXXXXXXX"></div>
+      <div style="grid-column:1/-1"><label class="field-label">Email</label><input id="lp-email" class="field-input" type="email" placeholder="your@email.com"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px">
+    <button id="submit-btn" class="submit-btn" onclick="submitReport()">🚨 Post Lost Pet Alert</button>
+    <button class="btn btn-gray" style="padding:16px 24px" onclick="goTo('05_lost_pet.html')">Cancel</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="api.js"></script>
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────
+function authHdr(){ return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')}; }
+
+// ─── GEO DATA ─────────────────────────────────────────────────
+var GEO = {
+  "India":{lat:20.59,lng:78.96,states:{
+    "Andhra Pradesh":{lat:15.91,lng:79.74,cities:{"Visakhapatnam":{lat:17.69,lng:83.22},"Vijayawada":{lat:16.51,lng:80.62},"Guntur":{lat:16.30,lng:80.44},"Tirupati":{lat:13.63,lng:79.42}}},
+    "Delhi":{lat:28.70,lng:77.10,cities:{"New Delhi":{lat:28.61,lng:77.21},"Dwarka":{lat:28.59,lng:77.05},"Rohini":{lat:28.75,lng:77.06},"Saket":{lat:28.52,lng:77.21},"Connaught Place":{lat:28.63,lng:77.22}}},
+    "Gujarat":{lat:22.26,lng:71.19,cities:{"Ahmedabad":{lat:23.02,lng:72.57},"Surat":{lat:21.17,lng:72.83},"Vadodara":{lat:22.31,lng:73.18},"Rajkot":{lat:22.30,lng:70.80},"Gandhinagar":{lat:23.22,lng:72.68}}},
+    "Karnataka":{lat:15.32,lng:75.71,cities:{"Bengaluru":{lat:12.97,lng:77.59},"Mysuru":{lat:12.30,lng:76.64},"Hubli":{lat:15.36,lng:75.12},"Mangaluru":{lat:12.91,lng:74.86},"Belagavi":{lat:15.85,lng:74.50}}},
+    "Kerala":{lat:10.85,lng:76.27,cities:{"Thiruvananthapuram":{lat:8.52,lng:76.94},"Kochi":{lat:9.93,lng:76.27},"Kozhikode":{lat:11.26,lng:75.78},"Thrissur":{lat:10.53,lng:76.21},"Kannur":{lat:11.87,lng:75.37}}},
+    "Madhya Pradesh":{lat:22.97,lng:78.66,cities:{"Bhopal":{lat:23.26,lng:77.41},"Indore":{lat:22.72,lng:75.86},"Gwalior":{lat:26.22,lng:78.18},"Jabalpur":{lat:23.18,lng:79.99}}},
+    "Maharashtra":{lat:19.75,lng:75.71,cities:{"Mumbai":{lat:19.08,lng:72.88},"Pune":{lat:18.52,lng:73.86},"Nagpur":{lat:21.15,lng:79.09},"Nashik":{lat:19.99,lng:73.79},"Thane":{lat:19.22,lng:72.98}}},
+    "Punjab":{lat:31.15,lng:75.34,cities:{"Chandigarh":{lat:30.73,lng:76.78},"Ludhiana":{lat:30.90,lng:75.86},"Amritsar":{lat:31.63,lng:74.87},"Jalandhar":{lat:31.33,lng:75.58}}},
+    "Rajasthan":{lat:27.02,lng:74.22,cities:{"Jaipur":{lat:26.91,lng:75.79},"Jodhpur":{lat:26.24,lng:73.02},"Udaipur":{lat:24.59,lng:73.71},"Kota":{lat:25.21,lng:75.86},"Ajmer":{lat:26.45,lng:74.64}}},
+    "Tamil Nadu":{lat:11.13,lng:78.66,cities:{"Chennai":{lat:13.08,lng:80.27},"Coimbatore":{lat:11.02,lng:76.96},"Madurai":{lat:9.93,lng:78.12},"Salem":{lat:11.66,lng:78.15},"Trichy":{lat:10.79,lng:78.70}}},
+    "Telangana":{lat:18.11,lng:79.02,cities:{"Hyderabad":{lat:17.39,lng:78.49},"Warangal":{lat:17.98,lng:79.59},"Nizamabad":{lat:18.67,lng:78.09},"Karimnagar":{lat:18.44,lng:79.13}}},
+    "Uttar Pradesh":{lat:26.85,lng:80.95,cities:{"Lucknow":{lat:26.85,lng:80.95},"Kanpur":{lat:26.45,lng:80.33},"Agra":{lat:27.18,lng:78.01},"Varanasi":{lat:25.32,lng:82.97},"Noida":{lat:28.54,lng:77.39},"Ghaziabad":{lat:28.67,lng:77.45}}},
+    "West Bengal":{lat:22.99,lng:87.85,cities:{"Kolkata":{lat:22.57,lng:88.36},"Siliguri":{lat:26.73,lng:88.40},"Asansol":{lat:23.69,lng:86.97},"Durgapur":{lat:23.52,lng:87.31}}}
+  }},
+  "United States":{lat:37.09,lng:-95.71,states:{
+    "California":{lat:36.78,lng:-119.42,cities:{"Los Angeles":{lat:34.05,lng:-118.24},"San Francisco":{lat:37.77,lng:-122.42},"San Diego":{lat:32.72,lng:-117.16},"Sacramento":{lat:38.58,lng:-121.49},"San Jose":{lat:37.34,lng:-121.89}}},
+    "Florida":{lat:27.77,lng:-81.69,cities:{"Miami":{lat:25.76,lng:-80.19},"Orlando":{lat:28.54,lng:-81.38},"Tampa":{lat:27.95,lng:-82.46},"Jacksonville":{lat:30.33,lng:-81.66}}},
+    "New York":{lat:42.17,lng:-74.95,cities:{"New York City":{lat:40.71,lng:-74.01},"Buffalo":{lat:42.89,lng:-78.88},"Rochester":{lat:43.16,lng:-77.61},"Albany":{lat:42.65,lng:-73.76}}},
+    "Texas":{lat:31.97,lng:-99.90,cities:{"Houston":{lat:29.76,lng:-95.37},"Dallas":{lat:32.78,lng:-96.80},"Austin":{lat:30.27,lng:-97.74},"San Antonio":{lat:29.42,lng:-98.49}}},
+    "Illinois":{lat:40.63,lng:-89.40,cities:{"Chicago":{lat:41.88,lng:-87.63},"Aurora":{lat:41.76,lng:-88.32},"Peoria":{lat:40.69,lng:-89.59}}}
+  }},
+  "United Kingdom":{lat:55.38,lng:-3.44,states:{
+    "England":{lat:52.36,lng:-1.17,cities:{"London":{lat:51.51,lng:-0.13},"Manchester":{lat:53.48,lng:-2.24},"Birmingham":{lat:52.49,lng:-1.89},"Leeds":{lat:53.80,lng:-1.55},"Liverpool":{lat:53.41,lng:-2.99}}},
+    "Scotland":{lat:56.49,lng:-4.20,cities:{"Edinburgh":{lat:55.95,lng:-3.19},"Glasgow":{lat:55.86,lng:-4.25},"Aberdeen":{lat:57.15,lng:-2.09}}},
+    "Wales":{lat:52.13,lng:-3.78,cities:{"Cardiff":{lat:51.48,lng:-3.18},"Swansea":{lat:51.62,lng:-3.94}}}
+  }},
+  "Australia":{lat:-25.27,lng:133.78,states:{
+    "New South Wales":{lat:-32.17,lng:147.0,cities:{"Sydney":{lat:-33.87,lng:151.21},"Newcastle":{lat:-32.93,lng:151.78},"Wollongong":{lat:-34.43,lng:150.89}}},
+    "Queensland":{lat:-20.92,lng:142.70,cities:{"Brisbane":{lat:-27.47,lng:153.03},"Gold Coast":{lat:-28.02,lng:153.40},"Cairns":{lat:-16.92,lng:145.78}}},
+    "Victoria":{lat:-36.60,lng:144.68,cities:{"Melbourne":{lat:-37.81,lng:144.96},"Geelong":{lat:-38.15,lng:144.36},"Ballarat":{lat:-37.56,lng:143.85}}}
+  }},
+  "Canada":{lat:56.13,lng:-106.35,states:{
+    "British Columbia":{lat:53.73,lng:-127.65,cities:{"Vancouver":{lat:49.28,lng:-123.12},"Victoria":{lat:48.43,lng:-123.37},"Surrey":{lat:49.19,lng:-122.85}}},
+    "Ontario":{lat:51.25,lng:-85.32,cities:{"Toronto":{lat:43.65,lng:-79.38},"Ottawa":{lat:45.42,lng:-75.70},"Mississauga":{lat:43.59,lng:-79.64}}},
+    "Quebec":{lat:52.94,lng:-73.55,cities:{"Montreal":{lat:45.50,lng:-73.57},"Quebec City":{lat:46.81,lng:-71.21},"Laval":{lat:45.61,lng:-73.71}}}
+  }},
+  "Singapore":{lat:1.35,lng:103.82,states:{
+    "Central Region":{lat:1.29,lng:103.85,cities:{"Orchard":{lat:1.30,lng:103.84},"Marina Bay":{lat:1.28,lng:103.86},"Chinatown":{lat:1.28,lng:103.84}}},
+    "East Region":{lat:1.35,lng:103.94,cities:{"Tampines":{lat:1.35,lng:103.94},"Bedok":{lat:1.32,lng:103.93},"Pasir Ris":{lat:1.37,lng:103.95}}}
+  }},
+  "UAE":{lat:23.42,lng:53.85,states:{
+    "Dubai":{lat:25.20,lng:55.27,cities:{"Downtown Dubai":{lat:25.19,lng:55.27},"Deira":{lat:25.27,lng:55.33},"Jumeirah":{lat:25.22,lng:55.25},"Marina":{lat:25.08,lng:55.14}}},
+    "Abu Dhabi":{lat:24.45,lng:54.38,cities:{"Abu Dhabi City":{lat:24.47,lng:54.37},"Al Ain":{lat:24.21,lng:55.74}}}
+  }}
+};
+
+// ─── MAP ──────────────────────────────────────────────────────
+var map, marker, selLat = null, selLng = null;
+
+var PAW_ICON = null;
+function getPawIcon(){
+  if(!PAW_ICON) PAW_ICON = L.divIcon({
+    html:'<div style="font-size:34px;line-height:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))">🐾</div>',
+    iconSize:[34,34], iconAnchor:[17,34], popupAnchor:[0,-34], className:''
+  });
+  return PAW_ICON;
+}
+
+window.addEventListener('load', function(){
+  // Fill countries FIRST — independent of map
+  var cSel = document.getElementById('lp-country');
+  Object.keys(GEO).sort().forEach(function(c){
+    var o=document.createElement('option'); o.value=c; o.textContent=c; cSel.appendChild(o);
+  });
+  cSel.value='India';
+  onCountryChange();
+
+  // Init map (safe — dropdowns already filled above)
+  try {
+    map = L.map('lost-map',{zoomControl:true}).setView([20.59,78.96],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:19
+    }).addTo(map);
+    map.on('click',function(e){ pinMap(e.latlng.lat,e.latlng.lng); reverseGeo(e.latlng.lat,e.latlng.lng); });
+  } catch(e){ console.warn('Map failed to load:',e); }
+
+  // Prefill user
+  var u = JSON.parse(localStorage.getItem('pb_user')||'{}');
+  if(u.name)  document.getElementById('lp-cname').value  = u.name;
+  if(u.email) document.getElementById('lp-email').value  = u.email;
+  document.getElementById('lp-date').value = new Date().toISOString().split('T')[0];
+});
+
+function pinMap(lat,lng){ if(!map) return;
+  if(marker) map.removeLayer(marker);
+  marker = L.marker([lat,lng],{icon:getPawIcon(),draggable:true}).addTo(map);
+  marker.on('dragend',function(e){
+    var p=e.target.getLatLng(); setCoords(p.lat,p.lng); reverseGeo(p.lat,p.lng);
+  });
+  setCoords(lat,lng);
+  map.setView([lat,lng],map.getZoom()<13?14:map.getZoom());
+}
+
+function setCoords(lat,lng){
+  selLat=lat; selLng=lng;
+  document.getElementById('coord-badge').style.display='inline-flex';
+  document.getElementById('coord-txt').textContent = lat.toFixed(5)+', '+lng.toFixed(5);
+}
+
+function reverseGeo(lat,lng){
+  fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng,{headers:{'Accept-Language':'en'}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.display_name){
+        var parts = d.display_name.split(',');
+        var short = parts.slice(0,3).join(',').trim();
+        var el = document.getElementById('lp-locality');
+        if(el&&!el.value) el.value=short;
+      }
+    }).catch(function(){});
+}
+
+// ─── CASCADING DROPDOWNS ─────────────────────────────────────
+function onCountryChange(){
+  var c = document.getElementById('lp-country').value;
+  var ss = document.getElementById('lp-state');
+  var cs = document.getElementById('lp-city');
+  ss.innerHTML='<option value="">— State —</option>';
+  cs.innerHTML='<option value="">— City —</option>';
+  ss.disabled=true; cs.disabled=true;
+  document.getElementById('lp-locality').value='';
+  if(!c||!GEO[c]) return;
+  Object.keys(GEO[c].states).sort().forEach(function(s){
+    var o=document.createElement('option'); o.value=s; o.textContent=s; ss.appendChild(o);
+  });
+  ss.disabled=false;
+  map.setView([GEO[c].lat,GEO[c].lng],5);
+}
+
+function onStateChange(){
+  var c = document.getElementById('lp-country').value;
+  var s = document.getElementById('lp-state').value;
+  var cs = document.getElementById('lp-city');
+  cs.innerHTML='<option value="">— City —</option>';
+  cs.disabled=true;
+  document.getElementById('lp-locality').value='';
+  if(!s||!GEO[c]||!GEO[c].states[s]) return;
+  Object.keys(GEO[c].states[s].cities).sort().forEach(function(ci){
+    var o=document.createElement('option'); o.value=ci; o.textContent=ci; cs.appendChild(o);
+  });
+  cs.disabled=false;
+  var st=GEO[c].states[s]; map.setView([st.lat,st.lng],9);
+}
+
+function onCityChange(){
+  var c  = document.getElementById('lp-country').value;
+  var s  = document.getElementById('lp-state').value;
+  var ci = document.getElementById('lp-city').value;
+  if(!ci) return;
+  var cityObj = GEO[c].states[s].cities[ci];
+  if(!cityObj) return;
+  map.setView([cityObj.lat,cityObj.lng],13);
+  pinMap(cityObj.lat,cityObj.lng);
+  document.getElementById('lp-locality').value='';
+  document.getElementById('lp-locality').placeholder='Type a locality in '+ci+'…';
+}
+
+// ─── LOCALITY AUTOCOMPLETE (Nominatim) ───────────────────────
+var _lt = null;
+function onLocalityInput(){
+  clearTimeout(_lt);
+  var val  = document.getElementById('lp-locality').value.trim();
+  var city = document.getElementById('lp-city').value;
+  var sug  = document.getElementById('lp-suggest');
+  if(val.length<3){ sug.style.display='none'; return; }
+  _lt = setTimeout(function(){
+    var q = encodeURIComponent(val+(city?', '+city:''));
+    fetch('https://nominatim.openstreetmap.org/search?format=json&limit=6&q='+q,{headers:{'Accept-Language':'en'}})
+      .then(function(r){return r.json();})
+      .then(function(results){
+        sug.innerHTML='';
+        if(!results.length){ sug.style.display='none'; return; }
+        results.forEach(function(r){
+          var label = r.display_name.split(',').slice(0,3).join(',').trim();
+          var d=document.createElement('div'); d.textContent=label;
+          d.onmousedown=function(){
+            document.getElementById('lp-locality').value=label;
+            sug.style.display='none';
+            pinMap(parseFloat(r.lat),parseFloat(r.lon));
+          };
+          sug.appendChild(d);
+        });
+        sug.style.display='block';
+      }).catch(function(){ sug.style.display='none'; });
+  },420);
+}
+function closeS(){ document.getElementById('lp-suggest').style.display='none'; }
+
+// ─── GPS ─────────────────────────────────────────────────────
+function useGPS(){
+  if(!navigator.geolocation){ showToast('Geolocation not supported','error'); return; }
+  navigator.geolocation.getCurrentPosition(function(p){
+    pinMap(p.coords.latitude,p.coords.longitude);
+    reverseGeo(p.coords.latitude,p.coords.longitude);
+  },function(){ showToast('Could not detect location — click the map to pin manually','error'); });
+}
+
+// ─── PHOTO PREVIEW ───────────────────────────────────────────
+function previewPhotos(input){
+  var pv=document.getElementById('photo-preview'); pv.innerHTML='';
+  Array.from(input.files).slice(0,5).forEach(function(f){
+    var r=new FileReader(); r.onload=function(e){var i=document.createElement('img');i.src=e.target.result;pv.appendChild(i);}; r.readAsDataURL(f);
+  });
+}
+
+// ─── SUBMIT ──────────────────────────────────────────────────
+function submitReport(){
+  var petName  = document.getElementById('lp-name').value.trim();
+  var species  = document.getElementById('lp-species').value;
+  var breed    = document.getElementById('lp-breed').value.trim();
+  var age      = document.getElementById('lp-age').value.trim();
+  var color    = document.getElementById('lp-color').value.trim();
+  var collar   = document.getElementById('lp-collar').value.trim();
+  var desc     = document.getElementById('lp-desc').value.trim();
+  var country  = document.getElementById('lp-country').value;
+  var state    = document.getElementById('lp-state').value;
+  var city     = document.getElementById('lp-city').value;
+  var locality = document.getElementById('lp-locality').value.trim();
+  var dateSeen = document.getElementById('lp-date').value;
+  var timeSeen = document.getElementById('lp-time').value;
+  var radius   = document.getElementById('lp-radius').value;
+  var cname    = document.getElementById('lp-cname').value.trim();
+  var phone    = document.getElementById('lp-phone').value.trim();
+  var email    = document.getElementById('lp-email').value.trim();
+
+  var area = [locality,city,state,country].filter(Boolean).join(', ');
+
+  if(!petName)  { showToast('Please enter pet name','error'); return; }
+  if(!country)  { showToast('Please select a country','error'); return; }
+  if(!state)    { showToast('Please select a state / province','error'); return; }
+  if(!city)     { showToast('Please select a city','error'); return; }
+  if(!locality) { showToast('Please enter a locality or pin on the map','error'); return; }
+  if(!dateSeen) { showToast('Please enter date last seen','error'); return; }
+  if(!cname)    { showToast('Please enter your name','error'); return; }
+  if(!phone)    { showToast('Please enter your phone number','error'); return; }
+
+  var btn=document.getElementById('submit-btn');
+  btn.disabled=true; btn.textContent='⏳ Posting…';
+
+  // Local fallback
+  var rec={id:Date.now(),pet_name:petName,species,breed,age,color,collar,description:desc,
+    country,state,city,locality,area,lat:selLat,lng:selLng,
+    date_last_seen:dateSeen,time_last_seen:timeSeen,alert_radius:radius,
+    contact_name:cname,contact_phone:phone,contact_email:email,
+    status:'lost',created_at:new Date().toISOString()};
+  var recs=JSON.parse(localStorage.getItem('pb_lost_reports')||'[]');
+  recs.unshift(rec); localStorage.setItem('pb_lost_reports',JSON.stringify(recs));
+
+  fetch(API_BASE+'/lost-pets',{method:'POST',headers:authHdr(),body:JSON.stringify({
+    pet_name:petName,species,breed:breed||null,age:age||null,color:color||null,collar:collar||null,
+    description:desc||null,area,date_last_seen:dateSeen,time_last_seen:timeSeen||null,
+    alert_radius:radius,contact_name:cname,contact_phone:phone,contact_email:email||null,
+    lat:selLat,lng:selLng,photos:[]
+  })})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.success){ showToast('🚨 Alert posted! Community notified.','success'); setTimeout(function(){goTo('05_lost_pet.html');},1800); }
+    else{ showToast(d.error||'Could not post alert','error'); btn.disabled=false; btn.textContent='🚨 Post Lost Pet Alert'; }
+  })
+  .catch(function(){ showToast('🚨 Alert saved! Will sync when online.','success'); setTimeout(function(){goTo('05_lost_pet.html');},1800); });
+}
+
+function showToast(msg,type){
+  if(typeof toast==='function'){toast(msg,type||'success');return;}
+  var t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
+  t.textContent=msg; document.body.appendChild(t); setTimeout(function(){t.remove();},2800);
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
+</script>
+</body></html>

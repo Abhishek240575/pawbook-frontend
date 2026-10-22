@@ -1,0 +1,28 @@
+cd C:\Users\Abhishek\pawbook\pawbook_v2
+
+$files = Get-ChildItem -Filter "*.html"
+$fixed = 0
+
+foreach ($file in $files) {
+    $content = Get-Content $file.FullName -Raw -Encoding UTF8
+    $original = $content
+
+    # Remove: var API_BASE = '...' (any URL, any quote style)
+    $content = $content -replace "(?m)^\s*var API_BASE\s*=\s*['""][^'""]+['""]\s*;\s*\r?\n", ""
+
+    # Remove: const API_BASE = '...' (just in case)
+    $content = $content -replace "(?m)^\s*const API_BASE\s*=\s*['""][^'""]+['""]\s*;\s*\r?\n", ""
+
+    # Remove: function authHeaders(){...} — single line version
+    $content = $content -replace "(?m)^\s*function authHeaders\s*\(\s*\)\s*\{[^\}]+\}\s*\r?\n", ""
+
+    if ($content -ne $original) {
+        [System.IO.File]::WriteAllText($file.FullName, $content, [System.Text.Encoding]::UTF8)
+        Write-Host "  FIXED: $($file.Name)"
+        $fixed++
+    } else {
+        Write-Host "  skip:  $($file.Name)"
+    }
+}
+
+Write-Host "`nDone. $fixed files cleaned."

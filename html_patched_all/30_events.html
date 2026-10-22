@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   PAWBOOK UNIFIED THEME v3
+   Facebook Blue × Clean White × India-first
+═══════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --pb-blue: #1877F2;
+  --pb-blue-dark: #0d65d9;
+  --pb-blue-soft: #e7f0fd;
+  --pb-green: #22c55e;
+  --pb-green-soft: #dcfce7;
+  --pb-red: #ef4444;
+  --pb-red-soft: #fee2e2;
+  --pb-amber: #f59e0b;
+  --pb-purple: #8b5cf6;
+  --pb-grad: linear-gradient(135deg,#1877F2,#8b5cf6);
+  --pb-ig-grad: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-bg: #f0f2f5;
+  --pb-card: #ffffff;
+  --pb-border: #e4e6eb;
+  --pb-text: #050505;
+  --pb-text2: #65676b;
+  --pb-text3: #8a8d91;
+  --pb-radius: 12px;
+  --pb-radius-sm: 8px;
+  --pb-pill: 999px;
+  --pb-shadow: 0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --pb-shadow-md: 0 4px 20px rgba(0,0,0,.1);
+  --pb-shadow-lg: 0 12px 48px rgba(0,0,0,.16);
+  --pb-nav-h: 56px;
+}
+
+/* ── RESET ── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+input,textarea,select{font-family:'Inter',sans-serif}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+
+/* ── TOPNAV ── */
+.pb-nav{
+  position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);
+  background:#fff;border-bottom:1px solid var(--pb-border);
+  display:flex;align-items:center;padding:0 16px;gap:10px;
+  z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08);
+}
+.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
+.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pb-nav-search{flex:1;max-width:260px;height:40px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
+.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;color:var(--pb-text);width:100%}
+.pb-nav-search input::placeholder{color:var(--pb-text3)}
+.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
+.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
+.pb-nav-tab.active{color:var(--pb-blue)}
+.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-blue);border-radius:3px 3px 0 0}
+.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s;position:relative}
+.pb-icon-btn:hover{background:var(--pb-border)}
+.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+
+/* ── BUTTONS ── */
+.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
+.pb-btn-blue{background:var(--pb-blue);color:#fff}
+.pb-btn-blue:hover{background:var(--pb-blue-dark)}
+.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}
+.pb-btn-gray:hover{background:var(--pb-border)}
+.pb-btn-green{background:var(--pb-green);color:#fff}
+.pb-btn-green:hover{background:#16a34a}
+.pb-btn-red{background:var(--pb-red);color:#fff}
+.pb-btn-red:hover{background:#dc2626}
+.pb-btn-outline{background:transparent;border:1.5px solid var(--pb-border);color:var(--pb-text2)}
+.pb-btn-outline:hover{background:var(--pb-bg)}
+.pb-btn-sm{height:30px;padding:0 12px;font-size:12px}
+.pb-btn-lg{height:44px;padding:0 28px;font-size:15px}
+.pb-btn-full{width:100%;justify-content:center}
+
+/* ── CARDS ── */
+.pb-card{background:var(--pb-card);border-radius:var(--pb-radius);border:1px solid var(--pb-border);box-shadow:var(--pb-shadow);overflow:hidden}
+.pb-card-body{padding:14px 16px}
+
+/* ── BADGES ── */
+.pb-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--pb-pill);font-size:11px;font-weight:700}
+.pb-badge-blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
+.pb-badge-green{background:var(--pb-green-soft);color:#16a34a}
+.pb-badge-red{background:var(--pb-red-soft);color:var(--pb-red)}
+.pb-badge-amber{background:#fef3c7;color:var(--pb-amber)}
+.pb-badge-purple{background:#f3e8ff;color:var(--pb-purple)}
+
+/* ── FORM INPUTS ── */
+.pb-input{width:100%;height:44px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:0 14px;font-size:14px;color:var(--pb-text);outline:none;background:var(--pb-card);transition:border-color .15s}
+.pb-input:focus{border-color:var(--pb-blue)}
+.pb-select{width:100%;height:44px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:0 14px;font-size:14px;color:var(--pb-text);outline:none;background:var(--pb-card);cursor:pointer}
+.pb-select:focus{border-color:var(--pb-blue)}
+.pb-textarea{width:100%;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:10px 14px;font-size:14px;color:var(--pb-text);outline:none;resize:none;transition:border-color .15s}
+.pb-textarea:focus{border-color:var(--pb-blue)}
+.pb-label{font-size:12px;font-weight:700;color:var(--pb-text2);display:block;margin-bottom:5px}
+
+/* ── MODAL ── */
+.pb-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
+.pb-modal-bg.open{display:flex}
+.pb-modal{background:var(--pb-card);border-radius:16px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--pb-shadow-lg)}
+.pb-modal-head{padding:16px 18px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--pb-card);z-index:1;border-radius:16px 16px 0 0}
+.pb-modal-title{font-size:17px;font-weight:800;color:var(--pb-text)}
+.pb-modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;color:var(--pb-text2)}
+.pb-modal-body{padding:18px}
+
+/* ── TOAST ── */
+.pb-toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#fff;padding:10px 20px;border-radius:var(--pb-pill);font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center;backdrop-filter:blur(8px)}
+.pb-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── BOTTOM NAV ── */
+.pb-bottomnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);display:none;align-items:center;justify-content:space-around;z-index:400}
+@media(max-width:768px){.pb-bottomnav{display:flex}}
+.pb-bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px;border-radius:var(--pb-radius-sm);border:none;background:none}
+.pb-bnav-item i{font-size:22px;color:var(--pb-text3)}
+.pb-bnav-item.active i{color:var(--pb-blue)}
+.pb-bnav-label{font-size:9px;font-weight:600;color:var(--pb-text3)}
+.pb-bnav-item.active .pb-bnav-label{color:var(--pb-blue)}
+
+/* ── PAGE LAYOUT ── */
+.pb-page-wrap{padding-top:var(--pb-nav-h);padding-bottom:60px;min-height:100vh}
+.pb-container{max-width:1100px;margin:0 auto;padding:20px 16px}
+
+/* ── SECTION HEADERS ── */
+.pb-section-title{font-size:18px;font-weight:800;color:var(--pb-text);margin-bottom:14px}
+.pb-divider{height:1px;background:var(--pb-border);margin:12px 0}
+
+/* ── HERO BANNER ── */
+.pb-hero{background:var(--pb-blue);position:relative;overflow:hidden;padding:40px 20px}
+.pb-hero-dark{background:var(--pb-text)}
+.pb-hero::before{content:'';position:absolute;inset:0;opacity:.12}
+.pb-hero-inner{position:relative;z-index:1}
+.pb-hero h1{font-size:clamp(24px,4vw,36px);font-weight:900;color:#fff;margin-bottom:8px}
+.pb-hero p{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:20px}
+
+/* ── DROPDOWN ── */
+.pb-dropdown{position:relative}
+.pb-dropdown-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius);box-shadow:var(--pb-shadow-md);z-index:100;max-height:260px;overflow-y:auto;display:none}
+.pb-dropdown-menu.open{display:block}
+.pb-dropdown-item{padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--pb-bg)}
+.pb-dropdown-item:hover{background:var(--pb-blue-soft);color:var(--pb-blue)}
+.pb-dropdown-item:last-child{border-bottom:none}
+
+html,body{overflow-x:hidden!important;max-width:100%!important}
+</style>
+<script src="api.js"></script>
+<script src="upload.js"></script>
+<script>
+(function(){
+  fetch(API_BASE+'/events',{headers:authHeaders()})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.data&&d.data.length){
+        EVENTS = d.data.map(function(e){
+          return {
+            id: e.event_id,
+            type: e.event_type||'meetup',
+            title: e.title,
+            date: new Date(e.event_date).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+            location: e.location,
+            description: e.description||'',
+            img: e.cover_image||'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=85',
+            attendees: parseInt(e.going_count)||0,
+            interested: parseInt(e.interested_count)||0,
+            organizer: e.organizer_name||'PawBook',
+            free: !e.entry_fee || e.entry_fee.toLowerCase()==='free',
+            price: e.entry_fee||'Free',
+            going: false
+          };
+        });
+        renderEvents(currentFilter);
+      }
+    })
+    .catch(function(){});
+})();
+function goTo(p){window.location.href=p;}
+
+function pbNavBar(activePage) {
+  var pages = {
+    home:'07_home.html', groups:'03_groups.html',
+    marketplace:'09_marketplace.html', vet:'11_vet_booking.html',
+    notifications:'12_notifications.html'
+  };
+  var tabs = [
+    {key:'home', icon:'ti-home', label:'Home'},
+    {key:'groups', icon:'ti-users', label:'Groups'},
+    {key:'marketplace', icon:'ti-building-store', label:'Shop'},
+    {key:'vet', icon:'ti-stethoscope', label:'Vet'},
+    {key:'notifications', icon:'ti-bell', label:'Alerts'},
+  ];
+  return tabs.map(function(t){
+    var isActive = t.key === activePage;
+    return '<button class="pb-nav-tab'+(isActive?' active':'')+'" onclick="goTo(\''+pages[t.key]+'\')" title="'+t.label+'"><i class="ti '+t.icon+'"></i></button>';
+  }).join('');
+}
+
+function pbBottomNav(activePage) {
+  var pages = {
+    home:'07_home.html', groups:'03_groups.html',
+    vet:'11_vet_booking.html', notifications:'12_notifications.html',
+    profile:'08_pet_profile.html'
+  };
+  var tabs = [
+    {key:'home', icon:'ti-home', label:'Home'},
+    {key:'groups', icon:'ti-users', label:'Groups'},
+    {key:'vet', icon:'ti-stethoscope', label:'Vet'},
+    {key:'notifications', icon:'ti-bell', label:'Alerts'},
+    {key:'profile', icon:'ti-user-circle', label:'Me'},
+  ];
+  return tabs.map(function(t){
+    var isActive = t.key === activePage;
+    return '<button class="pb-bnav-item'+(isActive?' active':'')+'" onclick="goTo(\''+pages[t.key]+'\')"><i class="ti '+t.icon+'"></i><span class="pb-bnav-label">'+t.label+'</span></button>';
+  }).join('');
+}
+
+// ── TOAST ────────────────────────────────────
+function toast(msg, type) {
+  var t = document.getElementById('pb-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'pb-toast';
+    t.className = 'pb-toast';
+    document.body.appendChild(t);
+  }
+  var bg = type==='error'?'#ef4444':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
+  t.style.background = bg;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+// ── MODAL HELPERS ────────────────────────────
+function openModal(id) {
+  var m = document.getElementById(id);
+  if(m) { m.classList.add('open'); document.body.style.overflow='hidden'; }
+}
+function closeModal(id) {
+  var m = document.getElementById(id);
+  if(m) { m.classList.remove('open'); document.body.style.overflow=''; }
+}
+
+// ── CITY DROPDOWN DATA ────────────────────────
+var PB_CITIES = {
+  'India': {
+    'Delhi': ['New Delhi','Gurgaon','Noida','Faridabad','Ghaziabad'],
+    'Maharashtra': ['Mumbai','Pune','Nagpur','Nashik','Aurangabad'],
+    'Karnataka': ['Bangalore','Mysore','Hubli','Mangalore','Belgaum'],
+    'Tamil Nadu': ['Chennai','Coimbatore','Madurai','Trichy','Salem'],
+    'Telangana': ['Hyderabad','Warangal','Nizamabad','Karimnagar'],
+    'West Bengal': ['Kolkata','Howrah','Durgapur','Asansol'],
+    'Gujarat': ['Ahmedabad','Surat','Vadodara','Rajkot','Gandhinagar'],
+    'Rajasthan': ['Jaipur','Jodhpur','Udaipur','Kota','Ajmer'],
+    'Uttar Pradesh': ['Lucknow','Kanpur','Agra','Varanasi','Allahabad'],
+    'Punjab': ['Chandigarh','Ludhiana','Amritsar','Jalandhar'],
+    'Kerala': ['Thiruvananthapuram','Kochi','Kozhikode','Thrissur'],
+  },
+  'USA': {
+    'California': ['Los Angeles','San Francisco','San Diego','Sacramento','San Jose'],
+    'New York': ['New York City','Buffalo','Rochester','Albany'],
+    'Texas': ['Houston','Dallas','Austin','San Antonio','Fort Worth'],
+    'Florida': ['Miami','Orlando','Tampa','Jacksonville'],
+    'Illinois': ['Chicago','Springfield','Rockford'],
+  },
+  'UK': {
+    'England': ['London','Manchester','Birmingham','Liverpool','Leeds','Bristol'],
+    'Scotland': ['Edinburgh','Glasgow','Aberdeen'],
+    'Wales': ['Cardiff','Swansea'],
+  },
+  'Australia': {
+    'New South Wales': ['Sydney','Newcastle','Wollongong'],
+    'Victoria': ['Melbourne','Geelong','Ballarat'],
+    'Queensland': ['Brisbane','Gold Coast','Cairns'],
+    'Western Australia': ['Perth','Fremantle'],
+  },
+  'Canada': {
+    'Ontario': ['Toronto','Ottawa','Hamilton','London'],
+    'British Columbia': ['Vancouver','Victoria','Kelowna'],
+    'Quebec': ['Montreal','Quebec City','Laval'],
+    'Alberta': ['Calgary','Edmonton'],
+  },
+  'Singapore': {'Singapore': ['Singapore City','Jurong','Tampines','Woodlands']},
+  'UAE': {
+    'Dubai': ['Dubai City','Deira','Bur Dubai','Jumeirah'],
+    'Abu Dhabi': ['Abu Dhabi City','Al Ain'],
+  },
+};
+
+// ── EMERGENCY NUMBERS ────────────────────────
+var PB_EMERGENCY = {
+  'India': {
+    'Delhi': [{name:'Animal Welfare Board Helpline',no:'1962',type:'govt'},{name:'Delhi Animal Hospital',no:'+91 11 2584 7200',type:'hospital'},{name:'Friendicoes SECA',no:'+91 11 2463 5945',type:'shelter'},{name:'Wildlife SOS',no:'+91 98005 44477',type:'wildlife'}],
+    'Maharashtra': [{name:'PETA India Helpline',no:'+91 98201 22602',type:'ngo'},{name:'Mumbai SPCA',no:'+91 22 2413 6640',type:'shelter'},{name:'Animal Welfare Hotline',no:'1962',type:'govt'}],
+    'Karnataka': [{name:'CUPA Bangalore',no:'+91 80 2341 0386',type:'shelter'},{name:'BBMP Animal Helpline',no:'+91 80 2295 5052',type:'govt'}],
+    'Tamil Nadu': [{name:'Blue Cross of India',no:'+91 44 2235 1006',type:'shelter'},{name:'Animal Welfare Board',no:'1962',type:'govt'}],
+    'All India': [{name:'Animal Welfare Board of India',no:'1962',type:'govt'},{name:'PETA India',no:'+91 98201 22602',type:'ngo'},{name:'Wildlife Crime Control Bureau',no:'+91 11 2436 2625',type:'govt'}],
+  },
+  'USA': {
+    'All USA': [{name:'ASPCA Emergency',no:'(888) 426-4435',type:'ngo'},{name:'Humane Society',no:'(202) 452-1100',type:'ngo'},{name:'Animal Poison Control',no:'(888) 426-4435',type:'emergency'}],
+    'California': [{name:'LA Animal Services',no:'(888) 452-7381',type:'govt'},{name:'SF SPCA',no:'(415) 554-3000',type:'shelter'}],
+    'New York': [{name:'NYC Animal Care Centers',no:'(212) 788-4000',type:'govt'},{name:'ASPCA NYC',no:'(212) 876-7700',type:'ngo'}],
+  },
+  'UK': {
+    'All UK': [{name:'RSPCA Emergency',no:'0300 1234 999',type:'ngo'},{name:'PDSA Vet Line',no:'0800 731 2502',type:'ngo'},{name:'British Vet Association',no:'020 7636 6541',type:'govt'}],
+    'England': [{name:'Dogs Trust',no:'020 7837 0006',type:'shelter'},{name:'Cats Protection',no:'03000 12 12 12',type:'shelter'}],
+  },
+  'Australia': {
+    'All Australia': [{name:'RSPCA Australia',no:'(02) 6282 8300',type:'ngo'},{name:'Animal Ethics',no:'1300 369 711',type:'govt'}],
+    'New South Wales': [{name:'NSW RSPCA',no:'(02) 9770 7555',type:'shelter'},{name:'Sydney Animal Hospital',no:'(02) 9519 4010',type:'hospital'}],
+  },
+  'Canada': {
+    'All Canada': [{name:'Canadian Humane Society',no:'(613) 224-8072',type:'ngo'},{name:'SPCA Canada',no:'1-833-722-7722',type:'ngo'}],
+    'Ontario': [{name:'Toronto Humane Society',no:'(416) 392-2273',type:'shelter'},{name:'Ottawa Humane Society',no:'(613) 725-3166',type:'shelter'}],
+  },
+  'UAE': {
+    'All UAE': [{name:'Dubai Municipality Animal',no:'800 900',type:'govt'},{name:'Emirates Animal Welfare',no:'+971 4 347 5536',type:'ngo'}],
+    'Dubai': [{name:'Dubai Pet Rescue',no:'+971 55 549 1986',type:'shelter'},{name:'K9 Friends Dubai',no:'+971 4 340 8402',type:'shelter'}],
+  },
+  'Singapore': {
+    'Singapore': [{name:'SPCA Singapore',no:'6287 5355',type:'shelter'},{name:'AVS Emergency',no:'1800 476 1600',type:'govt'},{name:'Animal Concern Research',no:'6974 1981',type:'ngo'}],
+  },
+};
+
+// ── CITY SELECTOR BUILDER ─────────────────────
+function buildCitySelector(countryId, stateId, cityId, onchange) {
+  var countries = Object.keys(PB_CITIES);
+  var countryHtml = '<select class="pb-select" id="'+countryId+'" onchange="pbUpdateStates(\''+countryId+'\',\''+stateId+'\',\''+cityId+'\')">';
+  countryHtml += '<option value="">🌍 Select Country</option>';
+  countries.forEach(function(c){ countryHtml += '<option>'+c+'</option>'; });
+  countryHtml += '</select>';
+
+  var stateHtml = '<select class="pb-select" id="'+stateId+'" onchange="pbUpdateCities(\''+countryId+'\',\''+stateId+'\',\''+cityId+'\')" disabled><option value="">Select State/Region</option></select>';
+  var cityHtml = '<select class="pb-select" id="'+cityId+'" disabled><option value="">Select City</option></select>';
+
+  return {country: countryHtml, state: stateHtml, city: cityHtml};
+}
+
+function pbUpdateStates(countryId, stateId, cityId) {
+  var country = document.getElementById(countryId).value;
+  var stateEl = document.getElementById(stateId);
+  var cityEl = document.getElementById(cityId);
+  stateEl.innerHTML = '<option value="">Select State/Region</option>';
+  cityEl.innerHTML = '<option value="">Select City</option>';
+  cityEl.disabled = true;
+  if(!country || !PB_CITIES[country]) { stateEl.disabled = true; return; }
+  stateEl.disabled = false;
+  Object.keys(PB_CITIES[country]).forEach(function(s){
+    stateEl.innerHTML += '<option>'+s+'</option>';
+  });
+}
+
+function pbUpdateCities(countryId, stateId, cityId) {
+  var country = document.getElementById(countryId).value;
+  var state = document.getElementById(stateId).value;
+  var cityEl = document.getElementById(cityId);
+  cityEl.innerHTML = '<option value="">Select City</option>';
+  if(!country || !state || !PB_CITIES[country] || !PB_CITIES[country][state]) { cityEl.disabled = true; return; }
+  cityEl.disabled = false;
+  PB_CITIES[country][state].forEach(function(c){
+    cityEl.innerHTML += '<option>'+c+'</option>';
+  });
+}
+
+// ── EMERGENCY NUMBER LOOKUP ───────────────────
+function pbGetEmergencyNumbers(country, region) {
+  if(!country || !PB_EMERGENCY[country]) return [];
+  var results = [];
+  var allKey = 'All ' + country;
+  if(PB_EMERGENCY[country][allKey]) results = results.concat(PB_EMERGENCY[country][allKey]);
+  if(region && PB_EMERGENCY[country][region]) results = results.concat(PB_EMERGENCY[country][region]);
+  return results;
+}
+
+// ── NEARBY SHELTERS ───────────────────────────
+var PB_SHELTERS = {
+  'Delhi': [{name:'Friendicoes SECA',addr:'6/7 Siri Institutional Area',phone:'+91 11 2463 5945',animals:'Dogs,Cats'},{name:'Jeevashram',addr:'Shiv Vihar, Delhi',phone:'+91 98100 45022',animals:'All animals'},{name:'Charlies Animal Rescue',addr:'Dwarka, New Delhi',phone:'+91 95992 03433',animals:'Dogs,Cats,Birds'}],
+  'Mumbai': [{name:'World For Animals',addr:'Oshiwara, Andheri West',phone:'+91 98192 89920',animals:'Dogs,Cats'},{name:'In Defence of Animals',addr:'Bandra West',phone:'+91 22 2641 3528',animals:'Dogs'}],
+  'Bangalore': [{name:'CUPA',addr:'Outer Ring Road, Devarabeesanahalli',phone:'+91 80 2341 0386',animals:'All animals'},{name:'Animal Rahat',addr:'Electronic City',phone:'+91 80 6741 8100',animals:'Horses,Donkeys,Bulls'}],
+  'Chennai': [{name:'Blue Cross of India',addr:'Velachery Main Road',phone:'+91 44 2235 1006',animals:'All animals'},{name:'PAWS Chennai',addr:'Anna Nagar',phone:'+91 44 2626 4460',animals:'Dogs,Cats'}],
+  'London': [{name:'Battersea Dogs and Cats Home',addr:'Battersea Park Road',phone:'020 7622 3626',animals:'Dogs,Cats'},{name:'RSPCA London',addr:'Southall',phone:'0300 1234 999',animals:'All animals'}],
+  'New York City': [{name:'NYC ACC Manhattan',addr:'326 E 110th St',phone:'(212) 788-4000',animals:'All animals'},{name:'ASPCA NYC',addr:'424 E 92nd St',phone:'(212) 876-7700',animals:'All animals'}],
+  'Sydney': [{name:'RSPCA NSW',addr:'Yagoona',phone:'(02) 9770 7555',animals:'All animals'},{name:'Sydney Dogs & Cats Home',addr:'St Peters',phone:'(02) 9587 9611',animals:'Dogs,Cats'}],
+};
+
+function pbGetNearbyShelters(city) {
+  return PB_SHELTERS[city] || [];
+}
+
+</script>
+
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="/manifest.json">
+<title>PawBook — Events</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e2e8f0;z-index:500;display:flex;align-items:center;padding:0 16px;gap:10px}
+.hero{background:linear-gradient(135deg,#1a4db3,#6366f1,#8b5cf6);padding:40px 20px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.hero::before{content:'🎪🐾🦁🐬🎭🎉';position:absolute;top:10px;right:10px;font-size:24px;opacity:0.3;letter-spacing:4px}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;scrollbar-width:none;background:#fff;border-bottom:1px solid #e2e8f0}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{flex-shrink:0;height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#64748b;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:all 0.15s}
+.filter-chip.active{background:#1a4db3;border-color:#1a4db3;color:#fff}
+.event-card{background:#fff;border-radius:14px;margin:8px 16px;overflow:visible;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #e4e6eb}
+.event-img{width:100%;height:160px;object-fit:cover}
+.event-body{padding:14px}
+.event-date-badge{display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1a4db3;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;margin-bottom:10px}
+.event-title{font-size:16px;font-weight:900;color:#1e293b;margin-bottom:4px}
+.event-meta{font-size:12px;color:#64748b;display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.event-attendees{display:flex;align-items:center;gap:-4px;margin-bottom:12px}
+.attendee-av{width:28px;height:28px;border-radius:50%;border:2px solid #fff;object-fit:cover;margin-right:-8px}
+.event-actions{display:flex;gap:8px;align-items:center;padding:0 14px 14px;flex-wrap:wrap}
+.event-btn{height:32px;padding:0 16px;border-radius:999px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all 0.15s;white-space:nowrap}
+.btn-going{background:#1a4db3;color:#fff}
+.btn-going.active{background:#dcfce7;color:#16a34a;border:1.5px solid #16a34a}
+.btn-interested{background:#f0f2f5;color:#1e293b;border:1.5px solid #e2e8f0}
+.section-label{padding:16px 16px 4px;font-size:13px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.5px}
+.create-btn{position:fixed;bottom:70px;right:16px;height:48px;padding:0 20px;border-radius:24px;background:linear-gradient(135deg,#1a4db3,#6366f1);color:#fff;border:none;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(26,77,179,0.4);display:flex;align-items:center;gap:8px;z-index:400}
+</style>
+<link rel="stylesheet" href="mobile.css">
+<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
+<style id="pb-mobile">
+html, body { overflow-x: hidden !important; }
+@media (max-width: 768px) {
+  html, body { width: 100% !important; overflow-x: hidden !important; }
+  div { min-width: 0 !important; }
+
+  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
+  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
+  .topnav-tabs, .nav-tabs { display: none !important; }
+  .bottomnav { display: flex !important; }
+  .left-sidebar, .right-sidebar, aside { display: none !important; }
+  body { padding-bottom: 72px !important; }
+}
+</style>
+<style id="pb-burger">
+.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
+.drawer-overlay.open { display: block; }
+.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
+.drawer-panel.open { left: 0; }
+.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
+.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
+.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
+.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
+.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
+.drawer-body { flex: 1; padding: 6px 0; }
+.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
+.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
+.drawer-item:hover { background: #eff6ff; color: #1877F2; }
+.drawer-item i { font-size: 20px; width: 24px; }
+.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
+.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
+.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
+.bnav-item i { font-size: 22px; }
+.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.bnav-item.active { color: #1877F2; }
+@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
+@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <button onclick="location.href='07_home.html'" style="background:none;border:none;cursor:pointer;font-size:22px;color:#64748b"><i class="ti ti-arrow-left"></i></button>
+  <div style="font-size:16px;font-weight:800">Events</div>
+  <button onclick="location.href='15_search.html'" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:22px;color:#64748b"><i class="ti ti-search"></i></button>
+</nav>
+
+<div style="padding-top:56px;padding-bottom:80px">
+  <div class="hero">
+    <div style="font-size:36px;margin-bottom:8px">🎉</div>
+    <div style="font-size:22px;font-weight:900;margin-bottom:6px">Pet Events Near You</div>
+    <div style="font-size:14px;opacity:0.85">Meetups · Adoption Drives · Vet Camps · Shows</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
+      <div style="background:rgba(255,255,255,0.2);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700">📍 Delhi</div>
+      <div style="background:rgba(255,255,255,0.2);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700">This Week</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <!-- Location & Time Filters -->
+<div style="background:#fff;border-bottom:1px solid #e4e6eb;padding:10px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+  <div style="display:flex;align-items:center;gap:6px">
+    <i class="ti ti-map-pin" style="color:#1877F2;font-size:15px"></i>
+    <select id="ev-location" onchange="filterByLocation(this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;background:#fff;cursor:pointer">
+      <option value="">📍 All Locations</option>
+      <option value="Delhi" selected>Delhi</option>
+      <option value="Mumbai">Mumbai</option>
+      <option value="Bangalore">Bangalore</option>
+      <option value="Chennai">Chennai</option>
+      <option value="Hyderabad">Hyderabad</option>
+      <option value="Pune">Pune</option>
+      <option value="Kolkata">Kolkata</option>
+      <option value="Online">🌐 Online</option>
+    </select>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <i class="ti ti-calendar" style="color:#1877F2;font-size:15px"></i>
+    <select id="ev-time" onchange="filterByTime(this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;background:#fff;cursor:pointer">
+      <option value="">🗓 Any Time</option>
+      <option value="today">Today</option>
+      <option value="tomorrow">Tomorrow</option>
+      <option value="week" selected>This Week</option>
+      <option value="weekend">This Weekend</option>
+      <option value="month">This Month</option>
+    </select>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <i class="ti ti-users" style="color:#1877F2;font-size:15px"></i>
+    <select id="ev-type" onchange="filterByType(this.value)" style="height:34px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;background:#fff;cursor:pointer">
+      <option value="">👥 All Types</option>
+      <option value="free">🆓 Free Only</option>
+      <option value="paid">💰 Paid</option>
+      <option value="online">💻 Online</option>
+      <option value="inperson">📍 In Person</option>
+    </select>
+  </div>
+  <button onclick="clearEventFilters()" style="height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;color:#65676b">✕ Clear</button>
+</div>
+
+<div class="filter-row">
+    <button class="filter-chip active" onclick="filterEvents('all',this)">All Events</button>
+    <button class="filter-chip" onclick="filterEvents('meetup',this)">🐾 Pet Meetups</button>
+    <button class="filter-chip" onclick="filterEvents('adoption',this)">🏠 Adoption Drives</button>
+    <button class="filter-chip" onclick="filterEvents('vet',this)">🩺 Vet Camps</button>
+    <button class="filter-chip" onclick="filterEvents('show',this)">🏆 Pet Shows</button>
+    <button class="filter-chip" onclick="filterEvents('training',this)">🎓 Training</button>
+    <button class="filter-chip" onclick="filterEvents('online',this)">💻 Online</button>
+  </div>
+
+  <div id="events-list"></div>
+</div>
+
+<button class="create-btn" onclick="openCreateEvent()"><i class="ti ti-plus"></i> Create Event</button>
+
+<!-- Bottom nav -->
+<div style="position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e2e8f0;display:flex;z-index:500">
+  <button onclick="location.href='07_home.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-home" style="font-size:20px"></i>Home</button>
+  <button onclick="location.href='03_groups.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-users" style="font-size:20px"></i>Groups</button>
+  <button style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#1a4db3;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-calendar-event" style="font-size:20px"></i>Events</button>
+  <button onclick="location.href='26_discover.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-world" style="font-size:20px"></i>Discover</button>
+  <button onclick="location.href='08_pet_profile.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-user" style="font-size:20px"></i>Profile</button>
+</div>
+
+<script>
+let EVENTS = [
+  { id:1, type:'meetup', title:'Delhi Dog Park Meetup 🐕', date:'Sun, Sep 15 · 7:00 AM', location:'Lodhi Garden, New Delhi', description:'Monthly dog meetup! All breeds welcome. Bring water and treats.', img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&q=80', attendees:234, interested:567, organizer:'Delhi Dog Club', free:true, going:false },
+  { id:2, type:'adoption', title:'Adoption Drive — 50 Pets Need Homes 🏠', date:'Sat, Sep 14 · 10:00 AM - 5:00 PM', location:'Connaught Place, New Delhi', description:'Hopeful Tails Shelter is hosting a mega adoption event. Meet dogs, cats, rabbits, and more!', img:'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=600&q=80', attendees:89, interested:1234, organizer:'Hopeful Tails Shelter', free:true, going:false },
+  { id:3, type:'vet', title:'Free Vaccination Camp 💉', date:'Sat, Sep 14 · 9:00 AM - 1:00 PM', location:'Sanjay Gandhi Animal Care, GK-1', description:'Free rabies + distemper vaccination for all pets. Bring health records.', img:'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=600&q=80', attendees:156, interested:892, organizer:'Delhi SPCA', free:true, going:false },
+  { id:4, type:'show', title:'PawBook Pet Talent Show 🏆', date:'Sat, Sep 21 · 3:00 PM', location:'India Habitat Centre, New Delhi', description:'Show off your pet\'s talents! Prizes for Best Trick, Cutest Pet, Best Costume.', img:'https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a?w=600&q=80', attendees:312, interested:2341, organizer:'PawBook India', free:false, price:'₹299', going:false },
+  { id:5, type:'training', title:'Puppy Socialization Workshop 🎓', date:'Sun, Sep 22 · 10:00 AM', location:'Vasant Kunj Pet Club, Delhi', description:'Professional trainers teach basic commands, leash walking, and socialization for puppies 8-16 weeks.', img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80', attendees:28, interested:145, organizer:'Cessna Lifeline', free:false, price:'₹599', going:false },
+  { id:6, type:'online', title:'Live Q&A: Exotic Pet Care 🦎', date:'Fri, Sep 13 · 8:00 PM IST', location:'PawBook Live', description:'Dr. Arjun Mehta answers your questions about reptiles, birds, and exotic pet care. Join free!', img:'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=600&q=80', attendees:678, interested:4521, organizer:'Dr. Arjun Mehta', free:true, going:false },
+  { id:7, type:'meetup', title:'Mumbai Cat Lovers Cafe Meetup 🐈', date:'Sat, Sep 28 · 4:00 PM', location:'Bandra, Mumbai', description:'Monthly cat lovers gathering at The Purrfect Cafe. Cats welcome on leash!', img:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&q=80', attendees:67, interested:234, organizer:'Mumbai Cat Society', free:true, going:false },
+  { id:8, type:'vet', title:'Bird & Avian Health Camp 🦜', date:'Sun, Sep 29 · 9:00 AM', location:'Lajpat Nagar, Delhi', description:'Free checkup and clipping for all pet birds. Specialist avian vet on site.', img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80', attendees:45, interested:321, organizer:'Delhi Avian Society', free:true, going:false },
+];
+
+let currentFilter = 'all';
+let goingEvents = new Set();
+
+function renderEvents(filter = 'all') {
+  const filtered = filter === 'all' ? EVENTS : EVENTS.filter(e => e.type === filter);
+  const list = document.getElementById('events-list');
+
+  // Group by upcoming vs this week
+  list.innerHTML = '';
+
+  const upcoming = filtered.filter((_,i) => i < 3);
+  const more = filtered.filter((_,i) => i >= 3);
+
+  if(upcoming.length) {
+    list.innerHTML += `<div class="section-label">📅 This Weekend</div>`;
+    list.innerHTML += upcoming.map(e => renderEventCard(e)).join('');
+  }
+  if(more.length) {
+    list.innerHTML += `<div class="section-label">🗓️ Coming Up</div>`;
+    list.innerHTML += more.map(e => renderEventCard(e)).join('');
+  }
+  if(!filtered.length) {
+    list.innerHTML = `<div style="text-align:center;padding:40px;color:#94a3b8"><div style="font-size:48px;margin-bottom:12px">📭</div><div style="font-weight:700">No events in this category</div><div style="font-size:13px;margin-top:6px">Check back soon!</div></div>`;
+  }
+}
+
+function renderEventCard(e) {
+  const isGoing = goingEvents.has(e.id);
+  return `
+  <div class="event-card">
+    <img class="event-img" src="${e.img}" onerror="this.style.background='#dbeafe';this.style.height='80px'">
+    <div class="event-body">
+      <div class="event-date-badge">📅 ${e.date}</div>
+      <div class="event-title">${e.title}</div>
+      <div class="event-meta"><i class="ti ti-map-pin" style="color:#1a4db3"></i> ${e.location}</div>
+      <div class="event-meta"><i class="ti ti-users" style="color:#10b981"></i> ${e.attendees} going · ${e.interested} interested · by ${e.organizer}</div>
+      <div style="font-size:12px;color:#475569;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${e.description}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px">
+        <div style="display:flex;align-items:center">
+          <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=60&q=80" style="width:24px;height:24px;border-radius:50%;border:2px solid #fff;margin-right:-6px;object-fit:cover;flex-shrink:0">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&q=80" style="width:24px;height:24px;border-radius:50%;border:2px solid #fff;margin-right:-6px;object-fit:cover;flex-shrink:0">
+          <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=60&q=80" style="width:24px;height:24px;border-radius:50%;border:2px solid #fff;margin-right:-6px;object-fit:cover;flex-shrink:0">
+        </div>
+        <span style="font-size:11px;color:#64748b;margin-left:10px">+${e.attendees-3} going</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 14px">
+        <span style="font-size:13px;font-weight:800;color:${e.free?'#16a34a':'#1877F2'}">${e.free?'🆓 Free':e.price}</span>
+        <span style="font-size:11px;color:#65676b">${e.category||''}</span>
+      </div>
+      <div class="event-actions">
+        <button class="event-btn btn-going ${isGoing?'active':''}" id="going-${e.id}" onclick="toggleGoing(${e.id},this)">
+          ${isGoing?'✓ Going':'Going'}
+        </button>
+        <button class="event-btn btn-interested" onclick="toggleInterested(${e.id},this)">Interested</button>
+        <button class="event-btn btn-interested" onclick="shareEvent('${e.title}')" style="padding:0 10px"><i class="ti ti-share"></i></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function filterEvents(type, el) {
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = type;
+  renderEvents(type);
+}
+
+function toggleGoing(id, btn) {
+  var isGoing = goingEvents.has(id);
+  var newStatus = isGoing ? 'none' : 'going';
+  fetch(API_BASE+'/events/'+id+'/rsvp',{method:'POST',headers:authHeaders(),body:JSON.stringify({status:newStatus})})
+    .then(function(r){return r.json();})
+    .then(function(){
+      if(isGoing){ goingEvents.delete(id); btn.textContent='Going'; btn.classList.remove('active'); showToast('Removed from going'); }
+      else { goingEvents.add(id); btn.textContent='✓ Going'; btn.classList.add('active'); showToast('✅ You\'re going!'); }
+    })
+    .catch(function(){ showToast('Network error','error'); });
+}
+function toggleInterested(id, btn) {
+  btn.textContent = btn.textContent==='Interested'?'★ Interested':'Interested';
+  btn.style.color = btn.textContent==='★ Interested'?'#f59e0b':'';
+  showToast(btn.textContent==='★ Interested'?'⭐ Marked as interested!':'Removed');
+}
+function shareEvent(title) {
+  navigator.clipboard?.writeText('Check out this event on PawBook: '+title).then(()=>showToast('🔗 Link copied!'));
+}
+function createEvent() {
+  const title = prompt('Event name:');
+  if(!title) return;
+  showToast('🎉 Event created! (Coming soon — full form)');
+}
+function showToast(msg) {
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a4db3;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);
+}
+
+renderEvents();
+</script>
+
+<!-- CREATE EVENT MODAL -->
+<div id="create-event-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)" onclick="if(event.target===this)closeCreateEvent()">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)">
+    <div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;border-radius:16px 16px 0 0">
+      <div style="font-size:17px;font-weight:800">🎉 Create Event</div>
+      <button onclick="closeCreateEvent()" style="width:32px;height:32px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Event Name *</label>
+        <input id="ce-name" placeholder="e.g. Delhi Dog Park Meetup" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Date *</label>
+          <input id="ce-date" type="date" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Time *</label>
+          <input id="ce-time" type="time" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Category</label>
+        <select id="ce-category" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif;background:#fff">
+          <option value="meetup">🐾 Pet Meetup</option>
+          <option value="adoption">🏠 Adoption Drive</option>
+          <option value="vet">🩺 Vet Camp</option>
+          <option value="show">🏆 Pet Show</option>
+          <option value="training">🎓 Training</option>
+          <option value="online">💻 Online Event</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Location *</label>
+        <input id="ce-location" placeholder="e.g. Lodhi Garden, New Delhi" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Max Attendees</label>
+          <input id="ce-max" type="number" placeholder="50" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Entry Fee</label>
+          <input id="ce-fee" placeholder="Free / ₹100" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 14px;font-size:14px;outline:none;font-family:Inter,sans-serif">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Description</label>
+        <textarea id="ce-desc" placeholder="Tell people what your event is about..." rows="3" style="width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 14px;font-size:14px;outline:none;resize:none;font-family:Inter,sans-serif"></textarea>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Cover Photo</label>
+        <div onclick="document.getElementById('ce-photo').click()" style="border:2px dashed #e4e6eb;border-radius:10px;padding:20px;text-align:center;cursor:pointer">
+          <div style="font-size:28px;margin-bottom:6px">📷</div>
+          <div style="font-size:13px;font-weight:600;color:#65676b">Click to upload cover photo</div>
+          <input type="file" id="ce-photo" accept="image/*" style="display:none">
+        </div>
+      </div>
+      <button onclick="submitCreateEvent()" style="width:100%;height:44px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">🎉 Create Event</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openCreateEvent() {
+  var m = document.getElementById('create-event-modal');
+  if(m) { m.style.display='flex'; document.body.style.overflow='hidden'; }
+}
+function closeCreateEvent() {
+  var m = document.getElementById('create-event-modal');
+  if(m) { m.style.display='none'; document.body.style.overflow=''; }
+}
+
+function submitCreateEvent() {
+  var name = document.getElementById('ce-name').value.trim();
+  var date = document.getElementById('ce-date').value;
+  var time = document.getElementById('ce-time').value;
+  var location = document.getElementById('ce-location').value.trim();
+  if(!name){alert('Please enter an event name');document.getElementById('ce-name').focus();return;}
+  if(!date){alert('Please select a date');return;}
+  if(!location){alert('Please enter a location');return;}
+
+  var eventDate = date + 'T' + (time||'09:00') + ':00';
+  var fee = document.getElementById('ce-fee').value.trim();
+  var body = {
+    title: name,
+    event_date: eventDate,
+    location: location,
+    event_type: document.getElementById('ce-category').value,
+    description: document.getElementById('ce-desc').value||'',
+    max_attendees: document.getElementById('ce-max').value||null,
+    entry_fee: fee||'Free'
+  };
+
+  fetch(API_BASE+'/events',{method:'POST',headers:authHeaders(),body:JSON.stringify(body)})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.success){
+        closeCreateEvent();
+        showToast('🎉 Event created!','success');
+        setTimeout(function(){ location.reload(); }, 1000);
+      } else {
+        showToast(d.message||'Failed to create event','error');
+      }
+    })
+    .catch(function(){ showToast('Network error','error'); });
+}
+
+function filterByLocation(val) {
+  var locBtn = document.getElementById('ev-location');
+  currentLocation = val;
+  applyEventFilters();
+}
+
+function filterByTime(val) {
+  currentTime = val;
+  applyEventFilters();
+}
+
+function filterByType(val) {
+  currentType = val;
+  applyEventFilters();
+}
+
+function clearEventFilters() {
+  document.getElementById('ev-location').value = '';
+  document.getElementById('ev-time').value = '';
+  document.getElementById('ev-type').value = '';
+  currentLocation = '';
+  currentTime = '';
+  currentType = '';
+  applyEventFilters();
+}
+
+var currentLocation = 'Delhi';
+var currentTime = 'week';
+var currentType = '';
+
+function applyEventFilters() {
+  if(typeof EVENTS === 'undefined') return;
+  var filtered = EVENTS.filter(function(e) {
+    if(currentLocation && !e.location.toLowerCase().includes(currentLocation.toLowerCase())) return false;
+    if(currentType === 'free' && !e.free) return false;
+    if(currentType === 'paid' && e.free) return false;
+    if(currentType === 'online' && e.category !== 'online') return false;
+    if(currentType === 'inperson' && e.category === 'online') return false;
+    return true;
+  });
+  renderEvents(filtered);
+  
+  // Update title
+  var title = document.getElementById('events-count');
+  if(title) title.textContent = filtered.length + ' event' + (filtered.length !== 1 ? 's' : '') + ' found';
+}
+
+function goTo(p) { window.location.href = p; }
+</script>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottomnav">
+  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
+  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER PANEL -->
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
+      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDrawer() {
+  document.getElementById('drawer-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+<script>
+(function(){
+  function showBurgerOnMobile(){
+    var btns = document.querySelectorAll('.burger-btn');
+    var isMobile = window.innerWidth <= 768;
+    btns.forEach(function(b){
+      b.style.display = isMobile ? 'flex' : 'none';
+    });
+    // Also hide topnav-tabs on mobile
+    var tabs = document.querySelector('.topnav-tabs');
+    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
+    // Show bottom nav on mobile
+    var bnav = document.querySelector('.bottomnav');
+    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+  }
+  showBurgerOnMobile();
+  window.addEventListener('resize', showBurgerOnMobile);
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
+</script>
+</body>
+</html>

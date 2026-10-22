@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="/manifest.json">
+<title>PawBook — Lost Pet Alert</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── HERO ─────────────────────────────────────────────────── */
+.alert-hero {
+  display:grid;
+  grid-template-columns:1fr 340px;
+  background:linear-gradient(135deg,#dc2626 0%,#b91c1c 60%,#991b1b 100%);
+  position:relative; overflow:hidden; min-height:160px;
+}
+.hero-left {
+  padding:22px 24px 18px;
+  position:relative; z-index:2;
+  display:flex; flex-direction:column; justify-content:center;
+}
+/* flower strip at bottom of hero */
+.hero-flowers {
+  position:absolute; bottom:0; left:0; right:0;
+  font-size:18px; letter-spacing:2px; opacity:0.5; color:#fbbf24;
+  line-height:1; padding:2px 0;
+}
+.alert-title {
+  font-size:34px; font-weight:900; color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,0.3);
+  margin-bottom:6px; line-height:1.1;
+  /* Red banner effect like the image */
+  display:inline-block;
+  background:linear-gradient(135deg,#ef4444,#dc2626);
+  padding:6px 18px 6px 14px;
+  border-radius:8px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+}
+.alert-sub {
+  font-size:15px; font-weight:600;
+  color:rgba(255,255,255,0.95); margin:10px 0 12px;
+}
+.alert-sub strong { color:#fff; }
+.gps-pill {
+  display:inline-flex; align-items:center; gap:8px;
+  background:#16a34a; border-radius:6px;
+  padding:7px 14px; font-size:12px; font-weight:700;
+  color:#fff; width:fit-content;
+}
+.gps-dot {
+  width:10px; height:10px; border-radius:50%;
+  background:#86efac; animation:blink 1.5s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.gps-last {
+  font-style:italic; color:rgba(255,255,255,0.9);
+  font-weight:500; margin-left:4px;
+}
+
+/* Hero right — dog+cat photo */
+.hero-right {
+  position:relative; overflow:hidden;
+}
+.hero-right img {
+  width:100%; height:100%;
+  object-fit:cover; object-position:center top;
+  display:block;
+}
+/* Cartoon-style overlay on photo */
+.hero-right::before {
+  content:''; position:absolute; inset:0; z-index:1;
+  background:linear-gradient(to right,rgba(185,28,28,0.3) 0%,transparent 40%);
+}
+.question-bubble {
+  position:absolute; top:14px; right:14px; z-index:2;
+  width:48px; height:48px; border-radius:50%;
+  background:#fff; color:#dc2626;
+  font-size:26px; font-weight:900;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,0.25);
+}
+/* Flowers along bottom of hero image */
+.hero-right .flowers-bottom {
+  position:absolute; bottom:0; left:0; right:0; z-index:2;
+  font-size:16px; text-align:center; opacity:0.7;
+  background:linear-gradient(transparent,rgba(185,28,28,0.4));
+  padding:8px 0 4px;
+}
+
+/* ── TAB BAR ─────────────────────────────────────────────── */
+.alert-tabs {
+  display:flex; background:#fff;
+  border-bottom:2px solid var(--border);
+  overflow-x:auto; scrollbar-width:none;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06);
+}
+.alert-tabs::-webkit-scrollbar { display:none; }
+.atab {
+  padding:12px 22px; font-size:14px; font-weight:700;
+  color:#65676b; cursor:pointer; white-space:nowrap;
+  border-bottom:3px solid transparent; margin-bottom:-2px;
+  border:none; background:transparent; font-family:'Poppins',sans-serif;
+  transition:all 0.15s;
+}
+.atab.active {
+  background:var(--blue); color:#fff;
+  border-radius:6px 6px 0 0;
+}
+.atab:not(.active):hover { color:var(--blue); background:#f0f2f5; }
+
+/* ── MAIN 2-COL LAYOUT ───────────────────────────────────── */
+.lost-page {
+  max-width: 100%; margin:0 auto;
+  display:grid; grid-template-columns: 1fr;
+  gap:16px; padding:16px; align-items:start;
+}
+
+/* ── MAP ─────────────────────────────────────────────────── */
+.map-wrap {
+  border-radius:14px; overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,0.15);
+  margin-bottom:12px; position:relative;
+}
+.map-container {
+  position:relative; height:300px; overflow:hidden;
+  background:linear-gradient(135deg,#6da832 0%,#4a8b1e 30%,#7ab840 60%,#5d9e2a 100%);
+}
+/* Illustrated map effect */
+.map-container::before {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 120px 80px at 60% 55%, rgba(150,210,100,0.6) 0%, transparent 70%),
+    radial-gradient(ellipse 90px 60px at 25% 70%, rgba(100,180,80,0.5) 0%, transparent 60%),
+    radial-gradient(ellipse 80px 50px at 80% 30%, rgba(120,190,90,0.4) 0%, transparent 60%);
+}
+/* Roads */
+.map-road-h {
+  position:absolute; left:0; right:0; height:14px;
+  background:rgba(220,180,100,0.6); border-top:1px solid rgba(180,140,60,0.4);
+  border-bottom:1px solid rgba(180,140,60,0.4);
+}
+.map-road-v {
+  position:absolute; top:0; bottom:0; width:14px;
+  background:rgba(220,180,100,0.6); border-left:1px solid rgba(180,140,60,0.4);
+  border-right:1px solid rgba(180,140,60,0.4);
+}
+/* Trees */
+.map-tree { position:absolute; font-size:22px; opacity:0.85; }
+/* Water */
+.map-water {
+  position:absolute; border-radius:50%;
+  background:rgba(100,180,220,0.6);
+  border:1px solid rgba(80,160,200,0.4);
+}
+/* Search radius circles */
+.map-radius-outer {
+  position:absolute; top:50%; left:40%;
+  transform:translate(-50%,-50%);
+  width:240px; height:240px; border-radius:50%;
+  border:2px dashed rgba(220,38,38,0.6);
+  background:rgba(220,38,38,0.08);
+}
+.map-radius-inner {
+  position:absolute; top:50%; left:40%;
+  transform:translate(-50%,-50%);
+  width:150px; height:150px; border-radius:50%;
+  border:2.5px dashed rgba(220,38,38,0.8);
+  background:rgba(220,38,38,0.12);
+}
+/* Labels */
+.map-label-red {
+  position:absolute; top:33%; left:50%;
+  transform:translateX(-50%);
+  background:rgba(220,38,38,0.95); color:#fff;
+  padding:7px 20px; border-radius:20px;
+  font-size:13px; font-weight:800;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  white-space:nowrap; z-index:3;
+}
+.map-pin-red {
+  position:absolute; top:48%; left:37%;
+  font-size:34px; z-index:3;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+}
+.map-pin-blue {
+  position:absolute; top:22%; right:24%;
+  font-size:28px; z-index:3;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.map-location-text {
+  position:absolute; bottom:28%; left:36%;
+  transform:translateX(-50%);
+  font-size:15px; font-weight:800; color:#1a1a2e;
+  background:rgba(255,255,255,0.88);
+  padding:4px 14px; border-radius:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15); z-index:3;
+  white-space:nowrap;
+}
+.map-plus {
+  position:absolute; bottom:20%; left:39%;
+  width:26px; height:26px; border-radius:50%;
+  background:rgba(255,255,255,0.85);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; font-weight:900; color:#1a56db;
+  box-shadow:0 2px 6px rgba(0,0,0,0.2); cursor:pointer; z-index:3;
+}
+/* Map bottom info bar */
+.map-info-bar {
+  background:#fff; padding:10px 16px;
+  display:flex; align-items:center; gap:8px;
+  font-size:13px; font-weight:600; color:#444;
+  border-top:1px solid var(--border);
+}
+.map-radius-text { color:var(--blue); font-weight:800; }
+
+/* ── ACTION BUTTONS ──────────────────────────────────────── */
+.action-btns {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:10px; margin-bottom:14px;
+}
+.act-btn {
+  padding:12px 8px; border-radius:10px; border:none;
+  font-size:14px; font-weight:700; cursor:pointer;
+  font-family:'Poppins',sans-serif;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+}
+.act-report   { background:var(--blue); color:#fff; }
+.act-location { background:var(--green); color:#fff; }
+.act-call     { background:var(--orange); color:#fff; }
+
+/* ── SIGHTING CARDS ──────────────────────────────────────── */
+.sight-card {
+  display:flex; gap:12px; padding:14px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background 0.12s;
+}
+.sight-card:hover { background:#f8f9ff; }
+.sight-card:last-child { border-bottom:none; }
+.sight-av {
+  width:64px; height:64px; border-radius:10px;
+  overflow:hidden; flex-shrink:0;
+}
+.sight-av img { width:100%; height:100%; object-fit:cover; }
+.sight-name { font-size:14px; font-weight:800; color:#1a1a2e; margin-bottom:2px; }
+.sight-loc  {
+  font-size:12px; color:var(--blue); font-weight:600;
+  display:flex; align-items:center; gap:4px; margin-bottom:4px;
+}
+.sight-text { font-size:13px; color:#444; line-height:1.4; margin-bottom:6px; }
+.sight-btns { display:flex; gap:7px; }
+.sb-owner {
+  padding:5px 14px; border-radius:6px;
+  border:1.5px solid var(--amber); background:#fff3e0;
+  color:var(--amber); font-size:12px; font-weight:700;
+  cursor:pointer; font-family:'Poppins',sans-serif;
+}
+.sb-located {
+  padding:5px 14px; border-radius:6px;
+  background:#dcfce7; color:var(--green);
+  font-size:12px; font-weight:700; border:1.5px solid var(--green);
+  cursor:pointer; font-family:'Poppins',sans-serif;
+}
+.sb-ping {
+  padding:5px 14px; border-radius:6px;
+  background:var(--green); color:#fff;
+  font-size:12px; font-weight:700; border:none;
+  cursor:pointer; font-family:'Poppins',sans-serif;
+}
+
+/* ── RIGHT SIDEBAR ────────────────────────────────────────── */
+.sidebar-sticky { position:sticky; top:72px; }
+
+/* Max details card */
+.max-card {
+  background:#fffbf0; border:1.5px solid #fbbf24;
+  border-radius:14px; overflow:hidden; margin-bottom:12px;
+}
+.max-img-wrap { position:relative; height:150px; overflow:hidden; }
+.max-img-wrap img {
+  width:100%; height:100%; object-fit:cover; object-position:center top;
+}
+.max-name-badge {
+  position:absolute; bottom:10px; right:12px;
+  font-size:24px; font-weight:900; color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,0.6);
+}
+.max-plus-btn {
+  position:absolute; bottom:10px; left:12px;
+  width:28px; height:28px; border-radius:50%;
+  background:rgba(255,255,255,0.85);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:900; color:var(--blue);
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+.max-body { padding:14px; }
+.max-title { font-size:15px; font-weight:800; margin-bottom:10px; }
+.max-detail {
+  display:flex; align-items:center; gap:8px;
+  font-size:13px; padding:3px 0; color:#333;
+}
+.max-detail i { color:var(--blue); font-size:15px; flex-shrink:0; }
+
+/* Alert updates */
+.alert-updates { margin-bottom:12px; }
+.au-title {
+  font-size:14px; font-weight:800; color:var(--amber);
+  display:flex; align-items:center; gap:6px; margin-bottom:10px;
+}
+.au-item {
+  display:flex; gap:8px; padding:7px 0;
+  border-bottom:1px solid var(--border); font-size:12px;
+  color:#333; align-items:flex-start; line-height:1.4;
+}
+.au-item:last-child { border-bottom:none; }
+.au-star { color:var(--amber); font-size:14px; flex-shrink:0; }
+
+/* Tips circles */
+.tips-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:8px; margin-top:6px;
+}
+.tip-item {
+  display:flex; flex-direction:column;
+  align-items:center; gap:4px; cursor:pointer;
+}
+.tip-circle {
+  width:48px; height:48px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; box-shadow:0 2px 8px rgba(0,0,0,0.12);
+}
+.tip-label { font-size:10px; font-weight:700; color:#333; text-align:center; }
+.tip-sub   { font-size:10px; color:#94a3b8; text-align:center; }
+
+/* Community support */
+.comm-item {
+  display:flex; gap:10px; padding:10px 0;
+  border-bottom:1px solid var(--border); align-items:flex-start;
+}
+.comm-item:last-child { border-bottom:none; }
+.comm-av { width:40px; height:40px; border-radius:50%; overflow:hidden; flex-shrink:0; }
+.comm-av img { width:100%; height:100%; object-fit:cover; }
+.comm-text { font-size:12px; color:#333; line-height:1.5; }
+html,body{overflow-x:hidden!important;max-width:100%!important}
+</style>
+<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
+<style id="pb-mobile">
+html, body { overflow-x: hidden !important; }
+@media (max-width: 768px) {
+  html, body { width: 100% !important; overflow-x: hidden !important; }
+  div { min-width: 0 !important; }
+  .lost-page { display: block !important; grid-template-columns: 1fr; }
+  .alert-hero { display: block !important; grid-template-columns: 1fr !important; }
+  .action-btns { display: block !important; grid-template-columns: 1fr !important; }
+  .tips-grid { display: block !important; grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
+  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
+  .topnav-tabs, .nav-tabs { display: none !important; }
+  .bottomnav { display: flex !important; }
+  .left-sidebar, .right-sidebar, aside { display: none !important; }
+  body { padding-bottom: 72px !important; }
+}
+</style>
+<style id="pb-burger">
+.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
+.drawer-overlay.open { display: block; }
+.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
+.drawer-panel.open { left: 0; }
+.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
+.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
+.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
+.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
+.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
+.drawer-body { flex: 1; padding: 6px 0; }
+.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
+.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
+.drawer-item:hover { background: #eff6ff; color: #1877F2; }
+.drawer-item i { font-size: 20px; width: 24px; }
+.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
+.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
+.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
+.bnav-item i { font-size: 22px; }
+.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.bnav-item.active { color: #1877F2; }
+@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
+@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <button class="burger-btn" onclick="openDrawer()" aria-label="Menu" style="width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:#1877F2;font-size:28px;align-items:center;justify-content:center;flex-shrink:0;font-weight:900;line-height:1;padding:0;display:flex">☰</button>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search lost pets…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-map-pin"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn" style="position:relative">
+      <i class="ti ti-bell"></i>
+      <span style="position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--blue)"></span>
+    </button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<!-- HERO: Left text + Right dog+cat photo -->
+<div class="alert-hero">
+  <!-- LEFT: Alert text -->
+  <div class="hero-left">
+    <div class="alert-title">Lost Pet Alert!</div>
+    <div class="alert-sub">Help us find <strong>Max!</strong> Missing in your area.</div>
+    <div class="gps-pill">
+      <div class="gps-dot"></div>
+      📍 GPS Tracking Active
+      <span class="gps-last">Last Seen: Maplewood Park, 15 mins ago</span>
+    </div>
+    <div class="hero-flowers">🌸🌼🌸🌼🌸🌼🌸🌼🌸🌼🌸🌼🌸🌼</div>
+  </div>
+
+  <!-- RIGHT: Real dog + cat photo -->
+  <div class="hero-right">
+    <img
+      src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&q=85"
+      alt="Lost dog and cat"
+      onerror="this.src='https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=85'">
+    <div class="question-bubble">?</div>
+    <div class="flowers-bottom">🌸🌼🌺🌸🌼🌺🌸🌼</div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="alert-tabs">
+  <button class="atab active" onclick="setTab(this)">All Owner</button>
+  <button class="atab" onclick="setTab(this)">Healits Secrords</button>
+  <button class="atab" onclick="setTab(this)">Priends</button>
+  <button class="atab" onclick="setTab(this)">Aubhnements</button>
+  <button class="atab" onclick="setTab(this)">Markeopleas</button>
+</div>
+
+<!-- MAIN 2-COL -->
+<div class="lost-page">
+
+  <!-- LEFT: Map + actions + sightings -->
+  <main>
+    <!-- MAP -->
+    <div class="map-wrap card">
+      <div class="map-container">
+        <!-- Roads -->
+        <div class="map-road-h" style="top:38%"></div>
+        <div class="map-road-h" style="top:62%"></div>
+        <div class="map-road-v" style="left:30%"></div>
+        <div class="map-road-v" style="left:65%"></div>
+        <!-- Water -->
+        <div class="map-water" style="width:90px;height:60px;top:18%;left:5%;opacity:0.7"></div>
+        <div class="map-water" style="width:60px;height:40px;top:55%;right:10%;opacity:0.5"></div>
+        <!-- Trees -->
+        <div class="map-tree" style="top:10%;left:40%">🌳</div>
+        <div class="map-tree" style="top:10%;left:55%">🌲</div>
+        <div class="map-tree" style="top:15%;right:15%">🌳</div>
+        <div class="map-tree" style="top:60%;left:10%">🌲</div>
+        <div class="map-tree" style="top:65%;right:5%">🌳</div>
+        <div class="map-tree" style="bottom:10%;left:52%">🌲</div>
+        <div class="map-tree" style="bottom:10%;right:20%">🌳</div>
+        <!-- Search radius circles -->
+        <div class="map-radius-outer"></div>
+        <div class="map-radius-inner"></div>
+        <!-- Pins & labels -->
+        <div class="map-label-red">Max Last Seen Here</div>
+        <div class="map-pin-red">📍</div>
+        <div class="map-pin-blue">📌</div>
+        <div class="map-location-text">Maplewood Park</div>
+        <div class="map-plus">+</div>
+      </div>
+      <div class="map-info-bar">
+        <span class="map-radius-text">2.3 km</span> Search Radius &nbsp;|&nbsp;
+        Beagle · Brown &amp; White · Blue Collar with Tag.
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="action-btns">
+      <button class="act-btn act-report">
+        <i class="ti ti-camera" style="font-size:16px"></i> Report a Sighting
+      </button>
+      <button class="act-btn act-location">
+        <i class="ti ti-map-pin" style="font-size:16px"></i> Send Location
+      </button>
+      <button class="act-btn act-call">
+        <i class="ti ti-phone" style="font-size:16px"></i> Call On Bear
+      </button>
+    </div>
+
+    <!-- SIGHTING CARDS -->
+    <div class="card">
+      <div class="sight-card">
+        <div class="sight-av">
+          <img src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=100&q=80" alt="Pug Fela">
+        </div>
+        <div style="flex:1">
+          <div class="sight-name">Pug Fela</div>
+          <div class="sight-loc"><i class="ti ti-map-pin" style="font-size:13px"></i> Lakeview Trail · 3 hrs ago</div>
+          <div class="sight-text">Dnne jass Newn Goages 😺</div>
+          <div class="sight-btns"><button class="sb-owner">Bert Owner</button></div>
+        </div>
+      </div>
+      <div class="sight-card">
+        <div class="sight-av">
+          <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=100&q=80" alt="Bay Area">
+        </div>
+        <div style="flex:1">
+          <div class="sight-name">Sap Area Pet Mestings:</div>
+          <div class="sight-loc"><i class="ti ti-world" style="font-size:13px"></i> Peenwood Ave · 1 day ago</div>
+          <div class="sight-text">Lould knort and püg sabe in the Eng And!!</div>
+          <div class="sight-btns">
+            <button class="sb-located">✅ Luneal</button>
+            <button class="sb-ping">Sienht &amp; Ping</button>
+          </div>
+        </div>
+      </div>
+      <div class="sight-card">
+        <div class="sight-av">
+          <img src="https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=100&q=80" alt="Rescue Network">
+        </div>
+        <div style="flex:1">
+          <div class="sight-name">Reccus &amp; Adoprán Notwork</div>
+          <div class="sight-loc"><i class="ti ti-world" style="font-size:13px"></i> Peenwited Ave · 1 day ago</div>
+          <div class="sight-text">Slaying pard Bee! Maxt Beorse Remes... ❤️</div>
+          <div class="sight-btns"><button class="sb-owner">Bert Owner</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-sticky">
+
+    <!-- Max's Details -->
+    <div class="max-card">
+      <div class="max-img-wrap">
+        <img src="https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=400&q=85" alt="Max">
+        <div class="max-name-badge">Max</div>
+        <div class="max-plus-btn">+</div>
+      </div>
+      <div class="max-body">
+        <div class="max-title">Max's Details</div>
+        <div class="max-detail"><i class="ti ti-circle-check"></i> Beagle · Male · 3 Years Old.</div>
+        <div class="max-detail"><i class="ti ti-circle-check"></i> Blue Collar with ID Tag</div>
+        <div class="max-detail"><i class="ti ti-phone"></i> Contact: (555) 123-4567</div>
+      </div>
+    </div>
+
+    <!-- Alert Updates -->
+    <div class="card alert-updates">
+      <div class="card-body">
+        <div class="au-title">⭐ Alert Updates</div>
+        <div class="au-item">
+          <div class="au-star">⭐</div>
+          <div>Possible sighting near Oak St. - 10 mits ago!</div>
+        </div>
+        <div class="au-item">
+          <div class="au-star">⭐</div>
+          <div>Search Party Meetup today at 49 40 → M.</div>
+        </div>
+        <button class="btn btn-blue btn-full btn-sm" style="margin-top:10px">Join Search Party</button>
+      </div>
+    </div>
+
+    <!-- Helpful Tips -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div class="card-title">💡 Helpful Tips</div>
+        <div class="tips-grid">
+          <div class="tip-item">
+            <div class="tip-circle" style="background:#ff9f43">📋</div>
+            <div class="tip-label">Posters</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-circle" style="background:#ee5a24">❤️</div>
+            <div class="tip-label">Flyers</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-circle" style="background:#0652DD">🖨️</div>
+            <div class="tip-label">Print it</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-circle" style="background:#1289A7">✉️</div>
+            <div class="tip-label">Darthing</div>
+            <div class="tip-sub">Lрpmon!</div>
+          </div>
+        </div>
+        <div class="tips-grid" style="margin-top:10px">
+          <div class="tip-item">
+            <div class="tip-circle" style="background:#9b59b6">⭐</div>
+            <div class="tip-label">Favorite</div>
+            <div class="tip-sub">Toy</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-circle" style="background:#27ae60">🌿</div>
+            <div class="tip-label">Bring</div>
+            <div class="tip-sub">Pond</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-circle" style="background:#e67e22">🦴</div>
+            <div class="tip-label">Use treats</div>
+            <div class="tip-sub">lluner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Support -->
+    <div class="card">
+      <div class="card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="card-title" style="margin:0">💬 Community Support</div>
+          <span style="color:#94a3b8;cursor:pointer;font-size:18px">✕</span>
+        </div>
+        <div class="comm-item">
+          <div class="comm-av"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80" alt="Sarah"></div>
+          <div class="comm-text">Saw a dog matching Max's description park !</div>
+        </div>
+        <div class="comm-item">
+          <div class="comm-av"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80" alt="Mike"></div>
+          <div class="comm-text">Out searching now with my Hope we find him soon! 🤞</div>
+        </div>
+        <div class="comm-item">
+          <div class="comm-av"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=80&q=80" alt="Amanda"></div>
+          <div class="comm-text">Shared the alert in the local pet group!… ❤️⚡</div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<div class="toast-wrap"></div>
+<script src="api.js"></script>
+<script>
+function setTab(el){
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottomnav">
+  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
+  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+<script>function goTo(p){window.location.href=p;}</script>
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER PANEL -->
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name">Abhishek Kumar</div>
+      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDrawer() {
+  document.getElementById('drawer-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+<script>
+(function(){
+  function showBurgerOnMobile(){
+    var btns = document.querySelectorAll('.burger-btn');
+    var isMobile = window.innerWidth <= 768;
+    btns.forEach(function(b){
+      b.style.display = isMobile ? 'flex' : 'none';
+    });
+    // Also hide topnav-tabs on mobile
+    var tabs = document.querySelector('.topnav-tabs');
+    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
+    // Show bottom nav on mobile
+    var bnav = document.querySelector('.bottomnav');
+    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+  }
+  showBurgerOnMobile();
+  window.addEventListener('resize', showBurgerOnMobile);
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
+</script>
+</body>
+</html>

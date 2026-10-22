@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="/manifest.json">
+<title>PawBook — Groups</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+:root{--ink:#0d1117;--ink2:#3d4451;--muted:#8b92a5;--border:#e8eaf0;--surface:#f5f6fa;--white:#fff;--blue:#2563eb;--blue-soft:#eff4ff;--green:#16a34a;--green-soft:#f0fdf4;--amber:#d97706;--red:#dc2626;--r:16px;--shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);--shadow-lg:0 8px 32px rgba(0,0,0,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased}
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,0.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;z-index:400}
+.nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-logo-icon{width:32px;height:32px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.nav-search{flex:1;max-width:360px;height:38px;background:var(--surface);border:1.5px solid var(--border);border-radius:20px;display:flex;align-items:center;padding:0 14px;gap:8px}
+.nav-search input{border:none;outline:none;background:transparent;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);width:100%}
+.nav-search input::placeholder{color:var(--muted)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-btn{width:36px;height:36px;border-radius:10px;border:none;background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:18px;transition:background .15s}
+.nav-btn:hover{background:var(--border)}
+.nav-av{width:36px;height:36px;border-radius:10px;background:var(--blue);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Inter',sans-serif}
+/* HERO */
+.hero{margin-top:56px;background:var(--ink);position:relative;overflow:hidden;padding:52px 24px 44px}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=1400&q=80') center/cover;opacity:.12}
+.hero-glow{position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,0.3),transparent 70%)}
+.hero-glow2{position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(22,163,74,0.2),transparent 70%)}
+.hero-inner{position:relative;z-index:1;max-width:640px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);margin-bottom:18px}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;color:#fff;line-height:1.05;margin-bottom:12px}
+.hero h1 em{font-style:normal;color:#60a5fa}
+.hero p{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:26px;line-height:1.7;max-width:460px}
+.hero-search{display:flex;gap:10px;max-width:540px;flex-wrap:wrap}
+.hero-inp{flex:1;min-width:200px;height:48px;border-radius:12px;border:none;padding:0 18px;font-family:'Inter',sans-serif;font-size:14px;background:rgba(255,255,255,0.95);color:var(--ink);outline:none}
+.hero-inp::placeholder{color:var(--muted)}
+.hero-search-btn{height:48px;padding:0 24px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap}
+.hero-search-btn:hover{background:#1d4ed8}
+.hero-stats{display:flex;gap:36px;margin-top:30px;flex-wrap:wrap}
+.hstat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff}
+.hstat-lbl{font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px}
+/* PAGE LAYOUT */
+.page{max-width:1200px;margin:0 auto;padding:24px 20px 80px;display:grid;grid-template-columns:260px 1fr;gap:22px}
+@media(max-width:860px){.page{grid-template-columns:1fr}.sidebar{display:none}}
+/* SIDEBAR */
+.sidebar{position:sticky;top:72px;align-self:start;display:flex;flex-direction:column;gap:14px}
+.scard{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:18px;box-shadow:var(--shadow)}
+.scard-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px}
+.fchip{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);transition:all .12s;font-family:'Inter',sans-serif;margin:3px}
+.fchip:hover,.fchip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.mg-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--surface);cursor:pointer}
+.mg-row:last-child{border-bottom:none}
+.mg-row:hover{opacity:.75}
+.mg-thumb{width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#eee}
+.mg-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.mg-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mg-meta{font-size:11px;color:var(--muted)}
+.mg-leave{width:24px;height:24px;border-radius:6px;border:none;background:var(--surface);cursor:pointer;color:var(--muted);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .1s}
+.mg-leave:hover{background:#fee2e2;color:var(--red)}
+.ttag{display:inline-block;padding:4px 12px;border-radius:20px;background:var(--surface);font-size:12px;font-weight:600;color:var(--blue);cursor:pointer;margin:3px;transition:background .1s}
+.ttag:hover{background:var(--blue-soft)}
+/* MAIN */
+.main{min-width:0}
+.cat-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:22px}
+.cat-row::-webkit-scrollbar{display:none}
+.cpill{height:38px;padding:0 18px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink2);white-space:nowrap;flex-shrink:0;transition:all .15s;display:flex;align-items:center;gap:6px}
+.cpill:hover,.cpill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* FEATURED */
+.featured{border-radius:var(--r);overflow:hidden;margin-bottom:20px;position:relative;cursor:pointer;min-height:210px;box-shadow:var(--shadow-lg)}
+.featured img{width:100%;height:210px;object-fit:cover;display:block}
+.featured-ov{position:absolute;inset:0;background:linear-gradient(transparent 20%,rgba(0,0,0,0.88))}
+.featured-body{position:absolute;bottom:0;left:0;right:0;padding:22px}
+.featured-pill{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.featured-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:4px}
+.featured-meta{font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:14px}
+.featured-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn-fw{height:36px;padding:0 20px;border-radius:20px;border:none;background:#fff;color:var(--ink);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.btn-fw:hover{opacity:.9}
+.btn-fv{height:36px;padding:0 16px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.35);background:transparent;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+/* SECTION HEAD */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--ink)}
+/* GROUP CARD */
+.gcard{background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow);transition:box-shadow .2s,transform .2s}
+.gcard:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.gcover{height:128px;position:relative;overflow:hidden}
+.gcover img{width:100%;height:100%;object-fit:cover;display:block}
+.gcover-ov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,0.45))}
+.gbadges{position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap}
+.gb{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;backdrop-filter:blur(8px)}
+.gb-blue{background:rgba(37,99,235,0.85);color:#fff}
+.gb-amber{background:rgba(217,119,6,0.9);color:#fff}
+.gb-green{background:rgba(22,163,74,0.88);color:#fff}
+.gpriv{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(0,0,0,0.45);color:#fff;backdrop-filter:blur(8px)}
+.gbody{padding:16px}
+.gtitle{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.gmeta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.gmeta-i{display:flex;align-items:center;gap:4px}
+.gdesc{font-size:13px;color:var(--ink2);line-height:1.65;margin-bottom:12px}
+/* member avatars */
+.mavs{display:flex;align-items:center;margin-bottom:13px}
+.mav{width:26px;height:26px;border-radius:50%;border:2px solid #fff;overflow:hidden;margin-left:-6px;flex-shrink:0;background:#eee}
+.mav:first-child{margin-left:0}
+.mav img{width:100%;height:100%;object-fit:cover;display:block}
+.mav-count{height:26px;padding:0 8px;border-radius:13px;border:2px solid #fff;background:var(--surface);font-size:10px;font-weight:700;color:var(--ink2);display:flex;align-items:center;margin-left:-6px}
+.gbtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn-join{height:36px;padding:0 20px;border-radius:20px;border:none;background:var(--blue);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-join:hover{background:#1d4ed8}
+.btn-join.joined{background:var(--green-soft);color:var(--green);border:1.5px solid #bbf7d0}
+.btn-join.joined:hover{background:#dcfce7}
+.btn-join.pending{background:#fef3c7;color:#92400e;border:1.5px solid #fcd34d}
+.btn-view{height:36px;padding:0 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink2);transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-view:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+.btn-invite{height:36px;padding:0 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink2);transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-invite:hover{border-color:var(--green);color:var(--green);background:var(--green-soft)}
+/* GRID */
+.ggrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
+@media(max-width:600px){.ggrid{grid-template-columns:1fr}}
+.ggcard{background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .2s;box-shadow:var(--shadow)}
+.ggcard:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.ggcover{height:88px;position:relative;overflow:hidden}
+.ggcover img{width:100%;height:100%;object-fit:cover;display:block}
+.ggbody{padding:12px}
+.ggtitle{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ggmeta{font-size:11px;color:var(--muted);margin-bottom:8px}
+.ggjoin{height:32px;padding:0 16px;border-radius:16px;border:none;background:var(--blue);color:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap}
+.ggjoin:hover{background:#1d4ed8}
+.ggjoin.joined{background:var(--green-soft);color:var(--green);border:1.5px solid #bbf7d0}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(13,17,23,0.75);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--white);border-radius:22px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,0.25)}
+.mhead{padding:20px 22px 16px;border-bottom:1px solid var(--surface);position:sticky;top:0;background:var(--white);z-index:1;display:flex;align-items:center;justify-content:space-between;border-radius:22px 22px 0 0}
+.mtitle{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--ink)}
+.mclose{width:32px;height:32px;border-radius:8px;border:none;background:var(--surface);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.mbody{padding:22px}
+.flabel{font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:6px;display:block}
+.finput{width:100%;height:44px;border:1.5px solid var(--border);border-radius:10px;padding:0 14px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);outline:none;background:var(--white);transition:border-color .15s;margin-bottom:14px}
+.finput:focus{border-color:var(--blue)}
+.ftextarea{width:100%;height:80px;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);outline:none;resize:none;margin-bottom:14px;transition:border-color .15s}
+.ftextarea:focus{border-color:var(--blue)}
+.fselect{width:100%;height:44px;border:1.5px solid var(--border);border-radius:10px;padding:0 14px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);outline:none;background:var(--white);margin-bottom:14px;cursor:pointer}
+.cover-zone{border:2px dashed var(--border);border-radius:12px;height:96px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:14px;transition:border-color .15s;background:var(--surface);font-size:13px;color:var(--muted);font-weight:600}
+.cover-zone:hover{border-color:var(--blue);color:var(--blue)}
+.priv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.priv-btn{padding:14px 10px;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;text-align:center;transition:all .15s;background:var(--white)}
+.priv-btn:hover,.priv-btn.on{border-color:var(--blue);background:var(--blue-soft)}
+.priv-icon{font-size:26px;display:block;margin-bottom:4px}
+.priv-lbl{font-size:11px;font-weight:700;color:var(--ink2)}
+.priv-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.priv-btn.on .priv-lbl{color:var(--blue)}
+.cchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.cchip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink2);transition:all .12s;font-family:'Inter',sans-serif}
+.cchip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.submit-btn{width:100%;height:50px;border-radius:12px;border:none;background:var(--ink);color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.submit-btn:hover{background:#1a2030}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed}
+/* JOIN FORM */
+.join-info-box{background:var(--blue-soft);border:1px solid #bfdbfe;border-radius:12px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--blue);line-height:1.5}
+.join-priv-note{background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400e;display:flex;align-items:flex-start;gap:8px}
+/* INVITE MODAL */
+.user-search-result{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--surface);cursor:pointer}
+.user-search-result:last-child{border-bottom:none}
+.user-search-result:hover{opacity:.75}
+.user-av{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;overflow:hidden}
+.user-av img{width:100%;height:100%;object-fit:cover}
+/* TOAST */
+.toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--ink);color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:60px;background:rgba(255,255,255,0.96);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:300;backdrop-filter:blur(16px)}
+.bni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 14px;border-radius:10px;transition:background .1s;border:none;background:none;font-family:'Inter',sans-serif}
+.bni:hover{background:var(--surface)}
+.bni i{font-size:22px;color:var(--muted)}
+.bni.on i{color:var(--blue)}
+.bni-lbl{font-size:9px;font-weight:600;color:var(--muted)}
+.bni.on .bni-lbl{color:var(--blue)}
+/* EMPTY */
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-icon{font-size:52px;margin-bottom:12px}
+.empty-title{font-size:15px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+/* SPINNER */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+html,body{overflow-x:hidden!important;max-width:100%!important}
+</style>
+<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
+<style id="pb-mobile">
+html, body { overflow-x: hidden !important; }
+@media (max-width: 768px) {
+  html, body { width: 100% !important; overflow-x: hidden !important; }
+  div { min-width: 0 !important; }
+  .ggrid { display: block !important; }
+  .page { display: block !important; }
+  .priv-grid { grid-template-columns: 1fr 1fr !important; }
+  .topnav-tabs, .nav-tabs { display: none !important; }
+  .bottomnav { display: flex !important; }
+  .left-sidebar, .right-sidebar, aside { display: none !important; }
+  body { padding-bottom: 72px !important; }
+}
+</style>
+<style id="pb-burger">
+.burger-btn{display:flex;width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:#1877F2;font-size:28px;align-items:center;justify-content:center;flex-shrink:0;font-weight:900;padding:0}
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450}
+.drawer-overlay.open{display:block}
+.drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:auto;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column}
+.drawer-panel.open{left:0}
+.drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px}
+.drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer}
+.drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover}
+.drawer-user-name{font-size:15px;font-weight:800;color:#fff}
+.drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px}
+.drawer-body{flex:1;padding:6px 0}
+.drawer-section{font-size:10px;font-weight:800;color:#8a8d91;text-transform:uppercase;letter-spacing:.6px;padding:12px 18px 4px}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left}
+.drawer-item:hover{background:#eff6ff;color:#1877F2}
+.drawer-item i{font-size:20px;width:24px}
+.drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px}
+.drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb}
+.bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e4e6eb;z-index:300;align-items:center;justify-content:space-around}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:6px 0;border:none;background:none;font-family:inherit;color:#65676b}
+.bnav-item i{font-size:22px}
+.bnav-item span{font-size:9px;font-weight:700;text-transform:uppercase}
+.bnav-item.active{color:#1877F2}
+@media(max-width:768px){.burger-btn{display:flex!important}.bottomnav{display:flex!important}}
+@media(min-width:769px){.burger-btn{display:none!important}.bottomnav{display:none!important}}
+</style>
+</head>
+<body>
+<script src="api.js"></script>
+<script src="upload.js"></script>
+<script>
+function goTo(p){window.location.href=p;}
+function toast(msg,type){var t=document.getElementById('pb-toast');t.textContent=msg;t.style.background=type==='error'?'#dc2626':type==='info'?'#2563eb':'#0d1117';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
+function apiToken(){try{return localStorage.getItem('pb_token')||'';}catch(e){return '';}}
+function isLoggedIn(){return !!apiToken();}
+function currentUser(){try{return JSON.parse(localStorage.getItem('pb_user')||'{}');}catch(e){return {};}}
+async function apiFetch(path,opts){
+  var url=API_BASE+path;
+  var headers={'Content-Type':'application/json'};
+  var tok=apiToken();if(tok)headers['Authorization']='Bearer '+tok;
+  var res=await fetch(url,Object.assign({headers:headers},opts));
+  var json=await res.json().catch(function(){return {};});
+  if(!res.ok)throw new Error(json.message||'Request failed');
+  return json;
+}
+</script>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="07_home.html">
+    <div class="nav-logo-icon">🐾</div>PawBook
+  </a>
+  <button class="burger-btn" onclick="openDrawer()" aria-label="Menu">☰</button>
+  <div class="nav-search">
+    <i class="ti ti-search" style="color:var(--muted);font-size:15px;flex-shrink:0"></i>
+    <input placeholder="Search groups…" oninput="filterSearch(this.value)">
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+    <button class="nav-btn" onclick="goTo('13_messages.html')"><i class="ti ti-message-circle"></i></button>
+    <div class="nav-av" id="nav-av" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">🐾 Pet Communities across India</div>
+    <h1>Find your<br><em>pet's tribe</em></h1>
+    <p>Connect with lakhs of pet parents — share stories, get vet advice, and find playmates for your furry family.</p>
+    <div class="hero-search">
+      <input class="hero-inp" placeholder="Search by breed, city, interest…" oninput="filterSearch(this.value)">
+      <button class="hero-search-btn" onclick="void(0)">Search</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hstat-val" id="stat-groups">1.2K+</div><div class="hstat-lbl">Active groups</div></div>
+      <div><div class="hstat-val">48K</div><div class="hstat-lbl">Pet parents</div></div>
+      <div><div class="hstat-val">India-first</div><div class="hstat-lbl">Platform</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button onclick="openCreate()" style="width:100%;height:46px;border-radius:12px;border:none;background:var(--ink);color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" onmouseover="this.style.background='#1a2030'" onmouseout="this.style.background='var(--ink)'">
+        <i class="ti ti-plus" style="font-size:16px"></i> Create a Group
+      </button>
+    </div>
+
+    <div class="scard">
+      <div class="scard-title">Filter</div>
+      <button class="fchip on" onclick="setFilter('all',this)">All</button>
+      <button class="fchip" onclick="setFilter('online',this)">🟢 Active</button>
+      <button class="fchip" onclick="setFilter('new',this)">✨ New</button>
+    </div>
+
+    <div class="scard">
+      <div class="scard-title">My Groups</div>
+      <div id="my-groups-sb"><div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">No groups yet</div></div>
+      <button onclick="setCategory('my',document.querySelectorAll('.cpill')[1])" style="width:100%;height:34px;margin-top:10px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink2)">View all →</button>
+    </div>
+
+    <div class="scard">
+      <div class="scard-title">Trending</div>
+      <span class="ttag" onclick="filterSearch('golden')">#GoldenRetriever</span>
+      <span class="ttag" onclick="filterSearch('delhi')">#DelhiPets</span>
+      <span class="ttag" onclick="filterSearch('adopt')">#AdoptDontShop</span>
+      <span class="ttag" onclick="filterSearch('cat')">#CatLovers</span>
+      <span class="ttag" onclick="filterSearch('puppy')">#PuppyLife</span>
+      <span class="ttag" onclick="filterSearch('vet')">#VetTips</span>
+      <span class="ttag" onclick="filterSearch('mumbai')">#MumbaiDogs</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- Category pills -->
+    <div class="cat-row">
+      <button class="cpill on" onclick="setCategory('all',this)">🐾 All Groups</button>
+      <button class="cpill" onclick="setCategory('my',this)">👤 My Groups</button>
+      <button class="cpill" onclick="setCategory('dogs',this)">🐕 Dogs</button>
+      <button class="cpill" onclick="setCategory('cats',this)">🐈 Cats</button>
+      <button class="cpill" onclick="setCategory('birds',this)">🦜 Birds</button>
+      <button class="cpill" onclick="setCategory('exotic',this)">🦎 Exotic</button>
+      <button class="cpill" onclick="setCategory('adoption',this)">🏠 Adoption</button>
+      <button class="cpill" onclick="setCategory('health',this)">🏥 Health</button>
+      <button class="cpill" onclick="setCategory('local',this)">📍 Local</button>
+    </div>
+
+    <!-- Featured -->
+    <div class="featured" id="featured-wrap">
+      <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=900&q=85" alt="Featured">
+      <div class="featured-ov"></div>
+      <div class="featured-body">
+        <div class="featured-pill">⭐ Featured this week</div>
+        <div class="featured-title">Golden Retrievers Forever</div>
+        <div class="featured-meta">48K members · Public · Dogs · All India</div>
+        <div class="featured-btns">
+          <button class="btn-fw" id="feat-btn" onclick="openJoin({id:'featured',name:'Golden Retrievers Forever',priv:'public'})">Join Group</button>
+          <button class="btn-fv" onclick="goTo('17_group_detail.html?group=1')">View Group →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section head -->
+    <div class="sec-head">
+      <div class="sec-title" id="sec-title">All Groups</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="grp-count" style="font-size:12px;color:var(--muted);font-weight:600"></span>
+        <select onchange="sortGroups(this.value)" style="height:32px;border:1.5px solid var(--border);border-radius:8px;padding:0 10px;font-family:'Inter',sans-serif;font-size:12px;outline:none;background:var(--white);color:var(--ink2);cursor:pointer">
+          <option value="members">Most members</option>
+          <option value="active">Most active</option>
+          <option value="new">Newest</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="grp-list"></div>
+    <div id="grp-empty" class="empty" style="display:none">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">No groups found</div>
+      <div style="font-size:13px">Try another category or <button onclick="openCreate()" style="background:none;border:none;color:var(--blue);cursor:pointer;font-weight:600;font-size:13px;font-family:'Inter',sans-serif">create one</button></div>
+    </div>
+
+    <!-- API groups section -->
+    <div id="api-section"></div>
+  </main>
+</div>
+
+<!-- ───────────────── CREATE GROUP MODAL ───────────────── -->
+<div class="modal-bg" id="create-modal" onclick="if(event.target===this)closeCreate()">
+  <div class="modal">
+    <div class="mhead">
+      <div class="mtitle">Create a Group</div>
+      <button class="mclose" onclick="closeCreate()">✕</button>
+    </div>
+    <div class="mbody">
+      <label class="flabel">Cover photo</label>
+      <div class="cover-zone" id="cover-zone" onclick="document.getElementById('cover-inp').click()">
+        <i class="ti ti-photo" style="font-size:22px"></i><span>Upload cover image (optional)</span>
+        <input type="file" id="cover-inp" accept="image/*" style="display:none" onchange="previewCover(this)">
+      </div>
+      <label class="flabel">Group name *</label>
+      <input class="finput" id="cg-name" placeholder="e.g. Delhi Beagle Parents">
+      <label class="flabel">Description</label>
+      <textarea class="ftextarea" id="cg-desc" placeholder="Who is this group for? What will you share?"></textarea>
+      <label class="flabel">Category *</label>
+      <div class="cchips">
+        <button class="cchip on" onclick="pickCat(this,'dogs')">🐕 Dogs</button>
+        <button class="cchip" onclick="pickCat(this,'cats')">🐈 Cats</button>
+        <button class="cchip" onclick="pickCat(this,'birds')">🦜 Birds</button>
+        <button class="cchip" onclick="pickCat(this,'exotic')">🦎 Exotic</button>
+        <button class="cchip" onclick="pickCat(this,'adoption')">🏠 Adoption</button>
+        <button class="cchip" onclick="pickCat(this,'health')">🏥 Health</button>
+        <button class="cchip" onclick="pickCat(this,'training')">🎓 Training</button>
+        <button class="cchip" onclick="pickCat(this,'local')">📍 Local</button>
+      </div>
+      <label class="flabel">City / Region</label>
+      <input class="finput" id="cg-city" placeholder="e.g. Delhi, Mumbai, Bangalore, All India">
+      <label class="flabel">Privacy</label>
+      <div class="priv-grid">
+        <div class="priv-btn on" onclick="pickPriv(this,'public')">
+          <span class="priv-icon">🌍</span>
+          <div class="priv-lbl">Public</div>
+          <div class="priv-sub">Anyone can join</div>
+        </div>
+        <div class="priv-btn" onclick="pickPriv(this,'private')">
+          <span class="priv-icon">🔒</span>
+          <div class="priv-lbl">Private</div>
+          <div class="priv-sub">Admin approves members</div>
+        </div>
+      </div>
+      <button class="submit-btn" id="cg-btn" onclick="submitGroup()">
+        <i class="ti ti-users" style="font-size:16px"></i> Create Group
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────── JOIN REQUEST MODAL ───────────────── -->
+<div class="modal-bg" id="join-modal" onclick="if(event.target===this)closeJoin()">
+  <div class="modal">
+    <div class="mhead">
+      <div class="mtitle">Join Group</div>
+      <button class="mclose" onclick="closeJoin()">✕</button>
+    </div>
+    <div class="mbody">
+      <div id="join-group-name" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px"></div>
+      <div id="join-group-type-note"></div>
+
+      <div id="join-login-required" style="display:none">
+        <div class="join-info-box" style="background:#fef2f2;border-color:#fecaca;color:#991b1b">
+          🔒 Please <a href="01_login.html" style="color:var(--blue);font-weight:700">log in</a> to join groups.
+        </div>
+      </div>
+
+      <div id="join-form-section">
+        <div class="join-info-box">
+          📋 Fill in your details below — this helps the group community know you better.
+        </div>
+        <label class="flabel">Your pet's name</label>
+        <input class="finput" id="jf-pet-name" placeholder="e.g. Bruno">
+        <label class="flabel">Pet type / breed</label>
+        <input class="finput" id="jf-pet-type" placeholder="e.g. Golden Retriever, Indie dog">
+        <label class="flabel">Your city</label>
+        <input class="finput" id="jf-city" placeholder="e.g. Mumbai">
+        <label class="flabel">Why do you want to join?</label>
+        <textarea class="ftextarea" id="jf-why" placeholder="Share a bit about yourself and your pet…" style="height:90px"></textarea>
+        <label class="flabel">How long have you been a pet owner? (years)</label>
+        <input class="finput" id="jf-years" type="number" min="0" max="50" placeholder="e.g. 3">
+        <button class="submit-btn" id="jf-btn" onclick="submitJoin()">
+          <i class="ti ti-send" style="font-size:15px"></i> Submit &amp; Join
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────── INVITE FRIENDS MODAL ───────────────── -->
+<div class="modal-bg" id="invite-modal" onclick="if(event.target===this)closeInvite()">
+  <div class="modal">
+    <div class="mhead">
+      <div class="mtitle">Invite Friends</div>
+      <button class="mclose" onclick="closeInvite()">✕</button>
+    </div>
+    <div class="mbody">
+      <div id="invite-group-name" style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:14px"></div>
+      <label class="flabel">Search pet friends to invite</label>
+      <input class="finput" id="inv-search" placeholder="Search by username or name…" oninput="searchUsers(this.value)">
+      <div id="inv-results" style="max-height:240px;overflow-y:auto"></div>
+      <div id="inv-sent-list" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="pb-toast"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bni" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span class="bni-lbl">Home</span></button>
+  <button class="bni on"><i class="ti ti-users"></i><span class="bni-lbl">Groups</span></button>
+  <button class="bni" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i><span class="bni-lbl">Shop</span></button>
+  <button class="bni" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i><span class="bni-lbl">Vet</span></button>
+  <button class="bni" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span class="bni-lbl">Me</span></button>
+</nav>
+
+<!-- DRAWER -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" id="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
+      <div class="drawer-user-handle" id="drawer-handle">@pawbook</div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){localStorage.removeItem('pawbook_user');window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── HARDCODED GROUPS (always shown) ─────────────────────────────────────────
+var GROUPS=[
+  {id:'g1',name:'Golden Retrievers Forever',cat:'dogs',city:'All India',members:48200,active:true,isNew:false,top:true,joined:false,priv:'public',desc:'The biggest Golden Retriever community in India — training tips, health advice, and weekend meetups.',img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=700&q=85',avs:['https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=40','https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=40','https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40'],apiId:null},
+  {id:'g2',name:'Delhi Pet Parents',cat:'local',city:'Delhi',members:32100,active:true,isNew:false,top:true,joined:false,priv:'public',desc:"Delhi NCR's most active pet community — weekly park meetups, vet recommendations and local news.",img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=700&q=85',avs:['https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40','https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=40'],apiId:null},
+  {id:'g3',name:'Indian Cat Lovers',cat:'cats',city:'All India',members:25600,active:true,isNew:false,top:false,joined:false,priv:'public',desc:"A warm community for cat parents across India. Share your cat's quirks, health tips and adoption stories.",img:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=700&q=85',avs:['https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40'],apiId:null},
+  {id:'g4',name:"Adopt Don't Shop India",cat:'adoption',city:'All India',members:18400,active:true,isNew:false,top:false,joined:false,priv:'public',desc:'Connecting rescued pets with loving homes across India. List pets for adoption, share success stories.',img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=700&q=85',avs:['https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=40'],apiId:null},
+  {id:'g5',name:'Mumbai Dog Meetups',cat:'local',city:'Mumbai',members:12300,active:false,isNew:false,top:false,joined:false,priv:'public',desc:'Weekly dog meetups at Juhu Beach and Carter Road. All breeds welcome — come socialise!',img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=700&q=85',avs:[],apiId:null},
+  {id:'g6',name:'Persian & Exotic Cats Club',cat:'cats',city:'Mumbai',members:8700,active:true,isNew:false,top:false,joined:false,priv:'private',desc:'For Persian, Maine Coon, Ragdoll and exotic cat parents. Breeding tips, shows, grooming.',img:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=700&q=85',avs:[],apiId:null},
+  {id:'g7',name:'Parrot & Bird Parents India',cat:'birds',city:'All India',members:6200,active:false,isNew:true,top:false,joined:false,priv:'public',desc:'For all bird lovers — parrots, cockatiels, finches and more. Care tips and beautiful photos.',img:'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=700&q=85',avs:[],apiId:null},
+  {id:'g8',name:'Reptile & Exotic Pets India',cat:'exotic',city:'All India',members:4100,active:false,isNew:true,top:false,joined:false,priv:'public',desc:"Bearded dragons, ball pythons, leopard geckos — India's exotic pet community.",img:'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=700&q=85',avs:[],apiId:null},
+  {id:'g9',name:'Pet Health & Wellness',cat:'health',city:'All India',members:22000,active:true,isNew:false,top:false,joined:false,priv:'public',desc:'Vet-moderated group for pet health questions, vaccination schedules and nutrition advice.',img:'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=700&q=85',avs:['https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=40'],apiId:null},
+  {id:'g10',name:'Dog Training & Behaviour',cat:'dogs',city:'All India',members:15800,active:true,isNew:false,top:false,joined:false,priv:'public',desc:'Positive reinforcement training, behaviour issues, agility and certified trainer Q&As.',img:'https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=700&q=85',avs:[],apiId:null},
+];
+
+// Track join states for local groups (loaded from localStorage)
+(function(){
+  var saved=JSON.parse(localStorage.getItem('pb_group_joins')||'{}');
+  GROUPS.forEach(function(g){if(saved[g.id])g.joined=true;});
+})();
+
+// API groups added at runtime
+var API_GROUPS=[];
+var curCat='all',curFilter='all',curQ='',selCatV='dogs',selPrivV='public';
+var _joinTarget=null,_inviteTarget=null;
+var _invitedUsers={};
+
+function fmtN(n){return n>=1000?(n/1000).toFixed(1).replace('.0','')+'K':n;}
+
+// ── SIDEBAR MY GROUPS ────────────────────────────────────────────────────────
+function renderSB(){
+  var all=GROUPS.concat(API_GROUPS);
+  var my=all.filter(function(g){return g.joined;});
+  var el=document.getElementById('my-groups-sb');
+  if(!my.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0">No groups yet</div>';return;}
+  el.innerHTML=my.map(function(g){
+    return '<div class="mg-row" onclick="goTo(\'17_group_detail.html?group='+g.id+'\')">'+
+      '<div class="mg-thumb"><img src="'+(g.img||'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80')+'" alt="'+g.name+'"></div>'+
+      '<div style="flex:1;min-width:0"><div class="mg-name">'+g.name+'</div><div class="mg-meta">'+fmtN(g.members)+' members</div></div>'+
+      '<button class="mg-leave" onclick="event.stopPropagation();leaveGroup(\''+g.id+'\',\''+g.name.replace(/'/g,"\\'")+'\')"><i class="ti ti-x"></i></button>'+
+    '</div>';
+  }).join('');
+}
+
+// ── MAIN RENDER ──────────────────────────────────────────────────────────────
+function renderGroups(){
+  var all=GROUPS.concat(API_GROUPS);
+  var list=all.filter(function(g){
+    if(curCat==='my'&&!g.joined) return false;
+    if(curCat!=='all'&&curCat!=='my'&&g.cat!==curCat) return false;
+    if(curFilter==='online'&&!g.active) return false;
+    if(curFilter==='new'&&!g.isNew) return false;
+    if(curQ&&!g.name.toLowerCase().includes(curQ)&&!(g.city||'').toLowerCase().includes(curQ)&&!(g.desc||'').toLowerCase().includes(curQ)) return false;
+    return true;
+  });
+
+  document.getElementById('grp-count').textContent=list.length+' groups';
+  document.getElementById('sec-title').textContent=curCat==='my'?'My Groups':curCat==='all'?'All Groups':curCat.charAt(0).toUpperCase()+curCat.slice(1)+' Groups';
+  document.getElementById('featured-wrap').style.display=(curCat==='all'&&!curQ)?'block':'none';
+
+  var el=document.getElementById('grp-list');
+  var empty=document.getElementById('grp-empty');
+  if(!list.length){el.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+
+  el.innerHTML=list.map(function(g){
+    var avHtml=g.avs.slice(0,3).map(function(a){return '<div class="mav"><img src="'+a+'" alt=""></div>';}).join('');
+    avHtml+='<div class="mav-count">'+fmtN(g.members)+'</div>';
+    var joinLabel=g.joined?'✓ Joined':(g.pending?'⏳ Pending':'Join Group');
+    var joinCls='btn-join'+(g.joined?' joined':g.pending?' pending':'');
+    var inviteBtn=g.joined?'<button class="btn-invite" onclick="openInvite(\''+g.id+'\',\''+g.name.replace(/'/g,"\\'")+'\')"><i class="ti ti-user-plus" style="font-size:13px"></i> Invite</button>':'';
+    return '<div class="gcard">'+
+      '<div class="gcover">'+
+        '<img src="'+g.img+'" alt="'+g.name+'">'+
+        '<div class="gcover-ov"></div>'+
+        '<div class="gbadges">'+
+          (g.top?'<span class="gb gb-amber">⭐ Top</span>':'')+
+          (g.isNew?'<span class="gb gb-green">New</span>':'')+
+          (g.active?'<span class="gb gb-green">● Active</span>':'')+
+        '</div>'+
+        '<div class="gpriv">'+(g.priv==='private'?'🔒 Private':'🌍 Public')+'</div>'+
+      '</div>'+
+      '<div class="gbody">'+
+        '<div class="gtitle">'+g.name+'</div>'+
+        '<div class="gmeta">'+
+          '<span class="gmeta-i"><i class="ti ti-map-pin" style="font-size:11px"></i>'+(g.city||'Online')+'</span>'+
+          '<span class="gmeta-i"><i class="ti ti-users" style="font-size:11px"></i>'+fmtN(g.members)+' members</span>'+
+          '<span style="text-transform:capitalize">'+g.cat+'</span>'+
+        '</div>'+
+        '<div class="gdesc">'+g.desc+'</div>'+
+        '<div class="mavs">'+avHtml+'</div>'+
+        '<div class="gbtns">'+
+          '<button class="'+joinCls+'" id="jb-'+g.id+'" onclick="handleJoinBtn(\''+g.id+'\')">'+joinLabel+'</button>'+
+          '<button class="btn-view" onclick="goTo(\'17_group_detail.html?group='+g.id+'\')"><i class="ti ti-arrow-right" style="font-size:13px"></i> View</button>'+
+          inviteBtn+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function setCategory(cat,btn){
+  curCat=cat;
+  document.querySelectorAll('.cpill').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  renderGroups();
+}
+function setFilter(val,btn){
+  curFilter=val;
+  btn.closest('div').querySelectorAll('.fchip').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderGroups();
+}
+function filterSearch(q){curQ=q.toLowerCase();renderGroups();}
+function sortGroups(by){
+  var all=GROUPS.concat(API_GROUPS);
+  if(by==='members')all.sort(function(a,b){return b.members-a.members;});
+  else if(by==='new')all.sort(function(a,b){return (b.isNew?1:0)-(a.isNew?1:0);});
+  else if(by==='active')all.sort(function(a,b){return (b.active?1:0)-(a.active?1:0);});
+  renderGroups();
+}
+
+// ── JOIN FLOW ────────────────────────────────────────────────────────────────
+function handleJoinBtn(id){
+  var all=GROUPS.concat(API_GROUPS);
+  var g=all.find(function(x){return x.id===id;});
+  if(!g)return;
+  if(g.joined){
+    if(confirm('Leave "'+g.name+'"?'))leaveGroup(id,g.name);
+    return;
+  }
+  if(g.pending){toast('Your join request is pending admin approval.','info');return;}
+  openJoin(g);
+}
+
+function openJoin(g){
+  _joinTarget=g;
+  var isLoggedIn=!!apiToken();
+  document.getElementById('join-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('join-group-name').textContent=g.name;
+
+  var note=document.getElementById('join-group-type-note');
+  if(g.priv==='private'){
+    note.innerHTML='<div class="join-priv-note"><i class="ti ti-lock" style="font-size:16px;flex-shrink:0"></i><span>This is a <strong>private group</strong>. Your request will be reviewed by the admin before you\'re approved.</span></div>';
+  } else {
+    note.innerHTML='<div class="join-info-box" style="margin-bottom:12px">🌍 <strong>Public group</strong> — you\'ll be joined immediately after submitting this form.</div>';
+  }
+
+  document.getElementById('join-login-required').style.display=isLoggedIn?'none':'block';
+  document.getElementById('join-form-section').style.display=isLoggedIn?'block':'none';
+
+  // Reset form
+  ['jf-pet-name','jf-pet-type','jf-city','jf-why','jf-years'].forEach(function(id){document.getElementById(id).value='';});
+  var btn=document.getElementById('jf-btn');
+  btn.innerHTML='<i class="ti ti-send" style="font-size:15px"></i> Submit &amp; Join';
+  btn.disabled=false;
+}
+function closeJoin(){document.getElementById('join-modal').classList.remove('open');document.body.style.overflow='';_joinTarget=null;}
+
+async function submitJoin(){
+  if(!_joinTarget)return;
+  var g=_joinTarget;
+  var btn=document.getElementById('jf-btn');
+  btn.innerHTML='<span class="spin"></span> Submitting…';btn.disabled=true;
+
+  var payload={
+    pet_name:document.getElementById('jf-pet-name').value.trim(),
+    pet_type:document.getElementById('jf-pet-type').value.trim(),
+    city:document.getElementById('jf-city').value.trim(),
+    why_joining:document.getElementById('jf-why').value.trim(),
+    years_as_owner:parseInt(document.getElementById('jf-years').value)||0
+  };
+
+  // Try real API first (if it's a real API group)
+  if(g.apiId){
+    try{
+      var res=await apiFetch('/groups/'+g.apiId+'/join',{method:'POST',body:JSON.stringify(payload)});
+      closeJoin();
+      if(res.data&&res.data.joined){
+        var grp=GROUPS.concat(API_GROUPS).find(function(x){return x.id===g.id;});
+        if(grp){grp.joined=true;grp.pending=false;}
+        toast('🎉 Joined '+g.name+'!');
+      } else {
+        var grp=GROUPS.concat(API_GROUPS).find(function(x){return x.id===g.id;});
+        if(grp){grp.pending=true;}
+        toast('📬 Request sent — awaiting admin approval.','info');
+      }
+      saveJoinState();renderSB();renderGroups();return;
+    }catch(e){console.warn('API join failed, using local:',e.message);}
+  }
+
+  // Local fallback
+  setTimeout(function(){
+    var all=GROUPS.concat(API_GROUPS);
+    var grp=all.find(function(x){return x.id===g.id;});
+    if(grp){
+      if(g.priv==='public'){grp.joined=true;grp.pending=false;}
+      else{grp.pending=true;grp.joined=false;}
+    }
+    saveJoinState();
+    closeJoin();
+    if(g.priv==='public') toast('🎉 Joined '+g.name+'!');
+    else toast('📬 Join request sent — admin will review shortly.','info');
+    renderSB();renderGroups();
+  },700);
+}
+
+function leaveGroup(id,name){
+  var all=GROUPS.concat(API_GROUPS);
+  var g=all.find(function(x){return x.id===id;});
+  if(!g)return;
+  // API call if real group
+  if(g.apiId&&isLoggedIn()){
+    apiFetch('/groups/'+g.apiId+'/leave',{method:'POST'}).catch(function(){});
+  }
+  g.joined=false;g.pending=false;
+  saveJoinState();
+  toast('Left "'+name+'"','info');
+  renderSB();renderGroups();
+}
+
+function saveJoinState(){
+  var state={};
+  GROUPS.concat(API_GROUPS).forEach(function(g){if(g.joined||g.pending)state[g.id]=g.joined?'joined':'pending';});
+  localStorage.setItem('pb_group_joins',JSON.stringify(state));
+}
+
+// ── INVITE FLOW ───────────────────────────────────────────────────────────────
+function openInvite(id,name){
+  _inviteTarget={id:id,name:name};
+  _invitedUsers={};
+  document.getElementById('invite-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('invite-group-name').textContent='Group: '+name;
+  document.getElementById('inv-search').value='';
+  document.getElementById('inv-results').innerHTML='<div style="color:var(--muted);font-size:13px;padding:12px 0;text-align:center">Start typing to search friends…</div>';
+  document.getElementById('inv-sent-list').innerHTML='';
+}
+function closeInvite(){document.getElementById('invite-modal').classList.remove('open');document.body.style.overflow='';_inviteTarget=null;}
+
+var _searchTimer=null;
+function searchUsers(q){
+  clearTimeout(_searchTimer);
+  if(!q.trim()){document.getElementById('inv-results').innerHTML='<div style="color:var(--muted);font-size:13px;padding:12px 0;text-align:center">Start typing to search friends…</div>';return;}
+  _searchTimer=setTimeout(async function(){
+    var el=document.getElementById('inv-results');
+    el.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0;text-align:center">Searching…</div>';
+    try{
+      var res=await apiFetch('/users/search?q='+encodeURIComponent(q)+'&limit=10');
+      var users=res.data||[];
+      if(!users.length){el.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0;text-align:center">No users found</div>';return;}
+      el.innerHTML=users.map(function(u){
+        var already=_invitedUsers[u.user_id];
+        return '<div class="user-search-result">'+
+          '<div class="user-av">'+(u.avatar_url?'<img src="'+u.avatar_url+'" alt="">':u.username[0].toUpperCase())+'</div>'+
+          '<div style="flex:1;min-width:0">'+
+            '<div style="font-size:13px;font-weight:600">'+u.full_name+'</div>'+
+            '<div style="font-size:11px;color:var(--muted)">@'+u.username+'</div>'+
+          '</div>'+
+          (already
+            ? '<span style="font-size:11px;color:var(--green);font-weight:700">✓ Invited</span>'
+            : '<button onclick="sendInvite(\''+u.user_id+'\',\''+u.full_name.replace(/'/g,"\\'")+'\',\''+u.username+'\',\''+((u.avatar_url||'').replace(/'/g,"\\'"))+'\')" style="height:32px;padding:0 14px;border-radius:16px;border:none;background:var(--blue);color:#fff;font-family:\'Inter\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Invite</button>')+
+        '</div>';
+      }).join('');
+    }catch(e){el.innerHTML='<div style="color:var(--red);font-size:13px;padding:8px 0;text-align:center">Please log in to invite friends</div>';}
+  },350);
+}
+
+async function sendInvite(userId,fullName,username,avatar){
+  if(!_inviteTarget)return;
+  _invitedUsers[userId]=true;
+  try{
+    var all=GROUPS.concat(API_GROUPS);
+    var g=all.find(function(x){return x.id===_inviteTarget.id;});
+    if(g&&g.apiId){
+      await apiFetch('/groups/'+g.apiId+'/invite',{method:'POST',body:JSON.stringify({invitee_id:userId})});
+    }
+  }catch(e){}
+  // Re-render search to show invited
+  searchUsers(document.getElementById('inv-search').value);
+  var sent=document.getElementById('inv-sent-list');
+  sent.innerHTML=(sent.innerHTML||'')+'<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px"><div class="user-av" style="width:28px;height:28px;font-size:11px">'+(avatar?'<img src="'+avatar+'" alt="">':fullName[0])+'</div><span style="font-weight:600">'+fullName+'</span><span style="color:var(--muted)">@'+username+'</span><span style="margin-left:auto;color:var(--green);font-weight:700">✓ Sent</span></div>';
+  toast('Invited '+fullName+' to the group!');
+}
+
+// ── CREATE GROUP ──────────────────────────────────────────────────────────────
+function pickCat(btn,cat){document.querySelectorAll('.cchip').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');selCatV=cat;}
+function pickPriv(el,val){document.querySelectorAll('.priv-btn').forEach(function(b){b.classList.remove('on');});el.classList.add('on');selPrivV=val;}
+function previewCover(inp){
+  if(!inp.files||!inp.files[0])return;
+  var r=new FileReader();
+  r.onload=function(e){
+    var z=document.getElementById('cover-zone');
+    z.style.background='url('+e.target.result+') center/cover';
+    z.style.border='none';
+    z.innerHTML='<div style="background:rgba(0,0,0,0.45);color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer" onclick="document.getElementById(\'cover-inp\').click()">Change photo</div><input type="file" id="cover-inp" accept="image/*" style="display:none" onchange="previewCover(this)">';
+  };r.readAsDataURL(inp.files[0]);
+}
+function openCreate(){
+  if(!isLoggedIn()){toast('Please log in to create a group','error');goTo('01_login.html');return;}
+  document.getElementById('create-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCreate(){document.getElementById('create-modal').classList.remove('open');document.body.style.overflow='';}
+
+async function submitGroup(){
+  var name=document.getElementById('cg-name').value.trim();
+  if(!name){toast('Enter a group name','error');return;}
+  var btn=document.getElementById('cg-btn');
+  btn.innerHTML='<span class="spin"></span> Creating…';btn.disabled=true;
+
+  var payload={
+    name:name,
+    description:document.getElementById('cg-desc').value.trim(),
+    group_type:selPrivV,
+    category:selCatV,
+    city:document.getElementById('cg-city').value.trim()||'All India'
+  };
+
+  var newId='g_'+Date.now();
+  var localGroup={id:newId,name:name,cat:selCatV,city:payload.city,members:1,active:true,isNew:true,top:false,joined:true,pending:false,priv:selPrivV,desc:payload.description||'A new community for pet lovers.',img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=700&q=85',avs:[],apiId:null};
+
+  // Try real API
+  if(isLoggedIn()){
+    try{
+      var res=await apiFetch('/groups',{method:'POST',body:JSON.stringify(payload)});
+      var created=res.data||{};
+      localGroup.apiId=created.group_id;
+      localGroup.id='api_'+created.group_id;
+      localGroup.img=created.cover_url||localGroup.img;
+    }catch(e){console.warn('API create failed, local only:',e.message);}
+  }
+
+  GROUPS.unshift(localGroup);
+  saveJoinState();
+  closeCreate();
+  btn.innerHTML='<i class="ti ti-users" style="font-size:16px"></i> Create Group';btn.disabled=false;
+  document.getElementById('cg-name').value='';document.getElementById('cg-desc').value='';document.getElementById('cg-city').value='';
+  setCategory('my',document.querySelectorAll('.cpill')[1]);
+  toast('🎉 "'+name+'" created! You\'re the admin.');
+  renderSB();
+}
+
+// ── LOAD API GROUPS ────────────────────────────────────────────────────────────
+(async function(){
+  // Init nav avatar
+  var u=currentUser();
+  if(u&&u.username){
+    var av=document.getElementById('nav-av');
+    if(av)av.textContent=(u.full_name||u.username)[0].toUpperCase();
+    var dn=document.getElementById('drawer-name');if(dn)dn.textContent=u.full_name||u.username;
+    var dh=document.getElementById('drawer-handle');if(dh)dh.textContent='@'+u.username;
+  }
+
+  // Load join states from localStorage
+  var saved=JSON.parse(localStorage.getItem('pb_group_joins')||'{}');
+  GROUPS.forEach(function(g){
+    if(saved[g.id]==='joined')g.joined=true;
+    else if(saved[g.id]==='pending')g.pending=true;
+  });
+
+  renderSB();
+  renderGroups();
+
+  if(!isLoggedIn())return;
+  try{
+    var res=await apiFetch('/groups?limit=8');
+    var groups=res.data||[];
+    if(!groups.length)return;
+    // Add to API_GROUPS (skip duplicates by name)
+    var existingNames=GROUPS.map(function(g){return g.name.toLowerCase();});
+    groups.forEach(function(g){
+      if(existingNames.includes(g.name.toLowerCase()))return;
+      var localId='api_'+g.group_id;
+      API_GROUPS.push({
+        id:localId,apiId:g.group_id,name:g.name,cat:g.category||'local',city:g.city||'Online',
+        members:g.member_count||0,active:true,isNew:false,top:false,
+        joined:!!g.my_role,pending:false,priv:g.group_type||'public',
+        desc:g.description||'',img:g.cover_url||'https://images.unsplash.com/photo-1552053831-71594a27632d?w=700&q=85',avs:[]
+      });
+    });
+    document.getElementById('stat-groups').textContent=(GROUPS.length+API_GROUPS.length)+'+';
+    renderGroups();
+  }catch(e){}
+})();
+
+// ── DRAWER ────────────────────────────────────────────────────────────────────
+function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+
+// ── MOBILE RESPONSIVE ─────────────────────────────────────────────────────────
+(function(){
+  function fix(){
+    var isMobile=window.innerWidth<=768;
+    document.querySelectorAll('.burger-btn').forEach(function(b){b.style.display=isMobile?'flex':'none';});
+    var bnav=document.querySelector('.bottomnav');if(bnav)bnav.style.display=isMobile?'flex':'none';
+  }
+  fix();window.addEventListener('resize',fix);
+})();
+</script>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottomnav">
+  <a class="bnav-item active" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
+  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,813 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="/manifest.json">
+<title>PawBook — Register Your Pet Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f0f2f5;-webkit-font-smoothing:antialiased;min-height:100vh}
+
+/* NAV */
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;padding:0 16px;gap:12px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.nav-logo{font-size:20px;font-weight:900;color:#1877F2;display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-btn{height:36px;padding:0 14px;border-radius:999px;border:none;background:#f0f2f5;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#050505;font-family:'Inter',sans-serif}
+.nav-btn:hover{background:#e4e6eb}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* PAGE */
+.page-wrap{padding-top:72px;padding-bottom:60px;min-height:100vh}
+.container{max-width:760px;margin:0 auto;padding:0 16px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1877F2 0%,#8b5cf6 100%);border-radius:16px;padding:32px;color:#fff;margin-bottom:28px;display:flex;align-items:center;gap:20px}
+.hero-icon{width:64px;height:64px;background:rgba(255,255,255,.2);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0}
+.hero-text h1{font-size:22px;font-weight:900;margin-bottom:6px}
+.hero-text p{font-size:14px;opacity:.9;line-height:1.5}
+
+/* STEPS */
+.steps-row{display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+.step-item{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .2s}
+.step-dot.active{background:#1877F2;color:#fff}
+.step-dot.done{background:#22c55e;color:#fff}
+.step-dot.pending{background:#e4e6eb;color:#8a8d91}
+.step-label{font-size:12px;font-weight:600;color:#65676b;white-space:nowrap}
+.step-label.active{color:#1877F2}
+.step-line{width:24px;height:2px;background:#e4e6eb;flex-shrink:0}
+.step-line.done{background:#22c55e}
+
+/* CARD */
+.form-card{background:#fff;border-radius:12px;border:1px solid #e4e6eb;margin-bottom:20px;overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid #f0f2f5;display:flex;align-items:center;gap:10px}
+.card-icon{width:36px;height:36px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;color:#1877F2;font-size:18px}
+.card-title{font-size:16px;font-weight:700;color:#050505}
+.card-body{padding:20px}
+
+/* FORM */
+.form-row{display:grid;gap:14px;margin-bottom:14px}
+.form-row-2{grid-template-columns:1fr 1fr}
+.form-row-3{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:13px;font-weight:600;color:#050505}
+.form-label span{color:#dc2626;margin-left:2px}
+.form-input,.form-select,.form-textarea{width:100%;border:1.5px solid #e4e6eb;border-radius:8px;padding:10px 13px;font-size:14px;font-family:'Inter',sans-serif;outline:none;color:#050505;transition:border-color .15s;background:#fff}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#1877F2;box-shadow:0 0 0 3px rgba(24,119,242,.08)}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-hint{font-size:11px;color:#8a8d91;margin-top:2px}
+
+/* CATEGORY GRID */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cat-option{border:2px solid #e4e6eb;border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s}
+.cat-option:hover{border-color:#1877F2;background:#eff6ff}
+.cat-option.selected{border-color:#1877F2;background:#eff6ff}
+.cat-option input[type=radio]{display:none}
+.cat-emoji{font-size:24px;display:block;margin-bottom:4px}
+.cat-name{font-size:11px;font-weight:700;color:#050505}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f2f5}
+.toggle-row:last-child{border-bottom:none}
+.toggle-label{font-size:14px;font-weight:600;color:#050505}
+.toggle-desc{font-size:12px;color:#65676b;margin-top:2px}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;border-radius:999px;background:#e4e6eb;cursor:pointer;transition:background .2s}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;left:3px;top:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked + .toggle-slider{background:#1877F2}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px)}
+
+/* MAP PICKER */
+.map-picker{width:100%;height:240px;border-radius:10px;border:2px solid #e4e6eb;overflow:hidden;position:relative;background:#f0f2f5}
+.map-picker-hint{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;white-space:nowrap;z-index:10;pointer-events:none}
+#map-coords{font-size:12px;color:#65676b;margin-top:6px;min-height:16px}
+
+/* SERVICES TAGS */
+.services-input-wrap{display:flex;flex-wrap:wrap;gap:6px;border:1.5px solid #e4e6eb;border-radius:8px;padding:8px 10px;min-height:44px;cursor:text}
+.services-input-wrap:focus-within{border-color:#1877F2;box-shadow:0 0 0 3px rgba(24,119,242,.08)}
+.service-tag{display:flex;align-items:center;gap:4px;background:#eff6ff;border:1px solid #1877F2;color:#1877F2;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.service-tag button{background:none;border:none;cursor:pointer;color:#1877F2;font-size:14px;line-height:1;padding:0}
+.services-input{border:none;outline:none;font-size:13px;font-family:'Inter',sans-serif;min-width:120px;flex:1}
+.services-suggestions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sug-chip{height:26px;padding:0 10px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.sug-chip:hover{background:#eff6ff;border-color:#1877F2;color:#1877F2}
+
+/* PHOTO */
+.photo-upload{border:2px dashed #e4e6eb;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .15s;position:relative}
+.photo-upload:hover{border-color:#1877F2;background:#eff6ff}
+.photo-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.photo-preview{width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-top:10px;display:none}
+
+/* ACTIONS */
+.form-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:8px}
+.btn-primary{height:44px;padding:0 28px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px;transition:all .15s}
+.btn-primary:hover{background:#0d65d9}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-secondary{height:44px;padding:0 20px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#050505;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-secondary:hover{background:#f0f2f5}
+
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:48px 24px}
+.success-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px}
+.success-title{font-size:24px;font-weight:900;color:#050505;margin-bottom:10px}
+.success-sub{font-size:15px;color:#65676b;line-height:1.6;margin-bottom:28px}
+.success-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast-item{background:#050505;color:#fff;font-size:14px;font-weight:600;padding:12px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:slideUp .25s ease;pointer-events:auto}
+.toast-item.success{background:#16a34a}
+.toast-item.error{background:#dc2626}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* REQUIRED NOTICE */
+.req-notice{font-size:12px;color:#65676b;margin-bottom:16px}
+.req-notice span{color:#dc2626}
+
+@media(max-width:600px){
+  .cat-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row-2,.form-row-3{grid-template-columns:1fr}
+  .hero{flex-direction:column;text-align:center}
+  .form-actions{flex-direction:column}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center}
+}
+</style>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <a class="nav-logo" href="07_home.html">
+    <div class="logo-icon">🐾</div>
+    PawBook
+  </a>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="window.location='26_discover.html'">
+      <i class="ti ti-map"></i> Discover
+    </button>
+    <div class="nav-avatar" id="nav-avatar">A</div>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- PAGE -->
+<div class="page-wrap">
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-icon">🏪</div>
+    <div class="hero-text">
+      <h1>Register Your Pet Business</h1>
+      <p>List your shelter, veterinary clinic, zoo, aquarium, grooming center, breeding center or pet shop on PawBook Discover. Reach millions of pet owners globally — for free.</p>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-row" id="steps-row">
+    <div class="step-item">
+      <div class="step-dot active" id="dot-1">1</div>
+      <div class="step-label active" id="lbl-1">Basic Info</div>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-item">
+      <div class="step-dot pending" id="dot-2">2</div>
+      <div class="step-label" id="lbl-2">Location</div>
+    </div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-item">
+      <div class="step-dot pending" id="dot-3">3</div>
+      <div class="step-label" id="lbl-3">Services</div>
+    </div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step-item">
+      <div class="step-dot pending" id="dot-4">4</div>
+      <div class="step-label" id="lbl-4">Review</div>
+    </div>
+  </div>
+
+  <!-- FORM WRAPPER -->
+  <div id="form-wrapper">
+
+    <!-- STEP 1: BASIC INFO -->
+    <div id="step-1">
+      <div class="form-card">
+        <div class="card-header">
+          <div class="card-icon"><i class="ti ti-building-store"></i></div>
+          <div class="card-title">Business Details</div>
+        </div>
+        <div class="card-body">
+          <p class="req-notice"><span>*</span> Required fields</p>
+
+          <!-- CATEGORY -->
+          <div class="form-group" style="margin-bottom:18px">
+            <div class="form-label">Business Type <span>*</span></div>
+            <div class="cat-grid">
+              <label class="cat-option" id="cat-vet">
+                <input type="radio" name="category" value="vet">
+                <span class="cat-emoji">🏥</span>
+                <div class="cat-name">Veterinary Clinic</div>
+              </label>
+              <label class="cat-option" id="cat-shelter">
+                <input type="radio" name="category" value="shelter">
+                <span class="cat-emoji">🏠</span>
+                <div class="cat-name">Animal Shelter</div>
+              </label>
+              <label class="cat-option" id="cat-zoo">
+                <input type="radio" name="category" value="zoo">
+                <span class="cat-emoji">🦁</span>
+                <div class="cat-name">Zoo / Safari</div>
+              </label>
+              <label class="cat-option" id="cat-aquarium">
+                <input type="radio" name="category" value="aquarium">
+                <span class="cat-emoji">🐠</span>
+                <div class="cat-name">Aquarium</div>
+              </label>
+              <label class="cat-option" id="cat-grooming">
+                <input type="radio" name="category" value="grooming">
+                <span class="cat-emoji">✂️</span>
+                <div class="cat-name">Grooming Center</div>
+              </label>
+              <label class="cat-option" id="cat-breeding">
+                <input type="radio" name="category" value="breeding">
+                <span class="cat-emoji">🐣</span>
+                <div class="cat-name">Breeding Center</div>
+              </label>
+              <label class="cat-option" id="cat-petshop">
+                <input type="radio" name="category" value="petshop">
+                <span class="cat-emoji">🛒</span>
+                <div class="cat-name">Pet Shop</div>
+              </label>
+              <label class="cat-option" id="cat-emergency">
+                <input type="radio" name="category" value="emergency">
+                <span class="cat-emoji">🚨</span>
+                <div class="cat-name">Emergency / 24h</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-bottom:14px">
+            <div class="form-group">
+              <label class="form-label">Business Name <span>*</span></label>
+              <input class="form-input" id="biz-name" type="text" placeholder="e.g. Happy Paws Veterinary Clinic" maxlength="200">
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-bottom:14px">
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea class="form-textarea" id="biz-desc" placeholder="Tell pet owners what makes your place special — services, specializations, experience…" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-row form-row-2" style="margin-bottom:14px">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input class="form-input" id="biz-phone" type="tel" placeholder="+91 98765 43210">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" id="biz-email" type="email" placeholder="contact@yourplace.com">
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label class="form-label">Website / Social Link</label>
+              <input class="form-input" id="biz-website" type="url" placeholder="https://yoursite.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Opening Hours</label>
+              <input class="form-input" id="biz-hours" type="text" placeholder="Mon–Sat 9am–7pm, Sun 10am–4pm">
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="goStep(2)">Next: Location <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 2: LOCATION -->
+    <div id="step-2" style="display:none">
+      <div class="form-card">
+        <div class="card-header">
+          <div class="card-icon"><i class="ti ti-map-pin"></i></div>
+          <div class="card-title">Location</div>
+        </div>
+        <div class="card-body">
+
+          <div class="form-row" style="margin-bottom:14px">
+            <div class="form-group">
+              <label class="form-label">Street Address <span>*</span></label>
+              <input class="form-input" id="biz-address" type="text" placeholder="Shop 4, MG Road, Near City Mall">
+            </div>
+          </div>
+
+          <div class="form-row form-row-3" style="margin-bottom:14px">
+            <div class="form-group">
+              <label class="form-label">City <span>*</span></label>
+              <input class="form-input" id="biz-city" type="text" placeholder="Mumbai">
+            </div>
+            <div class="form-group">
+              <label class="form-label">State / Province</label>
+              <input class="form-input" id="biz-state" type="text" placeholder="Maharashtra">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pincode / ZIP</label>
+              <input class="form-input" id="biz-pincode" type="text" placeholder="400001">
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-bottom:14px">
+            <div class="form-group">
+              <label class="form-label">Country <span>*</span></label>
+              <select class="form-select" id="biz-country">
+                <option value="India">India</option>
+                <option value="United States">United States</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Canada">Canada</option>
+                <option value="Australia">Australia</option>
+                <option value="Germany">Germany</option>
+                <option value="France">France</option>
+                <option value="Japan">Japan</option>
+                <option value="Brazil">Brazil</option>
+                <option value="Singapore">Singapore</option>
+                <option value="UAE">UAE</option>
+                <option value="South Africa">South Africa</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- MAP PICKER -->
+          <div class="form-group" style="margin-bottom:6px">
+            <label class="form-label">Pin Your Location on Map</label>
+            <div class="form-hint" style="margin-bottom:8px">Click the map to drop a pin, or use the button to auto-detect your location</div>
+            <div class="map-picker" id="map-picker">
+              <div class="map-picker-hint">Click to set location</div>
+              <div id="loc-map" style="width:100%;height:100%"></div>
+            </div>
+            <div id="map-coords"></div>
+          </div>
+
+          <div style="margin-top:10px">
+            <button class="btn-secondary" onclick="autoLocate()" style="height:36px;font-size:13px;display:flex;align-items:center;gap:6px">
+              <i class="ti ti-current-location"></i> Use My Current Location
+            </button>
+          </div>
+
+          <div class="form-row form-row-2" style="margin-top:14px">
+            <div class="form-group">
+              <label class="form-label">Latitude (auto-filled from map)</label>
+              <input class="form-input" id="biz-lat" type="number" step="0.0000001" placeholder="e.g. 19.0760">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Longitude (auto-filled from map)</label>
+              <input class="form-input" id="biz-lng" type="number" step="0.0000001" placeholder="e.g. 72.8777">
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="goStep(1)"><i class="ti ti-arrow-left"></i> Back</button>
+        <button class="btn-primary" onclick="goStep(3)">Next: Services <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 3: SERVICES & PHOTO -->
+    <div id="step-3" style="display:none">
+      <div class="form-card">
+        <div class="card-header">
+          <div class="card-icon"><i class="ti ti-clipboard-list"></i></div>
+          <div class="card-title">Services & Facilities</div>
+        </div>
+        <div class="card-body">
+
+          <div class="form-group" style="margin-bottom:16px">
+            <label class="form-label">Services Offered</label>
+            <div class="form-hint" style="margin-bottom:8px">Type and press Enter, or click suggestions below</div>
+            <div class="services-input-wrap" id="services-wrap" onclick="document.getElementById('services-text').focus()">
+              <input class="services-input" id="services-text" type="text" placeholder="Add a service…">
+            </div>
+            <div class="services-suggestions" id="sug-container"></div>
+          </div>
+
+          <div class="form-card" style="border-radius:8px;margin-bottom:16px">
+            <div class="card-body" style="padding:14px 16px">
+              <div class="toggle-row">
+                <div>
+                  <div class="toggle-label">Accepts Walk-ins</div>
+                  <div class="toggle-desc">Customers can visit without a prior appointment</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="walk-ins" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div>
+                  <div class="toggle-label">24-Hour Emergency Service</div>
+                  <div class="toggle-desc">Available round the clock for pet emergencies</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="emergency-24h">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Business Photo</label>
+            <div class="form-hint" style="margin-bottom:8px">Paste a photo URL or enter a public image link</div>
+            <input class="form-input" id="biz-photo" type="url" placeholder="https://example.com/your-shop-photo.jpg" oninput="previewPhoto(this.value)">
+            <img id="photo-preview" class="photo-preview">
+          </div>
+
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="goStep(2)"><i class="ti ti-arrow-left"></i> Back</button>
+        <button class="btn-primary" onclick="goStep(4)">Review & Submit <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 4: REVIEW -->
+    <div id="step-4" style="display:none">
+      <div class="form-card">
+        <div class="card-header">
+          <div class="card-icon"><i class="ti ti-eye"></i></div>
+          <div class="card-title">Review Your Listing</div>
+        </div>
+        <div class="card-body" id="review-body">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <div class="form-card" style="background:#fffbeb;border-color:#fbbf24">
+        <div class="card-body" style="display:flex;gap:12px;align-items:flex-start">
+          <div style="font-size:20px;flex-shrink:0">⚠️</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#92400e;margin-bottom:4px">Listing Review Policy</div>
+            <div style="font-size:13px;color:#78350f;line-height:1.5">Your listing will be reviewed by our team and published within <strong>24 hours</strong>. We verify that all businesses listed genuinely serve pet owners. Spam or fake listings are removed.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="goStep(3)"><i class="ti ti-arrow-left"></i> Edit</button>
+        <button class="btn-primary" id="submit-btn" onclick="submitBusiness()">
+          <i class="ti ti-send"></i> Submit Listing
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /form-wrapper -->
+
+  <!-- SUCCESS -->
+  <div class="form-card" id="success-screen" style="display:none">
+    <div class="success-screen" style="display:block">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Listing Submitted!</div>
+      <div class="success-sub">
+        Thank you for registering your pet business on PawBook.<br>
+        Your listing is under review and will appear on the Discover page within <strong>24 hours</strong>.<br>
+        We'll notify you at <span id="confirm-email" style="color:#1877F2;font-weight:700"></span> once it's live.
+      </div>
+      <div class="success-actions">
+        <button class="btn-primary" onclick="window.location='26_discover.html'">
+          <i class="ti ti-map"></i> Go to Discover
+        </button>
+        <button class="btn-secondary" onclick="window.location='07_home.html'">
+          <i class="ti ti-home"></i> Home
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+</div><!-- /page-wrap -->
+
+<script src="js/api.js"></script>
+<script>
+var currentStep = 1;
+var services = [];
+var pinMarker = null;
+var locMap = null;
+
+// ── NAV AVATAR ────────────────────────────────────────────────
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('pb_user') || '{}');
+    var el = document.getElementById('nav-avatar');
+    if(u.avatar_url) { el.innerHTML = '<img src="'+u.avatar_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'; }
+    else if(u.full_name || u.username) { el.textContent = (u.full_name || u.username).charAt(0).toUpperCase(); }
+  } catch(e){}
+})();
+
+// ── CATEGORY SELECTION ────────────────────────────────────────
+document.querySelectorAll('.cat-option').forEach(function(el) {
+  el.addEventListener('click', function() {
+    document.querySelectorAll('.cat-option').forEach(function(c){ c.classList.remove('selected'); });
+    el.classList.add('selected');
+  });
+});
+
+// ── STEPS ─────────────────────────────────────────────────────
+function goStep(n) {
+  if(n > currentStep && !validateStep(currentStep)) return;
+
+  // Update UI
+  for(var i=1; i<=4; i++) {
+    var dot = document.getElementById('dot-'+i);
+    var lbl = document.getElementById('lbl-'+i);
+    var line = document.getElementById('line-'+i);
+    if(i < n) { dot.className='step-dot done'; dot.innerHTML='✓'; lbl.className='step-label'; }
+    else if(i === n) { dot.className='step-dot active'; dot.textContent=i; lbl.className='step-label active'; }
+    else { dot.className='step-dot pending'; dot.textContent=i; lbl.className='step-label'; }
+    if(line) { line.className = i < n ? 'step-line done' : 'step-line'; }
+  }
+
+  for(var j=1;j<=4;j++) {
+    var el = document.getElementById('step-'+j);
+    if(el) el.style.display = j===n ? '' : 'none';
+  }
+
+  currentStep = n;
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  if(n===2 && !locMap) setTimeout(initLocMap, 200);
+  if(n===4) buildReview();
+}
+
+function validateStep(n) {
+  if(n===1) {
+    var cat = document.querySelector('input[name="category"]:checked');
+    if(!cat) { showToast('Please select a business type', 'error'); return false; }
+    var name = document.getElementById('biz-name').value.trim();
+    if(!name) { showToast('Business name is required', 'error'); return false; }
+  }
+  if(n===2) {
+    var addr = document.getElementById('biz-address').value.trim();
+    var city = document.getElementById('biz-city').value.trim();
+    if(!addr) { showToast('Street address is required', 'error'); return false; }
+    if(!city) { showToast('City is required', 'error'); return false; }
+  }
+  return true;
+}
+
+// ── MAP ───────────────────────────────────────────────────────
+function initLocMap() {
+  locMap = L.map('loc-map', {zoomControl:true}).setView([20.5937, 78.9629], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'© OpenStreetMap', maxZoom:19
+  }).addTo(locMap);
+
+  locMap.on('click', function(e) {
+    setPin(e.latlng.lat, e.latlng.lng);
+  });
+}
+
+function setPin(lat, lng) {
+  if(pinMarker) locMap.removeLayer(pinMarker);
+  pinMarker = L.marker([lat, lng], {draggable:true}).addTo(locMap);
+  pinMarker.on('dragend', function(e) {
+    var p = e.target.getLatLng();
+    setLatLng(p.lat, p.lng);
+  });
+  setLatLng(lat, lng);
+  locMap.setView([lat, lng], 15);
+}
+
+function setLatLng(lat, lng) {
+  document.getElementById('biz-lat').value = lat.toFixed(7);
+  document.getElementById('biz-lng').value = lng.toFixed(7);
+  document.getElementById('map-coords').textContent = 'Pinned: ' + lat.toFixed(5) + ', ' + lng.toFixed(5);
+}
+
+function autoLocate() {
+  if(!navigator.geolocation) { showToast('Geolocation not supported', 'error'); return; }
+  showToast('Getting your location…', 'info');
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    if(!locMap) { initLocMap(); setTimeout(function(){ setPin(pos.coords.latitude, pos.coords.longitude); }, 400); }
+    else { setPin(pos.coords.latitude, pos.coords.longitude); }
+  }, function() { showToast('Could not get location. Click the map manually.', 'error'); });
+}
+
+// ── SERVICES ──────────────────────────────────────────────────
+var SUGGESTIONS_BY_CAT = {
+  vet:       ['General Checkup','Vaccination','Surgery','Dental Care','X-Ray','Blood Tests','Emergency Care','Spay/Neuter','Microchipping'],
+  shelter:   ['Adoption','Fostering','Rescue','Rehabilitation','Lost & Found','Stray Care','Medical Aid'],
+  zoo:       ['Guided Tours','Photography Sessions','Animal Feeding','Kids Programs','Night Safari','Conservation Education'],
+  aquarium:  ['Guided Tours','Marine Education','Feeding Sessions','Diving Programs','Kids Workshops'],
+  grooming:  ['Bath & Dry','Haircut','Nail Trimming','Ear Cleaning','Teeth Brushing','Spa Treatment','De-shedding','Full Groom'],
+  breeding:  ['Health Certified Puppies','Pedigree Certificates','Stud Services','Kitten Breeding','Diet Counseling'],
+  petshop:   ['Pet Food','Accessories','Toys','Supplements','Grooming Products','Aquarium Supplies','Bird Cages','Reptile Supplies'],
+  emergency: ['24h Emergency','ICU','Oxygen Therapy','Blood Transfusion','Trauma Care','Poison Control']
+};
+
+function renderSuggestions() {
+  var cat = (document.querySelector('input[name="category"]:checked') || {}).value || '';
+  var sugs = SUGGESTIONS_BY_CAT[cat] || ['Consultation','Health Check','Grooming','Food','Accessories'];
+  var container = document.getElementById('sug-container');
+  container.innerHTML = sugs.filter(function(s){ return !services.includes(s); }).map(function(s) {
+    return '<button class="sug-chip" onclick="addService(\''+s+'\')">+ '+s+'</button>';
+  }).join('');
+}
+
+function addService(s) {
+  s = s.trim();
+  if(!s || services.includes(s) || services.length >= 20) return;
+  services.push(s);
+  renderServiceTags();
+  renderSuggestions();
+}
+
+function removeService(s) {
+  services = services.filter(function(x){ return x !== s; });
+  renderServiceTags();
+  renderSuggestions();
+}
+
+function renderServiceTags() {
+  var wrap = document.getElementById('services-wrap');
+  var input = document.getElementById('services-text');
+  wrap.innerHTML = '';
+  services.forEach(function(s) {
+    var tag = document.createElement('div');
+    tag.className = 'service-tag';
+    tag.innerHTML = s + '<button onclick="removeService(\''+s+'\')" title="Remove">×</button>';
+    wrap.appendChild(tag);
+  });
+  wrap.appendChild(input);
+  input.value = '';
+}
+
+document.getElementById('services-text').addEventListener('keydown', function(e) {
+  if(e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    addService(this.value);
+  }
+});
+
+// render initial suggestions based on selected cat
+document.querySelectorAll('input[name="category"]').forEach(function(r) {
+  r.addEventListener('change', renderSuggestions);
+});
+renderSuggestions();
+
+// ── PHOTO PREVIEW ─────────────────────────────────────────────
+function previewPhoto(url) {
+  var img = document.getElementById('photo-preview');
+  if(url && url.startsWith('http')) {
+    img.src = url; img.style.display = 'block';
+    img.onerror = function(){ img.style.display='none'; };
+  } else { img.style.display = 'none'; }
+}
+
+// ── REVIEW ────────────────────────────────────────────────────
+function buildReview() {
+  var cat = (document.querySelector('input[name="category"]:checked') || {}).value || '—';
+  var catNames = {vet:'Veterinary Clinic',shelter:'Animal Shelter',zoo:'Zoo / Safari',
+    aquarium:'Aquarium',grooming:'Grooming Center',breeding:'Breeding Center',
+    petshop:'Pet Shop',emergency:'Emergency / 24h'};
+
+  var rows = [
+    ['Business Type', catNames[cat] || cat],
+    ['Name', document.getElementById('biz-name').value || '—'],
+    ['Description', document.getElementById('biz-desc').value || '—'],
+    ['Phone', document.getElementById('biz-phone').value || '—'],
+    ['Email', document.getElementById('biz-email').value || '—'],
+    ['Website', document.getElementById('biz-website').value || '—'],
+    ['Opening Hours', document.getElementById('biz-hours').value || '—'],
+    ['Address', document.getElementById('biz-address').value || '—'],
+    ['City', document.getElementById('biz-city').value || '—'],
+    ['State', document.getElementById('biz-state').value || '—'],
+    ['Country', document.getElementById('biz-country').value || '—'],
+    ['Pincode', document.getElementById('biz-pincode').value || '—'],
+    ['Coordinates', (document.getElementById('biz-lat').value && document.getElementById('biz-lng').value)
+      ? document.getElementById('biz-lat').value + ', ' + document.getElementById('biz-lng').value : 'Not set'],
+    ['Services', services.length ? services.join(', ') : '—'],
+    ['Walk-ins', document.getElementById('walk-ins').checked ? 'Yes' : 'No'],
+    ['24h Emergency', document.getElementById('emergency-24h').checked ? 'Yes' : 'No'],
+  ];
+
+  var html = '<table style="width:100%;border-collapse:collapse">';
+  rows.forEach(function(r) {
+    html += '<tr style="border-bottom:1px solid #f0f2f5">'
+      + '<td style="padding:10px 0;font-size:13px;font-weight:700;color:#65676b;width:38%;vertical-align:top">'+r[0]+'</td>'
+      + '<td style="padding:10px 0 10px 12px;font-size:14px;color:#050505;word-break:break-word">'+r[1]+'</td>'
+      + '</tr>';
+  });
+  html += '</table>';
+
+  var photo = document.getElementById('biz-photo').value;
+  if(photo) {
+    html += '<div style="margin-top:14px"><div style="font-size:13px;font-weight:700;color:#65676b;margin-bottom:6px">Photo Preview</div><img src="'+photo+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;border:1px solid #e4e6eb"></div>';
+  }
+
+  document.getElementById('review-body').innerHTML = html;
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────
+function submitBusiness() {
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader" style="animation:spin .8s linear infinite"></i> Submitting…';
+
+  var token = localStorage.getItem('pb_token');
+  var payload = {
+    name:            document.getElementById('biz-name').value.trim(),
+    category:        (document.querySelector('input[name="category"]:checked') || {}).value,
+    description:     document.getElementById('biz-desc').value.trim(),
+    address:         document.getElementById('biz-address').value.trim(),
+    city:            document.getElementById('biz-city').value.trim(),
+    state:           document.getElementById('biz-state').value.trim(),
+    country:         document.getElementById('biz-country').value,
+    pincode:         document.getElementById('biz-pincode').value.trim(),
+    lat:             document.getElementById('biz-lat').value || null,
+    lng:             document.getElementById('biz-lng').value || null,
+    phone:           document.getElementById('biz-phone').value.trim(),
+    email:           document.getElementById('biz-email').value.trim(),
+    website:         document.getElementById('biz-website').value.trim(),
+    opening_hours:   document.getElementById('biz-hours').value.trim(),
+    services:        services,
+    accepts_walk_ins:document.getElementById('walk-ins').checked,
+    emergency_24h:   document.getElementById('emergency-24h').checked,
+    photo_url:       document.getElementById('biz-photo').value.trim()
+  };
+
+
+  fetch(API_BASE + '/businesses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? {'Authorization': 'Bearer ' + token} : {})
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    if(data.success) {
+      document.getElementById('form-wrapper').style.display = 'none';
+      document.getElementById('steps-row').style.display = 'none';
+      document.querySelector('.hero').style.display = 'none';
+      document.getElementById('success-screen').style.display = '';
+      var u = JSON.parse(localStorage.getItem('pb_user') || '{}');
+      document.getElementById('confirm-email').textContent = u.email || payload.email || 'your email';
+    } else {
+      showToast(data.message || 'Submission failed', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-send"></i> Submit Listing';
+    }
+  })
+  .catch(function(err) {
+    console.error(err);
+    showToast('Network error. Please try again.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-send"></i> Submit Listing';
+  });
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  var el = document.createElement('div');
+  el.className = 'toast-item ' + (type||'');
+  el.textContent = msg;
+  t.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 3500);
+}
+
+// spin keyframe
+var style = document.createElement('style');
+style.textContent = '@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}';
+document.head.appendChild(style);
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
+</script>
+</body>
+</html>

@@ -1,158 +1,144 @@
-// upload.js — shared media upload utility for PawBook frontend
-// Include AFTER api.js: <script src="upload.js"></script>
-// Provides: uploadMedia(file, onProgress) → Promise<{ url, public_id, ... }>
-//           uploadMultipleMedia(files, onProgress) → Promise<[...]>
-//           uploadToCloudinaryDirect(file, onProgress) → Promise<{ url, ... }>  (unsigned preset, no auth)
+/* ==========================================================================
+   PAWBOOK  upload.js  — Cloudinary image/video uploader (frontend helper)
+   Works with backend POST /api/v1/media/upload  (single)
+                        POST /api/v1/media/upload-multiple  (batch)
+   Usage:
+     uploadToCloudinary(file, type)          → { url, public_id }
+     uploadToCloudinaryDirect(file)          → same (alias, type='post')
+     uploadAvatar(file)                      → updates user avatar_url
+     uploadCover(file)                       → updates user cover_url
+     uploadMultiple(files)                   → [{ url, public_id }, …]
+   ========================================================================== */
 
-// ── Single file upload via backend (authenticated) ──────────────────
-async function uploadMedia(file, onProgress) {
-  const formData = new FormData();
-  formData.append('file', file);
+const _UP_BASE = (typeof API_BASE !== 'undefined') ? API_BASE
+               : 'https://pawbook-api-cquc.onrender.com/api/v1';
 
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
+function _upToken() {
+  return localStorage.getItem('pb_token') || localStorage.getItem('token') || '';
+}
 
-    xhr.open('POST', `${API_BASE}/media/upload`);
+/**
+ * Upload a single file to Cloudinary via the backend.
+ * @param {File}   file  - browser File object
+ * @param {string} type  - 'avatar' | 'cover' | 'post' | 'pet' | 'vet' | 'event'
+ * @returns {Promise<{url:string, public_id:string, type:string}>}
+ */
+async function uploadToCloudinary(file, type = 'post') {
+  const fd = new FormData();
+  fd.append('file', file);
 
-    // Auth header
-    const token = localStorage.getItem('pawbook_token');
-    if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-    if (typeof onProgress === 'function') {
-      xhr.upload.addEventListener('progress', e => {
-        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
-      });
-    }
-
-    xhr.onload = () => {
-      try {
-        const data = JSON.parse(xhr.responseText);
-        if (xhr.status >= 200 && xhr.status < 300 && data.success) {
-          resolve(data);
-        } else {
-          reject(new Error(data.message || 'Upload failed'));
-        }
-      } catch {
-        reject(new Error('Invalid server response'));
-      }
-    };
-
-    xhr.onerror = () => reject(new Error('Network error during upload'));
-    xhr.send(formData);
+  const res = await fetch(`${_UP_BASE}/media/upload?type=${type}`, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + _upToken() },
+    body: fd,
   });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Upload failed');
+
+  // Response shape: { success:true, data:{ url, public_id, type } }
+  return data.data || data;
 }
 
-// ── Multiple files via backend (authenticated) ──────────────────────
-async function uploadMultipleMedia(files, onProgress) {
-  const formData = new FormData();
-  Array.from(files).forEach(f => formData.append('files', f));
+/** Alias — same as uploadToCloudinary(file, 'post') */
+async function uploadToCloudinaryDirect(file) {
+  return uploadToCloudinary(file, 'post');
+}
 
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_BASE}/media/upload-multiple`);
+/**
+ * Upload avatar — updates user record on backend, refreshes pb_user in localStorage.
+ */
+async function uploadAvatar(file) {
+  const result = await uploadToCloudinary(file, 'avatar');
 
-    const token = localStorage.getItem('pawbook_token');
-    if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+  // Patch cached user
+  try {
+    const u = JSON.parse(localStorage.getItem('pb_user') || '{}');
+    u.avatar_url = result.url;
+    localStorage.setItem('pb_user', JSON.stringify(u));
+  } catch (_) {}
 
-    if (typeof onProgress === 'function') {
-      xhr.upload.addEventListener('progress', e => {
-        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
-      });
-    }
+  return result;
+}
 
-    xhr.onload = () => {
-      try {
-        const data = JSON.parse(xhr.responseText);
-        if (xhr.status >= 200 && xhr.status < 300 && data.success) {
-          resolve(data.files);
-        } else {
-          reject(new Error(data.message || 'Upload failed'));
-        }
-      } catch {
-        reject(new Error('Invalid server response'));
-      }
-    };
+/**
+ * Upload cover photo — updates user record on backend, refreshes pb_user.
+ */
+async function uploadCover(file) {
+  const result = await uploadToCloudinary(file, 'cover');
 
-    xhr.onerror = () => reject(new Error('Network error during upload'));
-    xhr.send(formData);
+  try {
+    const u = JSON.parse(localStorage.getItem('pb_user') || '{}');
+    u.cover_url = result.url;
+    localStorage.setItem('pb_user', JSON.stringify(u));
+  } catch (_) {}
+
+  return result;
+}
+
+/**
+ * Upload multiple files (up to 5).
+ * @param {File[]} files
+ * @returns {Promise<Array<{url, public_id, resource_type, original_name}>>}
+ */
+async function uploadMultiple(files) {
+  const fd = new FormData();
+  files.forEach(f => fd.append('files', f));
+
+  const res = await fetch(`${_UP_BASE}/media/upload-multiple`, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + _upToken() },
+    body: fd,
   });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Upload failed');
+
+  return (data.data || data).files || [];
 }
 
-// ── Direct unsigned upload to Cloudinary (no backend, no auth token needed) ──
-// Use for avatar / cover photo previews before profile save
-const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/pawbook-api/upload';
-const CLOUDINARY_PRESET    = 'pawbook_uploads';
+/**
+ * Reusable avatar-upload-button wirer.
+ * Adds a hidden <input type="file"> that triggers on btn click,
+ * uploads the chosen image, and calls onSuccess(url).
+ *
+ * @param {HTMLElement} btn        - clickable element (camera icon, edit btn, etc.)
+ * @param {string}      uploadType - 'avatar' | 'cover' | 'post'
+ * @param {Function}    onSuccess  - called with (url, public_id) after upload
+ * @param {Function}    onError    - optional error handler
+ */
+function wireUploadButton(btn, uploadType, onSuccess, onError) {
+  if (!btn) return;
 
-async function uploadToCloudinaryDirect(file, onProgress) {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_PRESET);
-  formData.append('folder', 'pawbook');
+  // Create hidden file input
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/jpeg,image/png,image/gif,image/webp';
+  inp.style.display = 'none';
+  document.body.appendChild(inp);
 
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', CLOUDINARY_UPLOAD_URL);
+  btn.addEventListener('click', () => inp.click());
 
-    if (typeof onProgress === 'function') {
-      xhr.upload.addEventListener('progress', e => {
-        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
-      });
+  inp.addEventListener('change', async () => {
+    const file = inp.files[0];
+    if (!file) return;
+
+    // Show loading state on button
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<span style="opacity:.6">Uploading…</span>';
+    btn.disabled = true;
+
+    try {
+      const result = await uploadToCloudinary(file, uploadType);
+      onSuccess(result.url, result.public_id);
+    } catch (err) {
+      console.error('[upload.js]', err);
+      if (typeof onError === 'function') onError(err);
+      else if (typeof toast === 'function') toast('Upload failed: ' + err.message, 'error');
+    } finally {
+      btn.innerHTML = orig;
+      btn.disabled = false;
+      inp.value = '';
     }
-
-    xhr.onload = () => {
-      try {
-        const data = JSON.parse(xhr.responseText);
-        if (xhr.status === 200) {
-          resolve({
-            url:           data.secure_url,
-            public_id:     data.public_id,
-            resource_type: data.resource_type,
-            width:         data.width,
-            height:        data.height,
-            format:        data.format,
-          });
-        } else {
-          reject(new Error(data.error?.message || 'Cloudinary upload failed'));
-        }
-      } catch {
-        reject(new Error('Invalid Cloudinary response'));
-      }
-    };
-
-    xhr.onerror = () => reject(new Error('Network error'));
-    xhr.send(formData);
   });
-}
-
-// ── Helper: show upload progress ring on an <img> element ───────────
-function showUploadProgress(imgEl, pct) {
-  imgEl.style.opacity = '0.5';
-  imgEl.title = `Uploading… ${pct}%`;
-  if (pct >= 100) {
-    imgEl.style.opacity = '1';
-    imgEl.title = '';
-  }
-}
-
-// ── Helper: validate file before upload ────────────────────────────
-function validateImageFile(file, maxMB = 10) {
-  const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-  if (!allowed.includes(file.type)) {
-    return 'Please choose a JPG, PNG, GIF, or WebP image.';
-  }
-  if (file.size > maxMB * 1024 * 1024) {
-    return `Image must be under ${maxMB} MB.`;
-  }
-  return null; // valid
-}
-
-function validateVideoFile(file, maxMB = 50) {
-  const allowed = ['video/mp4', 'video/quicktime', 'video/webm'];
-  if (!allowed.includes(file.type)) {
-    return 'Please choose an MP4, MOV, or WebM video.';
-  }
-  if (file.size > maxMB * 1024 * 1024) {
-    return `Video must be under ${maxMB} MB.`;
-  }
-  return null;
 }

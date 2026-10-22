@@ -1,0 +1,813 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+html,body{overflow-x:hidden!important;max-width:100%!important}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="/manifest.json">
+<title>PawBook — Training & Behavior</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+<style>
+.train-hero{background:linear-gradient(135deg,#312e81,#4338ca,#6d28d9);padding:80px 20px 36px;text-align:center;color:#fff}
+.train-hero h1{font-size:clamp(24px,4vw,38px);font-weight:900;margin-bottom:8px}
+.train-page{max-width: 100%;margin:0 auto;padding:16px 16px 80px;display:grid;grid-template-columns:1fr 300px;gap:16px}
+@media(max-width:768px){
+  .train-page { display: block !important; grid-template-columns: 1fr !important; }.train-page{grid-template-columns: 1fr}aside{display:none!important}}
+.prog-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.prog-circle{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative}
+.prog-circle-inner{width:56px;height:56px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#4338ca}
+.prog-label{font-size:11px;font-weight:700;color:#1e293b;text-align:center;max-width:70px}
+.session-card{display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s;align-items:flex-start}
+.session-card:hover{background:#f8f9ff}
+.session-card:last-child{border-bottom:none}
+.session-img{width:96px;height:68px;border-radius:10px;overflow:hidden;flex-shrink:0}
+.session-img img{width:100%;height:100%;object-fit:cover}
+.session-name{font-size:14px;font-weight:700;margin-bottom:3px}
+.session-meta{font-size:11px;color:var(--muted);margin-bottom:2px}
+.diff-easy{background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-top:5px}
+.diff-med{background:#fef3c7;color:#d97706;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-top:5px}
+.diff-hard{background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-top:5px}
+.expert-card{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center}
+.expert-card:last-child{border-bottom:none}
+.expert-av{width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.expert-av img{width:100%;height:100%;object-fit:cover}
+</style>
+<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
+<style id="pb-mobile">
+html, body { overflow-x: hidden !important; }
+@media (max-width: 768px) {
+  html, body { width: 100% !important; overflow-x: hidden !important; }
+  div { min-width: 0 !important; }
+  
+  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
+  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
+  .topnav-tabs, .nav-tabs { display: none !important; }
+  .bottomnav { display: flex !important; }
+  .left-sidebar, .right-sidebar, aside { display: none !important; }
+  body { padding-bottom: 72px !important; }
+}
+</style>
+<style id="pb-burger">
+.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
+.drawer-overlay.open { display: block; }
+.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
+.drawer-panel.open { left: 0; }
+.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
+.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
+.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
+.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
+.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
+.drawer-body { flex: 1; padding: 6px 0; }
+.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
+.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
+.drawer-item:hover { background: #eff6ff; color: #1877F2; }
+.drawer-item i { font-size: 20px; width: 24px; }
+.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
+.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
+.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
+.bnav-item i { font-size: 22px; }
+.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.bnav-item.active { color: #1877F2; }
+@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
+@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+</style>
+</head>
+<body>
+<script>function goTo(p){window.location.href=p;}</script>
+
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <button class="burger-btn" onclick="openDrawer()" aria-label="Menu" style="width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:#1877F2;font-size:28px;align-items:center;justify-content:center;flex-shrink:0;font-weight:900;line-height:1;padding:0;display:flex">☰</button>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search training sessions…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-certificate"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
+  </div>
+</nav>
+
+<div class="train-hero">
+  <div style="font-size:48px;margin-bottom:10px">🎓🐾</div>
+  <h1>Training &amp; Behavior</h1>
+  <p style="opacity:0.85;max-width:480px;margin:0 auto 16px">Expert-guided sessions to build a stronger bond with your pet</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <button class="btn" style="background:#fff;color:#4338ca;padding:10px 20px;font-weight:700" onclick="openVideoSessions()">📹 Video Sessions</button>
+    <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="openLiveExpert()">👨‍🏫 Live Expert</button>
+  </div>
+</div>
+
+<div class="train-page">
+  <main>
+    <!-- Progress -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-body">
+        <div class="card-title">🏆 Bruno's Training Progress</div>
+        <div style="display:flex;justify-content:space-around;padding:16px 0;flex-wrap:wrap;gap:12px">
+          <div class="prog-wrap">
+            <div class="prog-circle" style="background:conic-gradient(#4338ca 252deg,#e4e6eb 0)">
+              <div class="prog-circle-inner">70%</div>
+            </div>
+            <div class="prog-label">Basic Commands</div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-circle" style="background:conic-gradient(#4338ca 144deg,#e4e6eb 0)">
+              <div class="prog-circle-inner">40%</div>
+            </div>
+            <div class="prog-label">Socialisation</div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-circle" style="background:conic-gradient(#10b981 324deg,#e4e6eb 0)">
+              <div class="prog-circle-inner" style="color:#10b981">90%</div>
+            </div>
+            <div class="prog-label">Potty Training</div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-circle" style="background:conic-gradient(#f59e0b 108deg,#e4e6eb 0)">
+              <div class="prog-circle-inner" style="color:#f59e0b">30%</div>
+            </div>
+            <div class="prog-label">Agility</div>
+          </div>
+        </div>
+        <div style="background:#e7f3ff;border-radius:10px;padding:12px 16px;font-size:13px;font-weight:600;color:#1a4db3">
+          🎯 Next Goal: Complete <strong>Recall Training</strong> — 2 sessions remaining
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions -->
+    <div class="card">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div style="font-size:16px;font-weight:800">📚 Training Sessions</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-blue btn-sm" onclick="filterSess('all',this)">All</button>
+          <button class="btn btn-gray btn-sm" onclick="filterSess('basic',this)">Basic</button>
+          <button class="btn btn-gray btn-sm" onclick="filterSess('advanced',this)">Advanced</button>
+        </div>
+      </div>
+
+      <div id="sessions-container">
+        <div style="padding:20px;text-align:center;color:var(--muted)">Loading sessions…</div>
+      </div>
+    </div>
+  </main>
+
+  <aside style="position:sticky;top:72px">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div class="card-title">👨‍🏫 Expert Trainers</div>
+        <div id="trainers-container">
+          <div style="padding:10px;text-align:center;color:var(--muted);font-size:13px">Loading…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-body">
+        <div class="card-title">📅 Upcoming Sessions</div>
+        <div style="background:#e7f3ff;border-radius:10px;padding:12px;margin-bottom:8px">
+          <div style="font-weight:700;font-size:13px">Leash Training Live</div>
+          <div style="font-size:12px;color:var(--muted)">Tomorrow · 10:00 AM · Dr. Aryan</div>
+        </div>
+        <div style="background:#f0fdfa;border-radius:10px;padding:12px">
+          <div style="font-weight:700;font-size:13px">Recall Practice</div>
+          <div style="font-size:12px;color:var(--muted)">Sat, May 25 · 4:00 PM · Kavita</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">🏅 Achievements</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;text-align:center">
+          <div><div style="font-size:30px">🥇</div><div style="font-size:10px;font-weight:700">Sit Master</div></div>
+          <div><div style="font-size:30px">🏅</div><div style="font-size:10px;font-weight:700">Potty Pro</div></div>
+          <div><div style="font-size:30px">⭐</div><div style="font-size:10px;font-weight:700">Good Boy</div></div>
+          <div style="opacity:0.4"><div style="font-size:30px">🔒</div><div style="font-size:10px;font-weight:700;color:var(--muted)">Locked</div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="api.js"></script>
+
+<script>
+function authHeaders(){var t=localStorage.getItem('pb_token');return{'Content-Type':'application/json','Authorization':'Bearer '+t};}
+/* ── LOAD TRAINING PROGRAMS FROM API ─────────────────── */
+var _allSessions = [];
+function loadSessions() {
+  fetch(API_BASE + '/training/programs')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d || !d.data) return;
+      // Map API program shape to session shape
+      _allSessions = d.data.map(function(p){
+        return {
+          id: p.program_id,
+          title: p.title,
+          trainer_name: p.instructor || 'PawBook Expert',
+          difficulty: p.difficulty || 'Easy',
+          level: (p.difficulty||'Easy').toLowerCase(),
+          duration_min: (p.duration_weeks||4)*7*10, // approx
+          type: 'video',
+          rating: p.rating || 4.7,
+          completions: p.enrolled_count || 0,
+          thumbnail_url: p.thumbnail_url || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80',
+          category: p.category
+        };
+      });
+      renderSessions(_allSessions);
+    })
+    .catch(function(){
+      // silently keep static content if API unavailable
+    });
+}
+
+function renderSessions(sessions) {
+  var diffClass = {Easy:'diff-easy', Medium:'diff-med', Advanced:'diff-hard'};
+  var html = sessions.map(function(s) {
+    var compl = s.completions >= 1000 ? (s.completions/1000).toFixed(1)+'k' : s.completions;
+    var typeIcon = s.type === 'live' ? '👨‍🏫 Live' : '📹 Video';
+    var btn = s.type === 'live'
+      ? '<button class="btn btn-blue btn-sm" onclick="openBookingModal(\''+s.trainer_name+'\',\''+s.title+'\',\''+(s.price_inr||799)+'\',\''+s.duration_min+' min\')">Book</button>'
+      : '<button class="btn btn-blue btn-sm" onclick="openVideoPlayer(\''+s.title.replace(/'/g,"\\'")+(s.id?'[id:'+s.id+']':'')+'\',\''+s.thumbnail_url+'\',\''+s.duration_min+'\',\''+s.trainer_name+'\',\''+s.difficulty+'\')">Start</button>';
+    return '<div class="session-card" data-level="'+s.level+'">' +
+      '<div class="session-img"><img src="'+s.thumbnail_url+'" alt="Training"></div>' +
+      '<div style="flex:1">' +
+        '<div class="session-name">'+s.title+'</div>' +
+        '<div class="session-meta">⏱ '+s.duration_min+' min · '+typeIcon+' · Trainer: '+s.trainer_name+'</div>' +
+        '<div class="session-meta">⭐ '+s.rating+' · '+compl+' completions</div>' +
+        '<span class="'+(diffClass[s.difficulty]||'diff-easy')+'">'+s.difficulty+'</span>' +
+      '</div>' + btn + '</div>';
+  }).join('');
+  document.getElementById('sessions-container').innerHTML = html || '<div style="padding:16px;color:var(--muted)">No sessions found.</div>';
+}
+
+/* ── LOAD TRAINERS (uses static content — no trainer endpoint) ── */
+function loadTrainers() {
+  // Expert trainer cards rendered from static HTML; no API fetch needed
+}
+
+/* ── TOAST ─────────────────────────────────────────── */
+function showToast(msg, type) {
+  var t = document.getElementById('tr-toast');
+  if(!t) {
+    t = document.createElement('div');
+    t.id = 'tr-toast';
+    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+    document.body.appendChild(t);
+  }
+  t.style.background = type==='success'?'#22c55e':type==='error'?'#dc2626':'#4338ca';
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 3000);
+}
+
+/* ── SESSION FILTER ─────────────────────────────────── */
+function filterSess(level, btn) {
+  var filtered = level === 'all' ? _allSessions : _allSessions.filter(function(s){ return s.level === level; });
+  renderSessions(filtered);
+  btn.closest('div').querySelectorAll('button').forEach(function(b) { b.className = 'btn btn-gray btn-sm'; });
+  btn.className = 'btn btn-blue btn-sm';
+}
+
+/* ── VIDEO PLAYER ───────────────────────────────────── */
+var vp = { playing: false, timer: null, secs: 0, total: 900, title: '', sessionId: null };
+
+function openVideoPlayer(title, thumb, duration, trainer, level) {
+  // extract session id if embedded e.g. "Title[id:3]"
+  var idMatch = title.match(/\[id:(\d+)\]/);
+  vp.sessionId = idMatch ? parseInt(idMatch[1]) : null;
+  vp.title = title.replace(/\[id:\d+\]/, '').trim();
+  vp.playing = false; vp.secs = 0; vp.total = parseInt(duration) * 60 || 900;
+  clearInterval(vp.timer);
+
+  var modal = document.getElementById('vp-modal');
+  if(!modal) buildVideoModal();
+  document.getElementById('vp-title').textContent = vp.title;
+  document.getElementById('vp-meta').textContent = duration + ' min · Trainer: ' + trainer + ' · ' + level;
+  document.getElementById('vp-img').src = thumb;
+  document.getElementById('vp-progress').style.width = '0%';
+  document.getElementById('vp-cur').textContent = '0:00';
+  document.getElementById('vp-tot').textContent = fmtTime(vp.total);
+  document.getElementById('vp-status').textContent = 'Tap ▶ to start';
+  document.getElementById('vp-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function buildVideoModal() {
+  var m = document.createElement('div');
+  m.id = 'vp-modal';
+  m.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:700;align-items:center;justify-content:center;padding:20px';
+  m.innerHTML =
+    '<div style="background:#111;border-radius:16px;width:100%;max-width:720px;overflow:hidden">' +
+    '<div style="background:#1a1a2e;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">' +
+      '<div><div id="vp-title" style="font-size:16px;font-weight:800;color:#fff"></div>' +
+      '<div id="vp-meta" style="font-size:12px;color:#a0a0c0;margin-top:2px"></div></div>' +
+      '<button onclick="closeVP()" style="width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-size:16px">✕</button>' +
+    '</div>' +
+    '<div style="position:relative;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center">' +
+      '<img id="vp-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45">' +
+      '<div style="position:relative;z-index:2;text-align:center">' +
+        '<button onclick="vpToggle()" id="vp-playbtn" style="width:72px;height:72px;border-radius:50%;border:none;background:#4338ca;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(67,56,202,.6)">▶</button>' +
+        '<div id="vp-status" style="color:#fff;font-size:13px;font-weight:600;margin-top:10px">Tap ▶ to start</div>' +
+      '</div>' +
+      '<div style="position:absolute;bottom:0;left:0;right:0;padding:12px 16px;background:linear-gradient(transparent,rgba(0,0,0,.8))">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<span id="vp-cur" style="color:#fff;font-size:12px;font-weight:700;width:36px">0:00</span>' +
+          '<div onclick="vpSeek(event,this)" style="flex:1;height:4px;background:rgba(255,255,255,.3);border-radius:2px;cursor:pointer">' +
+            '<div id="vp-progress" style="height:100%;background:#4338ca;border-radius:2px;width:0%;transition:width .4s"></div>' +
+          '</div>' +
+          '<span id="vp-tot" style="color:#fff;font-size:12px;width:36px">0:00</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="background:#1a1a2e;padding:12px 18px;display:flex;gap:8px;flex-wrap:wrap">' +
+      '<button onclick="vpToggle()" id="vp-ctrlbtn" style="height:36px;padding:0 16px;border-radius:999px;border:none;background:#4338ca;color:#fff;font-size:13px;font-weight:700;cursor:pointer">▶ Play</button>' +
+      '<button onclick="vpRestart()" style="height:36px;padding:0 16px;border-radius:999px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:#fff;font-size:13px;font-weight:700;cursor:pointer">↺ Restart</button>' +
+      '<button onclick="vpComplete()" style="height:36px;padding:0 16px;border-radius:999px;border:none;background:#22c55e;color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-left:auto">✓ Mark Complete</button>' +
+    '</div>' +
+    '<div style="background:#0a0a1e;padding:12px 18px">' +
+      '<div style="font-size:12px;font-weight:700;color:#a0a0c0;margin-bottom:6px">📝 Session Notes</div>' +
+      '<textarea placeholder="Take notes during this session…" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;resize:none;font-family:Inter,sans-serif;outline:none" rows="2"></textarea>' +
+    '</div>' +
+    '</div>';
+  document.body.appendChild(m);
+}
+
+function vpToggle() {
+  if(vp.playing) {
+    vp.playing = false; clearInterval(vp.timer);
+    document.getElementById('vp-playbtn').textContent = '▶';
+    document.getElementById('vp-ctrlbtn').textContent = '▶ Play';
+    document.getElementById('vp-status').textContent = 'Paused';
+  } else {
+    vp.playing = true;
+    document.getElementById('vp-playbtn').textContent = '⏸';
+    document.getElementById('vp-ctrlbtn').textContent = '⏸ Pause';
+    document.getElementById('vp-status').textContent = 'Session in progress…';
+    vp.timer = setInterval(function() {
+      vp.secs++;
+      document.getElementById('vp-cur').textContent = fmtTime(vp.secs);
+      document.getElementById('vp-progress').style.width = Math.min((vp.secs/vp.total)*100,100) + '%';
+      if(vp.secs >= vp.total) { clearInterval(vp.timer); vpComplete(); }
+    }, 1000);
+  }
+}
+
+function vpRestart() {
+  clearInterval(vp.timer); vp.playing = false; vp.secs = 0;
+  document.getElementById('vp-progress').style.width = '0%';
+  document.getElementById('vp-cur').textContent = '0:00';
+  document.getElementById('vp-playbtn').textContent = '▶';
+  document.getElementById('vp-ctrlbtn').textContent = '▶ Play';
+  document.getElementById('vp-status').textContent = 'Tap ▶ to start';
+}
+
+function vpSeek(e, bar) {
+  var pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
+  vp.secs = Math.floor(pct * vp.total);
+  document.getElementById('vp-cur').textContent = fmtTime(vp.secs);
+  document.getElementById('vp-progress').style.width = (pct*100) + '%';
+}
+
+function vpComplete() {
+  clearInterval(vp.timer); vp.playing = false;
+  document.getElementById('vp-playbtn').textContent = '✓';
+  document.getElementById('vp-status').textContent = '✅ Session Complete!';
+  document.getElementById('vp-progress').style.width = '100%';
+  showToast('🎉 Session complete! Great work!', 'success');
+  // Save progress to backend if logged in (fire-and-forget)
+  var token = localStorage.getItem('pb_token');
+  if (token && vp.sessionId) {
+    // Enroll in program if not already enrolled
+    fetch(API_BASE + '/training/enroll', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ program_id: vp.sessionId })
+    }).catch(function(){});
+  }
+}
+
+function closeVP() {
+  clearInterval(vp.timer); vp.playing = false;
+  document.getElementById('vp-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function fmtTime(s) {
+  return Math.floor(s/60) + ':' + (s%60<10?'0':'') + (s%60);
+}
+
+/* ── BOOKING MODAL ──────────────────────────────────── */
+function openBookingModal(trainer, spec, price, duration) {
+  var m = document.getElementById('bk-modal');
+  if(!m) buildBookingModal();
+  document.getElementById('bk-trainer').textContent = trainer;
+  document.getElementById('bk-spec').textContent = spec;
+  document.getElementById('bk-price').textContent = '₹' + price + '/session';
+  document.getElementById('bk-dur').textContent = duration;
+  var d = new Date(); d.setDate(d.getDate()+1);
+  document.getElementById('bk-date').value = d.toISOString().split('T')[0];
+  document.getElementById('bk-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function buildBookingModal() {
+  var m = document.createElement('div');
+  m.id = 'bk-modal';
+  m.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:20px';
+  m.onclick = function(e){ if(e.target===m) closeBK(); };
+  m.innerHTML =
+    '<div style="background:#fff;border-radius:16px;width:100%;max-width:440px;box-shadow:0 12px 48px rgba(0,0,0,.2)">' +
+    '<div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between">' +
+      '<div style="font-size:17px;font-weight:800">📅 Book Session</div>' +
+      '<button onclick="closeBK()" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">✕</button>' +
+    '</div>' +
+    '<div style="padding:18px;display:flex;flex-direction:column;gap:14px">' +
+      '<div style="background:#f0f4ff;border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center">' +
+        '<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4338ca,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">👨‍🏫</div>' +
+        '<div><div id="bk-trainer" style="font-size:15px;font-weight:800"></div>' +
+        '<div id="bk-spec" style="font-size:13px;color:#65676b;margin-top:2px"></div>' +
+        '<div style="display:flex;gap:10px;margin-top:4px"><span id="bk-price" style="font-size:13px;font-weight:700;color:#4338ca"></span><span id="bk-dur" style="font-size:13px;color:#65676b"></span></div></div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+        '<div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Date</label>' +
+        '<input type="date" id="bk-date" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;outline:none;font-family:Inter,sans-serif"></div>' +
+        '<div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Time</label>' +
+        '<select id="bk-time" style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;outline:none;font-family:Inter,sans-serif;background:#fff;cursor:pointer">' +
+        '<option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option>' +
+        '</select></div>' +
+      '</div>' +
+      '<div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:6px">Session Type</label>' +
+        '<div style="display:flex;gap:8px">' +
+          '<label style="flex:1;border:1.5px solid #4338ca;border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;background:#f0f4ff"><input type="radio" name="bktype" checked style="accent-color:#4338ca"><span style="font-size:13px;font-weight:700">📹 Video Call</span></label>' +
+          '<label style="flex:1;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="bktype" style="accent-color:#4338ca"><span style="font-size:13px;font-weight:700">🏠 In Person</span></label>' +
+        '</div>' +
+      '</div>' +
+      '<div><label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px">Select Pet</label>' +
+        '<select style="width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;outline:none;font-family:Inter,sans-serif;background:#fff;cursor:pointer"><option>🐕 Bruno</option><option>🐈 Luna</option></select>' +
+      '</div>' +
+      '<button onclick="confirmBK()" style="width:100%;height:44px;border-radius:999px;border:none;background:#4338ca;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">✓ Confirm Booking</button>' +
+    '</div></div>';
+  document.body.appendChild(m);
+}
+
+function closeBK() {
+  document.getElementById('bk-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function confirmBK() {
+  var date = document.getElementById('bk-date').value;
+  var time = document.getElementById('bk-time').value;
+  var trainer = document.getElementById('bk-trainer').textContent;
+  var spec = document.getElementById('bk-spec').textContent;
+  var priceText = document.getElementById('bk-price').textContent.replace(/[₹\/session]/g,'').trim();
+  var sessType = document.querySelector('input[name="bktype"]:checked') ?
+    (document.querySelectorAll('input[name="bktype"]')[0].checked ? 'video' : 'in_person') : 'video';
+  if(!date) { showToast('Please select a date', 'error'); return; }
+
+  var token = localStorage.getItem('pb_token');
+  // Booking stored locally; API enroll called when program selected (fire-and-forget)
+
+  closeBK();
+  var d = new Date(date);
+  var ds = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+  showToast('Session booked with ' + trainer + ' on ' + ds + ' at ' + time, 'success');
+}
+
+/* ── VIDEO SESSIONS LIBRARY ─────────────────────────── */
+function openVideoSessions() {
+  var m = document.getElementById('vs-modal');
+  if(!m) {
+    m = document.createElement('div');
+    m.id = 'vs-modal';
+    m.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:20px';
+    m.onclick = function(e){ if(e.target===m) m.style.display='none'; };
+    var DATA = [
+      {title:'Sit Stay Recall Basics',dur:'15',trainer:'Kavita R.',level:'Easy',img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200'},
+      {title:'Leash Walking',dur:'25',trainer:'Aryan P.',level:'Medium',img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200'},
+      {title:'Recall Mastery',dur:'30',trainer:'Kavita R.',level:'Advanced',img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200'},
+      {title:'Socialisation Basics',dur:'20',trainer:'Dr. Neha',level:'Easy',img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200'},
+      {title:'Agility Foundations',dur:'35',trainer:'Aryan P.',level:'Advanced',img:'https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=200'},
+    ];
+    var rows = DATA.map(function(s,i) {
+      return '<div style="display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;border:1px solid #e4e6eb">' +
+        '<img src="'+s.img+'" style="width:72px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0">' +
+        '<div style="flex:1"><div style="font-size:14px;font-weight:700">'+s.title+'</div>' +
+        '<div style="font-size:12px;color:#65676b;margin-top:2px">'+s.dur+' min · '+s.trainer+' · <b style="color:#22c55e">'+s.level+'</b></div></div>' +
+        '<button class="vs-btn" data-i="'+i+'" style="height:32px;padding:0 14px;border-radius:999px;border:none;background:#4338ca;color:#fff;font-size:12px;font-weight:700;cursor:pointer">▶ Start</button>' +
+      '</div>';
+    }).join('');
+    m.innerHTML = '<div style="background:#fff;border-radius:16px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)">' +
+      '<div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0">' +
+        '<div style="font-size:17px;font-weight:800">📹 Video Sessions Library</div>' +
+        '<button class="cls-vs" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">&#x2715;</button>' +
+      '</div>' +
+      '<div style="padding:16px;display:flex;flex-direction:column;gap:10px">' + rows + '</div></div>';
+    m.addEventListener('click', function(e) {
+      if(e.target.closest('.cls-vs')){m.style.display='none';return;}
+      var btn = e.target.closest('.vs-btn');
+      if(!btn) return;
+      var i = parseInt(btn.dataset.i);
+      var s = DATA[i];
+      m.style.display = 'none';
+      openVideoPlayer(s.title, s.img, s.dur, s.trainer, s.level);
+    });
+    m.addEventListener('click', function(e){ if(e.target.closest('.close-vs-modal')) m.style.display='none'; });
+    document.body.appendChild(m);
+  }
+  m.style.display = 'flex';
+}
+
+/* ── LIVE EXPERT ────────────────────────────────────── */
+function openLiveExpert() {
+  var m = document.getElementById('live-modal');
+  if(!m) {
+    m = document.createElement('div');
+    m.id = 'live-modal';
+    m.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:20px';
+    m.onclick = function(e){ if(e.target===m) m.style.display='none'; };
+    var upcoming = [
+      {title:'Leash Training Live',trainer:'Dr. Aryan',date:'Tomorrow',time:'10:00 AM',price:'999'},
+      {title:'Recall Practice',trainer:'Kavita R.',date:'Sat May 25',time:'4:00 PM',price:'799'},
+      {title:'Potty Training Basics',trainer:'Dr. Neha',date:'Sun May 26',time:'10:00 AM',price:'899'},
+    ];
+    var rows = upcoming.map(function(s) {
+      return '<div style="padding:12px;border:1px solid #e4e6eb;border-radius:10px;display:flex;align-items:center;justify-content:space-between">' +
+        '<div><div style="font-size:14px;font-weight:700">'+s.title+'</div>' +
+        '<div style="font-size:12px;color:#65676b;margin-top:2px">'+s.date+' · '+s.time+' · '+s.trainer+'</div></div>' +
+        '<button class="live-bk" data-trainer="'+s.trainer+'" data-title="'+s.title+'" data-price="'+s.price+'" style="height:30px;padding:0 12px;border-radius:999px;border:none;background:#4338ca;color:#fff;font-size:11px;font-weight:700;cursor:pointer">Book</button>' +
+      '</div>';
+    }).join('');
+    m.innerHTML = '<div style="background:#fff;border-radius:16px;width:100%;max-width:480px;box-shadow:0 12px 48px rgba(0,0,0,.2)">' +
+      '<div style="padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between">' +
+        '<div style="font-size:17px;font-weight:800">👨‍🏫 Live Expert Sessions</div>' +
+        '<button class="cls-live" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:16px">&#x2715;</button>' +
+      '</div>' +
+      '<div style="padding:18px;display:flex;flex-direction:column;gap:12px">' +
+        '<div style="background:#fee2e2;border-radius:12px;padding:14px">' +
+          '<div style="font-size:13px;font-weight:700;color:#dc2626;margin-bottom:4px">🔴 Live Now · 42 watching</div>' +
+          '<div style="font-size:15px;font-weight:800">Leash Training Masterclass</div>' +
+          '<div style="font-size:13px;color:#65676b;margin-top:2px">Dr. Aryan Patel</div>' +
+          '<button onclick="joinLive()" style="margin-top:10px;height:36px;padding:0 18px;border-radius:999px;border:none;background:#dc2626;color:#fff;font-size:13px;font-weight:700;cursor:pointer">🔴 Join Live Now</button>' +
+        '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:#65676b">Upcoming:</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px">' + rows + '</div>' +
+      '</div></div>';
+    m.addEventListener('click', function(e) {
+      if(e.target.closest('.cls-live')){m.style.display='none';return;}
+      var btn = e.target.closest('.live-bk');
+      if(!btn) return;
+      m.style.display = 'none';
+      openBookingModal(btn.dataset.trainer, btn.dataset.title, btn.dataset.price + '/session', '60 min');
+    });
+    m.addEventListener('click', function(e){ if(e.target.closest('.close-live-modal')) m.style.display='none'; });
+    document.body.appendChild(m);
+  }
+  m.style.display = 'flex';
+}
+
+function joinLive() {
+  document.getElementById('live-modal').style.display = 'none';
+  showToast('Joining live session… 42 others watching!', 'success');
+}
+
+// ── INITIAL LOAD ─────────────────────────────────────
+loadSessions();
+loadTrainers();
+</script>
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottomnav">
+  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
+  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER PANEL -->
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
+      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDrawer() {
+  document.getElementById('drawer-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+<script>
+(function(){
+  function showBurgerOnMobile(){
+    var btns = document.querySelectorAll('.burger-btn');
+    var isMobile = window.innerWidth <= 768;
+    btns.forEach(function(b){
+      b.style.display = isMobile ? 'flex' : 'none';
+    });
+    // Also hide topnav-tabs on mobile
+    var tabs = document.querySelector('.topnav-tabs');
+    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
+    // Show bottom nav on mobile
+    var bnav = document.querySelector('.bottomnav');
+    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+  }
+  showBurgerOnMobile();
+  window.addEventListener('resize', showBurgerOnMobile);
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
+
+// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
+(function initDrawerUser(){
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
+  if(!u) {
+    // fetch from API if not cached
+    var tok = localStorage.getItem("pb_token");
+    if(tok) {
+      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
+      }).then(function(r){ return r.json(); }).then(function(res){
+        var ud = res.data || res;
+        if(ud && ud.username) {
+          localStorage.setItem("pb_user", JSON.stringify(ud));
+          populateDrawer(ud);
+        }
+      }).catch(function(){});
+    }
+    return;
+  }
+  populateDrawer(u);
+  function populateDrawer(ud){
+    var dn = document.getElementById("drawer-name");
+    var dh = document.getElementById("drawer-handle");
+    var da = document.getElementById("drawer-av");
+    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
+    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
+    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  }
+})();
+</script>
+</body>
+</html>
+

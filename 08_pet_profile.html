@@ -96,7 +96,7 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/manifest.json">
 <title>PawBook — Bella's Profile</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -411,12 +411,18 @@ html,body{overflow-x:hidden}
     <div class="profile-top">
       <!-- Avatar + name -->
       <div style="display:flex;align-items:flex-end;gap:16px">
-        <div class="profile-av-wrap">
+        <div class="profile-av-wrap" style="position:relative;cursor:pointer" onclick="document.getElementById('avatar-upload').click()" title="Change profile photo">
           <div class="profile-av">
             <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=85" alt="Bella" id="profile-av-img">
           </div>
           <div class="profile-av-badge"></div>
+          <!-- Avatar edit overlay -->
+          <div style="position:absolute;bottom:2px;right:2px;width:28px;height:28px;border-radius:50%;background:var(--blue,#1877F2);border:2px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.25)">
+            <i class="ti ti-camera" style="font-size:13px;color:#fff"></i>
+          </div>
         </div>
+        <!-- Hidden avatar file input -->
+        <input type="file" id="avatar-upload" accept="image/*" style="display:none">
         <div class="profile-name-block">
           <div class="profile-fullname" id="pname">
             Bella
@@ -887,7 +893,11 @@ function shareProfile(){
   if(navigator.clipboard)navigator.clipboard.writeText(location.href);
   toast('Profile link copied!','success');
 }
-function editCover(){toast('Tap to upload a cover photo','info');}
+function editCover(){
+  // Trigger the hidden cover-upload input
+  var inp = document.getElementById('cover-upload');
+  if(inp) inp.click();
+}
 function addPet(){goTo('02_onboarding.html');}
 
 // ── POST MODAL ────────────────────────────────────────────────────────────────
@@ -943,14 +953,22 @@ function triggerPhotoSelect(){
 
 function previewPhoto(input){
   if(!input.files||!input.files[0])return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    var preview=document.getElementById('photo-preview');
-    var img=document.getElementById('preview-img');
-    img.src=e.target.result;
-    preview.style.display='block';
-  };
-  reader.readAsDataURL(input.files[0]);
+  var file=input.files[0];
+  // Show local preview immediately
+  var preview=document.getElementById('photo-preview');
+  var img=document.getElementById('preview-img');
+  img.src=URL.createObjectURL(file);
+  preview.style.display='block';
+  // Upload to Cloudinary in background
+  window._pendingPostImageUrl=null;
+  if(typeof uploadToCloudinary==='function'){
+    uploadToCloudinary(file,'post').then(function(r){
+      window._pendingPostImageUrl=r.url;
+    }).catch(function(err){
+      console.error('[upload] post photo',err);
+      if(typeof toast==='function') toast('Photo upload failed','error');
+    });
+  }
 }
 
 function removePhoto(){
@@ -975,15 +993,44 @@ function submitPost(){
   
   var btn=document.getElementById('post-submit-btn');
   btn.textContent='Posting...';btn.disabled=true;
-  
-  // Build demo post and add to feed
+
+  // Use Cloudinary URL if available, otherwise fall back to local preview src
+  var finalPhotoUrl = null;
+  if(hasPhoto){
+    finalPhotoUrl = window._pendingPostImageUrl || document.getElementById('preview-img').src;
+  }
+
+  // Try real API post first
+  if(typeof PostAPI!=='undefined'){
+    var payload={body:body+(selectedFeeling?' — feeling '+selectedFeeling:'')};
+    if(finalPhotoUrl) payload.image_url=finalPhotoUrl;
+    PostAPI.create(payload).then(function(){
+      closePostModal();btn.textContent='Post';btn.disabled=false;
+      toast('✅ Post shared!','success');
+      loadFeed();
+    }).catch(function(e){
+      console.warn('[post] API error, falling back to demo',e);
+      renderDemoPost(body,selectedFeeling,finalPhotoUrl);
+      closePostModal();btn.textContent='Post';btn.disabled=false;
+    });
+    return;
+  }
+
+  // Demo fallback
   setTimeout(function(){
+    renderDemoPost(body,selectedFeeling,finalPhotoUrl);
+    closePostModal();
+    btn.textContent='Post';btn.disabled=false;
+    toast('✅ Post shared!','success');
+  },800);
+}
+
+function renderDemoPost(body,feeling,photoUrl){
     var feed=document.getElementById('feed');
-    var postText=body+(selectedFeeling?' — feeling '+selectedFeeling:'');
+    var postText=body+(feeling?' — feeling '+feeling:'');
     var photoHTML='';
-    if(hasPhoto){
-      var src=document.getElementById('preview-img').src;
-      photoHTML='<div style="margin:0 -16px"><img src="'+src+'" style="width:100%;max-height:400px;object-fit:cover;display:block"></div>';
+    if(photoUrl){
+      photoHTML='<div style="margin:0 -16px"><img src="'+photoUrl+'" style="width:100%;max-height:400px;object-fit:cover;display:block"></div>';
     }
     var now=new Date();
     var timeStr=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+' · Just now';
@@ -1006,11 +1053,7 @@ function submitPost(){
     // Insert at top of feed
     if(feed.firstChild) feed.insertBefore(newPost,feed.firstChild);
     else feed.appendChild(newPost);
-    
-    closePostModal();
-    btn.textContent='Post';btn.disabled=false;
     toast('✅ Post shared!','success');
-  },800);
 }
 
 // ── DEMO FEED (shown when API not available) ──────────────────────────────────
@@ -1468,13 +1511,28 @@ function showToast(msg, type) {
 
 function updateCover(input) {
   if(!input.files||!input.files[0]) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var cover = document.querySelector('.profile-cover, .cover-photo, [class*="cover"]');
-    if(cover) cover.style.backgroundImage = 'url(' + e.target.result + ')';
+  var file = input.files[0];
+  // Immediate local preview
+  var cover = document.querySelector('.profile-cover, .cover-photo, [class*="cover"]');
+  if(cover) cover.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
+  showToast('Uploading cover photo…','info');
+  // Upload to Cloudinary
+  if(typeof uploadCover === 'function'){
+    uploadCover(file).then(function(r){
+      // Update with real Cloudinary URL
+      if(cover) cover.style.backgroundImage = 'url(' + r.url + ')';
+      // Persist to user profile
+      if(typeof AuthAPI !== 'undefined'){
+        AuthAPI.updateProfile({cover_url: r.url}).catch(function(){});
+      }
+      showToast('Cover photo updated! 🎨','success');
+    }).catch(function(err){
+      showToast('Upload failed: '+(err&&err.message||err),'error');
+    });
+  } else {
     showToast('Cover photo updated!','success');
-  };
-  reader.readAsDataURL(input.files[0]);
+  }
+  input.value='';
 }
 </script>
 <script>function pbHeart(btn){btn.style.color=btn.style.color==="#ef4444"?"#65676b":"#ef4444";}</script>
@@ -1579,9 +1637,46 @@ function closeDrawer() {
 })();
 </script>
 <script>
+// ── AVATAR UPLOAD ─────────────────────────────────────────────────────────────
+(function(){
+  var avatarInput = document.getElementById('avatar-upload');
+  if(!avatarInput) return;
+  avatarInput.addEventListener('change', function(){
+    var file = this.files[0];
+    if(!file) return;
+    // Local preview immediately
+    var avImg = document.getElementById('profile-av-img');
+    if(avImg) avImg.src = URL.createObjectURL(file);
+    showToast('Uploading profile photo…','info');
+    if(typeof uploadAvatar === 'function'){
+      uploadAvatar(file).then(function(r){
+        if(avImg) avImg.src = r.url;
+        // Update nav avatar too
+        var navAv = document.getElementById('nav-av');
+        if(navAv) navAv.innerHTML = '<img src="'+r.url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+        // Persist to drawer
+        var da = document.getElementById('drawer-av');
+        if(da){ da.src = r.url; da.style.display='block'; }
+        // Persist in localStorage
+        try{
+          var u=JSON.parse(localStorage.getItem('pb_user')||'null');
+          if(u){ u.avatar_url=r.url; localStorage.setItem('pb_user',JSON.stringify(u)); }
+        }catch(e){}
+        showToast('Profile photo updated! 🐾','success');
+      }).catch(function(err){
+        showToast('Upload failed: '+(err&&err.message||err),'error');
+      });
+    } else {
+      showToast('Profile photo updated!','success');
+    }
+    this.value='';
+  });
+})();
+</script>
+<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
+    navigator.serviceWorker.register('/sw.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });

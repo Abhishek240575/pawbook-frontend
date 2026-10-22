@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style>
+/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
+  --purple:#8b5cf6;--pink:#ec4899;
+  --green:#22c55e;--green-soft:#dcfce7;
+  --red:#ef4444;--amber:#f59e0b;
+  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --bg:#f0f2f5;--card:#fff;
+  --border:#e4e6eb;--border-soft:#f0f2f5;
+  --text:#050505;--text2:#65676b;--text3:#8a8d91;
+  --radius:12px;--radius-sm:8px;--pill:999px;
+  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 4px 20px rgba(0,0,0,.1);
+}
+body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
+
+/* Topnav */
+.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
+.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
+.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
+.topnav-tab.active{color:var(--blue)!important}
+.topnav-tab.active::after{background:var(--blue)!important}
+
+/* Buttons - make all buttons rounder and Facebook-style */
+.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
+button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
+.btn-blue{background:var(--blue)!important;color:#fff!important}
+.btn-blue:hover{background:var(--blue-dark)!important}
+.btn-gray{background:var(--bg)!important;color:var(--text)!important}
+
+/* Cards - cleaner */
+.card,.sidebar-card,.scard,.filter-section,.pb-card{
+  border-radius:var(--radius)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+  background:var(--card)!important;
+}
+
+/* Badges - rounder */
+.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
+.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
+.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
+
+/* Post actions */
+.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
+.post-action.liked,.liked{color:var(--blue)!important}
+
+/* Story cards */
+.story-card{border-radius:var(--radius)!important}
+.story-card-av,.story-av{border:3px solid var(--blue)!important}
+
+/* Bottom nav */
+.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
+.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
+.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
+
+/* Market cards */
+.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
+
+/* Inputs */
+input,textarea,select{font-family:'Inter',sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
+
+/* Modals */
+.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
+.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
+
+/* Progress/fill */
+.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
+
+/* Tab bars */
+.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
+
+/* Notification unread */
+.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
+
+/* Vet-specific */
+.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
+.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+html,body{overflow-x:hidden!important;max-width:100%!important}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="/manifest.json">
+<title>PawBook — World Breeds Encyclopedia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size:15px}
+.nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(248,247,244,0.96);backdrop-filter:blur(12px);border-bottom:1px solid #e8e4dc;z-index:500;display:flex;align-items:center;padding:0 20px;gap:12px}
+.nav-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#1a1a2e}
+.nav-logo span{color:#8b4513}
+.nsearch{flex:1;max-width:380px;position:relative}
+.nsearch input{width:100%;height:36px;border-radius:8px;border:1.5px solid #e8e4dc;background:#fff;padding:0 14px 0 36px;font-family:'Inter',sans-serif;font-size:13px;outline:none;color:#1a1a2e}
+.nsearch input:focus{border-color:#8b4513}
+.nsearch i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:15px}
+.nav-home{height:34px;padding:0 14px;border-radius:8px;border:1.5px solid #e8e4dc;background:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:#4a5568;margin-left:auto}
+
+.hero{padding:76px 24px 32px;text-align:center;background:linear-gradient(180deg,#f0ebe0 0%,#f8f7f4 100%);border-bottom:1px solid #e8e4dc}
+.hero-label{font-size:11px;font-weight:700;letter-spacing:2.5px;color:#8b4513;text-transform:uppercase;margin-bottom:12px}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,58px);font-weight:900;line-height:1.1;margin-bottom:12px;color:#1a1a2e}
+.hero-sub{font-size:15px;color:#4a5568;max-width:520px;margin:0 auto 24px;line-height:1.7}
+.hero-nums{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+.hn{text-align:center}
+.hn-n{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:#8b4513}
+.hn-l{font-size:11px;color:#4a5568;font-weight:600;margin-top:1px}
+
+.species-bar{display:flex;background:#fff;border-bottom:2px solid #e8e4dc;position:sticky;top:56px;z-index:400;overflow-x:auto;scrollbar-width:none}
+.species-bar::-webkit-scrollbar{display:none}
+.stab{flex-shrink:0;padding:13px 22px;font-size:14px;font-weight:600;color:#4a5568;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;white-space:nowrap;transition:all 0.15s}
+.stab:hover{color:#1a1a2e;background:rgba(0,0,0,0.03)}
+.stab.active{color:#8b4513;border-bottom-color:#8b4513;background:#f8f7f4}
+
+.filters{padding:12px 20px;background:#fff;border-bottom:1px solid #e8e4dc;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fl{font-size:12px;font-weight:700;color:#4a5568;white-space:nowrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:28px;padding:0 12px;border-radius:20px;border:1.5px solid #e8e4dc;background:#f8f7f4;color:#4a5568;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all 0.15s}
+.chip:hover{border-color:#8b4513;color:#8b4513}
+.chip.on{background:#8b4513;border-color:#8b4513;color:#fff}
+
+.sh{padding:22px 20px 6px;display:flex;align-items:baseline;gap:8px}
+.sh-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#1a1a2e}
+.sh-count{font-size:13px;color:#4a5568}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0}
+.bcard{position:relative;cursor:pointer;overflow:hidden;background:#1a1a2e;aspect-ratio:1}
+.bcard img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;filter:brightness(0.88)}
+.bcard:hover img{transform:scale(1.08)}
+.bcard-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(10,10,20,0.82));transition:background 0.3s;display:flex;flex-direction:column;justify-content:flex-end;padding:12px}
+.bcard:hover .bcard-overlay{background:linear-gradient(transparent 20%,rgba(10,10,20,0.88))}
+.bcard-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:2px}
+.bcard-origin{font-size:10px;color:rgba(255,255,255,0.65);margin-bottom:4px}
+.bcard-tags{display:flex;gap:3px;flex-wrap:wrap}
+.btag{font-size:9px;padding:2px 6px;border-radius:12px;font-weight:700;background:rgba(255,255,255,0.15);color:#fff;backdrop-filter:blur(4px)}
+.btag.toy{background:rgba(139,69,19,0.7)}
+.btag.small{background:rgba(99,102,241,0.7)}
+.btag.medium{background:rgba(16,185,129,0.7)}
+.btag.large{background:rgba(245,158,11,0.7)}
+.btag.giant{background:rgba(239,68,68,0.7)}
+.fav-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.45);border:none;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(4px)}
+.fav-btn:hover{background:rgba(239,68,68,0.8);transform:scale(1.15)}
+.fav-btn.on{background:rgba(239,68,68,0.85)}
+
+.dpanel{position:fixed;top:0;right:0;bottom:0;width:390px;max-width:100vw;background:#fff;z-index:600;transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;box-shadow:-4px 0 28px rgba(0,0,0,0.14)}
+.dpanel.open{transform:translateX(0)}
+.dpanel-img{width:100%;height:240px;object-fit:cover}
+.dpanel-body{padding:18px}
+.dpanel-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#1a1a2e;margin-bottom:3px}
+.dpanel-sci{font-size:12px;color:#4a5568;font-style:italic;margin-bottom:10px}
+.dpanel-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:16px;font-size:11px;font-weight:700;margin-bottom:12px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat-cell{background:#f8f7f4;border-radius:8px;padding:10px 12px}
+.stat-lbl{font-size:9px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px}
+.stat-val{font-size:13px;font-weight:700;color:#1a1a2e}
+.dp-sect{margin-bottom:14px}
+.dp-sect-title{font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:6px;border-bottom:1px solid #e8e4dc;padding-bottom:5px}
+.dp-desc{font-size:13px;color:#4a5568;line-height:1.7}
+.trait-wrap{margin-bottom:7px}
+.trait-row{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:#4a5568;margin-bottom:3px}
+.tbar{height:5px;background:#e8e4dc;border-radius:3px;overflow:hidden}
+.tfill{height:100%;border-radius:3px;background:#8b4513;width:0;transition:width 0.7s ease}
+.close-dp{position:sticky;top:10px;float:right;margin:10px 10px 0 0;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.08);border:none;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;z-index:1}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.38);z-index:599;display:none}
+.overlay.open{display:block}
+.empty{text-align:center;padding:60px 20px;color:#4a5568;grid-column:1/-1}
+
+.bnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(248,247,244,0.97);border-top:1px solid #e8e4dc;display:flex;z-index:500}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.bni.on{color:#8b4513}
+.bni i{font-size:20px}
+
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.dpanel{width:100%}}
+@media(min-width:1200px){.grid{grid-template-columns:repeat(5,1fr)}}
+</style>
+<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
+<style id="pb-mobile">
+html, body { overflow-x: hidden !important; }
+@media (max-width: 768px) {
+  html, body { width: 100% !important; overflow-x: hidden !important; }
+  div { min-width: 0 !important; }
+  .stat-grid { display: block !important; grid-template-columns: 1fr !important; }
+  .grid { display: block !important; grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
+  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
+  .topnav-tabs, .nav-tabs { display: none !important; }
+  .bottomnav { display: flex !important; }
+  .left-sidebar, .right-sidebar, aside { display: none !important; }
+  body { padding-bottom: 72px !important; }
+}
+</style>
+<style id="pb-burger">
+.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
+.drawer-overlay.open { display: block; }
+.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
+.drawer-panel.open { left: 0; }
+.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
+.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
+.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
+.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
+.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
+.drawer-body { flex: 1; padding: 6px 0; }
+.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
+.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
+.drawer-item:hover { background: #eff6ff; color: #1877F2; }
+.drawer-item i { font-size: 20px; width: 24px; }
+.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
+.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
+.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
+.bnav-item i { font-size: 22px; }
+.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.bnav-item.active { color: #1877F2; }
+@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
+@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Paw<span>Book</span></div>
+  <div class="nsearch"><i class="ti ti-search"></i><input id="search-input" placeholder="Search breeds, origin, traits…"></div>
+  <button class="nav-home" onclick="location.href='07_home.html'">← Home</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">PawBook Breeds Encyclopedia</div>
+  <h1 class="hero-title">Every Breed,<br>Every Story</h1>
+  <p class="hero-sub">Explore dog and cat breeds worldwide — their origins, temperaments, traits and what makes each unique.</p>
+  <div class="hero-nums">
+    <div class="hn"><div class="hn-n" id="dog-count">40+</div><div class="hn-l">Dog Breeds</div></div>
+    <div class="hn"><div class="hn-n" id="cat-count">28+</div><div class="hn-l">Cat Breeds</div></div>
+    <div class="hn"><div class="hn-n">195</div><div class="hn-l">Countries</div></div>
+    <div class="hn"><div class="hn-n">10K+</div><div class="hn-l">Years of History</div></div>
+  </div>
+</div>
+
+<div class="species-bar">
+  <button class="stab active" onclick="switchSpecies('dogs',this)">🐕 Dogs</button>
+  <button class="stab" onclick="switchSpecies('cats',this)">🐈 Cats</button>
+  <button class="stab" onclick="switchSpecies('favs',this)">❤️ My Favourites</button>
+</div>
+
+<div class="filters">
+  <div class="fl">Size:</div>
+  <div class="chips" id="size-chips">
+    <button class="chip on" onclick="setSize('all',this)">All</button>
+    <button class="chip" onclick="setSize('toy',this)">Toy</button>
+    <button class="chip" onclick="setSize('small',this)">Small</button>
+    <button class="chip" onclick="setSize('medium',this)">Medium</button>
+    <button class="chip" onclick="setSize('large',this)">Large</button>
+    <button class="chip" onclick="setSize('giant',this)">Giant</button>
+  </div>
+  <div class="fl" style="margin-left:10px" id="group-label">Group:</div>
+  <div class="chips" id="group-chips">
+    <button class="chip on" onclick="setGroup('all',this)">All</button>
+    <button class="chip" onclick="setGroup('sporting',this)">Sporting</button>
+    <button class="chip" onclick="setGroup('working',this)">Working</button>
+    <button class="chip" onclick="setGroup('herding',this)">Herding</button>
+    <button class="chip" onclick="setGroup('terrier',this)">Terrier</button>
+    <button class="chip" onclick="setGroup('hound',this)">Hound</button>
+    <button class="chip" onclick="setGroup('toy',this)">Toy Group</button>
+    <button class="chip" onclick="setGroup('non-sporting',this)">Non-Sporting</button>
+  </div>
+</div>
+
+<div style="padding-bottom:80px">
+  <div class="sh">
+    <div class="sh-title" id="section-title">Dog Breeds</div>
+    <div class="sh-count" id="section-count">Loading…</div>
+  </div>
+  <div class="grid" id="breed-grid"></div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeDP()"></div>
+
+<div class="dpanel" id="dpanel">
+  <button class="close-dp" onclick="closeDP()">✕</button>
+  <img id="dp-img" class="dpanel-img" src="">
+  <div class="dpanel-body">
+    <div class="dpanel-name" id="dp-name"></div>
+    <div class="dpanel-sci" id="dp-sci"></div>
+    <div class="dpanel-badge" id="dp-badge"></div>
+    <div class="stat-grid" id="dp-stats"></div>
+    <div class="dp-sect"><div class="dp-sect-title">About this breed</div><div class="dp-desc" id="dp-desc"></div></div>
+    <div class="dp-sect"><div class="dp-sect-title">Personality Traits</div><div id="dp-traits"></div></div>
+    <div class="dp-sect"><div class="dp-sect-title">Good to know</div><div id="dp-facts" style="display:flex;flex-direction:column;gap:5px"></div></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button onclick="location.href='11_vet_booking.html'" style="flex:1;height:40px;border-radius:8px;border:none;background:#8b4513;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer">🩺 Find Vet</button>
+      <button onclick="location.href='04_adoption.html'" style="flex:1;height:40px;border-radius:8px;border:1.5px solid #e8e4dc;background:#fff;color:#1a1a2e;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer">🏠 Adopt</button>
+    </div>
+  </div>
+</div>
+
+<div class="bnav">
+  <button class="bni" onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
+  <button class="bni" onclick="location.href='26_discover.html'"><i class="ti ti-world"></i>Discover</button>
+  <button class="bni on"><i class="ti ti-paw"></i>Breeds</button>
+  <button class="bni" onclick="location.href='04_adoption.html'"><i class="ti ti-heart"></i>Adopt</button>
+  <button class="bni" onclick="location.href='08_pet_profile.html'"><i class="ti ti-user"></i>Profile</button>
+</div>
+
+<script src="api.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// BREED DATABASE — every breed has a UNIQUE Unsplash photo URL
+// ═══════════════════════════════════════════════════════════════════════════
+const DOGS=[
+// ── SPORTING ──────────────────────────────────────────────────────────────
+{id:'labrador',name:'Labrador Retriever',origin:'Canada',size:'large',group:'sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Labrador_on_Quantock_%282175262184%29.jpg/400px-Labrador_on_Quantock_%282175262184%29.jpg',
+ lifespan:'10–12 yrs',weight:'25–36 kg',height:'55–62 cm',
+ traits:{Energy:90,Affection:95,Trainability:95,Grooming:40,Barking:50},
+ facts:["World's #1 most popular breed for 30+ years","Coat is naturally water-repellent","Excellent guide and therapy dogs","Originally from Newfoundland, Canada"],
+ colors:'Yellow, Black, Chocolate',badge:{text:'Most Popular',bg:'#059669',fg:'#fff'},
+ desc:"The world's most popular breed for three decades. Labs are friendly, outgoing, and active — they excel as guide dogs, drug detection dogs, and devoted family companions."},
+
+{id:'golden',name:'Golden Retriever',origin:'Scotland',size:'large',group:'sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/400px-Golden_Retriever_Dukedestiny01_drvd.jpg',
+ lifespan:'10–12 yrs',weight:'25–34 kg',height:'51–61 cm',
+ traits:{Energy:85,Affection:99,Trainability:90,Grooming:70,Barking:45},
+ facts:["Third most popular AKC breed","Double coat sheds seasonally","Natural therapy dog temperament","Love to carry things in their mouths"],
+ colors:'Golden, Cream, Dark Gold',badge:{text:'Family Favourite',bg:'#d97706',fg:'#fff'},
+ desc:"One of the most beloved breeds worldwide. Their lustrous golden coats and sunny personalities make them a perennial family favourite and star of countless movies."},
+
+{id:'cocker',name:'Cocker Spaniel',origin:'Spain/UK',size:'medium',group:'sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/American-cocker-spaniel-hero.jpg/400px-American-cocker-spaniel-hero.jpg',
+ lifespan:'12–15 yrs',weight:'11–14 kg',height:'36–43 cm',
+ traits:{Energy:70,Affection:90,Trainability:80,Grooming:85,Barking:60},
+ facts:["\"Lady\" in Lady and the Tramp","Two types: American and English","Prone to ear infections","Loves to please their owners"],
+ colors:'Black, Golden, Parti-color, Buff',badge:{text:'Gentle Spirit',bg:'#6366f1',fg:'#fff'},
+ desc:"Merry and cheerful, the Cocker Spaniel is a versatile sporting dog with silky coat and expressive eyes. Equally at home flushing birds or curled up on the sofa."},
+
+{id:'weimaraner',name:'Weimaraner',origin:'Germany',size:'large',group:'sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Weimaraner_wb.jpg/400px-Weimaraner_wb.jpg',
+ lifespan:'11–13 yrs',weight:'25–40 kg',height:'57–69 cm',
+ traits:{Energy:95,Affection:85,Trainability:80,Grooming:30,Barking:65},
+ facts:["Called the \"Silver Ghost\"","Originally bred for big game hunting","Very high energy — need lots of exercise","Known as \"dog of royalty\" in Germany"],
+ colors:'Mouse-grey, Silver-grey',badge:{text:'Silver Ghost',bg:'#64748b',fg:'#fff'},
+ desc:"The 'Silver Ghost' of the dog world. Weimaraners are athletic, intelligent, and deeply loyal with a striking silver-grey coat and pale blue or amber eyes."},
+
+{id:'irishsetter',name:'Irish Setter',origin:'Ireland',size:'large',group:'sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Irish_Setter_wb.jpg/400px-Irish_Setter_wb.jpg',
+ lifespan:'12–15 yrs',weight:'27–32 kg',height:'61–69 cm',
+ traits:{Energy:90,Affection:88,Trainability:70,Grooming:60,Barking:40},
+ facts:["National dog of Ireland","One of the fastest dog breeds","Matures slowly — puppy-like for years","Featured in the film \"Big Red\""],
+ colors:'Mahogany, Rich Chestnut Red',badge:{text:'Irish Red',bg:'#b91c1c',fg:'#fff'},
+ desc:"The rollicking Irish Setter — a mahogany-red coat, elegant gait, and boundless enthusiasm make them a joy. Bred to work the Irish uplands for game birds."},
+
+{id:'vizsla',name:'Vizsla',origin:'Hungary',size:'large',group:'sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Vizsla_femal_3_months.jpg/400px-Vizsla_femal_3_months.jpg',
+ lifespan:'12–15 yrs',weight:'20–27 kg',height:'53–64 cm',
+ traits:{Energy:90,Affection:95,Trainability:88,Grooming:20,Barking:48},
+ facts:["National symbol of Hungary","Dubbed the \"Velcro Vizsla\"","First breed to win AKC quintuple titles","Rust-golden coat with matching nose"],
+ colors:'Golden rust',badge:{text:'Hungarian Gold',bg:'#d97706',fg:'#fff'},
+ desc:"Hungary's golden pointer. Vizslas are athletic and versatile hunters. Dubbed the 'Velcro Vizsla' for insisting on constant physical contact with their owners."},
+
+// ── WORKING ────────────────────────────────────────────────────────────────
+{id:'rottweiler',name:'Rottweiler',origin:'Germany',size:'large',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Rottweiler_head_jan_2006.jpg/400px-Rottweiler_head_jan_2006.jpg',
+ lifespan:'9–10 yrs',weight:'38–60 kg',height:'56–69 cm',
+ traits:{Energy:75,Affection:80,Trainability:85,Grooming:35,Barking:50},
+ facts:["Descended from Roman drover dogs","Used as police and military dogs","Bite force of 148 kg/cm²","Excellent service and therapy dogs"],
+ colors:'Black with rust/mahogany markings',badge:{text:'Protector',bg:'#1f2937',fg:'#fff'},
+ desc:"One of the oldest herding breeds, descended from Roman drover dogs. Powerful, confident, and loyal — natural protectors who are gentle with family."},
+
+{id:'boxer',name:'Boxer',origin:'Germany',size:'large',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Fawn_Boxer_standing_cropped.jpg/400px-Fawn_Boxer_standing_cropped.jpg',
+ lifespan:'10–12 yrs',weight:'25–32 kg',height:'53–63 cm',
+ traits:{Energy:88,Affection:92,Trainability:78,Grooming:30,Barking:55},
+ facts:["Name from their habit of pawing","Third most popular AKC working breed","One of first police dog breeds in Germany","Can jump very high despite stocky build"],
+ colors:'Fawn, Brindle, White',badge:{text:'Eternal Puppy',bg:'#d97706',fg:'#fff'},
+ desc:"Playful, energetic, and endlessly devoted. Boxers are the clowns of the dog world — always entertaining with their antics and maintaining puppy energy for life."},
+
+{id:'husky',name:'Siberian Husky',origin:'Russia',size:'medium',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Siberian-husky.jpg/400px-Siberian-husky.jpg',
+ lifespan:'12–14 yrs',weight:'16–27 kg',height:'51–60 cm',
+ traits:{Energy:95,Affection:85,Trainability:65,Grooming:75,Barking:40},
+ facts:["Can run 160km per day in sled races","Eyes can be blue, brown or heterochromatic","Howl instead of bark","Survived the 1925 Diphtheria serum run"],
+ colors:'Black, White, Red, Sable, Grey',badge:{text:'Sled Dog',bg:'#1d4ed8',fg:'#fff'},
+ desc:"Ancient sled dogs of the Chukchi people. Huskies are friendly, energetic wolves at heart — designed to run vast distances in Arctic conditions."},
+
+{id:'greatdane',name:'Great Dane',origin:'Germany',size:'giant',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Jenis_Anjing_Peliharaan_-_Great_Dane.jpg/400px-Jenis_Anjing_Peliharaan_-_Great_Dane.jpg',
+ lifespan:'7–10 yrs',weight:'50–82 kg',height:'71–86 cm',
+ traits:{Energy:65,Affection:90,Trainability:75,Grooming:30,Barking:40},
+ facts:["Scooby-Doo is a Great Dane","Tallest dog ever recorded was 111.8 cm","Needs less exercise than expected","Originally bred to hunt wild boar"],
+ colors:'Fawn, Brindle, Blue, Black, Harlequin',badge:{text:'Gentle Giant',bg:'#374151',fg:'#fff'},
+ desc:"The 'Apollo of Dogs.' Great Danes are the tallest breed in the world — yet their most defining quality is their enormous heart and gentle, patient personality."},
+
+{id:'bernese',name:'Bernese Mountain Dog',origin:'Switzerland',size:'large',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Berner_Sennenhund_4.jpg/400px-Berner_Sennenhund_4.jpg',
+ lifespan:'7–10 yrs',weight:'32–52 kg',height:'58–70 cm',
+ traits:{Energy:70,Affection:95,Trainability:82,Grooming:75,Barking:40},
+ facts:["One of four Swiss mountain dog breeds","Can pull up to 10× their body weight","Slow to mature — puppy behaviour until 2–3 yrs","Thrives in cold weather"],
+ colors:'Tricolour: Black, White and Rust',badge:{text:'Alpine Guard',bg:'#1a1a2e',fg:'#fff'},
+ desc:"Bred for farm work in the Swiss Alps, Berners are good-natured, calm, and strong. Their tricolour coats are as distinctive as their loyal personalities."},
+
+{id:'doberman',name:'Doberman Pinscher',origin:'Germany',size:'large',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Dobermann_handling.jpg/400px-Dobermann_handling.jpg',
+ lifespan:'10–12 yrs',weight:'27–45 kg',height:'61–72 cm',
+ traits:{Energy:88,Affection:85,Trainability:95,Grooming:25,Barking:50},
+ facts:["Created by Louis Dobermann in 1890s","Used as war dogs in WWII","Fastest maturing large breed","Named \"Devil Dogs\" by US Marines in WWII"],
+ colors:'Black & Rust, Red & Rust, Blue & Rust',badge:{text:'Noble Guard',bg:'#1f2937',fg:'#fff'},
+ desc:"Elegant, athletic, and loyal — the Doberman is among the most capable working dogs. Bred by a German tax collector who wanted a fierce protector."},
+
+{id:'samyoed',name:'Samoyed',origin:'Russia',size:'large',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Samoyed_Flickr_com_2.jpg/400px-Samoyed_Flickr_com_2.jpg',
+ lifespan:'12–14 yrs',weight:'16–30 kg',height:'48–60 cm',
+ traits:{Energy:85,Affection:92,Trainability:72,Grooming:90,Barking:65},
+ facts:["Upturned mouth corners prevent drooling — permanent smile","White coat repels dirt","Samoyedic people slept with dogs for warmth","Originally herded reindeer"],
+ colors:'White, Cream, Biscuit',badge:{text:'Smiling Sled Dog',bg:'#1d4ed8',fg:'#fff'},
+ desc:"The 'Smiling Sammie' — Samoyeds have upturned mouth corners giving them a permanent smile. Bred by the Samoyedic peoples of Siberia, they are fluffy and tireless."},
+
+{id:'akita',name:'Akita',origin:'Japan',size:'large',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Akita_Inu_dog.jpg/400px-Akita_Inu_dog.jpg',
+ lifespan:'10–14 yrs',weight:'32–59 kg',height:'58–70 cm',
+ traits:{Energy:75,Affection:75,Trainability:72,Grooming:65,Barking:40},
+ facts:["Hachiko — the most loyal dog in history","National treasure of Japan","Helen Keller brought the first Akita to America","Symbol of good health and happiness"],
+ colors:'Any colour including white, brindle, sesame',badge:{text:'Symbol of Loyalty',bg:'#dc2626',fg:'#fff'},
+ desc:"Japan's national dog and symbol of loyalty. The famous Hachiko was an Akita who waited at a Tokyo train station for 9 years after his owner's death."},
+
+{id:'malamute',name:'Alaskan Malamute',origin:'Alaska, USA',size:'giant',group:'working',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Alaskan_Malamute.jpg/400px-Alaskan_Malamute.jpg',
+ lifespan:'10–14 yrs',weight:'32–43 kg',height:'58–64 cm',
+ traits:{Energy:90,Affection:80,Trainability:60,Grooming:75,Barking:35},
+ facts:["Among the most ancient breeds","Can carry 33 kg over long distances","Often confused with Huskies — much bigger","Used by Admiral Byrd in Antarctic expeditions"],
+ colors:'Grey & White, Sable & White, Black & White',badge:{text:'Arctic Power',bg:'#1d4ed8',fg:'#fff'},
+ desc:"One of the oldest Arctic sled dogs, bred by the Mahlemut tribe. Malamutes are powerful, dignified, and pack-oriented — the heaviest sled dog breed."},
+
+// ── HERDING ────────────────────────────────────────────────────────────────
+{id:'gsd',name:'German Shepherd',origin:'Germany',size:'large',group:'herding',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/German_Shepherd_-_DSC_0346_%2810096362833%29.jpg/400px-German_Shepherd_-_DSC_0346_%2810096362833%29.jpg',
+ lifespan:'9–13 yrs',weight:'22–40 kg',height:'55–65 cm',
+ traits:{Energy:88,Affection:85,Trainability:98,Grooming:65,Barking:60},
+ facts:["Second most popular AKC breed","Can learn commands in under 5 repetitions","Featured in police forces worldwide","Rin Tin Tin was a German Shepherd"],
+ colors:'Black and Tan, Sable, All Black, All White',badge:{text:'Elite Worker',bg:'#1f2937',fg:'#fff'},
+ desc:"The quintessential working dog. German Shepherds combine intelligence, courage, loyalty, and adaptability — serving as police, military, guide and family dogs."},
+
+{id:'bordercollie',name:'Border Collie',origin:'UK/Scotland',size:'medium',group:'herding',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty-border-collie.jpg/400px-24701-nature-natural-beauty-border-collie.jpg',
+ lifespan:'12–15 yrs',weight:'12–20 kg',height:'46–56 cm',
+ traits:{Energy:99,Affection:78,Trainability:99,Grooming:55,Barking:50},
+ facts:["Ranked #1 in dog intelligence","Can learn over 1,000 words","\"Chaser\" learned 1,022 object names","Use \"the eye\" stare to control sheep"],
+ colors:'Black & White, Red & White, Blue Merle',badge:{text:'World\'s Smartest',bg:'#065f46',fg:'#fff'},
+ desc:"Widely considered the most intelligent dog breed. Border Collies are intense, energetic, and relentlessly focused — bred to herd sheep with extraordinary mental ability."},
+
+{id:'aussie',name:'Australian Shepherd',origin:'USA',size:'medium',group:'herding',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Australian_Shepherd_600.jpg/400px-Australian_Shepherd_600.jpg',
+ lifespan:'13–15 yrs',weight:'16–32 kg',height:'46–58 cm',
+ traits:{Energy:95,Affection:87,Trainability:95,Grooming:65,Barking:55},
+ facts:["Not actually from Australia","Naturally bobbed tail in some individuals","Blue and amber eye combination is common","Excel at agility, flyball, frisbee"],
+ colors:'Blue Merle, Red Merle, Black, Red',badge:{text:'Merle Marvel',bg:'#1d4ed8',fg:'#fff'},
+ desc:"Despite the name, Aussies were developed in the American West. These high-energy working dogs have remarkable herding ability and striking merle patterns."},
+
+{id:'corgi',name:'Pembroke Welsh Corgi',origin:'Wales, UK',size:'small',group:'herding',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Pembroke_Welsh_Corgi_Photo.jpg/400px-Pembroke_Welsh_Corgi_Photo.jpg',
+ lifespan:'12–13 yrs',weight:'9–14 kg',height:'25–30 cm',
+ traits:{Energy:78,Affection:90,Trainability:85,Grooming:55,Barking:70},
+ facts:["Queen Elizabeth II owned 30+ Corgis","Legend: fairy mounts in Welsh mythology","Double coat sheds heavily twice a year","Herds cattle by nipping at heels"],
+ colors:'Red, Sable, Fawn, Black & Tan',badge:{text:'Royal Breed',bg:'#7c3aed',fg:'#fff'},
+ desc:"The Queen's breed. Corgis are alert, intelligent, and full of personality — despite short legs, they are fearless herding dogs with fox-like faces and big ears."},
+
+{id:'sheltie',name:'Shetland Sheepdog',origin:'Scotland',size:'small',group:'herding',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Shetland_Sheepdog_Sheltie.jpg/400px-Shetland_Sheepdog_Sheltie.jpg',
+ lifespan:'12–14 yrs',weight:'6–12 kg',height:'33–41 cm',
+ traits:{Energy:75,Affection:88,Trainability:90,Grooming:70,Barking:75},
+ facts:["One of the most agile dog breeds","Sensitive to the moods of their family","Excel at obedience competitions","Originally herded sheep on the Shetland Islands"],
+ colors:'Sable, Tricolour, Blue Merle, Black & White',badge:{text:'Mini Collie',bg:'#92400e',fg:'#fff'},
+ desc:"The Sheltie is often described as a miniature Rough Collie. Loyal, responsive, and remarkably quick to learn — they are highly sensitive and deeply devoted."},
+
+// ── TERRIER ────────────────────────────────────────────────────────────────
+{id:'westie',name:'West Highland White Terrier',origin:'Scotland',size:'small',group:'terrier',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Westie_Portrait_Ethan_Ableman.jpg/400px-Westie_Portrait_Ethan_Ableman.jpg',
+ lifespan:'13–15 yrs',weight:'6–10 kg',height:'25–28 cm',
+ traits:{Energy:72,Affection:82,Trainability:70,Grooming:65,Barking:68},
+ facts:["Famous as the Cesar dog food mascot","Can squeeze into very tight spaces","White coat to distinguish from prey","Independent and strong-willed"],
+ colors:'White only',badge:{text:'Scottish Scrapper',bg:'#374151',fg:'#fff'},
+ desc:"Westies are compact, rugged terriers with a sparkling white double coat. Self-confident, fun-loving, and full of the typical terrier fire and grit."},
+
+{id:'airedale',name:'Airedale Terrier',origin:'England',size:'large',group:'terrier',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Airedal.jpg/400px-Airedal.jpg',
+ lifespan:'11–14 yrs',weight:'18–29 kg',height:'56–61 cm',
+ traits:{Energy:85,Affection:80,Trainability:78,Grooming:60,Barking:55},
+ facts:["First breed used by British police","Served in WWI & WWII as messengers","President Theodore Roosevelt owned one","King of Terriers — the largest terrier"],
+ colors:'Tan with black or dark grizzle saddle',badge:{text:'King of Terriers',bg:'#92400e',fg:'#fff'},
+ desc:"The 'King of Terriers' — Airedales are the largest terrier breed, combining tenacity and intelligence with versatility. They served in both World Wars."},
+
+{id:'scottish',name:'Scottish Terrier',origin:'Scotland',size:'small',group:'terrier',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Scottish_Terrier_Photo.jpg/400px-Scottish_Terrier_Photo.jpg',
+ lifespan:'11–13 yrs',weight:'8–10 kg',height:'25–28 cm',
+ traits:{Energy:65,Affection:75,Trainability:65,Grooming:70,Barking:55},
+ facts:["FDR's dog Fala was a Scottie","A Scottie was in original Monopoly","Independent to the point of stubbornness","Known as the \"Diehard\" of terriers"],
+ colors:'Black, Wheaten, Brindle',badge:{text:'Diehard',bg:'#1f2937',fg:'#fff'},
+ desc:"Bold, confident, and independent — the Scottie has an unmistakable silhouette. They have appeared on Monopoly boards and in White House history."},
+
+// ── HOUND ──────────────────────────────────────────────────────────────────
+{id:'beagle',name:'Beagle',origin:'England',size:'small',group:'hound',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/000_Beagle_Milo.jpg/400px-000_Beagle_Milo.jpg',
+ lifespan:'12–15 yrs',weight:'9–11 kg',height:'33–41 cm',
+ traits:{Energy:78,Affection:90,Trainability:68,Grooming:30,Barking:75},
+ facts:["Snoopy is a Beagle","Used in airport scent detection","Excellent nose — 220 million scent receptors","One of the most popular breeds worldwide"],
+ colors:'Tricolour, Red & White, Lemon & White',badge:{text:'Super Sniffer',bg:'#b45309',fg:'#fff'},
+ desc:"Merry, friendly, and curious — the Beagle is a scent hound developed primarily for hunting rabbits. Their gentle temperament makes them one of the most popular breeds."},
+
+{id:'greyhound',name:'Greyhound',origin:'Egypt',size:'large',group:'hound',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Grey_greyhound.jpg/400px-Grey_greyhound.jpg',
+ lifespan:'10–14 yrs',weight:'27–40 kg',height:'68–76 cm',
+ traits:{Energy:70,Affection:84,Trainability:72,Grooming:20,Barking:25},
+ facts:["One of the oldest breeds — depicted in Egyptian tombs 4,000 yrs ago","Fastest dog: up to 72 km/h","Largest heart of any dog per body weight","Called \"45 mph couch potatoes\""],
+ colors:'Fawn, Red, Blue, White, Black, Brindle',badge:{text:'World\'s Fastest',bg:'#7c3aed',fg:'#fff'},
+ desc:"One of the oldest breeds — depicted in Egyptian tombs 4,000 years ago. Greyhounds are gentle, quiet, and surprisingly calm at home despite being fastest dogs."},
+
+{id:'dachshund',name:'Dachshund',origin:'Germany',size:'small',group:'hound',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Dachshund_Szczecin_ul.Rayskiego.jpg/400px-Dachshund_Szczecin_ul.Rayskiego.jpg',
+ lifespan:'12–16 yrs',weight:'3–15 kg',height:'20–22 cm',
+ traits:{Energy:68,Affection:85,Trainability:62,Grooming:40,Barking:72},
+ facts:["Name means \"badger dog\" in German","Hot dog sausage was named after them","Two sizes: standard and miniature","Prone to back problems (IVDD)"],
+ colors:'Red, Black & Tan, Chocolate, Dapple',badge:{text:'Badger Dog',bg:'#78350f',fg:'#fff'},
+ desc:"Long body, short legs, bold personality. Dachshunds were bred to hunt badgers in Germany. They come in two sizes and three coat types, all with a feisty spirit."},
+
+{id:'dalmatian',name:'Dalmatian',origin:'Croatia',size:'large',group:'hound',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Dalmatian_Manfred_Heyde.jpg/400px-Dalmatian_Manfred_Heyde.jpg',
+ lifespan:'11–13 yrs',weight:'23–27 kg',height:'48–61 cm',
+ traits:{Energy:90,Affection:82,Trainability:78,Grooming:45,Barking:48},
+ facts:["Puppies are born completely white","Some are born deaf — up to 30%","American firehouse dog tradition","Made famous by 101 Dalmatians"],
+ colors:'White with black or liver spots',badge:{text:'Spotted Icon',bg:'#1f2937',fg:'#fff'},
+ desc:"Born pure white, Dalmatians develop their distinctive spots over the first weeks of life. Originally bred to run alongside horse-drawn coaches, they are tireless athletes."},
+
+{id:'basenji',name:'Basenji',origin:'Congo, Africa',size:'small',group:'hound',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/NDR_Basenji.jpg/400px-NDR_Basenji.jpg',
+ lifespan:'13–14 yrs',weight:'9–11 kg',height:'40–43 cm',
+ traits:{Energy:80,Affection:72,Trainability:52,Grooming:20,Barking:5},
+ facts:["Only dog breed that cannot bark","Makes a yodel called \"baroo\"","Cleans itself like a cat","Shown in ancient Egyptian pharaoh tombs"],
+ colors:'Red & White, Black & White, Tricolour',badge:{text:'Barkless Wonder',bg:'#b45309',fg:'#fff'},
+ desc:"The barkless dog from central Africa. Basenjis produce a unique yodel-like 'baroo' instead of barking. One of the oldest breeds, shown in Egyptian tomb paintings."},
+
+{id:'ridgeback',name:'Rhodesian Ridgeback',origin:'Zimbabwe/South Africa',size:'large',group:'hound',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Rhodesian_Ridgeback_WEB.jpg/400px-Rhodesian_Ridgeback_WEB.jpg',
+ lifespan:'10–12 yrs',weight:'29–41 kg',height:'61–69 cm',
+ traits:{Energy:80,Affection:80,Trainability:72,Grooming:25,Barking:38},
+ facts:["Only breed with a ridge of hair growing forward","Bred to track and bay lions","South Africa's national dog","Also known as \"African Lion Hound\""],
+ colors:'Wheaten (light to red)',badge:{text:'Lion Hunter',bg:'#b45309',fg:'#fff'},
+ desc:"The 'Lion Dog' of Africa. Ridgebacks were bred to hunt lions in southern Africa — not to kill, but to hold them at bay. The ridge of reversed fur is their trademark."},
+
+// ── TOY GROUP ─────────────────────────────────────────────────────────────
+{id:'chihuahua',name:'Chihuahua',origin:'Mexico',size:'toy',group:'toy',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_Chihuahua.jpg/400px-A_small_cup_of_Chihuahua.jpg',
+ lifespan:'14–16 yrs',weight:'1.5–3 kg',height:'15–23 cm',
+ traits:{Energy:65,Affection:88,Trainability:60,Grooming:30,Barking:78},
+ facts:["Smallest dog breed in the world","Named after the Mexican state of Chihuahua","Can live up to 20 years","Longest lifespan of any dog breed"],
+ colors:'Any colour: black, fawn, white, cream, chocolate',badge:{text:'Tiny Giant',bg:'#dc2626',fg:'#fff'},
+ desc:"The smallest dog breed in the world packs an enormous personality into a tiny package. Chihuahuas are fiercely loyal, alert, and surprisingly bold little companions."},
+
+{id:'pomeranian',name:'Pomeranian',origin:'Germany',size:'toy',group:'toy',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Pomeranian.jpg/400px-Pomeranian.jpg',
+ lifespan:'12–16 yrs',weight:'1.4–3.2 kg',height:'18–30 cm',
+ traits:{Energy:70,Affection:88,Trainability:75,Grooming:85,Barking:80},
+ facts:["Queen Victoria made them popular in Britain","Two Pomeranians survived the Titanic","Mozart owned a Pomeranian named Pimperl","Double coat requires regular brushing"],
+ colors:'Orange, Red, Cream, White, Black, Blue',badge:{text:'Fluffy Royalty',bg:'#d97706',fg:'#fff'},
+ desc:"The fluffy, fox-faced Pomeranian is descended from large sled dogs but bred down to toy size by Queen Victoria. Behind the cloud of fur is an active, confident little dog."},
+
+{id:'pug',name:'Pug',origin:'China',size:'toy',group:'toy',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Mops_oct09_cropped2.jpg/400px-Mops_oct09_cropped2.jpg',
+ lifespan:'13–15 yrs',weight:'6–9 kg',height:'25–33 cm',
+ traits:{Energy:45,Affection:95,Trainability:65,Grooming:50,Barking:55},
+ facts:["Napoleon's wife Josephine had a Pug","A group of Pugs is called a \"grumble\"","Brachycephalic — can have breathing issues","Emperor of China kept Pugs as royal pets"],
+ colors:'Fawn, Black, Silver, Apricot',badge:{text:'Emperor\'s Dog',bg:'#92400e',fg:'#fff'},
+ desc:"The Pug's motto: 'Much in Little.' These charming, mischievous dogs have been companion dogs to royalty and monks alike for centuries."},
+
+{id:'maltese',name:'Maltese',origin:'Malta',size:'toy',group:'toy',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Maltese_600.jpg/400px-Maltese_600.jpg',
+ lifespan:'12–15 yrs',weight:'2–3.6 kg',height:'20–25 cm',
+ traits:{Energy:55,Affection:90,Trainability:78,Grooming:90,Barking:70},
+ facts:["Over 2,000 years of documented history","Greeks built tombs for their Maltese","Hypoallergenic coat — minimal shedding","Sold for £2,000 equivalent in ancient Rome"],
+ colors:'White',badge:{text:'Ancient Noble',bg:'#1a4db3',fg:'#fff'},
+ desc:"One of the oldest toy breeds — Maltese have been companion dogs for over 2,000 years. Their silky white coats and dark expressive eyes give them an aristocratic elegance."},
+
+{id:'shihtzhu',name:'Shih Tzu',origin:'China/Tibet',size:'toy',group:'toy',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Shih-Tzu.jpg/400px-Shih-Tzu.jpg',
+ lifespan:'10–18 yrs',weight:'4–8 kg',height:'20–28 cm',
+ traits:{Energy:48,Affection:92,Trainability:68,Grooming:90,Barking:55},
+ facts:["Sacred to Tibetan Buddhists","Given as gifts to Chinese emperors","Name means \"Lion Dog\" in Chinese","Nearly extinct during Chinese revolution"],
+ colors:'Any colour: gold, white, black, liver, brindle',badge:{text:'Imperial Dog',bg:'#b45309',fg:'#fff'},
+ desc:"Bred by Tibetan monks as sacred palace dogs, the Shih Tzu was the house pet of Chinese emperors for centuries. They carry themselves with regal elegance."},
+
+// ── NON-SPORTING ───────────────────────────────────────────────────────────
+{id:'frenchbulldog',name:'French Bulldog',origin:'France',size:'small',group:'non-sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/French_Bulldog.jpg/400px-French_Bulldog.jpg',
+ lifespan:'10–12 yrs',weight:'8–13 kg',height:'28–33 cm',
+ traits:{Energy:52,Affection:95,Trainability:68,Grooming:25,Barking:45},
+ facts:["#1 breed in USA since 2022","Cannot swim — will sink in water","Most Frenchies born via C-section","Trace back to English Bulldogs"],
+ colors:'Fawn, Brindle, White, Cream, Pied',badge:{text:'City Dog #1',bg:'#1d4ed8',fg:'#fff'},
+ desc:"The bat-eared Frenchie is the most popular breed in many countries. Adaptable, playful, and deeply attached to their people — perfect for city apartment living."},
+
+{id:'bulldog',name:'English Bulldog',origin:'England',size:'medium',group:'non-sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Bulldog_inglese.jpg/400px-Bulldog_inglese.jpg',
+ lifespan:'8–10 yrs',weight:'18–25 kg',height:'31–40 cm',
+ traits:{Energy:35,Affection:90,Trainability:60,Grooming:40,Barking:35},
+ facts:["National symbol of Britain","Winston Churchill compared himself to one","Cannot tolerate heat very well","95% of Bulldogs born via C-section"],
+ colors:'Fawn, White, Red, Brindle, Piebald',badge:{text:'British Icon',bg:'#1f2937',fg:'#fff'},
+ desc:"The ultimate symbol of British tenacity. Once bred for bull-baiting, today's Bulldogs are gentle, loyal, and easygoing despite their fierce appearance."},
+
+{id:'poodle',name:'Poodle (Standard)',origin:'Germany/France',size:'large',group:'non-sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Poodle_white_Galizs.jpg/400px-Poodle_white_Galizs.jpg',
+ lifespan:'12–15 yrs',weight:'20–32 kg',height:'38–70 cm',
+ traits:{Energy:80,Affection:88,Trainability:99,Grooming:95,Barking:55},
+ facts:["Second most intelligent dog breed","Originally bred to retrieve waterfowl","Hypoallergenic — minimal shedding","The pompom cut has functional origins"],
+ colors:'Apricot, Black, Blue, Brown, Cream, Grey, Red, Silver, White',badge:{text:'French Elegance',bg:'#6366f1',fg:'#fff'},
+ desc:"Among the most intelligent breeds. Poodles were bred as water retrievers in Germany before becoming the national dog of France — brilliant mind, elegant bearing."},
+
+{id:'shiba',name:'Shiba Inu',origin:'Japan',size:'small',group:'non-sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Taka_Shiba.jpg/400px-Taka_Shiba.jpg',
+ lifespan:'13–16 yrs',weight:'8–11 kg',height:'33–43 cm',
+ traits:{Energy:78,Affection:72,Trainability:58,Grooming:50,Barking:50},
+ facts:["Origin of the famous Doge meme","Japan's most popular native breed","Famous \"Shiba scream\" when upset","Japan's smallest native breed"],
+ colors:'Red, Sesame, Black & Tan, Cream',badge:{text:'Doge Legend',bg:'#d97706',fg:'#fff'},
+ desc:"The internet's favourite dog — the Shiba Inu became globally famous through the Doge meme. Japan's smallest native breed, agile, alert, and famously spirited."},
+
+{id:'chowchow',name:'Chow Chow',origin:'China',size:'large',group:'non-sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Chow_Chow.jpg/400px-Chow_Chow.jpg',
+ lifespan:'8–12 yrs',weight:'20–32 kg',height:'43–51 cm',
+ traits:{Energy:45,Affection:68,Trainability:55,Grooming:80,Barking:40},
+ facts:["One of the oldest recognized breeds","Blue-black tongue — unique among dogs","Featured in Chinese pottery 2,000 years old","Han dynasty used them as temple guards"],
+ colors:'Red, Black, Blue, Cinnamon, Cream',badge:{text:'Lion Dog of China',bg:'#dc2626',fg:'#fff'},
+ desc:"One of the most ancient breeds with a lion-like mane and unique blue-black tongue. Aloof and independent, they are deeply loyal to family but reserved with strangers."},
+
+{id:'dalmatian2',name:'Shar-Pei',origin:'China',size:'medium',group:'non-sporting',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Shar_Pei_puppy_%28cropped%29.jpg/400px-Shar_Pei_puppy_%28cropped%29.jpg',
+ lifespan:'8–12 yrs',weight:'18–29 kg',height:'44–51 cm',
+ traits:{Energy:50,Affection:75,Trainability:62,Grooming:45,Barking:40},
+ facts:["Name means \"sand skin\" in Cantonese","Blue-black tongue like Chow Chow","Nearly extinct in 1970s — saved by Hong Kong breeders","Bred as multipurpose farm dog in China"],
+ colors:'Solid: fawn, red, black, cream, blue',badge:{text:'Wrinkle King',bg:'#92400e',fg:'#fff'},
+ desc:"The most wrinkled dog in the world. Shar-Peis were bred as multipurpose farm dogs in ancient China — herding, hunting, and guarding. Their hippo muzzle is unmistakable."},
+];
+
+const CATS=[
+{id:'persian',name:'Persian',origin:'Iran (Persia)',size:'medium',group:'longhair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/White_Persian_Cat.jpg/400px-White_Persian_Cat.jpg',
+ lifespan:'12–17 yrs',weight:'3–5 kg',height:'25–38 cm',
+ traits:{Energy:30,Affection:90,Trainability:55,Grooming:99,Vocality:35},
+ facts:["One of the oldest cat breeds","Flat face can cause breathing issues","Require daily grooming — mats quickly","80+ colour and pattern varieties"],
+ colors:'Colourpoint, Solid, Shaded, Tabby, Bicolour',badge:{text:'Regal Classic',bg:'#7c3aed',fg:'#fff'},
+ desc:"The quintessential lap cat. Persians are calm, sweet, and devoted. Their magnificent coats require daily grooming, but their gentle personalities make the effort worthwhile."},
+
+{id:'siamese',name:'Siamese',origin:'Thailand',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/400px-Siam_lilacpoint.jpg',
+ lifespan:'15–20 yrs',weight:'3–5 kg',height:'28–33 cm',
+ traits:{Energy:75,Affection:90,Trainability:80,Grooming:20,Vocality:99},
+ facts:["One of Asia's oldest documented breeds","Most talkative of all cat breeds","Blue eyes are a breed hallmark","Form incredibly strong bonds with one human"],
+ colors:'Seal Point, Blue Point, Chocolate Point, Lilac Point',badge:{text:'Sacred Cat of Siam',bg:'#1d4ed8',fg:'#fff'},
+ desc:"The Siamese is one of the oldest and most distinctive cat breeds. Sleek, pointed, and vocal — they form incredibly strong bonds with their humans."},
+
+{id:'mainecoon',name:'Maine Coon',origin:'USA',size:'large',group:'longhair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Maine_Coon_cat_by_Tomitheos.JPG/400px-Maine_Coon_cat_by_Tomitheos.JPG',
+ lifespan:'12–15 yrs',weight:'4–9 kg',height:'25–41 cm',
+ traits:{Energy:72,Affection:88,Trainability:85,Grooming:65,Vocality:55},
+ facts:["Largest domestic cat breed","Record: Ludo measured 118.33 cm","Polydactyl (extra toes) is common","Chirp and trill instead of meow"],
+ colors:'Over 75 colour combinations',badge:{text:'Gentle Giant',bg:'#92400e',fg:'#fff'},
+ desc:"The gentle giant of cat breeds — Maine Coons are the largest domestic cat breed. Dog-like in personality, they follow owners around and even walk on a leash."},
+
+{id:'ragdoll',name:'Ragdoll',origin:'USA',size:'large',group:'longhair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Ragdoll_from_Gatil_Ragbelas.jpg/400px-Ragdoll_from_Gatil_Ragbelas.jpg',
+ lifespan:'12–17 yrs',weight:'4–9 kg',height:'23–28 cm',
+ traits:{Energy:40,Affection:98,Trainability:75,Grooming:55,Vocality:40},
+ facts:["Go limp when held — hence the name","One of the largest domestic cat breeds","Slow to mature — full size at 4 years","Bred by Ann Baker in California 1960s"],
+ colors:'Colourpoint, Mitted, Bicolour in seal, blue, chocolate, lilac',badge:{text:'Floppy Angel',bg:'#7c3aed',fg:'#fff'},
+ desc:"Named for their tendency to go limp when picked up, Ragdolls are the most docile of all breeds. Blue-eyed, pointed, and incredibly gentle — often called 'puppy cats.'"},
+
+{id:'bengal',name:'Bengal',origin:'USA',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Paintedcats_Red_Star_standing.jpg/400px-Paintedcats_Red_Star_standing.jpg',
+ lifespan:'12–16 yrs',weight:'3–7 kg',height:'33–40 cm',
+ traits:{Energy:95,Affection:78,Trainability:88,Grooming:30,Vocality:70},
+ facts:["Hybrid of domestic cat and Asian Leopard Cat","Many Bengals love water","Coat has a distinctive glitter effect","Must be F4+ generation to keep as pet"],
+ colors:'Brown, Snow, Silver, Charcoal — spotted or marbled',badge:{text:'Mini Leopard',bg:'#065f46',fg:'#fff'},
+ desc:"Created by crossing domestic cats with Asian Leopard Cats, Bengals have a wild appearance with rosettes like a mini-leopard. Highly active and curious."},
+
+{id:'britishsh',name:'British Shorthair',origin:'UK',size:'large',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Britishblue.jpg/400px-Britishblue.jpg',
+ lifespan:'14–20 yrs',weight:'3–8 kg',height:'30–38 cm',
+ traits:{Energy:45,Affection:78,Trainability:62,Grooming:45,Vocality:35},
+ facts:["Inspiration for the Cheshire Cat","One of the oldest British cat breeds","Round face and dense plush coat","Full size at 3–5 years — slow to mature"],
+ colors:'Blue, Black, White, Cream, Red, Tabby — 30+ colours',badge:{text:'British Classic',bg:'#374151',fg:'#fff'},
+ desc:"The Cheshire Cat of Alice in Wonderland fame. British Shorthairs are round-faced, dense-coated, and undemanding — calm and independent."},
+
+{id:'abyssinian',name:'Abyssinian',origin:'Ethiopia',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Gustav_chocolate.jpg/400px-Gustav_chocolate.jpg',
+ lifespan:'14–17 yrs',weight:'2.5–5 kg',height:'30–36 cm',
+ traits:{Energy:92,Affection:80,Trainability:88,Grooming:20,Vocality:55},
+ facts:["Possibly the oldest cat breed","Depicted in ancient Egyptian art","Ticked coat — multiple bands per hair","One of the most active cat breeds"],
+ colors:'Ruddy, Sorrel (cinnamon), Blue, Fawn',badge:{text:'Ancient Egyptian',bg:'#b45309',fg:'#fff'},
+ desc:"One of the oldest breeds — perhaps closest in appearance to cats of ancient Egypt. Abyssinians are highly active, playful, and inquisitive — they love to explore and climb."},
+
+{id:'scottishfold',name:'Scottish Fold',origin:'Scotland',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Scottish_Fold_cat_Sammy.jpg/400px-Scottish_Fold_cat_Sammy.jpg',
+ lifespan:'11–14 yrs',weight:'2.7–6 kg',height:'22–30 cm',
+ traits:{Energy:55,Affection:88,Trainability:70,Grooming:40,Vocality:40},
+ facts:["Genetic mutation discovered in 1961","All trace back to \"Susie\" — a 1961 barn cat","Breeding two folds together is banned","Taylor Swift's cats are Scottish Folds"],
+ colors:'Any colour or pattern',badge:{text:'Owl Face',bg:'#6366f1',fg:'#fff'},
+ desc:"Famous for their folded ears giving them an owl-like appearance, Scottish Folds are sweet-natured and adaptable — known for sitting in unusual positions."},
+
+{id:'sphynx',name:'Sphynx',origin:'Canada',size:'medium',group:'hairless',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Na3omi_Naked_Cat.jpg/400px-Na3omi_Naked_Cat.jpg',
+ lifespan:'8–14 yrs',weight:'3.5–7 kg',height:'23–30 cm',
+ traits:{Energy:80,Affection:99,Trainability:82,Grooming:45,Vocality:75},
+ facts:["First hairless cat breed","Not completely hairless — fine down on skin","Require weekly baths — oily skin","Body temperature 4°C warmer than other cats"],
+ colors:'Any colour — pigment is in skin, not fur',badge:{text:'Hairless Heart',bg:'#dc2626',fg:'#fff'},
+ desc:"The hairless cat with heart of gold. Sphynx cats are extraordinarily social — they are constant companions who crave human warmth. Their skin feels like warm chamois."},
+
+{id:'norwegian',name:'Norwegian Forest Cat',origin:'Norway',size:'large',group:'longhair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Norwegian_Forest_Cat_Photo.jpg/400px-Norwegian_Forest_Cat_Photo.jpg',
+ lifespan:'14–16 yrs',weight:'3.5–9 kg',height:'28–38 cm',
+ traits:{Energy:68,Affection:80,Trainability:68,Grooming:65,Vocality:38},
+ facts:["Featured in Norse mythology with Freya","Natural breed that developed in Norway","Can descend trees head-first","Related to Maine Coon by common ancestry"],
+ colors:'All colours and patterns except colourpoint',badge:{text:'Norse Forest Cat',bg:'#1f2937',fg:'#fff'},
+ desc:"The 'Skogkatt' of Norse mythology. Norwegian Forest Cats are built for Scandinavian winters with a thick double coat and tufted paws for climbing."},
+
+{id:'ragamuffin',name:'RagaMuffin',origin:'USA',size:'large',group:'longhair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/RagaMuffin_-_Adult_Female.jpg/400px-RagaMuffin_-_Adult_Female.jpg',
+ lifespan:'12–16 yrs',weight:'4–9 kg',height:'25–30 cm',
+ traits:{Energy:38,Affection:96,Trainability:72,Grooming:55,Vocality:38},
+ facts:["Created by splitting from Ragdoll program","Come in all colours and patterns","Often called \"living stuffed animals\"","Go limp when held — like Ragdolls"],
+ colors:'All colours and patterns',badge:{text:'Cuddly Giant',bg:'#dc2626',fg:'#fff'},
+ desc:"Close relative of the Ragdoll, RagaMuffins are large, cuddly cats with lush coats and eyes in any colour. Docile, friendly, and known for going limp when held."},
+
+{id:'birman',name:'Birman',origin:'Myanmar (Burma)',size:'medium',group:'longhair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Birmancat.jpg/400px-Birmancat.jpg',
+ lifespan:'12–16 yrs',weight:'3–7 kg',height:'23–30 cm',
+ traits:{Energy:58,Affection:90,Trainability:72,Grooming:55,Vocality:42},
+ facts:["Sacred cats of Buddhist temples in Burma","White \"gloves\" on all four paws","Can take up to 3 years to develop full colour","Nearly extinct after WWII"],
+ colors:'Seal, Blue, Chocolate, Lilac, Red, Cream points',badge:{text:'Sacred Temple Cat',bg:'#b45309',fg:'#fff'},
+ desc:"The sacred cat of Burma. Birmans have a colourpointed coat, deep blue eyes, and distinctive white 'gloves' on all four paws — legend says given by a Buddhist goddess."},
+
+{id:'russianblue',name:'Russian Blue',origin:'Russia',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Russianblue.jpg/400px-Russianblue.jpg',
+ lifespan:'15–20 yrs',weight:'2.5–5.5 kg',height:'23–30 cm',
+ traits:{Energy:55,Affection:82,Trainability:75,Grooming:30,Vocality:35},
+ facts:["One of the longest-living cat breeds","Coat appears to shimmer — double layer","Lower Fel d 1 allergen — more hypoallergenic","Said to bring good luck in Russia"],
+ colors:'Blue only — silvery-blue with silver tips',badge:{text:'Silver Mystic',bg:'#374151',fg:'#fff'},
+ desc:"The mysterious, elegant Russian Blue with its double silvery-blue plush coat and emerald eyes. Shy with strangers but deeply loving with family."},
+
+{id:'burmese',name:'Burmese',origin:'Myanmar/USA',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Burmese_cat_-_Zack.jpg/400px-Burmese_cat_-_Zack.jpg',
+ lifespan:'16–18 yrs',weight:'3.5–5.5 kg',height:'25–30 cm',
+ traits:{Energy:78,Affection:97,Trainability:85,Grooming:15,Vocality:80},
+ facts:["Called \"brick wrapped in silk\"","All American Burmese trace to \"Wong Mau\" 1930","Closest personality to a dog among cats","Will follow commands reliably"],
+ colors:'Sable, Champagne, Blue, Platinum',badge:{text:'Silky Devotee',bg:'#7c3aed',fg:'#fff'},
+ desc:"Burmese are called 'brick wrapped in silk' — surprisingly heavy for their size. They are the most people-oriented of all cat breeds."},
+
+{id:'bengal2',name:'Egyptian Mau',origin:'Egypt',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/EgyptianMau_bronze.jpg/400px-EgyptianMau_bronze.jpg',
+ lifespan:'9–13 yrs',weight:'2.7–5 kg',height:'20–28 cm',
+ traits:{Energy:88,Affection:80,Trainability:78,Grooming:25,Vocality:60},
+ facts:["Only naturally spotted domestic cat","Fastest domestic cat: up to 48 km/h","Descended from cats worshipped in ancient Egypt","Longer hind legs give a cheetah-like gait"],
+ colors:'Silver, Bronze, Smoke — always spotted',badge:{text:'Pharaoh\'s Cat',bg:'#b45309',fg:'#fff'},
+ desc:"The only naturally spotted domestic cat breed. Egyptian Maus are descended from cats worshipped in ancient Egypt. They are the fastest domestic cat, reaching 48 km/h."},
+
+{id:'sphynx2',name:'Devon Rex',origin:'England',size:'small',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Devon_rex_pb.jpg/400px-Devon_rex_pb.jpg',
+ lifespan:'9–15 yrs',weight:'2.5–4.5 kg',height:'18–25 cm',
+ traits:{Energy:80,Affection:95,Trainability:82,Grooming:20,Vocality:65},
+ facts:["Also called \"Alien Cat\" or \"Pixie Cat\"","Curly coat from a natural mutation","Can learn tricks easily — very trainable","Discovered in Devon, England in 1959"],
+ colors:'Any colour and pattern',badge:{text:'Curly Pixie',bg:'#7c3aed',fg:'#fff'},
+ desc:"The Devon Rex looks like a pixie — large ears, enormous eyes, and a wavy rippling coat incredibly soft to the touch. Mischievous, clownish, and intensely people-oriented."},
+
+{id:'cornishrex',name:'Cornish Rex',origin:'England',size:'small',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cornish_Rex_Cat.jpg/400px-Cornish_Rex_Cat.jpg',
+ lifespan:'11–15 yrs',weight:'2.5–4.5 kg',height:'28–36 cm',
+ traits:{Energy:88,Affection:90,Trainability:85,Grooming:15,Vocality:68},
+ facts:["Discovered in Cornwall, England in 1950","Only curly undercoat — no guard hairs","Feel warmer to touch than other cats","Love to fetch and play games"],
+ colors:'Any colour and pattern',badge:{text:'Velvet Athlete',bg:'#b45309',fg:'#fff'},
+ desc:"Greyhound-like in build and personality. The Cornish Rex is slender, muscular, and built for speed. Their unique wavy coat has no guard hairs and feels like warm velvet."},
+
+{id:'scottishfold2',name:'Scottish Straight',origin:'Scotland',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Scottish_straight_male_tabby.jpg/400px-Scottish_straight_male_tabby.jpg',
+ lifespan:'11–14 yrs',weight:'2.7–6 kg',height:'22–30 cm',
+ traits:{Energy:55,Affection:85,Trainability:70,Grooming:40,Vocality:40},
+ facts:["Straight-eared version of the Scottish Fold","Same sweet temperament as Fold","Better health than Fold — no ear cartilage issues","Essential for Fold breeding programs"],
+ colors:'Any colour or pattern',badge:{text:'Sweet Straight',bg:'#374151',fg:'#fff'},
+ desc:"The straight-eared sibling of the Scottish Fold, sharing the same sweet and adaptable temperament without the ear-related health concerns."},
+
+{id:'turkishangora',name:'Turkish Angora',origin:'Turkey',size:'medium',group:'longhair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/TurkishAngora.jpg/400px-TurkishAngora.jpg',
+ lifespan:'12–18 yrs',weight:'2.5–5 kg',height:'23–30 cm',
+ traits:{Energy:80,Affection:88,Trainability:82,Grooming:45,Vocality:65},
+ facts:["One of the world's oldest natural breeds","National treasure of Turkey — protected at Ankara Zoo","Odd-eyed (one blue, one amber) is common","Loves water — will join owner in the shower"],
+ colors:'All colours; white most recognized',badge:{text:'Ottoman Elegance',bg:'#b45309',fg:'#fff'},
+ desc:"One of the oldest natural cat breeds, Turkish Angoras were prized by European royalty. Their silky single-coat doesn't mat. Elegant, athletic, and playful."},
+
+{id:'tonkinese',name:'Tonkinese',origin:'Canada/USA',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Natural_mink_Tonkinese_cat.jpg/400px-Natural_mink_Tonkinese_cat.jpg',
+ lifespan:'15–18 yrs',weight:'2.5–5.5 kg',height:'23–28 cm',
+ traits:{Energy:80,Affection:92,Trainability:85,Grooming:15,Vocality:72},
+ facts:["Unique aquamarine eye colour","First bred by crossing Siamese and Burmese","Come in mink — a unique coat pattern","Very playful — often play fetch"],
+ colors:'Platinum, Champagne, Natural, Blue',badge:{text:'Aqua Eyes',bg:'#0891b2',fg:'#fff'},
+ desc:"A playful blend of Siamese and Burmese, the Tonkinese has unique aqua eyes, a silky coat, and a perfectly balanced personality between both parent breeds."},
+
+{id:'lykoi',name:'Lykoi (Werewolf Cat)',origin:'USA',size:'medium',group:'shorthair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Lykoi.jpg/400px-Lykoi.jpg',
+ lifespan:'12–15 yrs',weight:'2.5–5 kg',height:'23–28 cm',
+ traits:{Energy:78,Affection:82,Trainability:78,Grooming:20,Vocality:48},
+ facts:["Name means \"wolf\" in Greek","Natural mutation from feral cat colonies","Looks like a werewolf — hence the name","Confirmed unique gene mutation"],
+ colors:'Roan (black and white) — unique pattern',badge:{text:'Werewolf Cat',bg:'#374151',fg:'#fff'},
+ desc:"The Lykoi looks like a werewolf — partially hairless with a patchy roan coat. Despite their wild appearance they are gentle, intelligent, and playful cats."},
+
+{id:'somali',name:'Somali',origin:'USA/Canada',size:'medium',group:'longhair',
+ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Somali_cat.jpg/400px-Somali_cat.jpg',
+ lifespan:'12–14 yrs',weight:'3–5.5 kg',height:'28–33 cm',
+ traits:{Energy:88,Affection:82,Trainability:85,Grooming:55,Vocality:55},
+ facts:["Longhaired form of the Abyssinian","Bushy tail gives the \"fox\" nickname","Ticked agouti coat with multiple colour bands","Loves to play with water"],
+ colors:'Ruddy, Red, Blue, Fawn',badge:{text:'Fox Cat',bg:'#78350f',fg:'#fff'},
+ desc:"The Somali is a longhaired Abyssinian — sometimes called the 'Fox Cat' for its bushy tail and ticked coat. They share the Abyssinian's high energy and curiosity."},
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let species='dogs', sizeFilter='all', groupFilter='all', searchQ='';
+let favs=new Set(JSON.parse(localStorage.getItem('pb_favs')||'[]'));
+
+function getList(){
+  const base = species==='dogs'?DOGS : species==='cats'?CATS : [...DOGS,...CATS].filter(b=>favs.has(b.id));
+  return base.filter(b=>{
+    const sm = sizeFilter==='all' || b.size===sizeFilter;
+    const gm = groupFilter==='all' || b.group===groupFilter;
+    const qm = !searchQ || b.name.toLowerCase().includes(searchQ) || b.origin.toLowerCase().includes(searchQ) || (b.desc||'').toLowerCase().includes(searchQ);
+    return sm && gm && qm;
+  });
+}
+
+function render(){
+  const list = getList();
+  const titles = {dogs:'Dog Breeds',cats:'Cat Breeds',favs:'My Favourites'};
+  document.getElementById('section-title').textContent = titles[species]||'Breeds';
+  document.getElementById('section-count').textContent = list.length+' breed'+(list.length!==1?'s':'');
+  document.getElementById('dog-count').textContent = DOGS.length+'+';
+  document.getElementById('cat-count').textContent = CATS.length+'+';
+
+  const grid = document.getElementById('breed-grid');
+  if(!list.length){
+    grid.innerHTML='<div class="empty"><div style="font-size:48px;margin-bottom:12px">🔍</div><div style="font-size:16px;font-weight:700;color:#4a5568">No breeds found</div><div style="font-size:13px;color:#94a3b8;margin-top:6px">Try a different filter or search term</div></div>';
+    return;
+  }
+  grid.innerHTML = list.map(b=>`
+    <div class="bcard" onclick="openDP('${b.id}')">
+      <img src="${b.img}" loading="lazy" alt="${b.name}" onerror="this.src='https://images.unsplash.com/photo-1415369629372-26f2fe60c467?w=400&q=80'">
+      <div class="bcard-overlay">
+        <div class="bcard-name">${b.name}</div>
+        <div class="bcard-origin">📍 ${b.origin}</div>
+        <div class="bcard-tags">
+          <span class="btag ${b.size}">${b.size.charAt(0).toUpperCase()+b.size.slice(1)}</span>
+          <span class="btag">${b.group}</span>
+          <span class="btag">${b.lifespan}</span>
+        </div>
+      </div>
+      <button class="fav-btn ${favs.has(b.id)?'on':''}" onclick="toggleFav(event,'${b.id}')" title="Save to favourites">
+        ${favs.has(b.id)?'❤️':'🤍'}
+      </button>
+    </div>`).join('');
+}
+
+function openDP(id){
+  const b=[...DOGS,...CATS].find(x=>x.id===id);
+  if(!b)return;
+  document.getElementById('dp-img').src=b.img;
+  document.getElementById('dp-name').textContent=b.name;
+  document.getElementById('dp-sci').textContent=b.scientific||'Canis lupus familiaris / Felis catus';
+  const badge=document.getElementById('dp-badge');
+  badge.textContent=b.badge.text;
+  badge.style.background=b.badge.bg+'22';
+  badge.style.color=b.badge.bg;
+  document.getElementById('dp-desc').textContent=b.desc;
+  document.getElementById('dp-stats').innerHTML=`
+    <div class="stat-cell"><div class="stat-lbl">Lifespan</div><div class="stat-val">⏳ ${b.lifespan}</div></div>
+    <div class="stat-cell"><div class="stat-lbl">Weight</div><div class="stat-val">⚖️ ${b.weight}</div></div>
+    <div class="stat-cell"><div class="stat-lbl">Height</div><div class="stat-val">📏 ${b.height}</div></div>
+    <div class="stat-cell"><div class="stat-lbl">Origin</div><div class="stat-val">📍 ${b.origin}</div></div>
+    <div class="stat-cell" style="grid-column:1/-1"><div class="stat-lbl">Coat Colours</div><div class="stat-val" style="font-size:11px;font-weight:500">${b.colors}</div></div>`;
+  document.getElementById('dp-traits').innerHTML=Object.entries(b.traits).map(([k,v])=>`
+    <div class="trait-wrap">
+      <div class="trait-row"><span>${k}</span><span style="color:#8b4513">${v}%</span></div>
+      <div class="tbar"><div class="tfill" data-w="${v}" style="width:0"></div></div>
+    </div>`).join('');
+  document.getElementById('dp-facts').innerHTML=(b.facts||[]).map(f=>`
+    <div style="display:flex;gap:7px;font-size:12px;color:#4a5568"><span style="color:#8b4513;flex-shrink:0">•</span>${f}</div>`).join('');
+  document.getElementById('dpanel').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(()=>{document.querySelectorAll('.tfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},80);
+}
+function closeDP(){
+  document.getElementById('dpanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+function switchSpecies(s,el){
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  species=s; sizeFilter='all'; groupFilter='all';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#size-chips .chip:first-child,#group-chips .chip:first-child').forEach(c=>c.classList.add('on'));
+  // Show/hide dog groups for cats
+  const gLabel=document.getElementById('group-label');
+  const gChips=document.getElementById('group-chips');
+  if(s==='cats'){gLabel.style.display='none';gChips.style.display='none';}
+  else{gLabel.style.display='';gChips.style.display='';}
+  render();
+}
+function setSize(v,el){
+  document.querySelectorAll('#size-chips .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');sizeFilter=v;render();
+}
+function setGroup(v,el){
+  document.querySelectorAll('#group-chips .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');groupFilter=v;render();
+}
+function toggleFav(e,id){
+  e.stopPropagation();
+  favs.has(id)?favs.delete(id):favs.add(id);
+  localStorage.setItem('pb_favs',JSON.stringify([...favs]));
+  render();
+  showToast(favs.has(id)?'❤️ Added to favourites!':'Removed from favourites');
+}
+document.getElementById('search-input').addEventListener('input',e=>{searchQ=e.target.value.toLowerCase().trim();render();});
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#8b4513;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;font-family:Inter,sans-serif;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2)';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);
+}
+// ── FALLBACK IMAGES (unique per breed, loads instantly) ───────────────────────
+const FALLBACK = {
+  // Dogs
+  'labrador':    'https://images.unsplash.com/photo-1579213838058-58a35c38d647?w=500&q=75',
+  'golden':      'https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&q=75',
+  'cocker':      'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500&q=75',
+  'weimaraner':  'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=500&q=75',
+  'irishsetter': 'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=500&q=75',
+  'vizsla':      'https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?w=500&q=75',
+  'rottweiler':  'https://images.unsplash.com/photo-1567418679720-5dc6e3a9a1c8?w=500&q=75',
+  'boxer':       'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500&q=75',
+  'husky':       'https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=500&q=75',
+  'greatdane':   'https://images.unsplash.com/photo-1596797882870-8c33dba3959a?w=500&q=75',
+  'bernese':     'https://images.unsplash.com/photo-1612940960267-3c3f56e2d2de?w=500&q=75',
+  'doberman':    'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=500&q=75',
+  'samyoed':     'https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?w=500&q=75',
+  'akita':       'https://images.unsplash.com/photo-1617895153857-82fe0c43621b?w=500&q=75',
+  'malamute':    'https://images.unsplash.com/photo-1568572933382-74d440642117?w=500&q=75',
+  'gsd':         'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=500&q=75',
+  'bordercollie':'https://images.unsplash.com/photo-1565372195458-9de0b320ef04?w=500&q=75',
+  'aussie':      'https://images.unsplash.com/photo-1508532566027-b2579a8b0b96?w=500&q=75',
+  'corgi':       'https://images.unsplash.com/photo-1554692918-08fa0fdc9db3?w=500&q=75',
+  'sheltie':     'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500&q=75',
+  'westie':      'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=500&q=75',
+  'airedale':    'https://images.unsplash.com/photo-1619533394023-7d61d089e5f3?w=500&q=75',
+  'scottish':    'https://images.unsplash.com/photo-1504595403659-9088ce801e29?w=500&q=75',
+  'beagle':      'https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=500&q=75',
+  'greyhound':   'https://images.unsplash.com/photo-1598133893773-de3e890d36c4?w=500&q=75',
+  'dachshund':   'https://images.unsplash.com/photo-1518155317743-a8ff43ea6a5f?w=500&q=75',
+  'dalmatian':   'https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=500&q=75',
+  'basenji':     'https://images.unsplash.com/photo-1603265994513-1a4a0ede0a4e?w=500&q=75',
+  'ridgeback':   'https://images.unsplash.com/photo-1558929996-da64ba858215?w=500&q=75',
+  'chihuahua':   'https://images.unsplash.com/photo-1573246123716-6b1782bfc499?w=500&q=75',
+  'pomeranian':  'https://images.unsplash.com/photo-1608096077-2c3e4d28cb5f?w=500&q=75',
+  'pug':         'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=500&q=75',
+  'maltese':     'https://images.unsplash.com/photo-1583512603806-077998240c02?w=500&q=75',
+  'shihtzhu':    'https://images.unsplash.com/photo-1589927986089-35812378533a?w=500&q=75',
+  'frenchbulldog':'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500&q=75',
+  'bulldog':     'https://images.unsplash.com/photo-1491947153227-33d59da6c448?w=500&q=75',
+  'poodle':      'https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=500&q=75',
+  'shiba':       'https://images.unsplash.com/photo-1582797493098-23d8d0cc6769?w=500&q=75',
+  'chowchow':    'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=500&q=75',
+  'dalmatian2':  'https://images.unsplash.com/photo-1560743641-3914f2c45636?w=500&q=75',
+  // Cats
+  'persian':      'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&q=75',
+  'siamese':      'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=500&q=75',
+  'mainecoon':    'https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=500&q=75',
+  'ragdoll':      'https://images.unsplash.com/photo-1561923130-c0e38f3a6a9c?w=500&q=75',
+  'bengal':       'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=500&q=75',
+  'britishsh':    'https://images.unsplash.com/photo-1555685812-4b8f59697ef3?w=500&q=75',
+  'abyssinian':   'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500&q=75',
+  'scottishfold': 'https://images.unsplash.com/photo-1472491235688-bdc81a63246e?w=500&q=75',
+  'sphynx':       'https://images.unsplash.com/photo-1520315342629-6ea920342047?w=500&q=75',
+  'norwegian':    'https://images.unsplash.com/photo-1591871937573-74dbba515c4c?w=500&q=75',
+  'ragamuffin':   'https://images.unsplash.com/photo-1513245543132-31f507417b26?w=500&q=75',
+  'birman':       'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=500&q=75',
+  'russianblue':  'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=500&q=75',
+  'burmese':      'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500&q=75',
+  'bengal2':      'https://images.unsplash.com/photo-1625316708582-7c38734be31d?w=500&q=75',
+  'sphynx2':      'https://images.unsplash.com/photo-1531804226150-3c3beb1e0d2e?w=500&q=75',
+  'cornishrex':   'https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?w=500&q=75',
+  'scottishfold2':'https://images.unsplash.com/photo-1490150028299-bf57d78394e0?w=500&q=75',
+  'turkishangora':'https://images.unsplash.com/photo-1561049501-e1f96bdd98fd?w=500&q=75',
+  'tonkinese':    'https://images.unsplash.com/photo-1603203040743-24aced6793b4?w=500&q=75',
+  'lykoi':        'https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=500&q=75',
+  'somali':       'https://images.unsplash.com/photo-1577023311546-cdc07a8454d9?w=500&q=75',
+};
+
+// Apply unique fallback images to every breed before first render
+[...DOGS,...CATS].forEach(b => { if(FALLBACK[b.id]) b.img = FALLBACK[b.id]; });
+
+// Render immediately with fallbacks (all unique, no broken images)
+render();
+
+// Background: upgrade with live API breed-specific photos
+(async function upgradeImages(){
+  const DOG_API='https://api.thedogapi.com/v1';
+  const CAT_API='https://api.thecatapi.com/v1';
+  const opts = {signal: AbortSignal.timeout(4000)};
+
+  const dogTerms={'labrador':'labrador retriever','golden':'golden retriever','cocker':'cocker spaniel','weimaraner':'weimaraner','irishsetter':'irish setter','vizsla':'vizsla','rottweiler':'rottweiler','boxer':'boxer','husky':'siberian husky','greatdane':'great dane','bernese':'bernese mountain dog','doberman':'doberman pinscher','samyoed':'samoyed','akita':'akita','malamute':'alaskan malamute','gsd':'german shepherd','bordercollie':'border collie','aussie':'australian shepherd','corgi':'corgi','sheltie':'shetland sheepdog','westie':'west highland terrier','airedale':'airedale terrier','scottish':'scottish terrier','beagle':'beagle','greyhound':'greyhound','dachshund':'dachshund','dalmatian':'dalmatian','basenji':'basenji','ridgeback':'rhodesian ridgeback','chihuahua':'chihuahua','pomeranian':'pomeranian','pug':'pug','maltese':'maltese','shihtzhu':'shih tzu','frenchbulldog':'french bulldog','bulldog':'bulldog','poodle':'poodle','shiba':'shiba inu','chowchow':'chow chow','dalmatian2':'shar pei'};
+  const catTerms={'persian':'Persian','siamese':'Siamese','mainecoon':'Maine Coon','ragdoll':'Ragdoll','bengal':'Bengal','britishsh':'British Shorthair','abyssinian':'Abyssinian','scottishfold':'Scottish Fold','sphynx':'Sphynx','norwegian':'Norwegian Forest Cat','ragamuffin':'Ragamuffin','birman':'Birman','russianblue':'Russian Blue','burmese':'Burmese','bengal2':'Egyptian Mau','sphynx2':'Devon Rex','cornishrex':'Cornish Rex','scottishfold2':'Scottish Fold','turkishangora':'Turkish Angora','tonkinese':'Tonkinese','lykoi':'Lykoi','somali':'Somali'};
+
+  async function updateBreedImg(b, url) {
+    b.img = url;
+    const el = document.querySelector(`.bcard[onclick*="'${b.id}'"] img`);
+    if(el){ el.src=url; el.style.opacity='0'; el.onload=()=>{el.style.transition='opacity 0.4s';el.style.opacity='1';} }
+  }
+
+  for(const b of DOGS){
+    try{
+      const term=dogTerms[b.id]||b.name.toLowerCase();
+      const r=await fetch(`${DOG_API}/breeds/search?q=${encodeURIComponent(term)}`,opts);
+      const brs=await r.json();
+      if(brs[0]?.id){
+        const r2=await fetch(`${DOG_API}/images/search?breed_id=${brs[0].id}&limit=1`,opts);
+        const imgs=await r2.json();
+        if(imgs[0]?.url) await updateBreedImg(b,imgs[0].url);
+      }
+    }catch{}
+    await new Promise(r=>setTimeout(r,120));
+  }
+  for(const b of CATS){
+    try{
+      const term=catTerms[b.id]||b.name;
+      const r=await fetch(`${CAT_API}/breeds/search?q=${encodeURIComponent(term)}`,opts);
+      const brs=await r.json();
+      if(brs[0]?.id){
+        const r2=await fetch(`${CAT_API}/images/search?breed_ids=${brs[0].id}&limit=1`,opts);
+        const imgs=await r2.json();
+        if(imgs[0]?.url) await updateBreedImg(b,imgs[0].url);
+      }
+    }catch{}
+    await new Promise(r=>setTimeout(r,120));
+  }
+})().catch(()=>{});
+</script>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottomnav">
+  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
+  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+<script>function goTo(p){window.location.href=p;}</script>
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER PANEL -->
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name">Abhishek Kumar</div>
+      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Main</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <div class="drawer-section">Pet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+    <div class="drawer-footer">
+      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDrawer() {
+  document.getElementById('drawer-panel').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer-panel').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+<script>
+(function(){
+  function showBurgerOnMobile(){
+    var btns = document.querySelectorAll('.burger-btn');
+    var isMobile = window.innerWidth <= 768;
+    btns.forEach(function(b){
+      b.style.display = isMobile ? 'flex' : 'none';
+    });
+    // Also hide topnav-tabs on mobile
+    var tabs = document.querySelector('.topnav-tabs');
+    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
+    // Show bottom nav on mobile
+    var bnav = document.querySelector('.bottomnav');
+    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+  }
+  showBurgerOnMobile();
+  window.addEventListener('resize', showBurgerOnMobile);
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+  });
+}
+</script>
+</body>
+</html>

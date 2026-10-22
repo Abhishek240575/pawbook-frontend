@@ -211,6 +211,8 @@
     .header-tag { display: none; }
   }
 </style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1877F2">
 </head>
 <body>
 
@@ -902,5 +904,12 @@ function show(id, btn) {
   }
 })();
 </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(r){ console.log('[SW] registered', r.scope); })
+        .catch(function(e){ console.warn('[SW] failed', e); });
+    }
+  </script>
 </body>
 </html>
