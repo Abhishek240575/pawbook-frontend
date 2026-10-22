@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -180,6 +180,7 @@ function showToast(msg,type){
 </nav>
 
 <script src="api.js"></script>
+<script src="socket.js"></script>
 <script>
 function authHeaders(){var t=localStorage.getItem('pb_token');return{'Content-Type':'application/json','Authorization':'Bearer '+t};}
 
@@ -350,6 +351,33 @@ function followBack(id, btn) {
         NOTIFS = fresh.concat(NOTIFS);
       }
       renderNotifs();
+      // ── Real-time Socket.io push ───────────────────────────
+      if(typeof PawSocket !== 'undefined'){
+        PawSocket.on('new_notification', function(notif){
+          var typeMap2 = {like:'social',comment:'social',follow:'social',match:'social',appointment:'health',system:'health'};
+          var n = {
+            id: 'rt_'+Date.now(),
+            api_id: notif.id || null,
+            type: typeMap2[notif.type] || 'social',
+            category: 'new',
+            unread: true,
+            icon: '🔔', iconBg: '#dbeafe',
+            badge: notif.type==='like'?'❤️':notif.type==='comment'?'💬':notif.type==='match'?'🐾':notif.type==='appointment'?'📅':'📢',
+            badgeBg: '#dbeafe',
+            text: '<strong>'+(notif.title||'New notification')+'</strong>'+(notif.body?' — '+notif.body:''),
+            time: 'Just now'
+          };
+          NOTIFS.unshift(n);
+          renderNotifs();
+          // Update nav badge
+          var unreadCount = NOTIFS.filter(function(x){ return x.unread; }).length;
+          var navDot = document.querySelector('.notif-dot');
+          var navCount = document.querySelector('.notif-count');
+          if(navDot) navDot.style.display = 'block';
+          if(navCount){ navCount.textContent = unreadCount > 99 ? '99+' : unreadCount; navCount.style.display = 'block'; }
+          showToast((notif.title||'New notification'), 'success');
+        });
+      }
     });
 })();
 </script>
