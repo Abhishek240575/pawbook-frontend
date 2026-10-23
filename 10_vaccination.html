@@ -473,7 +473,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Vaccination Diary</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -1134,6 +1134,9 @@ function toast(msg,type='success'){const t=document.createElement('div');t.style
 <script>
 function authHeaders(){var t=localStorage.getItem('pb_token');return{'Content-Type':'application/json','Authorization':'Bearer '+t};}
 
+// Module-scoped so deleteVaccRecord & saveVaccineRecord can access it
+var activePet = null;
+
 // ── Load real vaccination records from API on page open ──────
 (function loadVaccinations() {
   var myPets = JSON.parse(localStorage.getItem('pb_my_pets') || '[]');
@@ -1147,9 +1150,12 @@ function authHeaders(){var t=localStorage.getItem('pb_token');return{'Content-Ty
   }
 
   var token = localStorage.getItem('pb_token');
-  if (!token || !myPets.length) return;
+  if (!token || !myPets.length) {
+    showToast('👋 Showing demo vaccination data. Sign in to track your pet\'s records.', 'info');
+    return;
+  }
 
-  var activePet = myPets[0];
+  activePet = myPets[0];
   if (!activePet || !activePet.id) return;
 
   fetch(API_BASE + '/pets/' + activePet.id + '/vaccinations', { headers: authHeaders() })
@@ -1159,8 +1165,9 @@ function authHeaders(){var t=localStorage.getItem('pb_token');return{'Content-Ty
       renderVaccinationTimeline(data.vaccinations);
       renderNextDue(data.vaccinations);
     })
-    .catch(function(){
-      // Silent fallback — page shows hardcoded demo data for new users
+    .catch(function(err){
+      console.warn('[Vacc] API unavailable, showing demo data:', err);
+      showToast('⚠️ Could not load vaccination records. Showing demo data.', 'error');
     });
 })();
 
@@ -1287,7 +1294,9 @@ function saveVaccineRecord(){
         }
       }
     })
-    .catch(function(){});
+    .catch(function(err){
+      console.warn('[Vacc] Save to API failed, kept in localStorage:', err);
+    });
   }
 
   closeAddVaccine();
@@ -1316,9 +1325,10 @@ function addRecordToTimeline(rec){
 
 function showToast(msg, type){
   if(typeof toast === 'function'){ toast(msg, type||'success'); return; }
+  var bg = type==='error'?'#dc2626':type==='info'?'#1877F2':'#16a34a';
   var t=document.createElement('div');
-  t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc2626':'#16a34a')+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
-  t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},2600);
+  t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:'+bg+';color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;font-family:Poppins,sans-serif;max-width:90vw;text-align:center';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},3200);
 }
 </script>
 
@@ -1522,7 +1532,7 @@ function closeDrawer() {
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });

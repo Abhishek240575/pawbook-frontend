@@ -63,7 +63,7 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Analytics</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -406,15 +406,17 @@ function showDefaults(){
   drawBars('activity-chart', DEF_WALK, 'day', 'km', ['#1a4db3','#6366f1','#8b5cf6','#a78bfa','#c4b5fd','#1a4db3','#6366f1']);
   drawBars('engagement-chart', DEF_ENG, 'week', 'reactions', '#8b5cf6');
   document.getElementById('walk-avg').textContent = '4.4 km/day';
-  document.getElementById('eng-note').innerHTML = 'Best post: <strong style="color:#8b5cf6">Bruno\'s park walk 🐾</strong>';
+  var _uname = (function(){try{var u=JSON.parse(localStorage.getItem('pb_user')||'{}');return (u.full_name||u.name||'').split(' ')[0]||'Your pet';}catch(e){return 'Your pet';}}());
+  document.getElementById('eng-note').innerHTML = 'Best post: <strong style="color:#8b5cf6">'+_uname+'\'s park walk 🐾</strong>';
 
-  var defs = {s_walk:'4.2 km', s_followers:'248', s_engage:'234', s_vet:'6'};
-  var cols  = {s_walk:'#1a4db3', s_followers:'#10b981', s_engage:'#8b5cf6', s_vet:'#f59e0b'};
+  var defs = {'s-walk':'4.2 km', 's-followers':'248', 's-engage':'234', 's-vet':'6'};
+  var cols  = {'s-walk':'#1a4db3', 's-followers':'#10b981', 's-engage':'#8b5cf6', 's-vet':'#f59e0b'};
   ['s-walk','s-followers','s-engage','s-vet'].forEach(function(id){
     var el = document.getElementById(id);
+    if(!el) return;
     el.className = 'stat-val';
-    el.style.cssText = 'color:'+cols[id.replace('-','_')];
-    el.textContent = defs[id.replace('-','_')];
+    el.style.cssText = 'color:'+cols[id];
+    el.textContent = defs[id];
   });
   document.getElementById('s-walk-tr').innerHTML    = '<i class="ti ti-trending-up" style="font-size:14px"></i> +0.5 km vs last month';
   document.getElementById('s-foll-tr').innerHTML    = '<i class="ti ti-trending-up" style="font-size:14px"></i> +12 this month';
@@ -430,7 +432,8 @@ function showDefaults(){
 }
 
 /* ── main load ── */
-function loadAnalytics(){
+function loadAnalytics(period){
+  period = period || '7d';
   // Always render defaults immediately
   showDefaults();
 
@@ -438,7 +441,7 @@ function loadAnalytics(){
   var token = localStorage.getItem('pb_token');
   if(!token) return;
 
-  fetch(API_BASE+'/analytics/me', {headers:authHeaders()})
+  fetch(API_BASE+'/analytics/me?period='+period, {headers:authHeaders()})
     .then(function(r){return r.json();})
     .then(function(resp){
       if(!resp.success || !resp.data) return;
@@ -488,13 +491,24 @@ function loadAnalytics(){
     .catch(function(){}); // silently keep defaults on error
 }
 
-loadAnalytics();
+// ── Personalise hero title from stored user ─────────────────
+(function(){
+  try {
+    var u = JSON.parse(localStorage.getItem('pb_user') || '{}');
+    var name = (u.full_name || u.name || '').split(' ')[0];
+    if (name) document.getElementById('hero-title').textContent = name + '\'s Dashboard';
+  } catch(e){}
+})();
+
+var _currentPeriod = '7d';
+loadAnalytics(_currentPeriod);
 
 /* ── period switcher ── */
 function setPeriod(p, btn) {
   document.querySelectorAll('.pbtn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  toast('Showing '+btn.textContent+' data');
+  _currentPeriod = p;
+  loadAnalytics(p);
 }
 
 function toast(msg) {
@@ -571,7 +585,7 @@ function closeDrawer(){document.getElementById('drawer-panel').classList.remove(
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
