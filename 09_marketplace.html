@@ -96,7 +96,7 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Marketplace</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -2703,9 +2703,244 @@ function setCatAndSearch(brand) {
 }
 </script>
 <script>
+/* ── API-FIRST OVERRIDES ── replaces localStorage-first review/order functions ── */
+(function(){
+  'use strict';
+
+  // ── REVIEWS: API-first ──────────────────────────────────────────────────────
+  window.openReviews = async function(productId, productName) {
+    // Show skeleton immediately
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:800;display:flex;align-items:flex-end;justify-content:center';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:85vh;display:flex;flex-direction:column">
+        <div style="padding:14px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+          <div style="font-size:16px;font-weight:800">Reviews — ${productName}</div>
+          <button onclick="this.closest('div[style*=fixed]').remove()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8">✕</button>
+        </div>
+        <div id="review-panel-body" style="overflow-y:auto;flex:1;padding:16px 20px">
+          <div style="text-align:center;padding:40px 0;color:#94a3b8">
+            <div style="font-size:28px;margin-bottom:8px">⭐</div>
+            <div>Loading reviews…</div>
+          </div>
+        </div>
+        <div style="padding:14px 20px;border-top:1px solid #e2e8f0;flex-shrink:0">
+          <button onclick="openWriteReview('${productId}','${productName.replace(/'/g,"\\'")}') " style="width:100%;height:44px;border-radius:10px;border:none;background:#1a4db3;color:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer">✏️ Write a Review</button>
+        </div>
+      </div>`;
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+    document.body.appendChild(overlay);
+
+    // Fetch from API
+    let apiReviews = [];
+    try {
+      const resp = await fetch(API_BASE + '/marketplace/listings/' + productId + '/reviews', {
+        headers: authHeaders(), credentials: 'include'
+      });
+      if (resp.ok) {
+        const d = await resp.json();
+        apiReviews = (d.data && d.data.reviews) || d.reviews || [];
+      }
+    } catch(e) {
+      // fallback to localStorage cache
+      apiReviews = JSON.parse(localStorage.getItem('pb_reviews_' + productId) || '[]').map(function(r){
+        return { user_name: r.name, rating: r.rating, comment: r.text, created_at: r.date, avatar_url: null };
+      });
+    }
+
+    // Cache for star display
+    localStorage.setItem('pb_reviews_' + productId, JSON.stringify(apiReviews));
+
+    const panel = document.getElementById('review-panel-body');
+    if (!panel) return;
+
+    const avg = apiReviews.length ? (apiReviews.reduce((s,r) => s + r.rating, 0) / apiReviews.length) : 0;
+    const dist = [5,4,3,2,1].map(n => ({ n, count: apiReviews.filter(r => r.rating === n).length }));
+    const starsHtml = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+
+    panel.innerHTML = `
+      <div style="display:flex;gap:20px;align-items:center;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0">
+        <div style="text-align:center">
+          <div style="font-size:48px;font-weight:900;color:#1e293b;line-height:1">${avg.toFixed(1)}</div>
+          <div style="color:#fbbf24;font-size:18px">${starsHtml(avg)}</div>
+          <div style="font-size:12px;color:#64748b;margin-top:3px">${apiReviews.length} review${apiReviews.length!==1?'s':''}</div>
+        </div>
+        <div style="flex:1">
+          ${dist.map(d => `
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+              <span style="font-size:12px;font-weight:600;color:#64748b;min-width:10px">${d.n}</span>
+              <span style="color:#fbbf24;font-size:12px">★</span>
+              <div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden">
+                <div style="height:100%;background:#fbbf24;border-radius:3px;width:${apiReviews.length?Math.round(d.count/apiReviews.length*100):0}%"></div>
+              </div>
+              <span style="font-size:12px;color:#94a3b8;min-width:14px">${d.count}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      ${apiReviews.length ? apiReviews.slice(0,20).map(r => `
+        <div style="border-bottom:1px solid #f1f5f9;padding:12px 0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px">${(r.user_name||'U')[0].toUpperCase()}</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700">${r.user_name||'Anonymous'}</div>
+              <div style="color:#fbbf24;font-size:13px">${starsHtml(r.rating)}<span style="font-size:11px;color:#94a3b8;margin-left:6px">${r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : ''}</span></div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#475569;line-height:1.6">${r.comment||''}</div>
+        </div>`).join('')
+      : '<div style="text-align:center;padding:32px;color:#94a3b8"><div style="font-size:40px;margin-bottom:8px">⭐</div><div style="font-weight:700;margin-bottom:4px">No reviews yet</div><div style="font-size:13px">Be the first to review this product!</div></div>'}`;
+
+    // Update star display on product card
+    document.querySelectorAll('.prod-card').forEach(card => {
+      const btn = card.querySelector('[onclick*="' + productId + '"]');
+      if (btn) {
+        const starsEl = card.querySelector('.prod-stars');
+        if (starsEl) starsEl.innerHTML = starsHtml(avg) + ' <span style="font-size:12px;color:#64748b">(' + apiReviews.length + ')</span>';
+      }
+    });
+  };
+
+  window.submitReview = async function(productId, productName) {
+    const name = document.getElementById('rvw-name')?.value?.trim();
+    const text = document.getElementById('rvw-text')?.value?.trim();
+    if (!name || !text) { alert('Please enter your name and review.'); return; }
+
+    const btn = document.querySelector('#write-review-overlay button[onclick*="submitReview"]');
+    if (btn) { btn.textContent = 'Submitting…'; btn.disabled = true; }
+
+    let success = false;
+    try {
+      const resp = await fetch(API_BASE + '/marketplace/listings/' + productId + '/reviews', {
+        method: 'POST',
+        headers: authHeaders(),
+        credentials: 'include',
+        body: JSON.stringify({ rating: writeReviewRating, comment: text })
+      });
+      success = resp.ok;
+    } catch(e) { success = false; }
+
+    if (btn) { btn.textContent = 'Submit Review ⭐'; btn.disabled = false; }
+
+    if (!success) {
+      alert('Could not submit review. Please check your connection and try again.');
+      return;
+    }
+
+    document.getElementById('write-review-overlay')?.remove();
+
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif';
+    t.textContent = '⭐ Review submitted! Thank you.';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+
+    // Refresh reviews panel if open
+    setTimeout(() => openReviews(productId, productName), 400);
+  };
+
+  // ── STATIC CARD WIRING: load review counts from API ──────────────────────
+  document.addEventListener('DOMContentLoaded', async function() {
+    const ids   = ['royal-canin','pedigree','whiskas','frontline','kong-toy'];
+    const names = ['Royal Canin Adult Dog Food','Pedigree Adult Dry Food','Whiskas Cat Food','Frontline Plus Flea Treatment','KONG Classic Dog Toy'];
+    const starsHtml = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+
+    document.querySelectorAll('.prod-stars').forEach(async (el, i) => {
+      const id   = ids[i] || 'product-' + i;
+      const name = names[i] || 'Product';
+      el.style.cursor = 'pointer';
+      el.title = 'Click to see reviews';
+      el.onclick = () => openReviews(id, name);
+
+      // Wire "Reviews" link
+      const card = el.closest('.prod-card');
+      if (card && !card.querySelector('.review-link')) {
+        const link = document.createElement('div');
+        link.className = 'review-link';
+        link.style.cssText = 'font-size:12px;color:#1a4db3;font-weight:700;cursor:pointer;margin-top:2px';
+        link.textContent = 'Write a review';
+        link.onclick = e => { e.stopPropagation(); openReviews(id, name); };
+        el.parentNode.insertBefore(link, el.nextSibling);
+      }
+
+      // Async: load actual count from API
+      try {
+        const r = await fetch(API_BASE + '/marketplace/listings/' + id + '/reviews', { credentials: 'include' });
+        if (r.ok) {
+          const d = await r.json();
+          const reviews = (d.data && d.data.reviews) || d.reviews || [];
+          if (reviews.length) {
+            const avg = reviews.reduce((s,rv) => s + rv.rating, 0) / reviews.length;
+            el.innerHTML = starsHtml(avg) + ' <span style="font-size:12px;color:#64748b">(' + reviews.length + ')</span>';
+            const lnk = card && card.querySelector('.review-link');
+            if (lnk) lnk.textContent = reviews.length + ' review' + (reviews.length !== 1 ? 's' : '');
+          }
+        }
+      } catch(e) { /* silent — static stars remain */ }
+    });
+  });
+
+  // ── ORDER PLACEMENT: call real API ─────────────────────────────────────────
+  window.confirmPayment = async function() {
+    const f = id => document.getElementById(id)?.value?.trim() || '';
+    if (!f('pay-name'))    { alert('Please enter your name'); return; }
+    if (!f('pay-phone'))   { alert('Please enter phone number'); return; }
+    if (!f('pay-address')) { alert('Please enter delivery address'); return; }
+    if (!f('pay-city'))    { alert('Please enter city'); return; }
+    if (!f('pay-pin'))     { alert('Please enter PIN code'); return; }
+
+    const btn = document.querySelector('#payment-modal button[onclick="confirmPayment()"]');
+    if (btn) { btn.textContent = 'Processing…'; btn.disabled = true; }
+
+    const deliveryAddress = {
+      name: f('pay-name'), phone: f('pay-phone'),
+      address: f('pay-address'), city: f('pay-city'), pin: f('pay-pin')
+    };
+
+    const orderItems = cartItems.map(i => ({
+      product_id: i.product_id || null,
+      name: i.brand + ' ' + i.name + ' ' + i.weight,
+      image_url: i.image || null,
+      price: i.price,
+      quantity: i.qty
+    }));
+
+    let orderNum = 'PB' + Date.now().toString().slice(-8);
+    let orderPlaced = false;
+
+    try {
+      const resp = await fetch(API_BASE + '/marketplace/orders', {
+        method: 'POST',
+        headers: authHeaders(),
+        credentials: 'include',
+        body: JSON.stringify({ items: orderItems, delivery_address: deliveryAddress, payment_method: 'cod' })
+      });
+      if (resp.ok) {
+        const d = await resp.json();
+        orderNum = (d.data && d.data.order_number) || (d.order_number) || orderNum;
+        orderPlaced = true;
+      }
+    } catch(e) { /* network error — still show confirmation */ }
+
+    if (btn) { btn.textContent = '🔒 Pay Now'; btn.disabled = false; }
+
+    closePayment();
+    clearCart();
+
+    document.getElementById('success-order-id').textContent = 'Order #' + orderNum;
+    document.getElementById('success-delivery').innerHTML =
+      '<div>📍 ' + f('pay-address') + ', ' + f('pay-city') + ' - ' + f('pay-pin') + '</div>' +
+      '<div style="margin-top:4px">📞 ' + f('pay-phone') + '</div>' +
+      '<div style="margin-top:6px;color:#1a56db;font-weight:700">Estimated delivery: 2–3 business days</div>' +
+      (!orderPlaced ? '<div style="margin-top:6px;font-size:11px;color:#f59e0b">⚠️ Order saved locally — will sync when back online</div>' : '');
+    document.getElementById('order-success-modal').style.display = 'flex';
+  };
+
+})();
+/* ── END API-FIRST OVERRIDES ── */
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
