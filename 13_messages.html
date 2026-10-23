@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Messages</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -184,8 +184,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1c1e21}
 @keyframes spin{to{transform:rotate(360deg)}}
 .emsg{padding:16px;text-align:center;color:var(--muted);font-size:13px}
 </style>
-<script src="api.js"></script>
-<script src="socket.js"></script>
+<script src="api.js?v=2"></script>
 </head>
 <body>
 <div id="nav-ph">
@@ -453,17 +452,11 @@ async function loadConvs(){
     </div>`).join('');
 }
 async function openConv(id, name, username, avatar, type){
-  // Leave old conversation via Socket.io
-  if(activeId && typeof PawSocket !== 'undefined') PawSocket.leaveConversation(activeId);
   clearInterval(pollId); lastId=null;
   activeId=id; activeType=type;
   renderChatShell(name, username, avatar, type);
   await loadMsgs(type);
-  // Join new conversation via Socket.io for real-time messages
-  if(typeof PawSocket !== 'undefined'){
-    PawSocket.joinConversation(id);
-    PawSocket.markRead(id);
-  }
+  pollId = setInterval(()=>pollMsgs(type), 3000);
   if(type==='dm') loadConvs();
   else loadGroupConvs();
 }
@@ -477,8 +470,7 @@ function renderChatShell(name, username, avatar, type){
       <div class="chd-av">${avHTML}</div>
       <div>
         <div class="chd-name">${esc(name)}</div>
-        <div class="chd-sub" id="chd-sub-text">${isGrp?'Group chat · tap ➕ to add members':'@'+esc(username)}</div>
-        <div id="typing-indicator" style="display:none;font-size:11px;color:var(--blue);font-style:italic;margin-top:1px">typing…</div>
+        <div class="chd-sub">${isGrp?'Group chat · tap ➕ to add members':'@'+esc(username)}</div>
       </div>
       <div class="chd-acts">
         ${isGrp?`<button class="ic-btn" title="Add members" onclick="openAddMemModal()"><i class="ti ti-user-plus"></i></button>`:''}
@@ -493,7 +485,7 @@ function renderChatShell(name, username, avatar, type){
     <div class="cfoot">
       <textarea class="cinput" id="cinp" placeholder="Write a message…" rows="1"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
-        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';_onTypingInput()"></textarea>
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
       <button class="send-btn" onclick="sendMsg()"><i class="ti ti-send"></i></button>
     </div>`;
 }
@@ -562,9 +554,6 @@ async function sendMsg(){
   const content=inp.value.trim(); if(!content) return;
   if(editState){ await doEdit(content); return; }
   inp.value=''; inp.style.height='auto';
-  // Stop typing indicator
-  if(typeof PawSocket !== 'undefined') PawSocket.sendTyping(activeId, false);
-  clearTimeout(_typingStopTimer);
   // optimistic
   const el=document.getElementById('cbody');
   const tid='tmp'+Date.now();
@@ -582,9 +571,7 @@ async function sendMsg(){
   else alert('Failed to send: '+r.message);
 }
 function closeChat(){
-  clearInterval(pollId);
-  if(activeId && typeof PawSocket !== 'undefined') PawSocket.leaveConversation(activeId);
-  activeId=null; activeType=null;
+  clearInterval(pollId); activeId=null; activeType=null;
   document.getElementById('chat-pane').innerHTML=`<div class="empty">
     <div class="empty-icon"><i class="ti ti-messages"></i></div>
     <p>Your messages</p><span>Select a person or conversation to start chatting</span>
@@ -770,81 +757,16 @@ const closeM = id => document.getElementById(id).classList.remove('open');
 document.querySelectorAll('.mbg').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
 
 // ══════════════════════════════════════════════════════════
-// TYPING INDICATOR HELPERS
-// ══════════════════════════════════════════════════════════
-var _typingStopTimer = null;
-function _onTypingInput(){
-  if(!activeId || typeof PawSocket === 'undefined') return;
-  PawSocket.sendTyping(activeId, true);
-  clearTimeout(_typingStopTimer);
-  _typingStopTimer = setTimeout(()=>{ PawSocket.sendTyping(activeId, false); }, 2000);
-}
-
-// ══════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════
 loadPeople();
 loadGroupConvs();
-// Reduced to 30s refresh; real-time is handled by Socket.io
-setInterval(()=>{ loadConvs(); loadGroupConvs(); }, 30000);
-
-// ── Socket.io real-time wiring ─────────────────────────────
-document.addEventListener('DOMContentLoaded', function(){
-  if(typeof PawSocket === 'undefined') return;
-
-  // New message received
-  PawSocket.on('new_message', function(msg){
-    const convId = msg.conversation_id || msg.group_conversation_id;
-    if(convId === activeId){
-      // Append new message without full re-render
-      pollMsgs(activeType);
-    } else {
-      // Update conversation list to show unread badge
-      loadConvs();
-      loadGroupConvs();
-    }
-  });
-
-  // Typing indicator
-  PawSocket.on('typing', function(data){
-    if(data.conversation_id !== activeId && data.group_conversation_id !== activeId) return;
-    const indicator = document.getElementById('typing-indicator');
-    const subText   = document.getElementById('chd-sub-text');
-    if(!indicator) return;
-    if(data.is_typing){
-      indicator.textContent = (data.username || 'Someone') + ' is typing…';
-      indicator.style.display = 'block';
-      if(subText) subText.style.display = 'none';
-    } else {
-      indicator.style.display = 'none';
-      if(subText) subText.style.display = 'block';
-    }
-  });
-
-  // Online / offline presence — update dots in people list
-  PawSocket.on('user_online', function(data){
-    document.querySelectorAll('[data-uid="' + data.user_id + '"] .online-dot').forEach(function(dot){
-      dot.classList.add('online');
-    });
-  });
-  PawSocket.on('user_offline', function(data){
-    document.querySelectorAll('[data-uid="' + data.user_id + '"] .online-dot').forEach(function(dot){
-      dot.classList.remove('online');
-    });
-  });
-
-  // Mark read when window gets focus on active conversation
-  document.addEventListener('visibilitychange', function(){
-    if(!document.hidden && activeId && typeof PawSocket !== 'undefined'){
-      PawSocket.markRead(activeId);
-    }
-  });
-});
+setInterval(()=>{ loadConvs(); loadGroupConvs(); }, 10000);
 </script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
