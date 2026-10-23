@@ -703,11 +703,13 @@ async function handleGoogleCredential(response) {
     const res = await fetch(`${API_BASE}/auth/google`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ id_token: response.credential }),
     });
 
     const data = await res.json();
 
+    console.log('[Google OAuth] response:', JSON.stringify(data).substring(0, 200));
     if (data.success) {
       // Store auth (same way as normal login via AuthAPI)
       if (data.data?.token) localStorage.setItem('pb_token', data.data.token);
