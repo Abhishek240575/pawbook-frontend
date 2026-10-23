@@ -710,9 +710,10 @@ async function handleGoogleCredential(response) {
 
     if (data.success) {
       // Store auth (same way as normal login via AuthAPI)
-      localStorage.setItem('token',   data.data.token);
-      localStorage.setItem('refresh', data.data.refresh);
-      localStorage.setItem('user',    JSON.stringify(data.data.user));
+      if (data.data?.token) localStorage.setItem('pb_token', data.data.token);
+      if (data.data?.refresh) localStorage.setItem('pb_refresh', data.data.refresh);
+      if (data.data?.user) localStorage.setItem('pb_user', JSON.stringify(data.data.user));
+      console.log('[Google OAuth] pb_token saved:', localStorage.getItem('pb_token')?.substring(0,20));
       location.href = '07_home.html';
     } else {
       err.textContent = data.message || 'Google sign-in failed. Please try again.';
