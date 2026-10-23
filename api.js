@@ -21,11 +21,13 @@ function authHeaders() {
 
 async function request(method, path, body, auth = true) {
   const headers = { 'Content-Type': 'application/json' };
+  // Include Bearer token for backward-compat (mobile/Postman); cookie is preferred by server
   if (auth && getToken()) headers['Authorization'] = 'Bearer ' + getToken();
   try {
     const res = await fetch(API_BASE + path, {
       method,
       headers,
+      credentials: 'include',   // send httpOnly pb_token cookie automatically
       body: body ? JSON.stringify(body) : undefined,
     });
     const data = await res.json();
@@ -58,10 +60,19 @@ const Auth = {
     return res;
   },
   async me() { return get('/auth/me'); },
-  logout() { clearToken(); window.location.href = '01_login.html'; },
+  async logout() {
+    try { await post('/auth/logout', {}, false); } catch(e) { /* non-fatal */ }
+    clearToken();
+    window.location.href = '01_login.html';
+  },
   require() {
+    // Logged-in if we have a stored user OR a Bearer token (cookie is invisible to JS)
     if (!this.isLoggedIn()) { window.location.href = '01_login.html'; return false; }
     return true;
+  },
+  isLoggedIn() {
+    // Token in localStorage OR pb_user (means we authenticated this session)
+    return !!getToken() || !!localStorage.getItem('pb_user');
   },
   currentUser() {
     try { return JSON.parse(localStorage.getItem('pb_user') || 'null'); }
@@ -182,9 +193,12 @@ const MediaAPI = {
   delete:     (id)     => del(`/media/${id}`),
   upload:     async (file) => {
     const fd = new FormData(); fd.append('file', file);
+    const headers = {};
+    if (getToken()) headers['Authorization'] = 'Bearer ' + getToken();
     const res = await fetch(API_BASE + '/media/upload', {
       method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + getToken() },
+      headers,
+      credentials: 'include',
       body: fd
     });
     return res.json();
