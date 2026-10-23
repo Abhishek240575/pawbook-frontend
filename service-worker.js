@@ -3,7 +3,7 @@
  * Strategy: Network-first for API, Cache-first for static assets
  */
 
-const CACHE_NAME = 'pawbook-v1';
+const CACHE_NAME = 'pawbook-v2';
 const API_ORIGIN = 'https://pawbook-api-cquc.onrender.com';
 
 const STATIC_ASSETS = [
