@@ -131,7 +131,7 @@ const PostAPI = {
   delete:    (id)          => del(`/posts/${id}`),
   react:     (id, type)    => post(`/posts/${id}/react`, { reaction_type: type||'love' }),
   comments:  (id, page)    => get(`/posts/${id}/comments?page=${page||1}`),
-  addComment: (id, text) => post(/posts/+id+/comments, {content:text}, true),
+  addComment: (id, text) => post(`/posts/${id}/comments`, {content:text}, true),
   comment: (id, text) => post(`/posts/${id}/comments`, { body: text }),
   deleteComment: (cid)     => del(`/posts/comments/${cid}`),
   save:      (id)          => post(`/saved/${id}`),
