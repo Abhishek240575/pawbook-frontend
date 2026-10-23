@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Travel – PawBook</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+:root{--primary:#ff6b35;--primary-light:#fff3ee;--card-bg:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--radius:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f8f9fb;color:var(--text);padding-bottom:80px}
+.top-bar{background:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text)}
+.top-bar h1{font-size:18px;font-weight:700}
+.top-bar .add-btn{margin-left:auto;background:var(--primary);color:#fff;border:none;border-radius:50px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer}
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);padding:0 20px}
+.tab{flex:1;text-align:center;padding:14px 0;font-size:14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;transition:.2s}
+.tab.active{color:var(--primary);border-color:var(--primary)}
+.section{padding:20px;display:none}
+.section.active{display:block}
+
+/* My Plans */
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-state .icon{font-size:64px;margin-bottom:12px}
+.empty-state p{font-size:15px}
+.plan-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:14px;overflow:hidden}
+.plan-card-header{padding:16px;display:flex;align-items:center;gap:12px}
+.plan-icon{width:48px;height:48px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.plan-info{flex:1}
+.plan-info h3{font-size:16px;font-weight:700;margin-bottom:2px}
+.plan-info .meta{font-size:13px;color:var(--muted)}
+.plan-status{padding:4px 12px;border-radius:50px;font-size:12px;font-weight:600}
+.status-planned{background:#eff6ff;color:#2563eb}
+.status-ongoing{background:#fef3c7;color:#d97706}
+.status-completed{background:#ecfdf5;color:#059669}
+.plan-card-body{padding:0 16px 16px;border-top:1px solid var(--border);padding-top:14px}
+.plan-detail-row{display:flex;gap:20px;flex-wrap:wrap}
+.plan-detail{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.plan-actions{display:flex;gap:8px;margin-top:14px}
+.btn-sm{padding:6px 14px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:#fff}
+.btn-sm.danger{color:#ef4444;border-color:#fecaca}
+.btn-sm.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* Destinations */
+.dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dest-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;cursor:pointer}
+.dest-img{width:100%;height:120px;object-fit:cover;background:linear-gradient(135deg,#ff6b35,#ff9a5c);display:flex;align-items:center;justify-content:center;font-size:40px}
+.dest-info{padding:12px}
+.dest-info h4{font-size:14px;font-weight:700;margin-bottom:4px}
+.dest-info p{font-size:12px;color:var(--muted);line-height:1.4}
+.dest-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.dest-tag{background:var(--primary-light);color:var(--primary);font-size:11px;padding:3px 8px;border-radius:50px;font-weight:600}
+.save-btn{background:none;border:none;font-size:20px;cursor:pointer;float:right;margin-top:-4px}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:24px 24px 0 0;padding:24px 20px 40px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:20px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--muted)}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-size:14px;outline:none;font-family:inherit}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-footer{display:flex;gap:10px;margin-top:20px}
+.modal-footer button{flex:1;padding:14px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;border:none}
+.btn-cancel{background:#f3f4f6;color:var(--text)}
+.btn-save{background:var(--primary);color:#fff}
+
+/* Tips */
+.tip-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start}
+.tip-icon{font-size:28px;flex-shrink:0}
+.tip-text h4{font-size:14px;font-weight:700;margin-bottom:4px}
+.tip-text p{font-size:13px;color:var(--muted);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <h1>✈️ Pet Travel</h1>
+  <button class="add-btn" onclick="openModal()">+ Plan Trip</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('plans',this)">My Plans</div>
+  <div class="tab" onclick="switchTab('destinations',this)">Destinations</div>
+  <div class="tab" onclick="switchTab('tips',this)">Travel Tips</div>
+</div>
+
+<!-- MY PLANS -->
+<div id="tab-plans" class="section active">
+  <div id="plans-list">
+    <div class="empty-state">
+      <div class="icon">🗺️</div>
+      <p>No travel plans yet.<br>Plan your first trip with your pet!</p>
+    </div>
+  </div>
+</div>
+
+<!-- DESTINATIONS -->
+<div id="tab-destinations" class="section">
+  <div class="dest-grid" id="dest-grid">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- TIPS -->
+<div id="tab-tips" class="section">
+  <div class="tip-card">
+    <div class="tip-icon">📋</div>
+    <div class="tip-text">
+      <h4>Visit the Vet First</h4>
+      <p>Get a health certificate and ensure vaccinations are up to date at least 10 days before travel.</p>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🎒</div>
+    <div class="tip-text">
+      <h4>Pack a Pet Travel Kit</h4>
+      <p>Bring food, water, bowls, leash, waste bags, medications, and a first aid kit for your pet.</p>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🚗</div>
+    <div class="tip-text">
+      <h4>Car Safety</h4>
+      <p>Use a pet carrier or seat belt harness. Never let pets ride with their heads out the window.</p>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🏨</div>
+    <div class="tip-text">
+      <h4>Book Pet-Friendly Hotels</h4>
+      <p>Always confirm pet policies before booking. Many hotels in India now welcome pets with a deposit.</p>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">✈️</div>
+    <div class="tip-text">
+      <h4>Flying with Pets</h4>
+      <p>Check airline pet policies. Most Indian airlines allow pets in cabin (under 7 kg) or cargo. Book early.</p>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🌡️</div>
+    <div class="tip-text">
+      <h4>Watch the Weather</h4>
+      <p>Avoid travelling to hot destinations in summer with brachycephalic breeds (Pugs, Bulldogs, Persians).</p>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🏷️</div>
+    <div class="tip-text">
+      <h4>ID Tags & Microchip</h4>
+      <p>Ensure your pet has a current ID tag and is microchipped — essential if they get lost during travel.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PLAN MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>🗺️ Plan a Trip</h2>
+    <div class="form-group">
+      <label>Destination *</label>
+      <input type="text" id="f-destination" placeholder="e.g. Manali, Goa, Coorg">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Travel Date</label>
+        <input type="date" id="f-travel-date">
+      </div>
+      <div class="form-group">
+        <label>Return Date</label>
+        <input type="date" id="f-return-date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Transport</label>
+        <select id="f-transport">
+          <option value="car">Car</option>
+          <option value="train">Train</option>
+          <option value="flight">Flight</option>
+          <option value="bus">Bus</option>
+          <option value="bike">Bike</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Pet</label>
+        <select id="f-pet"><option value="">Select pet</option></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Accommodation</label>
+      <input type="text" id="f-accommodation" placeholder="Hotel, Homestay, etc.">
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea id="f-notes" placeholder="Packing list, special requirements…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="savePlan()">Save Plan</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+const API = window.API_BASE || 'https://pawbook-api-cquc.onrender.com/api/v1';
+const token = localStorage.getItem('pb_token');
+let plans = [];
+
+const DESTINATIONS = [
+  { name:'Manali', emoji:'🏔️', desc:'Himachal Pradesh — snow & pine forests', tags:['Hills','Dog-friendly','Adventure'] },
+  { name:'Goa',    emoji:'🏖️', desc:'Beaches, shacks & pet-friendly resorts', tags:['Beach','Relaxing','Social'] },
+  { name:'Coorg',  emoji:'🌿', desc:'Coffee estates & misty trails in Karnataka', tags:['Nature','Walks','Cool'] },
+  { name:'Mussoorie', emoji:'🌄', desc:'Queen of Hills — great trails & fresh air', tags:['Hills','Walks','Views'] },
+  { name:'Pondicherry', emoji:'🏡', desc:'French-quarter charm, cafes & beaches', tags:['Beach','Cafes','Culture'] },
+  { name:'Munnar', emoji:'☕', desc:'Tea gardens & waterfalls in Kerala', tags:['Nature','Cool','Scenic'] },
+];
+
+async function loadPlans() {
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/travel`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    plans = Array.isArray(data) ? data : (data.plans || []);
+    renderPlans();
+  } catch(e) { console.error(e); }
+}
+
+function renderPlans() {
+  const el = document.getElementById('plans-list');
+  if (!plans.length) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">🗺️</div><p>No travel plans yet.<br>Plan your first trip with your pet!</p></div>`;
+    return;
+  }
+  el.innerHTML = plans.map(p => `
+    <div class="plan-card">
+      <div class="plan-card-header">
+        <div class="plan-icon">${transportIcon(p.transport)}</div>
+        <div class="plan-info">
+          <h3>${p.destination}</h3>
+          <div class="meta">${p.pet_name ? '🐾 '+p.pet_name+' · ' : ''}${formatDate(p.travel_date)}</div>
+        </div>
+        <span class="plan-status status-${p.status||'planned'}">${(p.status||'Planned')}</span>
+      </div>
+      <div class="plan-card-body">
+        <div class="plan-detail-row">
+          ${p.transport ? `<div class="plan-detail">🚗 ${p.transport}</div>` : ''}
+          ${p.return_date ? `<div class="plan-detail">📅 Return: ${formatDate(p.return_date)}</div>` : ''}
+          ${p.accommodation ? `<div class="plan-detail">🏨 ${p.accommodation}</div>` : ''}
+        </div>
+        ${p.notes ? `<p style="font-size:13px;color:#6b7280;margin-top:10px">${p.notes}</p>` : ''}
+        <div class="plan-actions">
+          <button class="btn-sm" onclick="markStatus(${p.id},'ongoing')">Start Trip</button>
+          <button class="btn-sm primary" onclick="markStatus(${p.id},'completed')">Mark Done</button>
+          <button class="btn-sm danger" onclick="deletePlan(${p.id})">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderDestinations() {
+  document.getElementById('dest-grid').innerHTML = DESTINATIONS.map(d => `
+    <div class="dest-card">
+      <div class="dest-img">${d.emoji}</div>
+      <div class="dest-info">
+        <button class="save-btn" title="Save">🔖</button>
+        <h4>${d.name}</h4>
+        <p>${d.desc}</p>
+        <div class="dest-tags">${d.tags.map(t=>`<span class="dest-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadPets() {
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/pets/my`, { headers:{ Authorization:`Bearer ${token}` } });
+    const data = await res.json();
+    const pets = data.pets || data || [];
+    const sel = document.getElementById('f-pet');
+    pets.forEach(p => { const o = new Option(p.name, p.id); sel.add(o); });
+  } catch(e) {}
+}
+
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+async function savePlan() {
+  const destination = document.getElementById('f-destination').value.trim();
+  if (!destination) { alert('Please enter a destination'); return; }
+  const body = {
+    destination,
+    travel_date:   document.getElementById('f-travel-date').value || null,
+    return_date:   document.getElementById('f-return-date').value || null,
+    transport:     document.getElementById('f-transport').value,
+    accommodation: document.getElementById('f-accommodation').value.trim(),
+    notes:         document.getElementById('f-notes').value.trim(),
+    pet_id:        document.getElementById('f-pet').value || null,
+  };
+  try {
+    const res = await fetch(`${API}/travel`, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) { closeModal(); loadPlans(); }
+    else { const e = await res.json(); alert(e.message || 'Failed to save plan'); }
+  } catch(e) { alert('Network error'); }
+}
+
+async function markStatus(id, status) {
+  try {
+    await fetch(`${API}/travel/${id}/status`, {
+      method:'PATCH',
+      headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+      body: JSON.stringify({ status })
+    });
+    loadPlans();
+  } catch(e) {}
+}
+
+async function deletePlan(id) {
+  if (!confirm('Delete this travel plan?')) return;
+  try {
+    await fetch(`${API}/travel/${id}`, {
+      method:'DELETE', headers:{ Authorization:`Bearer ${token}` }
+    });
+    loadPlans();
+  } catch(e) {}
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+function transportIcon(t) {
+  return { car:'🚗', train:'🚆', flight:'✈️', bus:'🚌', bike:'🏍️' }[t] || '🗺️';
+}
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+}
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+renderDestinations();
+loadPlans();
+loadPets();
+</script>
+</body>
+</html>
