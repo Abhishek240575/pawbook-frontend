@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -81,7 +81,7 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Home</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -286,7 +286,7 @@ html, body { overflow-x: hidden !important; }
   <div class="topnav-right">
     <button class="nav-icon-btn"><i class="ti ti-grid-dots"></i></button>
     <button class="nav-icon-btn"><i class="ti ti-message-circle"></i></button>
-    <div class="nav-icon-btn" style="position:relative" onclick="window.location.href='12_notifications.html'"><i class="ti ti-bell"></i><span id="home-notif-dot" class="notif-dot" style="position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--blue);display:none"></span><span id="home-notif-count" class="notif-count" style="position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:999px;font-size:10px;font-weight:700;padding:1px 5px;min-width:16px;text-align:center;display:none;border:2px solid #fff"></span></div>
+    <div class="nav-icon-btn" style="position:relative"><i class="ti ti-bell"></i><span style="position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--blue)"></span></div>
     <div class="nav-avatar" id="nav-av" onclick="goTo('08_pet_profile.html')">A</div>
   </div>
 </nav>
@@ -527,23 +527,30 @@ html, body { overflow-x: hidden !important; }
     <div class="card">
       <div class="card-body">
         <div class="card-title">🟢 Active Now <a>See all</a></div>
-        <div class="online-friends" id="online-friends-list">
-          <!-- Populated by Socket.io user_online events; fallback static entries shown initially -->
-          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer" class="of-entry" data-uid="">
+        <div class="online-friends">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
             <div class="of-av"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=80&q=80"><div class="of-dot"></div></div>
             <div class="of-name">Bruno</div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer" class="of-entry" data-uid="">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
             <div class="of-av"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80"><div class="of-dot"></div></div>
             <div class="of-name">Mittens</div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer" class="of-entry" data-uid="">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
             <div class="of-av"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80"><div class="of-dot"></div></div>
             <div class="of-name">Max</div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer" class="of-entry" data-uid="">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
             <div class="of-av"><img src="https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=80&q=80"><div class="of-dot"></div></div>
             <div class="of-name">Luna</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="of-av"><img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=80&q=80"><div class="of-dot"></div></div>
+            <div class="of-name">Buddy</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="of-av"><img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=80&q=80"><div class="of-dot"></div></div>
+            <div class="of-name">Snowball</div>
           </div>
         </div>
       </div>
@@ -624,7 +631,6 @@ html, body { overflow-x: hidden !important; }
 <div class="toast-wrap"></div>
 <script src="api.js"></script>
 <script src="upload.js"></script>
-<script src="socket.js"></script>
 <script>
 function fmt(n) {
   if(!n) return '0';
@@ -750,8 +756,10 @@ async function loadStats(userId){
 
 async function loadFeed(){
   const feed = document.getElementById('feed');
+  var _serverReached = false;
   try {
     const r = await PostAPI.feed(1, 15);
+    _serverReached = true;
     const posts = r?.data || [];
     if(!posts.length) throw new Error('empty');
     // render real posts
@@ -775,7 +783,9 @@ async function loadFeed(){
     })).join('');
   } catch(e) {
     // Show a notice at the top, then render demo posts below
-    var notice = '<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#856404;display:flex;align-items:center;gap:10px"><i class="ti ti-wifi-off" style="font-size:18px;flex-shrink:0"></i><span><b>Showing sample posts</b> — could not reach the server. Log in or check your connection to see real posts.</span></div>';
+    var notice = _serverReached
+      ? '<div style="background:#e0f2fe;border:1px solid #7dd3fc;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#0369a1;display:flex;align-items:center;gap:10px"><i class="ti ti-feather" style="font-size:18px;flex-shrink:0"></i><span><b>Be the first to post!</b> Your feed is empty — share what your pet is up to today 🐾</span></div>'
+      : '<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#856404;display:flex;align-items:center;gap:10px"><i class="ti ti-wifi-off" style="font-size:18px;flex-shrink:0"></i><span><b>Showing sample posts</b> — could not reach the server. Log in or check your connection to see real posts.</span></div>';
     var DEMO = [
       {user:"Priya Sharma",handle:"@priya_pets",time:"2 hours ago",verified:true,av:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80",text:"Luna had her first birthday today! She loved her tuna cake. #CatLife #PawBook",img:"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=85",likes:247,comments:38,shares:12},
       {user:"Rahul Dev",handle:"@rahul_and_max",time:"4 hours ago",verified:false,av:"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80",text:"Max aced his first agility training today! So proud of this champion. #GoldenRetriever #DogTraining",img:"https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=85",likes:189,comments:24,shares:8},
@@ -1131,73 +1141,11 @@ function doSend() {
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
 }
-</script>
-<script>
-// ── Socket.io real-time: notifications + online presence ──────────────────
-(function(){
-  // Helper to update the bell badge
-  function updateBellBadge(count){
-    var dot   = document.getElementById('home-notif-dot');
-    var badge = document.getElementById('home-notif-count');
-    if(count > 0){
-      if(dot)   { dot.style.display   = 'block'; }
-      if(badge) { badge.textContent   = count > 99 ? '99+' : count; badge.style.display = 'block'; }
-    } else {
-      if(dot)   dot.style.display   = 'none';
-      if(badge) badge.style.display = 'none';
-    }
-  }
-
-  // socket.js auto-connects on DOMContentLoaded if pb_token exists.
-  // PawSocket updates .notif-count / .notif-dot elements globally;
-  // we also update our custom #home-notif-dot / #home-notif-count.
-  document.addEventListener('DOMContentLoaded', function(){
-    if(typeof PawSocket === 'undefined') return;
-
-    // Track unread count locally
-    var _unread = 0;
-
-    PawSocket.on('new_notification', function(notif){
-      _unread++;
-      updateBellBadge(_unread);
-      // Optional toast
-      if(typeof toast === 'function'){
-        toast((notif.title || 'New notification'), 'success');
-      }
-    });
-
-    // Online friends from Socket.io — add real users dynamically
-    var _onlineUsers = {};
-    PawSocket.on('user_online', function(data){
-      if(!data.user_id || _onlineUsers[data.user_id]) return;
-      _onlineUsers[data.user_id] = data;
-      var list = document.getElementById('online-friends-list');
-      if(!list) return;
-      var name = (data.full_name || data.username || 'Friend').split(' ')[0];
-      var avatar = data.avatar_url
-        ? '<img src="' + data.avatar_url + '" alt="">'
-        : '<div style="width:100%;height:100%;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px">' + name[0].toUpperCase() + '</div>';
-      var el = document.createElement('div');
-      el.className = 'of-entry';
-      el.setAttribute('data-uid', data.user_id);
-      el.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer';
-      el.innerHTML = '<div class="of-av">' + avatar + '<div class="of-dot"></div></div>'
-                   + '<div class="of-name">' + name + '</div>';
-      list.appendChild(el);
-    });
-
-    PawSocket.on('user_offline', function(data){
-      delete _onlineUsers[data.user_id];
-      var el = document.querySelector('#online-friends-list [data-uid="' + data.user_id + '"]');
-      if(el) el.remove();
-    });
-  });
-})();
 </script>
 </body>
 </html>
