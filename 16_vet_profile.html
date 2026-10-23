@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html><html lang="en"><head>
-<link rel="manifest" href="/manifest.json"><meta charset="UTF-8"><title>PawBook â€” Vet Profile</title>
+<link rel="manifest" href="manifest.json"><meta charset="UTF-8"><title>PawBook â€” Vet Profile</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link rel="stylesheet" href="style.css">
@@ -119,9 +119,156 @@
 </div>
 <script src="api.js"></script><script>function goTo(p){window.location.href=p;}</script>
 <script>
+// ── Load real vet data from API ────────────────────────────────────────────
+(function loadVetProfile(){
+  var params = new URLSearchParams(window.location.search);
+  var vetId  = params.get('vet_id') || params.get('id');
+  if(!vetId) return; // keep static design as fallback
+  var tok = localStorage.getItem('pb_token') || '';
+  var hdrs = {'Authorization':'Bearer '+tok,'Content-Type':'application/json'};
+
+  function stars(n){
+    var r=Math.round(n||0);
+    return '★'.repeat(r)+'☆'.repeat(5-r);
+  }
+  function timeAgo(s){
+    if(!s) return '';
+    var d=Math.floor((Date.now()-new Date(s))/86400000);
+    if(d===0) return 'Today'; if(d===1) return 'Yesterday';
+    if(d<7) return d+' days ago'; if(d<30) return Math.floor(d/7)+' weeks ago';
+    return Math.floor(d/30)+' months ago';
+  }
+
+  fetch(API_BASE+'/vets/'+vetId, {headers:hdrs})
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      var v = res.data || res.vet || res;
+      if(!v || !v.id) return;
+
+      // Update avatar
+      var avEl = document.querySelector('.vet-av-lg img');
+      if(avEl && v.avatar_url) avEl.src = v.avatar_url;
+
+      // Update cover
+      var covEl = document.querySelector('.vet-cover img');
+      if(covEl && v.cover_url) covEl.src = v.cover_url;
+
+      // Name
+      var nameEl = document.querySelector('.vet-card [style*="font-size:24px"]');
+      if(nameEl) nameEl.textContent = v.name || v.full_name || nameEl.textContent;
+
+      // Subtitle
+      var subEl = document.querySelector('.vet-card [style*="font-size:14px"][style*="color:var(--muted)"]');
+      var qual = [v.specialization, v.qualification, (v.years_experience?v.years_experience+' years experience':null)]
+        .filter(Boolean).join(' · ');
+      if(subEl && qual) subEl.textContent = '🩺 ' + qual;
+
+      // Rating
+      var rating = parseFloat(v.avg_rating||v.rating||0).toFixed(1);
+      var reviewCount = v.review_count || v.reviews_count || 0;
+      var ratingContainer = document.querySelector('.vet-card [style*="gap:6px"]');
+      if(ratingContainer){
+        ratingContainer.innerHTML =
+          '<span style="color:#fbbf24;font-size:18px">'+stars(rating)+'</span>'+
+          '<span style="font-weight:700">'+rating+'</span>'+
+          '<span style="color:var(--muted)">('+reviewCount+' reviews)</span>'+
+          (v.is_available!==false?'<span style="background:#dcfce7;color:#16a34a;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:700">● Available</span>':'');
+      }
+
+      // Specializations chips
+      var chips = (v.specializations||v.tags||[]);
+      if(chips.length){
+        var chipsContainer = document.querySelector('.vet-card [style*="flex-wrap:wrap"]');
+        if(chipsContainer){
+          chipsContainer.innerHTML = chips.map(function(c){
+            return '<span style="background:#e7f3ff;color:var(--blue);padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600">'+c+'</span>';
+          }).join('');
+        }
+      }
+
+      // Price
+      var priceEl = document.querySelector('.vet-card [style*="font-size:24px;font-weight:900"]');
+      if(priceEl && v.consultation_fee) priceEl.textContent = '₹'+Number(v.consultation_fee).toLocaleString('en-IN');
+
+      // Location
+      var locEl = document.querySelector('.vet-card [style*="color:#16a34a"]');
+      if(locEl && (v.area||v.city)) locEl.textContent = '📍 '+(v.area||'')+(v.city?', '+v.city:'');
+
+      // About
+      var aboutEl = document.querySelector('[style*="line-height:1.7"]');
+      if(aboutEl && v.bio) aboutEl.textContent = v.bio;
+
+      // About heading
+      var aboutHead = document.querySelector('[style*="font-size:16px;font-weight:800"]');
+      if(aboutHead) aboutHead.textContent = 'About ' + (v.name||'the Vet').split(' ').slice(0,2).join(' ');
+
+      // Big rating number in reviews section
+      var bigRating = document.querySelector('[style*="font-size:36px"]');
+      if(bigRating) bigRating.textContent = rating;
+
+      // Book appointment links: pass vet_id
+      document.querySelectorAll('[onclick*="vet_booking"]').forEach(function(el){
+        el.setAttribute('onclick','goTo("11_vet_booking.html?vet_id='+v.id+'")');
+      });
+
+      // Render Book link in top card
+      var bookBtns = document.querySelectorAll('.btn-blue');
+      bookBtns.forEach(function(b){
+        if(b.textContent.includes('Book')){
+          b.setAttribute('onclick','goTo("11_vet_booking.html?vet_id='+v.id+'")');
+        }
+      });
+    })
+    .catch(function(e){ console.warn('[VetProfile] load failed:',e); });
+
+  // Load reviews
+  fetch(API_BASE+'/vets/'+vetId+'/reviews', {headers:hdrs})
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      var reviews = (res.data||res.reviews||res||[]).slice(0,5);
+      if(!reviews.length) return;
+      var revContainer = document.querySelector('[style*="padding:0 16px"] .review-item');
+      if(!revContainer) return;
+      var parent = revContainer.parentElement;
+      parent.innerHTML = reviews.map(function(rv){
+        var avatar = rv.user_avatar||rv.avatar||'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=60&q=80';
+        var name = rv.user_name||rv.reviewer_name||'PawBook User';
+        var r = Math.round(rv.rating||5);
+        return '<div class="review-item">'+
+          '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
+            '<img src="'+avatar+'" onerror="this.src=\'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=60&q=80\'" style="width:38px;height:38px;border-radius:50%;object-fit:cover">'+
+            '<div><div style="font-weight:700;font-size:14px">'+name+'</div><div style="color:#fbbf24;font-size:14px">'+'★'.repeat(r)+'☆'.repeat(5-r)+'</div></div>'+
+            '<div style="margin-left:auto;font-size:12px;color:var(--muted)">'+timeAgo(rv.created_at)+'</div>'+
+          '</div>'+
+          '<div style="font-size:13px;color:#333">'+(rv.comment||rv.text||'')+'</div>'+
+        '</div>';
+      }).join('');
+    })
+    .catch(function(e){ console.warn('[VetProfile] reviews failed:',e); });
+
+  // Load available slots
+  fetch(API_BASE+'/vets/'+vetId+'/slots', {headers:hdrs})
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      var slots = (res.data||res.slots||res||[]).slice(0,6);
+      if(!slots.length) return;
+      var slotsGrid = document.querySelector('[style*="grid-template-columns:1fr 1fr"]');
+      if(!slotsGrid) return;
+      slotsGrid.innerHTML = slots.map(function(sl,i){
+        var d=new Date(sl.start_time||sl.slot_time||sl.datetime||Date.now());
+        var label=d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})+' '+
+                  d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+        var cls = i===1?'btn-blue':'btn-gray';
+        return '<button class="btn '+cls+' btn-sm" style="padding:10px;font-size:11px" onclick="goTo(\'11_vet_booking.html?vet_id='+vetId+'&slot='+encodeURIComponent(sl.start_time||sl.slot_time||sl.datetime||'')+'\')">'+label+'</button>';
+      }).join('');
+    })
+    .catch(function(e){ console.warn('[VetProfile] slots failed:',e); });
+})();
+</script>
+<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });

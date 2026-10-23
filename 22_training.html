@@ -96,7 +96,7 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Training & Behavior</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -346,9 +346,42 @@ function renderSessions(sessions) {
   document.getElementById('sessions-container').innerHTML = html || '<div style="padding:16px;color:var(--muted)">No sessions found.</div>';
 }
 
-/* ── LOAD TRAINERS (uses static content — no trainer endpoint) ── */
+/* ── LOAD TRAINERS FROM API ─────────────────────────────────────────────────── */
 function loadTrainers() {
-  // Expert trainer cards rendered from static HTML; no API fetch needed
+  var container = document.getElementById('trainers-container');
+  fetch(API_BASE + '/training/trainers', { headers: authHeaders() })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var trainers = d.data || d.trainers || d || [];
+      if(!Array.isArray(trainers) || !trainers.length){
+        // Static fallback cards
+        container.innerHTML = [
+          {name:'Dr. Aryan Kapoor',specialty:'Obedience & Agility',rating:4.9,img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80'},
+          {name:'Kavita Menon',specialty:'Behavioural Therapy',rating:4.8,img:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80'},
+          {name:'Rahul Singh',specialty:'Puppy Training',rating:4.7,img:'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80'}
+        ].map(function(t){ return trainerCard(t); }).join('');
+        return;
+      }
+      container.innerHTML = trainers.slice(0,4).map(function(t){ return trainerCard(t); }).join('');
+    })
+    .catch(function(){
+      container.innerHTML = [
+        {name:'Dr. Aryan Kapoor',specialty:'Obedience & Agility',rating:4.9,img:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80'},
+        {name:'Kavita Menon',specialty:'Behavioural Therapy',rating:4.8,img:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80'}
+      ].map(function(t){ return trainerCard(t); }).join('');
+    });
+}
+
+function trainerCard(t){
+  var img = t.avatar_url || t.profile_image || t.img || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80';
+  var name = t.name || t.full_name || 'Trainer';
+  var spec = t.specialization || t.specialty || 'Pet Training';
+  var rating = parseFloat(t.avg_rating || t.rating || 5).toFixed(1);
+  return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">' +
+    '<img src="'+img+'" onerror="this.src=\'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80\'" style="width:44px;height:44px;border-radius:50%;object-fit:cover">' +
+    '<div style="flex:1"><div style="font-weight:700;font-size:13px">'+name+'</div><div style="font-size:11px;color:var(--muted)">'+spec+'</div></div>' +
+    '<div style="font-size:12px;font-weight:700;color:#fbbf24">★ '+rating+'</div>' +
+  '</div>';
 }
 
 /* ── TOAST ─────────────────────────────────────────── */
@@ -771,7 +804,7 @@ function closeDrawer() {
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });

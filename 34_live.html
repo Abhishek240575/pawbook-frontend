@@ -96,7 +96,7 @@ html,body{overflow-x:hidden!important;max-width:100%!important}
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Live</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -452,8 +452,10 @@ html, body { overflow-x: hidden !important; }
 </div>
 
 <script src="api.js"></script>
+<script src="socket.js"></script>
+<!-- Agora Web SDK v4 — free tier: 10K min/month -->
+<script src="https://cdn.jsdelivr.net/npm/agora-rtc-sdk-ng@4.21.0/AgoraRTC_N-production.min.js"></script>
 <script>
-;}
 function goTo(p){location.href=p;}
 
 const STREAMS=[
@@ -471,144 +473,311 @@ const FAKE_COMMENTS=[
   ['BrunoLover','My dog does this too!! 😂','#d97706'],['CatDad42','What food do you recommend for cats?','#6366f1'],
 ];
 
-let streamInterval=null, commentInterval=null, durationInterval=null;
-let streamSeconds=0, viewerCount=0, heartCount=0;
-let myStream=false;
+/* ── STATE ────────────────────────────────────────────────────────────────── */
+let durationInterval=null, streamSeconds=0, viewerCount=0, heartCount=0;
+let activeStreamId=null, agoraClient=null, localTracks=[], cameraStream=null;
+let socketBound=false;
 
-function openStream(idx){
-  const s=STREAMS[idx];
-  document.getElementById('stream-view').classList.add('active');
-  document.getElementById('stream-bg').src=s.bg;
-  document.getElementById('stream-av').src=s.av;
-  document.getElementById('stream-name').textContent=s.name;
-  document.getElementById('stream-sub').textContent=s.sub;
-  viewerCount=s.viewers;
-  heartCount=Math.floor(s.viewers*1.6);
-  updateStats();
-  streamSeconds=Math.floor(Math.random()*1800);
-  updateDuration();
-  startSimulation();
-}
-function closeStream(){
-  document.getElementById('stream-view').classList.remove('active');
-  clearInterval(streamInterval);
-  clearInterval(commentInterval);
-  clearInterval(durationInterval);
-  document.getElementById('comment-feed').innerHTML='';
-}
+/* ── AGORA CONFIG ─────────────────────────────────────────────────────────── */
+// Agora App ID stored on backend; fetch it at go-live time.
+// Frontend just requests a token from /live/:id/token (backend generates RTC token).
+const AGORA_CHAN_PREFIX='pb_live_';
+
+/* ── HELPERS ──────────────────────────────────────────────────────────────── */
+function fmt(n){if(n>=1000)return(n/1000).toFixed(1)+'K';return String(n);}
+function authHeaders(){var t=localStorage.getItem('pb_token')||'';return{'Authorization':'Bearer '+t,'Content-Type':'application/json'};}
+
 function updateStats(){
   document.getElementById('viewer-count').textContent=fmt(viewerCount);
   document.getElementById('heart-count').textContent=fmt(heartCount);
 }
 function updateDuration(){
-  const m=Math.floor(streamSeconds/60).toString().padStart(2,'0');
-  const s=(streamSeconds%60).toString().padStart(2,'0');
+  var m=Math.floor(streamSeconds/60).toString().padStart(2,'0');
+  var s=(streamSeconds%60).toString().padStart(2,'0');
   document.getElementById('stream-duration').textContent=m+':'+s;
 }
-function startSimulation(){
-  clearInterval(streamInterval);clearInterval(commentInterval);clearInterval(durationInterval);
-  streamInterval=setInterval(()=>{
-    viewerCount+=Math.floor(Math.random()*5-1);
-    heartCount+=Math.floor(Math.random()*8);
-    updateStats();
-  },2000);
-  commentInterval=setInterval(()=>{
-    const c=FAKE_COMMENTS[Math.floor(Math.random()*FAKE_COMMENTS.length)];
-    addComment(c[0],c[1],c[2]);
-  },2500);
-  durationInterval=setInterval(()=>{streamSeconds++;updateDuration();},1000);
-}
-function addComment(author,text,color,isMe=false){
-  const feed=document.getElementById('comment-feed');
-  const div=document.createElement('div');
+function addComment(author,text,color,isMe){
+  var feed=document.getElementById('comment-feed');
+  var div=document.createElement('div');
   div.className='comment-item';
-  div.innerHTML=`
-    <div class="comment-av" style="background:${color||'#1a4db3'}">${author[0]}</div>
-    <div class="comment-bubble">
-      <div class="comment-author" style="color:${isMe?'#60a5fa':'#fbbf24'}">${isMe?'You':author}</div>
-      ${text}
-    </div>`;
+  div.innerHTML='<div class="comment-av" style="background:'+(color||'#1a4db3')+'">'+author[0]+'</div>'
+    +'<div class="comment-bubble"><div class="comment-author" style="color:'+(isMe?'#60a5fa':'#fbbf24')+'">'+(isMe?'You':author)+'</div>'+text+'</div>';
   feed.appendChild(div);
-  while(feed.children.length>6) feed.removeChild(feed.firstChild);
-  feed.scrollTop=feed.scrollHeight;
+  while(feed.children.length>6)feed.removeChild(feed.firstChild);
 }
-function sendStreamComment(){
-  var inp=document.getElementById("stream-input")||document.querySelector(".stream-input");
-  var txt=inp?inp.value.trim():"";
-  var streamId=localStorage.getItem("pb_active_stream_id")||"";
-  if(txt&&streamId){fetch(API_BASE+'/live/'+streamId+'/comments',{method:'POST',headers:authHeaders(),body:JSON.stringify({content:txt})}).catch(function(){});}
 
-  const input=document.getElementById('stream-comment-input');
-  const text=input.value.trim();if(!text)return;
-  input.value='';
-  const user=typeof Auth!=='undefined'?Auth.getUser():null;
-  addComment(user?.full_name||'You',text,'#1a4db3',true);
+/* ── SOCKET.IO LIVE EVENTS ────────────────────────────────────────────────── */
+function bindSocket(streamId){
+  if(socketBound)return;
+  if(typeof PawSocket==='undefined')return;
+  var sock=PawSocket.get();
+  if(!sock)return;
+  socketBound=true;
+  sock.emit('live:join',{stream_id:streamId});
+  sock.on('live:comment',function(d){
+    if(d.stream_id!==streamId)return;
+    addComment(d.author||'Viewer',d.text||'','#6366f1',false);
+  });
+  sock.on('live:reaction',function(d){
+    if(d.stream_id!==streamId)return;
+    heartCount=(d.total_hearts||heartCount+1);
+    updateStats();
+    burstEmoji(d.emoji||'❤️');
+  });
+  sock.on('live:viewer_count',function(d){
+    if(d.stream_id!==streamId)return;
+    viewerCount=d.count||viewerCount;
+    updateStats();
+  });
+  sock.on('live:ended',function(d){
+    if(d.stream_id!==streamId)return;
+    toast('This stream has ended','error');
+    setTimeout(closeStream,2000);
+  });
 }
+function unbindSocket(streamId){
+  socketBound=false;
+  if(typeof PawSocket==='undefined')return;
+  var sock=PawSocket.get();
+  if(!sock)return;
+  sock.emit('live:leave',{stream_id:streamId});
+  sock.off('live:comment');sock.off('live:reaction');
+  sock.off('live:viewer_count');sock.off('live:ended');
+}
+
+/* ── BROWSE → WATCH ───────────────────────────────────────────────────────── */
+function openStream(idx){
+  var s=STREAMS[idx];
+  // Try to fetch real stream from API first; fall back to static data
+  fetch(API_BASE+'/live?limit=10',{headers:authHeaders()})
+    .then(function(r){return r.json();})
+    .then(function(res){
+      var streams=res.data||res.streams||[];
+      var real=streams[idx]||null;
+      if(real){_showStream(real.id,real.host_name||s.name,real.title||s.sub,real.avatar_url||s.av,real.thumbnail||s.bg,real.viewer_count||s.viewers);}
+      else{_showStream(null,s.name,s.sub,s.av,s.bg,s.viewers);}
+    })
+    .catch(function(){_showStream(null,s.name,s.sub,s.av,s.bg,s.viewers);});
+}
+
+function _showStream(streamId,name,sub,av,bg,viewers){
+  activeStreamId=streamId;
+  document.getElementById('stream-view').classList.add('active');
+  var bgEl=document.getElementById('stream-bg');
+  bgEl.src=bg;bgEl.style.display='block';
+  document.getElementById('stream-av').src=av;
+  document.getElementById('stream-name').textContent=name;
+  document.getElementById('stream-sub').textContent=sub;
+  viewerCount=viewers||0;heartCount=Math.floor((viewers||0)*1.6);
+  updateStats();
+  streamSeconds=0;updateDuration();
+  clearInterval(durationInterval);
+  durationInterval=setInterval(function(){streamSeconds++;updateDuration();},1000);
+  // Seed a few static comments so screen isn't empty
+  setTimeout(function(){
+    var c=FAKE_COMMENTS[Math.floor(Math.random()*FAKE_COMMENTS.length)];
+    addComment(c[0],c[1],c[2]);
+  },1200);
+  if(streamId)bindSocket(streamId);
+}
+
+function closeStream(){
+  document.getElementById('stream-view').classList.remove('active');
+  clearInterval(durationInterval);
+  document.getElementById('comment-feed').innerHTML='';
+  if(activeStreamId)unbindSocket(activeStreamId);
+  // If this was our own stream, stop Agora publish
+  if(agoraClient&&localTracks.length){
+    localTracks.forEach(function(t){t.stop();t.close();});
+    localTracks=[];
+    agoraClient.leave().catch(function(){});
+    // POST end to backend
+    if(activeStreamId){
+      fetch(API_BASE+'/live/'+activeStreamId+'/end',{method:'POST',headers:authHeaders()}).catch(function(){});
+    }
+    // Replace Agora video with static bg image again
+    document.getElementById('stream-bg').style.display='block';
+    var vEl=document.getElementById('agora-remote-video');
+    if(vEl)vEl.remove();
+  }
+  activeStreamId=null;
+}
+
+/* ── COMMENT SEND ─────────────────────────────────────────────────────────── */
+function sendStreamComment(){
+  var input=document.getElementById('stream-comment-input');
+  var text=(input.value||'').trim();if(!text)return;
+  input.value='';
+  var user=typeof Auth!=='undefined'?Auth.getUser():null;
+  var name=user?user.full_name||user.name||'You':'You';
+  addComment(name,text,'#1a4db3',true);
+  // Send via socket
+  if(typeof PawSocket!=='undefined'&&activeStreamId){
+    var sock=PawSocket.get();
+    if(sock)sock.emit('live:comment',{stream_id:activeStreamId,text:text,author:name});
+  }
+  // Also POST to REST
+  if(activeStreamId){
+    fetch(API_BASE+'/live/'+activeStreamId+'/comments',{method:'POST',headers:authHeaders(),body:JSON.stringify({content:text})}).catch(function(){});
+  }
+}
+
+/* ── REACTIONS ────────────────────────────────────────────────────────────── */
 function sendReaction(el,emoji){
   el.style.transform='scale(1.5)';
-  setTimeout(()=>el.style.transform='scale(1)',300);
-  heartCount+=Math.floor(Math.random()*10+5);
+  setTimeout(function(){el.style.transform='scale(1)';},300);
+  heartCount+=Math.floor(Math.random()*5+3);
   updateStats();
-  // Float emoji up
-  const burst=document.createElement('div');
-  burst.className='emoji-burst';
-  burst.textContent=emoji;
-  burst.style.left=Math.random()*60+20+'%';
-  burst.style.bottom='120px';
-  document.getElementById('stream-view').appendChild(burst);
-  setTimeout(()=>burst.remove(),2000);
+  burstEmoji(emoji);
+  if(typeof PawSocket!=='undefined'&&activeStreamId){
+    var sock=PawSocket.get();
+    if(sock)sock.emit('live:reaction',{stream_id:activeStreamId,emoji:emoji});
+  }
 }
+function burstEmoji(emoji){
+  var burst=document.createElement('div');
+  burst.className='emoji-burst';burst.textContent=emoji;
+  burst.style.left=Math.random()*60+20+'%';burst.style.bottom='120px';
+  document.getElementById('stream-view').appendChild(burst);
+  setTimeout(function(){burst.remove();},2000);
+}
+
 function toggleFollowStream(btn){
   btn.classList.toggle('following');
   btn.textContent=btn.classList.contains('following')?'Following':'Follow';
   if(btn.classList.contains('following'))toast('✓ Following! You\'ll be notified.');
 }
 function shareStream(){
-  navigator.share?.({title:'PawBook Live',text:'Watch this live stream!',url:location.href}).catch(()=>{});
-  if(!navigator.share){navigator.clipboard?.writeText(location.href);toast('🔗 Link copied!');}
+  var url=location.href+(activeStreamId?'?stream_id='+activeStreamId:'');
+  if(navigator.share){navigator.share({title:'PawBook Live',text:'Join this live stream!',url:url}).catch(function(){});}
+  else{navigator.clipboard&&navigator.clipboard.writeText(url);toast('🔗 Link copied!');}
 }
-function fmt(n){if(n>=1000)return (n/1000).toFixed(1)+'K';return String(n);}
 
-// ── GO LIVE ────────────────────────────────────────────────────────────────
+/* ── GO LIVE ──────────────────────────────────────────────────────────────── */
 function openGoLive(){document.getElementById('go-live-view').classList.add('active');}
-function closeGoLive(){document.getElementById('go-live-view').classList.remove('active');}
+function closeGoLive(){
+  document.getElementById('go-live-view').classList.remove('active');
+  // Stop camera preview
+  if(cameraStream){cameraStream.getTracks().forEach(function(t){t.stop();});cameraStream=null;}
+  var v=document.getElementById('camera-feed');
+  v.srcObject=null;v.style.display='none';
+  document.querySelector('.camera-placeholder').style.display='flex';
+}
 
 function requestCamera(){
-  navigator.mediaDevices?.getUserMedia({video:true,audio:true}).then(stream=>{
-    const video=document.getElementById('camera-feed');
-    video.srcObject=stream;
-    video.style.display='block';
-    document.querySelector('.camera-placeholder').style.display='none';
-    toast('📷 Camera ready!');
-  }).catch(()=>toast('Camera permission denied — demo mode active','error'));
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    toast('Camera not supported in this browser','error');return;
+  }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true})
+    .then(function(stream){
+      cameraStream=stream;
+      var v=document.getElementById('camera-feed');
+      v.srcObject=stream;v.style.display='block';
+      document.querySelector('.camera-placeholder').style.display='none';
+      toast('📷 Camera ready! Set a title and go live.');
+    })
+    .catch(function(e){
+      console.warn('[Live] Camera error:',e.message);
+      toast('Camera denied — check browser permissions','error');
+    });
 }
 
 function toggleCat(btn){
-  document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('on');});
   btn.classList.add('on');
 }
 
-function startLive(){
-  const title=document.getElementById('live-title').value.trim();
+/* ── START LIVE (Agora WebRTC broadcaster) ────────────────────────────────── */
+async function startLive(){
+  var title=(document.getElementById('live-title').value||'').trim();
   if(!title){toast('Add a title for your stream!','error');return;}
-  closeGoLive();
-  myStream=true;
-  // Open self-stream view
-  const user=typeof Auth!=='undefined'?Auth.getUser():null;
-  openStream(0);
-  document.getElementById('stream-name').textContent=user?.full_name||'Your Live';
-  document.getElementById('stream-sub').textContent=title;
-  viewerCount=1;streamSeconds=0;heartCount=0;
-  updateStats();
-  toast('🔴 You are now LIVE!');
-  addComment('PawBook','Welcome to your first live stream! 🎉','#ef4444');
+
+  var startBtn=document.querySelector('.start-live-btn');
+  startBtn.disabled=true;startBtn.textContent='Starting…';
+
+  try{
+    // 1. Create stream on backend → get stream_id + Agora token
+    var res=await fetch(API_BASE+'/live',{
+      method:'POST',
+      headers:authHeaders(),
+      body:JSON.stringify({title:title,category:document.querySelector('.cat-chip.on')?.textContent||''})
+    });
+    var data=await res.json();
+    var streamId=data.data?.stream_id||data.stream_id||('local_'+Date.now());
+    var agoraToken=data.data?.agora_token||data.agora_token||null;
+    var agoraAppId=data.data?.agora_app_id||data.agora_app_id||null;
+    var channel=AGORA_CHAN_PREFIX+streamId;
+
+    activeStreamId=streamId;
+    localStorage.setItem('pb_active_stream_id',streamId);
+
+    // 2. If Agora creds available, publish via WebRTC
+    if(agoraAppId&&typeof AgoraRTC!=='undefined'){
+      AgoraRTC.setLogLevel(3); // warn only
+      agoraClient=AgoraRTC.createClient({mode:'live',codec:'h264'});
+      await agoraClient.setClientRole('host');
+      await agoraClient.join(agoraAppId,channel,agoraToken||null,null);
+      var [microTrack,cameraTrack]=await AgoraRTC.createMicrophoneAndCameraTracks(
+        {encoderConfig:'speech_standard'},
+        {encoderConfig:'480p_2',facingMode:'user'}
+      );
+      localTracks=[microTrack,cameraTrack];
+      // Show local camera in preview area of stream view
+      cameraTrack.play('agora-local-video');
+      await agoraClient.publish(localTracks);
+      // Hide the static bg, show live video
+      document.getElementById('stream-bg').style.display='none';
+      toast('🔴 You are now LIVE with Agora WebRTC!');
+    } else {
+      // Fallback: use local camera preview via HTML5 (no WebRTC relay)
+      if(cameraStream){
+        var vEl=document.getElementById('camera-feed');
+        // Clone video into stream view
+        var sv=document.createElement('video');
+        sv.id='agora-local-video';sv.autoplay=true;sv.muted=true;sv.playsInline=true;
+        sv.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1';
+        sv.srcObject=cameraStream;
+        document.querySelector('.stream-video-area').appendChild(sv);
+        document.getElementById('stream-bg').style.display='none';
+      }
+      toast('🔴 You are now LIVE!');
+    }
+
+    closeGoLive();
+    // Show stream view with user's own info
+    var user=typeof Auth!=='undefined'?Auth.getUser():null;
+    _showStream(streamId,user?user.full_name||user.name||'Your Live':'Your Live',title,
+      user&&user.avatar_url?user.avatar_url:'',
+      '',1);
+    addComment('PawBook','Welcome to your live stream! 🎉','#ef4444');
+    bindSocket(streamId);
+
+  }catch(e){
+    console.error('[Live] startLive error:',e);
+    toast('Could not start stream — check connection','error');
+  }
+  startBtn.disabled=false;startBtn.innerHTML='<div class="live-dot" style="width:10px;height:10px"></div>Start Live Stream';
 }
 
-function toast(msg,type='success'){
-  const t=document.createElement('div');
-  t.style.cssText=`position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:${type==='error'?'#dc2626':'#1a4db3'};color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:'Poppins',sans-serif;white-space:nowrap`;
-  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
+/* ── TOAST ────────────────────────────────────────────────────────────────── */
+function toast(msg,type){
+  var t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:'
+    +(type==='error'?'#dc2626':'#1a4db3')+';color:#fff;padding:10px 20px;border-radius:24px;'
+    +'font-size:13px;font-weight:700;z-index:9999;font-family:\'Poppins\',sans-serif;white-space:nowrap;pointer-events:none';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},2500);
 }
+
+/* ── Agora local video container (hidden until go-live) ───────────────────── */
+document.addEventListener('DOMContentLoaded',function(){
+  var area=document.querySelector('.stream-video-area');
+  if(area){
+    var lv=document.createElement('div');
+    lv.id='agora-local-video';
+    lv.style.cssText='position:absolute;inset:0;width:100%;height:100%;display:none;z-index:2';
+    area.appendChild(lv);
+  }
+});
 </script>
 
 <!-- BOTTOM NAV (mobile) -->
@@ -699,7 +868,7 @@ function closeDrawer() {
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });

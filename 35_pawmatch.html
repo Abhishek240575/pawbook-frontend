@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawMatch - Find Your Pet's Perfect Match</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -591,11 +591,20 @@ function flyCard(card, pet, direction) {
   // Record swipe to API (fire-and-forget)
   var myPetId = localStorage.getItem('pawmatch_active_pet_id');
   if(myPetId) {
-    var action = direction === 'right' || direction === 'up' ? 'like' : 'pass';
-    fetch(API_BASE+'/pawmatch/'+pet.id+'/'+action, {
+    var dir = (direction === 'right' || direction === 'up') ? 'right' : 'left';
+    fetch(API_BASE+'/pawmatch/swipe', {
       method: 'POST',
-      headers: authHeaders()
-    }).catch(function(){});
+      headers: authHeaders(),
+      body: JSON.stringify({ swiper_pet_id: myPetId, swiped_pet_id: pet.id, direction: dir })
+    }).then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        // If backend reports a match, show the match overlay
+        if(data && data.data && data.data.matched){
+          document.getElementById('match-pet-name').textContent = pet.name;
+          document.getElementById('match-overlay').classList.add('show');
+        }
+      })
+      .catch(function(){});
   }
 
   if(direction === 'right') {
@@ -885,19 +894,70 @@ function pmToast(msg, type) {
   t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
 }
 
+/* ── LOAD DISCOVER FROM API ── */
+function petFromApi(p) {
+  return {
+    id:          p.pet_id || p.id,
+    name:        p.name || p.pet_name || 'Pet',
+    age:         p.age || '',
+    species:     (p.species || 'dog').toLowerCase(),
+    breed:       p.breed || '',
+    gender:      p.gender || '',
+    size:        p.size || '',
+    vaccinated:  !!p.vaccinated,
+    neutered:    !!p.neutered,
+    distance:    p.distance_km ? p.distance_km.toFixed(1)+' km' : 'Nearby',
+    city:        p.city || '',
+    lookingFor:  p.looking_for || ['Playdate'],
+    bio:         p.bio || 'Hi! I\'m '+p.name+' 🐾',
+    photos:      (p.photos && p.photos.length) ? p.photos : [p.photo_url || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80'],
+    owner:       p.owner_name || p.owner || '',
+    ownerAvatar: p.owner_avatar || '',
+    energy:      p.energy_level || '',
+    friendly:    p.friendly || '',
+    matchChance: 0.7
+  };
+}
+
+function loadDiscover() {
+  var myPetId = localStorage.getItem('pawmatch_active_pet_id');
+  if(!myPetId) {
+    // No pet selected — use demo data
+    deck = PETS.slice();
+    renderDeck();
+    return;
+  }
+  fetch(API_BASE+'/pawmatch/discover?pet_id='+myPetId, { headers: authHeaders() })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      var rows = (data && (data.data || data)) || [];
+      if(Array.isArray(rows) && rows.length) {
+        PETS = rows.map(petFromApi);
+      }
+      // Always fall back to DEMO_PETS if API returns nothing
+      if(!PETS || !PETS.length) PETS = DEMO_PETS;
+      deck = PETS.slice();
+      activePetIdx = 0;
+      renderDeck();
+    })
+    .catch(function(){
+      deck = PETS.slice(); // fallback
+      renderDeck();
+    });
+}
+
 /* ── INIT ── */
 document.addEventListener('DOMContentLoaded', function() {
-  deck = PETS.slice();
-  renderDeck();
   updateMatchBadge();
   document.getElementById('tab-matches-content').style.display = 'none';
   document.getElementById('tab-liked-content').style.display = 'none';
+  loadDiscover(); // loads from API (or falls back to DEMO_PETS)
 });
 </script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });

@@ -471,7 +471,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outli
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Reels</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -637,7 +637,7 @@ function fmt(n) {
 function renderReels() {
   const container = document.getElementById('reels-container');
   container.innerHTML = REELS.map((r,i) => `
-    <div class="reel" id="reel-${r.id}">
+    <div class="reel" id="reel-${r.id}" data-reel-id="${r.id}">
       <div class="reel-progress"><div class="reel-progress-fill" id="rprog-${r.id}" style="width:0%"></div></div>
       <img class="reel-bg" src="${r.img}" onerror="this.style.background='#1a1a2e'">
       <div class="reel-overlay"></div>
@@ -902,6 +902,70 @@ function showToast(msg) {
 }
 
 renderReels();
+
+// ── Real progress bar via IntersectionObserver ────────────────────────────────
+(function initReelProgress(){
+  var activeTimer = null;
+  var activeFill = null;
+  var startTime = 0;
+  var REEL_DURATION = 15000; // 15s default if no video
+
+  function stopProgress(){
+    if(activeTimer){ clearInterval(activeTimer); activeTimer=null; }
+    if(activeFill){ activeFill.style.width='0%'; activeFill=null; }
+  }
+
+  function startProgress(reelEl){
+    stopProgress();
+    var id = reelEl.dataset.reelId;
+    if(!id) return;
+    activeFill = document.getElementById('rprog-'+id);
+    if(!activeFill) return;
+    var video = reelEl.querySelector('video');
+    var duration = (video && video.duration && isFinite(video.duration)) ? video.duration * 1000 : REEL_DURATION;
+    if(video && !isNaN(video.duration) && isFinite(video.duration)){
+      duration = video.duration * 1000;
+      try{ video.play().catch(function(){}); }catch(e){}
+      video.addEventListener('timeupdate', function onTime(){
+        if(!activeFill) return video.removeEventListener('timeupdate', onTime);
+        if(video.duration) activeFill.style.width = (video.currentTime/video.duration*100).toFixed(1)+'%';
+      });
+      return;
+    }
+    // Fallback timer for non-video reels
+    startTime = Date.now();
+    activeTimer = setInterval(function(){
+      var elapsed = Date.now() - startTime;
+      var pct = Math.min(elapsed / REEL_DURATION * 100, 100);
+      if(activeFill) activeFill.style.width = pct.toFixed(1) + '%';
+      if(pct >= 100){ clearInterval(activeTimer); activeTimer = null; }
+    }, 100);
+  }
+
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting) startProgress(entry.target);
+      else {
+        var id = entry.target.dataset.reelId;
+        if(id && activeFill === document.getElementById('rprog-'+id)) stopProgress();
+        var video = entry.target.querySelector('video');
+        if(video) try{ video.pause(); }catch(e){}
+      }
+    });
+  }, { threshold: 0.8 });
+
+  function observeAll(){
+    document.querySelectorAll('.reel[data-reel-id]').forEach(function(el){ obs.observe(el); });
+  }
+
+  // Observe after renderReels populates the DOM
+  observeAll();
+  // Re-observe after any new reels are added (e.g. load more)
+  var container = document.getElementById('reels-container');
+  if(container && window.MutationObserver){
+    new MutationObserver(observeAll).observe(container, {childList:true});
+  }
+})();
 </script>
 
 <!-- ══ REEL UPLOAD MODAL ══ -->
@@ -1104,7 +1168,7 @@ function closeDrawer() {
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });

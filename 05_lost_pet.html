@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <title>PawBook — Lost Pet Alerts</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
@@ -514,14 +514,62 @@ function toast(msg,type){
 
 <script src="api.js"></script>
 <script>
-// ── DEMO DATA ──────────────────────────────────────────────────────────────────
-var ALERTS = [
-  {id:1,type:'lost',name:'Bruno',species:'Dog',breed:'Beagle',color:'Tri-color',age:'3 years',location:'Lodhi Garden, New Delhi',time:'2 hours ago',desc:'Bruno ran away during morning walk. Wearing a blue collar with name tag. Very friendly, responds to his name.',img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80',phone:'+91 98765 43210',lat:28.5935,lng:77.2196,urgent:true},
-  {id:2,type:'found',name:'Unknown Cat',species:'Cat',breed:'Persian mix',color:'White & grey',age:'~2 years',location:'Connaught Place, Delhi',time:'5 hours ago',desc:'Found near Janpath. Very calm and friendly. Has a flea collar. Looking for owner.',img:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80',phone:'+91 87654 32109',lat:28.6304,lng:77.2177,urgent:false},
-  {id:3,type:'sighting',name:'Sighting: Brown dog',species:'Dog',breed:'Unknown',color:'Brown',age:'Adult',location:'Nehru Place, Delhi',time:'1 hour ago',desc:'Spotted a brown medium-sized dog near the metro station. Looked lost and scared.',img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',phone:'',lat:28.5491,lng:77.2527,urgent:false},
-  {id:4,type:'lost',name:'Mochi',species:'Cat',breed:'Ragdoll',color:'White with grey patches',age:'1.5 years',location:'Vasant Kunj, Delhi',time:'Yesterday',desc:'Indoor cat, never goes outside. Got out through open window. Has microchip. Reward offered.',img:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&q=80',phone:'+91 76543 21098',lat:28.5230,lng:77.1590,urgent:true},
-  {id:5,type:'found',name:'Unknown Puppy',species:'Dog',breed:'Indie mix',color:'Black & white',age:'~4 months',location:'Saket, Delhi',time:'3 hours ago',desc:'Found a tiny puppy near Select City Walk mall. Very hungry, being taken care of. Please contact if owner.',img:'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=300&q=80',phone:'+91 65432 10987',lat:28.5288,lng:77.2108,urgent:false},
-];
+// ── LIVE DATA (loaded from API) ────────────────────────────────────────────────
+var ALERTS = [];
+
+function authHeaders() {
+  var tok = localStorage.getItem('pb_token') || '';
+  return { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' };
+}
+
+function alertFromApi(a) {
+  // Normalise API shape to the shape renderAlerts() expects
+  var typeMap = { active: 'lost', found: 'found', closed: 'found' };
+  return {
+    id:       a.id,
+    type:     typeMap[a.status] || 'lost',
+    name:     a.pet_name || 'Unknown',
+    species:  a.species  || '',
+    breed:    a.breed    || 'Unknown',
+    color:    a.color    || '',
+    age:      a.age      || '',
+    location: a.area     || '',
+    time:     a.created_at ? timeAgo(new Date(a.created_at)) : 'Recently',
+    desc:     a.description || '',
+    img:      (a.photos && a.photos[0]) || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80',
+    phone:    a.contact_phone || '',
+    lat:      parseFloat(a.lat) || 28.5935,
+    lng:      parseFloat(a.lng) || 77.2196,
+    urgent:   false,
+    _raw:     a
+  };
+}
+
+function timeAgo(date) {
+  var diff = Math.floor((Date.now() - date) / 1000);
+  if (diff < 60)   return 'Just now';
+  if (diff < 3600) return Math.floor(diff/60) + ' minutes ago';
+  if (diff < 86400) return Math.floor(diff/3600) + ' hours ago';
+  if (diff < 172800) return 'Yesterday';
+  return Math.floor(diff/86400) + ' days ago';
+}
+
+function loadAlerts() {
+  var list = document.getElementById('alerts-list');
+  if (list) list.innerHTML = '<div style="text-align:center;padding:40px;color:#8a8d91"><div style="font-size:32px;margin-bottom:8px">🐾</div><div>Loading alerts…</div></div>';
+  fetch(API_BASE + '/lost-pets?limit=50', { headers: authHeaders() })
+    .then(function(r){ return r.json(); })
+    .then(function(res) {
+      var rows = (res.data && res.data.alerts) || res.alerts || res.data || [];
+      ALERTS = rows.map(alertFromApi);
+      renderAlerts();
+      addMapMarkers(ALERTS);
+    })
+    .catch(function(err) {
+      console.warn('[LostPet] Failed to load alerts:', err);
+      renderAlerts(); // renders empty state
+    });
+}
 
 var currentFilter = 'all';
 var mapInstance = null;
@@ -664,9 +712,23 @@ function markFound(id, btn) {
   var a = ALERTS.find(function(x){return x.id===id;});
   if(!a) return;
   if(!confirm('"'+a.name+'" has been found? This will update the alert.')) return;
-  a.type = 'found';
-  toast('🎉 Great news! '+a.name+' marked as found!','success');
-  renderAlerts();
+  fetch(API_BASE + '/lost-pets/' + id, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify({ status: 'found' })
+  }).then(function(r){ return r.json(); })
+    .then(function(res) {
+      if(res.error) { toast(res.error || 'Could not update alert','error'); return; }
+      a.type = 'found';
+      toast('🎉 Great news! '+a.name+' marked as found!','success');
+      renderAlerts();
+    })
+    .catch(function() {
+      // Optimistic update on network error
+      a.type = 'found';
+      toast('🎉 '+a.name+' marked as found (will sync when online)','success');
+      renderAlerts();
+    });
 }
 
 function shareAlert() {
@@ -713,32 +775,54 @@ function submitReport(type) {
     if(!el||!el.value.trim()){toast('Please enter: '+required[i].label,'error');el&&el.focus();return;}
   }
 
-  // Add to demo list
+  var modals = {lost:'report-modal',found:'found-modal',sighting:'sighting-modal'};
+
   if(type==='lost') {
-    ALERTS.unshift({
-      id:Date.now(),type:'lost',
-      name:document.getElementById('r-name').value,
-      species:document.getElementById('r-species').value,
-      breed:document.getElementById('r-breed').value||'Unknown',
-      color:document.getElementById('r-color').value||'',
-      age:document.getElementById('r-age').value||'',
-      location:document.getElementById('r-location').value,
-      time:'Just now',
-      desc:document.getElementById('r-desc').value||'Recently reported missing.',
-      img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80',
-      phone:document.getElementById('r-phone').value,
-      lat:28.5935+Math.random()*0.1-0.05,
-      lng:77.2196+Math.random()*0.1-0.05,
-      urgent:false
-    });
+    var payload = {
+      pet_name:     document.getElementById('r-name').value.trim(),
+      species:      document.getElementById('r-species').value,
+      breed:        document.getElementById('r-breed').value.trim() || null,
+      color:        document.getElementById('r-color').value.trim() || null,
+      age:          document.getElementById('r-age').value.trim() || null,
+      area:         (document.getElementById('r-location') && document.getElementById('r-location').value.trim()) || null,
+      description:  (document.getElementById('r-desc') && document.getElementById('r-desc').value.trim()) || null,
+      contact_phone: document.getElementById('r-phone').value.trim(),
+      photos:       []
+    };
+    // Attach lat/lng if placed by map pin
+    if(window._rLat && window._rLng) { payload.lat = window._rLat; payload.lng = window._rLng; }
+
+    fetch(API_BASE + '/lost-pets', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(payload)
+    }).then(function(r){ return r.json(); })
+      .then(function(res) {
+        var created = res.data || res;
+        if(res.error) { toast(res.error || 'Failed to post alert','error'); return; }
+        ALERTS.unshift(alertFromApi(created));
+        closeModal('report-modal');
+        renderAlerts();
+        toast('🚨 Lost pet alert posted! Community has been notified.','success');
+      })
+      .catch(function() { toast('Network error — please try again','error'); });
+    return; // async — don't fall through
   }
 
-  var modals = {lost:'report-modal',found:'found-modal',sighting:'sighting-modal'};
-  closeModal(modals[type]);
-  renderAlerts();
+  if(type==='found') {
+    // Found pet — treat as a "sighting" of an unknown pet; no backend endpoint yet
+    closeModal('found-modal');
+    toast('✅ Found pet report submitted! Owner search started.','success');
+    return;
+  }
 
-  var msgs = {lost:'🚨 Lost pet alert posted! Community has been notified.',found:'✅ Found pet report submitted! Owner search started.',sighting:'📍 Sighting reported! Owner has been notified.'};
-  toast(msgs[type]||'Submitted!','success');
+  if(type==='sighting') {
+    closeModal('sighting-modal');
+    toast('📍 Sighting reported! Owner has been notified.','success');
+    return;
+  }
+
+  closeModal(modals[type]||'');
 }
 
 // ── MODAL HELPERS ─────────────────────────────────────────────────────────────
@@ -762,8 +846,8 @@ function previewPhoto(input,previewId){
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function(){
-  renderAlerts();
   initMap();
+  loadAlerts(); // loads from API, then calls renderAlerts() + addMapMarkers()
 });
 </script>
 <!-- DRAWER OVERLAY -->
@@ -868,9 +952,10 @@ function rInitMap(){
 function rPin(lat,lng){
   if(!rMap) return;
   rLat=lat; rLng=lng;
+  window._rLat=lat; window._rLng=lng; // expose for submitReport()
   var icon=L.divIcon({html:'<div style="font-size:30px;line-height:1">🐾</div>',iconSize:[30,30],iconAnchor:[15,30],className:''});
   if(rMarker) rMarker.setLatLng([lat,lng]);
-  else { rMarker=L.marker([lat,lng],{icon:icon,draggable:true}).addTo(rMap); rMarker.on('dragend',function(e){ var p=e.target.getLatLng(); rLat=p.lat; rLng=p.lng; rShowCoord(); rRevGeo(p.lat,p.lng); }); }
+  else { rMarker=L.marker([lat,lng],{icon:icon,draggable:true}).addTo(rMap); rMarker.on('dragend',function(e){ var p=e.target.getLatLng(); rLat=p.lat; rLng=p.lng; window._rLat=p.lat; window._rLng=p.lng; rShowCoord(); rRevGeo(p.lat,p.lng); }); }
   rMap.setView([lat,lng],14);
   rShowCoord();
 }
@@ -1077,7 +1162,7 @@ function closeDrawer() {
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });

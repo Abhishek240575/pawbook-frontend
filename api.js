@@ -118,7 +118,7 @@ const PostAPI = {
   delete:    (id)          => del(`/posts/${id}`),
   react:     (id, type)    => post(`/posts/${id}/react`, { reaction_type: type||'love' }),
   comments:  (id, page)    => get(`/posts/${id}/comments?page=${page||1}`),
-  addComment: (id, text) => post(`/posts/${id}/comments`, { content: text }, true),
+  addComment: (id, text) => post(/posts/+id+/comments, {content:text}, true),
   comment: (id, text) => post(`/posts/${id}/comments`, { body: text }),
   deleteComment: (cid)     => del(`/posts/comments/${cid}`),
   save:      (id)          => post(`/saved/${id}`),
@@ -193,12 +193,16 @@ const MediaAPI = {
 
 // â”€â”€ GROUP API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const GroupAPI = {
-  list:   (params) => get(`/groups?${new URLSearchParams(params||{})}`),
-  get:    (id)     => get(`/groups/${id}`, false),
-  create: (data)   => post('/groups', data),
-  join:   (id)     => post(`/groups/${id}/join`),
-  leave:  (id)     => post(`/groups/${id}/leave`),
-  posts:  (id, p)  => get(`/groups/${id}/posts?page=${p||1}`),
+  list:    (params) => get(`/groups?${new URLSearchParams(params||{})}`),
+  get:     (id)     => get(`/groups/${id}`, false),
+  create:  (data)   => post('/groups', data),
+  join:    (id)     => post(`/groups/${id}/join`),
+  leave:   (id)     => post(`/groups/${id}/leave`),
+  posts:   (id, p)  => get(`/groups/${id}/posts?limit=20&offset=${((p||1)-1)*20}`),
+  feed:    (id, p)  => get(`/groups/${id}/posts?limit=20&offset=${((p||1)-1)*20}`), // alias
+  post:    (id, d)  => post(`/groups/${id}/posts`, d),
+  members: (id)     => get(`/groups/${id}/members`),
+  media:   (id)     => get(`/groups/${id}/media`),
 };
 
 // â”€â”€ LOST PET API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -338,7 +342,6 @@ async function checkAPIHealth() {
   }
 }
 checkAPIHealth();
-
 
 
 
