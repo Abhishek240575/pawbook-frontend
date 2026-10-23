@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -701,6 +701,9 @@ function injectDemoProducts(cat) {
       const res = await MarketAPI.products({ limit: 12, sort: 'popular', ...params });
       const products = res?.data?.products || res?.data || [];
       if (!products.length) { grid.innerHTML = ''; return; }
+      // Store product map for cart lookup
+      window._pbProductMap = window._pbProductMap || {};
+      products.forEach(p => { const id = p.product_id || p.id; if(id) window._pbProductMap[id] = p; });
 
       grid.innerHTML = `
         <div style="font-size:14px;font-weight:800;color:#1e293b;margin-bottom:12px">
@@ -752,6 +755,14 @@ function injectDemoProducts(cat) {
     try {
       await MarketAPI.addCart(product_id, 1);
       cartCount++;
+      // Also add to local cartItems so cart drawer shows it
+      const prod = (window._pbProductMap || {})[product_id];
+      if (prod) {
+        const ex = cartItems.find(i => i.id === product_id);
+        if (ex) { ex.qty++; }
+        else { cartItems.push({ id: product_id, brand: prod.brand || 'PawBook', name: prod.title || prod.name || 'Product', weight: '', price: Number(prod.price) || 0, mrp: Number(prod.compare_price) || Number(prod.price) || 0, pet: prod.pet_type || '', qty: 1 }); }
+        saveCart(); updateCartUI();
+      }
       btn.textContent = '✓ Added!';
       btn.style.background = '#16a34a';
       setTimeout(() => { btn.textContent = '🛒 Add to Cart'; btn.style.background = '#1a56db'; }, 2000);
