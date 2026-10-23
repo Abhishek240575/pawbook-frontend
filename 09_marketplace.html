@@ -392,7 +392,7 @@ html, body { overflow-x: hidden !important; }
           <div class="prod-name">Plush Squeaky Dog Toys</div>
           <div class="prod-stars">★★★½☆</div>
           <div class="prod-price">$9.99</div>
-          <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
+          <button class="add-cart-btn" onclick="pbAddToCart(null,this)" data-static="true">Add to Cart</button>
         </div>
       </div>
       <!-- Whiskas Cat Food -->
@@ -405,7 +405,7 @@ html, body { overflow-x: hidden !important; }
           <div class="prod-name">Whiskas Cat Food</div>
           <div class="prod-stars">★★★★☆</div>
           <div class="prod-price">$14.99</div>
-          <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
+          <button class="add-cart-btn" onclick="pbAddToCart(null,this)" data-static="true">Add to Cart</button>
         </div>
       </div>
       <!-- Pet Grooming Package -->
@@ -432,7 +432,7 @@ html, body { overflow-x: hidden !important; }
           <div class="prod-name">Premium Dog Food Bowl</div>
           <div class="prod-stars">★★★★★</div>
           <div class="prod-price">$22.99</div>
-          <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
+          <button class="add-cart-btn" onclick="pbAddToCart(null,this)" data-static="true">Add to Cart</button>
         </div>
       </div>
       <div class="prod-card" data-category="food">
@@ -443,7 +443,7 @@ html, body { overflow-x: hidden !important; }
           <div class="prod-name">Cosy Orthopedic Pet Bed</div>
           <div class="prod-stars">★★★★½</div>
           <div class="prod-price">$49.99</div>
-          <button class="add-cart-btn" onclick="pbAddToCart(null,this)">Add to Cart</button>
+          <button class="add-cart-btn" onclick="pbAddToCart(null,this)" data-static="true">Add to Cart</button>
         </div>
       </div>
     </div>
@@ -746,6 +746,7 @@ function injectDemoProducts(cat) {
   }
 
   window.pbAddToCart = async function(product_id, btn) {
+    if (!product_id) { alert('This is a demo product — add real products via Sell Item.'); return; }
     const orig = btn.textContent;
     btn.disabled = true; btn.style.opacity = '0.7';
     try {
