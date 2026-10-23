@@ -60,9 +60,11 @@ const Auth = {
     return res;
   },
   async me() { return get('/auth/me'); },
-  async logout() {
-    try { await post('/auth/logout', {}, false); } catch(e) { /* non-fatal */ }
+  logout() {
+    // Clear localStorage immediately — never wait for API
     clearToken();
+    // Fire-and-forget to clear httpOnly cookie server-side
+    try { fetch(API_BASE + '/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {}); } catch(e) {}
     window.location.href = '01_login.html';
   },
   require() {
