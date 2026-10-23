@@ -699,7 +699,7 @@ function injectDemoProducts(cat) {
 
     try {
       const res = await MarketAPI.products({ limit: 12, sort: 'popular', ...params });
-      const products = res?.data || [];
+      const products = res?.data?.products || res?.data || [];
       if (!products.length) { grid.innerHTML = ''; return; }
 
       grid.innerHTML = `
@@ -2862,7 +2862,9 @@ function setCatAndSearch(brand) {
         el.parentNode.insertBefore(link, el.nextSibling);
       }
 
-      // Async: load actual count from API
+      // Async: load actual count from API (skip fake string IDs — only real UUIDs)
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (!isUUID) return;
       try {
         const r = await fetch(API_BASE + '/marketplace/listings/' + id + '/reviews', { credentials: 'include' });
         if (r.ok) {

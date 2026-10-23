@@ -373,7 +373,7 @@ html, body { overflow-x: hidden !important; }
   <div class="or-row">Or</div>
 
   <!-- Social -->
-  <button class="social-btn">
+  <button class="social-btn" id="google-btn" onclick="doGoogleLogin()">
     <div class="g-logo"></div>
     Continue with <strong>Google</strong>
   </button>
@@ -685,6 +685,62 @@ if ('serviceWorker' in navigator) {
       .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
       .catch(function(err) { console.warn('[SW] Registration failed:', err); });
   });
+}
+</script>
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+// ── GOOGLE SIGN-IN ────────────────────────────────────────────────────────────
+// PAWBOOK_GOOGLE_CLIENT_ID: set this to your Google OAuth client ID from
+// https://console.cloud.google.com → APIs & Services → Credentials
+const PAWBOOK_GOOGLE_CLIENT_ID = ''; // ← paste your Google Client ID here
+
+async function doGoogleLogin() {
+  if (!PAWBOOK_GOOGLE_CLIENT_ID) {
+    alert('Google Sign-In is not configured yet.\n\nTo set it up:\n1. Go to console.cloud.google.com\n2. Create an OAuth 2.0 Client ID (Web application)\n3. Paste the Client ID into 01_login.html (PAWBOOK_GOOGLE_CLIENT_ID)\n4. Also add GOOGLE_CLIENT_ID=<your_id> to the Render backend env vars.');
+    return;
+  }
+  const btn = document.getElementById('google-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="g-logo"></div> Signing in…';
+
+  try {
+    if (typeof google === 'undefined') {
+      throw new Error('Google Sign-In library not loaded. Check your connection.');
+    }
+    // Trigger Google One Tap / popup
+    await new Promise((resolve, reject) => {
+      google.accounts.id.initialize({
+        client_id: PAWBOOK_GOOGLE_CLIENT_ID,
+        callback: async (response) => {
+          try {
+            await AuthAPI.googleLogin(response.credential);
+            resolve();
+            location.href = '07_home.html';
+          } catch(e) {
+            reject(e);
+          }
+        },
+        error_callback: reject,
+      });
+      google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // Fallback: popup flow
+          google.accounts.id.renderButton(document.getElementById('google-btn'), {
+            theme: 'outline', size: 'large', width: 320
+          });
+          reject(new Error('One Tap not shown — use the rendered button below'));
+        }
+      });
+    });
+  } catch(e) {
+    const err = document.getElementById('login-err');
+    err.textContent = e.message || 'Google Sign-In failed. Please try again.';
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<div class="g-logo"></div> Continue with <strong>Google</strong>';
+  }
 }
 </script>
 </body>

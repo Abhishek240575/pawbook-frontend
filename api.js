@@ -92,6 +92,12 @@ const AuthAPI = {
   forgotPassword: (email)           => post('/auth/forgot-password', { email }, false),
   verifyOtp:      (email, otp)      => post('/auth/verify-otp', { email, otp }, false),
   resetPassword:  (email, otp, password) => post('/auth/reset-password', { email, otp, new_password: password }, false),
+  async googleLogin(id_token) {
+    const res = await post('/auth/google', { id_token }, false);
+    if (res.data?.token) setToken(res.data.token);
+    if (res.data?.user)  localStorage.setItem('pb_user', JSON.stringify(res.data.user));
+    return res;
+  },
 };
 
 // â”€â”€ USER API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
