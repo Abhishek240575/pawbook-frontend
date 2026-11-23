@@ -658,35 +658,10 @@ function triggerGoogleLogin() {
     callback: handleGoogleCredential,
     auto_select: false,
     cancel_on_tap_outside: true,
+    ux_mode: 'popup',
   });
 
-  // Use renderButton approach — more reliable than prompt()
-  const container = document.createElement('div');
-  container.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;padding:20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.2)';
-  container.id = 'google-popup-container';
-
-  const closeBtn = document.createElement('div');
-  closeBtn.textContent = '✕';
-  closeBtn.style.cssText = 'text-align:right;cursor:pointer;font-size:18px;color:#666;margin-bottom:8px';
-  closeBtn.onclick = () => container.remove();
-
-  const btnDiv = document.createElement('div');
-  container.appendChild(closeBtn);
-  container.appendChild(btnDiv);
-  document.body.appendChild(container);
-
-  google.accounts.id.renderButton(btnDiv, {
-    theme: 'outline',
-    size: 'large',
-    text: 'continue_with',
-    width: 280,
-  });
-
-  // Auto-click the rendered button
-  setTimeout(() => {
-    const gBtn = btnDiv.querySelector('div[role="button"]');
-    if (gBtn) gBtn.click();
-  }, 100);
+  google.accounts.id.prompt();
 }
 
 async function handleGoogleCredential(response) {
@@ -698,7 +673,7 @@ async function handleGoogleCredential(response) {
   err.style.display = 'none';
 
   try {
-    const API_BASE = 'https://pawbook-api-cquc.onrender.com/api/v1';
+    const API_BASE = 'https://pawbook.deemona.com/api/v1';
 
     const res = await fetch(`${API_BASE}/auth/google`, {
       method: 'POST',
