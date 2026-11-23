@@ -1,236 +1,755 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Reels – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════
-   PAWBOOK UNIFIED THEME v3
-   Facebook Blue × Clean White × India-first
-═══════════════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-:root {
-  --pb-blue: #1877F2;
-  --pb-blue-dark: #0d65d9;
-  --pb-blue-soft: #e7f0fd;
-  --pb-green: #22c55e;
-  --pb-green-soft: #dcfce7;
-  --pb-red: #ef4444;
-  --pb-red-soft: #fee2e2;
-  --pb-amber: #f59e0b;
-  --pb-purple: #8b5cf6;
-  --pb-grad: linear-gradient(135deg,#1877F2,#8b5cf6);
-  --pb-ig-grad: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-bg: #f0f2f5;
-  --pb-card: #ffffff;
-  --pb-border: #e4e6eb;
-  --pb-text: #050505;
-  --pb-text2: #65676b;
-  --pb-text3: #8a8d91;
-  --pb-radius: 12px;
-  --pb-radius-sm: 8px;
-  --pb-pill: 999px;
-  --pb-shadow: 0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --pb-shadow-md: 0 4px 20px rgba(0,0,0,.1);
-  --pb-shadow-lg: 0 12px 48px rgba(0,0,0,.16);
-  --pb-nav-h: 56px;
+:root{
+  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
+  --pb-green:#22c55e;--pb-green-soft:#dcfce7;
+  --pb-red:#ef4444;--pb-red-soft:#fee2e2;
+  --pb-amber:#f59e0b;
+  --pb-purple:#8b5cf6;--pb-pink:#ec4899;
+  --pb-reel-grad:linear-gradient(135deg,#f97316,#ec4899,#8b5cf6);
+  --pb-reel-grad2:linear-gradient(135deg,#ff6b35,#f7c59f);
+  --pb-bg:#0a0a0a;--pb-card:#1a1a1a;--pb-border:#2a2a2a;
+  --pb-text:#ffffff;--pb-text2:#b0b3b8;--pb-text3:#65676b;
+  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
+  --pb-nav-h:56px;
+  --reel-w:380px;--reel-h:680px;
 }
-
-/* ── RESET ── */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 button{font-family:'Inter',sans-serif;cursor:pointer}
-input,textarea,select{font-family:'Inter',sans-serif}
-img{max-width:100%;display:block}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+input,select,textarea{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
 
-/* ── TOPNAV ── */
-.pb-nav{
-  position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);
-  background:#fff;border-bottom:1px solid var(--pb-border);
-  display:flex;align-items:center;padding:0 16px;gap:10px;
-  z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08);
-}
-.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
-.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.pb-nav-search{flex:1;max-width:260px;height:40px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
-.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;color:var(--pb-text);width:100%}
-.pb-nav-search input::placeholder{color:var(--pb-text3)}
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:rgba(10,10,10,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400}
+.pb-nav-logo{font-size:22px;font-weight:900;display:flex;align-items:center;gap:8px;cursor:pointer}
+.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-reel-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pb-nav-logo-text{background:var(--pb-reel-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
-.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
-.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
-.pb-nav-tab.active{color:var(--pb-blue)}
-.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-blue);border-radius:3px 3px 0 0}
+.pb-nav-tab{height:48px;width:100px;border-radius:8px;border:none;background:transparent;cursor:pointer;color:#666;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.pb-nav-tab:hover{background:#1a1a1a;color:var(--pb-pink)}
+.pb-nav-tab.active{color:var(--pb-pink)}
+.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-reel-grad);border-radius:3px 3px 0 0}
 .pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
-.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s;position:relative}
-.pb-icon-btn:hover{background:var(--pb-border)}
-.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:#1a1a1a;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:18px;transition:.15s}
+.pb-icon-btn:hover{background:#2a2a2a;color:#fff}
+.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-reel-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
-/* ── BUTTONS ── */
-.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
-.pb-btn-blue{background:var(--pb-blue);color:#fff}
-.pb-btn-blue:hover{background:var(--pb-blue-dark)}
-.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}
-.pb-btn-gray:hover{background:var(--pb-border)}
-.pb-btn-green{background:var(--pb-green);color:#fff}
-.pb-btn-green:hover{background:#16a34a}
-.pb-btn-red{background:var(--pb-red);color:#fff}
-.pb-btn-red:hover{background:#dc2626}
-.pb-btn-outline{background:transparent;border:1.5px solid var(--pb-border);color:var(--pb-text2)}
-.pb-btn-outline:hover{background:var(--pb-bg)}
-.pb-btn-sm{height:30px;padding:0 12px;font-size:12px}
-.pb-btn-lg{height:44px;padding:0 28px;font-size:15px}
-.pb-btn-full{width:100%;justify-content:center}
+/* ═══════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════ */
+.reels-layout{display:flex;min-height:100vh;padding-top:var(--pb-nav-h)}
 
-/* ── CARDS ── */
-.pb-card{background:var(--pb-card);border-radius:var(--pb-radius);border:1px solid var(--pb-border);box-shadow:var(--pb-shadow);overflow:hidden}
-.pb-card-body{padding:14px 16px}
+/* LEFT SIDEBAR */
+.reels-sidebar{width:280px;flex-shrink:0;position:fixed;top:var(--pb-nav-h);left:0;bottom:0;overflow-y:auto;padding:16px;border-right:1px solid var(--pb-border);background:#0d0d0d;display:flex;flex-direction:column;gap:16px}
 
-/* ── BADGES ── */
-.pb-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--pb-pill);font-size:11px;font-weight:700}
-.pb-badge-blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.pb-badge-green{background:var(--pb-green-soft);color:#16a34a}
-.pb-badge-red{background:var(--pb-red-soft);color:var(--pb-red)}
-.pb-badge-amber{background:#fef3c7;color:var(--pb-amber)}
-.pb-badge-purple{background:#f3e8ff;color:var(--pb-purple)}
+/* MAIN FEED */
+.reels-feed{flex:1;margin-left:280px;margin-right:320px;display:flex;flex-direction:column;align-items:center;padding:20px 20px 60px;gap:0;overflow-y:scroll;height:calc(100vh - var(--pb-nav-h));scroll-snap-type:y mandatory}
 
-/* ── FORM INPUTS ── */
-.pb-input{width:100%;height:44px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:0 14px;font-size:14px;color:var(--pb-text);outline:none;background:var(--pb-card);transition:border-color .15s}
-.pb-input:focus{border-color:var(--pb-blue)}
-.pb-select{width:100%;height:44px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:0 14px;font-size:14px;color:var(--pb-text);outline:none;background:var(--pb-card);cursor:pointer}
-.pb-select:focus{border-color:var(--pb-blue)}
-.pb-textarea{width:100%;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:10px 14px;font-size:14px;color:var(--pb-text);outline:none;resize:none;transition:border-color .15s}
-.pb-textarea:focus{border-color:var(--pb-blue)}
-.pb-label{font-size:12px;font-weight:700;color:var(--pb-text2);display:block;margin-bottom:5px}
+/* RIGHT PANEL */
+.reels-right{width:320px;flex-shrink:0;position:fixed;top:var(--pb-nav-h);right:0;bottom:0;overflow-y:auto;padding:16px;border-left:1px solid var(--pb-border);background:#0d0d0d}
 
-/* ── MODAL ── */
-.pb-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
-.pb-modal-bg.open{display:flex}
-.pb-modal{background:var(--pb-card);border-radius:16px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--pb-shadow-lg)}
-.pb-modal-head{padding:16px 18px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--pb-card);z-index:1;border-radius:16px 16px 0 0}
-.pb-modal-title{font-size:17px;font-weight:800;color:var(--pb-text)}
-.pb-modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;color:var(--pb-text2)}
-.pb-modal-body{padding:18px}
+/* ═══════════════════════════════════════
+   SIDEBAR COMPONENTS
+═══════════════════════════════════════ */
+.sidebar-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#666;margin-bottom:10px}
+.upload-btn{width:100%;padding:12px;border-radius:var(--pb-radius);border:none;background:var(--pb-reel-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:.15s}
+.upload-btn:hover{opacity:.9;transform:translateY(-1px)}
 
-/* ── TOAST ── */
-.pb-toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#fff;padding:10px 20px;border-radius:var(--pb-pill);font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center;backdrop-filter:blur(8px)}
-.pb-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.filter-block{background:#1a1a1a;border-radius:var(--pb-radius);padding:14px;border:1px solid var(--pb-border)}
+.filter-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.filter-select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--pb-border);background:#0d0d0d;color:#fff;font-size:13px;outline:none;appearance:none;cursor:pointer}
+.filter-select:focus{border-color:var(--pb-pink)}
+.filter-select option{background:#1a1a1a}
+.filter-gap{height:10px}
 
-/* ── BOTTOM NAV ── */
-.pb-bottomnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);display:none;align-items:center;justify-content:space-around;z-index:400}
-@media(max-width:768px){.pb-bottomnav{display:flex}}
-.pb-bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px;border-radius:var(--pb-radius-sm);border:none;background:none}
-.pb-bnav-item i{font-size:22px;color:var(--pb-text3)}
-.pb-bnav-item.active i{color:var(--pb-blue)}
-.pb-bnav-label{font-size:9px;font-weight:600;color:var(--pb-text3)}
-.pb-bnav-item.active .pb-bnav-label{color:var(--pb-blue)}
+.cat-chips{display:flex;flex-wrap:wrap;gap:6px}
+.cat-chip{padding:5px 11px;border-radius:var(--pb-pill);background:#1a1a1a;border:1px solid var(--pb-border);color:#ccc;font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+.cat-chip:hover{border-color:var(--pb-pink);color:var(--pb-pink)}
+.cat-chip.active{background:var(--pb-pink);border-color:var(--pb-pink);color:#fff}
 
-/* ── PAGE LAYOUT ── */
-.pb-page-wrap{padding-top:var(--pb-nav-h);padding-bottom:60px;min-height:100vh}
-.pb-container{max-width:1100px;margin:0 auto;padding:20px 16px}
+.sort-btns{display:flex;gap:6px}
+.sort-btn{flex:1;padding:7px;border-radius:8px;border:1px solid var(--pb-border);background:#1a1a1a;color:#ccc;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;text-align:center}
+.sort-btn.active,.sort-btn:hover{background:var(--pb-pink);border-color:var(--pb-pink);color:#fff}
 
-/* ── SECTION HEADERS ── */
-.pb-section-title{font-size:18px;font-weight:800;color:var(--pb-text);margin-bottom:14px}
-.pb-divider{height:1px;background:var(--pb-border);margin:12px 0}
+/* search */
+.sb-search{display:flex;align-items:center;gap:8px;background:#1a1a1a;border:1px solid var(--pb-border);border-radius:var(--pb-pill);padding:8px 14px}
+.sb-search input{flex:1;border:none;background:transparent;outline:none;color:#fff;font-size:13px}
+.sb-search input::placeholder{color:#555}
+.sb-search i{color:#555}
 
-/* ── HERO BANNER ── */
-.pb-hero{background:var(--pb-blue);position:relative;overflow:hidden;padding:40px 20px}
-.pb-hero-dark{background:var(--pb-text)}
-.pb-hero::before{content:'';position:absolute;inset:0;opacity:.12}
-.pb-hero-inner{position:relative;z-index:1}
-.pb-hero h1{font-size:clamp(24px,4vw,36px);font-weight:900;color:#fff;margin-bottom:8px}
-.pb-hero p{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:20px}
+/* ═══════════════════════════════════════
+   REEL CARD  (YouTube Shorts style)
+═══════════════════════════════════════ */
+.reel-wrapper{display:flex;align-items:center;gap:14px;width:100%;max-width:calc(var(--reel-w) + 72px);min-height:100%;padding:10px 0;scroll-snap-align:center;scroll-snap-stop:always}
 
-/* ── DROPDOWN ── */
-.pb-dropdown{position:relative}
-.pb-dropdown-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius);box-shadow:var(--pb-shadow-md);z-index:100;max-height:260px;overflow-y:auto;display:none}
-.pb-dropdown-menu.open{display:block}
-.pb-dropdown-item{padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--pb-bg)}
-.pb-dropdown-item:hover{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.pb-dropdown-item:last-child{border-bottom:none}
+.reel-card{width:var(--reel-w);height:var(--reel-h);border-radius:18px;overflow:hidden;position:relative;background:#111;flex-shrink:0;box-shadow:0 8px 40px rgba(0,0,0,.7)}
 
-html,body{overflow-x:hidden!important;max-width:100%!important}
+/* video / poster */
+.reel-video{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.reel-poster{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+
+/* gradient overlay */
+.reel-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.2) 40%,transparent 65%)}
+
+/* top badges */
+.reel-top{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;z-index:5}
+.reel-badge{background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border-radius:var(--pb-pill);padding:4px 10px;font-size:11px;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.12)}
+.reel-badge-cat{background:var(--pb-pink);border:none}
+.reel-duration-badge{background:rgba(0,0,0,.7);backdrop-filter:blur(4px);border-radius:var(--pb-pill);padding:4px 10px;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:4px}
+
+/* play/pause tap zone */
+.reel-tap-zone{position:absolute;inset:0;z-index:4;cursor:pointer}
+.reel-play-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;opacity:0;transition:.2s;pointer-events:none}
+.reel-card.paused .reel-play-icon{opacity:1}
+
+/* progress bar */
+.reel-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.2);z-index:6}
+.reel-progress-fill{height:100%;background:var(--pb-reel-grad);width:0%;transition:width .1s linear;border-radius:2px}
+
+/* bottom info */
+.reel-bottom{position:absolute;bottom:14px;left:14px;right:72px;z-index:5}
+.reel-owner{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer}
+.reel-owner-avatar{width:40px;height:40px;border-radius:50%;border:2px solid var(--pb-pink);background:var(--pb-reel-grad);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+.reel-owner-avatar img{width:100%;height:100%;object-fit:cover}
+.reel-owner-name{font-size:14px;font-weight:700}
+.reel-owner-loc{font-size:11px;color:rgba(255,255,255,.7);margin-top:1px}
+.follow-btn{padding:4px 12px;border-radius:var(--pb-pill);border:1px solid rgba(255,255,255,.6);background:transparent;color:#fff;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
+.follow-btn:hover{background:rgba(255,255,255,.15)}
+.follow-btn.following{background:var(--pb-pink);border-color:var(--pb-pink)}
+
+.reel-pet-name{font-size:19px;font-weight:900;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.reel-pet-name .breed-tag{font-size:12px;font-weight:600;background:rgba(255,255,255,.12);border-radius:var(--pb-pill);padding:2px 10px;color:rgba(255,255,255,.9)}
+.reel-desc{font-size:13px;color:rgba(255,255,255,.85);line-height:1.5;margin-bottom:8px;max-height:40px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.reel-desc.expanded{max-height:none;-webkit-line-clamp:unset}
+.reel-more-btn{font-size:12px;color:rgba(255,255,255,.6);cursor:pointer;background:none;border:none;padding:0;color:rgba(255,255,255,.75);font-weight:600}
+.reel-tags{display:flex;flex-wrap:wrap;gap:4px}
+.reel-tag{font-size:11px;color:var(--pb-pink);font-weight:600;cursor:pointer}
+
+/* action buttons (right side) */
+.reel-actions{position:absolute;right:12px;bottom:20px;display:flex;flex-direction:column;gap:14px;align-items:center;z-index:5}
+.reel-action-btn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;color:#fff}
+.reel-action-icon{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;font-size:20px;transition:.15s;border:1px solid rgba(255,255,255,.1)}
+.reel-action-btn:hover .reel-action-icon{background:rgba(255,255,255,.22);transform:scale(1.08)}
+.reel-action-btn.liked .reel-action-icon{background:rgba(236,72,153,.3);border-color:var(--pb-pink);color:var(--pb-pink)}
+.reel-action-btn.saved .reel-action-icon{background:rgba(139,92,246,.3);border-color:var(--pb-purple);color:var(--pb-purple)}
+.reel-action-count{font-size:11px;font-weight:700;color:rgba(255,255,255,.85)}
+
+/* pet mini-avatar on action column */
+.reel-pet-avatar{width:44px;height:44px;border-radius:50%;border:3px solid var(--pb-pink);overflow:hidden;cursor:pointer;box-shadow:0 0 0 2px #000}
+.reel-pet-avatar img{width:100%;height:100%;object-fit:cover}
+
+/* ═══════════════════════════════════════
+   RIGHT PANEL
+═══════════════════════════════════════ */
+.rp-section{margin-bottom:20px}
+.rp-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#555;margin-bottom:10px}
+.rp-trending-tag{display:inline-flex;align-items:center;gap:5px;background:#1a1a1a;border:1px solid var(--pb-border);border-radius:var(--pb-pill);padding:5px 11px;font-size:12px;font-weight:600;color:#ccc;cursor:pointer;margin:3px 3px 3px 0;transition:.15s}
+.rp-trending-tag:hover{border-color:var(--pb-pink);color:var(--pb-pink)}
+
+/* popular reels list */
+.pop-reel{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--pb-border);cursor:pointer}
+.pop-reel:last-child{border-bottom:none}
+.pop-thumb{width:60px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;background:#222}
+.pop-thumb img{width:100%;height:100%;object-fit:cover}
+.pop-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);font-size:18px}
+.pop-info{flex:1;min-width:0}
+.pop-pet{font-size:13px;font-weight:700;margin-bottom:2px}
+.pop-meta{font-size:11px;color:#666}
+.pop-likes{font-size:11px;color:var(--pb-pink);font-weight:700;margin-top:3px}
+
+/* stats strip */
+.stats-strip{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.stat-tile{background:#1a1a1a;border-radius:var(--pb-radius-sm);padding:12px;border:1px solid var(--pb-border)}
+.stat-tile-val{font-size:18px;font-weight:900;background:var(--pb-reel-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-tile-label{font-size:11px;color:#666;margin-top:2px}
+
+/* ═══════════════════════════════════════
+   MODALS
+═══════════════════════════════════════ */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:900;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-backdrop.open{display:flex}
+.modal{background:#111;border-radius:20px;border:1px solid var(--pb-border);box-shadow:0 24px 80px rgba(0,0,0,.8);width:100%;max-width:560px;max-height:92vh;overflow-y:auto;position:relative}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--pb-border);position:sticky;top:0;background:#111;z-index:2;border-radius:20px 20px 0 0}
+.modal-title{font-size:17px;font-weight:800;background:var(--pb-reel-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:#222;color:#ccc;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.modal-body{padding:20px}
+
+/* Upload modal steps */
+.upload-steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
+.upload-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative}
+.upload-step::after{content:'';position:absolute;top:14px;left:50%;right:-50%;height:2px;background:var(--pb-border);z-index:0}
+.upload-step:last-child::after{display:none}
+.upload-step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--pb-border);background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#555;z-index:1;transition:.3s}
+.upload-step.done .upload-step-dot{background:var(--pb-pink);border-color:var(--pb-pink);color:#fff}
+.upload-step.active .upload-step-dot{background:transparent;border-color:var(--pb-pink);color:var(--pb-pink);box-shadow:0 0 0 3px rgba(236,72,153,.2)}
+.upload-step-label{font-size:10px;font-weight:700;color:#555;text-align:center}
+.upload-step.active .upload-step-label,.upload-step.done .upload-step-label{color:var(--pb-pink)}
+
+/* step panels */
+.upload-panel{display:none}
+.upload-panel.active{display:block}
+
+/* drop zone */
+.drop-zone{border:2px dashed #333;border-radius:14px;padding:36px;text-align:center;cursor:pointer;transition:.2s;background:#0d0d0d;position:relative}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--pb-pink);background:rgba(236,72,153,.05)}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop-zone-icon{font-size:44px;margin-bottom:12px;opacity:.6}
+.drop-zone-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.drop-zone-sub{font-size:12px;color:#666}
+.drop-zone-limit{display:inline-block;margin-top:10px;padding:4px 12px;border-radius:var(--pb-pill);background:#222;border:1px solid #333;font-size:11px;font-weight:700;color:#888}
+
+.video-preview-box{position:relative;border-radius:12px;overflow:hidden;background:#000;aspect-ratio:9/16;max-width:200px;margin:0 auto}
+.video-preview-box video{width:100%;height:100%;object-fit:cover}
+.video-preview-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.7));padding:10px;font-size:12px;color:#fff;font-weight:600}
+.trim-bar{margin-top:12px}
+.trim-bar label{font-size:12px;color:#888;display:block;margin-bottom:5px}
+.trim-range{width:100%;accent-color:var(--pb-pink)}
+.trim-info{display:flex;justify-content:space-between;font-size:11px;color:#666;margin-top:3px}
+
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;font-weight:700;color:#aaa;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.form-label .req{color:var(--pb-pink)}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--pb-border);background:#1a1a1a;color:#fff;font-size:13px;outline:none;transition:.15s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--pb-pink);box-shadow:0 0 0 3px rgba(236,72,153,.12)}
+.form-select option{background:#1a1a1a}
+.form-textarea{min-height:70px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.thumb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.thumb-option{aspect-ratio:9/16;border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;position:relative;background:#222}
+.thumb-option img{width:100%;height:100%;object-fit:cover}
+.thumb-option.selected{border-color:var(--pb-pink)}
+.thumb-option .thumb-check{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;background:var(--pb-pink);display:none;align-items:center;justify-content:center;font-size:12px;color:#fff}
+.thumb-option.selected .thumb-check{display:flex}
+
+/* tag input */
+.tag-input-box{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border:1px solid var(--pb-border);border-radius:9px;background:#1a1a1a;min-height:42px;cursor:text}
+.tag-input-box:focus-within{border-color:var(--pb-pink)}
+.tag-pill{display:flex;align-items:center;gap:4px;background:rgba(236,72,153,.18);border-radius:var(--pb-pill);padding:3px 10px;font-size:12px;color:var(--pb-pink);font-weight:600}
+.tag-pill button{background:none;border:none;color:var(--pb-pink);cursor:pointer;font-size:14px;line-height:1;padding:0}
+.tag-input-box input{border:none;background:transparent;outline:none;color:#fff;font-size:13px;flex:1;min-width:80px}
+
+.modal-footer{padding:14px 20px;border-top:1px solid var(--pb-border);display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;background:#111;border-radius:0 0 20px 20px}
+.btn-ghost{padding:9px 18px;border-radius:9px;border:1px solid var(--pb-border);background:transparent;color:#ccc;font-size:13px;font-weight:600;cursor:pointer}
+.btn-primary{padding:9px 20px;border-radius:9px;border:none;background:var(--pb-reel-grad);color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+.btn-primary:hover{opacity:.9}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+
+/* share sheet */
+.share-sheet{background:#1a1a1a;border-radius:var(--pb-radius);padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.share-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;border:none;background:none;color:#ccc}
+.share-btn-icon{width:44px;height:44px;border-radius:50%;background:#222;border:1px solid var(--pb-border);display:flex;align-items:center;justify-content:center;font-size:20px;transition:.15s}
+.share-btn:hover .share-btn-icon{background:var(--pb-pink);color:#fff;border-color:var(--pb-pink)}
+.share-btn span{font-size:11px;font-weight:600}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a1a;border:1px solid var(--pb-border);color:#fff;padding:10px 20px;border-radius:var(--pb-pill);font-size:13px;font-weight:600;z-index:9999;transition:.3s;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* scrollbar for feed */
+.reels-feed::-webkit-scrollbar{display:none}
+.reels-feed{-ms-overflow-style:none;scrollbar-width:none}
+
+/* empty state */
+.empty-feed{display:flex;flex-direction:column;align-items:center;justify-content:center;height:400px;color:#555;gap:12px;text-align:center}
+.empty-feed-icon{font-size:56px;opacity:.4}
+.empty-feed-title{font-size:18px;font-weight:700;color:#777}
+.empty-feed-sub{font-size:13px;color:#555;max-width:260px}
+
+/* loading pulse */
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+.reel-skeleton{width:var(--reel-w);height:var(--reel-h);border-radius:18px;background:#1a1a1a;animation:pulse 1.5s infinite}
+
+/* detail modal reel player */
+.detail-player{aspect-ratio:9/16;background:#000;border-radius:12px;overflow:hidden;position:relative;max-width:320px;margin:0 auto}
+.detail-player video,.detail-player img{width:100%;height:100%;object-fit:cover}
+.detail-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.detail-meta-item{background:#1a1a1a;border-radius:9px;padding:10px;border:1px solid var(--pb-border)}
+.detail-meta-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#555;margin-bottom:3px}
+.detail-meta-val{font-size:14px;font-weight:700}
+
+/* personality bars */
+.trait-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.trait-name{font-size:12px;font-weight:600;width:90px;color:#aaa;flex-shrink:0}
+.trait-bar{flex:1;height:6px;background:#222;border-radius:3px;overflow:hidden}
+.trait-fill{height:100%;background:var(--pb-reel-grad);border-radius:3px;transition:width .6s ease}
+
+/* responsive */
+@media(max-width:1100px){
+  .reels-right{display:none}
+  .reels-feed{margin-right:0}
+}
+@media(max-width:780px){
+  .reels-sidebar{display:none}
+  .reels-feed{margin-left:0;padding:0}
+  :root{--reel-w:100vw;--reel-h:100svh}
+  .reel-wrapper{padding:0;max-width:100vw}
+  .reel-card{border-radius:0}
+  .reels-feed{padding-top:0}
+}
+
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
 </style>
-<script src="pawbook-api.js"></script>
-<script src="upload.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     NAV
+═══════════════════════════════════════ -->
+<nav class="pb-nav">
+  <div class="pb-nav-logo" onclick="location.href='07_home.html'">
+    <div class="pb-nav-logo-icon">🎬</div>
+    <span class="pb-nav-logo-text">PawBook</span>
+  </div>
+  <div class="pb-nav-tabs">
+    <button class="pb-nav-tab" onclick="location.href='07_home.html'" title="Home"><i class="ti ti-home"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='27_stories.html'" title="Stories"><i class="ti ti-camera"></i></button>
+    <button class="pb-nav-tab active" title="Reels"><i class="ti ti-brand-tiktok"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='09_marketplace.html'" title="Marketplace"><i class="ti ti-shopping-bag"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='17_groups.html'" title="Groups"><i class="ti ti-users"></i></button>
+  </div>
+  <div class="pb-nav-right">
+    <button class="pb-icon-btn" onclick="openModal('searchModal')" title="Search Reels"><i class="ti ti-search"></i></button>
+    <button class="pb-icon-btn" onclick="openModal('savedModal')" title="Saved Reels"><i class="ti ti-bookmark"></i></button>
+    <button class="pb-icon-btn" onclick="openModal('notifModal')" title="Notifications"><i class="ti ti-bell"></i></button>
+    <div class="pb-avatar" onclick="location.href='02_profile.html'">A</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     LAYOUT
+═══════════════════════════════════════ -->
+<div class="reels-layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="reels-sidebar">
+    <button class="upload-btn" onclick="openModal('uploadModal')">
+      <i class="ti ti-plus" style="font-size:18px"></i>
+      Upload a Reel
+    </button>
+
+    <div class="sb-search">
+      <i class="ti ti-search"></i>
+      <input type="text" placeholder="Search pet reels…" oninput="filterReels(this.value)" id="searchInput">
+    </div>
+
+    <div class="filter-block">
+      <div class="sidebar-title">🌍 Filter by Location</div>
+      <div class="filter-label">Country</div>
+      <select class="filter-select" id="filterCountry" onchange="onFilterCountryChange()">
+        <option value="">All Countries</option>
+      </select>
+      <div class="filter-gap"></div>
+      <div class="filter-label">State / Region</div>
+      <select class="filter-select" id="filterState" onchange="onFilterStateChange()" disabled>
+        <option value="">All States</option>
+      </select>
+      <div class="filter-gap"></div>
+      <div class="filter-label">City</div>
+      <select class="filter-select" id="filterCity" onchange="applyFilters()" disabled>
+        <option value="">All Cities</option>
+      </select>
+    </div>
+
+    <div class="filter-block">
+      <div class="sidebar-title">🐾 Filter by Pet</div>
+      <div class="filter-label">Category</div>
+      <select class="filter-select" id="filterCategory" onchange="onFilterCategoryChange()">
+        <option value="">All Categories</option>
+        <option value="dog">🐕 Dog</option>
+        <option value="cat">🐱 Cat</option>
+        <option value="bird">🐦 Bird</option>
+        <option value="rabbit">🐰 Rabbit</option>
+        <option value="fish">🐠 Fish</option>
+        <option value="reptile">🦎 Reptile</option>
+        <option value="hamster">🐹 Hamster</option>
+        <option value="guinea_pig">🐹 Guinea Pig</option>
+        <option value="turtle">🐢 Turtle</option>
+        <option value="other">🐾 Other</option>
+      </select>
+      <div class="filter-gap"></div>
+      <div class="filter-label">Breed</div>
+      <select class="filter-select" id="filterBreed" onchange="applyFilters()">
+        <option value="">All Breeds</option>
+      </select>
+    </div>
+
+    <div class="filter-block">
+      <div class="sidebar-title">⚡ Sort By</div>
+      <div class="sort-btns">
+        <button class="sort-btn active" id="sortNew" onclick="setSort('new',this)">Newest</button>
+        <button class="sort-btn" id="sortTop" onclick="setSort('top',this)">Most Liked</button>
+        <button class="sort-btn" id="sortTrend" onclick="setSort('trend',this)">Trending</button>
+      </div>
+    </div>
+
+    <div class="filter-block" id="emergencyPanel" style="display:none">
+      <div class="sidebar-title">🚨 Emergency Numbers</div>
+      <div id="emergencyList" style="font-size:12px;line-height:1.6"></div>
+    </div>
+
+    <div class="filter-block">
+      <div class="sidebar-title">🏷️ Popular Tags</div>
+      <div class="cat-chips" id="tagChips">
+        <span class="cat-chip" onclick="filterByTag('puppylife')"> #puppylife</span>
+        <span class="cat-chip" onclick="filterByTag('catsofpawbook')">#catsofpawbook</span>
+        <span class="cat-chip" onclick="filterByTag('petlove')">#petlove</span>
+        <span class="cat-chip" onclick="filterByTag('dogmom')">#dogmom</span>
+        <span class="cat-chip" onclick="filterByTag('funnypets')">#funnypets</span>
+        <span class="cat-chip" onclick="filterByTag('indiandogs')">#indiandogs</span>
+        <span class="cat-chip" onclick="filterByTag('exoticpets')">#exoticpets</span>
+        <span class="cat-chip" onclick="filterByTag('animalrescue')">#animalrescue</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN REEL FEED -->
+  <main class="reels-feed" id="reelsFeed">
+    <!-- reels rendered by JS -->
+    <div class="empty-feed" id="emptyState" style="display:none">
+      <div class="empty-feed-icon">🎬</div>
+      <div class="empty-feed-title">No reels found</div>
+      <div class="empty-feed-sub">Try a different filter or be the first to upload!</div>
+    </div>
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="reels-right">
+    <div class="rp-section">
+      <div class="stats-strip">
+        <div class="stat-tile"><div class="stat-tile-val" id="statReels">24</div><div class="stat-tile-label">Total Reels</div></div>
+        <div class="stat-tile"><div class="stat-tile-val" id="statLikes">1.4K</div><div class="stat-tile-label">Total Likes</div></div>
+        <div class="stat-tile"><div class="stat-tile-val" id="statCountries">8</div><div class="stat-tile-label">Countries</div></div>
+        <div class="stat-tile"><div class="stat-tile-val" id="statBreeds">12</div><div class="stat-tile-label">Breeds</div></div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">🔥 Trending Tags</div>
+      <div>
+        <span class="rp-trending-tag" onclick="filterByTag('puppylife')">🐕 #puppylife <span style="color:#555">·</span> <span style="color:var(--pb-pink)">847</span></span>
+        <span class="rp-trending-tag" onclick="filterByTag('catsofpawbook')">🐱 #catsofpawbook <span style="color:#555">·</span> <span style="color:var(--pb-pink)">631</span></span>
+        <span class="rp-trending-tag" onclick="filterByTag('funnypets')">😂 #funnypets <span style="color:#555">·</span> <span style="color:var(--pb-pink)">512</span></span>
+        <span class="rp-trending-tag" onclick="filterByTag('indiandogs')">🇮🇳 #indiandogs <span style="color:#555">·</span> <span style="color:var(--pb-pink)">389</span></span>
+        <span class="rp-trending-tag" onclick="filterByTag('petlove')">❤️ #petlove <span style="color:#555">·</span> <span style="color:var(--pb-pink)">276</span></span>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">🌟 Most Liked Reels</div>
+      <div id="popularList"></div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">🌍 Top Countries</div>
+      <div id="countryBreakdown"></div>
+    </div>
+  </aside>
+
+</div><!-- end layout -->
+
+<!-- ═══════════════════════════════════════
+     UPLOAD MODAL
+═══════════════════════════════════════ -->
+<div class="modal-backdrop" id="uploadModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🎬 Upload a Pet Reel</span>
+      <button class="modal-close" onclick="closeModal('uploadModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <!-- steps indicator -->
+      <div class="upload-steps">
+        <div class="upload-step active" id="ustep-1"><div class="upload-step-dot">1</div><div class="upload-step-label">Video</div></div>
+        <div class="upload-step" id="ustep-2"><div class="upload-step-dot">2</div><div class="upload-step-label">Trim</div></div>
+        <div class="upload-step" id="ustep-3"><div class="upload-step-dot">3</div><div class="upload-step-label">Pet Info</div></div>
+        <div class="upload-step" id="ustep-4"><div class="upload-step-dot">4</div><div class="upload-step-label">Details</div></div>
+        <div class="upload-step" id="ustep-5"><div class="upload-step-dot">5</div><div class="upload-step-label">Publish</div></div>
+      </div>
+
+      <!-- STEP 1: Upload video -->
+      <div class="upload-panel active" id="upanel-1">
+        <div class="drop-zone" id="dropZone" ondragover="onDragOver(event)" ondrop="onDrop(event)">
+          <input type="file" accept="video/*" id="videoFileInput" onchange="onVideoSelected(event)">
+          <div class="drop-zone-icon">🎬</div>
+          <div class="drop-zone-title">Drop your pet video here</div>
+          <div class="drop-zone-sub">or click to browse from your device</div>
+          <span class="drop-zone-limit">MP4 / MOV · Max 10 seconds · Up to 50MB</span>
+        </div>
+        <div id="videoSelectedInfo" style="display:none;margin-top:12px;background:#1a1a1a;border-radius:9px;padding:12px;border:1px solid var(--pb-border)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <i class="ti ti-video" style="font-size:24px;color:var(--pb-pink)"></i>
+            <div>
+              <div id="videoFileName" style="font-size:13px;font-weight:700">video.mp4</div>
+              <div id="videoFileSize" style="font-size:11px;color:#666">0 MB</div>
+            </div>
+            <div id="videoDurationBadge" style="margin-left:auto;padding:4px 10px;border-radius:var(--pb-pill);background:var(--pb-pink);font-size:11px;font-weight:800;color:#fff">0s</div>
+          </div>
+          <div id="videoDurationWarning" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(239,68,68,.12);border-radius:8px;border:1px solid rgba(239,68,68,.3);font-size:12px;color:#ef4444">
+            ⚠️ Video is longer than 10 seconds. Use the trim tool in the next step to cut it down.
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Trim -->
+      <div class="upload-panel" id="upanel-2">
+        <div class="video-preview-box">
+          <video id="trimVideo" muted playsinline loop></video>
+          <div class="video-preview-overlay" id="trimOverlay">0s / 10s</div>
+        </div>
+        <div class="trim-bar">
+          <label>Start time (seconds)</label>
+          <input type="range" class="trim-range" id="trimStart" min="0" max="10" step="0.1" value="0" oninput="updateTrim()">
+          <label style="margin-top:8px">End time (seconds — max 10s clip)</label>
+          <input type="range" class="trim-range" id="trimEnd" min="0" max="10" step="0.1" value="10" oninput="updateTrim()">
+          <div class="trim-info"><span id="trimStartVal">0.0s</span><span>Clip length: <b id="trimLength">10.0s</b></span><span id="trimEndVal">10.0s</span></div>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:#666;text-align:center">The uploaded clip will be stored from start to end time you select above.</div>
+      </div>
+
+      <!-- STEP 3: Pet Info -->
+      <div class="upload-panel" id="upanel-3">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Pet Name <span class="req">*</span></label>
+            <input class="form-input" id="upPetName" placeholder="e.g. Simba" oninput="validateUpload()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pet Category <span class="req">*</span></label>
+            <select class="form-select" id="upCategory" onchange="onUpCategoryChange(); validateUpload()">
+              <option value="">Select category</option>
+              <option value="dog">🐕 Dog</option>
+              <option value="cat">🐱 Cat</option>
+              <option value="bird">🐦 Bird</option>
+              <option value="rabbit">🐰 Rabbit</option>
+              <option value="fish">🐠 Fish</option>
+              <option value="reptile">🦎 Reptile</option>
+              <option value="hamster">🐹 Hamster</option>
+              <option value="guinea_pig">🐹 Guinea Pig</option>
+              <option value="turtle">🐢 Turtle</option>
+              <option value="other">🐾 Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Breed <span class="req">*</span></label>
+            <select class="form-select" id="upBreed" onchange="validateUpload()">
+              <option value="">Select breed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Age</label>
+            <input class="form-input" id="upAge" placeholder="e.g. 2 years">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Gender</label>
+            <select class="form-select" id="upGender">
+              <option value="">Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Colour / Markings</label>
+            <input class="form-input" id="upColor" placeholder="e.g. Golden">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Country <span class="req">*</span></label>
+            <select class="form-select" id="upCountry" onchange="onUpCountryChange(); validateUpload()">
+              <option value="">Select country</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">State / Region <span class="req">*</span></label>
+            <select class="form-select" id="upState" onchange="onUpStateChange(); validateUpload()" disabled>
+              <option value="">Select state</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">City <span class="req">*</span></label>
+            <select class="form-select" id="upCity" onchange="validateUpload()" disabled>
+              <option value="">Select city</option>
+            </select>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Details -->
+      <div class="upload-panel" id="upanel-4">
+        <div class="form-group">
+          <label class="form-label">Reel Caption <span class="req">*</span></label>
+          <input class="form-input" id="upCaption" placeholder="A short catchy title for your reel…" oninput="validateUpload()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="upDesc" placeholder="Tell us what's happening in this reel…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tags <span style="font-weight:400;color:#555">(type and press Enter)</span></label>
+          <div class="tag-input-box" id="tagBox" onclick="this.querySelector('input').focus()">
+            <input id="tagInput" placeholder="#puppylife" onkeydown="handleTagKey(event)">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mood / Vibe</label>
+          <select class="form-select" id="upMood">
+            <option value="">Select mood</option>
+            <option value="funny">😂 Funny</option>
+            <option value="cute">🥰 Cute / Adorable</option>
+            <option value="training">🎓 Training</option>
+            <option value="adventure">🏕️ Adventure</option>
+            <option value="chill">😌 Chill</option>
+            <option value="agility">⚡ Agility / Sport</option>
+            <option value="rescue">❤️ Rescue Story</option>
+            <option value="grooming">✂️ Grooming</option>
+            <option value="feeding">🍖 Feeding Time</option>
+            <option value="playing">🎾 Playing</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Privacy</label>
+            <select class="form-select" id="upPrivacy">
+              <option value="public">🌍 Public</option>
+              <option value="followers">👥 Followers Only</option>
+              <option value="private">🔒 Private</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Allow Comments</label>
+            <select class="form-select" id="upComments">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5: Publish preview -->
+      <div class="upload-panel" id="upanel-5">
+        <div style="text-align:center;padding:16px 0">
+          <div style="font-size:48px;margin-bottom:8px">🚀</div>
+          <div style="font-size:17px;font-weight:800;margin-bottom:4px" id="publishPetName">Simba's Reel</div>
+          <div style="font-size:13px;color:#888" id="publishMeta">Labrador · Mumbai, India</div>
+        </div>
+        <div class="detail-meta-grid" id="publishGrid"></div>
+        <div style="background:#1a1a1a;border-radius:9px;padding:14px;border:1px solid var(--pb-border);font-size:13px;color:#aaa;line-height:1.6" id="publishDesc">
+          Your reel is ready to go! Once uploaded it will be visible to your selected audience and stored in PawBook's reel database, searchable by breed, country, and category.
+        </div>
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(236,72,153,.08);border-radius:9px;border:1px solid rgba(236,72,153,.2);font-size:12px;color:#aaa">
+          <i class="ti ti-database" style="color:var(--pb-pink)"></i> This reel will be stored to the PawBook database — discoverable by pet category, breed, country, city and tags. Other users can find, like, comment on and share it.
+        </div>
+      </div>
+
+    </div><!-- end modal-body -->
+    <div class="modal-footer">
+      <button class="btn-ghost" id="upBackBtn" onclick="uploadStep(-1)" style="display:none"><i class="ti ti-arrow-left"></i> Back</button>
+      <button class="btn-primary" id="upNextBtn" onclick="uploadStep(1)">Next <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- REEL DETAIL MODAL -->
+<div class="modal-backdrop" id="detailModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <span class="modal-title" id="detailTitle">Reel Details</span>
+      <button class="modal-close" onclick="closeModal('detailModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-backdrop" id="shareModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <span class="modal-title">Share Reel</span>
+      <button class="modal-close" onclick="closeModal('shareModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:#888;margin-bottom:10px">Share this reel via:</div>
+      <div class="share-sheet">
+        <button class="share-btn" onclick="shareVia('whatsapp')"><div class="share-btn-icon" style="color:#25d366"><i class="ti ti-brand-whatsapp"></i></div><span>WhatsApp</span></button>
+        <button class="share-btn" onclick="shareVia('instagram')"><div class="share-btn-icon" style="color:#e1306c"><i class="ti ti-brand-instagram"></i></div><span>Instagram</span></button>
+        <button class="share-btn" onclick="shareVia('twitter')"><div class="share-btn-icon" style="color:#1da1f2"><i class="ti ti-brand-twitter"></i></div><span>Twitter</span></button>
+        <button class="share-btn" onclick="shareVia('copy')"><div class="share-btn-icon"><i class="ti ti-link"></i></div><span>Copy Link</span></button>
+        <button class="share-btn" onclick="shareVia('facebook')"><div class="share-btn-icon" style="color:#1877f2"><i class="ti ti-brand-facebook"></i></div><span>Facebook</span></button>
+        <button class="share-btn" onclick="shareVia('telegram')"><div class="share-btn-icon" style="color:#0088cc"><i class="ti ti-brand-telegram"></i></div><span>Telegram</span></button>
+        <button class="share-btn" onclick="shareVia('email')"><div class="share-btn-icon"><i class="ti ti-mail"></i></div><span>Email</span></button>
+        <button class="share-btn" onclick="shareVia('download')"><div class="share-btn-icon"><i class="ti ti-download"></i></div><span>Save</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SAVED REELS MODAL -->
+<div class="modal-backdrop" id="savedModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <span class="modal-title">🔖 Saved Reels</span>
+      <button class="modal-close" onclick="closeModal('savedModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="savedBody">
+      <div class="empty-feed" style="height:200px"><div class="empty-feed-icon">🔖</div><div class="empty-feed-title">No saved reels yet</div><div class="empty-feed-sub">Tap the bookmark icon on any reel to save it here</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
 <script>
-(function(){
-  fetch(API_BASE+'/reels',{headers:authHeaders()})
-    .then(function(r){return r.json();})
-    .then(function(d){if(d&&d.data)localStorage.setItem('pb_reels',JSON.stringify(d.data));})
-    .catch(function(){});
-})();
-function goTo(p){window.location.href=p;}
-
-function pbNavBar(activePage) {
-  var pages = {
-    home:'07_home.html', groups:'03_groups.html',
-    marketplace:'09_marketplace.html', vet:'11_vet_booking.html',
-    notifications:'12_notifications.html'
-  };
-  var tabs = [
-    {key:'home', icon:'ti-home', label:'Home'},
-    {key:'groups', icon:'ti-users', label:'Groups'},
-    {key:'marketplace', icon:'ti-building-store', label:'Shop'},
-    {key:'vet', icon:'ti-stethoscope', label:'Vet'},
-    {key:'notifications', icon:'ti-bell', label:'Alerts'},
-  ];
-  return tabs.map(function(t){
-    var isActive = t.key === activePage;
-    return '<button class="pb-nav-tab'+(isActive?' active':'')+'" onclick="goTo(\''+pages[t.key]+'\')" title="'+t.label+'"><i class="ti '+t.icon+'"></i></button>';
-  }).join('');
-}
-
-function pbBottomNav(activePage) {
-  var pages = {
-    home:'07_home.html', groups:'03_groups.html',
-    vet:'11_vet_booking.html', notifications:'12_notifications.html',
-    profile:'08_pet_profile.html'
-  };
-  var tabs = [
-    {key:'home', icon:'ti-home', label:'Home'},
-    {key:'groups', icon:'ti-users', label:'Groups'},
-    {key:'vet', icon:'ti-stethoscope', label:'Vet'},
-    {key:'notifications', icon:'ti-bell', label:'Alerts'},
-    {key:'profile', icon:'ti-user-circle', label:'Me'},
-  ];
-  return tabs.map(function(t){
-    var isActive = t.key === activePage;
-    return '<button class="pb-bnav-item'+(isActive?' active':'')+'" onclick="goTo(\''+pages[t.key]+'\')"><i class="ti '+t.icon+'"></i><span class="pb-bnav-label">'+t.label+'</span></button>';
-  }).join('');
-}
-
-// ── TOAST ────────────────────────────────────
-function toast(msg, type) {
-  var t = document.getElementById('pb-toast');
-  if(!t) {
-    t = document.createElement('div');
-    t.id = 'pb-toast';
-    t.className = 'pb-toast';
-    document.body.appendChild(t);
-  }
-  var bg = type==='error'?'#ef4444':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
-  t.style.background = bg;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 2800);
-}
-
-// ── MODAL HELPERS ────────────────────────────
-function openModal(id) {
-  var m = document.getElementById(id);
-  if(m) { m.classList.add('open'); document.body.style.overflow='hidden'; }
-}
-function closeModal(id) {
-  var m = document.getElementById(id);
-  if(m) { m.classList.remove('open'); document.body.style.overflow=''; }
-}
-
-// ── CITY DROPDOWN DATA ────────────────────────
-var PB_CITIES = {
+// ─── DATA ────────────────────────────────────────────────────────────────────
+// 3-level Country → State/Region → City cascade
+const PB_CITIES = {
   'India': {
     'Delhi': ['New Delhi','Gurgaon','Noida','Faridabad','Ghaziabad'],
     'Maharashtra': ['Mumbai','Pune','Nagpur','Nashik','Aurangabad'],
@@ -275,7 +794,7 @@ var PB_CITIES = {
   },
 };
 
-// ── EMERGENCY NUMBERS ────────────────────────
+// Real verified emergency numbers — no fabrication
 var PB_EMERGENCY = {
   'India': {
     'Delhi': [{name:'Animal Welfare Board Helpline',no:'1962',type:'govt'},{name:'Delhi Animal Hospital',no:'+91 11 2584 7200',type:'hospital'},{name:'Friendicoes SECA',no:'+91 11 2463 5945',type:'shelter'},{name:'Wildlife SOS',no:'+91 98005 44477',type:'wildlife'}],
@@ -310,901 +829,844 @@ var PB_EMERGENCY = {
   },
 };
 
-// ── CITY SELECTOR BUILDER ─────────────────────
-function buildCitySelector(countryId, stateId, cityId, onchange) {
-  var countries = Object.keys(PB_CITIES);
-  var countryHtml = '<select class="pb-select" id="'+countryId+'" onchange="pbUpdateStates(\''+countryId+'\',\''+stateId+'\',\''+cityId+'\')">';
-  countryHtml += '<option value="">🌍 Select Country</option>';
-  countries.forEach(function(c){ countryHtml += '<option>'+c+'</option>'; });
-  countryHtml += '</select>';
-
-  var stateHtml = '<select class="pb-select" id="'+stateId+'" onchange="pbUpdateCities(\''+countryId+'\',\''+stateId+'\',\''+cityId+'\')" disabled><option value="">Select State/Region</option></select>';
-  var cityHtml = '<select class="pb-select" id="'+cityId+'" disabled><option value="">Select City</option></select>';
-
-  return {country: countryHtml, state: stateHtml, city: cityHtml};
-}
-
-function pbUpdateStates(countryId, stateId, cityId) {
-  var country = document.getElementById(countryId).value;
-  var stateEl = document.getElementById(stateId);
-  var cityEl = document.getElementById(cityId);
-  stateEl.innerHTML = '<option value="">Select State/Region</option>';
-  cityEl.innerHTML = '<option value="">Select City</option>';
-  cityEl.disabled = true;
-  if(!country || !PB_CITIES[country]) { stateEl.disabled = true; return; }
-  stateEl.disabled = false;
-  Object.keys(PB_CITIES[country]).forEach(function(s){
-    stateEl.innerHTML += '<option>'+s+'</option>';
-  });
-}
-
-function pbUpdateCities(countryId, stateId, cityId) {
-  var country = document.getElementById(countryId).value;
-  var state = document.getElementById(stateId).value;
-  var cityEl = document.getElementById(cityId);
-  cityEl.innerHTML = '<option value="">Select City</option>';
-  if(!country || !state || !PB_CITIES[country] || !PB_CITIES[country][state]) { cityEl.disabled = true; return; }
-  cityEl.disabled = false;
-  PB_CITIES[country][state].forEach(function(c){
-    cityEl.innerHTML += '<option>'+c+'</option>';
-  });
-}
-
-// ── EMERGENCY NUMBER LOOKUP ───────────────────
 function pbGetEmergencyNumbers(country, region) {
-  if(!country || !PB_EMERGENCY[country]) return [];
+  if (!country || !PB_EMERGENCY[country]) return [];
   var results = [];
   var allKey = 'All ' + country;
-  if(PB_EMERGENCY[country][allKey]) results = results.concat(PB_EMERGENCY[country][allKey]);
-  if(region && PB_EMERGENCY[country][region]) results = results.concat(PB_EMERGENCY[country][region]);
+  if (PB_EMERGENCY[country][allKey]) results = results.concat(PB_EMERGENCY[country][allKey]);
+  if (region && PB_EMERGENCY[country][region]) results = results.concat(PB_EMERGENCY[country][region]);
   return results;
 }
 
-// ── NEARBY SHELTERS ───────────────────────────
-var PB_SHELTERS = {
-  'Delhi': [{name:'Friendicoes SECA',addr:'6/7 Siri Institutional Area',phone:'+91 11 2463 5945',animals:'Dogs,Cats'},{name:'Jeevashram',addr:'Shiv Vihar, Delhi',phone:'+91 98100 45022',animals:'All animals'},{name:'Charlies Animal Rescue',addr:'Dwarka, New Delhi',phone:'+91 95992 03433',animals:'Dogs,Cats,Birds'}],
-  'Mumbai': [{name:'World For Animals',addr:'Oshiwara, Andheri West',phone:'+91 98192 89920',animals:'Dogs,Cats'},{name:'In Defence of Animals',addr:'Bandra West',phone:'+91 22 2641 3528',animals:'Dogs'}],
-  'Bangalore': [{name:'CUPA',addr:'Outer Ring Road, Devarabeesanahalli',phone:'+91 80 2341 0386',animals:'All animals'},{name:'Animal Rahat',addr:'Electronic City',phone:'+91 80 6741 8100',animals:'Horses,Donkeys,Bulls'}],
-  'Chennai': [{name:'Blue Cross of India',addr:'Velachery Main Road',phone:'+91 44 2235 1006',animals:'All animals'},{name:'PAWS Chennai',addr:'Anna Nagar',phone:'+91 44 2626 4460',animals:'Dogs,Cats'}],
-  'London': [{name:'Battersea Dogs and Cats Home',addr:'Battersea Park Road',phone:'020 7622 3626',animals:'Dogs,Cats'},{name:'RSPCA London',addr:'Southall',phone:'0300 1234 999',animals:'All animals'}],
-  'New York City': [{name:'NYC ACC Manhattan',addr:'326 E 110th St',phone:'(212) 788-4000',animals:'All animals'},{name:'ASPCA NYC',addr:'424 E 92nd St',phone:'(212) 876-7700',animals:'All animals'}],
-  'Sydney': [{name:'RSPCA NSW',addr:'Yagoona',phone:'(02) 9770 7555',animals:'All animals'},{name:'Sydney Dogs & Cats Home',addr:'St Peters',phone:'(02) 9587 9611',animals:'Dogs,Cats'}],
+function renderEmergencyPanel(country, state) {
+  const nums = pbGetEmergencyNumbers(country, state);
+  const panel = document.getElementById('emergencyPanel');
+  const list = document.getElementById('emergencyList');
+  if (!nums.length) { panel.style.display = 'none'; return; }
+  const typeColor = {govt:'#1877F2',ngo:'#22c55e',shelter:'#f59e0b',hospital:'#ef4444',wildlife:'#8b5cf6',emergency:'#ef4444'};
+  list.innerHTML = nums.map(n => `
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--pb-border)">
+      <div style="flex:1">
+        <div style="font-weight:700;color:#ccc;font-size:11px">${n.name}</div>
+        <a href="tel:${n.no}" style="color:${typeColor[n.type]||'#aaa'};font-weight:800;font-size:13px;text-decoration:none">${n.no}</a>
+      </div>
+      <span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.07);color:#888;text-transform:uppercase">${n.type}</span>
+    </div>
+  `).join('');
+  panel.style.display = '';
+}
+
+// Alias for legacy COUNTRIES lookups (flat list of all cities per country)
+function allCitiesForCountry(country) {
+  if (!PB_CITIES[country]) return [];
+  return Object.values(PB_CITIES[country]).flat();
+}
+
+const BREEDS = {
+  dog:["Indian Pariah (Indie)","Labrador Retriever","German Shepherd","Golden Retriever","Beagle","Pug","Rottweiler","Dobermann","Great Dane","Siberian Husky","Dachshund","Pomeranian","Shih Tzu","Maltese","Boxer","Border Collie","Cocker Spaniel","Dalmatian","French Bulldog","Bulldog","Chihuahua","Lhasa Apso","Spitz","Saint Bernard","Mudhol Hound"],
+  cat:["Persian","Siamese","Maine Coon","Bengal","Ragdoll","British Shorthair","Scottish Fold","Abyssinian","Sphynx","Birman","Russian Blue","Himalayan","American Shorthair","Turkish Angora","Bombay"],
+  bird:["Indian Ringneck","Budgerigar","Cockatiel","Lovebird","African Grey Parrot","Macaw","Conure","Cockatoo","Finch","Canary","Mynah","Parakeet","Eclectus Parrot"],
+  rabbit:["Holland Lop","Lionhead","Dutch","Rex","Angora","Mini Rex","Flemish Giant","Himalayan","New Zealand","English Spot"],
+  fish:["Goldfish","Betta Fish","Guppy","Molly","Platy","Swordtail","Tetra","Cichlid","Oscar","Discus","Angel Fish","Koi"],
+  reptile:["Bearded Dragon","Leopard Gecko","Ball Python","Corn Snake","Blue-tongued Skink","Crested Gecko","Red-eared Slider","Green Iguana","Chameleon"],
+  hamster:["Syrian Hamster","Dwarf Hamster","Roborovski Hamster","Chinese Hamster","Campbell's Hamster","Winter White"],
+  guinea_pig:["American","Peruvian","Silkie","Teddy","Rex","Abyssinian"],
+  turtle:["Red-eared Slider","Box Turtle","Painted Turtle","Snapping Turtle","Indian Roofed Turtle"],
+  other:["Other"]
 };
 
-function pbGetNearbyShelters(city) {
-  return PB_SHELTERS[city] || [];
+const EMOJI = {dog:"🐕",cat:"🐱",bird:"🐦",rabbit:"🐰",fish:"🐠",reptile:"🦎",hamster:"🐹",guinea_pig:"🐹",turtle:"🐢",other:"🐾"};
+
+// Pet photos by breed (Unsplash open licence)
+const PET_PHOTOS = {
+  "Labrador Retriever":"https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=600&fit=crop&auto=format",
+  "German Shepherd":"https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=400&h=600&fit=crop&auto=format",
+  "Golden Retriever":"https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=600&fit=crop&auto=format",
+  "Beagle":"https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=600&fit=crop&auto=format",
+  "Rottweiler":"https://images.unsplash.com/photo-1567752881298-894bb81f9379?w=400&h=600&fit=crop&auto=format",
+  "Indian Pariah (Indie)":"https://images.unsplash.com/photo-1612774412771-005ed8e861d2?w=400&h=600&fit=crop&auto=format",
+  "Persian":"https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=600&fit=crop&auto=format",
+  "Bengal":"https://images.unsplash.com/photo-1555990538-c88a3fa7c47d?w=400&h=600&fit=crop&auto=format",
+  "Siamese":"https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=400&h=600&fit=crop&auto=format",
+  "Indian Ringneck":"https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=400&h=600&fit=crop&auto=format",
+  "Holland Lop":"https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&h=600&fit=crop&auto=format",
+  "Pug":"https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&h=600&fit=crop&auto=format",
+  "Dachshund":"https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=600&fit=crop&auto=format",
+  "French Bulldog":"https://images.unsplash.com/photo-1575425186775-b8de9a427e67?w=400&h=600&fit=crop&auto=format",
+  "Siberian Husky":"https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=400&h=600&fit=crop&auto=format",
+  "Maine Coon":"https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=400&h=600&fit=crop&auto=format",
+  "Budgerigar":"https://images.unsplash.com/photo-1486365227551-f3f90034a57c?w=400&h=600&fit=crop&auto=format",
+  "dog":"https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=600&fit=crop&auto=format",
+  "cat":"https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=600&fit=crop&auto=format",
+  "bird":"https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=400&h=600&fit=crop&auto=format",
+  "rabbit":"https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&h=600&fit=crop&auto=format",
+  "fish":"https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=400&h=600&fit=crop&auto=format",
+  "reptile":"https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=400&h=600&fit=crop&auto=format",
+  "hamster":"https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=400&h=600&fit=crop&auto=format",
+  "other":"https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=600&fit=crop&auto=format"
+};
+
+function getPhoto(breed, category) {
+  return PET_PHOTOS[breed] || PET_PHOTOS[category] || PET_PHOTOS["dog"];
 }
 
-</script>
-
-
-<style>
-/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-:root{
-  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
-  --purple:#8b5cf6;--pink:#ec4899;
-  --green:#22c55e;--green-soft:#dcfce7;
-  --red:#ef4444;--amber:#f59e0b;
-  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --bg:#f0f2f5;--card:#fff;
-  --border:#e4e6eb;--border-soft:#f0f2f5;
-  --text:#050505;--text2:#65676b;--text3:#8a8d91;
-  --radius:12px;--radius-sm:8px;--pill:999px;
-  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --shadow-md:0 4px 20px rgba(0,0,0,.1);
-}
-body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
-
-/* Topnav */
-.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
-.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
-.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
-.topnav-tab.active{color:var(--blue)!important}
-.topnav-tab.active::after{background:var(--blue)!important}
-
-/* Buttons - make all buttons rounder and Facebook-style */
-.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
-button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
-.btn-blue{background:var(--blue)!important;color:#fff!important}
-.btn-blue:hover{background:var(--blue-dark)!important}
-.btn-gray{background:var(--bg)!important;color:var(--text)!important}
-
-/* Cards - cleaner */
-.card,.sidebar-card,.scard,.filter-section,.pb-card{
-  border-radius:var(--radius)!important;
-  border:1px solid var(--border)!important;
-  box-shadow:var(--shadow)!important;
-  background:var(--card)!important;
-}
-
-/* Badges - rounder */
-.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
-.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
-.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
-
-/* Post actions */
-.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
-.post-action.liked,.liked{color:var(--blue)!important}
-
-/* Story cards */
-.story-card{border-radius:var(--radius)!important}
-.story-card-av,.story-av{border:3px solid var(--blue)!important}
-
-/* Bottom nav */
-.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
-.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
-.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
-
-/* Market cards */
-.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
-
-/* Inputs */
-input,textarea,select{font-family:'Inter',sans-serif!important}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
-
-/* Modals */
-.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
-.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
-
-/* Progress/fill */
-.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
-
-/* Tab bars */
-.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
-
-/* Notification unread */
-.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
-
-/* Vet-specific */
-.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-</style>
-
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1877F2">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="manifest.json">
-<title>PawBook — Reels</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Poppins',sans-serif;background:#000;color:#fff;height:100vh;overflow:hidden}
-.reels-container{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none}
-.reels-container::-webkit-scrollbar{display:none}
-.reel{height:100vh;width:100%;position:relative;scroll-snap-align:start;overflow:hidden;background:#111}
-.reel-bg{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.reel-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,0.6))}
-.reel-content{position:absolute;inset:0;display:flex}
-
-/* Right sidebar actions */
-.reel-actions{position:absolute;right:12px;bottom:100px;display:flex;flex-direction:column;gap:20px;align-items:center}
-.reel-act-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
-.reel-act-icon{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:22px;border:none;color:#fff;cursor:pointer}
-.reel-act-label{font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
-.reel-av-ring{position:relative;margin-bottom:4px}
-.reel-av-img{width:44px;height:44px;border-radius:50%;border:2px solid #fff;object-fit:cover;cursor:pointer}
-.reel-follow-dot{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:#1a4db3;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;cursor:pointer}
-
-/* Bottom info */
-.reel-info{position:absolute;bottom:80px;left:12px;right:70px}
-.reel-username{font-size:14px;font-weight:800;margin-bottom:4px;cursor:pointer}
-.reel-caption{font-size:13px;line-height:1.5;margin-bottom:8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.reel-tags{display:flex;flex-wrap:wrap;gap:4px}
-.reel-tag{font-size:12px;font-weight:700;color:#60a5fa}
-.reel-sound{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;opacity:0.8}
-.reel-sound-disc{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);animation:spin 3s linear infinite;object-fit:cover}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
-/* Play/pause tap */
-.reel-tap{position:absolute;inset:0;z-index:1;cursor:pointer}
-
-/* Progress bar */
-.reel-progress{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.3);z-index:10}
-.reel-progress-fill{height:100%;background:#fff;transition:width 0.1s linear}
-
-/* Top nav */
-.reels-nav{position:fixed;top:0;left:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:200;background:linear-gradient(rgba(0,0,0,0.5),transparent)}
-.tab-btn{background:none;border:none;color:rgba(255,255,255,0.6);font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;padding:4px 0}
-.tab-btn.active{color:#fff;border-bottom:2px solid #fff}
-
-/* Comment drawer */
-.comment-drawer{position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;border-radius:20px 20px 0 0;transform:translateY(100%);transition:transform 0.3s ease;z-index:500;max-height:70vh;display:flex;flex-direction:column}
-.comment-drawer.open{transform:translateY(0)}
-.drawer-handle{width:36px;height:4px;background:#2e3650;border-radius:2px;margin:12px auto 16px}
-
-/* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(0,0,0,0.9);border-top:1px solid rgba(255,255,255,0.1);display:flex;z-index:300}
-.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#94a3b8;font-size:10px;font-weight:600;border:none;background:none;cursor:pointer;font-family:'Poppins',sans-serif}
-.bn-item.active{color:#fff}
-.bn-item i{font-size:20px}
-</style>
-<link rel="stylesheet" href="mobile.css">
-<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
-<style id="pb-mobile">
-html, body { overflow-x: hidden !important; }
-@media (max-width: 768px) {
-  html, body { width: 100% !important; overflow-x: hidden !important; }
-  div { min-width: 0 !important; }
-
-  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
-  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
-  .topnav-tabs, .nav-tabs { display: none !important; }
-  .bottomnav { display: flex !important; }
-  .left-sidebar, .right-sidebar, aside { display: none !important; }
-  body { padding-bottom: 72px !important; }
-}
-</style>
-<style id="pb-burger">
-.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
-.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
-.drawer-overlay.open { display: block; }
-.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
-.drawer-panel.open { left: 0; }
-.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
-.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
-.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
-.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
-.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
-.drawer-body { flex: 1; padding: 6px 0; }
-.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
-.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
-.drawer-item:hover { background: #eff6ff; color: #1877F2; }
-.drawer-item i { font-size: 20px; width: 24px; }
-.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
-.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
-.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
-.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
-.bnav-item i { font-size: 22px; }
-.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.bnav-item.active { color: #1877F2; }
-@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
-@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
-</style>
-</head>
-<body>
-
-<!-- Top tabs -->
-<div class="reels-nav">
-  <button onclick="location.href='07_home.html'" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer"><i class="ti ti-arrow-left"></i></button>
-  <div style="display:flex;gap:24px">
-    <button class="tab-btn" onclick="location.href='07_home.html'">For You</button>
-    <button class="tab-btn active" onclick="goTo('28_reels.html')">Reels</button>
-    <button class="tab-btn" onclick="location.href='27_stories.html'">Stories</button>
-  </div>
-  <button style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer" onclick="openUpload()"><i class="ti ti-circle-plus"></i></button>
-</div>
-
-<!-- Reels feed -->
-<div class="reels-container" id="reels-container"></div>
-
-<!-- Comment Drawer -->
-<div class="comment-drawer" id="comment-drawer">
-  <div class="drawer-handle"></div>
-  <div style="padding:0 16px;font-size:15px;font-weight:800;border-bottom:1px solid #2e3650;padding-bottom:12px">Comments</div>
-  <div id="comment-list" style="flex:1;overflow-y:auto;padding:12px 16px">
-    <div style="display:flex;gap:10px;margin-bottom:14px">
-      <div style="width:36px;height:36px;border-radius:50%;background:#6366f1;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">P</div>
-      <div><div style="background:#252542;border-radius:14px;padding:8px 12px;font-size:13px"><div style="font-weight:700;font-size:12px;margin-bottom:2px">Priya</div>So adorable! 😍🐾</div><div style="font-size:11px;color:#94a3b8;margin-top:3px;padding:0 6px">2m · ❤️ Like · Reply</div></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-bottom:14px">
-      <div style="width:36px;height:36px;border-radius:50%;background:#10b981;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">R</div>
-      <div><div style="background:#252542;border-radius:14px;padding:8px 12px;font-size:13px"><div style="font-weight:700;font-size:12px;margin-bottom:2px">Rahul</div>What breed is this? 🐕</div><div style="font-size:11px;color:#94a3b8;margin-top:3px;padding:0 6px">5m · ❤️ Like · Reply</div></div>
-    </div>
-  </div>
-  <div style="padding:10px 16px;border-top:1px solid #2e3650;display:flex;gap:8px">
-    <input id="reel-comment-input" placeholder="Add a comment..." style="flex:1;height:40px;border-radius:20px;border:none;background:#252542;color:#e2e8f0;padding:0 16px;font-family:'Poppins',sans-serif;font-size:13px;outline:none">
-    <button onclick="postReelComment()" style="background:none;border:none;color:#1a4db3;font-size:16px;cursor:pointer;font-weight:800">Post</button>
-  </div>
-</div>
-
-<!-- Bottom nav -->
-<div class="bottom-nav">
-  <button class="bn-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
-  <button class="bn-item active"><i class="ti ti-player-play"></i>Reels</button>
-  <button class="bn-item" onclick="location.href='27_stories.html'"><i class="ti ti-circle-dot"></i>Stories</button>
-  <button class="bn-item" onclick="location.href='15_search.html'"><i class="ti ti-search"></i>Search</button>
-  <button class="bn-item" onclick="location.href='08_pet_profile.html'"><i class="ti ti-user"></i>Profile</button>
-</div>
-
-<script>
+// Demo reel database
 let REELS = [
-  { id:1, user:'Bruno_Daily', avatar:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80', img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80', caption:'Watch Bruno learn his new trick! 🎾 Best boy ever #DogLife #Beagle', likes:4821, comments:234, shares:89, sound:'Original Audio · Bruno_Daily' },
-  { id:2, user:'CatMomDelhi', avatar:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80', img:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&q=80', caption:'Luna discovered the sunbeam spot 😸☀️ #CatLife #Lazy #Feline', likes:12.4e3, comments:567, shares:234, sound:'Chill Vibes · Spotify' },
-  { id:3, user:'BirdLoverMumbai', avatar:'https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=80&q=80', img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80', caption:'Polly learned 5 new words this week! 🦜🎤 #Parrot #TalkingBird', likes:8934, comments:421, shares:156, sound:'Original Audio · BirdLoverMumbai' },
-  { id:4, user:'RabbitFamily', avatar:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=80&q=80', img:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&q=80', caption:'Bunny binkies are the cutest thing EVER 🐰💕 #Rabbit #BunnyLife', likes:6721, comments:312, shares:98, sound:'Happy Music · Trending' },
-  { id:5, user:'VetDrPriya', avatar:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80', img:'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=600&q=80', caption:'Signs your pet needs a vet visit ASAP! 🩺 Save this! #VetTips #PetHealth', likes:23.1e3, comments:1234, shares:4567, sound:'Original Audio · VetDrPriya' },
-  { id:6, user:'ExoticPets_India', avatar:'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=80&q=80', img:'https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?w=600&q=80', caption:'Meet my baby gecko! 🦎 Day gecko care tips in comments #Reptile #Gecko', likes:9876, comments:543, shares:234, sound:'Lo-fi Beats · Trending' },
+  {id:1,petName:"Simba",category:"dog",breed:"Labrador Retriever",age:"3 yrs",gender:"male",color:"Golden",country:"India",city:"Mumbai",ownerName:"Priya Sharma",caption:"Watch Simba catch the frisbee mid-air! 🎯",desc:"Three perfect catches in a row — trained for 2 months for this moment.",tags:["#dogtraining","#frisbee","#labrador","#puppylife"],mood:"training",duration:9,likes:342,comments:28,shares:14,saves:67,views:1842,privacy:"public",uploadedAt:"2026-11-10T08:30:00Z",featured:true,trending:true},
+  {id:2,petName:"Luna",category:"cat",breed:"Persian",age:"5 yrs",gender:"female",color:"White",country:"India",city:"Bengaluru",ownerName:"Arjun Nair",caption:"Luna discovered gravity doesn't apply to her 😂",desc:"She jumps from the wardrobe EVERY morning. This is now a ritual.",tags:["#catlife","#funnycat","#persian","#catsofpawbook"],mood:"funny",duration:7,likes:489,comments:52,shares:31,saves:118,views:2601,privacy:"public",uploadedAt:"2026-11-09T14:20:00Z",featured:true,trending:true},
+  {id:3,petName:"Rocky",category:"dog",breed:"German Shepherd",age:"2 yrs",gender:"male",color:"Black & Tan",country:"India",city:"Delhi",ownerName:"Rohit Verma",caption:"Rocky's first agility course run 🏃",desc:"He completed the full course in under 40 seconds. So proud!",tags:["#agility","#germanshepherd","#dogmom","#pawbook"],mood:"agility",duration:10,likes:198,comments:19,shares:9,saves:44,views:1120,privacy:"public",uploadedAt:"2026-11-08T11:00:00Z",featured:false,trending:false},
+  {id:4,petName:"Mango",category:"bird",breed:"Indian Ringneck",age:"4 yrs",gender:"male",color:"Green",country:"India",city:"Chennai",ownerName:"Kavitha Rajan",caption:"Mango sings his morning raga 🎵",desc:"Every morning at 6am sharp. No alarm needed in this house.",tags:["#parrot","#birdsong","#indianringneck","#morning"],mood:"cute",duration:8,likes:627,comments:74,shares:88,saves:201,views:3890,privacy:"public",uploadedAt:"2026-11-07T06:05:00Z",featured:true,trending:true},
+  {id:5,petName:"Buddy",category:"dog",breed:"Beagle",age:"1 yr",gender:"male",color:"Tricolor",country:"United Kingdom",city:"London",ownerName:"James Wilson",caption:"Buddy found 47p and thinks he's rich now 💰",desc:"We were walking in Hyde Park and he literally dug this out of the grass.",tags:["#beagle","#funny","#puppylife","#london"],mood:"funny",duration:6,likes:284,comments:38,shares:22,saves:79,views:1540,privacy:"public",uploadedAt:"2026-11-06T16:45:00Z",featured:false,trending:true},
+  {id:6,petName:"Zara",category:"cat",breed:"Bengal",age:"2 yrs",gender:"female",color:"Spotted Brown",country:"United Arab Emirates",city:"Dubai",ownerName:"Fatima Al-Hassan",caption:"Zara's midnight parkour run 🌙",desc:"3am and this is happening. Every. Single. Night.",tags:["#bengalcat","#catnip","#midnight","#catsofpawbook"],mood:"funny",duration:9,likes:512,comments:61,shares:45,saves:154,views:2890,privacy:"public",uploadedAt:"2026-11-05T22:12:00Z",featured:false,trending:true},
+  {id:7,petName:"Bruno",category:"dog",breed:"Rottweiler",age:"4 yrs",gender:"male",color:"Black & Mahogany",country:"Germany",city:"Munich",ownerName:"Klaus Müller",caption:"Bruno's favourite place: on top of me 😩",desc:"45kg of dog sitting on you is quite a wake-up call.",tags:["#rottweiler","#bigdog","#dogsofinstagram","#germany"],mood:"cute",duration:7,likes:176,comments:21,shares:11,saves:38,views:980,privacy:"public",uploadedAt:"2026-11-04T09:30:00Z",featured:false,trending:false},
+  {id:8,petName:"Coco",category:"rabbit",breed:"Holland Lop",age:"3 yrs",gender:"female",color:"Brown & White",country:"Australia",city:"Sydney",ownerName:"Emma Clarke",caption:"Coco binkies for a whole minute straight 🐰",desc:"She does this every time I open the veggie drawer. Pavlovian.",tags:["#rabbit","#binkies","#hollandlop","#australia"],mood:"cute",duration:8,likes:398,comments:44,shares:29,saves:95,views:2140,privacy:"public",uploadedAt:"2026-11-03T17:00:00Z",featured:true,trending:false}
 ];
 
-let likedReels = new Set();
-let currentReelId = null;
+let activeReelId = null;
+let currentSort = 'new';
+let currentFilters = {country:'',state:'',city:'',category:'',breed:'',tag:'',search:''};
+let savedReels = JSON.parse(localStorage.getItem('pb_saved_reels')||'[]');
+let likedReels = JSON.parse(localStorage.getItem('pb_liked_reels')||'[]');
+let currentUploadStep = 1;
+let uploadTags = [];
+let uploadVideoDuration = 0;
+let uploadVideoFile = null;
 
-function fmt(n) {
-  if(n >= 1000000) return (n/1000000).toFixed(1)+'M';
-  if(n >= 1000) return (n/1000).toFixed(1)+'K';
-  return Math.round(n).toString();
-}
-
-function renderReels() {
-  const container = document.getElementById('reels-container');
-  container.innerHTML = REELS.map((r,i) => `
-    <div class="reel" id="reel-${r.id}" data-reel-id="${r.id}">
-      <div class="reel-progress"><div class="reel-progress-fill" id="rprog-${r.id}" style="width:0%"></div></div>
-      <img class="reel-bg" src="${r.img}" onerror="this.style.background='#1a1a2e'">
-      <div class="reel-overlay"></div>
-      <div class="reel-content">
-        <div class="reel-tap" onclick="togglePlay(${r.id})"></div>
-
-        <!-- Right actions -->
-        <div class="reel-actions">
-          <div class="reel-av-ring">
-            <img class="reel-av-img" src="${r.avatar}" onclick="location.href='29_user_profile.html'">
-            <div class="reel-follow-dot" onclick="followUser(this)">+</div>
-          </div>
-          <div class="reel-act-btn" onclick="likeReel(${r.id}, this)">
-            <button class="reel-act-icon" id="like-${r.id}" style="${likedReels.has(r.id)?'color:#ef4444':''}" onclick="likeReel(this)">❤️</button>
-            <span class="reel-act-label" id="likes-${r.id}">${fmt(r.likes)}</span>
-          </div>
-          <div class="reel-act-btn" onclick="openComments(${r.id})">
-            <button class="reel-act-icon">💬</button>
-            <span class="reel-act-label">${fmt(r.comments)}</span>
-          </div>
-          <div class="reel-act-btn" onclick="shareReel(${r.id})">
-            <button class="reel-act-icon">↗️</button>
-            <span class="reel-act-label">${fmt(r.shares)}</span>
-          </div>
-          <div class="reel-act-btn" onclick="bookmarkReel(${r.id},this)">
-            <button class="reel-act-icon" id="bm-${r.id}">🔖</button>
-            <span class="reel-act-label">Save</span>
-          </div>
-          <div class="reel-act-btn" onclick="openReelMenu(${r.id})">
-            <button class="reel-act-icon">⋯</button>
-          </div>
-        </div>
-
-        <!-- Bottom info -->
-        <div class="reel-info">
-          <div class="reel-username" onclick="location.href='29_user_profile.html'">@${r.user}</div>
-          <div class="reel-caption">${r.caption}</div>
-          <div class="reel-sound">
-            <img class="reel-sound-disc" src="${r.avatar}">
-            <span>${r.sound}</span>
-          </div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function likeReel(id, container) {
-  const btn = document.getElementById('like-'+id);
-  const countEl = document.getElementById('likes-'+id);
-  const reel = REELS.find(r => r.id === id);
-  if(!reel) return;
-  if(likedReels.has(id)) {
-    likedReels.delete(id);
-    reel.likes--;
-    btn.style.color = '';
-    showToast('Like removed');
-  } else {
-    likedReels.add(id);
-    reel.likes++;
-    btn.style.transform='scale(1.3)';
-    setTimeout(()=>btn.style.transform='scale(1)',300);
-    showToast('❤️ Liked!');
-  }
-  countEl.textContent = fmt(reel.likes);
-}
-
-function bookmarkReel(id, container) {
-  const btn = document.getElementById('bm-'+id);
-  btn.textContent = btn.textContent === '🔖' ? '📌' : '🔖';
-  showToast(btn.textContent === '📌' ? '📌 Saved to collection!' : 'Removed from saved');
-}
-
-function shareReel(id) {
-  if(navigator.share) navigator.share({title:'PawBook Reel',text:'Check this reel!',url:location.href+'#reel-'+id}).catch(()=>{});
-  else showToast('🔗 Link copied!');
-}
-
-function followUser(btn) {
-  btn.textContent = btn.textContent === '+' ? '✓' : '+';
-  btn.style.background = btn.textContent === '✓' ? '#10b981' : '#1a4db3';
-  showToast(btn.textContent === '✓' ? '✓ Following!' : 'Unfollowed');
-}
-
-function openComments(id) {
-  currentReelId = id;
-  document.getElementById('comment-drawer').classList.add('open');
-}
-
-function postReelComment() {
-  const input = document.getElementById('reel-comment-input');
-  const text = input.value.trim();
-  if(!text) return;
-  const list = document.getElementById('comment-list');
-  const div = document.createElement('div');
-  div.style.cssText = 'display:flex;gap:10px;margin-bottom:14px';
-  const user = typeof Auth!=='undefined'?Auth.getUser():null;
-  const initial = (user?.full_name||user?.username||'Y')[0].toUpperCase();
-  div.innerHTML = `<div style="width:36px;height:36px;border-radius:50%;background:#1a4db3;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">${initial}</div>
-    <div><div style="background:#252542;border-radius:14px;padding:8px 12px;font-size:13px"><div style="font-weight:700;font-size:12px;margin-bottom:2px">You</div>${text}</div><div style="font-size:11px;color:#94a3b8;margin-top:3px;padding:0 6px">Just now · ❤️ Like · Reply</div></div>`;
-  list.appendChild(div);
-  list.scrollTop = list.scrollHeight;
-  input.value = '';
-  showToast('Comment posted! 💬');
-}
-
-function openReelMenu(id) {
-  const menu = document.createElement('div');
-  menu.style.cssText = 'position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;justify-content:center';
-  menu.innerHTML = `<div style="background:#1a1a2e;border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:8px 0 32px">
-    <div style="width:36px;height:4px;background:#2e3650;border-radius:2px;margin:10px auto 16px"></div>
-    ${['🚩 Report','🔇 Not Interested','👤 View Profile','📋 Copy Link'].map((l,i)=>`<div style="padding:14px 20px;font-size:15px;font-weight:600;cursor:pointer;border-bottom:1px solid #252542" onclick="this.closest('div[style*=fixed]').remove();showToast('Done!')">${l}</div>`).join('')}
-    <div style="padding:14px 20px;font-size:15px;color:#94a3b8;cursor:pointer" onclick="this.closest('div[style*=fixed]').remove()">Cancel</div>
-  </div>`;
-  menu.addEventListener('click', e=>{ if(e.target===menu) menu.remove(); });
-  document.body.appendChild(menu);
-}
-
-// Close comment drawer on outside tap
-document.addEventListener('click', e => {
-  const drawer = document.getElementById('comment-drawer');
-  if(!drawer.contains(e.target) && drawer.classList.contains('open') && !e.target.closest('.reel-act-btn')) {
-    drawer.classList.remove('open');
-  }
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initCountryDropdowns();
+  renderReels(REELS);
+  renderPopularList();
+  renderCountryBreakdown();
+  updateStats();
 });
 
-function togglePlay(id) { showToast('▶️ Playing'); }
-function openUpload() {
-  document.getElementById('reel-upload-modal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-function closeUpload() {
-  document.getElementById('reel-upload-modal').style.display = 'none';
-  document.body.style.overflow = '';
-  // Reset form
-  document.getElementById('ru-preview').style.display = 'none';
-  document.getElementById('ru-dropzone').style.display = 'flex';
-  document.getElementById('ru-caption').value = '';
-  document.getElementById('ru-category').value = 'pets';
-  document.getElementById('ru-audio').value = '';
-  selectedVideoSrc = '';
-}
-
-var selectedVideoSrc = '';
-
-function handleVideoSelect(input) {
-  if (!input.files || !input.files[0]) return;
-  var file = input.files[0];
-  // Validate
-  if (file.size > 100 * 1024 * 1024) { showToast('❌ File too large. Max 100MB'); return; }
-  if (!file.type.startsWith('video/')) { showToast('❌ Please select a video file'); return; }
-
-  var url = URL.createObjectURL(file);
-  selectedVideoSrc = url;
-
-  // Show preview
-  var preview = document.getElementById('ru-preview');
-  var video = document.getElementById('ru-video');
-  video.src = url;
-  preview.style.display = 'block';
-  document.getElementById('ru-dropzone').style.display = 'none';
-  document.getElementById('ru-filename').textContent = file.name + ' (' + (file.size/1024/1024).toFixed(1) + 'MB)';
-}
-
-function removeVideo() {
-  document.getElementById('ru-preview').style.display = 'none';
-  document.getElementById('ru-dropzone').style.display = 'flex';
-  document.getElementById('ru-video').src = '';
-  document.getElementById('ru-video-input').value = '';
-  selectedVideoSrc = '';
-}
-
-async function publishReel() {
-  var caption = document.getElementById('ru-caption').value.trim();
-  var category = document.getElementById('ru-category').value;
-  var audio = document.getElementById('ru-audio').value.trim();
-
-  if (!selectedVideoSrc && !caption) {
-    showToast('❌ Add a video or write a caption'); return;
-  }
-
-  var btn = document.getElementById('ru-publish-btn');
-  btn.textContent = 'Publishing…'; btn.disabled = true;
-
-  var prog = document.getElementById('ru-progress');
-  var fill = document.getElementById('ru-prog-fill');
-  prog.style.display = 'block';
-
-  var videoUrl = selectedVideoSrc;
-  var thumbUrl = selectedVideoSrc || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80';
-
-  // Simulate progress while uploading
-  var pct = 0;
-  var progInterval = setInterval(function() {
-    if (pct < 85) { pct += Math.random() * 8; fill.style.width = Math.min(pct,85) + '%'; document.getElementById('ru-prog-label').textContent = Math.round(Math.min(pct,85)) + '%'; }
-  }, 200);
-
-  // Real Cloudinary upload if a file was selected
-  var fileInp = document.getElementById('ru-file-input') || document.querySelector('[accept*="video"]');
-  if (fileInp && fileInp.files && fileInp.files[0] && typeof uploadToCloudinaryDirect === 'function') {
-    try {
-      var result = await uploadToCloudinaryDirect(fileInp.files[0]);
-      videoUrl = result.secure_url;
-      thumbUrl = result.secure_url.replace(/\.[^.]+$/, '.jpg'); // auto thumbnail
-    } catch(e) { console.warn('Video upload failed:', e); }
-  }
-
-  clearInterval(progInterval);
-  fill.style.width = '100%';
-  document.getElementById('ru-prog-label').textContent = '100%';
-
-  setTimeout(function() {
-    var user = (Auth && Auth.getUser && Auth.getUser()) || {};
-    var newReel = {
-      id: Date.now(),
-      user: user.full_name || 'You',
-      username: user.username ? '@'+user.username : '@me',
-      avatar: user.avatar_url || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80',
-      caption: caption || 'New Reel 🐾',
-      category: category,
-      audio: audio || '🎵 Original Audio',
-      likes: 0, comments: 0, shares: 0,
-      liked: false, bookmarked: false,
-      video: videoUrl,
-      thumb: thumbUrl
-    };
-    REELS.unshift(newReel);
-    renderReels();
-    closeUpload();
-    btn.textContent = 'Publish Reel'; btn.disabled = false;
-    showToast('✅ Reel published!');
-
-    // Sync to backend
-    var token = getToken ? getToken() : localStorage.getItem('pb_token');
-    if (token) {
-      fetch(API_BASE + '/reels', {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({ caption: caption||'New Reel 🐾', category: category, video_url: videoUrl, audio_title: audio||'Original Audio' })
-      }).catch(function(){});
-    }
-  }, 400);
-}
-
-function triggerRecord() {
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then(function(stream) {
-        showToast('📹 Camera ready — recording feature coming soon!');
-        stream.getTracks().forEach(t => t.stop());
-      })
-      .catch(function() { showToast('❌ Camera permission denied'); });
-  } else {
-    showToast('Camera not available on this device');
-  }
-}
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(26,77,179,0.95);color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2000);
-}
-
-renderReels();
-
-// ── Real progress bar via IntersectionObserver ────────────────────────────────
-(function initReelProgress(){
-  var activeTimer = null;
-  var activeFill = null;
-  var startTime = 0;
-  var REEL_DURATION = 15000; // 15s default if no video
-
-  function stopProgress(){
-    if(activeTimer){ clearInterval(activeTimer); activeTimer=null; }
-    if(activeFill){ activeFill.style.width='0%'; activeFill=null; }
-  }
-
-  function startProgress(reelEl){
-    stopProgress();
-    var id = reelEl.dataset.reelId;
-    if(!id) return;
-    activeFill = document.getElementById('rprog-'+id);
-    if(!activeFill) return;
-    var video = reelEl.querySelector('video');
-    var duration = (video && video.duration && isFinite(video.duration)) ? video.duration * 1000 : REEL_DURATION;
-    if(video && !isNaN(video.duration) && isFinite(video.duration)){
-      duration = video.duration * 1000;
-      try{ video.play().catch(function(){}); }catch(e){}
-      video.addEventListener('timeupdate', function onTime(){
-        if(!activeFill) return video.removeEventListener('timeupdate', onTime);
-        if(video.duration) activeFill.style.width = (video.currentTime/video.duration*100).toFixed(1)+'%';
-      });
-      return;
-    }
-    // Fallback timer for non-video reels
-    startTime = Date.now();
-    activeTimer = setInterval(function(){
-      var elapsed = Date.now() - startTime;
-      var pct = Math.min(elapsed / REEL_DURATION * 100, 100);
-      if(activeFill) activeFill.style.width = pct.toFixed(1) + '%';
-      if(pct >= 100){ clearInterval(activeTimer); activeTimer = null; }
-    }, 100);
-  }
-
-  var obs = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting) startProgress(entry.target);
-      else {
-        var id = entry.target.dataset.reelId;
-        if(id && activeFill === document.getElementById('rprog-'+id)) stopProgress();
-        var video = entry.target.querySelector('video');
-        if(video) try{ video.pause(); }catch(e){}
-      }
+// ─── COUNTRY / STATE / CITY CASCADE ──────────────────────────────────────────
+function initCountryDropdowns() {
+  ['filterCountry','upCountry'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    Object.keys(PB_CITIES).forEach(c => {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      sel.appendChild(o);
     });
-  }, { threshold: 0.8 });
+  });
+}
 
-  function observeAll(){
-    document.querySelectorAll('.reel[data-reel-id]').forEach(function(el){ obs.observe(el); });
+function populateStates(countrySelId, stateSelId, citySelId) {
+  const country = document.getElementById(countrySelId).value;
+  const stateSel = document.getElementById(stateSelId);
+  const citySel = document.getElementById(citySelId);
+  stateSel.innerHTML = '<option value="">All States</option>';
+  citySel.innerHTML = '<option value="">All Cities</option>';
+  citySel.disabled = true;
+  if (!country || !PB_CITIES[country]) { stateSel.disabled = true; return; }
+  stateSel.disabled = false;
+  Object.keys(PB_CITIES[country]).forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    stateSel.appendChild(o);
+  });
+}
+
+function populateCitiesFromState(countrySelId, stateSelId, citySelId) {
+  const country = document.getElementById(countrySelId).value;
+  const state = document.getElementById(stateSelId).value;
+  const citySel = document.getElementById(citySelId);
+  citySel.innerHTML = '<option value="">All Cities</option>';
+  if (!country || !state || !PB_CITIES[country] || !PB_CITIES[country][state]) {
+    citySel.disabled = true; return;
+  }
+  citySel.disabled = false;
+  PB_CITIES[country][state].forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    citySel.appendChild(o);
+  });
+}
+
+function populateBreeds(categorySelId, breedSelId) {
+  const cat = document.getElementById(categorySelId).value;
+  const breedSel = document.getElementById(breedSelId);
+  breedSel.innerHTML = '<option value="">All Breeds</option>';
+  if (cat && BREEDS[cat]) {
+    BREEDS[cat].forEach(b => {
+      const o = document.createElement('option');
+      o.value = b; o.textContent = b;
+      breedSel.appendChild(o);
+    });
+  }
+}
+
+function onFilterCountryChange() {
+  populateStates('filterCountry','filterState','filterCity');
+  renderEmergencyPanel(document.getElementById('filterCountry').value, '');
+  applyFilters();
+}
+function onFilterStateChange() {
+  populateCitiesFromState('filterCountry','filterState','filterCity');
+  renderEmergencyPanel(document.getElementById('filterCountry').value, document.getElementById('filterState').value);
+  applyFilters();
+}
+function onFilterCategoryChange() { populateBreeds('filterCategory','filterBreed'); applyFilters(); }
+
+function onUpCountryChange() { populateStates('upCountry','upState','upCity'); }
+function onUpStateChange() { populateCitiesFromState('upCountry','upState','upCity'); }
+function onUpCategoryChange() { populateBreeds('upCategory','upBreed'); }
+
+// ─── FILTER / SORT ────────────────────────────────────────────────────────────
+function applyFilters() {
+  currentFilters.country = document.getElementById('filterCountry').value;
+  currentFilters.state = document.getElementById('filterState')?.value || '';
+  currentFilters.city = document.getElementById('filterCity').value;
+  currentFilters.category = document.getElementById('filterCategory').value;
+  currentFilters.breed = document.getElementById('filterBreed').value;
+  let list = [...REELS];
+  if (currentFilters.country) list = list.filter(r => r.country === currentFilters.country);
+  if (currentFilters.state) list = list.filter(r => r.state === currentFilters.state || !r.state);
+  if (currentFilters.city) list = list.filter(r => r.city === currentFilters.city);
+  if (currentFilters.category) list = list.filter(r => r.category === currentFilters.category);
+  if (currentFilters.breed) list = list.filter(r => r.breed === currentFilters.breed);
+  if (currentFilters.tag) list = list.filter(r => r.tags.some(t => t.toLowerCase().includes(currentFilters.tag.toLowerCase())));
+  if (currentFilters.search) {
+    const q = currentFilters.search.toLowerCase();
+    list = list.filter(r => r.petName.toLowerCase().includes(q) || r.caption.toLowerCase().includes(q) || r.breed.toLowerCase().includes(q) || r.city.toLowerCase().includes(q) || r.country.toLowerCase().includes(q));
+  }
+  list = sortList(list);
+  renderReels(list);
+}
+
+function filterReels(q) { currentFilters.search = q; applyFilters(); }
+function filterByTag(tag) {
+  currentFilters.tag = tag;
+  currentFilters.search = '';
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  applyFilters();
+  showToast(`Filtering by #${tag}`);
+}
+
+function setSort(type, btn) {
+  currentSort = type;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function sortList(list) {
+  if (currentSort === 'top') return [...list].sort((a,b) => b.likes - a.likes);
+  if (currentSort === 'trend') return [...list].sort((a,b) => (b.trending?1:0) - (a.trending?1:0) || b.views - a.views);
+  return [...list].sort((a,b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+}
+
+// ─── RENDER REELS ────────────────────────────────────────────────────────────
+function renderReels(list) {
+  const feed = document.getElementById('reelsFeed');
+  const empty = document.getElementById('emptyState');
+  // clear all reel wrappers
+  feed.querySelectorAll('.reel-wrapper').forEach(el => el.remove());
+  if (!list.length) { empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  list.forEach(r => { feed.insertBefore(buildReelWrapper(r), empty); });
+}
+
+function buildReelWrapper(r) {
+  const photo = getPhoto(r.breed, r.category);
+  const isLiked = likedReels.includes(r.id);
+  const isSaved = savedReels.includes(r.id);
+  const em = EMOJI[r.category] || '🐾';
+  const timeAgo = formatTimeAgo(r.uploadedAt);
+  const tagHtml = r.tags.map(t => `<span class="reel-tag" onclick="filterByTag('${t.replace('#','')}')">${t}</span>`).join(' ');
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'reel-wrapper';
+  wrapper.id = `reel-wrapper-${r.id}`;
+  wrapper.innerHTML = `
+    <div class="reel-card${r.paused!==false?' paused':''}" id="reel-${r.id}">
+      <img class="reel-poster" src="${photo}" alt="${r.petName}" loading="lazy" onerror="this.style.background='#222'">
+      <div class="reel-overlay"></div>
+      <div class="reel-play-icon"><i class="ti ti-player-play-filled"></i></div>
+      <div class="reel-tap-zone" onclick="togglePlay(${r.id})"></div>
+      <div class="reel-progress"><div class="reel-progress-fill" id="prog-${r.id}"></div></div>
+
+      <!-- top badges -->
+      <div class="reel-top">
+        <span class="reel-badge reel-badge-cat">${em} ${r.category}</span>
+        <span class="reel-duration-badge"><i class="ti ti-clock" style="font-size:10px"></i> ${r.duration}s</span>
+      </div>
+
+      <!-- bottom info -->
+      <div class="reel-bottom">
+        <div class="reel-owner">
+          <div class="reel-owner-avatar">${r.ownerName.charAt(0)}</div>
+          <div>
+            <div class="reel-owner-name">${r.ownerName}</div>
+            <div class="reel-owner-loc">📍 ${r.city}, ${r.country} · ${timeAgo}</div>
+          </div>
+          <button class="follow-btn" id="follow-${r.id}" onclick="toggleFollow(${r.id},this); event.stopPropagation()">Follow</button>
+        </div>
+        <div class="reel-pet-name">${r.petName} <span class="breed-tag">${r.breed}</span></div>
+        <div class="reel-desc" id="desc-${r.id}">${r.caption}</div>
+        <button class="reel-more-btn" onclick="expandDesc(${r.id});event.stopPropagation()">more</button>
+        <div class="reel-tags">${tagHtml}</div>
+      </div>
+
+      <!-- action buttons -->
+      <div class="reel-actions">
+        <div class="reel-pet-avatar" onclick="openReelDetail(${r.id});event.stopPropagation()">
+          <img src="${photo}" alt="${r.petName}">
+        </div>
+        <button class="reel-action-btn${isLiked?' liked':''}" id="likebtn-${r.id}" onclick="toggleLike(${r.id});event.stopPropagation()">
+          <div class="reel-action-icon"><i class="ti ti-heart${isLiked?'-filled':''}"></i></div>
+          <span class="reel-action-count" id="likecount-${r.id}">${formatCount(r.likes)}</span>
+        </button>
+        <button class="reel-action-btn" onclick="openReelDetail(${r.id});event.stopPropagation()">
+          <div class="reel-action-icon"><i class="ti ti-message-circle"></i></div>
+          <span class="reel-action-count">${formatCount(r.comments)}</span>
+        </button>
+        <button class="reel-action-btn${isSaved?' saved':''}" id="savebtn-${r.id}" onclick="toggleSave(${r.id});event.stopPropagation()">
+          <div class="reel-action-icon"><i class="ti ti-bookmark${isSaved?'-filled':''}"></i></div>
+          <span class="reel-action-count" id="savecount-${r.id}">${formatCount(r.saves)}</span>
+        </button>
+        <button class="reel-action-btn" onclick="openShareModal(${r.id});event.stopPropagation()">
+          <div class="reel-action-icon"><i class="ti ti-share"></i></div>
+          <span class="reel-action-count">${formatCount(r.shares)}</span>
+        </button>
+        <button class="reel-action-btn" onclick="openReelDetail(${r.id});event.stopPropagation()">
+          <div class="reel-action-icon"><i class="ti ti-dots-vertical"></i></div>
+          <span class="reel-action-count">More</span>
+        </button>
+      </div>
+    </div>
+  `;
+  return wrapper;
+}
+
+// ─── INTERACTIONS ─────────────────────────────────────────────────────────────
+function togglePlay(id) {
+  const card = document.getElementById(`reel-${id}`);
+  card.classList.toggle('paused');
+}
+
+function expandDesc(id) {
+  const el = document.getElementById(`desc-${id}`);
+  el.classList.toggle('expanded');
+  const r = REELS.find(x => x.id === id);
+  if (el.classList.contains('expanded') && r) el.textContent = r.caption + (r.desc ? ' — ' + r.desc : '');
+}
+
+function toggleLike(id) {
+  const r = REELS.find(x => x.id === id);
+  if (!r) return;
+  const btn = document.getElementById(`likebtn-${id}`);
+  const countEl = document.getElementById(`likecount-${id}`);
+  const isLiked = likedReels.includes(id);
+  if (isLiked) {
+    likedReels = likedReels.filter(x => x !== id);
+    r.likes--;
+    btn.classList.remove('liked');
+    btn.querySelector('i').className = 'ti ti-heart';
+  } else {
+    likedReels.push(id);
+    r.likes++;
+    btn.classList.add('liked');
+    btn.querySelector('i').className = 'ti ti-heart-filled';
+    heartBurst(btn);
+  }
+  countEl.textContent = formatCount(r.likes);
+  localStorage.setItem('pb_liked_reels', JSON.stringify(likedReels));
+  updateStats();
+}
+
+function heartBurst(btn) {
+  const burst = document.createElement('div');
+  burst.style.cssText = 'position:absolute;font-size:24px;animation:heartFloat .6s ease forwards;pointer-events:none;z-index:99';
+  burst.textContent = '❤️';
+  btn.style.position = 'relative';
+  btn.appendChild(burst);
+  setTimeout(() => burst.remove(), 700);
+  const style = document.createElement('style');
+  style.textContent = '@keyframes heartFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(1.5)}}';
+  document.head.appendChild(style);
+}
+
+function toggleSave(id) {
+  const r = REELS.find(x => x.id === id);
+  if (!r) return;
+  const btn = document.getElementById(`savebtn-${id}`);
+  const countEl = document.getElementById(`savecount-${id}`);
+  const isSaved = savedReels.includes(id);
+  if (isSaved) {
+    savedReels = savedReels.filter(x => x !== id);
+    r.saves--;
+    btn.classList.remove('saved');
+    btn.querySelector('i').className = 'ti ti-bookmark';
+    showToast('Removed from saved reels');
+  } else {
+    savedReels.push(id);
+    r.saves++;
+    btn.classList.add('saved');
+    btn.querySelector('i').className = 'ti ti-bookmark-filled';
+    showToast('Reel saved! 🔖');
+  }
+  countEl.textContent = formatCount(r.saves);
+  localStorage.setItem('pb_saved_reels', JSON.stringify(savedReels));
+}
+
+function toggleFollow(id, btn) {
+  const isFollowing = btn.classList.contains('following');
+  btn.classList.toggle('following');
+  btn.textContent = isFollowing ? 'Follow' : 'Following';
+  showToast(isFollowing ? 'Unfollowed' : 'Now following! 🐾');
+}
+
+function openShareModal(id) {
+  activeReelId = id;
+  openModal('shareModal');
+}
+
+function shareVia(platform) {
+  const r = REELS.find(x => x.id === activeReelId);
+  const url = `https://pawbook.app/reels/${activeReelId}`;
+  const text = `Check out ${r?.petName}'s reel on PawBook! 🐾`;
+  const links = {
+    whatsapp:`https://wa.me/?text=${encodeURIComponent(text+' '+url)}`,
+    instagram:`https://www.instagram.com/`,
+    twitter:`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+    facebook:`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    telegram:`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+    email:`mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(url)}`
+  };
+  if (platform === 'copy') { navigator.clipboard?.writeText(url); showToast('Link copied! 🔗'); }
+  else if (platform === 'download') showToast('Video saved to downloads 📥');
+  else if (links[platform]) window.open(links[platform], '_blank');
+  if (r) r.shares++;
+  closeModal('shareModal');
+}
+
+// ─── REEL DETAIL MODAL ───────────────────────────────────────────────────────
+function openReelDetail(id) {
+  const r = REELS.find(x => x.id === id);
+  if (!r) return;
+  const photo = getPhoto(r.breed, r.category);
+  const em = EMOJI[r.category] || '🐾';
+  document.getElementById('detailTitle').textContent = `${em} ${r.petName}'s Reel`;
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-player">
+      <img src="${photo}" alt="${r.petName}" style="width:100%;height:100%;object-fit:cover">
+      <div style="position:absolute;bottom:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center">
+        <span style="background:rgba(0,0,0,.6);padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;color:#fff">${r.duration}s · ${formatCount(r.views)} views</span>
+        <span style="background:var(--pb-pink);padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;color:#fff">${r.mood||'cute'}</span>
+      </div>
+    </div>
+    <div style="margin:14px 0">
+      <div style="font-size:16px;font-weight:800">${r.petName}</div>
+      <div style="font-size:13px;color:#888;margin:3px 0">${r.breed} · ${r.gender||''} · ${r.age} · ${r.color}</div>
+      <div style="font-size:12px;color:#666">📍 ${r.city}, ${r.country} · 👤 ${r.ownerName}</div>
+    </div>
+    <div class="detail-meta-grid">
+      <div class="detail-meta-item"><div class="detail-meta-label">❤️ Likes</div><div class="detail-meta-val" style="color:var(--pb-pink)">${formatCount(r.likes)}</div></div>
+      <div class="detail-meta-item"><div class="detail-meta-label">👁️ Views</div><div class="detail-meta-val">${formatCount(r.views)}</div></div>
+      <div class="detail-meta-item"><div class="detail-meta-label">💬 Comments</div><div class="detail-meta-val">${r.comments}</div></div>
+      <div class="detail-meta-item"><div class="detail-meta-label">🔖 Saves</div><div class="detail-meta-val" style="color:var(--pb-purple)">${formatCount(r.saves)}</div></div>
+    </div>
+    <div style="font-size:13px;color:#aaa;line-height:1.6;margin-bottom:12px">${r.caption}${r.desc?' — '+r.desc:''}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+      ${r.tags.map(t=>`<span style="background:rgba(236,72,153,.12);border-radius:99px;padding:3px 10px;font-size:12px;color:var(--pb-pink);font-weight:600;cursor:pointer" onclick="closeModal('detailModal');filterByTag('${t.replace('#','')}')">${t}</span>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="toggleLike(${r.id});closeModal('detailModal')" style="flex:1;padding:10px;border-radius:9px;border:none;background:rgba(236,72,153,.15);color:var(--pb-pink);font-weight:700;font-size:13px;cursor:pointer">❤️ ${likedReels.includes(r.id)?'Liked':'Like'}</button>
+      <button onclick="toggleSave(${r.id});closeModal('detailModal')" style="flex:1;padding:10px;border-radius:9px;border:none;background:rgba(139,92,246,.15);color:var(--pb-purple);font-weight:700;font-size:13px;cursor:pointer">🔖 ${savedReels.includes(r.id)?'Saved':'Save'}</button>
+      <button onclick="closeModal('detailModal');openShareModal(${r.id})" style="flex:1;padding:10px;border-radius:9px;border:none;background:#1a1a1a;color:#ccc;font-weight:700;font-size:13px;cursor:pointer">↗️ Share</button>
+    </div>
+  `;
+  openModal('detailModal');
+}
+
+// ─── UPLOAD WIZARD ────────────────────────────────────────────────────────────
+function uploadStep(dir) {
+  const newStep = currentUploadStep + dir;
+  if (newStep < 1 || newStep > 5) return;
+  if (dir > 0 && !validateCurrentUploadStep()) return;
+
+  document.getElementById(`upanel-${currentUploadStep}`).classList.remove('active');
+  document.getElementById(`ustep-${currentUploadStep}`).classList.remove('active');
+  document.getElementById(`ustep-${currentUploadStep}`).classList.add('done');
+  currentUploadStep = newStep;
+  document.getElementById(`upanel-${currentUploadStep}`).classList.add('active');
+  document.getElementById(`ustep-${currentUploadStep}`).classList.add('active');
+  document.getElementById(`ustep-${currentUploadStep}`).classList.remove('done');
+  if (dir < 0) { // going back
+    for (let i = currentUploadStep; i <= 5; i++) {
+      document.getElementById(`ustep-${i}`).classList.remove('done','active');
+    }
+    document.getElementById(`ustep-${currentUploadStep}`).classList.add('active');
   }
 
-  // Observe after renderReels populates the DOM
-  observeAll();
-  // Re-observe after any new reels are added (e.g. load more)
-  var container = document.getElementById('reels-container');
-  if(container && window.MutationObserver){
-    new MutationObserver(observeAll).observe(container, {childList:true});
+  document.getElementById('upBackBtn').style.display = currentUploadStep > 1 ? '' : 'none';
+  const nextBtn = document.getElementById('upNextBtn');
+  if (currentUploadStep === 5) {
+    nextBtn.innerHTML = '🚀 Publish Reel';
+    nextBtn.onclick = publishReel;
+    buildPublishPreview();
+  } else {
+    nextBtn.innerHTML = 'Next <i class="ti ti-arrow-right"></i>';
+    nextBtn.onclick = () => uploadStep(1);
   }
-})();
+
+  if (currentUploadStep === 2 && uploadVideoFile) {
+    const v = document.getElementById('trimVideo');
+    v.src = URL.createObjectURL(uploadVideoFile);
+    document.getElementById('trimEnd').max = Math.min(uploadVideoDuration, 10);
+    document.getElementById('trimEnd').value = Math.min(uploadVideoDuration, 10);
+    updateTrim();
+  }
+}
+
+function validateCurrentUploadStep() {
+  if (currentUploadStep === 1 && !uploadVideoFile) { showToast('Please select a video first'); return false; }
+  if (currentUploadStep === 3) {
+    if (!document.getElementById('upPetName').value.trim()) { showToast('Please enter pet name'); return false; }
+    if (!document.getElementById('upCategory').value) { showToast('Please select pet category'); return false; }
+    if (!document.getElementById('upBreed').value) { showToast('Please select breed'); return false; }
+    if (!document.getElementById('upCountry').value) { showToast('Please select country'); return false; }
+    if (!document.getElementById('upState').value) { showToast('Please select state/region'); return false; }
+    if (!document.getElementById('upCity').value) { showToast('Please select city'); return false; }
+  }
+  if (currentUploadStep === 4) {
+    if (!document.getElementById('upCaption').value.trim()) { showToast('Please add a caption'); return false; }
+  }
+  return true;
+}
+
+function validateUpload() {/* live validation — could highlight fields */}
+
+function onVideoSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  uploadVideoFile = file;
+  const url = URL.createObjectURL(file);
+  const v = document.createElement('video');
+  v.src = url;
+  v.onloadedmetadata = () => {
+    uploadVideoDuration = v.duration;
+    document.getElementById('videoFileName').textContent = file.name;
+    document.getElementById('videoFileSize').textContent = (file.size/1024/1024).toFixed(1) + ' MB';
+    document.getElementById('videoDurationBadge').textContent = Math.round(v.duration) + 's';
+    document.getElementById('videoSelectedInfo').style.display = '';
+    document.getElementById('videoDurationWarning').style.display = v.duration > 10 ? '' : 'none';
+  };
+}
+
+function onDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) {
+    document.getElementById('videoFileInput').files = e.dataTransfer.files;
+    onVideoSelected({target:{files:[file]}});
+  }
+}
+
+function updateTrim() {
+  const start = parseFloat(document.getElementById('trimStart').value);
+  const end = parseFloat(document.getElementById('trimEnd').value);
+  const length = Math.max(0, end - start);
+  document.getElementById('trimStartVal').textContent = start.toFixed(1) + 's';
+  document.getElementById('trimEndVal').textContent = end.toFixed(1) + 's';
+  document.getElementById('trimLength').textContent = length.toFixed(1) + 's';
+  document.getElementById('trimOverlay').textContent = `${start.toFixed(1)}s — ${end.toFixed(1)}s · ${length.toFixed(1)}s clip`;
+  const v = document.getElementById('trimVideo');
+  if (v.src) { v.currentTime = start; }
+}
+
+function handleTagKey(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = e.target.value.trim().replace(/^#?/,'#').replace(/\s+/g,'');
+    if (val.length > 1 && !uploadTags.includes(val)) {
+      uploadTags.push(val);
+      renderTagPills();
+    }
+    e.target.value = '';
+  }
+}
+
+function renderTagPills() {
+  const box = document.getElementById('tagBox');
+  box.querySelectorAll('.tag-pill').forEach(el => el.remove());
+  uploadTags.forEach((t, i) => {
+    const pill = document.createElement('div');
+    pill.className = 'tag-pill';
+    pill.innerHTML = `${t}<button onclick="removeTag(${i})">×</button>`;
+    box.insertBefore(pill, box.querySelector('input'));
+  });
+}
+
+function removeTag(i) { uploadTags.splice(i,1); renderTagPills(); }
+
+function buildPublishPreview() {
+  const name = document.getElementById('upPetName').value;
+  const breed = document.getElementById('upBreed').value;
+  const city = document.getElementById('upCity').value;
+  const state = document.getElementById('upState').value;
+  const country = document.getElementById('upCountry').value;
+  const caption = document.getElementById('upCaption').value;
+  const start = parseFloat(document.getElementById('trimStart').value||0);
+  const end = parseFloat(document.getElementById('trimEnd').value||10);
+  document.getElementById('publishPetName').textContent = `${name}'s Reel`;
+  document.getElementById('publishMeta').textContent = `${breed} · ${city}${state?', '+state:''}, ${country}`;
+  document.getElementById('publishGrid').innerHTML = `
+    <div class="detail-meta-item"><div class="detail-meta-label">Pet Name</div><div class="detail-meta-val" style="font-size:13px">${name}</div></div>
+    <div class="detail-meta-item"><div class="detail-meta-label">Breed</div><div class="detail-meta-val" style="font-size:13px">${breed}</div></div>
+    <div class="detail-meta-item"><div class="detail-meta-label">Location</div><div class="detail-meta-val" style="font-size:13px">${city}${state?', '+state:''}, ${country}</div></div>
+    <div class="detail-meta-item"><div class="detail-meta-label">Clip Length</div><div class="detail-meta-val" style="font-size:13px">${(end-start).toFixed(1)}s</div></div>
+  `;
+  document.getElementById('publishDesc').textContent = caption;
+}
+
+function publishReel() {
+  const r = {
+    id: REELS.length + 1,
+    petName: document.getElementById('upPetName').value,
+    category: document.getElementById('upCategory').value,
+    breed: document.getElementById('upBreed').value,
+    age: document.getElementById('upAge').value || 'Unknown',
+    gender: document.getElementById('upGender').value,
+    color: document.getElementById('upColor').value,
+    country: document.getElementById('upCountry').value,
+    state: document.getElementById('upState').value,
+    city: document.getElementById('upCity').value,
+    ownerName: 'You',
+    caption: document.getElementById('upCaption').value,
+    desc: document.getElementById('upDesc').value,
+    tags: [...uploadTags],
+    mood: document.getElementById('upMood').value,
+    duration: Math.round(parseFloat(document.getElementById('trimEnd').value||10) - parseFloat(document.getElementById('trimStart').value||0)),
+    likes: 0, comments: 0, shares: 0, saves: 0, views: 0,
+    privacy: document.getElementById('upPrivacy').value,
+    uploadedAt: new Date().toISOString(),
+    featured: false, trending: false
+    // Real app: POST FormData to /api/reels with video file + metadata
+  };
+  REELS.unshift(r);
+  closeModal('uploadModal');
+  resetUploadForm();
+  renderReels(sortList(REELS));
+  renderPopularList();
+  updateStats();
+  showToast('🎉 Reel published! Stored to database.');
+  // scroll feed to top
+  document.getElementById('reelsFeed').scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetUploadForm() {
+  currentUploadStep = 1;
+  uploadTags = [];
+  uploadVideoFile = null;
+  uploadVideoDuration = 0;
+  ['upPetName','upAge','upColor','upCaption','upDesc'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  ['upCategory','upBreed','upGender','upCountry','upState','upCity','upMood','upPrivacy'].forEach(id => { const el=document.getElementById(id); if(el) { el.selectedIndex=0; if(id==='upState'||id==='upCity') el.disabled=true; } });
+  renderTagPills();
+  document.getElementById('videoSelectedInfo').style.display='none';
+  document.getElementById('videoFileName').textContent='';
+  document.getElementById('videoDurationWarning').style.display='none';
+  for (let i=1;i<=5;i++) {
+    const p=document.getElementById(`upanel-${i}`); if(p){p.classList.remove('active');}
+    const s=document.getElementById(`ustep-${i}`); if(s){s.classList.remove('active','done');}
+  }
+  document.getElementById('upanel-1').classList.add('active');
+  document.getElementById('ustep-1').classList.add('active');
+  document.getElementById('upBackBtn').style.display='none';
+  const nb=document.getElementById('upNextBtn');
+  nb.innerHTML='Next <i class="ti ti-arrow-right"></i>';
+  nb.onclick=()=>uploadStep(1);
+}
+
+// ─── RIGHT PANEL ──────────────────────────────────────────────────────────────
+function renderPopularList() {
+  const el = document.getElementById('popularList');
+  if (!el) return;
+  const top = [...REELS].sort((a,b)=>b.likes-a.likes).slice(0,5);
+  el.innerHTML = top.map(r => `
+    <div class="pop-reel" onclick="openReelDetail(${r.id})">
+      <div class="pop-thumb">
+        <img src="${getPhoto(r.breed,r.category)}" alt="${r.petName}" loading="lazy">
+        <div class="pop-play">▶</div>
+      </div>
+      <div class="pop-info">
+        <div class="pop-pet">${r.petName} <span style="font-size:10px;color:#666">· ${r.duration}s</span></div>
+        <div class="pop-meta">${r.breed} · ${r.city}</div>
+        <div class="pop-likes">❤️ ${formatCount(r.likes)} · 👁️ ${formatCount(r.views)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCountryBreakdown() {
+  const el = document.getElementById('countryBreakdown');
+  if (!el) return;
+  const counts = {};
+  REELS.forEach(r => { counts[r.country] = (counts[r.country]||0)+1; });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  el.innerHTML = sorted.map(([c,n]) => {
+    const pct = Math.round((n/REELS.length)*100);
+    return `
+      <div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+          <span style="font-weight:600;color:#ccc">${c}</span>
+          <span style="color:#666">${n} reel${n>1?'s':''}</span>
+        </div>
+        <div style="height:4px;background:#1a1a1a;border-radius:2px"><div style="width:${pct}%;height:100%;background:var(--pb-reel-grad);border-radius:2px"></div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateStats() {
+  const totalLikes = REELS.reduce((s,r)=>s+r.likes,0);
+  const countries = new Set(REELS.map(r=>r.country)).size;
+  const breeds = new Set(REELS.map(r=>r.breed)).size;
+  document.getElementById('statReels').textContent = REELS.length;
+  document.getElementById('statLikes').textContent = formatCount(totalLikes);
+  document.getElementById('statCountries').textContent = countries;
+  document.getElementById('statBreeds').textContent = breeds;
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function formatCount(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function formatTimeAgo(iso) {
+  const diff = (Date.now() - new Date(iso)) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// close modals on backdrop click
+document.querySelectorAll('.modal-backdrop').forEach(bd => {
+  bd.addEventListener('click', e => { if(e.target===bd) bd.classList.remove('open'); });
+});
+
+// keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));
+});
 </script>
 
-<!-- ══ REEL UPLOAD MODAL ══ -->
-<div id="reel-upload-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:600;align-items:flex-end;justify-content:center">
-  <div style="background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto">
-
-    <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:1">
-      <div style="font-size:17px;font-weight:900;color:#1e293b">📹 Create Reel</div>
-      <button onclick="closeUpload()" style="width:32px;height:32px;border-radius:50%;border:none;background:#f1f5f9;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center">✕</button>
-    </div>
-
-    <div style="padding:20px">
-
-      <!-- Drop zone -->
-      <div id="ru-dropzone" style="border:2px dashed #c7d2fe;border-radius:16px;padding:32px 20px;text-align:center;background:#f8faff;cursor:pointer;margin-bottom:16px"
-        onclick="document.getElementById('ru-video-input').click()"
-        ondragover="event.preventDefault();this.style.borderColor='#1a4db3'"
-        ondragleave="this.style.borderColor='#c7d2fe'"
-        ondrop="event.preventDefault();this.style.borderColor='#c7d2fe';var f=event.dataTransfer.files[0];if(f){var inp=document.getElementById('ru-video-input');inp.files=event.dataTransfer.files;handleVideoSelect(inp)}">
-        <div style="font-size:48px;margin-bottom:10px">🎬</div>
-        <div style="font-size:15px;font-weight:700;color:#1a4db3;margin-bottom:4px">Tap to select video</div>
-        <div style="font-size:12px;color:#64748b">or drag & drop here</div>
-        <div style="font-size:11px;color:#94a3b8;margin-top:8px">MP4, MOV, AVI · Max 100MB · Up to 90 seconds</div>
-        <input type="file" id="ru-video-input" accept="video/*" style="display:none" onchange="handleVideoSelect(this)">
-      </div>
-
-      <!-- OR record -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-        <div style="flex:1;height:1px;background:#e2e8f0"></div>
-        <span style="font-size:12px;color:#94a3b8;font-weight:600">OR</span>
-        <div style="flex:1;height:1px;background:#e2e8f0"></div>
-      </div>
-      <button onclick="triggerRecord()" style="width:100%;height:48px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:#475569;margin-bottom:16px">
-        <i class="ti ti-video" style="font-size:18px;color:#ef4444"></i> Record with Camera
-      </button>
-
-      <!-- Video preview -->
-      <div id="ru-preview" style="display:none;margin-bottom:16px">
-        <div style="position:relative;border-radius:12px;overflow:hidden;background:#000;aspect-ratio:9/16;max-height:300px">
-          <video id="ru-video" controls style="width:100%;height:100%;object-fit:contain;display:block"></video>
-          <button onclick="removeVideo()" style="position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(0,0,0,0.6);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">✕</button>
-        </div>
-        <div id="ru-filename" style="font-size:11px;color:#64748b;margin-top:6px;text-align:center"></div>
-      </div>
-
-      <!-- Upload progress -->
-      <div id="ru-progress" style="display:none;margin-bottom:16px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px">
-          <span>Uploading reel…</span><span id="ru-prog-label">0%</span>
-        </div>
-        <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden">
-          <div id="ru-prog-fill" style="height:100%;background:linear-gradient(90deg,#1a4db3,#6366f1);border-radius:4px;width:0;transition:width 0.2s"></div>
-        </div>
-      </div>
-
-      <!-- Caption -->
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:6px">Caption</label>
-        <textarea id="ru-caption" placeholder="Write a caption, add hashtags… 🐾 #PawBook #PetLife"
-          style="width:100%;height:80px;border:1.5px solid #e2e8f0;border-radius:12px;padding:10px 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;resize:none"></textarea>
-      </div>
-
-      <!-- Category -->
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:6px">Category</label>
-        <select id="ru-category" style="width:100%;height:44px;border:1.5px solid #e2e8f0;border-radius:12px;padding:0 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;background:#fff">
-          <option value="pets">🐾 Pets & Animals</option>
-          <option value="training">🎓 Training Tips</option>
-          <option value="health">🏥 Pet Health</option>
-          <option value="funny">😂 Funny Moments</option>
-          <option value="adoption">🏠 Adoption Stories</option>
-          <option value="grooming">✂️ Grooming</option>
-          <option value="nutrition">🥗 Nutrition</option>
-          <option value="travel">✈️ Pet Travel</option>
-        </select>
-      </div>
-
-      <!-- Audio -->
-      <div style="margin-bottom:16px">
-        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:6px">🎵 Audio / Song Name (optional)</label>
-        <input id="ru-audio" placeholder="e.g. Happy · Pharrell Williams"
-          style="width:100%;height:44px;border:1.5px solid #e2e8f0;border-radius:12px;padding:0 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none">
-      </div>
-
-      <!-- Visibility -->
-      <div style="margin-bottom:20px">
-        <label style="font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:8px">Visibility</label>
-        <div style="display:flex;gap:8px">
-          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid #c7d2fe;border-radius:10px;background:#eff6ff;cursor:pointer;font-size:13px;font-weight:600">
-            <input type="radio" name="ru-vis" value="public" checked> 🌍 Public
-          </label>
-          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;cursor:pointer;font-size:13px;font-weight:600">
-            <input type="radio" name="ru-vis" value="followers"> 👥 Followers
-          </label>
-          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;cursor:pointer;font-size:13px;font-weight:600">
-            <input type="radio" name="ru-vis" value="private"> 🔒 Private
-          </label>
-        </div>
-      </div>
-
-      <!-- Publish button -->
-      <button id="ru-publish-btn" onclick="publishReel()"
-        style="width:100%;height:52px;border-radius:14px;border:none;background:linear-gradient(135deg,#1a4db3,#6366f1);color:#fff;font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-        🚀 Publish Reel
-      </button>
-      <div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:10px">
-        By publishing, you agree to PawBook's Community Guidelines
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottomnav">
-  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
-  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
-  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
-  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
-</nav>
-<!-- DRAWER OVERLAY -->
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
-
-<!-- DRAWER PANEL -->
 <div id="drawer-panel" class="drawer-panel">
   <div class="drawer-header" style="position:relative">
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
-    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
     <div>
-      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
-      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
       <div class="drawer-stats">
-        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
       </div>
     </div>
   </div>
   <div class="drawer-body">
-    <div class="drawer-section">Main</div>
-    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
-    <div class="drawer-section">Community</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
     <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
-    <div class="drawer-section">Pet Services</div>
-    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
-    <div class="drawer-footer">
-      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
-      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
-    </div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
   </div>
 </div>
 
-<script>
-function openDrawer() {
-  document.getElementById('drawer-panel').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  document.getElementById('drawer-panel').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-</script>
-<script>
-(function(){
-  function showBurgerOnMobile(){
-    var btns = document.querySelectorAll('.burger-btn');
-    var isMobile = window.innerWidth <= 768;
-    btns.forEach(function(b){
-      b.style.display = isMobile ? 'flex' : 'none';
-    });
-    // Also hide topnav-tabs on mobile
-    var tabs = document.querySelector('.topnav-tabs');
-    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
-    // Show bottom nav on mobile
-    var bnav = document.querySelector('.bottomnav');
-    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
-  }
-  showBurgerOnMobile();
-  window.addEventListener('resize', showBurgerOnMobile);
-})();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
-      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
-  });
-}
-
-// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
-(function initDrawerUser(){
-  var u = null;
-  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
-  if(!u) {
-    // fetch from API if not cached
-    var tok = localStorage.getItem("pb_token");
-    if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
-        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
-      }).then(function(r){ return r.json(); }).then(function(res){
-        var ud = res.data || res;
-        if(ud && ud.username) {
-          localStorage.setItem("pb_user", JSON.stringify(ud));
-          populateDrawer(ud);
-        }
-      }).catch(function(){});
-    }
-    return;
-  }
-  populateDrawer(u);
-  function populateDrawer(ud){
-    var dn = document.getElementById("drawer-name");
-    var dh = document.getElementById("drawer-handle");
-    var da = document.getElementById("drawer-av");
-    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
-    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
-    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
-  }
-})();
-</script>
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
 </body>
 </html>

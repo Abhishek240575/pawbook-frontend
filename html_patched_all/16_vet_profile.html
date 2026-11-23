@@ -23,7 +23,7 @@
   <button class="topnav-tab active"><i class="ti ti-stethoscope"></i></button>
   <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
   <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
-  <button class="topnav-tab" onclick="goTo('04_adoption.html')"><i class="ti ti-heart"></i></button>
+  <button class="topnav-tab" onclick="goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i></button>
 </div>
 <div class="topnav-right"><div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div></div></nav>
 
@@ -117,7 +117,7 @@
     </div>
   </aside>
 </div>
-<script src="api.js"></script><script>function goTo(p){window.location.href=p;}</script>
+<script src="pawbook-api.js"></script><script>function goTo(p){window.location.href=p;}</script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -135,7 +135,7 @@ if ('serviceWorker' in navigator) {
     // fetch from API if not cached
     var tok = localStorage.getItem("pb_token");
     if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+      fetch("https://pawbook.deemona.com/api/v1/auth/me", {
         headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
       }).then(function(r){ return r.json(); }).then(function(res){
         var ud = res.data || res;
@@ -159,4 +159,5 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 </body></html>
+
 

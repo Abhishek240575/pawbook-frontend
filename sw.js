@@ -3,7 +3,7 @@
    Handles: offline caching, background sync, push notifications
    ========================================================================== */
 
-const CACHE_VERSION  = 'pb-v2';
+const CACHE_VERSION  = 'pb-v1';
 const STATIC_CACHE   = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE  = `${CACHE_VERSION}-dynamic`;
 const API_CACHE      = `${CACHE_VERSION}-api`;
@@ -16,7 +16,7 @@ const PRECACHE_URLS = [
   '/02_onboarding.html',
   '/style.css',
   '/mobile.css',
-  '/pawbook-api.js',
+  '/api.js',
   '/upload.js',
   '/socket.js',
   '/manifest.json',

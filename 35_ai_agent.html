@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook AI">
+<link rel="manifest" href="manifest.json">
+<title>PawBook AI — Your Pet Care Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1877F2;--blue-dark:#1565c0;--blue-light:#e7f0fd;
+  --purple:#8b5cf6;--green:#16a34a;--red:#dc2626;--orange:#f59e0b;
+  --bg:#f0f2f5;--surface:#fff;--border:#e4e6eb;
+  --text:#050505;--muted:#65676b;--faint:#8a8d91;
+  --radius:12px;--shadow:0 2px 12px rgba(0,0,0,.10);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);-webkit-font-smoothing:antialiased;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── TOP NAV ── */
+.topnav{flex-shrink:0;height:56px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.topnav-logo{font-size:20px;font-weight:900;color:var(--blue);display:flex;align-items:center;gap:8px;text-decoration:none;cursor:pointer;flex-shrink:0}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:16px}
+.topnav-center{flex:1;display:flex;align-items:center;justify-content:center;gap:6px}
+.agent-title{font-size:14px;font-weight:700;color:var(--text)}
+.agent-badge{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.3px}
+.topnav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:18px}
+.nav-icon-btn:hover{background:var(--border)}
+.user-chip{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:999px;background:var(--bg);cursor:pointer;border:1.5px solid var(--border);font-size:13px;font-weight:600;color:var(--text)}
+.user-chip img,.user-chip .user-av{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.user-chip .user-av{background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800}
+
+/* ── MAIN LAYOUT ── */
+.main{flex:1;display:flex;overflow:hidden;max-width:1100px;width:100%;margin:0 auto;padding:16px;gap:16px}
+
+/* ── LEFT PANEL ── */
+.left-panel{width:260px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+@media(max-width:768px){.left-panel{display:none}}
+
+.panel-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+.panel-card-head{padding:14px 16px 10px;font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+.quick-btn{display:flex;align-items:center;gap:10px;width:100%;padding:10px 16px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);text-align:left;transition:background .12s}
+.quick-btn:hover{background:var(--blue-light);color:var(--blue)}
+.quick-btn i{font-size:16px;width:18px;color:var(--muted)}
+.quick-btn:hover i{color:var(--blue)}
+.quick-btn .qbadge{margin-left:auto;background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:800;padding:1px 6px;border-radius:8px}
+
+.status-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── CHAT AREA ── */
+.chat-wrap{flex:1;display:flex;flex-direction:column;background:#fff;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;min-width:0}
+
+.chat-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.agent-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.agent-info{}
+.agent-name{font-size:15px;font-weight:800;color:var(--text)}
+.agent-status{font-size:12px;color:#22c55e;font-weight:600;display:flex;align-items:center;gap:4px}
+.chat-actions{margin-left:auto;display:flex;gap:6px}
+
+/* ── MESSAGES ── */
+.messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.messages::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-track{background:transparent}
+.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+.msg{display:flex;align-items:flex-end;gap:8px;max-width:82%}
+.msg.bot{align-self:flex-start}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+
+.msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px}
+.msg.bot .msg-av{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff}
+.msg.user .msg-av{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:12px;font-weight:800}
+
+.msg-bubble{padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.55;max-width:100%;word-break:break-word}
+.msg.bot .msg-bubble{background:var(--bg);color:var(--text);border-bottom-left-radius:4px}
+.msg.user .msg-bubble{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.msg-bubble a{color:var(--blue);text-decoration:underline;cursor:pointer}
+.msg.user .msg-bubble a{color:#cce0ff}
+.msg-bubble ul{padding-left:18px;margin-top:6px}
+.msg-bubble li{margin-bottom:4px}
+.msg-time{font-size:10px;color:var(--faint);margin-top:3px;padding:0 4px}
+
+/* Typing indicator */
+.typing-bubble{display:flex;align-items:center;gap:4px;padding:12px 16px}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:typing .9s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* Quick replies */
+.quick-replies{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 8px}
+.qr-btn{padding:7px 14px;border-radius:999px;border:1.5px solid var(--blue);background:#fff;color:var(--blue);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.qr-btn:hover{background:var(--blue);color:#fff}
+
+/* Cards inside chat */
+.chat-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-top:8px;max-width:320px}
+.chat-card-img{width:100%;height:140px;object-fit:cover;display:block}
+.chat-card-body{padding:12px}
+.chat-card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.chat-card-sub{font-size:12px;color:var(--muted)}
+.chat-card-btn{display:block;margin:10px 12px 12px;padding:8px;border-radius:8px;background:var(--blue);color:#fff;font-size:12px;font-weight:700;text-align:center;cursor:pointer;border:none;width:calc(100% - 24px);font-family:inherit}
+
+/* Feature pills in bot message */
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.feature-pill{padding:8px 10px;background:var(--blue-light);border-radius:10px;font-size:12px;font-weight:600;color:var(--blue);cursor:pointer;text-align:center;transition:all .15s;border:1.5px solid transparent}
+.feature-pill:hover{background:var(--blue);color:#fff}
+
+/* ── INPUT BAR ── */
+.input-bar{padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:flex-end;gap:8px;flex-shrink:0;background:#fff}
+.input-wrap{flex:1;background:var(--bg);border-radius:22px;display:flex;align-items:center;padding:0 14px;gap:8px;border:1.5px solid transparent;transition:border .15s}
+.input-wrap:focus-within{border-color:var(--blue);background:#fff}
+#chat-input{flex:1;border:none;outline:none;background:transparent;font-size:14px;color:var(--text);font-family:inherit;padding:10px 0;resize:none;min-height:40px;max-height:120px;line-height:1.4}
+#chat-input::placeholder{color:var(--faint)}
+.input-attach{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px;border-radius:50%}
+.input-attach:hover{color:var(--blue)}
+.send-btn{width:40px;height:40px;border-radius:50%;background:var(--blue);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;transition:all .15s}
+.send-btn:hover{background:var(--blue-dark);transform:scale(1.05)}
+.send-btn:disabled{background:var(--border);cursor:not-allowed;transform:none}
+
+/* ── LOGIN MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.modal-overlay.hidden{display:none}
+.modal{background:#fff;border-radius:16px;padding:32px 28px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative}
+.modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-logo{text-align:center;margin-bottom:20px}
+.modal-logo .logo-icon{width:52px;height:52px;border-radius:16px;font-size:24px;margin:0 auto 10px}
+.modal-logo h2{font-size:20px;font-weight:900;color:var(--text)}
+.modal-logo p{font-size:13px;color:var(--muted);margin-top:4px}
+
+.social-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;transition:all .15s}
+.social-btn:hover{background:var(--bg);border-color:var(--blue)}
+.social-btn.google{color:#3c4043}
+.social-btn.facebook{background:#1877F2;color:#fff;border-color:#1877F2}
+.social-btn.facebook:hover{background:#1565c0;border-color:#1565c0}
+.social-btn img{width:20px;height:20px}
+
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--faint);font-size:12px;font-weight:600}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.form-group{margin-bottom:12px}
+.form-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.4px}
+.form-input{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--border);font-family:inherit;font-size:14px;color:var(--text);outline:none;transition:border .15s}
+.form-input:focus{border-color:var(--blue)}
+.form-btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--blue);color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;margin-top:4px;transition:background .15s}
+.form-btn:hover{background:var(--blue-dark)}
+.form-btn:disabled{background:var(--border);cursor:not-allowed}
+.form-switch{text-align:center;font-size:13px;color:var(--muted);margin-top:14px}
+.form-switch a{color:var(--blue);cursor:pointer;font-weight:700;text-decoration:none}
+.form-error{background:#fee2e2;color:var(--red);font-size:12px;font-weight:600;padding:8px 12px;border-radius:8px;margin-bottom:10px;display:none}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--border);align-items:center;justify-content:space-around;z-index:400}
+@media(max-width:768px){.bottomnav{display:flex}.main{padding:8px;padding-bottom:72px}}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 0;border:none;background:none;font-family:inherit;color:var(--faint)}
+.bnav-item i{font-size:22px}
+.bnav-item span{font-size:9px;font-weight:700;text-transform:uppercase}
+.bnav-item.active{color:var(--blue)}
+
+/* ── MISC ── */
+html,body{overflow-x:hidden!important;max-width:100%!important}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a class="topnav-logo" onclick="goTo('07_home.html')">
+    <div class="logo-icon">🐾</div> PawBook
+  </a>
+  <div class="topnav-center">
+    <span class="agent-title">AI Assistant</span>
+    <span class="agent-badge">✦ INTELLIGENT</span>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn" onclick="goTo('07_home.html')" title="Home"><i class="ti ti-home"></i></button>
+    <div id="user-chip-wrap">
+      <!-- Injected by JS: login button or user chip -->
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LEFT PANEL -->
+  <aside class="left-panel">
+    <div class="panel-card">
+      <div class="panel-card-head"><span class="status-dot"></span>Agent Online</div>
+      <button class="quick-btn" onclick="sendQuick('What can you help me with?')"><i class="ti ti-sparkles"></i> Capabilities</button>
+      <button class="quick-btn" onclick="sendQuick('How do I report a lost pet?')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+      <button class="quick-btn" onclick="sendQuick('Show me pets available for adoption')"><i class="ti ti-heart"></i> Adoption</button>
+      <button class="quick-btn" onclick="sendQuick('How does the marketplace work?')"><i class="ti ti-building-store"></i> Marketplace</button>
+      <button class="quick-btn" onclick="sendQuick('Book a vet appointment')"><i class="ti ti-stethoscope"></i> Vet Booking</button>
+      <button class="quick-btn" onclick="sendQuick('Track my pet vaccination schedule')"><i class="ti ti-vaccine"></i> Vaccination</button>
+      <button class="quick-btn" onclick="sendQuick('Find pet emergency services near me')"><i class="ti ti-urgent"></i> Emergency</button>
+      <button class="quick-btn" onclick="sendQuick('Join or create a pet group')"><i class="ti ti-users"></i> Groups</button>
+      <button class="quick-btn" onclick="sendQuick('How do I find pet grooming or shops nearby?')"><i class="ti ti-compass"></i> Discover</button>
+      <button class="quick-btn" onclick="sendQuick('I have a complaint or grievance')"><i class="ti ti-message-report"></i> Grievance <span class="qbadge">24/7</span></button>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-card-head">About this Agent</div>
+      <div style="padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.6">
+        🤖 Powered by PawBook's knowledge base.<br><br>
+        Handles queries on lost pets, adoption, marketplace, vets, vaccination, grooming, emergency and more.<br><br>
+        Available <strong style="color:var(--text)">24 × 7</strong>.
+      </div>
+    </div>
+  </aside>
+
+  <!-- CHAT -->
+  <section class="chat-wrap">
+    <div class="chat-header">
+      <div class="agent-avatar">🤖</div>
+      <div class="agent-info">
+        <div class="agent-name">PawBook AI</div>
+        <div class="agent-status"><span class="status-dot" style="width:6px;height:6px"></span> Online · Replies instantly</div>
+      </div>
+      <div class="chat-actions">
+        <button class="nav-icon-btn" onclick="clearChat()" title="Clear chat"><i class="ti ti-trash"></i></button>
+        <button class="nav-icon-btn" onclick="goTo('07_home.html')" title="Go to PawBook"><i class="ti ti-external-link"></i></button>
+      </div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="input-bar">
+      <div class="input-wrap">
+        <textarea id="chat-input" placeholder="Ask anything about PawBook…" rows="1"
+          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="input-attach" title="Attach" onclick="showToast('File attachment coming soon','info')"><i class="ti ti-paperclip"></i></button>
+      </div>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <i class="ti ti-send"></i>
+      </button>
+    </div>
+  </section>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottomnav">
+  <button class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></button>
+  <button class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></button>
+  <button class="bnav-item active"><i class="ti ti-robot"></i><span>AI</span></button>
+  <button class="bnav-item" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i><span>Alerts</span></button>
+  <button class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Me</span></button>
+</nav>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay hidden" id="login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLoginModal()">✕</button>
+    <div class="modal-logo">
+      <div class="logo-icon">🐾</div>
+      <h2>Sign in to PawBook</h2>
+      <p>Access your pets, bookings & more</p>
+    </div>
+
+    <div id="login-error" class="form-error"></div>
+
+    <!-- Social buttons -->
+    <button class="social-btn google" onclick="socialLogin('google')">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <button class="social-btn facebook" onclick="socialLogin('facebook')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.971H15.83c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+      Continue with Facebook
+    </button>
+
+    <div class="divider">or sign in with email</div>
+
+    <div id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="login-password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doEmailLogin()">
+      </div>
+      <button class="form-btn" id="login-submit-btn" onclick="doEmailLogin()">Sign In</button>
+      <div class="form-switch">Don't have an account? <a onclick="switchToRegister()">Sign up</a></div>
+    </div>
+
+    <div id="register-form" class="hidden">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" type="text" id="reg-name" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="reg-email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="reg-password" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doRegister()">
+      </div>
+      <button class="form-btn" id="reg-submit-btn" onclick="doRegister()">Create Account</button>
+      <div class="form-switch">Already have an account? <a onclick="switchToLogin()">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="pb-toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  GLOBALS
+// ═══════════════════════════════════════════════════════════════
+var API_BASE = 'https://pawbook.deemona.com/api/v1';
+var currentUser = null;
+var isTyping = false;
+var msgIdCounter = 0;
+
+function goTo(p){window.location.href=p;}
+function showToast(msg,type){
+  var t=document.getElementById('pb-toast');
+  t.style.background=type==='error'?'#dc2626':type==='success'?'#16a34a':type==='warning'?'#f59e0b':'rgba(0,0,0,.88)';
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2800);
+}
+function authHeaders(){
+  var t=localStorage.getItem('pb_token');
+  return{'Content-Type':'application/json','Authorization':'Bearer '+t};
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════════════════
+function loadUser(){
+  try{ currentUser = JSON.parse(localStorage.getItem('pb_user')||'null'); }catch(e){}
+  renderUserChip();
+}
+
+function renderUserChip(){
+  var wrap = document.getElementById('user-chip-wrap');
+  if(!wrap) return;
+  if(currentUser){
+    var init = (currentUser.full_name||currentUser.username||'U').charAt(0).toUpperCase();
+    var avatar = currentUser.avatar
+      ? '<img src="'+currentUser.avatar+'" alt="">'
+      : '<div class="user-av">'+init+'</div>';
+    wrap.innerHTML = '<div class="user-chip" onclick="showUserMenu()">'+avatar+'<span>'+
+      (currentUser.full_name||currentUser.username||'You')+'</span></div>';
+  } else {
+    wrap.innerHTML = '<button class="form-btn" style="width:auto;padding:7px 18px;font-size:13px;margin:0" onclick="openLoginModal()">Sign In</button>';
+  }
+}
+
+function openLoginModal(){
+  document.getElementById('login-modal').classList.remove('hidden');
+  document.getElementById('login-error').style.display='none';
+  setTimeout(function(){ document.getElementById('login-email').focus(); },200);
+}
+function closeLoginModal(){ document.getElementById('login-modal').classList.add('hidden'); }
+function switchToRegister(){
+  document.getElementById('login-form').classList.add('hidden');
+  document.getElementById('register-form').classList.remove('hidden');
+  document.getElementById('login-error').style.display='none';
+}
+function switchToLogin(){
+  document.getElementById('register-form').classList.add('hidden');
+  document.getElementById('login-form').classList.remove('hidden');
+  document.getElementById('login-error').style.display='none';
+}
+
+function showLoginError(msg){
+  var el=document.getElementById('login-error');
+  el.textContent=msg; el.style.display='block';
+}
+
+function socialLogin(provider){
+  showToast('Redirecting to '+provider.charAt(0).toUpperCase()+provider.slice(1)+'…','info');
+  // In a real integration this would open an OAuth popup
+  // For now simulate a demo session
+  setTimeout(function(){
+    var demo = {full_name:'Pet Parent', username:'petparent', email:'demo@pawbook.app'};
+    localStorage.setItem('pb_user', JSON.stringify(demo));
+    localStorage.setItem('pb_token','demo_token_'+provider);
+    currentUser = demo;
+    renderUserChip();
+    closeLoginModal();
+    showToast('Signed in with '+provider.charAt(0).toUpperCase()+provider.slice(1)+' ✓','success');
+    botSay('Welcome back, '+demo.full_name+'! 🐾 You\'re now signed in. How can I help you today?', [
+      'View my pet profile','Track my vaccinations','Check my appointments','Find lost pets near me'
+    ]);
+  }, 1200);
+}
+
+function doEmailLogin(){
+  var email = document.getElementById('login-email').value.trim();
+  var pass  = document.getElementById('login-password').value;
+  if(!email || !pass){ showLoginError('Please enter your email and password.'); return; }
+  var btn = document.getElementById('login-submit-btn');
+  btn.disabled=true; btn.textContent='Signing in…';
+  document.getElementById('login-error').style.display='none';
+
+  fetch(API_BASE+'/auth/login',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email:email, password:pass})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    btn.disabled=false; btn.textContent='Sign In';
+    if(d.token || (d.data && d.data.token)){
+      var tok = d.token || d.data.token;
+      var ud  = d.user || d.data || {};
+      localStorage.setItem('pb_token', tok);
+      localStorage.setItem('pb_user', JSON.stringify(ud));
+      currentUser = ud;
+      renderUserChip();
+      closeLoginModal();
+      showToast('Signed in ✓','success');
+      botSay('Welcome back, '+(ud.full_name||ud.username||'friend')+'! 🐾 How can I help you today?', [
+        'View my pet profile','Track my vaccinations','Book a vet','Find pet services'
+      ]);
+    } else {
+      showLoginError(d.message || 'Invalid email or password.');
+    }
+  })
+  .catch(function(){
+    btn.disabled=false; btn.textContent='Sign In';
+    // Fallback demo login for development
+    if(email==='abhishek@pawbook.app'){
+      var demo={full_name:'Abhishek',username:'abhishek',email:email};
+      localStorage.setItem('pb_user',JSON.stringify(demo));
+      localStorage.setItem('pb_token','demo_token_email');
+      currentUser=demo; renderUserChip(); closeLoginModal();
+      showToast('Signed in (demo mode) ✓','success');
+      botSay('Welcome, Abhishek! 👋 I\'m your PawBook AI assistant. What would you like to do?',[
+        'Show all features','My pet profile','Vet appointments','Emergency contacts'
+      ]);
+    } else {
+      showLoginError('Could not connect. Please try again.');
+    }
+  });
+}
+
+function doRegister(){
+  var name  = document.getElementById('reg-name').value.trim();
+  var email = document.getElementById('reg-email').value.trim();
+  var pass  = document.getElementById('reg-password').value;
+  if(!name||!email||!pass){ showLoginError('Please fill all fields.'); return; }
+  if(pass.length<6){ showLoginError('Password must be at least 6 characters.'); return; }
+  var btn=document.getElementById('reg-submit-btn');
+  btn.disabled=true; btn.textContent='Creating account…';
+
+  fetch(API_BASE+'/auth/register',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({full_name:name, email:email, password:pass})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    btn.disabled=false; btn.textContent='Create Account';
+    if(d.token||(d.data&&d.data.token)){
+      var tok=d.token||d.data.token;
+      var ud=d.user||d.data||{full_name:name,email:email};
+      localStorage.setItem('pb_token',tok);
+      localStorage.setItem('pb_user',JSON.stringify(ud));
+      currentUser=ud; renderUserChip(); closeLoginModal();
+      showToast('Account created ✓','success');
+      botSay('Welcome to PawBook, '+name+'! 🎉 Your account is ready. Let me show you around!', [
+        'Add my first pet','Explore features','Find vets near me','Join a pet group'
+      ]);
+    } else {
+      showLoginError(d.message||'Registration failed. Please try again.');
+    }
+  })
+  .catch(function(){
+    btn.disabled=false; btn.textContent='Create Account';
+    showLoginError('Could not connect. Please try again.');
+  });
+}
+
+function showUserMenu(){
+  if(confirm('Sign out of PawBook?')){
+    localStorage.removeItem('pb_token');
+    localStorage.removeItem('pb_user');
+    currentUser=null;
+    renderUserChip();
+    showToast('Signed out','info');
+    botSay('You\'ve been signed out. Sign in again any time to access your pets, bookings and history. 👋');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  KNOWLEDGE BASE — PawBook complete feature map
+// ═══════════════════════════════════════════════════════════════
+var KB = {
+
+  // ── GENERAL ─────────────────────────────────────────────────
+  general: {
+    patterns: ['what can you do','what can you help','capabilities','features','what is pawbook','about pawbook','help me','hi','hello','hey','namaste','good morning','good evening'],
+    answer: function(){
+      return {
+        text: 'Hi there! 👋 I\'m the PawBook AI Assistant — your all-in-one guide for everything on PawBook. Here\'s what I can help you with:',
+        html: '<div class="feature-grid">'+
+          '<div class="feature-pill" onclick="sendQuick(\'Lost pet reporting\')">🔍 Lost & Found</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Pet adoption process\')">🐾 Adoption</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Marketplace buying selling\')">🛍️ Marketplace</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Book vet appointment\')">🏥 Vet Booking</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Vaccination tracking\')">💉 Vaccination</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Emergency vet near me\')">🚨 Emergency</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Discover pet services\')">🗺️ Discover</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Pet groups and community\')">👥 Community</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Pet insurance\')">🛡️ Insurance</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Pet training tips\')">🎓 Training</div>'+
+        '</div>',
+        quickReplies: ['Lost pet','Adoption','Vet booking','Emergency help']
+      };
+    }
+  },
+
+  // ── LOST PET ─────────────────────────────────────────────────
+  lost: {
+    patterns: ['lost pet','lost dog','lost cat','missing pet','lost animal','found a dog','found a cat','found pet','stray dog','stray cat','pet missing','report lost','lost and found'],
+    answer: function(){
+      return {
+        text: '🔍 **Lost & Found on PawBook**\n\nHere\'s how it works:\n\n**To report a LOST pet:**\n• Go to Lost Pet page → tap "Report Lost Pet"\n• Upload your pet\'s photo, describe markings\n• Add last seen location (GPS auto-detects)\n• Your alert is instantly shared to all users in a 10 km radius\n\n**To report a FOUND pet:**\n• Tap "I Found a Pet"\n• Upload a clear photo + location\n• The original owner is notified if their pet matches\n\n**Tips to increase chances:**\n• Post on the Delhi Dog Parents or local group too\n• Add collar photo if visible\n• Check back daily — matches are suggested automatically',
+        quickReplies: ['Report lost pet now','View found pets near me','Share to pet groups','Emergency vet'],
+        action: {label:'Go to Lost Pet', page:'05_lost_pet.html'}
+      };
+    }
+  },
+
+  // ── ADOPTION ─────────────────────────────────────────────────
+  adoption: {
+    patterns: ['adopt','adoption','adopt a pet','rescue','rehome','shelter dog','shelter cat','want a dog','want a cat','get a puppy','get a kitten','foster'],
+    answer: function(){
+      return {
+        text: '🐾 **Pet Adoption on PawBook**\n\nFind your perfect companion through our adoption network:\n\n**How to adopt:**\n1. Browse pets on the Adoption page\n2. Filter by species, breed, age, city\n3. Tap "Interested" on a pet's card\n4. Chat with the shelter or foster directly\n5. Schedule a meet & greet\n6. Complete the adoption form\n\n**Featured shelters:**\n• Blue Cross of India (Chennai)\n• Friendicoes SECA (Delhi)\n• CUPA Bangalore\n• K9 Friends Dubai\n\n**Cost:** Most PawBook adoptions are free or ₹500–₹2,000 for vaccinations/microchip\n\n💡 Tip: Enable notifications to get instant alerts when a pet matching your preferences is listed.',
+        quickReplies: ['Browse dogs for adoption','Browse cats','Adoption process','Nearest shelter'],
+        action: {label:'Go to Adoption', page:'04_adoption.html'}
+      };
+    }
+  },
+
+  // ── MARKETPLACE ───────────────────────────────────────────────
+  marketplace: {
+    patterns: ['marketplace','buy','sell','shop','pet food','pet accessories','puppy for sale','kitten for sale','pet supplies','shop pets','pet products','listings','buy a dog','buy a cat'],
+    answer: function(){
+      return {
+        text: '🛍️ **PawBook Marketplace**\n\nBuy and sell pet products, services and yes — responsibly bred pets too.\n\n**What you can buy/sell:**\n• Pet food & treats\n• Accessories (collars, leashes, beds, toys)\n• Grooming products\n• Pets from verified breeders\n• Pet services (walking, boarding, training)\n\n**How to buy:**\n1. Go to Marketplace → Browse or Search\n2. Filter by category, price, city\n3. Tap a listing → "Contact Seller"\n4. Negotiate via PawBook Messages\n5. Meet safely in a public place\n\n**How to sell:**\n1. Tap the + "New Listing" button\n2. Add photos, description, price\n3. Set your location\n4. Your listing goes live instantly\n\n⚠️ Safety tip: Always meet in public. Never pay before seeing the pet.',
+        quickReplies: ['Browse marketplace','Post a listing','Pet food products','Grooming tools'],
+        action: {label:'Go to Marketplace', page:'09_marketplace.html'}
+      };
+    }
+  },
+
+  // ── VET BOOKING ───────────────────────────────────────────────
+  vet: {
+    patterns: ['vet','veterinarian','doctor','appointment','book vet','vet booking','clinic','animal hospital','consultation','video call vet','online vet','find doctor','pet doctor','find vet'],
+    answer: function(){
+      return {
+        text: '🏥 **Vet Booking on PawBook**\n\nBook in-clinic or video consultations with verified vets.\n\n**Types of appointments:**\n• 🏥 In-Clinic Visit — visit the vet in person\n• 📹 Video Consultation — consult from home\n• 🏠 Home Visit — vet comes to you (select cities)\n\n**How to book:**\n1. Go to Vet Booking page\n2. Search vets by city or specialty\n3. Check availability calendar\n4. Select date & time slot\n5. Confirm — get instant SMS/email confirmation\n\n**Pricing:**\n• Video call: ₹200–₹500\n• In-clinic: ₹300–₹1,000\n• Home visit: ₹800–₹2,000\n\n**Available 24/7 emergency vets** are listed separately — just ask me for emergency services!',
+        quickReplies: ['Book appointment now','Video consultation','Emergency vet','Vet near me'],
+        action: {label:'Book a Vet', page:'11_vet_booking.html'}
+      };
+    }
+  },
+
+  // ── VACCINATION ───────────────────────────────────────────────
+  vaccination: {
+    patterns: ['vaccination','vaccine','vaccin','shot','booster','immunization','rabies','leptospirosis','parvovirus','deworming','deworming','parasite','flea','tick','health record','medical record'],
+    answer: function(){
+      return {
+        text: '💉 **Vaccination Intelligence on PawBook**\n\nTrack every vaccine, booster and deworming dose for all your pets.\n\n**Features:**\n• Visual calendar showing all upcoming & past doses\n• Auto-reminders 7 days before each due date\n• Add vaccines manually or import from vet records\n• Shareable vaccination certificate (PDF)\n\n**Standard dog vaccination schedule:**\n• 6 weeks — Parvovirus\n• 8 weeks — DHPP combo\n• 12 weeks — DHPP booster + Rabies\n• 16 weeks — DHPP final + Leptospirosis\n• Annual — Rabies + DHPP + Leptospirosis boosters\n\n**Standard cat vaccination schedule:**\n• 8 weeks — FVRCP\n• 12 weeks — FVRCP booster\n• 16 weeks — Rabies\n• Annual — FVRCP + Rabies boosters\n\n💡 Missed a vaccine? I can help you book a catch-up appointment.',
+        quickReplies: ['Add vaccination record','View upcoming vaccines','Book vaccination appointment','Download certificate'],
+        action: {label:'Vaccination Intelligence', page:'10_vaccination.html'}
+      };
+    }
+  },
+
+  // ── EMERGENCY ─────────────────────────────────────────────────
+  emergency: {
+    patterns: ['emergency','urgent','critical','my pet is sick','pet is dying','accident','bleeding','poisoned','poison','ate something','not breathing','unconscious','collapsed','seizure','emergency vet','24 hour','24hr','after hours','night vet'],
+    answer: function(){
+      return {
+        text: '🚨 **PET EMERGENCY? Here\'s what to do:**\n\n**STEP 1 — Stay calm.** Your pet needs you calm.\n\n**STEP 2 — Call an emergency vet NOW:**\n• Delhi: Cessna Lifeline +91 98102 60604\n• Mumbai: Bombay Veterinary College +91 22 2419 4071\n• Bangalore: CUPA Emergency +91 80 2334 1086\n• Chennai: Blue Cross +91 44 2235 1074\n• Dubai: Dubai Vet Hospital +971 4 349 4646 (24hr)\n\n**STEP 3 — Common emergencies:**\n• **Choking** — open mouth carefully, do NOT reach in blindly\n• **Poisoning** — do NOT induce vomiting, rush to vet\n• **Bleeding** — apply firm pressure with cloth\n• **Heatstroke** — move to cool area, wet paws & belly with cool (not cold) water\n• **Seizure** — keep area clear, do not restrain, time the seizure\n\n⚠️ I can also find emergency services near your location via the Discover page.',
+        quickReplies: ['Emergency vets near me','Call ambulance','First aid guide','Find 24hr vet'],
+        action: {label:'Emergency Services', page:'37_pet_ai_health_agent.html'}
+      };
+    }
+  },
+
+  // ── DISCOVER ──────────────────────────────────────────────────
+  discover: {
+    patterns: ['discover','find services','pet shop','grooming','groomer','boarding','pet hotel','pet store','nearby','near me','locate','map','directions','vet near','shelter near'],
+    answer: function(){
+      return {
+        text: '🗺️ **Discover Pet Services on PawBook**\n\nFind any pet-related business near you, anywhere in the world.\n\n**What you can find:**\n• 🏥 Veterinary clinics\n• ✂️ Grooming salons\n• 🛍️ Pet shops & stores\n• 🏠 Shelters & rescues\n• 🦁 Zoos & aquariums\n• 🚨 24-hour emergency vets\n\n**How to use Discover:**\n1. Go to Discover page\n2. Select your country → state → city\n3. Tap a category chip (Vets, Grooming, etc.)\n4. See results on the interactive map\n5. Tap any pin → Get Details or Directions\n\n**Live Google Maps integration** — results update in real time for your selected city.\n\n🌍 Works for cities worldwide including India, UAE, UK, Europe, USA and more.',
+        quickReplies: ['Pet shops near me','Grooming centers','Vets on map','Emergency services'],
+        action: {label:'Open Discover', page:'26_discover.html'}
+      };
+    }
+  },
+
+  // ── GROUPS ────────────────────────────────────────────────────
+  groups: {
+    patterns: ['group','community','join group','create group','pet group','dog group','cat group','breed group','local group','meetup','event','pet parents','club'],
+    answer: function(){
+      return {
+        text: '👥 **Pet Groups & Community**\n\nConnect with pet parents who get it!\n\n**Popular groups:**\n• Delhi Dog Parents (12,400 members)\n• Mumbai Cat Lovers (8,900 members)\n• Bangalore Paws (6,200 members)\n• Golden Retriever India (5,100 members)\n• Stray Rescue Network (9,800 members)\n\n**What you can do in groups:**\n• Post photos, ask for advice\n• Share lost/found alerts with group members\n• Organise meetups and events\n• Vote on group polls\n• Buy/sell within the group\n\n**To join a group:**\n1. Go to Groups page\n2. Search by name, breed or city\n3. Tap Join — public groups are instant, private groups need approval\n\n**To create a group:**\n• Tap "Create Group" → add name, photo, rules → invite friends',
+        quickReplies: ['Browse groups','Create a group','Pet events near me','Find breed groups'],
+        action: {label:'Go to Groups', page:'03_groups.html'}
+      };
+    }
+  },
+
+  // ── INSURANCE ─────────────────────────────────────────────────
+  insurance: {
+    patterns: ['insurance','pet insurance','health insurance','cover','coverage','claim','policy','premium','insure my pet'],
+    answer: function(){
+      return {
+        text: '🛡️ **Pet Insurance on PawBook**\n\nProtect your pet from unexpected vet bills.\n\n**Plans available:**\n• **Basic** — Accidents & injuries: ₹500/month\n• **Standard** — Accidents + illnesses: ₹900/month\n• **Premium** — Comprehensive + dental + alternative therapy: ₹1,500/month\n\n**What\'s covered (Premium):**\n• Emergency surgeries\n• Hospitalisation\n• Diagnostic tests (X-ray, blood work)\n• Specialist consultations\n• Dental treatment\n• Prescription medicines\n\n**How to claim:**\n1. Visit any empanelled vet\n2. Pay the bill\n3. Upload bill + vet notes on PawBook Insurance page\n4. Reimbursement within 7 working days\n\n**How to enrol:**\n1. Go to Pet Insurance page\n2. Enter pet details & select plan\n3. Pay via UPI/card\n4. Policy active immediately',
+        quickReplies: ['View insurance plans','Get a quote','How to file a claim','Empanelled vets'],
+        action: {label:'Pet Insurance', page:'21_pet_insurance.html'}
+      };
+    }
+  },
+
+  // ── TRAINING ──────────────────────────────────────────────────
+  training: {
+    patterns: ['training','train my dog','obedience','behaviour','behavior','bark','biting','potty training','leash','commands','sit stay fetch','aggressive dog','puppy training','trainer','dog school'],
+    answer: function(){
+      return {
+        text: '🎓 **Pet Training on PawBook**\n\nHelp your pet become their best self!\n\n**Training resources available:**\n• Video lessons (basic to advanced)\n• Breed-specific training guides\n• Problem behaviour troubleshooting\n• Find certified trainers near you\n\n**Common issues I can help with:**\n• 🐕 Excessive barking → distraction & reward method\n• 💩 Potty training → schedule-based with positive reinforcement\n• 🦷 Biting/nipping → "ouch" method + redirection\n• 🐾 Leash pulling → stop-and-go technique\n• 😠 Aggression → professional trainer recommended\n\n**Book a trainer:**\n• Certified trainers listed by city\n• Home sessions or group classes\n• Pricing: ₹500–₹2,000 per session\n\n💡 Tip: Consistency + positive reinforcement = fastest results. Never punish — always redirect.',
+        quickReplies: ['Basic commands guide','Find a dog trainer','Stop my dog barking','Puppy potty training'],
+        action: {label:'Training Hub', page:'22_training.html'}
+      };
+    }
+  },
+
+  // ── SOCIAL / POSTS ────────────────────────────────────────────
+  social: {
+    patterns: ['post','share photo','story','reel','feed','home feed','like','comment','follow','friend','share','upload photo','create post','status'],
+    answer: function(){
+      return {
+        text: '📱 **PawBook Social Features**\n\nShare your pet\'s life with the world!\n\n**Post types:**\n• 📸 Photos & multi-photo albums\n• 🎥 Reels — short videos up to 60 sec\n• 📖 Stories — disappear after 24 hrs\n• 🔴 Live — go live with your pet\n• 💬 Text status with emoji & mood\n\n**How to post:**\n1. Tap the "What\'s on your pet\'s mind?" box on Home\n2. Add photo/video, tag your pet, add location\n3. Choose audience (Everyone / Friends / Groups)\n4. Hit Post!\n\n**Engagement tips:**\n• Use breed hashtags (#GoldenRetriever #BeagleLove)\n• Post at 7–9 PM IST for maximum reach\n• Tag location for local discovery\n• React with the 🐾 Paw reaction — PawBook exclusive!',
+        quickReplies: ['Create a post','View home feed','Go live','Upload a reel'],
+        action: {label:'Home Feed', page:'07_home.html'}
+      };
+    }
+  },
+
+  // ── ACCOUNT / SETTINGS ───────────────────────────────────────
+  account: {
+    patterns: ['account','profile','settings','password','privacy','delete account','change email','notification settings','theme','dark mode','block user','report user','deactivate'],
+    answer: function(){
+      return {
+        text: '⚙️ **Account & Settings**\n\nManage your PawBook account:\n\n**Profile:**\n• Edit name, bio, profile photo\n• Add/remove pets from your profile\n• Change privacy (public/friends/private)\n\n**Security:**\n• Change password: Settings → Security → Change Password\n• Enable 2-factor authentication (coming soon)\n• View active sessions & log out all devices\n\n**Notifications:**\n• Customise what you get notified about\n• Set quiet hours (e.g. 10 PM – 7 AM)\n• Choose push/email/SMS preferences\n\n**Privacy:**\n• Who can see your posts\n• Who can message you\n• Block/unblock users\n• Hide your location\n\n**Delete account:**\n• Settings → Account → Delete Account\n• 30-day cool-off period before permanent deletion',
+        quickReplies: ['Change my password','Privacy settings','Notification preferences','Delete my account'],
+        action: {label:'Settings', page:'14_settings.html'}
+      };
+    }
+  },
+
+  // ── COMPLAINT / GRIEVANCE ────────────────────────────────────
+  grievance: {
+    patterns: ['complaint','complain','grievance','issue','problem','not working','bug','report','scam','fraud','fake listing','harassment','inappropriate','abuse','report user','unhappy','dissatisfied','refund','dispute','wrong information'],
+    answer: function(){
+      return {
+        text: '📋 **Complaints & Grievances — PawBook Support**\n\nWe take every complaint seriously. Here\'s how to get resolution:\n\n**Types of issues we handle:**\n• 🐾 Pet welfare concerns (abuse, neglect reports)\n• 🛍️ Marketplace disputes (scam, fake listing, non-delivery)\n• 👤 User reports (harassment, fake profiles, spam)\n• 🐛 Technical bugs (page not loading, feature broken)\n• 💊 Medical advice concerns\n• 💰 Payment/refund issues\n\n**How to file a complaint:**\n1. **In-app:** 3-dot menu on any post/user → Report\n2. **Email:** support@deemona.com\n3. **Grievance Officer:** As per IT Act 2021 — Deemona Global Solutions, New Delhi 110075\n\n**Response times:**\n• Critical (abuse/fraud): within 4 hours\n• Standard: within 24 hours\n• General feedback: within 72 hours\n\nTell me more about your specific issue and I\'ll guide you to the fastest resolution.',
+        quickReplies: ['Report a fake listing','Report a user','Technical bug','Request a refund']
+      };
+    }
+  },
+
+  // ── MESSAGES ──────────────────────────────────────────────────
+  messages: {
+    patterns: ['message','chat','dm','direct message','inbox','send message','conversation','messaging'],
+    answer: function(){
+      return {
+        text: '💬 **PawBook Messages**\n\nChat privately with pet parents, vets, sellers and shelters.\n\n**Features:**\n• Text messages with emoji reactions\n• Send photos & videos\n• Voice messages\n• Location sharing\n• Read receipts\n• Group chats\n\n**To start a conversation:**\n• From someone\'s profile → tap Message\n• From the Messages icon in the top nav\n• From a Marketplace listing → Contact Seller\n• From a Vet\'s profile → Message Vet\n\n**Message requests** — people you don\'t follow go to a separate "Requests" folder.',
+        quickReplies: ['Open my messages','Message a vet','Contact a seller'],
+        action: {label:'Messages', page:'13_messages.html'}
+      };
+    }
+  },
+
+  // ── DEFAULT FALLBACK ─────────────────────────────────────────
+  fallback: {
+    answer: function(input){
+      return {
+        text: 'I don\'t have a specific answer for "'+input+'" yet, but I\'m learning! 🐾\n\nHere\'s what I can help you with right now:',
+        html: '<div class="feature-grid">'+
+          '<div class="feature-pill" onclick="sendQuick(\'Lost pet\')">🔍 Lost Pet</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Adoption\')">🐾 Adoption</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Book a vet\')">🏥 Vet</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Emergency\')">🚨 Emergency</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Marketplace\')">🛍️ Marketplace</div>'+
+          '<div class="feature-pill" onclick="sendQuick(\'Complaint\')">📋 Complaint</div>'+
+        '</div>',
+        quickReplies: ['What can you help with?','Speak to support','Report a problem']
+      };
+    }
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  INTENT DETECTION
+// ═══════════════════════════════════════════════════════════════
+function detectIntent(input){
+  var lower = input.toLowerCase();
+  var order = ['emergency','lost','grievance','vet','vaccination','adoption','marketplace','insurance','training','groups','discover','social','account','messages','general'];
+  for(var i=0;i<order.length;i++){
+    var key = order[i];
+    var entry = KB[key];
+    if(entry && entry.patterns){
+      for(var j=0;j<entry.patterns.length;j++){
+        if(lower.indexOf(entry.patterns[j])!==-1) return key;
+      }
+    }
+  }
+  return 'fallback';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CHAT ENGINE
+// ═══════════════════════════════════════════════════════════════
+function formatText(text){
+  return text
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n/g,'<br>')
+    .replace(/• /g,'• ');
+}
+
+function botSay(text, quickReplies, extraHtml, action){
+  var id = 'msg-'+(++msgIdCounter);
+  var wrap = document.createElement('div');
+  wrap.className = 'msg bot';
+  wrap.id = id;
+  var now = new Date();
+  var timeStr = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+
+  var html = '<div class="msg-av">🤖</div><div>';
+  html += '<div class="msg-bubble">'+formatText(text)+'</div>';
+  if(extraHtml) html += '<div style="padding:0 2px">'+extraHtml+'</div>';
+  if(action){
+    html += '<button class="chat-card-btn" style="margin:8px 0 0;max-width:200px" onclick="goTo(\''+action.page+'\')">'+
+      '<i class="ti ti-external-link" style="margin-right:4px"></i>'+action.label+'</button>';
+  }
+  if(quickReplies && quickReplies.length){
+    html += '<div class="quick-replies">';
+    quickReplies.forEach(function(qr){
+      html += '<button class="qr-btn" onclick="sendQuick(\''+qr.replace(/'/g,"\\'")+'\')"">'+qr+'</button>';
+    });
+    html += '</div>';
+  }
+  html += '<div class="msg-time">'+timeStr+'</div></div>';
+  wrap.innerHTML = html;
+  document.getElementById('messages').appendChild(wrap);
+  scrollBottom();
+}
+
+function userSay(text){
+  var wrap = document.createElement('div');
+  wrap.className = 'msg user';
+  var now = new Date();
+  var timeStr = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  var init = currentUser ? (currentUser.full_name||currentUser.username||'U').charAt(0).toUpperCase() : 'U';
+  wrap.innerHTML = '<div class="msg-av" style="font-size:13px">'+init+'</div>'+
+    '<div><div class="msg-bubble">'+escHtml(text)+'</div><div class="msg-time" style="text-align:right">'+timeStr+'</div></div>';
+  document.getElementById('messages').appendChild(wrap);
+  scrollBottom();
+}
+
+function showTyping(){
+  var el = document.createElement('div');
+  el.className = 'msg bot';
+  el.id = 'typing-indicator';
+  el.innerHTML = '<div class="msg-av">🤖</div>'+
+    '<div class="msg-bubble typing-bubble">'+
+      '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>'+
+    '</div>';
+  document.getElementById('messages').appendChild(el);
+  scrollBottom();
+}
+
+function hideTyping(){
+  var el = document.getElementById('typing-indicator');
+  if(el) el.remove();
+}
+
+function scrollBottom(){
+  var m = document.getElementById('messages');
+  m.scrollTop = m.scrollHeight;
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function sendMessage(){
+  var inp = document.getElementById('chat-input');
+  var text = inp.value.trim();
+  if(!text) return;
+  inp.value = ''; inp.style.height='';
+  document.getElementById('send-btn').disabled = true;
+  processMessage(text);
+}
+
+function sendQuick(text){
+  document.getElementById('chat-input').value = '';
+  processMessage(text);
+}
+
+function processMessage(text){
+  userSay(text);
+  showTyping();
+
+  // Simulate realistic delay (400–1000ms based on length)
+  var delay = Math.min(400 + text.length * 8, 1000);
+
+  setTimeout(function(){
+    hideTyping();
+    var intent = detectIntent(text);
+    var entry = KB[intent];
+    var result = entry.answer(text);
+    botSay(result.text, result.quickReplies, result.html, result.action);
+    document.getElementById('send-btn').disabled = false;
+  }, delay);
+}
+
+function handleKey(e){
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+}
+
+function clearChat(){
+  if(!confirm('Clear this conversation?')) return;
+  document.getElementById('messages').innerHTML='';
+  greetUser();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GREET ON LOAD
+// ═══════════════════════════════════════════════════════════════
+function greetUser(){
+  var name = currentUser ? (currentUser.full_name || currentUser.username || 'friend') : null;
+  var hour = new Date().getHours();
+  var greet = hour<12 ? 'Good morning' : hour<17 ? 'Good afternoon' : 'Good evening';
+  var greeting = name
+    ? greet+', '+name+'! 🐾 I\'m PawBook AI, your pet care assistant.'
+    : greet+'! 🐾 I\'m PawBook AI — your intelligent pet care assistant.';
+
+  botSay(greeting + '\n\nI can help you with **lost pets, adoption, vet booking, vaccination tracking, emergency services, marketplace, grooming, groups and much more**.\n\nWhat would you like to do today?', [
+    'Lost pet help','Adopt a pet','Book a vet','Emergency services'
+  ]);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+loadUser();
+greetUser();
+</script>
+
+<!-- SERVICE WORKER -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('service-worker.js').catch(function(){});
+  });
+}
+</script>
+
+</body>
+</html>

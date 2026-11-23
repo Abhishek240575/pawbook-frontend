@@ -2,766 +2,1642 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1877F2">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="manifest.json">
-<title>PawBook — Stories</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Stories – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ── RESET EVERYTHING for this page ── */
-*{box-sizing:border-box}
-body{margin:0;padding:0;font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh}
+:root{
+  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
+  --pb-green:#22c55e;--pb-green-soft:#dcfce7;
+  --pb-red:#ef4444;--pb-red-soft:#fee2e2;
+  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;
+  --pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
+  --pb-pink:#ec4899;--pb-pink-soft:#fce7f3;
+  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;
+  --pb-orange:#f97316;--pb-orange-soft:#ffedd5;
+  --pb-indigo:#6366f1;--pb-indigo-soft:#e0e7ff;
+  --pb-story-grad:linear-gradient(135deg,#ec4899,#8b5cf6,#6366f1);
+  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
+  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
+  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
+  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --pb-shadow-md:0 4px 20px rgba(0,0,0,.12);
+  --pb-nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
+a{text-decoration:none;color:inherit}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+input,select,textarea{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
 
-/* ── TOP NAV ── */
-.pb-topnav{
-  position:fixed;top:0;left:0;right:0;height:52px;
-  background:#fff;border-bottom:1px solid #e2e8f0;
-  display:flex;align-items:center;padding:0 16px;gap:12px;z-index:300;
-}
-.pb-topnav-back{background:none;border:none;font-size:22px;cursor:pointer;color:#1e293b;display:flex;align-items:center}
-.pb-topnav-title{font-size:17px;font-weight:800;color:#1e293b;flex:1}
-.pb-topnav-btn{background:#1a4db3;border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;padding:7px 16px;border-radius:20px;font-family:'Poppins',sans-serif}
+/* NAV */
+.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
+.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-story-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pb-nav-search{flex:1;max-width:220px;height:38px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
+.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;width:100%;color:var(--pb-text)}
+.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
+.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-pink)}
+.pb-nav-tab.active{color:var(--pb-pink)}
+.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-pink);border-radius:3px 3px 0 0}
+.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px}
+.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-story-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
-/* ── PAGE BODY ── */
-.pb-page{padding-top:52px;padding-bottom:70px}
+/* LAYOUT */
+.st-layout{max-width:1100px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:260px 1fr 280px;gap:18px}
+@media(max-width:1050px){.st-layout{grid-template-columns:240px 1fr}.st-right{display:none}}
+@media(max-width:760px){.st-layout{grid-template-columns:1fr}.st-left{display:none}}
+.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
+.pb-card-header{padding:14px 18px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
+.pb-card-header h3{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
 
-/* ══════════════════════════════════════════════
-   STORY CIRCLES ROW
-══════════════════════════════════════════════ */
-.pb-circles-row{
-  background:#fff;
-  border-bottom:1.5px solid #e2e8f0;
-  padding:14px 14px;
-  display:flex !important;
-  flex-direction:row !important;
-  flex-wrap:nowrap !important;
-  gap:14px;
-  overflow-x:auto;
-  overflow-y:visible;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-  align-items:flex-start;
-}
-.pb-circles-row::-webkit-scrollbar{display:none}
+/* BUTTONS */
+.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
+.pb-btn-pink{background:var(--pb-pink);color:#fff}.pb-btn-pink:hover{background:#db2777}
+.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
+.pb-btn-purple{background:var(--pb-purple);color:#fff}.pb-btn-purple:hover{background:#7c3aed}
+.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
+.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
+.pb-btn-xs{height:26px;padding:0 10px;font-size:11px}
 
-/* Each circle item */
-.pb-story-ci{
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center;
-  gap:5px;
-  cursor:pointer;
-  flex-shrink:0;
-  width:70px;
-  text-decoration:none;
-}
+/* HERO */
+.story-hero{background:var(--pb-story-grad);border-radius:var(--pb-radius);padding:24px 20px;margin-bottom:18px;color:#fff;position:relative;overflow:hidden}
+.story-hero::before{content:'📖';position:absolute;right:-5px;top:-10px;font-size:110px;opacity:.12}
+.story-hero::after{content:'🐾';position:absolute;right:70px;bottom:-18px;font-size:80px;opacity:.1}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:var(--pb-pill);padding:4px 12px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.story-hero h1{font-size:22px;font-weight:900;margin-bottom:6px;line-height:1.2}
+.story-hero p{font-size:13px;opacity:.85;line-height:1.6;margin-bottom:16px;max-width:500px}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap}
+.hero-btn-white{background:#fff;color:var(--pb-purple);height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:6px}
+.hero-btn-outline{background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.5);height:36px;padding:0 14px;border-radius:var(--pb-pill);cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
 
-/* Gradient ring */
-.pb-story-ring{
-  width:64px;
-  height:64px;
-  border-radius:50%;
-  padding:3px;
-  background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#bc1888);
-  flex-shrink:0;
-}
-.pb-story-ring.seen{background:#cbd5e1}
+/* FILTER BAR */
+.filter-bar{background:#fff;border-radius:var(--pb-radius);border:1px solid var(--pb-border);box-shadow:var(--pb-shadow);padding:14px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.filter-select{height:34px;border:1.5px solid var(--pb-border);border-radius:var(--pb-pill);padding:0 12px;font-size:12px;font-weight:600;outline:none;background:#fff;color:var(--pb-text);cursor:pointer;min-width:120px}
+.filter-select:focus{border-color:var(--pb-pink)}
+.filter-sep{width:1px;height:20px;background:var(--pb-border)}
+.view-toggle{display:flex;gap:2px;background:var(--pb-bg);border-radius:var(--pb-pill);padding:3px}
+.view-btn{width:28px;height:28px;border-radius:var(--pb-pill);border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--pb-text3)}
+.view-btn.active{background:#fff;color:var(--pb-pink);box-shadow:var(--pb-shadow)}
 
-/* Inner circle */
-.pb-story-ring-inner{
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  overflow:hidden;
-  border:2.5px solid #fff;
-  background:#eee;
-}
-/* Avatar image — MUST be circular */
-.pb-story-ring-inner img{
-  width:100% !important;
-  height:100% !important;
-  object-fit:cover !important;
-  display:block !important;
-  border-radius:0 !important;
-  filter:none !important;
-}
+/* STORY CARDS GRID */
+.stories-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:16px}
+.stories-list{display:flex;flex-direction:column;gap:14px;margin-bottom:16px}
 
-/* Name label */
-.pb-story-ci-name{
-  font-size:10px;
-  font-weight:600;
-  color:#1e293b;
-  text-align:center;
-  width:70px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  line-height:1.3;
-}
+/* STORY CARD */
+.story-card{background:#fff;border-radius:var(--pb-radius);border:1px solid var(--pb-border);box-shadow:var(--pb-shadow);overflow:hidden;cursor:pointer;transition:all .2s}
+.story-card:hover{box-shadow:var(--pb-shadow-md);transform:translateY(-2px)}
+.sc-media{position:relative;height:180px;background:linear-gradient(135deg,#f0f2f5,#e4e6eb);overflow:hidden}
+.sc-media img{width:100%;height:100%;object-fit:cover}
+.sc-media video{width:100%;height:100%;object-fit:cover}
+.sc-media-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:56px}
+.sc-category-badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:var(--pb-pill);padding:3px 10px;font-size:11px;font-weight:700;backdrop-filter:blur(4px)}
+.sc-media-count{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:var(--pb-pill);padding:3px 10px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px)}
+.sc-body{padding:14px 16px}
+.sc-pet-name{font-size:16px;font-weight:900;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.sc-meta{font-size:12px;color:var(--pb-text3);margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sc-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--pb-text3)}
+.sc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.sc-tag{padding:3px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:600}
+.tag-friendly{background:var(--pb-green-soft);color:#16a34a}
+.tag-aggressive{background:var(--pb-red-soft);color:#dc2626}
+.tag-shy{background:var(--pb-indigo-soft);color:var(--pb-indigo)}
+.tag-playful{background:var(--pb-amber-soft);color:#92400e}
+.tag-calm{background:var(--pb-teal-soft);color:#0f766e}
+.tag-curious{background:var(--pb-purple-soft);color:var(--pb-purple)}
+.tag-energetic{background:var(--pb-pink-soft);color:var(--pb-pink)}
+.sc-excerpt{font-size:12px;color:var(--pb-text2);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sc-footer{display:flex;align-items:center;justify-content:space-between}
+.sc-owner{display:flex;align-items:center;gap:7px}
+.sc-owner-avatar{width:28px;height:28px;border-radius:50%;background:var(--pb-story-grad);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sc-owner-info{font-size:11px}
+.sc-owner-name{font-weight:700;color:var(--pb-text)}
+.sc-owner-loc{color:var(--pb-text3)}
+.sc-actions{display:flex;gap:4px}
+.sc-action-btn{width:28px;height:28px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--pb-text2)}
+.sc-action-btn:hover{background:var(--pb-pink-soft);color:var(--pb-pink)}
+.sc-action-btn.liked{background:var(--pb-pink-soft);color:var(--pb-pink)}
 
-/* Add Story circle */
-.pb-add-circle{
-  width:64px;height:64px;
-  border-radius:50%;
-  background:#eff6ff;
-  border:2px dashed #1a4db3;
-  display:flex;align-items:center;justify-content:center;
-  font-size:26px;
-  position:relative;
-  flex-shrink:0;
-}
-.pb-add-plus{
-  position:absolute;bottom:0;right:0;
-  width:20px;height:20px;
-  background:#1a4db3;color:#fff;
-  border-radius:50%;border:2px solid #fff;
-  font-size:13px;font-weight:900;
-  display:flex;align-items:center;justify-content:center;
-}
+/* LIST VIEW CARD */
+.story-list-card{background:#fff;border-radius:var(--pb-radius);border:1px solid var(--pb-border);box-shadow:var(--pb-shadow);padding:14px 16px;display:flex;gap:14px;cursor:pointer;transition:all .15s}
+.story-list-card:hover{box-shadow:var(--pb-shadow-md)}
+.slc-thumb{width:80px;height:80px;border-radius:var(--pb-radius-sm);overflow:hidden;flex-shrink:0;background:var(--pb-bg);display:flex;align-items:center;justify-content:center;font-size:36px}
+.slc-thumb img{width:100%;height:100%;object-fit:cover}
+.slc-body{flex:1;min-width:0}
+.slc-name{font-size:15px;font-weight:800;margin-bottom:3px}
+.slc-meta{font-size:12px;color:var(--pb-text3);margin-bottom:6px}
+.slc-excerpt{font-size:12px;color:var(--pb-text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* ══════════════════════════════════════════════
-   BROWSE GRID
-══════════════════════════════════════════════ */
-.pb-browse-header{
-  padding:12px 16px 8px;
-  font-size:14px;font-weight:800;color:#1e293b;
-  background:#fff;border-bottom:1px solid #f1f5f9;
-  margin-top:10px;
-}
-.pb-stories-grid{
-  display:grid !important;
-  grid-template-columns:repeat(3,1fr) !important;
-  gap:3px;
-  background:#111;
-}
-/* Each grid card */
-.pb-story-card{
-  position:relative;
-  width:100%;
-  padding-bottom:177.78%; /* 9:16 ratio */
-  cursor:pointer;
-  overflow:hidden;
-  background:#222;
-}
-/* Story card image — absolute fill, sharp, no oval */
-.pb-story-card-img{
-  position:absolute !important;
-  top:0 !important;left:0 !important;
-  width:100% !important;height:100% !important;
-  object-fit:cover !important;
-  display:block !important;
-  border-radius:0 !important;
-  filter:none !important;
-  -webkit-filter:none !important;
-}
-.pb-story-card-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(transparent 55%,rgba(0,0,0,0.8));
-  pointer-events:none;
-}
-/* Small avatar on card */
-.pb-sc-av{
-  position:absolute;top:8px;left:8px;
-  width:32px;height:32px;
-  border-radius:50%;
-  overflow:hidden;
-  border:2px solid #f09433;
-  background:#333;
-}
-.pb-sc-av.seen{border-color:#94a3b8}
-.pb-sc-av img{
-  width:100% !important;height:100% !important;
-  object-fit:cover !important;display:block !important;
-}
-.pb-sc-name{
-  position:absolute;bottom:8px;left:8px;right:8px;
-  font-size:10px;font-weight:700;color:#fff;line-height:1.3;
-  text-shadow:0 1px 3px rgba(0,0,0,0.8);
-}
-.pb-sc-dot{
-  position:absolute;top:8px;right:8px;
-  width:8px;height:8px;border-radius:50%;background:#f09433;
-}
+/* SIDEBAR LEFT */
+.sidebar-nav{display:flex;flex-direction:column;gap:3px;padding:6px}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--pb-radius-sm);font-size:13px;font-weight:600;color:var(--pb-text2);cursor:pointer;transition:all .15s;border:none;background:transparent;text-align:left;width:100%}
+.sidebar-link:hover{background:var(--pb-pink-soft);color:var(--pb-pink)}
+.sidebar-link.active{background:var(--pb-pink-soft);color:var(--pb-pink);font-weight:700}
+.sidebar-link i{font-size:18px;flex-shrink:0}
+.sidebar-count{margin-left:auto;background:var(--pb-pink);color:#fff;border-radius:var(--pb-pill);font-size:10px;font-weight:800;padding:1px 7px}
 
-/* ══════════════════════════════════════════════
-   STORY VIEWER (fullscreen)
-══════════════════════════════════════════════ */
-#pb-viewer{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,0.95);
-  z-index:500;
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-.pb-sv{
-  position:relative;
-  width:100%;max-width:420px;
-  height:100vh;
-  background:#000;
-  display:flex;flex-direction:column;
-  overflow:hidden;
-}
-/* Progress bars */
-.pb-sv-prog{
-  display:flex;gap:3px;
-  padding:50px 10px 6px;
-  flex-shrink:0;z-index:10;
-}
-.pb-sv-bar{
-  flex:1;height:3px;
-  background:rgba(255,255,255,0.3);
-  border-radius:2px;overflow:hidden;
-}
-.pb-sv-fill{
-  height:100%;background:#fff;width:0;
-}
-.pb-sv-fill.done{width:100%}
-/* Header */
-.pb-sv-head{
-  display:flex;align-items:center;gap:10px;
-  padding:6px 12px;flex-shrink:0;
-}
-.pb-sv-av{
-  width:38px;height:38px;border-radius:50%;
-  object-fit:cover;border:2px solid #fff;flex-shrink:0;
-}
-.pb-sv-name{font-size:14px;font-weight:700;color:#fff}
-.pb-sv-time{font-size:11px;color:rgba(255,255,255,0.65);margin-top:1px}
-.pb-sv-x{
-  margin-left:auto;
-  background:rgba(255,255,255,0.15);border:none;
-  color:#fff;width:34px;height:34px;border-radius:50%;
-  cursor:pointer;font-size:18px;
-  display:flex;align-items:center;justify-content:center;
-}
-/* Image area */
-.pb-sv-img-area{
-  flex:1;position:relative;overflow:hidden;background:#000;
-}
-#pb-sv-img{
-  position:absolute !important;
-  top:0 !important;left:0 !important;bottom:0 !important;right:0 !important;
-  width:100% !important;height:100% !important;
-  object-fit:cover !important;
-  display:block !important;
-  border-radius:0 !important;
-  filter:none !important;
-  -webkit-filter:none !important;
-}
-.pb-sv-caption{
-  position:absolute;bottom:0;left:0;right:0;
-  padding:40px 16px 14px;
-  background:linear-gradient(transparent,rgba(0,0,0,0.8));
-  font-size:14px;font-weight:600;color:#fff;line-height:1.5;z-index:2;
-}
-.pb-sv-prev{position:absolute;left:0;top:0;width:33%;height:100%;cursor:pointer;z-index:5}
-.pb-sv-next{position:absolute;right:0;top:0;width:33%;height:100%;cursor:pointer;z-index:5}
-/* Footer */
-.pb-sv-foot{
-  padding:10px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;
-}
-.pb-sv-reply{
-  flex:1;height:40px;border-radius:20px;
-  border:1.5px solid rgba(255,255,255,0.4);
-  background:rgba(255,255,255,0.08);
-  color:#fff;padding:0 14px;
-  font-family:'Poppins',sans-serif;font-size:13px;outline:none;
-}
-.pb-sv-reply::placeholder{color:rgba(255,255,255,0.45)}
-.pb-sv-emoji{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:4px}
+/* FEATURED STORY SIDEBAR */
+.featured-story{padding:14px}
+.fs-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--pb-text3);margin-bottom:10px}
+.fs-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--pb-border);cursor:pointer}
+.fs-item:last-child{border-bottom:none}
+.fs-thumb{width:48px;height:48px;border-radius:var(--pb-radius-sm);overflow:hidden;flex-shrink:0;background:var(--pb-bg);display:flex;align-items:center;justify-content:center;font-size:24px}
+.fs-thumb img{width:100%;height:100%;object-fit:cover}
+.fs-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.fs-sub{font-size:11px;color:var(--pb-text3)}
 
-@keyframes pb-float{
-  0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
-  100%{opacity:0;transform:translateX(-50%) translateY(-70px) scale(1.5)}
-}
+/* TRENDING TAGS */
+.trending-tags{padding:14px;display:flex;flex-wrap:wrap;gap:6px}
+.trend-tag{padding:5px 12px;border-radius:var(--pb-pill);background:var(--pb-bg);border:1px solid var(--pb-border);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.trend-tag:hover{background:var(--pb-pink-soft);border-color:var(--pb-pink);color:var(--pb-pink)}
 
-/* ══════════════════════════════════════════════
-   CREATE STORY MODAL
-══════════════════════════════════════════════ */
-#pb-create-modal{
-  position:fixed;inset:0;background:rgba(0,0,0,0.6);
-  z-index:600;display:none;
-  align-items:flex-end;justify-content:center;
-}
-.pb-create-box{
-  background:#fff;border-radius:20px 20px 0 0;
-  padding:20px;width:100%;max-width:500px;
-}
-.pb-create-preview{
-  width:100%;height:200px;
-  background:#f1f5f9;border-radius:12px;
-  overflow:hidden;margin-bottom:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:42px;cursor:pointer;
-}
-.pb-create-preview img{width:100%;height:100%;object-fit:cover;display:block}
-html,body{overflow-x:hidden!important;max-width:100%!important}
-</style>
-<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
-<style id="pb-mobile">
-html, body { overflow-x: hidden !important; }
-@media (max-width: 768px) {
-  html, body { width: 100% !important; overflow-x: hidden !important; }
-  div { min-width: 0 !important; }
-  .pb-stories-grid { display: block !important; grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
-  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
-  .topnav-tabs, .nav-tabs { display: none !important; }
-  .bottomnav { display: flex !important; }
-  .left-sidebar, .right-sidebar, aside { display: none !important; }
-  body { padding-bottom: 72px !important; }
-}
-</style>
-<style id="pb-burger">
-.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
-.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
-.drawer-overlay.open { display: block; }
-.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
-.drawer-panel.open { left: 0; }
-.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
-.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
-.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
-.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
-.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
-.drawer-body { flex: 1; padding: 6px 0; }
-.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
-.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
-.drawer-item:hover { background: #eff6ff; color: #1877F2; }
-.drawer-item i { font-size: 20px; width: 24px; }
-.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
-.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
-.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
-.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
-.bnav-item i { font-size: 22px; }
-.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.bnav-item.active { color: #1877F2; }
-@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
-@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;opacity:0;visibility:hidden;transition:all .2s}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:680px;box-shadow:var(--pb-shadow-md);margin:auto}
+.modal-header{padding:16px 22px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;border-radius:16px 16px 0 0}
+.modal-header h3{font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--pb-text2)}
+.modal-body{padding:20px 22px}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--pb-border);display:flex;gap:10px;justify-content:flex-end;border-radius:0 0 16px 16px}
+
+/* FORM */
+.form-section{margin-bottom:22px}
+.form-section-title{font-size:13px;font-weight:800;color:var(--pb-purple);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:2px solid var(--pb-purple-soft)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--pb-text2);margin-bottom:5px}
+.form-label .req{color:var(--pb-red)}
+.form-input{width:100%;height:38px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:13px;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--pb-purple)}
+.form-select{width:100%;height:38px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:13px;outline:none;background:#fff;cursor:pointer;transition:border-color .15s}
+.form-select:focus{border-color:var(--pb-purple)}
+.form-textarea{width:100%;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:10px 12px;font-size:13px;outline:none;resize:vertical;min-height:70px;line-height:1.5;transition:border-color .15s}
+.form-textarea:focus{border-color:var(--pb-purple)}
+.form-hint{font-size:11px;color:var(--pb-text3);margin-top:3px}
+
+/* SLIDER INPUT */
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.slider-label-left{font-size:11px;color:var(--pb-text3);min-width:60px;text-align:right}
+.slider-label-right{font-size:11px;color:var(--pb-text3);min-width:60px}
+.range-input{flex:1;accent-color:var(--pb-purple)}
+.slider-val{font-size:13px;font-weight:800;color:var(--pb-purple);min-width:28px;text-align:center}
+
+/* CHIP SELECTOR */
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.chip{padding:5px 14px;border-radius:var(--pb-pill);border:1.5px solid var(--pb-border);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;background:#fff;user-select:none}
+.chip:hover{border-color:var(--pb-purple);color:var(--pb-purple)}
+.chip.selected{background:var(--pb-purple-soft);border-color:var(--pb-purple);color:var(--pb-purple);font-weight:700}
+.chip-pink.selected{background:var(--pb-pink-soft);border-color:var(--pb-pink);color:var(--pb-pink)}
+.chip-green.selected{background:var(--pb-green-soft);border-color:var(--pb-green);color:#16a34a}
+.chip-amber.selected{background:var(--pb-amber-soft);border-color:var(--pb-amber);color:#92400e}
+.chip-red.selected{background:var(--pb-red-soft);border-color:var(--pb-red);color:#dc2626}
+.chip-teal.selected{background:var(--pb-teal-soft);border-color:var(--pb-teal);color:#0f766e}
+
+/* MEDIA UPLOAD */
+.upload-zone{border:2px dashed var(--pb-border);border-radius:var(--pb-radius);padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--pb-bg)}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--pb-purple);background:var(--pb-purple-soft)}
+.upload-zone-icon{font-size:36px;margin-bottom:8px}
+.upload-zone-text{font-size:13px;font-weight:700;color:var(--pb-text2);margin-bottom:4px}
+.upload-zone-hint{font-size:12px;color:var(--pb-text3)}
+.media-preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:12px}
+.media-thumb{position:relative;border-radius:var(--pb-radius-sm);overflow:hidden;aspect-ratio:1;background:var(--pb-bg)}
+.media-thumb img,.media-thumb video{width:100%;height:100%;object-fit:cover}
+.media-thumb-remove{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;border:none;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center}
+
+/* STEP WIZARD */
+.wizard-steps{display:flex;gap:0;margin-bottom:22px;position:relative}
+.wizard-steps::before{content:'';position:absolute;top:14px;left:14px;right:14px;height:2px;background:var(--pb-border);z-index:0}
+.wizard-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;z-index:1}
+.ws-circle{width:28px;height:28px;border-radius:50%;border:2px solid var(--pb-border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--pb-text3);transition:all .2s}
+.ws-label{font-size:10px;font-weight:600;color:var(--pb-text3);text-align:center;line-height:1.3}
+.wizard-step.active .ws-circle{background:var(--pb-purple);border-color:var(--pb-purple);color:#fff}
+.wizard-step.active .ws-label{color:var(--pb-purple)}
+.wizard-step.done .ws-circle{background:var(--pb-green);border-color:var(--pb-green);color:#fff}
+.wizard-step.done .ws-label{color:var(--pb-green)}
+
+/* STORY DETAIL MODAL */
+.story-detail-hero{background:var(--pb-story-grad);padding:20px;color:#fff}
+.sdh-pet-name{font-size:22px;font-weight:900;margin-bottom:4px}
+.sdh-meta{font-size:13px;opacity:.85;margin-bottom:12px}
+.sdh-tags{display:flex;gap:6px;flex-wrap:wrap}
+.sdh-tag{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:var(--pb-pill);padding:3px 12px;font-size:12px;font-weight:700}
+.story-media-scroll{display:flex;gap:8px;padding:14px 16px;overflow-x:auto;border-bottom:1px solid var(--pb-border);scrollbar-width:none}
+.story-media-scroll::-webkit-scrollbar{display:none}
+.story-media-item{flex-shrink:0;width:160px;height:120px;border-radius:var(--pb-radius-sm);overflow:hidden;background:var(--pb-bg);display:flex;align-items:center;justify-content:center;font-size:40px}
+.story-media-item img,.story-media-item video{width:100%;height:100%;object-fit:cover}
+.story-detail-body{padding:16px 20px}
+.sdb-section{margin-bottom:16px}
+.sdb-section-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--pb-purple);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.sdb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sdb-item{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:10px 12px}
+.sdb-item-label{font-size:11px;color:var(--pb-text3);margin-bottom:3px;font-weight:600}
+.sdb-item-val{font-size:13px;font-weight:700;color:var(--pb-text)}
+.personality-bar{height:6px;background:var(--pb-border);border-radius:3px;overflow:hidden;margin-top:4px}
+.personality-fill{height:100%;border-radius:3px;transition:width .4s}
+
+/* PROGRESS STEPS IN FORM */
+.form-step{display:none}
+.form-step.active{display:block}
+.step-nav{display:flex;gap:8px;justify-content:space-between;margin-top:14px}
+
+/* BOTTOM NAV */
+.pb-bnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);display:flex;z-index:400}
+.pb-bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--pb-text3);font-size:10px;font-weight:600;transition:color .15s;border:none;background:transparent}
+.pb-bnav-item i{font-size:22px}
+.pb-bnav-item.active{color:var(--pb-pink)}
+.pb-bnav-fab{width:48px;height:48px;border-radius:50%;background:var(--pb-story-grad);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(236,72,153,.4);margin:-16px auto 0}
+
+/* BADGE */
+.badge{display:inline-block;padding:2px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:700}
+.badge-green{background:var(--pb-green-soft);color:#16a34a}
+.badge-red{background:var(--pb-red-soft);color:#dc2626}
+.badge-purple{background:var(--pb-purple-soft);color:var(--pb-purple)}
+.badge-amber{background:var(--pb-amber-soft);color:#92400e}
+.badge-pink{background:var(--pb-pink-soft);color:var(--pb-pink)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 24px;color:var(--pb-text3)}
+.empty-state-icon{font-size:56px;margin-bottom:12px}
+.empty-state h3{font-size:16px;font-weight:800;color:var(--pb-text2);margin-bottom:6px}
+.empty-state p{font-size:13px;line-height:1.6;margin-bottom:16px}
+
+/* LOAD MORE */
+.load-more-btn{width:100%;height:40px;border:1.5px dashed var(--pb-border);border-radius:var(--pb-radius);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--pb-text3);transition:all .15s}
+.load-more-btn:hover{border-color:var(--pb-pink);color:var(--pb-pink);background:var(--pb-pink-soft)}
+
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
 </style>
 </head>
 <body>
 
-<script src="pawbook-api.js"></script>
-<script src="upload.js"></script>
-<script>
-(function(){
-  fetch(API_BASE+'/stories',{headers:authHeaders()})
-    .then(function(r){return r.json();})
-    .then(function(d){if(d&&d.data)localStorage.setItem('pb_stories',JSON.stringify(d.data));})
-    .catch(function(){});
-})();
-function goTo(p){window.location.href=p;}
-function toast(msg,type){
-  var bg=type==='error'?'#dc2626':type==='info'?'#6366f1':'#16a34a';
-  var t=document.createElement('div');
-  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+bg+';color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap;max-width:90vw;text-align:center';
-  t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},2500);
-}
-</script>
+<!-- NAV -->
+<nav class="pb-nav">
+  <div class="pb-nav-logo" onclick="location.href='07_home.html'">
+    <div class="pb-nav-logo-icon">🐾</div>
+    <span>PawBook</span>
+  </div>
+  <div class="pb-nav-search">
+    <i class="ti ti-search" style="color:var(--pb-text3);font-size:16px"></i>
+    <input type="text" placeholder="Search pet stories…" oninput="filterStories(this.value)">
+  </div>
+  <div class="pb-nav-tabs">
+    <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
+    <button class="pb-nav-tab active"><i class="ti ti-book"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='09_marketplace.html'"><i class="ti ti-shopping-bag"></i></button>
+  </div>
+  <div class="pb-nav-right">
+    <button class="pb-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="pb-avatar">A</div>
+  </div>
+</nav>
 
-<!-- TOP NAV -->
-<div class="pb-topnav">
-  <button class="pb-topnav-back" onclick="goTo('07_home.html')">
-    <i class="ti ti-arrow-left"></i>
-  </button>
-  <span class="pb-topnav-title">Stories</span>
-  <button class="pb-topnav-btn" onclick="openCreate()">+ Create</button>
-</div>
+<!-- LAYOUT -->
+<div class="st-layout">
 
-<div class="pb-page">
-
-  <!-- Circles row -->
-  <div class="pb-circles-row" id="pb-circles"></div>
-
-  <!-- Grid -->
-  <div class="pb-browse-header">📖 All Stories</div>
-  <div class="pb-stories-grid" id="pb-grid"></div>
-
-</div>
-
-<!-- VIEWER -->
-<div id="pb-viewer">
-  <div class="pb-sv">
-    <div class="pb-sv-prog" id="pb-prog"></div>
-    <div class="pb-sv-head">
-      <img class="pb-sv-av" id="pb-av" src="">
-      <div>
-        <div class="pb-sv-name" id="pb-uname"></div>
-        <div class="pb-sv-time" id="pb-utime"></div>
+  <!-- LEFT SIDEBAR -->
+  <aside class="st-left">
+    <div class="pb-card" style="margin-bottom:14px">
+      <div class="pb-card-header"><h3><i class="ti ti-book" style="color:var(--pb-pink)"></i> Stories</h3></div>
+      <div class="sidebar-nav">
+        <button class="sidebar-link active" onclick="filterByTab('all')"><i class="ti ti-layout-grid"></i> All Stories <span class="sidebar-count" id="cnt-all">48</span></button>
+        <button class="sidebar-link" onclick="filterByTab('dogs')"><i class="ti ti-dog"></i> Dogs <span class="sidebar-count" id="cnt-dogs">19</span></button>
+        <button class="sidebar-link" onclick="filterByTab('cats')"><i class="ti ti-cat"></i> Cats <span class="sidebar-count" id="cnt-cats">14</span></button>
+        <button class="sidebar-link" onclick="filterByTab('birds')"><i class="ti ti-feather"></i> Birds <span class="sidebar-count" id="cnt-birds">7</span></button>
+        <button class="sidebar-link" onclick="filterByTab('rabbits')"><i class="ti ti-paw"></i> Rabbits <span class="sidebar-count" id="cnt-rabbits">4</span></button>
+        <button class="sidebar-link" onclick="filterByTab('exotic')"><i class="ti ti-fish"></i> Exotic Pets <span class="sidebar-count" id="cnt-exotic">4</span></button>
+        <button class="sidebar-link" onclick="filterByTab('my')"><i class="ti ti-heart"></i> My Stories</button>
+        <button class="sidebar-link" onclick="filterByTab('bookmarked')"><i class="ti ti-bookmark"></i> Bookmarked</button>
       </div>
-      <button class="pb-sv-x" onclick="closeSV()">✕</button>
     </div>
-    <div class="pb-sv-img-area">
-      <img id="pb-sv-img" src="" alt="">
-      <div class="pb-sv-caption" id="pb-cap"></div>
-      <div class="pb-sv-prev" onclick="prevSV()" title="Previous"></div>
-      <div class="pb-sv-next" onclick="nextSV()" title="Next"></div>
+
+    <div class="pb-card" style="margin-bottom:14px">
+      <div class="pb-card-header"><h3><i class="ti ti-map-pin" style="color:var(--pb-pink)"></i> Browse by Location</h3></div>
+      <div style="padding:12px">
+        <select class="form-select" style="margin-bottom:8px" id="locCountry" onchange="onLocCountryChange()">
+          <option value="">— All Countries —</option>
+        </select>
+        <select class="form-select" id="locCity" disabled onchange="filterStories()">
+          <option value="">— All Cities —</option>
+        </select>
+      </div>
     </div>
-    <div class="pb-sv-foot">
-      <input class="pb-sv-reply" placeholder="Reply to story…">
-      <button class="pb-sv-emoji" onclick="floatE('❤️')">❤️</button>
-      <button class="pb-sv-emoji" onclick="floatE('🐾')">🐾</button>
-      <button class="pb-sv-emoji" onclick="floatE('🔥')">🔥</button>
+
+    <div class="pb-card">
+      <div class="pb-card-header"><h3><i class="ti ti-chart-bar" style="color:var(--pb-pink)"></i> Stats</h3></div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Total Stories</span><span style="font-weight:800">48</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Countries</span><span style="font-weight:800">12</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Cities</span><span style="font-weight:800">29</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Pet Breeds</span><span style="font-weight:800">34</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">With Media</span><span style="font-weight:800">36</span></div>
+      </div>
     </div>
-  </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <!-- Hero -->
+    <div class="story-hero">
+      <div class="hero-badge">📖 PawBook Stories</div>
+      <h1>Every Pet Has a Story 🐾</h1>
+      <p>Share your pet's personality, habits, quirks, and life. Build a memorable profile that the whole world can discover — searchable by breed, city, country, and character.</p>
+      <div class="hero-actions">
+        <button class="hero-btn-white" onclick="openStoryForm()"><i class="ti ti-plus"></i> Share Your Pet's Story</button>
+        <button class="hero-btn-outline" onclick="openDiscoverModal()"><i class="ti ti-compass"></i> Discover Stories</button>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <select class="filter-select" id="fCountry" onchange="onFilterCountryChange()">
+        <option value="">🌍 All Countries</option>
+      </select>
+      <select class="filter-select" id="fCity" disabled onchange="filterStories()">
+        <option value="">📍 All Cities</option>
+      </select>
+      <select class="filter-select" id="fCategory" onchange="filterStories()">
+        <option value="">🐾 All Pets</option>
+        <option value="dog">🐕 Dog</option>
+        <option value="cat">🐱 Cat</option>
+        <option value="bird">🐦 Bird</option>
+        <option value="rabbit">🐰 Rabbit</option>
+        <option value="fish">🐠 Fish</option>
+        <option value="reptile">🦎 Reptile</option>
+        <option value="hamster">🐹 Hamster</option>
+        <option value="other">🐾 Other</option>
+      </select>
+      <select class="filter-select" id="fBreed" onchange="filterStories()">
+        <option value="">All Breeds</option>
+      </select>
+      <select class="filter-select" id="fTemper" onchange="filterStories()">
+        <option value="">All Temperaments</option>
+        <option value="friendly">😊 Friendly</option>
+        <option value="playful">🎾 Playful</option>
+        <option value="calm">😌 Calm</option>
+        <option value="shy">🙈 Shy</option>
+        <option value="aggressive">😤 Aggressive</option>
+        <option value="curious">🔍 Curious</option>
+        <option value="energetic">⚡ Energetic</option>
+      </select>
+      <div class="filter-sep"></div>
+      <select class="filter-select" id="fSort" onchange="filterStories()">
+        <option value="new">Newest First</option>
+        <option value="popular">Most Liked</option>
+        <option value="az">Pet Name A–Z</option>
+      </select>
+      <div class="view-toggle">
+        <button class="view-btn active" id="vGrid" onclick="setView('grid')" title="Grid"><i class="ti ti-layout-grid"></i></button>
+        <button class="view-btn" id="vList" onclick="setView('list')" title="List"><i class="ti ti-list"></i></button>
+      </div>
+    </div>
+
+    <!-- STORIES GRID -->
+    <div id="storiesGrid" class="stories-grid"></div>
+    <div id="storiesList" class="stories-list" style="display:none"></div>
+    <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()"><i class="ti ti-refresh"></i> Load More Stories</button>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="st-right">
+    <div class="pb-card" style="margin-bottom:14px">
+      <div class="pb-card-header"><h3><i class="ti ti-star" style="color:var(--pb-amber)"></i> Featured Stories</h3></div>
+      <div class="featured-story" id="featuredList"></div>
+    </div>
+    <div class="pb-card" style="margin-bottom:14px">
+      <div class="pb-card-header"><h3><i class="ti ti-trending-up" style="color:var(--pb-pink)"></i> Trending Tags</h3></div>
+      <div class="trending-tags">
+        <span class="trend-tag" onclick="filterByTag('friendly')">#friendly</span>
+        <span class="trend-tag" onclick="filterByTag('playful')">#playful</span>
+        <span class="trend-tag" onclick="filterByTag('labrador')">#labrador</span>
+        <span class="trend-tag" onclick="filterByTag('indie')">#IndianBred</span>
+        <span class="trend-tag" onclick="filterByTag('rescue')">#rescue</span>
+        <span class="trend-tag" onclick="filterByTag('senior')">#seniorpet</span>
+        <span class="trend-tag" onclick="filterByTag('firstpet')">#firstpet</span>
+        <span class="trend-tag" onclick="filterByTag('streetdog')">#streetdog</span>
+        <span class="trend-tag" onclick="filterByTag('cuddler')">#cuddler</span>
+        <span class="trend-tag" onclick="filterByTag('velcrodog')">#velcrodog</span>
+      </div>
+    </div>
+    <div class="pb-card">
+      <div class="pb-card-header"><h3><i class="ti ti-database" style="color:var(--pb-teal)"></i> Database Info</h3></div>
+      <div style="padding:14px;font-size:12px;color:var(--pb-text2);line-height:1.7">
+        <p>All stories, pet profiles, media (photos & videos), and personality data are stored securely in PawBook's database.</p>
+        <br>
+        <p><strong>What we store:</strong></p>
+        <ul style="padding-left:14px;margin-top:4px">
+          <li>Full pet profile with 15+ personality traits</li>
+          <li>Photos & videos (up to 10 per story)</li>
+          <li>Location (country, city)</li>
+          <li>Breed, age, habits & routines</li>
+          <li>Reactions & behaviour notes</li>
+        </ul>
+        <br>
+        <p style="color:var(--pb-text3)">Stories are public by default. You can set a story to private in settings.</p>
+      </div>
+    </div>
+  </aside>
+
 </div>
 
-<!-- CREATE MODAL -->
-<div id="pb-create-modal" onclick="if(event.target===this)closeCreate()">
-  <div class="pb-create-box">
-    <div style="font-size:16px;font-weight:800;margin-bottom:14px">📸 Create Story</div>
-    <div class="pb-create-preview" id="pb-cprev" onclick="document.getElementById('pb-cfile').click()">
-      📷
-      <input type="file" id="pb-cfile" accept="image/*" style="display:none" onchange="previewC(this)">
+<!-- ══════════════════════════════════════
+     CREATE STORY MODAL (5-Step Wizard)
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="storyFormModal" onclick="if(event.target.id==='storyFormModal')closeModal('storyFormModal')">
+<div class="modal">
+  <div class="modal-header">
+    <h3><i class="ti ti-paw" style="color:var(--pb-purple)"></i> Tell Your Pet's Story</h3>
+    <button class="modal-close" onclick="closeModal('storyFormModal')"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="modal-body">
+
+    <!-- Wizard steps -->
+    <div class="wizard-steps">
+      <div class="wizard-step active" id="ws1"><div class="ws-circle">1</div><div class="ws-label">Pet<br>Identity</div></div>
+      <div class="wizard-step" id="ws2"><div class="ws-circle">2</div><div class="ws-label">Personality<br>& Traits</div></div>
+      <div class="wizard-step" id="ws3"><div class="ws-circle">3</div><div class="ws-label">Daily<br>Life</div></div>
+      <div class="wizard-step" id="ws4"><div class="ws-circle">4</div><div class="ws-label">Social<br>Behaviour</div></div>
+      <div class="wizard-step" id="ws5"><div class="ws-circle">5</div><div class="ws-label">Photos<br>& Video</div></div>
     </div>
-    <input placeholder="Add a caption… 🐾" id="pb-ccap"
-      style="width:100%;height:42px;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;margin-bottom:12px;display:block">
-    <div style="display:flex;gap:8px">
-      <button onclick="closeCreate()"
-        style="flex:1;height:42px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Cancel</button>
-      <button onclick="publishStory()"
-        style="flex:2;height:42px;border-radius:10px;border:none;background:#1a4db3;color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Share Story</button>
+
+    <!-- STEP 1: Pet Identity -->
+    <div class="form-step active" id="step1">
+      <div class="form-section-title"><i class="ti ti-id-badge"></i> Pet Identity</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Pet Name <span class="req">*</span></label>
+          <input class="form-input" id="petName" placeholder="e.g. Simba, Luna, Rocky…">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pet Category <span class="req">*</span></label>
+          <select class="form-select" id="petCategory" onchange="onPetCategoryChange()">
+            <option value="">— Select —</option>
+            <option value="dog">🐕 Dog</option>
+            <option value="cat">🐱 Cat</option>
+            <option value="bird">🐦 Bird</option>
+            <option value="rabbit">🐰 Rabbit</option>
+            <option value="fish">🐠 Fish</option>
+            <option value="reptile">🦎 Reptile</option>
+            <option value="hamster">🐹 Hamster</option>
+            <option value="guinea_pig">🐹 Guinea Pig</option>
+            <option value="turtle">🐢 Turtle</option>
+            <option value="other">🐾 Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Breed <span class="req">*</span></label>
+          <select class="form-select" id="petBreed">
+            <option value="">— Select Category First —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gender</label>
+          <select class="form-select" id="petGender">
+            <option value="">— Select —</option>
+            <option value="male">♂ Male</option>
+            <option value="female">♀ Female</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Age</label>
+          <input class="form-input" id="petAge" placeholder="e.g. 2 years">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Colour / Coat</label>
+          <input class="form-input" id="petColor" placeholder="e.g. Golden, Black & White">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Weight (approx)</label>
+          <input class="form-input" id="petWeight" placeholder="e.g. 12 kg">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Country <span class="req">*</span></label>
+          <select class="form-select" id="formCountry" onchange="onFormCountryChange()">
+            <option value="">— Select Country —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">City <span class="req">*</span></label>
+          <select class="form-select" id="formCity" disabled>
+            <option value="">— Select Country First —</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Story Title <span class="req">*</span></label>
+        <input class="form-input" id="storyTitle" placeholder="Give your pet's story a catchy title…">
+        <div class="form-hint">e.g. "Simba — The Golden Who Thinks He's a Lap Dog"</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Short Introduction</label>
+        <textarea class="form-textarea" id="storyIntro" placeholder="A few lines about how you met your pet or what makes them special…" rows="3"></textarea>
+      </div>
     </div>
+
+    <!-- STEP 2: Personality & Traits -->
+    <div class="form-step" id="step2">
+      <div class="form-section-title"><i class="ti ti-sparkles"></i> Personality & Traits</div>
+
+      <div class="form-group">
+        <label class="form-label">Strengths — What is your pet great at? <span class="req">*</span></label>
+        <div class="chip-group" id="strengthChips">
+          <div class="chip chip-green" onclick="toggleChip(this)">🧠 Smart</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">💪 Strong</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🏃 Fast</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🤝 Loyal</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🎯 Obedient</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🤗 Affectionate</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🛡️ Protective</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🧘 Calm</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🤩 Entertaining</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🎪 Trainable</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🌟 Gentle</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🧩 Problem Solver</div>
+        </div>
+        <input class="form-input" style="margin-top:8px" id="strengthCustom" placeholder="Add custom strength…">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Weaknesses — What does your pet struggle with?</label>
+        <div class="chip-group" id="weaknessChips">
+          <div class="chip chip-red" onclick="toggleChip(this)">😰 Anxious</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">😤 Stubborn</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🏃 Hyperactive</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🙈 Shy</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🌧️ Hates Rain</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🔊 Noise-sensitive</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🐾 Chews Everything</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🏠 Separation Anxiety</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🚗 Car-sick</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🐕 Dog-reactive</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🧒 Not Kid-friendly</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🌙 Night Howler</div>
+        </div>
+        <input class="form-input" style="margin-top:8px" id="weaknessCustom" placeholder="Add custom weakness…">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">General Temperament</label>
+        <div class="chip-group" id="temperChips">
+          <div class="chip chip-pink" onclick="toggleChip(this)">😊 Friendly</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">⚡ Energetic</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">😌 Calm</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🔍 Curious</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🎾 Playful</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🦁 Bold</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🌸 Gentle</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🥰 Clingy</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">😤 Dominant</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🏆 Competitive</div>
+        </div>
+      </div>
+
+      <!-- Friendly vs Aggressive Slider -->
+      <div class="form-group">
+        <label class="form-label">Friendliness Scale</label>
+        <div class="slider-row">
+          <span class="slider-label-left">Aggressive</span>
+          <input type="range" class="range-input" id="friendlinessSlider" min="1" max="10" value="7" oninput="updateSlider('friendlinessSlider','friendlinessVal')">
+          <span class="slider-val" id="friendlinessVal">7</span>
+          <span class="slider-label-right">Friendly</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Energy Level</label>
+        <div class="slider-row">
+          <span class="slider-label-left">Lazy</span>
+          <input type="range" class="range-input" id="energySlider" min="1" max="10" value="6" oninput="updateSlider('energySlider','energyVal')">
+          <span class="slider-val" id="energyVal">6</span>
+          <span class="slider-label-right">Very Active</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Intelligence</label>
+        <div class="slider-row">
+          <span class="slider-label-left">Average</span>
+          <input type="range" class="range-input" id="intelligenceSlider" min="1" max="10" value="7" oninput="updateSlider('intelligenceSlider','intelligenceVal')">
+          <span class="slider-val" id="intelligenceVal">7</span>
+          <span class="slider-label-right">Genius</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Affection Level</label>
+        <div class="slider-row">
+          <span class="slider-label-left">Independent</span>
+          <input type="range" class="range-input" id="affectionSlider" min="1" max="10" value="8" oninput="updateSlider('affectionSlider','affectionVal')">
+          <span class="slider-val" id="affectionVal">8</span>
+          <span class="slider-label-right">Very Clingy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Daily Life -->
+    <div class="form-step" id="step3">
+      <div class="form-section-title"><i class="ti ti-clock"></i> Daily Life & Habits</div>
+
+      <div class="form-group">
+        <label class="form-label">Daily Routine <span class="req">*</span></label>
+        <textarea class="form-textarea" id="dailyRoutine" placeholder="Describe a typical day — wake up time, walks, naps, play time, bedtime…" rows="4"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Food Habits <span class="req">*</span></label>
+        <div class="form-row">
+          <div>
+            <label class="form-label" style="font-size:11px">Food Type</label>
+            <select class="form-select" id="foodType">
+              <option value="">— Select —</option>
+              <option value="dry">Dry Kibble</option>
+              <option value="wet">Wet / Canned Food</option>
+              <option value="raw">Raw / BARF Diet</option>
+              <option value="homemade">Home-cooked</option>
+              <option value="mixed">Mixed Diet</option>
+              <option value="veg">Vegetarian</option>
+              <option value="seeds">Seeds & Grains</option>
+              <option value="insects">Insects/Live food</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label" style="font-size:11px">Meals per Day</label>
+            <select class="form-select" id="mealsPerDay">
+              <option value="1">1 meal/day</option>
+              <option value="2" selected>2 meals/day</option>
+              <option value="3">3 meals/day</option>
+              <option value="free">Free feeding</option>
+            </select>
+          </div>
+        </div>
+        <textarea class="form-textarea" style="margin-top:8px" id="foodDetails" placeholder="Favourite foods, special treats, foods they absolutely refuse…" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Favourite Play & Activities <span class="req">*</span></label>
+        <div class="chip-group" id="playChips">
+          <div class="chip chip-amber" onclick="toggleChip(this)">🎾 Fetch</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🏃 Running</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🧸 Tug of War</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🧩 Puzzle Toys</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🌊 Swimming</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🌳 Hiking</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">😴 Cuddling</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🎪 Agility</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🐾 Chase</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🌿 Sniffing/Exploring</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🪃 Frisbee</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🎵 Music</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">📺 Watching TV</div>
+          <div class="chip chip-amber" onclick="toggleChip(this)">🌸 Sunbathing</div>
+        </div>
+        <input class="form-input" style="margin-top:8px" id="playCustom" placeholder="Describe favourite play in your own words…">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">What Does Your Pet Hate? 😤</label>
+        <div class="chip-group" id="hateChips">
+          <div class="chip chip-red" onclick="toggleChip(this)">🛁 Bath time</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🚗 Car rides</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🌧️ Rain</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🔊 Loud noises</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🏠 Being alone</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">👶 Babies</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🐱 Cats</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🐕 Other dogs</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">💊 Medicine</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">✂️ Grooming</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🌙 Night walks</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🧹 Vacuum cleaner</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🎃 Strangers in costume</div>
+          <div class="chip chip-red" onclick="toggleChip(this)">🎆 Fireworks</div>
+        </div>
+        <input class="form-input" style="margin-top:8px" id="hateCustom" placeholder="Anything else they strongly dislike?">
+      </div>
+    </div>
+
+    <!-- STEP 4: Social Behaviour -->
+    <div class="form-step" id="step4">
+      <div class="form-section-title"><i class="ti ti-users"></i> Social Behaviour</div>
+
+      <div class="form-group">
+        <label class="form-label">When Alone at Home <span class="req">*</span></label>
+        <div class="chip-group" id="aloneChips">
+          <div class="chip chip-purple" onclick="toggleChip(this)">😴 Sleeps peacefully</div>
+          <div class="chip chip-purple" onclick="toggleChip(this)">😰 Gets anxious</div>
+          <div class="chip chip-purple" onclick="toggleChip(this)">🗣️ Barks/Meows</div>
+          <div class="chip chip-purple" onclick="toggleChip(this)">🐾 Destroys things</div>
+          <div class="chip chip-purple" onclick="toggleChip(this)">🪟 Watches from window</div>
+          <div class="chip chip-purple" onclick="toggleChip(this)">🧸 Plays with toys</div>
+          <div class="chip chip-purple" onclick="toggleChip(this)">📺 Watches TV</div>
+          <div class="chip chip-purple" onclick="toggleChip(this)">🚪 Waits at the door</div>
+          <div class="chip chip-purple" onclick="toggleChip(this)">😌 Completely fine</div>
+        </div>
+        <textarea class="form-textarea" style="margin-top:8px" id="aloneDetails" placeholder="Tell us more about how they behave when left alone…" rows="2"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Behaviour in Public / Outdoors <span class="req">*</span></label>
+        <div class="chip-group" id="publicChips">
+          <div class="chip chip-teal" onclick="toggleChip(this)">😊 Calm & friendly</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">🤝 Greets everyone</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">😤 Pulls on leash</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">🙈 Hides behind owner</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">🔊 Barks at strangers</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">🏃 Tries to run off</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">🌸 Loves attention</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">🐕 Plays with other dogs</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">🌿 Sniffs everything</div>
+          <div class="chip chip-teal" onclick="toggleChip(this)">👀 Watches others</div>
+        </div>
+        <textarea class="form-textarea" style="margin-top:8px" id="publicDetails" placeholder="How do they behave in parks, streets, or public spaces?…" rows="2"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Reaction to New People in the Family / Home</label>
+        <div class="chip-group" id="newPersonChips">
+          <div class="chip chip-pink" onclick="toggleChip(this)">🤗 Instant best friends</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">👀 Cautious at first</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">⏳ Warms up slowly</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🚫 Protective/territorial</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🙈 Hides</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">😤 Growls/Hisses</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🐾 Sniffs & accepts</div>
+          <div class="chip chip-pink" onclick="toggleChip(this)">🎉 Excited & jumpy</div>
+        </div>
+        <textarea class="form-textarea" style="margin-top:8px" id="newPersonDetails" placeholder="Describe how your pet reacts when a new family member or visitor comes home…" rows="2"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Social Style — Best described as:</label>
+        <div class="form-row" style="gap:8px;margin-bottom:0">
+          <div class="chip-group" id="socialChips" style="gap:6px">
+            <div class="chip chip-green" onclick="toggleChipSingle('socialChips',this)">😊 Extrovert</div>
+            <div class="chip chip-purple" onclick="toggleChipSingle('socialChips',this)">🙈 Introvert</div>
+            <div class="chip chip-amber" onclick="toggleChipSingle('socialChips',this)">🔄 Ambivert</div>
+            <div class="chip chip-pink" onclick="toggleChipSingle('socialChips',this)">🦁 Pack Leader</div>
+            <div class="chip chip-teal" onclick="toggleChipSingle('socialChips',this)">🤝 Peacemaker</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Compatible With:</label>
+        <div class="chip-group" id="compatChips">
+          <div class="chip chip-green" onclick="toggleChip(this)">🧒 Kids</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">👴 Seniors</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🐕 Other Dogs</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🐱 Cats</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🏠 Apartment Life</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🌳 Outdoor Life</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🌍 Travelling</div>
+          <div class="chip chip-green" onclick="toggleChip(this)">🏢 Office Visits</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your Pet's Story — Share the Full Journey</label>
+        <textarea class="form-textarea" id="fullStory" placeholder="Share the full story — how you met, memorable moments, challenges, funny incidents, what they've taught you…" rows="5"></textarea>
+        <div class="form-hint">The more you share, the more memorable the story becomes.</div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Media Upload -->
+    <div class="form-step" id="step5">
+      <div class="form-section-title"><i class="ti ti-photo"></i> Photos & Videos</div>
+
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('mediaInput').click()" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragleave="this.classList.remove('dragover')">
+        <div class="upload-zone-icon">📸</div>
+        <div class="upload-zone-text">Click to upload photos & videos</div>
+        <div class="upload-zone-hint">JPG, PNG, GIF, MP4, MOV — up to 10 files, 50MB each</div>
+        <input type="file" id="mediaInput" multiple accept="image/*,video/*" style="display:none" onchange="handleMediaUpload(event)">
+      </div>
+
+      <div class="media-preview-grid" id="mediaPreviewGrid"></div>
+
+      <div style="margin-top:16px;padding:14px;background:var(--pb-purple-soft);border-radius:var(--pb-radius-sm)">
+        <div style="font-size:13px;font-weight:800;color:var(--pb-purple);margin-bottom:6px">📦 Database Storage</div>
+        <div style="font-size:12px;color:var(--pb-text2);line-height:1.6">
+          All uploaded media is stored securely in PawBook's media database. Files are associated with this pet story and can be accessed anytime from the story page. Up to 10 photos/videos per story.
+        </div>
+      </div>
+
+      <div style="margin-top:12px;padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:12px;color:var(--pb-text2)">
+        <strong>Story will be saved with:</strong>
+        <div style="margin-top:6px;display:flex;flex-direction:column;gap:3px" id="storyPreviewSummary">
+          <div>🐾 Pet: <span id="previewPetName" style="font-weight:700">—</span></div>
+          <div>📍 Location: <span id="previewLoc" style="font-weight:700">—</span></div>
+          <div>🏷️ Category: <span id="previewCat" style="font-weight:700">—</span></div>
+          <div>📸 Media: <span id="previewMedia" style="font-weight:700">0 files</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step Navigation -->
+    <div class="step-nav">
+      <button class="pb-btn pb-btn-gray" id="prevBtn" onclick="prevStep()" style="display:none"><i class="ti ti-arrow-left"></i> Back</button>
+      <button class="pb-btn pb-btn-purple" id="nextBtn" onclick="nextStep()">Next <i class="ti ti-arrow-right"></i></button>
+      <button class="pb-btn pb-btn-pink" id="submitBtn" onclick="submitStory()" style="display:none"><i class="ti ti-check"></i> Publish Story</button>
+    </div>
+
   </div>
 </div>
+</div>
+
+<!-- STORY DETAIL MODAL -->
+<div class="modal-overlay" id="storyDetailModal" onclick="if(event.target.id==='storyDetailModal')closeModal('storyDetailModal')">
+<div class="modal">
+  <div class="modal-header">
+    <h3 id="detailModalTitle">Pet Story</h3>
+    <button class="modal-close" onclick="closeModal('storyDetailModal')"><i class="ti ti-x"></i></button>
+  </div>
+  <div id="storyDetailContent"></div>
+  <div class="modal-footer">
+    <button class="pb-btn pb-btn-gray" onclick="closeModal('storyDetailModal')">Close</button>
+    <button class="pb-btn pb-btn-pink"><i class="ti ti-heart"></i> Like Story</button>
+    <button class="pb-btn pb-btn-purple"><i class="ti ti-share"></i> Share</button>
+  </div>
+</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="pb-bnav">
+  <button class="pb-bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
+  <button class="pb-bnav-item" onclick="location.href='39_adoption_matching.html'"><i class="ti ti-heart"></i><span>Adopt</span></button>
+  <button class="pb-bnav-fab" onclick="openStoryForm()"><i class="ti ti-plus"></i></button>
+  <button class="pb-bnav-item active"><i class="ti ti-book"></i><span>Stories</span></button>
+  <button class="pb-bnav-item" onclick="location.href='29_user_profile.html'"><i class="ti ti-user"></i><span>Profile</span></button>
+</nav>
 
 <script>
-// ── DATA ───────────────────────────────────────────────────────────────────────
-var STORIES = [
-  {user:'Bruno & Max',  avatar:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80',  img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=90',  caption:'Morning walk vibes 🐾',                  time:'2m ago',  seen:false},
-  {user:'Dr. Priya',   avatar:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80',  img:'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=800&q=90',  caption:'Vaccination drive today! Book now 🩺',  time:'15m ago', seen:false},
-  {user:'Luna & Cats', avatar:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80', img:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&q=90', caption:'Lazy Sunday 😸',                          time:'1h ago',  seen:true},
-  {user:'Delhi Pups',  avatar:'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=80&q=80', img:'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=800&q=90',  caption:'Dog park meetup this Sunday! 🎾',        time:'2h ago',  seen:true},
-  {user:'Hopeful Tails',avatar:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=80&q=80',  img:'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=800&q=90',  caption:'5 puppies need homes! Adopt today 🏠', time:'3h ago',  seen:false},
-  {user:'PawBook',     avatar:'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=80&q=80', img:'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800&q=90', caption:'Trending: Exotic pets care tips 🦎',     time:'5h ago',  seen:true},
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+
+const COUNTRIES = {
+  "India":["Mumbai","Delhi","Bengaluru","Hyderabad","Chennai","Kolkata","Pune","Ahmedabad","Jaipur","Lucknow","Chandigarh","Kochi"],
+  "United States":["New York","Los Angeles","Chicago","Houston","Phoenix","Philadelphia","San Antonio","San Diego","Dallas","San Jose"],
+  "United Kingdom":["London","Manchester","Birmingham","Leeds","Glasgow","Liverpool","Bristol","Edinburgh","Sheffield","Cardiff"],
+  "United Arab Emirates":["Dubai","Abu Dhabi","Sharjah","Ajman","Ras Al Khaimah"],
+  "Australia":["Sydney","Melbourne","Brisbane","Perth","Adelaide","Gold Coast","Canberra","Hobart"],
+  "Canada":["Toronto","Vancouver","Montreal","Calgary","Ottawa","Edmonton","Winnipeg","Quebec City"],
+  "Germany":["Berlin","Munich","Hamburg","Frankfurt","Cologne","Stuttgart","Düsseldorf","Leipzig"],
+  "Singapore":["Singapore"],
+  "Japan":["Tokyo","Osaka","Kyoto","Yokohama","Nagoya","Fukuoka","Sapporo"],
+  "France":["Paris","Lyon","Marseille","Toulouse","Nice","Bordeaux","Strasbourg"],
+  "Brazil":["São Paulo","Rio de Janeiro","Brasília","Salvador","Fortaleza","Curitiba"],
+  "South Africa":["Cape Town","Johannesburg","Durban","Pretoria","Port Elizabeth"]
+};
+
+const BREEDS = {
+  dog:["Indian Pariah (Indie)","Labrador Retriever","German Shepherd","Golden Retriever","Beagle","Pug","Rottweiler","Dobermann","Dachshund","Boxer","Siberian Husky","Border Collie","Shih Tzu","French Bulldog","Poodle","Maltese","Great Dane","Cocker Spaniel","Bulldog","Dalmatian","Rajapalayam","Mudhol Hound","Chippiparai","Kombai","Mixed/Other"],
+  cat:["Indian Street Cat (Desi)","Persian","Siamese","Maine Coon","Bengal","Ragdoll","British Shorthair","Scottish Fold","Abyssinian","Burmese","Russian Blue","Sphynx","Norwegian Forest","American Shorthair","Mixed/Other"],
+  bird:["Budgerigar","African Grey","Amazon Parrot","Cockatiel","Lovebird","Macaw","Cockatoo","Finch","Canary","Indian Ringneck","Sun Conure","Myna","Mixed/Other"],
+  rabbit:["Holland Lop","Lionhead","Dutch","Rex","Flemish Giant","Mini Rex","Angora","Californian","New Zealand","Mixed/Other"],
+  fish:["Goldfish","Betta","Guppy","Tetra","Molly","Platy","Cichlid","Koi","Oscar","Angelfish","Clownfish","Mixed/Other"],
+  reptile:["Bearded Dragon","Leopard Gecko","Ball Python","Corn Snake","Blue-tongued Skink","Red-eared Slider","Iguana","Crested Gecko","Mixed/Other"],
+  hamster:["Syrian","Dwarf Campbell","Winter White","Chinese","Roborovski","Mixed/Other"],
+  guinea_pig:["American","Peruvian","Abyssinian","Silkie","Teddy","Mixed/Other"],
+  turtle:["Red-eared Slider","Painted Turtle","Box Turtle","Russian Tortoise","Mixed/Other"],
+  other:["Mixed/Unknown"]
+};
+
+const EMOJI = { dog:"🐕",cat:"🐱",bird:"🐦",rabbit:"🐰",fish:"🐠",reptile:"🦎",hamster:"🐹",guinea_pig:"🐹",turtle:"🐢",other:"🐾" };
+
+// Real pet photos — Unsplash Source (open licence, no API key needed)
+// Format: https://images.unsplash.com/photo-{ID}?w=400&h=300&fit=crop&auto=format
+const PET_PHOTOS = {
+  // Dogs
+  "Labrador Retriever": [
+    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1534361960057-19f4434a1888?w=400&h=300&fit=crop&auto=format"
+  ],
+  "German Shepherd": [
+    "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1546527868-ccb7ee7dfa6a?w=400&h=300&fit=crop&auto=format"
+  ],
+  "Golden Retriever": [
+    "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=400&h=300&fit=crop&auto=format"
+  ],
+  "Beagle": [
+    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=300&fit=crop&auto=format"
+  ],
+  "Rottweiler": [
+    "https://images.unsplash.com/photo-1567752881298-894bb81f9379?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1612774412771-005ed8e861d2?w=400&h=300&fit=crop&auto=format"
+  ],
+  "Indian Pariah (Indie)": [
+    "https://images.unsplash.com/photo-1612774412771-005ed8e861d2?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=300&fit=crop&auto=format"
+  ],
+  // Cats
+  "Persian": [
+    "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=300&fit=crop&auto=format"
+  ],
+  "Bengal": [
+    "https://images.unsplash.com/photo-1555990538-c88a3fa7c47d?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=300&fit=crop&auto=format"
+  ],
+  "Siamese": [
+    "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=400&h=300&fit=crop&auto=format"
+  ],
+  // Birds
+  "Indian Ringneck": [
+    "https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1486365227551-f3f90034a57c?w=400&h=300&fit=crop&auto=format"
+  ],
+  "Budgerigar": [
+    "https://images.unsplash.com/photo-1486365227551-f3f90034a57c?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=400&h=300&fit=crop&auto=format"
+  ],
+  // Rabbits
+  "Holland Lop": [
+    "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&h=300&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1535241749838-299277b6305f?w=400&h=300&fit=crop&auto=format"
+  ],
+  // Fallbacks by category
+  "dog": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=300&fit=crop&auto=format",
+  "cat": "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=300&fit=crop&auto=format",
+  "bird": "https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=400&h=300&fit=crop&auto=format",
+  "rabbit": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&h=300&fit=crop&auto=format",
+  "fish": "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=400&h=300&fit=crop&auto=format",
+  "reptile": "https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=400&h=300&fit=crop&auto=format",
+  "hamster": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=400&h=300&fit=crop&auto=format",
+  "other": "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=300&fit=crop&auto=format"
+};
+
+function getPhotoUrl(breed, category) {
+  const breedPhotos = PET_PHOTOS[breed];
+  if (breedPhotos) return Array.isArray(breedPhotos) ? breedPhotos[0] : breedPhotos;
+  return PET_PHOTOS[category] || PET_PHOTOS["dog"];
+}
+
+function getPhotoGallery(breed, category, count) {
+  const photos = [];
+  const breedPhotos = PET_PHOTOS[breed];
+  const fallback = PET_PHOTOS[category] || PET_PHOTOS["dog"];
+  for (let i = 0; i < Math.min(count, 4); i++) {
+    if (breedPhotos && Array.isArray(breedPhotos) && breedPhotos[i]) {
+      photos.push(breedPhotos[i]);
+    } else {
+      // vary the seed for different crops of fallback
+      photos.push(fallback.replace('w=400', `w=${400+i*10}`));
+    }
+  }
+  return photos;
+}
+
+// Demo stories data
+const STORIES = [
+  {id:1,petName:"Simba",category:"dog",breed:"Labrador Retriever",gender:"male",age:"3 years",color:"Golden",weight:"32 kg",country:"India",city:"Mumbai",ownerName:"Priya Sharma",storyTitle:"Simba — The Golden Who Stole Everyone's Heart",intro:"Simba came to us as an 8-week-old puppy and immediately took over the entire house.",strengths:["Loyal","Affectionate","Trainable"],weaknesses:["Separation Anxiety","Chews Everything"],temperament:["Friendly","Energetic","Playful"],friendliness:9,energy:8,intelligence:8,affection:10,favouritePlay:["Fetch","Running","Swimming"],hates:["Bath time","Being alone"],alone:"Gets anxious and waits at the door",inPublic:"Greets everyone — absolute social butterfly",newPerson:"Instant best friends with everyone",compatible:["Kids","Other Dogs","Travelling"],story:"Simba has been the soul of our family for 3 years. He greets every visitor with his tail wagging so hard it nearly knocks things over. He's afraid of absolutely nothing — except the vacuum cleaner. At the dog park, he's the mayor. Everyone knows Simba.",mediaCount:4,hasVideo:true,likes:142,bookmarks:28,featured:true},
+  {id:2,petName:"Luna",category:"cat",breed:"Persian",gender:"female",age:"5 years",color:"White",weight:"4 kg",country:"India",city:"Bengaluru",ownerName:"Arjun Nair",storyTitle:"Luna — The Queen Who Rules with Grace",intro:"Luna arrived as a rescue kitten and has since decided she owns every room.",strengths:["Calm","Gentle","Intelligent"],weaknesses:["Stubborn","Not Kid-friendly"],temperament:["Calm","Curious"],friendliness:5,energy:3,intelligence:9,affection:7,favouritePlay:["Puzzle Toys","Sunbathing","Watching TV"],hates:["Loud noises","Babies","Strangers in costume"],alone:"Sleeps peacefully — completely unbothered",inPublic:"Watches others from a safe distance",newPerson:"Cautious at first, warms up slowly",compatible:["Seniors","Apartment Life"],story:"Luna operates on her own schedule and by her own rules. She judges visitors silently from the top shelf. She'll come to you when she wants affection — and only then. Five years in, she still makes us earn every purr.",mediaCount:6,hasVideo:false,likes:98,bookmarks:41,featured:true},
+  {id:3,petName:"Rocky",category:"dog",breed:"German Shepherd",gender:"male",age:"2 years",color:"Black & Tan",weight:"28 kg",country:"India",city:"Delhi",ownerName:"Rohit Verma",storyTitle:"Rocky — The Guardian With a Golden Heart",intro:"Rocky is proof that the best security system also loves belly rubs.",strengths:["Protective","Smart","Loyal"],weaknesses:["Dog-reactive","Dominant"],temperament:["Bold","Dominant","Energetic"],friendliness:6,energy:9,intelligence:10,affection:7,favouritePlay:["Agility","Chase","Frisbee"],hates:["Fireworks","Other dogs"],alone:"Watches from window, calm and alert",inPublic:"Protective, stays close to owner",newPerson:"Cautious — sniffs and assesses carefully",compatible:["Outdoor Life","Travelling"],story:"Rocky knows every corner of our neighbourhood on patrol. He's the dog other dogs respect and the dog the kids in our building adore (once he decides they're safe). Training him was the most rewarding challenge of my life.",mediaCount:3,hasVideo:true,likes:76,bookmarks:19,featured:false},
+  {id:4,petName:"Mango",category:"bird",breed:"Indian Ringneck",gender:"male",age:"4 years",color:"Green",weight:"130 g",country:"India",city:"Chennai",ownerName:"Kavitha Rajan",storyTitle:"Mango — The Bird Who Learned to Say 'Chai Peelo'",intro:"Mango has a vocabulary of 40+ words and an opinion on everything.",strengths:["Entertaining","Smart","Problem Solver"],weaknesses:["Noise-sensitive","Stubborn"],temperament:["Curious","Energetic","Bold"],friendliness:7,energy:8,intelligence:10,affection:6,favouritePlay:["Music","Puzzle Toys","Watching TV"],hates:["Vacuum cleaner","Night walks","Grooming"],alone:"Talks to himself — full conversations",inPublic:"Only outside on a harness — very observant",newPerson:"Curious, says hello immediately",compatible:["Apartment Life","Seniors"],story:"Mango greets me every morning with 'good morning Kavitha' and has been doing this for 2 years. He learned 'Chai Peelo' from watching us and now shouts it at 4pm every day. He's also figured out how to open his own cage door.",mediaCount:5,hasVideo:true,likes:189,bookmarks:62,featured:true},
+  {id:5,petName:"Buddy",category:"dog",breed:"Beagle",gender:"male",age:"1 year",color:"Tricolor",weight:"10 kg",country:"United Kingdom",city:"London",ownerName:"James Wilson",storyTitle:"Buddy — The Nose on Four Legs",intro:"Buddy has followed his nose into every corner of Hyde Park and several neighbours' gardens.",strengths:["Curious","Entertaining","Energetic"],weaknesses:["Stubborn","Hyperactive","Chews Everything"],temperament:["Curious","Playful","Energetic"],friendliness:9,energy:10,intelligence:7,affection:8,favouritePlay:["Sniffing/Exploring","Running","Chase"],hates:["Being alone","Bath time","Grooming"],alone:"Howls for the first 20 minutes, then naps",inPublic:"Greets everyone — nose leads the way",newPerson:"Instant best friends",compatible:["Kids","Other Dogs","Outdoor Life"],story:"Buddy has the nose of a bloodhound and the attention span of a goldfish. Every walk is a 45-minute investigation. He's stolen socks from 3 different homes, made friends with every dog in zone 1, and learned that if he looks sad enough, someone will give him a treat.",mediaCount:2,hasVideo:false,likes:54,bookmarks:13,featured:false},
+  {id:6,petName:"Zara",category:"cat",breed:"Bengal",gender:"female",age:"2 years",color:"Spotted Brown",weight:"5 kg",country:"United Arab Emirates",city:"Dubai",ownerName:"Fatima Al-Hassan",storyTitle:"Zara — Wild Heart in an Apartment",intro:"Zara runs the apartment like her personal jungle.",strengths:["Energetic","Curious","Entertaining"],weaknesses:["Hyperactive","Not Kid-friendly","Chews Everything"],temperament:["Bold","Curious","Energetic"],friendliness:6,energy:10,intelligence:9,affection:5,favouritePlay:["Chase","Puzzle Toys","Fetch"],hates:["Being alone","Grooming","Medicine"],alone:"Destroys things — needs cat enrichment",inPublic:"Curious, watches everything from carrier",newPerson:"Hides first, investigates from safe distance",compatible:["Apartment Life"],story:"Zara came to Dubai from a Bengal breeder and immediately claimed every surface above 2 metres. She leaps between furniture like it's a parkour course, hunts imaginary prey at 3am, and brings toy mice to my pillow as gifts. She's exhausting and I love her completely.",mediaCount:7,hasVideo:true,likes:112,bookmarks:35,featured:false},
+  {id:7,petName:"Bruno",category:"dog",breed:"Rottweiler",gender:"male",age:"4 years",color:"Black & Mahogany",weight:"45 kg",country:"Germany",city:"Munich",ownerName:"Klaus Müller",storyTitle:"Bruno — The Gentle Giant",intro:"Bruno is 45kg of pure love who thinks he's a lapdog.",strengths:["Loyal","Protective","Gentle"],weaknesses:["Stubborn","Dominant"],temperament:["Calm","Protective","Gentle"],friendliness:7,energy:6,intelligence:8,affection:9,favouritePlay:["Fetch","Hiking","Cuddling"],hates:["Fireworks","Strangers approaching fast"],alone:"Calm — sleeps peacefully",inPublic:"Alert, controlled, stays close",newPerson:"Waits for owner's cue, then calm",compatible:["Outdoor Life","Travelling"],story:"People see Bruno and cross the street. What they're missing is the most affectionate dog you'll ever meet. He greets me after a 2-minute absence like I've returned from war. He learned the word 'treat' in German, English, and apparently Turkish from our neighbour.",mediaCount:3,hasVideo:false,likes:67,bookmarks:22,featured:false},
+  {id:8,petName:"Coco",category:"rabbit",breed:"Holland Lop",gender:"female",age:"3 years",color:"Brown & White",weight:"1.8 kg",country:"Australia",city:"Sydney",ownerName:"Emma Clarke",storyTitle:"Coco — The Rabbit Who Does Zoomies at Midnight",intro:"Coco is the most surprisingly energetic 1.8kg creature you'll ever meet.",strengths:["Entertaining","Curious","Gentle"],weaknesses:["Shy","Night Howler"],temperament:["Curious","Playful","Shy"],friendliness:7,energy:8,intelligence:7,affection:6,favouritePlay:["Sniffing/Exploring","Chase","Sunbathing"],hates:["Strangers in costume","Loud noises","Grooming"],alone:"Completely fine — explores the pen",inPublic:"Curious in carrier — nose always twitching",newPerson:"Hides first, peeks out after 10 minutes",compatible:["Apartment Life","Seniors"],story:"Coco does binkies — those joyful rabbit jumps — every time I open the vegetable drawer. At midnight, she does full zoomies around her enclosure for exactly 20 minutes and then passes out. She has never once been on time to do anything. She is perfect.",mediaCount:4,hasVideo:true,likes:88,bookmarks:30,featured:false}
 ];
 
-var curIdx = 0, svTimer = null;
+let currentView = 'grid';
+let currentStep = 1;
+let totalSteps = 5;
+let uploadedMedia = [];
+let filteredStories = [...STORIES];
 
-// ── RENDER ─────────────────────────────────────────────────────────────────────
-function renderAll() { renderCircles(); renderGrid(); }
-
-function renderCircles() {
-  var row = document.getElementById('pb-circles');
-  if (!row) return;
-  var html = '';
-
-  // Add Story button
-  html += '<div class="pb-story-ci" onclick="openCreate()" style="cursor:pointer">' +
-    '<div class="pb-add-circle">🐾<div class="pb-add-plus">+</div></div>' +
-    '<div class="pb-story-ci-name">Add Story</div>' +
-  '</div>';
-
-  // Story circles
-  for (var i = 0; i < STORIES.length; i++) {
-    var s = STORIES[i];
-    html += '<div class="pb-story-ci" onclick="openSV(' + i + ')" style="cursor:pointer">' +
-      '<div class="pb-story-ring' + (s.seen ? ' seen' : '') + '">' +
-        '<div class="pb-story-ring-inner">' +
-          '<img src="' + s.avatar + '" alt="' + s.user + '">' +
-        '</div>' +
-      '</div>' +
-      '<div class="pb-story-ci-name">' + s.user.split(' ')[0] + '</div>' +
-    '</div>';
-  }
-  row.innerHTML = html;
-}
-
-function renderGrid() {
-  var grid = document.getElementById('pb-grid');
-  if (!grid) return;
-  var html = '';
-  for (var i = 0; i < STORIES.length; i++) {
-    var s = STORIES[i];
-    html +=
-      '<div class="pb-story-card" onclick="openSV(' + i + ')">' +
-        '<img class="pb-story-card-img" src="' + s.img + '" alt="' + s.user + '">' +
-        '<div class="pb-story-card-overlay"></div>' +
-        '<div class="pb-sc-av' + (s.seen ? ' seen' : '') + '">' +
-          '<img src="' + s.avatar + '" alt="">' +
-        '</div>' +
-        '<div class="pb-sc-name">' + s.user + '</div>' +
-        (!s.seen ? '<div class="pb-sc-dot"></div>' : '') +
-      '</div>';
-  }
-  grid.innerHTML = html;
-}
-
-// ── VIEWER ─────────────────────────────────────────────────────────────────────
-function openSV(idx) {
-  curIdx = idx;
-  document.getElementById('pb-viewer').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  showSV(idx);
-}
-
-function showSV(idx) {
-  if (idx < 0 || idx >= STORIES.length) { closeSV(); return; }
-  curIdx = idx;
-  var s = STORIES[idx];
-  STORIES[idx].seen = true;
-
-  document.getElementById('pb-sv-img').src = s.img;
-  document.getElementById('pb-av').src = s.avatar;
-  document.getElementById('pb-uname').textContent = s.user;
-  document.getElementById('pb-utime').textContent = s.time;
-  document.getElementById('pb-cap').textContent = s.caption;
-
-  // Progress bars
-  var bars = '';
-  for (var i = 0; i < STORIES.length; i++) {
-    bars += '<div class="pb-sv-bar"><div class="pb-sv-fill' + (i < idx ? ' done' : '') + '" id="pbf' + i + '"></div></div>';
-  }
-  document.getElementById('pb-prog').innerHTML = bars;
-
-  // Animate bar
-  clearTimeout(svTimer);
-  var fill = document.getElementById('pbf' + idx);
-  if (fill) {
-    fill.style.transition = 'none';
-    fill.style.width = '0';
-    fill.offsetWidth; // force reflow
-    fill.style.transition = 'width 5s linear';
-    fill.style.width = '100%';
-    svTimer = setTimeout(function() { nextSV(); }, 5000);
-  }
-}
-
-function nextSV() {
-  if (curIdx < STORIES.length - 1) showSV(curIdx + 1);
-  else closeSV();
-}
-function prevSV() {
-  if (curIdx > 0) showSV(curIdx - 1);
-}
-function closeSV() {
-  clearTimeout(svTimer);
-  document.getElementById('pb-viewer').style.display = 'none';
-  document.body.style.overflow = '';
-  renderAll(); // refresh seen state
-}
-
-function floatE(emoji) {
-  var area = document.querySelector('.pb-sv-img-area');
-  if (!area) return;
-  var el = document.createElement('div');
-  el.textContent = emoji;
-  el.style.cssText = 'position:absolute;bottom:60px;left:50%;transform:translateX(-50%);font-size:36px;z-index:20;pointer-events:none;animation:pb-float 1s ease-out forwards';
-  area.appendChild(el);
-  setTimeout(function() { el.remove(); }, 1000);
-}
-
-// Keyboard
-document.addEventListener('keydown', function(e) {
-  var v = document.getElementById('pb-viewer');
-  if (!v || v.style.display !== 'flex') return;
-  if (e.key === 'ArrowRight') nextSV();
-  else if (e.key === 'ArrowLeft') prevSV();
-  else if (e.key === 'Escape') closeSV();
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  initCountryDropdowns();
+  renderStories(STORIES);
+  renderFeatured();
+  updatePreview();
 });
 
-// Click outside viewer to close
-document.getElementById('pb-viewer').addEventListener('click', function(e) {
-  if (e.target === this) closeSV();
-});
-
-// ── CREATE STORY ───────────────────────────────────────────────────────────────
-var newImg = '';
-
-function openCreate() {
-  document.getElementById('pb-create-modal').style.display = 'flex';
-}
-function closeCreate() {
-  document.getElementById('pb-create-modal').style.display = 'none';
-  document.getElementById('pb-cprev').innerHTML = '📷<input type="file" id="pb-cfile" accept="image/*" style="display:none" onchange="previewC(this)">';
-  document.getElementById('pb-ccap').value = '';
-  newImg = '';
-}
-function previewC(input) {
-  if (!input.files || !input.files[0]) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    newImg = e.target.result;
-    document.getElementById('pb-cprev').innerHTML =
-      '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;display:block">' +
-      '<input type="file" id="pb-cfile" accept="image/*" style="display:none" onchange="previewC(this)">';
-  };
-  reader.readAsDataURL(input.files[0]);
-}
-async function publishStory() {
-  var cap = document.getElementById('pb-ccap').value.trim() || 'New story 🐾';
-  var fileInp = document.getElementById('pb-cfile');
-  var btn = document.querySelector('[onclick="publishStory()"]');
-  if(btn){btn.textContent='Sharing…';btn.disabled=true;}
-
-  var mediaUrl = newImg || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=90';
-  var mediaType = 'image';
-
-  // Upload to Cloudinary if a file was selected
-  if(fileInp && fileInp.files && fileInp.files[0] && typeof uploadToCloudinaryDirect === 'function'){
-    try{
-      var result = await uploadToCloudinaryDirect(fileInp.files[0]);
-      mediaUrl = result.secure_url;
-      mediaType = fileInp.files[0].type.startsWith('video') ? 'video' : 'image';
-    }catch(e){ console.warn('Cloudinary upload failed, using preview URL'); }
-  }
-
-  // Add to local display immediately
-  STORIES.unshift({
-    user:'You', seen:false, time:'Just now',
-    avatar: (Auth&&Auth.getUser&&Auth.getUser()&&Auth.getUser().avatar_url) || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80',
-    img: mediaUrl,
-    caption: cap
+function initCountryDropdowns() {
+  const countryIds = ['locCountry','fCountry','formCountry'];
+  countryIds.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    Object.keys(COUNTRIES).sort().forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      sel.appendChild(opt);
+    });
   });
-  closeCreate();
-  renderAll();
-  if(btn){btn.textContent='Share Story';btn.disabled=false;}
-  toast('✅ Story shared!', 'success');
+}
 
-  // Sync to backend
-  var token = getToken ? getToken() : localStorage.getItem('pb_token');
-  if(token){
-    fetch(API_BASE+'/stories', {
-      method:'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ caption: cap, media_url: mediaUrl, media_type: mediaType })
-    }).catch(function(){});
+// ═══════════════════════════════════════
+// LOCATION CASCADES
+// ═══════════════════════════════════════
+function populateCities(countrySelId, citySelId) {
+  const country = document.getElementById(countrySelId).value;
+  const citySel = document.getElementById(citySelId);
+  citySel.innerHTML = '<option value="">— All Cities —</option>';
+  citySel.disabled = !country;
+  if (country && COUNTRIES[country]) {
+    COUNTRIES[country].forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      citySel.appendChild(opt);
+    });
   }
 }
 
-// ── INIT ───────────────────────────────────────────────────────────────────────
-renderAll();
+function onLocCountryChange() { populateCities('locCountry','locCity'); filterStories(); }
+function onFilterCountryChange() { populateCities('fCountry','fCity'); filterStories(); }
+function onFormCountryChange() {
+  const country = document.getElementById('formCountry').value;
+  const citySel = document.getElementById('formCity');
+  citySel.innerHTML = '<option value="">— Select City —</option>';
+  citySel.disabled = !country;
+  if (country && COUNTRIES[country]) {
+    COUNTRIES[country].forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      citySel.appendChild(opt);
+    });
+  }
+}
+
+function onPetCategoryChange() {
+  const cat = document.getElementById('petCategory').value;
+  const breedSel = document.getElementById('petBreed');
+  breedSel.innerHTML = '<option value="">— Select Breed —</option>';
+  if (cat && BREEDS[cat]) {
+    BREEDS[cat].forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b; opt.textContent = b;
+      breedSel.appendChild(opt);
+    });
+    // Also update filter breed dropdown
+    updateFilterBreeds(cat);
+  }
+}
+
+function updateFilterBreeds(cat) {
+  const sel = document.getElementById('fBreed');
+  sel.innerHTML = '<option value="">All Breeds</option>';
+  if (cat && BREEDS[cat]) {
+    BREEDS[cat].forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b; opt.textContent = b;
+      sel.appendChild(opt);
+    });
+  }
+}
+
+// ═══════════════════════════════════════
+// FILTER & RENDER
+// ═══════════════════════════════════════
+function filterStories(searchText) {
+  const country = document.getElementById('fCountry').value || document.getElementById('locCountry').value;
+  const city = document.getElementById('fCity').value || document.getElementById('locCity').value;
+  const category = document.getElementById('fCategory').value;
+  const breed = document.getElementById('fBreed').value;
+  const temper = document.getElementById('fTemper').value;
+  const sort = document.getElementById('fSort').value;
+  const q = searchText !== undefined ? searchText : (document.querySelector('.pb-nav-search input')?.value || '');
+
+  let result = STORIES.filter(s => {
+    if (country && s.country !== country) return false;
+    if (city && s.city !== city) return false;
+    if (category && s.category !== category) return false;
+    if (breed && s.breed !== breed) return false;
+    if (temper && !s.temperament.map(t=>t.toLowerCase()).some(t=>t.includes(temper))) return false;
+    if (q) {
+      const lq = q.toLowerCase();
+      if (!s.petName.toLowerCase().includes(lq) && !s.breed.toLowerCase().includes(lq) && !s.storyTitle.toLowerCase().includes(lq) && !s.city.toLowerCase().includes(lq)) return false;
+    }
+    return true;
+  });
+
+  if (sort === 'popular') result.sort((a,b) => b.likes - a.likes);
+  else if (sort === 'az') result.sort((a,b) => a.petName.localeCompare(b.petName));
+  else result.sort((a,b) => b.id - a.id);
+
+  filteredStories = result;
+  renderStories(result);
+}
+
+function filterByTab(tab) {
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  event.target.closest('.sidebar-link').classList.add('active');
+  if (tab === 'all') { document.getElementById('fCategory').value = ''; filterStories(); return; }
+  if (tab === 'dogs') { document.getElementById('fCategory').value = 'dog'; }
+  else if (tab === 'cats') { document.getElementById('fCategory').value = 'cat'; }
+  else if (tab === 'birds') { document.getElementById('fCategory').value = 'bird'; }
+  else if (tab === 'rabbits') { document.getElementById('fCategory').value = 'rabbit'; }
+  else if (tab === 'exotic') { document.getElementById('fCategory').value = 'fish'; }
+  filterStories();
+}
+
+function filterByTag(tag) { document.querySelector('.pb-nav-search input').value = tag; filterStories(tag); }
+
+function renderStories(list) {
+  const grid = document.getElementById('storiesGrid');
+  const listEl = document.getElementById('storiesList');
+  grid.innerHTML = '';
+  listEl.innerHTML = '';
+  if (!list.length) {
+    const e = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🔍</div><h3>No stories found</h3><p>Try different filters or be the first to share a story from this location!</p><button class="pb-btn pb-btn-pink" onclick="openStoryForm()"><i class="ti ti-plus"></i> Share a Story</button></div>`;
+    grid.innerHTML = e;
+    return;
+  }
+  list.forEach(s => {
+    grid.innerHTML += buildGridCard(s);
+    listEl.innerHTML += buildListCard(s);
+  });
+}
+
+function buildGridCard(s) {
+  const em = EMOJI[s.category] || '🐾';
+  const tagHtml = s.temperament.slice(0,2).map(t => {
+    const tc = t.toLowerCase().includes('friendly')?'friendly':t.toLowerCase().includes('aggressive')?'aggressive':t.toLowerCase().includes('shy')?'shy':t.toLowerCase().includes('playful')?'playful':t.toLowerCase().includes('calm')?'calm':t.toLowerCase().includes('curious')?'curious':'energetic';
+    return `<span class="sc-tag tag-${tc}">${t}</span>`;
+  }).join('');
+  return `
+  <div class="story-card" onclick="openStoryDetail(${s.id})">
+    <div class="sc-media">
+      ${s.photoUrl||getPhotoUrl(s.breed,s.category)?`<img src="${s.photoUrl||getPhotoUrl(s.breed,s.category)}" alt="${s.petName}" loading="lazy">`:`<div class="sc-media-placeholder">${em}</div>`}
+      <span class="sc-category-badge">${s.category}</span>
+      ${s.mediaCount>0?`<span class="sc-media-count"><i class="ti ti-camera" style="font-size:11px"></i> ${s.mediaCount}${s.hasVideo?' 🎬':''}</span>`:''}
+    </div>
+    <div class="sc-body">
+      <div class="sc-pet-name">${em} ${s.petName} <span class="badge badge-${s.friendliness>=7?'green':s.friendliness>=5?'amber':'red'}" style="font-size:10px">${s.friendliness>=7?'Friendly':s.friendliness>=5?'Neutral':'Aggressive'}</span></div>
+      <div class="sc-meta"><span>${s.breed}</span><span class="sc-meta-dot"></span><span>${s.age}</span><span class="sc-meta-dot"></span><span>📍 ${s.city}, ${s.country}</span></div>
+      <div class="sc-tags">${tagHtml}</div>
+      <div class="sc-excerpt">${s.storyTitle}</div>
+      <div class="sc-footer">
+        <div class="sc-owner">
+          <div class="sc-owner-avatar">${s.ownerName[0]}</div>
+          <div class="sc-owner-info"><div class="sc-owner-name">${s.ownerName}</div><div class="sc-owner-loc">${s.city}</div></div>
+        </div>
+        <div class="sc-actions">
+          <button class="sc-action-btn" onclick="event.stopPropagation();toggleLike(this,${s.id})"><i class="ti ti-heart"></i></button>
+          <button class="sc-action-btn" onclick="event.stopPropagation()"><i class="ti ti-bookmark"></i></button>
+          <button class="sc-action-btn" onclick="event.stopPropagation()"><i class="ti ti-share"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildListCard(s) {
+  const em = EMOJI[s.category] || '🐾';
+  return `
+  <div class="story-list-card" onclick="openStoryDetail(${s.id})">
+    <div class="slc-thumb">${s.photoUrl||getPhotoUrl(s.breed,s.category)?`<img src="${s.photoUrl||getPhotoUrl(s.breed,s.category)}" alt="${s.petName}" loading="lazy">`:`${em}`}</div>
+    <div class="slc-body">
+      <div class="slc-name">${em} ${s.petName} <span class="badge badge-${s.friendliness>=7?'green':'amber'}" style="font-size:10px">${s.breed}</span></div>
+      <div class="slc-meta">📍 ${s.city}, ${s.country} · ${s.age} · ${s.temperament.join(', ')}</div>
+      <div class="slc-excerpt">${s.storyTitle}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+      <span style="font-size:12px;color:var(--pb-pink);font-weight:700">❤️ ${s.likes}</span>
+      ${s.mediaCount>0?`<span style="font-size:11px;color:var(--pb-text3)">📸 ${s.mediaCount}</span>`:''}
+    </div>
+  </div>`;
+}
+
+function renderFeatured() {
+  const list = document.getElementById('featuredList');
+  if (!list) return;
+  list.innerHTML = '<div class="fs-label">Most Liked This Week</div>';
+  STORIES.filter(s=>s.featured).forEach(s=>{
+    const em = EMOJI[s.category]||'🐾';
+    const ph = getPhotoUrl(s.breed,s.category);
+    list.innerHTML += `<div class="fs-item" onclick="openStoryDetail(${s.id})"><div class="fs-thumb">${ph?`<img src="${ph}" alt="${s.petName}" loading="lazy">`:`${em}`}</div><div><div class="fs-name">${s.petName}</div><div class="fs-sub">${s.breed} · ${s.city} · ❤️ ${s.likes}</div></div></div>`;
+  });
+}
+
+// ═══════════════════════════════════════
+// STORY DETAIL
+// ═══════════════════════════════════════
+function openStoryDetail(id) {
+  const s = STORIES.find(x=>x.id===id);
+  if (!s) return;
+  document.getElementById('detailModalTitle').textContent = s.petName + "'s Story";
+  const em = EMOJI[s.category]||'🐾';
+  const tagHtml = s.temperament.map(t=>`<span class="sdh-tag">${t}</span>`).join('');
+  const content = `
+  <div class="story-detail-hero" style="position:relative;overflow:hidden">
+    ${(()=>{const ph=s.photoUrl||getPhotoUrl(s.breed,s.category);return ph?`<div style="position:absolute;inset:0;background-image:url('${ph}');background-size:cover;background-position:center;filter:brightness(.45)"></div>`:'';})()}
+    <div style="position:relative;z-index:1;font-size:36px;margin-bottom:8px">${em}</div>
+    <div class="sdh-pet-name" style="position:relative;z-index:1">${s.petName}</div>
+    <div class="sdh-meta" style="position:relative;z-index:1">${s.breed} · ${s.gender||''} · ${s.age} · ${s.color} · ${s.weight || ''}</div>
+    <div class="sdh-meta" style="position:relative;z-index:1;margin-bottom:10px">📍 ${s.city}, ${s.country}</div>
+    <div class="sdh-tags" style="position:relative;z-index:1">${tagHtml}</div>
+  </div>
+  <div class="story-media-scroll">
+    ${getPhotoGallery(s.breed,s.category,s.mediaCount||1).map((url,i)=>`<div class="story-media-item"><img src="${url}" alt="${s.petName} photo ${i+1}" loading="lazy" style="width:100%;height:100%;object-fit:cover"></div>`).join('')}
+  </div>
+  <div class="story-detail-body">
+    <div class="sdb-section">
+      <div class="sdb-section-title"><i class="ti ti-book"></i> The Story</div>
+      <p style="font-size:13px;color:var(--pb-text2);line-height:1.7">${s.story}</p>
+    </div>
+    <div class="sdb-section">
+      <div class="sdb-section-title"><i class="ti ti-sparkles"></i> Personality Traits</div>
+      <div class="sdb-grid">
+        <div class="sdb-item"><div class="sdb-item-label">Friendliness</div><div class="sdb-item-val">${s.friendliness}/10</div><div class="personality-bar"><div class="personality-fill" style="width:${s.friendliness*10}%;background:var(--pb-green)"></div></div></div>
+        <div class="sdb-item"><div class="sdb-item-label">Energy Level</div><div class="sdb-item-val">${s.energy}/10</div><div class="personality-bar"><div class="personality-fill" style="width:${s.energy*10}%;background:var(--pb-orange)"></div></div></div>
+        <div class="sdb-item"><div class="sdb-item-label">Intelligence</div><div class="sdb-item-val">${s.intelligence}/10</div><div class="personality-bar"><div class="personality-fill" style="width:${s.intelligence*10}%;background:var(--pb-blue)"></div></div></div>
+        <div class="sdb-item"><div class="sdb-item-label">Affection</div><div class="sdb-item-val">${s.affection}/10</div><div class="personality-bar"><div class="personality-fill" style="width:${s.affection*10}%;background:var(--pb-pink)"></div></div></div>
+      </div>
+    </div>
+    <div class="sdb-section">
+      <div class="sdb-section-title"><i class="ti ti-users"></i> Behaviour</div>
+      <div class="sdb-grid">
+        <div class="sdb-item"><div class="sdb-item-label">🏠 When Alone</div><div class="sdb-item-val" style="font-size:12px;font-weight:600">${s.alone}</div></div>
+        <div class="sdb-item"><div class="sdb-item-label">🌍 In Public</div><div class="sdb-item-val" style="font-size:12px;font-weight:600">${s.inPublic}</div></div>
+        <div class="sdb-item" style="grid-column:1/-1"><div class="sdb-item-label">👋 New People</div><div class="sdb-item-val" style="font-size:12px;font-weight:600">${s.newPerson}</div></div>
+      </div>
+    </div>
+    <div class="sdb-section">
+      <div class="sdb-section-title"><i class="ti ti-heart"></i> Strengths & Weaknesses</div>
+      <div class="sdb-grid">
+        <div class="sdb-item"><div class="sdb-item-label">💪 Strengths</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">${s.strengths.map(x=>`<span class="badge badge-green">${x}</span>`).join('')}</div></div>
+        <div class="sdb-item"><div class="sdb-item-label">⚠️ Weaknesses</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">${s.weaknesses.map(x=>`<span class="badge badge-red">${x}</span>`).join('')}</div></div>
+      </div>
+    </div>
+    <div class="sdb-section">
+      <div class="sdb-section-title"><i class="ti ti-clock"></i> Life & Play</div>
+      <div class="sdb-grid">
+        <div class="sdb-item"><div class="sdb-item-label">🎾 Favourite Play</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">${s.favouritePlay.map(x=>`<span class="badge badge-purple">${x}</span>`).join('')}</div></div>
+        <div class="sdb-item"><div class="sdb-item-label">😤 Hates</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">${s.hates.map(x=>`<span class="badge badge-amber">${x}</span>`).join('')}</div></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;padding-top:12px;border-top:1px solid var(--pb-border)">
+      <div class="sc-owner"><div class="sc-owner-avatar">${s.ownerName[0]}</div><div class="sc-owner-info"><div class="sc-owner-name">${s.ownerName}</div><div class="sc-owner-loc">${s.city}, ${s.country}</div></div></div>
+      <span style="margin-left:auto;font-size:13px;color:var(--pb-pink);font-weight:700">❤️ ${s.likes} likes</span>
+      <span style="font-size:13px;color:var(--pb-text3);font-weight:600">🔖 ${s.bookmarks}</span>
+    </div>
+  </div>`;
+  document.getElementById('storyDetailContent').innerHTML = content;
+  openModal('storyDetailModal');
+}
+
+// ═══════════════════════════════════════
+// WIZARD STEPS
+// ═══════════════════════════════════════
+function nextStep() {
+  if (currentStep < totalSteps) {
+    document.getElementById('step'+currentStep).classList.remove('active');
+    document.getElementById('ws'+currentStep).classList.remove('active');
+    document.getElementById('ws'+currentStep).classList.add('done');
+    currentStep++;
+    document.getElementById('step'+currentStep).classList.add('active');
+    document.getElementById('ws'+currentStep).classList.add('active');
+    document.getElementById('prevBtn').style.display = 'inline-flex';
+    if (currentStep === totalSteps) {
+      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('submitBtn').style.display = 'inline-flex';
+      updatePreview();
+    }
+  }
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    document.getElementById('step'+currentStep).classList.remove('active');
+    document.getElementById('ws'+currentStep).classList.remove('active');
+    currentStep--;
+    document.getElementById('step'+currentStep).classList.add('active');
+    document.getElementById('ws'+currentStep).classList.remove('done');
+    document.getElementById('ws'+currentStep).classList.add('active');
+    document.getElementById('nextBtn').style.display = 'inline-flex';
+    document.getElementById('submitBtn').style.display = 'none';
+    if (currentStep === 1) document.getElementById('prevBtn').style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════
+// CHIPS
+// ═══════════════════════════════════════
+function toggleChip(el) { el.classList.toggle('selected'); }
+function toggleChipSingle(groupId, el) {
+  document.querySelectorAll(`#${groupId} .chip`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ═══════════════════════════════════════
+// SLIDER
+// ═══════════════════════════════════════
+function updateSlider(sliderId, valId) {
+  document.getElementById(valId).textContent = document.getElementById(sliderId).value;
+}
+
+// ═══════════════════════════════════════
+// MEDIA UPLOAD
+// ═══════════════════════════════════════
+function handleMediaUpload(event) {
+  const files = Array.from(event.target.files);
+  files.forEach(file => {
+    if (uploadedMedia.length >= 10) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      uploadedMedia.push({name:file.name,type:file.type,dataUrl:e.target.result});
+      renderMediaPreviews();
+      updatePreview();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderMediaPreviews() {
+  const grid = document.getElementById('mediaPreviewGrid');
+  grid.innerHTML = '';
+  uploadedMedia.forEach((m,i) => {
+    const isVideo = m.type.startsWith('video');
+    grid.innerHTML += `<div class="media-thumb">${isVideo?`<video src="${m.dataUrl}"></video>`:`<img src="${m.dataUrl}" alt="${m.name}">`}<button class="media-thumb-remove" onclick="removeMedia(${i})"><i class="ti ti-x"></i></button></div>`;
+  });
+}
+
+function removeMedia(i) {
+  uploadedMedia.splice(i, 1);
+  renderMediaPreviews();
+  updatePreview();
+}
+
+function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+function onDrop(e) {
+  e.preventDefault(); e.currentTarget.classList.remove('dragover');
+  const files = Array.from(e.dataTransfer.files);
+  handleMediaUpload({target:{files}});
+}
+
+// ═══════════════════════════════════════
+// PREVIEW SUMMARY
+// ═══════════════════════════════════════
+function updatePreview() {
+  const name = document.getElementById('petName')?.value || '—';
+  const country = document.getElementById('formCountry')?.value || '';
+  const city = document.getElementById('formCity')?.value || '';
+  const cat = document.getElementById('petCategory')?.value || '—';
+  document.getElementById('previewPetName').textContent = name;
+  document.getElementById('previewLoc').textContent = city && country ? `${city}, ${country}` : country || '—';
+  document.getElementById('previewCat').textContent = cat;
+  document.getElementById('previewMedia').textContent = `${uploadedMedia.length} file${uploadedMedia.length!==1?'s':''}`;
+}
+
+// ═══════════════════════════════════════
+// SUBMIT
+// ═══════════════════════════════════════
+function submitStory() {
+  const petName = document.getElementById('petName').value.trim();
+  if (!petName) { alert('Please enter your pet\'s name!'); return; }
+
+  // Build new story object (in real app this goes to database via API)
+  const newStory = {
+    id: STORIES.length + 1,
+    petName,
+    category: document.getElementById('petCategory').value || 'other',
+    breed: document.getElementById('petBreed').value || 'Mixed',
+    gender: document.getElementById('petGender').value,
+    age: document.getElementById('petAge').value,
+    color: document.getElementById('petColor').value,
+    weight: document.getElementById('petWeight').value,
+    country: document.getElementById('formCountry').value || 'India',
+    city: document.getElementById('formCity').value || 'Unknown',
+    ownerName: 'You',
+    storyTitle: document.getElementById('storyTitle').value || `${petName}'s Story`,
+    intro: document.getElementById('storyIntro').value,
+    strengths: Array.from(document.querySelectorAll('#strengthChips .chip.selected')).map(c=>c.textContent.trim()),
+    weaknesses: Array.from(document.querySelectorAll('#weaknessChips .chip.selected')).map(c=>c.textContent.trim()),
+    temperament: Array.from(document.querySelectorAll('#temperChips .chip.selected')).map(c=>c.textContent.trim()),
+    friendliness: parseInt(document.getElementById('friendlinessSlider').value),
+    energy: parseInt(document.getElementById('energySlider').value),
+    intelligence: parseInt(document.getElementById('intelligenceSlider').value),
+    affection: parseInt(document.getElementById('affectionSlider').value),
+    favouritePlay: Array.from(document.querySelectorAll('#playChips .chip.selected')).map(c=>c.textContent.trim()),
+    hates: Array.from(document.querySelectorAll('#hateChips .chip.selected')).map(c=>c.textContent.trim()),
+    alone: Array.from(document.querySelectorAll('#aloneChips .chip.selected')).map(c=>c.textContent.trim()).join(', ') || 'Not specified',
+    inPublic: Array.from(document.querySelectorAll('#publicChips .chip.selected')).map(c=>c.textContent.trim()).join(', ') || 'Not specified',
+    newPerson: Array.from(document.querySelectorAll('#newPersonChips .chip.selected')).map(c=>c.textContent.trim()).join(', ') || 'Not specified',
+    compatible: Array.from(document.querySelectorAll('#compatChips .chip.selected')).map(c=>c.textContent.trim()),
+    story: document.getElementById('fullStory').value || document.getElementById('storyIntro').value,
+    mediaCount: uploadedMedia.length,
+    hasVideo: uploadedMedia.some(m=>m.type.startsWith('video')),
+    likes: 0,
+    bookmarks: 0,
+    featured: false
+  };
+
+  // Add to local array (in real app: POST /api/stories with FormData including media files)
+  STORIES.unshift(newStory);
+  filterStories();
+  closeModal('storyFormModal');
+  resetForm();
+
+  // Show success toast
+  showToast(`🎉 ${petName}'s story has been published!`);
+}
+
+function resetForm() {
+  currentStep = 1;
+  document.querySelectorAll('.form-step').forEach((s,i)=>{s.classList.toggle('active',i===0)});
+  document.querySelectorAll('.wizard-step').forEach((ws,i)=>{ws.classList.toggle('active',i===0);ws.classList.remove('done')});
+  document.getElementById('prevBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+  document.getElementById('submitBtn').style.display = 'none';
+  uploadedMedia = [];
+  renderMediaPreviews();
+  document.querySelectorAll('.chip.selected').forEach(c=>c.classList.remove('selected'));
+  ['petName','petAge','petColor','petWeight','storyTitle','storyIntro','dailyRoutine','foodDetails','strengthCustom','weaknessCustom','playCustom','hateCustom','aloneDetails','publicDetails','newPersonDetails','fullStory'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+
+// ═══════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════
+function setView(v) {
+  currentView = v;
+  document.getElementById('storiesGrid').style.display = v==='grid'?'grid':'none';
+  document.getElementById('storiesList').style.display = v==='list'?'flex':'none';
+  document.getElementById('vGrid').classList.toggle('active',v==='grid');
+  document.getElementById('vList').classList.toggle('active',v==='list');
+}
+
+function toggleLike(btn, id) {
+  btn.classList.toggle('liked');
+  const s = STORIES.find(x=>x.id===id);
+  if (s) s.likes += btn.classList.contains('liked') ? 1 : -1;
+}
+
+function loadMore() {
+  showToast('Loading more stories…');
+}
+
+function openModal(id) {
+  document.getElementById(id)?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id)?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openStoryForm() {
+  resetForm();
+  openModal('storyFormModal');
+}
+
+function openDiscoverModal() { openModal('storyFormModal'); }
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:#050505;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;animation:fadeIn .2s;white-space:nowrap';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
 </script>
 
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottomnav">
-  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
-  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
-  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
-  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
-</nav>
-<!-- DRAWER OVERLAY -->
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
-
-<!-- DRAWER PANEL -->
 <div id="drawer-panel" class="drawer-panel">
   <div class="drawer-header" style="position:relative">
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
-    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
     <div>
-      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
-      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
       <div class="drawer-stats">
-        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
       </div>
     </div>
   </div>
   <div class="drawer-body">
-    <div class="drawer-section">Main</div>
-    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
-    <div class="drawer-section">Community</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
     <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
-    <div class="drawer-section">Pet Services</div>
-    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
-    <div class="drawer-footer">
-      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
-      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
-    </div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
   </div>
 </div>
 
-<script>
-function openDrawer() {
-  document.getElementById('drawer-panel').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  document.getElementById('drawer-panel').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-</script>
-<script>
-(function(){
-  function showBurgerOnMobile(){
-    var btns = document.querySelectorAll('.burger-btn');
-    var isMobile = window.innerWidth <= 768;
-    btns.forEach(function(b){
-      b.style.display = isMobile ? 'flex' : 'none';
-    });
-    // Also hide topnav-tabs on mobile
-    var tabs = document.querySelector('.topnav-tabs');
-    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
-    // Show bottom nav on mobile
-    var bnav = document.querySelector('.bottomnav');
-    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
-  }
-  showBurgerOnMobile();
-  window.addEventListener('resize', showBurgerOnMobile);
-})();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
-      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
-  });
-}
-
-// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
-(function initDrawerUser(){
-  var u = null;
-  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
-  if(!u) {
-    // fetch from API if not cached
-    var tok = localStorage.getItem("pb_token");
-    if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
-        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
-      }).then(function(r){ return r.json(); }).then(function(res){
-        var ud = res.data || res;
-        if(ud && ud.username) {
-          localStorage.setItem("pb_user", JSON.stringify(ud));
-          populateDrawer(ud);
-        }
-      }).catch(function(){});
-    }
-    return;
-  }
-  populateDrawer(u);
-  function populateDrawer(ud){
-    var dn = document.getElementById("drawer-name");
-    var dh = document.getElementById("drawer-handle");
-    var da = document.getElementById("drawer-av");
-    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
-    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
-    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
-  }
-})();
-</script>
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
 </body>
 </html>

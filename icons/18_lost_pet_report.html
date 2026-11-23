@@ -163,12 +163,12 @@
 
   <div style="display:flex;gap:12px">
     <button id="submit-btn" class="submit-btn" onclick="submitReport()">🚨 Post Lost Pet Alert</button>
-    <button class="btn btn-gray" style="padding:16px 24px" onclick="goTo('05_lost_pet.html')">Cancel</button>
+    <button class="btn btn-gray" style="padding:16px 24px" onclick="goTo('38_lost_pet_network.html')">Cancel</button>
   </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="api.js"></script>
+<script src="pawbook-api.js"></script>
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────
 function authHdr(){ return {'Content-Type':'application/json','Authorization':'Bearer '+(localStorage.getItem('pb_token')||'')}; }
@@ -432,10 +432,10 @@ function submitReport(){
   })})
   .then(function(r){return r.json();})
   .then(function(d){
-    if(d.success){ showToast('🚨 Alert posted! Community notified.','success'); setTimeout(function(){goTo('05_lost_pet.html');},1800); }
+    if(d.success){ showToast('🚨 Alert posted! Community notified.','success'); setTimeout(function(){goTo('38_lost_pet_network.html');},1800); }
     else{ showToast(d.error||'Could not post alert','error'); btn.disabled=false; btn.textContent='🚨 Post Lost Pet Alert'; }
   })
-  .catch(function(){ showToast('🚨 Alert saved! Will sync when online.','success'); setTimeout(function(){goTo('05_lost_pet.html');},1800); });
+  .catch(function(){ showToast('🚨 Alert saved! Will sync when online.','success'); setTimeout(function(){goTo('38_lost_pet_network.html');},1800); });
 }
 
 function showToast(msg,type){
@@ -462,7 +462,7 @@ if ('serviceWorker' in navigator) {
     // fetch from API if not cached
     var tok = localStorage.getItem("pb_token");
     if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+      fetch("https://pawbook.deemona.com/api/v1/auth/me", {
         headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
       }).then(function(r){ return r.json(); }).then(function(res){
         var ud = res.data || res;
@@ -486,3 +486,4 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 </body></html>
+

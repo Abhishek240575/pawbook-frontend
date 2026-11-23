@@ -3,367 +3,1114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pet Travel – PawBook</title>
-<link rel="stylesheet" href="css/style.css">
+<title>Pet Travel Guide – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--primary:#ff6b35;--primary-light:#fff3ee;--card-bg:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--radius:16px}
+:root{
+  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
+  --pb-green:#22c55e;--pb-green-soft:#dcfce7;
+  --pb-red:#ef4444;--pb-red-soft:#fee2e2;
+  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;
+  --pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
+  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;
+  --pb-orange:#f97316;--pb-orange-soft:#ffedd5;
+  --pb-indigo:#6366f1;--pb-indigo-soft:#e0e7ff;
+  --pb-travel-grad:linear-gradient(135deg,#0ea5e9,#6366f1,#8b5cf6);
+  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
+  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
+  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
+  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --pb-shadow-md:0 4px 20px rgba(0,0,0,.12);
+  --pb-nav-h:56px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',sans-serif;background:#f8f9fb;color:var(--text);padding-bottom:80px}
-.top-bar{background:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text)}
-.top-bar h1{font-size:18px;font-weight:700}
-.top-bar .add-btn{margin-left:auto;background:var(--primary);color:#fff;border:none;border-radius:50px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer}
-.tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);padding:0 20px}
-.tab{flex:1;text-align:center;padding:14px 0;font-size:14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;transition:.2s}
-.tab.active{color:var(--primary);border-color:var(--primary)}
-.section{padding:20px;display:none}
-.section.active{display:block}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
+a{text-decoration:none;color:inherit}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
 
-/* My Plans */
-.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
-.empty-state .icon{font-size:64px;margin-bottom:12px}
-.empty-state p{font-size:15px}
-.plan-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:14px;overflow:hidden}
-.plan-card-header{padding:16px;display:flex;align-items:center;gap:12px}
-.plan-icon{width:48px;height:48px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.plan-info{flex:1}
-.plan-info h3{font-size:16px;font-weight:700;margin-bottom:2px}
-.plan-info .meta{font-size:13px;color:var(--muted)}
-.plan-status{padding:4px 12px;border-radius:50px;font-size:12px;font-weight:600}
-.status-planned{background:#eff6ff;color:#2563eb}
-.status-ongoing{background:#fef3c7;color:#d97706}
-.status-completed{background:#ecfdf5;color:#059669}
-.plan-card-body{padding:0 16px 16px;border-top:1px solid var(--border);padding-top:14px}
-.plan-detail-row{display:flex;gap:20px;flex-wrap:wrap}
-.plan-detail{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
-.plan-actions{display:flex;gap:8px;margin-top:14px}
-.btn-sm{padding:6px 14px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:#fff}
-.btn-sm.danger{color:#ef4444;border-color:#fecaca}
-.btn-sm.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+/* NAV */
+.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
+.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-travel-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pb-nav-search{flex:1;max-width:220px;height:38px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
+.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;width:100%;color:var(--pb-text)}
+.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
+.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
+.pb-nav-tab.active{color:var(--pb-indigo)}
+.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-indigo);border-radius:3px 3px 0 0}
+.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px}
+.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-travel-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
-/* Destinations */
-.dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.dest-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;cursor:pointer}
-.dest-img{width:100%;height:120px;object-fit:cover;background:linear-gradient(135deg,#ff6b35,#ff9a5c);display:flex;align-items:center;justify-content:center;font-size:40px}
-.dest-info{padding:12px}
-.dest-info h4{font-size:14px;font-weight:700;margin-bottom:4px}
-.dest-info p{font-size:12px;color:var(--muted);line-height:1.4}
-.dest-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.dest-tag{background:var(--primary-light);color:var(--primary);font-size:11px;padding:3px 8px;border-radius:50px;font-weight:600}
-.save-btn{background:none;border:none;font-size:20px;cursor:pointer;float:right;margin-top:-4px}
+/* BUTTONS */
+.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
+.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
+.pb-btn-indigo{background:var(--pb-indigo);color:#fff}.pb-btn-indigo:hover{background:#4f46e5}
+.pb-btn-green{background:var(--pb-green);color:#fff}.pb-btn-green:hover{background:#16a34a}
+.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
+.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
+.pb-btn-outline{background:transparent;border:1.5px solid currentColor;height:36px;padding:0 16px;border-radius:var(--pb-pill);cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
 
-/* Modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:24px 24px 0 0;padding:24px 20px 40px;width:100%;max-height:90vh;overflow-y:auto}
-.modal h2{font-size:18px;font-weight:700;margin-bottom:20px}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--muted)}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-size:14px;outline:none;font-family:inherit}
-.form-group textarea{resize:vertical;min-height:80px}
+/* LAYOUT */
+.pt-layout{max-width:1100px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:260px 1fr;gap:20px}
+@media(max-width:900px){.pt-layout{grid-template-columns:1fr}.pt-sidebar{display:none}}
+.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
+.pb-card-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
+.pb-card-header h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+
+/* HERO */
+.travel-hero{background:var(--pb-travel-grad);border-radius:var(--pb-radius);padding:28px 24px;margin-bottom:20px;color:#fff;position:relative;overflow:hidden}
+.travel-hero::before{content:'✈️';position:absolute;right:-10px;top:-15px;font-size:120px;opacity:.12;transform:rotate(15deg)}
+.travel-hero::after{content:'🐾';position:absolute;right:80px;bottom:-20px;font-size:90px;opacity:.1}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:var(--pb-pill);padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.travel-hero h1{font-size:26px;font-weight:900;margin-bottom:8px;line-height:1.2}
+.travel-hero p{font-size:14px;opacity:.85;line-height:1.6;margin-bottom:20px;max-width:580px}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:20px}
+.hero-stat{text-align:center}
+.hero-stat-val{font-size:24px;font-weight:900}
+.hero-stat-label{font-size:11px;opacity:.8}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap}
+.hero-btn-white{background:#fff;color:var(--pb-indigo);height:38px;padding:0 20px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:6px}
+.hero-btn-outline{background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.5);height:38px;padding:0 16px;border-radius:var(--pb-pill);cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+
+/* TABS */
+.section-tabs{display:flex;gap:4px;padding:4px;background:var(--pb-bg);border-radius:var(--pb-pill);margin-bottom:20px;overflow-x:auto;scrollbar-width:none}
+.section-tabs::-webkit-scrollbar{display:none}
+.section-tab{padding:8px 18px;border-radius:var(--pb-pill);border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--pb-text2);white-space:nowrap;transition:all .15s}
+.section-tab.active{background:#fff;color:var(--pb-indigo);box-shadow:var(--pb-shadow);font-weight:700}
+
+/* SECTION PANELS */
+.section-panel{display:none}
+.section-panel.active{display:block}
+
+/* INFO CARDS */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:20px}
+.info-card{background:#fff;border-radius:var(--pb-radius);border:1px solid var(--pb-border);padding:20px;box-shadow:var(--pb-shadow)}
+.info-card-icon{width:44px;height:44px;border-radius:var(--pb-radius-sm);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.info-card h4{font-size:15px;font-weight:800;margin-bottom:8px}
+.info-card p{font-size:13px;color:var(--pb-text2);line-height:1.6}
+
+/* MODE CARDS */
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:20px}
+.mode-card{border-radius:var(--pb-radius);overflow:hidden;box-shadow:var(--pb-shadow);border:1px solid var(--pb-border)}
+.mode-card-header{padding:18px 20px;color:#fff;display:flex;align-items:center;gap:12px}
+.mode-card-icon{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.mode-card-title{font-size:17px;font-weight:900}
+.mode-card-sub{font-size:12px;opacity:.85}
+.mode-card-body{padding:16px 20px;background:#fff}
+.mode-step{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--pb-border)}
+.mode-step:last-child{border-bottom:none}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--pb-indigo);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:13px;color:var(--pb-text2);line-height:1.5;flex:1}
+.step-text strong{color:var(--pb-text);display:block;margin-bottom:2px}
+
+/* ALERT BOX */
+.alert-box{border-radius:var(--pb-radius-sm);padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:flex-start}
+.alert-red{background:var(--pb-red-soft);border:1px solid #fca5a5}
+.alert-amber{background:var(--pb-amber-soft);border:1px solid #fcd34d}
+.alert-green{background:var(--pb-green-soft);border:1px solid #86efac}
+.alert-blue{background:var(--pb-blue-soft);border:1px solid #93c5fd}
+.alert-purple{background:var(--pb-purple-soft);border:1px solid #c4b5fd}
+.alert-teal{background:var(--pb-teal-soft);border:1px solid #5eead4}
+.alert-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.alert-content h5{font-size:13px;font-weight:800;margin-bottom:4px}
+.alert-content p,.alert-content li{font-size:12px;line-height:1.6;color:var(--pb-text2)}
+.alert-content ul{padding-left:14px}
+
+/* DOCUMENT TABLE */
+.doc-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+.doc-table th{background:var(--pb-indigo);color:#fff;padding:10px 14px;text-align:left;font-size:12px;font-weight:700}
+.doc-table th:first-child{border-radius:var(--pb-radius-sm) 0 0 0}
+.doc-table th:last-child{border-radius:0 var(--pb-radius-sm) 0 0}
+.doc-table td{padding:10px 14px;border-bottom:1px solid var(--pb-border);vertical-align:top;line-height:1.5}
+.doc-table tr:last-child td{border-bottom:none}
+.doc-table tr:nth-child(even) td{background:#fafafa}
+.doc-table tr:hover td{background:var(--pb-indigo-soft)}
+.badge{display:inline-block;padding:2px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:700}
+.badge-green{background:var(--pb-green-soft);color:#16a34a}
+.badge-red{background:var(--pb-red-soft);color:#dc2626}
+.badge-amber{background:var(--pb-amber-soft);color:#92400e}
+.badge-blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
+.badge-purple{background:var(--pb-purple-soft);color:var(--pb-purple)}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.check-item{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
+.check-item i{font-size:18px;flex-shrink:0;margin-top:1px}
+.check-item-body{flex:1}
+.check-item-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.check-item-desc{font-size:12px;color:var(--pb-text2);line-height:1.5}
+.check-required{color:var(--pb-red)}
+.check-optional{color:var(--pb-amber)}
+.check-done{color:var(--pb-green)}
+
+/* EMERGENCY SECTION */
+.emergency-hero{background:linear-gradient(135deg,#dc2626,#f97316);border-radius:var(--pb-radius);padding:22px;margin-bottom:16px;color:#fff}
+.emergency-hero h3{font-size:19px;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.emergency-hero p{font-size:13px;opacity:.9;line-height:1.6;margin-bottom:16px}
+.emergency-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.e-step{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:var(--pb-radius-sm);padding:14px}
+.e-step-num{font-size:22px;font-weight:900;opacity:.6;margin-bottom:4px}
+.e-step-title{font-size:13px;font-weight:800;margin-bottom:4px}
+.e-step-desc{font-size:12px;opacity:.85;line-height:1.5}
+
+/* AIRLINE TABLE */
+.airline-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:16px}
+.airline-card{background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius);padding:16px;box-shadow:var(--pb-shadow)}
+.airline-name{font-size:15px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.airline-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--pb-border);font-size:12px}
+.airline-row:last-child{border-bottom:none}
+.airline-label{color:var(--pb-text3);font-weight:600}
+.airline-val{font-weight:700;color:var(--pb-text);text-align:right}
+
+/* COUNTRY CARDS */
+.country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:16px}
+.country-card{background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius);overflow:hidden;box-shadow:var(--pb-shadow)}
+.country-card-header{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--pb-border)}
+.country-flag{font-size:24px}
+.country-name{font-size:15px;font-weight:800}
+.country-body{padding:12px 16px}
+.country-row{font-size:12px;padding:4px 0;border-bottom:1px solid var(--pb-border);display:flex;gap:6px;line-height:1.5}
+.country-row:last-child{border-bottom:none}
+.country-row strong{color:var(--pb-text);min-width:90px;flex-shrink:0}
+.country-row span{color:var(--pb-text2)}
+
+/* SECTION TITLES */
+.section-title{font-size:18px;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.section-sub{font-size:13px;color:var(--pb-text2);margin-bottom:18px;line-height:1.6}
+.divider{height:1px;background:var(--pb-border);margin:20px 0}
+
+/* SIDEBAR */
+.sidebar-nav{display:flex;flex-direction:column;gap:4px;padding:8px}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--pb-radius-sm);font-size:13px;font-weight:600;color:var(--pb-text2);cursor:pointer;transition:all .15s;border:none;background:transparent;text-align:left;width:100%}
+.sidebar-link:hover{background:var(--pb-indigo-soft);color:var(--pb-indigo)}
+.sidebar-link.active{background:var(--pb-indigo-soft);color:var(--pb-indigo);font-weight:700}
+.sidebar-link i{font-size:18px;flex-shrink:0}
+.tip-card{padding:16px;background:linear-gradient(135deg,var(--pb-indigo-soft),var(--pb-purple-soft));border-radius:var(--pb-radius-sm)}
+.tip-title{font-size:13px;font-weight:800;color:var(--pb-indigo);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tip-item{font-size:12px;color:var(--pb-text2);padding:4px 0;border-bottom:1px solid rgba(99,102,241,.1);display:flex;gap:6px}
+.tip-item:last-child{border-bottom:none}
+
+/* BOTTOM NAV */
+.pb-bnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);display:flex;z-index:400}
+.pb-bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--pb-text3);font-size:10px;font-weight:600;transition:color .15s;border:none;background:transparent}
+.pb-bnav-item i{font-size:22px}
+.pb-bnav-item.active{color:var(--pb-indigo)}
+.pb-bnav-fab{width:48px;height:48px;border-radius:50%;background:var(--pb-travel-grad);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(99,102,241,.4);margin:-16px auto 0}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;transition:all .2s}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--pb-shadow-md)}
+.modal-header{padding:18px 24px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.modal-header h3{font-size:17px;font-weight:800}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--pb-text2)}
+.modal-body{padding:20px 24px}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--pb-text2);margin-bottom:5px}
+.form-input{width:100%;height:40px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none}
+.form-input:focus{border-color:var(--pb-indigo)}
+.form-select{width:100%;height:40px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;background:#fff}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.modal-footer{display:flex;gap:10px;margin-top:20px}
-.modal-footer button{flex:1;padding:14px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;border:none}
-.btn-cancel{background:#f3f4f6;color:var(--text)}
-.btn-save{background:var(--primary);color:#fff}
+.modal-footer{padding:14px 24px;border-top:1px solid var(--pb-border);display:flex;gap:10px;justify-content:flex-end}
 
-/* Tips */
-.tip-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start}
-.tip-icon{font-size:28px;flex-shrink:0}
-.tip-text h4{font-size:14px;font-weight:700;margin-bottom:4px}
-.tip-text p{font-size:13px;color:var(--muted);line-height:1.5}
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
 </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <button class="back-btn" onclick="history.back()">←</button>
-  <h1>✈️ Pet Travel</h1>
-  <button class="add-btn" onclick="openModal()">+ Plan Trip</button>
+<!-- NAV -->
+<nav class="pb-nav">
+  <div class="pb-nav-logo" onclick="location.href='07_home.html'">
+    <div class="pb-nav-logo-icon">🐾</div>
+    <span>PawBook</span>
+  </div>
+  <div class="pb-nav-search">
+    <i class="ti ti-search" style="color:var(--pb-text3);font-size:16px"></i>
+    <input type="text" placeholder="Search travel guides…">
+  </div>
+  <div class="pb-nav-tabs">
+    <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='38_lost_pet_network.html'"><i class="ti ti-map-pin"></i></button>
+    <button class="pb-nav-tab active"><i class="ti ti-plane"></i></button>
+  </div>
+  <div class="pb-nav-right">
+    <button class="pb-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="pb-avatar">A</div>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="pt-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="pt-sidebar">
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header"><h3><i class="ti ti-compass" style="color:var(--pb-indigo)"></i> Travel Guide</h3></div>
+      <div class="sidebar-nav">
+        <button class="sidebar-link active" onclick="switchTab('overview')"><i class="ti ti-layout-dashboard"></i> Overview & Guidelines</button>
+        <button class="sidebar-link" onclick="switchTab('documents')"><i class="ti ti-file-certificate"></i> Travel Documents</button>
+        <button class="sidebar-link" onclick="switchTab('flight')"><i class="ti ti-plane"></i> Flight Travel</button>
+        <button class="sidebar-link" onclick="switchTab('train')"><i class="ti ti-train"></i> Train Travel</button>
+        <button class="sidebar-link" onclick="switchTab('bus')"><i class="ti ti-bus"></i> Bus Travel</button>
+        <button class="sidebar-link" onclick="switchTab('international')"><i class="ti ti-world"></i> International Travel</button>
+        <button class="sidebar-link" onclick="switchTab('emergency')"><i class="ti ti-urgent"></i> Medical Emergency</button>
+        <button class="sidebar-link" onclick="switchTab('laws')"><i class="ti ti-gavel"></i> Laws & Policies</button>
+      </div>
+    </div>
+
+    <!-- Quick Tips -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header"><h3><i class="ti ti-bulb" style="color:var(--pb-amber)"></i> Quick Tips</h3></div>
+      <div style="padding:14px">
+        <div class="tip-card">
+          <div class="tip-title"><i class="ti ti-sparkles"></i> Before You Travel</div>
+          <div class="tip-item">🩺 <span>Vet check 1 week before</span></div>
+          <div class="tip-item">📋 <span>Carry vaccination certificate always</span></div>
+          <div class="tip-item">🏷️ <span>ID tag + microchip your pet</span></div>
+          <div class="tip-item">💊 <span>Consult vet for travel anxiety meds</span></div>
+          <div class="tip-item">🧊 <span>Carry familiar toy/blanket for comfort</span></div>
+          <div class="tip-item">💧 <span>Portable water bowl + food supply</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Contacts -->
+    <div class="pb-card">
+      <div class="pb-card-header"><h3><i class="ti ti-urgent" style="color:var(--pb-red)"></i> Emergency Numbers</h3></div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:12px;padding:8px 10px;background:var(--pb-red-soft);border-radius:var(--pb-radius-sm)">
+          <div style="font-weight:700;color:var(--pb-red);margin-bottom:2px">🇮🇳 India — Animal Helpline</div>
+          <div style="font-size:14px;font-weight:900;color:var(--pb-text)">1962</div>
+        </div>
+        <div style="font-size:12px;padding:8px 10px;background:var(--pb-blue-soft);border-radius:var(--pb-radius-sm)">
+          <div style="font-weight:700;color:var(--pb-blue);margin-bottom:2px">✈️ DGCA Pet Helpdesk</div>
+          <div style="font-size:13px;font-weight:800;color:var(--pb-text)">0124-2371100</div>
+        </div>
+        <div style="font-size:12px;padding:8px 10px;background:var(--pb-green-soft);border-radius:var(--pb-radius-sm)">
+          <div style="font-weight:700;color:#16a34a;margin-bottom:2px">🚆 Indian Railways Inquiry</div>
+          <div style="font-size:14px;font-weight:900;color:var(--pb-text)">139</div>
+        </div>
+        <div style="font-size:12px;padding:8px 10px;background:var(--pb-amber-soft);border-radius:var(--pb-radius-sm)">
+          <div style="font-weight:700;color:#92400e;margin-bottom:2px">🌍 IATA Live Animals</div>
+          <div style="font-size:13px;font-weight:800;color:var(--pb-text)">+41 22 770 2525</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- Hero -->
+    <div class="travel-hero">
+      <div class="hero-badge">✈️ Complete Pet Travel Guide 2024</div>
+      <h1>Travel Safely With Your Pet 🐾</h1>
+      <p>Everything you need to know about travelling with your pet — by air, train, or road. Documents, booking steps, laws, emergency protocols, and country-specific rules all in one place.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val">50+</div><div class="hero-stat-label">Airlines Covered</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">30+</div><div class="hero-stat-label">Countries</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">8</div><div class="hero-stat-label">Pet Categories</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">24/7</div><div class="hero-stat-label">Emergency Guide</div></div>
+      </div>
+      <div class="hero-actions">
+        <button class="hero-btn-white" onclick="openModal('checklist')"><i class="ti ti-checklist"></i> Travel Checklist</button>
+        <button class="hero-btn-outline" onclick="switchTab('emergency')"><i class="ti ti-urgent"></i> Medical Emergency</button>
+        <button class="hero-btn-outline" onclick="switchTab('international')"><i class="ti ti-world"></i> International Guide</button>
+      </div>
+    </div>
+
+    <!-- Section Tabs -->
+    <div class="section-tabs">
+      <button class="section-tab active" onclick="switchTab('overview')">📋 Overview</button>
+      <button class="section-tab" onclick="switchTab('documents')">📄 Documents</button>
+      <button class="section-tab" onclick="switchTab('flight')">✈️ Flight</button>
+      <button class="section-tab" onclick="switchTab('train')">🚆 Train</button>
+      <button class="section-tab" onclick="switchTab('bus')">🚌 Bus</button>
+      <button class="section-tab" onclick="switchTab('international')">🌍 International</button>
+      <button class="section-tab" onclick="switchTab('emergency')">🚨 Emergency</button>
+      <button class="section-tab" onclick="switchTab('laws')">⚖️ Laws</button>
+    </div>
+
+    <!-- ══════════ OVERVIEW ══════════ -->
+    <div class="section-panel active" id="panel-overview">
+
+      <div class="section-title"><i class="ti ti-layout-dashboard" style="color:var(--pb-indigo)"></i> Travel Overview & General Guidelines</div>
+      <div class="section-sub">Understanding pet travel categories, what to prepare, and general rules that apply across all modes of transport in India and internationally.</div>
+
+      <!-- Pet Categories -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3><i class="ti ti-paw" style="color:var(--pb-indigo)"></i> Pet Travel Categories</h3></div>
+        <div style="padding:20px">
+          <div class="alert-box alert-blue" style="margin-bottom:16px">
+            <span class="alert-icon">ℹ️</span>
+            <div class="alert-content"><p>Different pets are classified differently by airlines, railways, and international customs authorities. Always confirm your pet's category with the carrier before booking.</p></div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="doc-table">
+              <tr><th>Pet Type</th><th>Airline (Cabin)</th><th>Airline (Cargo)</th><th>Indian Railways</th><th>International</th></tr>
+              <tr><td>🐕 Small Dog (under 8 kg)</td><td><span class="badge badge-green">Cabin Allowed</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-amber">Varies by country</span></td></tr>
+              <tr><td>🐕 Large Dog (over 8 kg)</td><td><span class="badge badge-red">Cargo Only</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-amber">Varies by country</span></td></tr>
+              <tr><td>🐱 Cat</td><td><span class="badge badge-green">Cabin Allowed</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-amber">Varies by country</span></td></tr>
+              <tr><td>🐦 Bird</td><td><span class="badge badge-red">Not Allowed</span></td><td><span class="badge badge-amber">Select Airlines</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-red">Restricted — CITES</span></td></tr>
+              <tr><td>🐰 Rabbit</td><td><span class="badge badge-red">Not Allowed</span></td><td><span class="badge badge-amber">Select Airlines</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-amber">Varies by country</span></td></tr>
+              <tr><td>🐠 Fish</td><td><span class="badge badge-red">Not Allowed</span></td><td><span class="badge badge-amber">Select Airlines</span></td><td><span class="badge badge-red">Not Allowed</span></td><td><span class="badge badge-red">Strictly Regulated</span></td></tr>
+              <tr><td>🦎 Reptile</td><td><span class="badge badge-red">Not Allowed</span></td><td><span class="badge badge-amber">Select Airlines</span></td><td><span class="badge badge-red">Not Allowed</span></td><td><span class="badge badge-red">CITES Restricted</span></td></tr>
+              <tr><td>🐹 Small Rodent</td><td><span class="badge badge-red">Not Allowed</span></td><td><span class="badge badge-amber">Select Airlines</span></td><td><span class="badge badge-green">Allowed</span></td><td><span class="badge badge-amber">Varies by country</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- General Guidelines -->
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-icon" style="background:var(--pb-indigo-soft)">📋</div>
+          <h4>Book Well in Advance</h4>
+          <p>Airlines and trains limit the number of pets per journey. Book at least 48–72 hours in advance for domestic travel, and 2–4 weeks for international. Some airlines only allow 1–2 pets per flight.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon" style="background:var(--pb-green-soft)">🩺</div>
+          <h4>Pre-Travel Health Check</h4>
+          <p>Get a fitness-to-travel certificate from a licensed veterinarian within 10 days of travel. Many carriers and countries require this. Pets with respiratory or cardiac conditions may not be cleared for air travel.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon" style="background:var(--pb-amber-soft)">🏷️</div>
+          <h4>Identification & Microchip</h4>
+          <p>All pets must have an ID tag with owner name and phone number. International travel requires ISO 11784/11785 microchip (15-digit). India recommends microchipping under Prevention of Cruelty to Animals Act.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon" style="background:var(--pb-teal-soft)">📦</div>
+          <h4>Approved Carrier / Crate</h4>
+          <p>IATA-approved carriers are mandatory for air travel. Crate must be large enough for pet to stand, turn, and lie down. Hard-sided crates required for cargo; soft-sided allowed for cabin on some airlines.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon" style="background:var(--pb-red-soft)">🌡️</div>
+          <h4>Temperature Restrictions</h4>
+          <p>Many airlines restrict pet cargo travel when outside temperatures exceed 29°C or fall below 7°C. Snub-nosed (brachycephalic) breeds like Pugs, Bulldogs, and Persians face additional restrictions due to breathing risks.</p>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon" style="background:var(--pb-purple-soft)">💊</div>
+          <h4>Sedation Policy</h4>
+          <p>IATA and most airlines strongly advise AGAINST sedating pets for travel as sedation can cause respiratory and cardiovascular issues at altitude. If medically necessary, consult your vet and inform the airline in advance.</p>
+        </div>
+      </div>
+
+      <!-- Brachycephalic Warning -->
+      <div class="alert-box alert-red">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-content">
+          <h5>Brachycephalic (Snub-nosed) Breed Warning</h5>
+          <p>Breeds including Pug, French Bulldog, English Bulldog, Boston Terrier, Shih Tzu, Persian Cat, Himalayan Cat, and Pekingese face higher risk of heat stroke and breathing distress during air travel. Many airlines ban these breeds in cargo. Always confirm with the airline before booking.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ DOCUMENTS ══════════ -->
+    <div class="section-panel" id="panel-documents">
+
+      <div class="section-title"><i class="ti ti-file-certificate" style="color:var(--pb-indigo)"></i> Required Travel Documents</div>
+      <div class="section-sub">Documents required vary by pet type, travel mode, and destination. Keep originals and digital copies of all documents.</div>
+
+      <!-- Domestic India -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🇮🇳 Domestic Travel — India (All Modes)</h3></div>
+        <div style="padding:20px">
+          <div class="checklist">
+            <div class="check-item"><i class="ti ti-certificate check-required"></i><div class="check-item-body"><div class="check-item-title">Vaccination Certificate <span style="color:var(--pb-red);font-size:11px">REQUIRED</span></div><div class="check-item-desc">Issued by a registered veterinarian. Must show Rabies, Distemper, Parvovirus, and Hepatitis vaccines. Valid within 1 year for domestic travel. Rabies vaccine required at least 30 days before travel.</div></div></div>
+            <div class="check-item"><i class="ti ti-stethoscope check-required"></i><div class="check-item-body"><div class="check-item-title">Health / Fitness-to-Travel Certificate <span style="color:var(--pb-red);font-size:11px">REQUIRED</span></div><div class="check-item-desc">Issued by a licensed vet within 10 days of travel. Confirms the pet is free from contagious diseases and fit to travel. Required by all airlines; strongly recommended for trains.</div></div></div>
+            <div class="check-item"><i class="ti ti-id-badge check-required"></i><div class="check-item-body"><div class="check-item-title">Pet Ownership Proof <span style="color:var(--pb-red);font-size:11px">REQUIRED</span></div><div class="check-item-desc">Purchase receipt, adoption certificate, or municipal pet registration document. Proves you are the rightful owner.</div></div></div>
+            <div class="check-item"><i class="ti ti-scan check-optional"></i><div class="check-item-body"><div class="check-item-title">Microchip Documentation <span style="color:var(--pb-amber);font-size:11px">RECOMMENDED</span></div><div class="check-item-desc">Certificate from the vet showing ISO microchip number. Not mandatory for domestic travel but strongly recommended for identification if the pet is lost.</div></div></div>
+            <div class="check-item"><i class="ti ti-photo check-optional"></i><div class="check-item-body"><div class="check-item-title">Recent Pet Photo <span style="color:var(--pb-amber);font-size:11px">RECOMMENDED</span></div><div class="check-item-desc">Clear, recent photo of your pet showing coat colour and markings. Useful in case of loss or theft during travel.</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- International Documents -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🌍 International Travel Documents</h3></div>
+        <div style="padding:20px">
+          <div class="alert-box alert-amber" style="margin-bottom:16px">
+            <span class="alert-icon">⚠️</span>
+            <div class="alert-content"><h5>Start the process at least 3–6 months before travel</h5><p>Many countries have quarantine rules, blood titre tests, and waiting periods that require months of advance planning. Always check the destination country's official government import rules.</p></div>
+          </div>
+          <div class="checklist">
+            <div class="check-item"><i class="ti ti-world check-required"></i><div class="check-item-body"><div class="check-item-title">International Health Certificate <span style="color:var(--pb-red);font-size:11px">REQUIRED</span></div><div class="check-item-desc">Issued by a government-accredited veterinarian and endorsed by the Department of Animal Husbandry (India). Must be done within 10 days of travel. Many countries have their own specific form.</div></div></div>
+            <div class="check-item"><i class="ti ti-certificate check-required"></i><div class="check-item-body"><div class="check-item-title">Rabies Vaccination Certificate <span style="color:var(--pb-red);font-size:11px">REQUIRED</span></div><div class="check-item-desc">Must be valid at time of entry. Some countries (Australia, UK, Japan) require rabies titre test 3–6 months before entry and a mandatory waiting period after vaccination.</div></div></div>
+            <div class="check-item"><i class="ti ti-scan check-required"></i><div class="check-item-body"><div class="check-item-title">ISO Microchip (15-digit) <span style="color:var(--pb-red);font-size:11px">REQUIRED</span></div><div class="check-item-desc">ISO 11784/11785 compliant 15-digit microchip is mandatory for international travel. Must be implanted BEFORE rabies vaccination to be valid. Confirm chip is readable with a compatible scanner.</div></div></div>
+            <div class="check-item"><i class="ti ti-flask check-required"></i><div class="check-item-body"><div class="check-item-title">Rabies Titre Test (FAV/FAVN) <span style="color:var(--pb-red);font-size:11px">REQUIRED for many countries</span></div><div class="check-item-desc">Blood test confirming adequate rabies antibody levels (≥0.5 IU/ml). Required by Australia, UK, New Zealand, Japan, Singapore, and others. Must be done at an approved lab. Allow 3–6 months for the waiting period.</div></div></div>
+            <div class="check-item"><i class="ti ti-bug check-optional"></i><div class="check-item-body"><div class="check-item-title">Parasite Treatment Certificate <span style="color:var(--pb-amber);font-size:11px">REQUIRED for some countries</span></div><div class="check-item-desc">Treatment for tapeworm, ticks, and fleas administered by a vet within 24–120 hours before entry. Required by EU, UK, Australia, and many others. Specific product names and dosages may be specified.</div></div></div>
+            <div class="check-item"><i class="ti ti-file-import check-required"></i><div class="check-item-body"><div class="check-item-title">Import Permit <span style="color:var(--pb-red);font-size:11px">REQUIRED for some countries</span></div><div class="check-item-desc">Prior approval from the destination country's agriculture/veterinary authority. Australia, New Zealand, Singapore, and many others require an import permit obtained months in advance.</div></div></div>
+            <div class="check-item"><i class="ti ti-report check-required"></i><div class="check-item-body"><div class="check-item-title">CITES Permit (Exotic Species) <span style="color:var(--pb-red);font-size:11px">REQUIRED for exotic pets</span></div><div class="check-item-desc">Convention on International Trade in Endangered Species permit for certain birds, reptiles, and exotic animals. Apply through the Ministry of Environment, Forest and Climate Change (India) or equivalent authority.</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document by pet type -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3><i class="ti ti-table" style="color:var(--pb-indigo)"></i> Document Requirements by Pet Type</h3></div>
+        <div style="padding:20px;overflow-x:auto">
+          <table class="doc-table">
+            <tr><th>Pet</th><th>Vaccination Cert</th><th>Health Cert</th><th>Microchip</th><th>Import Permit</th><th>CITES</th></tr>
+            <tr><td>🐕 Dog</td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-blue">International</span></td><td><span class="badge badge-amber">Some countries</span></td><td><span class="badge badge-purple">If exotic breed</span></td></tr>
+            <tr><td>🐱 Cat</td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-blue">International</span></td><td><span class="badge badge-amber">Some countries</span></td><td><span class="badge badge-purple">If wild-origin</span></td></tr>
+            <tr><td>🐦 Bird (pet)</td><td><span class="badge badge-amber">Species-specific</span></td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-red">Not applicable</span></td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-green">Required</span></td></tr>
+            <tr><td>🐰 Rabbit</td><td><span class="badge badge-amber">Recommended</span></td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-amber">Recommended</span></td><td><span class="badge badge-amber">Some countries</span></td><td><span class="badge badge-red">Usually not needed</span></td></tr>
+            <tr><td>🦎 Reptile</td><td><span class="badge badge-red">N/A</span></td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-red">N/A</span></td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-green">Usually Required</span></td></tr>
+            <tr><td>🐠 Fish (aquatic)</td><td><span class="badge badge-red">N/A</span></td><td><span class="badge badge-amber">Species-specific</span></td><td><span class="badge badge-red">N/A</span></td><td><span class="badge badge-green">Required</span></td><td><span class="badge badge-green">If listed species</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ FLIGHT ══════════ -->
+    <div class="section-panel" id="panel-flight">
+
+      <div class="section-title"><i class="ti ti-plane" style="color:var(--pb-indigo)"></i> Air Travel with Pets</div>
+      <div class="section-sub">How to book, what to expect, airline-specific policies, and tips for a stress-free flight with your pet.</div>
+
+      <div class="alert-box alert-amber" style="margin-bottom:16px">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-content"><h5>Book the pet SEPARATELY from your ticket</h5><p>Pet reservations are not automatic. After booking your flight, call the airline's cargo or reservations desk to register your pet. Each airline limits the number of pets per flight (usually 2–4 in cabin, 10–12 in cargo).</p></div>
+      </div>
+
+      <!-- How to book -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>📋 How to Book a Flight for Your Pet — Step by Step</h3></div>
+        <div style="padding:20px">
+          <div class="mode-step"><div class="step-num">1</div><div class="step-text"><strong>Check airline's pet policy</strong>Visit the airline website or call their cargo helpdesk. Confirm: pet size limits, breed restrictions, temperature embargo dates, cabin vs. cargo options, and fees.</div></div>
+          <div class="mode-step"><div class="step-num">2</div><div class="step-text"><strong>Book your own ticket first</strong>Get your PNR/booking reference. You need this to register your pet on the same flight.</div></div>
+          <div class="mode-step"><div class="step-num">3</div><div class="step-text"><strong>Call airline's reservations/cargo desk</strong>Provide your PNR, pet details (species, breed, age, weight with carrier), and request pet booking. Confirm space availability — it's first-come, first-served.</div></div>
+          <div class="mode-step"><div class="step-num">4</div><div class="step-text"><strong>Get an IATA-approved carrier</strong>Purchase or rent a carrier that meets IATA Live Animals Regulations. Hard-sided for cargo; soft-sided may be allowed in cabin. Crate must be ventilated on 3 sides, lockable, and leak-proof.</div></div>
+          <div class="mode-step"><div class="step-num">5</div><div class="step-text"><strong>Visit vet for health certificate</strong>Get the fitness-to-travel certificate from a licensed vet within 10 days of departure. Bring it on the day of travel.</div></div>
+          <div class="mode-step"><div class="step-num">6</div><div class="step-text"><strong>Arrive early at the airport</strong>Arrive 2–3 hours before departure for domestic, 3–4 hours for international. For cargo pets, check-in at the airline's cargo terminal separately (not the main terminal).</div></div>
+          <div class="mode-step"><div class="step-num">7</div><div class="step-text"><strong>At check-in</strong>Present your ticket, pet health certificate, vaccination record, and ownership proof. Pay the pet surcharge (collected at check-in). For cabin pets, the carrier goes through the X-ray scanner — take the pet out briefly during screening.</div></div>
+          <div class="mode-step"><div class="step-num">8</div><div class="step-text"><strong>After landing</strong>For cargo pets, collect from the airline's baggage claim or cargo area. Present your collection receipt and ID. Inspect your pet immediately for any distress, injury, or disorientation.</div></div>
+        </div>
+      </div>
+
+      <!-- Indian Airlines Comparison -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🇮🇳 Indian Airlines — Pet Policy Comparison</h3></div>
+        <div style="padding:20px">
+          <div class="airline-cards">
+            <div class="airline-card">
+              <div class="airline-name">✈️ Air India</div>
+              <div class="airline-row"><span class="airline-label">Cabin (small pets)</span><span class="airline-val"><span class="badge badge-green">Allowed</span></span></div>
+              <div class="airline-row"><span class="airline-label">Max weight (cabin)</span><span class="airline-val">Up to 8 kg (pet + carrier)</span></div>
+              <div class="airline-row"><span class="airline-label">Cargo</span><span class="airline-val"><span class="badge badge-green">Allowed</span></span></div>
+              <div class="airline-row"><span class="airline-label">Cabin fee</span><span class="airline-val">₹2,000–₹4,000 per sector</span></div>
+              <div class="airline-row"><span class="airline-label">Cargo fee</span><span class="airline-val">₹200–₹500 per kg</span></div>
+              <div class="airline-row"><span class="airline-label">Contact</span><span class="airline-val">1800-180-1407</span></div>
+            </div>
+            <div class="airline-card">
+              <div class="airline-name">✈️ IndiGo</div>
+              <div class="airline-row"><span class="airline-label">Cabin</span><span class="airline-val"><span class="badge badge-red">Not Allowed</span></span></div>
+              <div class="airline-row"><span class="airline-label">Cargo</span><span class="airline-val"><span class="badge badge-green">Allowed</span></span></div>
+              <div class="airline-row"><span class="airline-label">Max weight (cargo)</span><span class="airline-val">Up to 32 kg per crate</span></div>
+              <div class="airline-row"><span class="airline-label">Cargo fee</span><span class="airline-val">₹250–₹600 per kg</span></div>
+              <div class="airline-row"><span class="airline-label">Advance booking</span><span class="airline-val">Minimum 48 hrs before</span></div>
+              <div class="airline-row"><span class="airline-label">Contact</span><span class="airline-val">0124-6173838</span></div>
+            </div>
+            <div class="airline-card">
+              <div class="airline-name">✈️ SpiceJet</div>
+              <div class="airline-row"><span class="airline-label">Cabin</span><span class="airline-val"><span class="badge badge-red">Not Allowed</span></span></div>
+              <div class="airline-row"><span class="airline-label">Cargo</span><span class="airline-val"><span class="badge badge-green">Allowed</span></span></div>
+              <div class="airline-row"><span class="airline-label">Cargo fee</span><span class="airline-val">₹200–₹500 per kg</span></div>
+              <div class="airline-row"><span class="airline-label">Advance booking</span><span class="airline-val">48 hrs minimum</span></div>
+              <div class="airline-row"><span class="airline-label">Contact</span><span class="airline-val">0987-1803333</span></div>
+            </div>
+            <div class="airline-card">
+              <div class="airline-name">✈️ Vistara (now Air India)</div>
+              <div class="airline-row"><span class="airline-label">Cabin</span><span class="airline-val"><span class="badge badge-green">Allowed (small)</span></span></div>
+              <div class="airline-row"><span class="airline-label">Max weight (cabin)</span><span class="airline-val">7 kg (pet + carrier)</span></div>
+              <div class="airline-row"><span class="airline-label">Cargo</span><span class="airline-val"><span class="badge badge-green">Allowed</span></span></div>
+              <div class="airline-row"><span class="airline-label">Cabin fee</span><span class="airline-val">₹3,000 per sector</span></div>
+              <div class="airline-row"><span class="airline-label">Contact</span><span class="airline-val">0124-7098977</span></div>
+            </div>
+          </div>
+          <div class="alert-box alert-blue">
+            <span class="alert-icon">ℹ️</span>
+            <div class="alert-content"><p>Fees and policies change frequently. Always confirm directly with the airline before booking. DGCA regulations require all Indian carriers to allow pets as checked baggage or cargo.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IATA Crate Requirements -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3><i class="ti ti-box" style="color:var(--pb-indigo)"></i> IATA-Approved Carrier Requirements</h3></div>
+        <div style="padding:20px">
+          <div class="info-grid">
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-teal-soft)">📐</div><h4>Size Rule</h4><p>Pet must be able to stand, turn around, and lie down in a natural position. Measure pet standing height (top of head to floor) and length (tip of nose to base of tail) + 10 cm clearance each.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-green-soft)">🔒</div><h4>Secure Latching</h4><p>Crate must have secure, locking bolts on all 4 sides of the door. Spring latches alone are not acceptable. Zip ties or additional security ties are recommended as backup.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-blue-soft)">🌬️</div><h4>Ventilation</h4><p>Minimum 16% of total wall area must be ventilation. Must have ventilation on at least 3 sides. Ventilation holes should be inward-facing rims to prevent other cargo from blocking airflow.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-amber-soft)">💧</div><h4>Food & Water</h4><p>Attach a water bowl (tip-proof) accessible from outside crate. For journeys over 4 hours, include a food container. Tape a small bag of dry food to the top of the crate with feeding instructions.</p></div>
+          </div>
+          <div class="alert-box alert-purple">
+            <span class="alert-icon">📌</span>
+            <div class="alert-content"><h5>Label Requirements on the Crate</h5><ul><li>Owner name, address, phone number (at origin and destination)</li><li>"LIVE ANIMAL" label in large letters on top and at least one side</li><li>Directional arrows showing "this side up"</li><li>Pet's name, species, breed, age, gender, weight</li><li>Emergency contact number</li></ul></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ TRAIN ══════════ -->
+    <div class="section-panel" id="panel-train">
+
+      <div class="section-title"><i class="ti ti-train" style="color:var(--pb-indigo)"></i> Train Travel with Pets</div>
+      <div class="section-sub">Indian Railways allows pets in specific classes. Here's everything you need to know to travel by train with your pet in India.</div>
+
+      <div class="alert-box alert-green" style="margin-bottom:16px">
+        <span class="alert-icon">✅</span>
+        <div class="alert-content"><h5>Indian Railways — Pets Are Permitted</h5><p>Indian Railways allows dogs, cats, and other animals in the Luggage Van (SLR/brake van) of most trains. Dogs are allowed in First Class AC (1AC) compartments under specific conditions. No pets are allowed in sleeper, 2AC, 3AC, or general coaches.</p></div>
+      </div>
+
+      <!-- How to book train -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🚆 How to Book a Train Ticket for Your Pet</h3></div>
+        <div style="padding:20px">
+          <div class="mode-step"><div class="step-num">1</div><div class="step-text"><strong>Book your own ticket first</strong>Book on IRCTC or at the station. For pets in the brake van, you do NOT need to be in the same train — but it is strongly recommended to travel on the same train so you can check on your pet at stops.</div></div>
+          <div class="mode-step"><div class="step-num">2</div><div class="step-text"><strong>Visit the station's Parcel Office</strong>Go to the station's Parcel/Luggage Office (not the main booking counter). Present your pet in a carrier and declare it as a live animal consignment. This is done on the day of travel; advance booking for the pet is not available online.</div></div>
+          <div class="mode-step"><div class="step-num">3</div><div class="step-text"><strong>Fill the Live Animals Consignment Form</strong>Provide pet details: species, breed, weight, number of animals, carrier dimensions, and destination. Sign the declaration that the animal is healthy and fit to travel.</div></div>
+          <div class="mode-step"><div class="step-num">4</div><div class="step-text"><strong>Pay the charges at the Parcel Office</strong>Charges are based on weight of pet + carrier combined. Minimum charge applies. Pay and collect the consignment note (receipt) — keep this for collecting the pet at destination.</div></div>
+          <div class="mode-step"><div class="step-num">5</div><div class="step-text"><strong>Pet is loaded into the Luggage Van (SLR)</strong>The guard/parcel staff will place the carrier in the designated area. Ensure the crate is labelled with your contact details and destination. Provide water and food for the journey.</div></div>
+          <div class="mode-step"><div class="step-num">6</div><div class="step-text"><strong>At the destination</strong>Go directly to the Parcel Office at the destination station. Present your consignment note and ID. Inspect the pet before leaving the station premises.</div></div>
+        </div>
+      </div>
+
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>💰 Indian Railways Pet Charges (Approximate)</h3></div>
+        <div style="padding:20px;overflow-x:auto">
+          <table class="doc-table">
+            <tr><th>Weight (pet + carrier)</th><th>Charge per km</th><th>Minimum Charge</th><th>Notes</th></tr>
+            <tr><td>Up to 10 kg</td><td>₹0.50/km</td><td>₹30</td><td>Standard rate</td></tr>
+            <tr><td>10–20 kg</td><td>₹0.75/km</td><td>₹50</td><td>Standard rate</td></tr>
+            <tr><td>20–50 kg</td><td>₹1.00/km</td><td>₹75</td><td>Large breeds</td></tr>
+            <tr><td>Above 50 kg</td><td>₹1.50/km</td><td>₹100</td><td>Prior permission needed</td></tr>
+          </table>
+          <div class="alert-box alert-blue" style="margin-top:12px">
+            <span class="alert-icon">ℹ️</span>
+            <div class="alert-content"><p>Charges are indicative and subject to revision by Indian Railways. For exact rates, contact the station master or parcel office. Helpline: <strong>139</strong></p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1AC Dogs -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🐕 Dogs in First Class AC (1AC) — Special Provision</h3></div>
+        <div style="padding:20px">
+          <div class="alert-box alert-purple" style="margin-bottom:12px">
+            <span class="alert-icon">📌</span>
+            <div class="alert-content"><h5>Only in 1AC Compartment — by Booking the Entire Coupe</h5><p>A passenger may keep their dog in a 1AC compartment if they book all 4 berths of the coupe exclusively. The dog must be kept under control. This is a special provision under Indian Railways rule and may not apply to all trains.</p></div>
+          </div>
+          <div class="checklist">
+            <div class="check-item"><i class="ti ti-ticket check-required"></i><div class="check-item-body"><div class="check-item-title">Book all 4 berths of the 1AC coupe</div><div class="check-item-desc">Must be done at the station or via IRCTC. Inform the booking clerk at the time of reservation that the coupe is being booked for a pet.</div></div></div>
+            <div class="check-item"><i class="ti ti-certificate check-required"></i><div class="check-item-body"><div class="check-item-title">Carry health/vaccination certificate</div><div class="check-item-desc">The TTE (Ticket Examiner) may ask for vaccination proof. Carry original documents.</div></div></div>
+            <div class="check-item"><i class="ti ti-leash check-required"></i><div class="check-item-body"><div class="check-item-title">Dog must be on leash at all times</div><div class="check-item-desc">The dog should not enter corridors or other compartments. Owner is responsible for behaviour and cleanliness.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ BUS ══════════ -->
+    <div class="section-panel" id="panel-bus">
+
+      <div class="section-title"><i class="ti ti-bus" style="color:var(--pb-indigo)"></i> Bus Travel with Pets</div>
+      <div class="section-sub">Bus travel policies for pets in India vary significantly by operator. Most state-run buses do not allow pets inside the passenger cabin.</div>
+
+      <div class="alert-box alert-red" style="margin-bottom:16px">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-content"><h5>Most Government Buses Do Not Allow Pets in the Cabin</h5><p>KSRTC, MSRTC, DTC, and most state transport undertakings do not permit pets inside the passenger compartment. Small pets in carriers may be allowed at the driver's discretion, but this is not guaranteed or official policy.</p></div>
+      </div>
+
+      <!-- Private Bus Options -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🚌 Private Bus & Road Travel Options</h3></div>
+        <div style="padding:20px">
+          <div class="info-grid">
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-green-soft)">🚐</div><h4>Pet-Friendly Private Buses</h4><p>Some private overnight bus operators (Redbus-listed operators) allow small pets in carriers. Always confirm in advance when booking. Call the operator directly — the online booking system may not reflect the pet policy.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-blue-soft)">🚗</div><h4>Self-Drive / Personal Vehicle</h4><p>Best option for pets. Use a crate, pet seat belt harness, or backseat barrier. Never let a pet ride in the front seat. For road trips over 4 hours, stop every 2–3 hours for toilet breaks, water, and exercise.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-indigo-soft)">📱</div><h4>Cab / App-Based Taxis</h4><p>Ola and Uber do not have an official pet policy but rides are at the driver's discretion. Use Ola/Uber with the pet in a carrier and always inform the driver before confirming the ride. Some drivers may cancel.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-amber-soft)">🐾</div><h4>Pet-Friendly Cab Services</h4><p>Dedicated pet-friendly cab services are available in major cities (Mumbai, Bengaluru, Delhi). Search "pet taxi" or "pet cab" in your city. These services have trained drivers and proper crates in the vehicle.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Road trip tips -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🗺️ Road Trip Safety Tips</h3></div>
+        <div style="padding:20px">
+          <div class="checklist">
+            <div class="check-item"><i class="ti ti-temperature check-required"></i><div class="check-item-body"><div class="check-item-title">Never leave a pet in a parked car</div><div class="check-item-desc">Car interior temperatures can rise to 60°C+ within minutes in Indian summers. This is life-threatening. Even with windows cracked, the heat builds up rapidly. This is also illegal under Prevention of Cruelty to Animals Act.</div></div></div>
+            <div class="check-item"><i class="ti ti-first-aid-kit check-done"></i><div class="check-item-body"><div class="check-item-title">Carry a pet first-aid kit</div><div class="check-item-desc">Include: bandages, antiseptic wipes, tweezers, oral rehydration salts, any regular medications, vet contact number, and nearest emergency vet along your route.</div></div></div>
+            <div class="check-item"><i class="ti ti-droplet check-done"></i><div class="check-item-body"><div class="check-item-title">Water and no feeding 2 hours before</div><div class="check-item-desc">Avoid feeding pets 2 hours before the journey to reduce motion sickness. Keep water available. Do not let the pet drink large amounts just before moving.</div></div></div>
+            <div class="check-item"><i class="ti ti-map-2 check-done"></i><div class="check-item-body"><div class="check-item-title">Plan vet stops along your route</div><div class="check-item-desc">Research emergency vet clinics along the highway. Apps like VetsinPractice or PawBook can help locate 24-hour vets on your route.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ INTERNATIONAL ══════════ -->
+    <div class="section-panel" id="panel-international">
+
+      <div class="section-title"><i class="ti ti-world" style="color:var(--pb-indigo)"></i> International Pet Travel</div>
+      <div class="section-sub">Rules, quarantine requirements, and what to expect when travelling internationally with your pet. Always verify with the destination country's official government website.</div>
+
+      <div class="alert-box alert-red" style="margin-bottom:16px">
+        <span class="alert-icon">🚨</span>
+        <div class="alert-content"><h5>Failure to comply can result in deportation of your pet or mandatory quarantine at your expense</h5><p>International pet import rules are enforced strictly. A missing document at the border means your pet may be quarantined for weeks at a government facility — at your cost — or returned to the origin country. Plan at least 3–6 months ahead.</p></div>
+      </div>
+
+      <!-- Country cards -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🌍 Country-Specific Requirements (from India)</h3></div>
+        <div style="padding:20px">
+          <div class="country-grid">
+            <div class="country-card">
+              <div class="country-card-header"><span class="country-flag">🇬🇧</span><div><div class="country-name">United Kingdom</div><span class="badge badge-red">Strict</span></div></div>
+              <div class="country-body">
+                <div class="country-row"><strong>Microchip:</strong><span>ISO 15-digit — mandatory</span></div>
+                <div class="country-row"><strong>Rabies vaccine:</strong><span>At least 21 days before entry</span></div>
+                <div class="country-row"><strong>Titre test:</strong><span>Required — wait 3 months after test</span></div>
+                <div class="country-row"><strong>Tapeworm:</strong><span>Treatment 24–120 hrs before arrival</span></div>
+                <div class="country-row"><strong>Quarantine:</strong><span>None if all criteria met</span></div>
+                <div class="country-row"><strong>Import permit:</strong><span>Not required, but APHA notification needed</span></div>
+              </div>
+            </div>
+            <div class="country-card">
+              <div class="country-card-header"><span class="country-flag">🇦🇺</span><div><div class="country-name">Australia</div><span class="badge badge-red">Very Strict</span></div></div>
+              <div class="country-body">
+                <div class="country-row"><strong>Microchip:</strong><span>ISO — mandatory</span></div>
+                <div class="country-row"><strong>Rabies titre:</strong><span>Required — from DAWR-approved lab</span></div>
+                <div class="country-row"><strong>Import permit:</strong><span>Mandatory — apply to DAWE months ahead</span></div>
+                <div class="country-row"><strong>Quarantine:</strong><span>10 days at AQIS facility — owner pays</span></div>
+                <div class="country-row"><strong>Approved countries:</strong><span>India is Category 3 — complex process</span></div>
+                <div class="country-row"><strong>Lead time:</strong><span>Minimum 6 months preparation</span></div>
+              </div>
+            </div>
+            <div class="country-card">
+              <div class="country-card-header"><span class="country-flag">🇺🇸</span><div><div class="country-name">United States</div><span class="badge badge-amber">Moderate</span></div></div>
+              <div class="country-body">
+                <div class="country-row"><strong>Microchip:</strong><span>Strongly recommended</span></div>
+                <div class="country-row"><strong>Rabies vaccine:</strong><span>Required — must be current</span></div>
+                <div class="country-row"><strong>CDC rules:</strong><span>Increased requirements since Aug 2024</span></div>
+                <div class="country-row"><strong>Import permit:</strong><span>Not usually required for dogs/cats</span></div>
+                <div class="country-row"><strong>Quarantine:</strong><span>Not required if documents in order</span></div>
+                <div class="country-row"><strong>USDA Health Cert:</strong><span>Required — from accredited vet</span></div>
+              </div>
+            </div>
+            <div class="country-card">
+              <div class="country-card-header"><span class="country-flag">🇦🇪</span><div><div class="country-name">UAE</div><span class="badge badge-green">Moderate</span></div></div>
+              <div class="country-body">
+                <div class="country-row"><strong>Microchip:</strong><span>ISO — mandatory</span></div>
+                <div class="country-row"><strong>Rabies vaccine:</strong><span>Valid vaccination required</span></div>
+                <div class="country-row"><strong>Health cert:</strong><span>Issued within 7 days of travel</span></div>
+                <div class="country-row"><strong>Import permit:</strong><span>Required from MOCCAE</span></div>
+                <div class="country-row"><strong>Quarantine:</strong><span>Not required if documents complete</span></div>
+                <div class="country-row"><strong>Allowed pets:</strong><span>Dogs, cats — 2 per passport max</span></div>
+              </div>
+            </div>
+            <div class="country-card">
+              <div class="country-card-header"><span class="country-flag">🇸🇬</span><div><div class="country-name">Singapore</div><span class="badge badge-red">Strict</span></div></div>
+              <div class="country-body">
+                <div class="country-row"><strong>Microchip:</strong><span>ISO — mandatory</span></div>
+                <div class="country-row"><strong>Rabies titre:</strong><span>Required — AVS-approved lab</span></div>
+                <div class="country-row"><strong>Import permit:</strong><span>Mandatory from AVS</span></div>
+                <div class="country-row"><strong>Quarantine:</strong><span>Up to 30 days at AVS facility</span></div>
+                <div class="country-row"><strong>India classification:</strong><span>Category II — complex process</span></div>
+                <div class="country-row"><strong>Lead time:</strong><span>6+ months recommended</span></div>
+              </div>
+            </div>
+            <div class="country-card">
+              <div class="country-card-header"><span class="country-flag">🇩🇪</span><div><div class="country-name">Germany / EU</div><span class="badge badge-amber">Moderate</span></div></div>
+              <div class="country-body">
+                <div class="country-row"><strong>Microchip:</strong><span>ISO — mandatory</span></div>
+                <div class="country-row"><strong>Rabies vaccine:</strong><span>Minimum 21 days before entry</span></div>
+                <div class="country-row"><strong>Titre test:</strong><span>Required from India (non-listed country)</span></div>
+                <div class="country-row"><strong>Wait period:</strong><span>3 months after titre test</span></div>
+                <div class="country-row"><strong>EU Health Cert:</strong><span>Official form required from DADF</span></div>
+                <div class="country-row"><strong>Quarantine:</strong><span>Not required if conditions met</span></div>
+              </div>
+            </div>
+            <div class="country-card">
+              <div class="country-card-header"><span class="country-flag">🇨🇦</span><div><div class="country-name">Canada</div><span class="badge badge-green">Relatively Easy</span></div></div>
+              <div class="country-body">
+                <div class="country-row"><strong>Dogs:</strong><span>Proof of rabies vaccination required</span></div>
+                <div class="country-row"><strong>Cats:</strong><span>No documentation usually required</span></div>
+                <div class="country-row"><strong>Import permit:</strong><span>Not required for dogs/cats</span></div>
+                <div class="country-row"><strong>Quarantine:</strong><span>Not required</span></div>
+                <div class="country-row"><strong>CBSA inspection:</strong><span>Pet inspected on arrival</span></div>
+                <div class="country-row"><strong>CFIA guidelines:</strong><span>Check CFIA website for latest</span></div>
+              </div>
+            </div>
+            <div class="country-card">
+              <div class="country-card-header"><span class="country-flag">🇯🇵</span><div><div class="country-name">Japan</div><span class="badge badge-red">Very Strict</span></div></div>
+              <div class="country-body">
+                <div class="country-row"><strong>Microchip:</strong><span>ISO — mandatory, before vaccination</span></div>
+                <div class="country-row"><strong>Rabies vaccine:</strong><span>2 vaccinations at 30-day intervals</span></div>
+                <div class="country-row"><strong>Titre test:</strong><span>Required — after 2nd vaccination</span></div>
+                <div class="country-row"><strong>Wait period:</strong><span>180 days from titre test</span></div>
+                <div class="country-row"><strong>Quarantine:</strong><span>Up to 180 days if incomplete docs</span></div>
+                <div class="country-row"><strong>Lead time:</strong><span>Minimum 1 year preparation</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exporting from India -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🇮🇳 Exporting Pets from India — Procedure</h3></div>
+        <div style="padding:20px">
+          <div class="mode-step"><div class="step-num">1</div><div class="step-text"><strong>Get ISO microchip implanted</strong>Visit a registered vet for ISO 11784/11785 15-digit microchip implantation. This must be done BEFORE the rabies vaccination for it to count toward international requirements.</div></div>
+          <div class="mode-step"><div class="step-num">2</div><div class="step-text"><strong>Complete vaccination schedule</strong>Ensure rabies, distemper, hepatitis, parvovirus, and leptospirosis are up to date. For some destinations, specific timelines apply (e.g., rabies at least 21–30 days before export).</div></div>
+          <div class="mode-step"><div class="step-num">3</div><div class="step-text"><strong>Rabies titre test (if required by destination)</strong>Send blood sample to an FAVN/FAV-approved laboratory (OIE-accredited). India has approved labs in Delhi, Mumbai, and Bengaluru. Allow 4–6 weeks for results.</div></div>
+          <div class="mode-step"><div class="step-num">4</div><div class="step-text"><strong>Obtain International Health Certificate from DADF</strong>Contact the Department of Animal Husbandry & Dairying (DADF). Their regional offices issue government-endorsed export health certificates. Location: Krishi Bhawan, New Delhi. Contact: 011-23382939.</div></div>
+          <div class="mode-step"><div class="step-num">5</div><div class="step-text"><strong>Apply for No Objection Certificate (NOC)</strong>Some exotic pets (birds, reptiles) require NOC from MoEFCC (Ministry of Environment) under Wildlife Protection Act 1972. Apply online at parivesh.nic.in.</div></div>
+          <div class="mode-step"><div class="step-num">6</div><div class="step-text"><strong>Book airline + file export declaration</strong>Notify Customs of live animal export. Cargo exports must be declared at the Air Cargo Complex. Carry all original documents, vaccination history, and microchip certificate.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ EMERGENCY ══════════ -->
+    <div class="section-panel" id="panel-emergency">
+
+      <div class="section-title"><i class="ti ti-urgent" style="color:var(--pb-red)"></i> Medical Emergency Travel</div>
+      <div class="section-sub">What to do when your pet needs emergency medical transport — by flight, train, or road. How to get priority booking and what documents you need.</div>
+
+      <!-- Emergency Hero -->
+      <div class="emergency-hero">
+        <h3>🚨 Pet Medical Emergency Protocol</h3>
+        <p>If your pet requires urgent medical travel — to a specialist hospital in another city or country — follow these steps immediately. Speed and correct documentation are critical.</p>
+        <div class="emergency-steps">
+          <div class="e-step"><div class="e-step-num">01</div><div class="e-step-title">Call your vet immediately</div><div class="e-step-desc">Get a written medical emergency certificate stating the pet's condition and urgency of travel. This document unlocks priority handling with carriers.</div></div>
+          <div class="e-step"><div class="e-step-num">02</div><div class="e-step-title">Call the airline/railway cargo desk</div><div class="e-step-desc">Explain the medical emergency. Some airlines (Air India) offer expedited processing for medical pet transport with an emergency vet letter.</div></div>
+          <div class="e-step"><div class="e-step-num">03</div><div class="e-step-title">Contact a pet transport agency</div><div class="e-step-desc">Specialist pet transport agencies handle documentation, carrier preparation, and logistics on your behalf — critical in an emergency. Contact: Jetpets India, Fido Fly, Pet Express.</div></div>
+          <div class="e-step"><div class="e-step-num">04</div><div class="e-step-title">Prepare emergency document pack</div><div class="e-step-desc">Health certificate, vaccination record, ownership proof, medical emergency letter from vet, and your own ID. Keep all in a waterproof folder attached to the crate.</div></div>
+        </div>
+      </div>
+
+      <!-- Air emergency -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>✈️ Emergency Air Transport for Pets</h3></div>
+        <div style="padding:20px">
+          <div class="alert-box alert-amber" style="margin-bottom:14px">
+            <span class="alert-icon">⚠️</span>
+            <div class="alert-content"><h5>No guaranteed "emergency lane" for pet air travel in India</h5><p>Unlike human medical emergencies, there is no mandated priority system for pets on commercial airlines. However, a vet emergency letter often helps expedite cargo booking and check-in procedures.</p></div>
+          </div>
+          <div class="info-grid">
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-red-soft)">📞</div><h4>Air India Medical Cargo</h4><p>Call Air India Cargo: <strong>1800-180-1407</strong>. Explain the medical emergency and request same-day or next-flight booking. Bring a written vet emergency certificate to the cargo terminal. Fees are standard — no emergency discount.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-blue-soft)">🚁</div><h4>Chartered Pet Air Ambulance</h4><p>For true life-threatening emergencies, pet air ambulances are available in India. Contact Jetpets India (+91-80-4699-8888) or Air Vets India. These services provide a climate-controlled, medically supervised flight with trained handlers.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-green-soft)">🌍</div><h4>International Emergency Transport</h4><p>For international medical emergencies, IPATA (International Pet and Animal Transportation Association) members can arrange emergency pet transport within 24–48 hours. Contact an IPATA-accredited agent immediately.</p></div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-purple-soft)">📋</div><h4>Documents for Emergency Flight</h4><p>Vet emergency certificate (dated same day), vaccination certificate, health certificate (even if slightly expired — explain emergency), ownership proof, and your government ID. Border/airport officials have discretion in genuine emergencies.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency train -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🚆 Emergency Train Transport</h3></div>
+        <div style="padding:20px">
+          <div class="mode-step"><div class="step-num">1</div><div class="step-text"><strong>Contact Station Master directly</strong>Go to the Station Master's office at your departure station. Explain the medical emergency and present the vet's emergency certificate. The Station Master can allow same-day pet loading even without prior booking in genuine emergencies.</div></div>
+          <div class="mode-step"><div class="step-num">2</div><div class="step-text"><strong>Indian Railways Helpline: 139</strong>Call 139 to inquire about the next available train with a brake van/luggage van heading to your destination. Ask for the train number and parcel office contact.</div></div>
+          <div class="mode-step"><div class="step-num">3</div><div class="step-text"><strong>Bring all documents to Parcel Office</strong>Vaccination record, health certificate (or vet emergency letter if certificate has expired), ownership proof. Pay charges on the spot and get the consignment receipt.</div></div>
+          <div class="mode-step"><div class="step-num">4</div><div class="step-text"><strong>Arrange for someone to receive the pet</strong>If you cannot travel on the same train, arrange for a trusted person with the consignment note to receive the pet at the destination. Provide them with the vet's contact details and the receiving hospital's address.</div></div>
+        </div>
+      </div>
+
+      <!-- Emergency contacts -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>📞 Emergency Contacts — Pet Medical Transport India</h3></div>
+        <div style="padding:20px;overflow-x:auto">
+          <table class="doc-table">
+            <tr><th>Service</th><th>Contact</th><th>Coverage</th><th>Notes</th></tr>
+            <tr><td>🐾 Jetpets India</td><td>+91-80-4699-8888</td><td>Pan-India + International</td><td>24/7 emergency service</td></tr>
+            <tr><td>✈️ Air India Cargo</td><td>1800-180-1407</td><td>Domestic + International</td><td>Toll-free, 24/7</td></tr>
+            <tr><td>🚑 Pet Express</td><td>+91-98100-10800</td><td>Delhi NCR + Pan-India</td><td>Road + Air transport</td></tr>
+            <tr><td>🌍 IPATA India</td><td>+91-22-6710-9800</td><td>International</td><td>Accredited international agents</td></tr>
+            <tr><td>🐕 PFA Emergency</td><td>+91-98103-56000</td><td>Delhi NCR</td><td>People for Animals — Delhi</td></tr>
+            <tr><td>🩺 Blue Cross</td><td>+91-44-2235-1301</td><td>Chennai</td><td>24/7 emergency vet + transport advice</td></tr>
+            <tr><td>🚆 Railway Helpline</td><td>139</td><td>Pan-India</td><td>Parcel/live animal queries</td></tr>
+            <tr><td>📋 DADF (Export)</td><td>011-23382939</td><td>India export clearance</td><td>International health cert</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ LAWS ══════════ -->
+    <div class="section-panel" id="panel-laws">
+
+      <div class="section-title"><i class="ti ti-gavel" style="color:var(--pb-indigo)"></i> Laws, Policies & Regulations</div>
+      <div class="section-sub">Key legal frameworks governing pet travel in India and internationally. Know your rights and responsibilities as a pet owner.</div>
+
+      <!-- India Laws -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🇮🇳 Key Indian Laws for Pet Travel</h3></div>
+        <div style="padding:20px">
+          <div class="info-grid">
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-indigo-soft)">⚖️</div>
+              <h4>Prevention of Cruelty to Animals Act, 1960</h4>
+              <p>Section 11 prohibits carrying animals in conditions causing unnecessary suffering. Carriers must be properly ventilated, sized, and maintained. Violations can result in fines and criminal liability for the carrier and owner.</p>
+            </div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-green-soft)">🌿</div>
+              <h4>Wildlife Protection Act, 1972</h4>
+              <p>Prohibits transport of any Schedule I-IV wildlife (including certain birds and reptiles) without a CITES permit. Applies to international travel and cross-state transport of protected species. Violations carry imprisonment up to 7 years.</p>
+            </div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-teal-soft)">🐾</div>
+              <h4>Animal Quarantine & Certification Services (AQCS)</h4>
+              <p>Under DADF, AQCS stations at major airports (Delhi, Mumbai, Chennai, Kolkata, Bengaluru, Hyderabad) handle import/export health certification. Pets entering India are inspected at AQCS before customs clearance.</p>
+            </div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-red-soft)">📋</div>
+              <h4>DGCA Civil Aviation Requirements</h4>
+              <p>DGCA Section 8, Series C regulates carriage of live animals by air in India. Airlines must follow IATA Live Animals Regulations (LAR). Airlines cannot refuse to carry pets if IATA requirements are met, subject to space availability.</p>
+            </div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-amber-soft)">🚆</div>
+              <h4>Indian Railways Parcel Rules</h4>
+              <p>Indian Railways Parcel Management System allows carriage of live animals as luggage in brake vans. The Railways Act 1989 governs liability for animals in transit. Railways are liable for negligence but not for natural death or escape.</p>
+            </div>
+            <div class="info-card"><div class="info-card-icon" style="background:var(--pb-purple-soft)">🌐</div>
+              <h4>Foreign Trade Policy — Exotic Pets</h4>
+              <p>Export of certain exotic species (parrots, owls, mongoose, certain turtles) is prohibited under Schedule IV of WPA. Import of dogs/cats is governed by AQCS import rules. All imported pets must undergo health certification at the port of entry.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- International frameworks -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>🌍 International Regulatory Frameworks</h3></div>
+        <div style="padding:20px;overflow-x:auto">
+          <table class="doc-table">
+            <tr><th>Framework</th><th>What It Governs</th><th>Who Issues</th><th>Relevance</th></tr>
+            <tr><td><strong>IATA LAR</strong><br>Live Animals Regulations</td><td>Container standards, handling, documentation for air transport of all live animals</td><td>IATA</td><td>Mandatory for all international airlines. Updated annually. 46th edition is current.</td></tr>
+            <tr><td><strong>CITES</strong></td><td>International trade in endangered species — exotic pets, birds, reptiles</td><td>UN Environment</td><td>Applies to 183 countries. India is a signatory. Permits required for listed species.</td></tr>
+            <tr><td><strong>OIE / WOAH</strong><br>World Organisation for Animal Health</td><td>International animal health standards, disease-free status, approved labs for titre tests</td><td>WOAH (Paris)</td><td>Sets which labs are accredited for rabies titre tests. Many countries only accept WOAH-approved labs.</td></tr>
+            <tr><td><strong>EU Pet Passport / Pet Travel Scheme</strong></td><td>Standardised health documentation for pets moving within or into the EU</td><td>European Commission</td><td>India is not a listed country — titre test and waiting period required for EU entry from India.</td></tr>
+            <tr><td><strong>Codex Alimentarius</strong></td><td>Food safety including pet food — relevant when carrying pet food across borders</td><td>FAO/WHO</td><td>Some countries restrict importing pet food. Declare and carry vet-prescribed food with documentation.</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Owner rights -->
+      <div class="pb-card" style="margin-bottom:16px">
+        <div class="pb-card-header"><h3>✅ Your Rights as a Pet Owner While Travelling</h3></div>
+        <div style="padding:20px">
+          <div class="checklist">
+            <div class="check-item"><i class="ti ti-shield-check check-done"></i><div class="check-item-body"><div class="check-item-title">Right to claim compensation for injury/death in transit</div><div class="check-item-desc">If your pet is injured or dies due to carrier negligence, you may file a complaint with the Consumer Forum or DGCA (for airlines). Keep all receipts, documents, and photos of your pet before boarding.</div></div></div>
+            <div class="check-item"><i class="ti ti-eye check-done"></i><div class="check-item-body"><div class="check-item-title">Right to inspect cargo area conditions (request)</div><div class="check-item-desc">You can request to see the cargo area conditions before loading. Airlines are not legally obligated to allow this but many will accommodate the request.</div></div></div>
+            <div class="check-item"><i class="ti ti-certificate check-done"></i><div class="check-item-body"><div class="check-item-title">Right to refuse loading if conditions are unsafe</div><div class="check-item-desc">If the cargo area is excessively hot, lacks ventilation, or the crate is damaged, you have the right to refuse loading and request a refund or rebooking.</div></div></div>
+            <div class="check-item"><i class="ti ti-report check-done"></i><div class="check-item-body"><div class="check-item-title">File complaints with DGCA (airlines) or Ministry of Railways</div><div class="check-item-desc">Airline complaints: complaints.dgca@nic.in | Indian Railways complaints: pgportal.gov.in | PCA complaints: awbi.gov.in (Animal Welfare Board of India)</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('plans',this)">My Plans</div>
-  <div class="tab" onclick="switchTab('destinations',this)">Destinations</div>
-  <div class="tab" onclick="switchTab('tips',this)">Travel Tips</div>
-</div>
-
-<!-- MY PLANS -->
-<div id="tab-plans" class="section active">
-  <div id="plans-list">
-    <div class="empty-state">
-      <div class="icon">🗺️</div>
-      <p>No travel plans yet.<br>Plan your first trip with your pet!</p>
-    </div>
-  </div>
-</div>
-
-<!-- DESTINATIONS -->
-<div id="tab-destinations" class="section">
-  <div class="dest-grid" id="dest-grid">
-    <!-- filled by JS -->
-  </div>
-</div>
-
-<!-- TIPS -->
-<div id="tab-tips" class="section">
-  <div class="tip-card">
-    <div class="tip-icon">📋</div>
-    <div class="tip-text">
-      <h4>Visit the Vet First</h4>
-      <p>Get a health certificate and ensure vaccinations are up to date at least 10 days before travel.</p>
-    </div>
-  </div>
-  <div class="tip-card">
-    <div class="tip-icon">🎒</div>
-    <div class="tip-text">
-      <h4>Pack a Pet Travel Kit</h4>
-      <p>Bring food, water, bowls, leash, waste bags, medications, and a first aid kit for your pet.</p>
-    </div>
-  </div>
-  <div class="tip-card">
-    <div class="tip-icon">🚗</div>
-    <div class="tip-text">
-      <h4>Car Safety</h4>
-      <p>Use a pet carrier or seat belt harness. Never let pets ride with their heads out the window.</p>
-    </div>
-  </div>
-  <div class="tip-card">
-    <div class="tip-icon">🏨</div>
-    <div class="tip-text">
-      <h4>Book Pet-Friendly Hotels</h4>
-      <p>Always confirm pet policies before booking. Many hotels in India now welcome pets with a deposit.</p>
-    </div>
-  </div>
-  <div class="tip-card">
-    <div class="tip-icon">✈️</div>
-    <div class="tip-text">
-      <h4>Flying with Pets</h4>
-      <p>Check airline pet policies. Most Indian airlines allow pets in cabin (under 7 kg) or cargo. Book early.</p>
-    </div>
-  </div>
-  <div class="tip-card">
-    <div class="tip-icon">🌡️</div>
-    <div class="tip-text">
-      <h4>Watch the Weather</h4>
-      <p>Avoid travelling to hot destinations in summer with brachycephalic breeds (Pugs, Bulldogs, Persians).</p>
-    </div>
-  </div>
-  <div class="tip-card">
-    <div class="tip-icon">🏷️</div>
-    <div class="tip-text">
-      <h4>ID Tags & Microchip</h4>
-      <p>Ensure your pet has a current ID tag and is microchipped — essential if they get lost during travel.</p>
-    </div>
-  </div>
-</div>
-
-<!-- ADD PLAN MODAL -->
-<div class="modal-overlay" id="modal">
+<!-- TRAVEL CHECKLIST MODAL -->
+<div class="modal-overlay" id="checklistModal" onclick="if(event.target.id==='checklistModal')closeModal('checklistModal')">
   <div class="modal">
-    <h2>🗺️ Plan a Trip</h2>
-    <div class="form-group">
-      <label>Destination *</label>
-      <input type="text" id="f-destination" placeholder="e.g. Manali, Goa, Coorg">
+    <div class="modal-header">
+      <h3>✈️ Complete Pet Travel Checklist</h3>
+      <button class="modal-close" onclick="closeModal('checklistModal')"><i class="ti ti-x"></i></button>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Travel Date</label>
-        <input type="date" id="f-travel-date">
+    <div class="modal-body">
+      <div style="font-weight:800;font-size:13px;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">1 Week Before Travel</div>
+      <div class="checklist" id="cl1">
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-required" id="ci"></i><div class="check-item-body"><div class="check-item-title">Vet health/fitness certificate</div><div class="check-item-desc">Valid within 10 days of travel. Essential for airlines.</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-required"></i><div class="check-item-body"><div class="check-item-title">Vaccination certificate review</div><div class="check-item-desc">Ensure rabies and core vaccines are current and within validity.</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-optional"></i><div class="check-item-body"><div class="check-item-title">Confirm pet booking with airline/railway</div><div class="check-item-desc">Call carrier to verify space and get written confirmation.</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-optional"></i><div class="check-item-body"><div class="check-item-title">Purchase/prepare IATA-approved crate</div><div class="check-item-desc">Test that pet is comfortable and secure in crate.</div></div></div>
       </div>
-      <div class="form-group">
-        <label>Return Date</label>
-        <input type="date" id="f-return-date">
+      <div style="font-weight:800;font-size:13px;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 10px">Day of Travel</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-required"></i><div class="check-item-body"><div class="check-item-title">All original documents in one folder</div><div class="check-item-desc">Vaccination cert, health cert, ownership proof, ID</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-required"></i><div class="check-item-body"><div class="check-item-title">ID tag + leash on pet</div><div class="check-item-desc">Tag should have your phone number and destination address</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-optional"></i><div class="check-item-body"><div class="check-item-title">Familiar toy/blanket in crate</div><div class="check-item-desc">Reduces anxiety. Use an item with your scent.</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-optional"></i><div class="check-item-body"><div class="check-item-title">No food 2–4 hours before travel</div><div class="check-item-desc">Prevents motion sickness. Water is fine.</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-required"></i><div class="check-item-body"><div class="check-item-title">Water attached to crate</div><div class="check-item-desc">Freeze water bowl night before so it thaws slowly during travel</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square check-optional"></i><div class="check-item-body"><div class="check-item-title">Photo of pet on your phone</div><div class="check-item-desc">Recent, clear image in case of loss</div></div></div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Transport</label>
-        <select id="f-transport">
-          <option value="car">Car</option>
-          <option value="train">Train</option>
-          <option value="flight">Flight</option>
-          <option value="bus">Bus</option>
-          <option value="bike">Bike</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Pet</label>
-        <select id="f-pet"><option value="">Select pet</option></select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Accommodation</label>
-      <input type="text" id="f-accommodation" placeholder="Hotel, Homestay, etc.">
-    </div>
-    <div class="form-group">
-      <label>Notes</label>
-      <textarea id="f-notes" placeholder="Packing list, special requirements…"></textarea>
     </div>
     <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="savePlan()">Save Plan</button>
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('checklistModal')">Close</button>
+      <button class="pb-btn pb-btn-indigo" onclick="closeModal('checklistModal')"><i class="ti ti-check"></i> All Done!</button>
     </div>
   </div>
 </div>
 
-<script src="js/api.js"></script>
+<!-- BOTTOM NAV -->
+<nav class="pb-bnav">
+  <button class="pb-bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
+  <button class="pb-bnav-item" onclick="location.href='36_pet_life_record.html'"><i class="ti ti-heart-rate-monitor"></i><span>Health</span></button>
+  <button class="pb-bnav-fab" onclick="openModal('checklistModal')"><i class="ti ti-checklist"></i></button>
+  <button class="pb-bnav-item active"><i class="ti ti-plane"></i><span>Travel</span></button>
+  <button class="pb-bnav-item" onclick="location.href='29_user_profile.html'"><i class="ti ti-user"></i><span>Profile</span></button>
+</nav>
+
 <script>
-const API = window.API_BASE || 'https://pawbook-api-cquc.onrender.com/api/v1';
-const token = localStorage.getItem('pb_token');
-let plans = [];
-
-const DESTINATIONS = [
-  { name:'Manali', emoji:'🏔️', desc:'Himachal Pradesh — snow & pine forests', tags:['Hills','Dog-friendly','Adventure'] },
-  { name:'Goa',    emoji:'🏖️', desc:'Beaches, shacks & pet-friendly resorts', tags:['Beach','Relaxing','Social'] },
-  { name:'Coorg',  emoji:'🌿', desc:'Coffee estates & misty trails in Karnataka', tags:['Nature','Walks','Cool'] },
-  { name:'Mussoorie', emoji:'🌄', desc:'Queen of Hills — great trails & fresh air', tags:['Hills','Walks','Views'] },
-  { name:'Pondicherry', emoji:'🏡', desc:'French-quarter charm, cafes & beaches', tags:['Beach','Cafes','Culture'] },
-  { name:'Munnar', emoji:'☕', desc:'Tea gardens & waterfalls in Kerala', tags:['Nature','Cool','Scenic'] },
-];
-
-async function loadPlans() {
-  if (!token) return;
-  try {
-    const res = await fetch(`${API}/travel`, { headers:{ Authorization:`Bearer ${token}` } });
-    const data = await res.json();
-    plans = Array.isArray(data) ? data : (data.plans || []);
-    renderPlans();
-  } catch(e) { console.error(e); }
+function switchTab(id) {
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  // Activate matching tab button
+  document.querySelectorAll('.section-tab').forEach(t => {
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + id + "'")) t.classList.add('active');
+  });
+  document.querySelectorAll('.sidebar-link').forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + id + "'")) l.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function renderPlans() {
-  const el = document.getElementById('plans-list');
-  if (!plans.length) {
-    el.innerHTML = `<div class="empty-state"><div class="icon">🗺️</div><p>No travel plans yet.<br>Plan your first trip with your pet!</p></div>`;
-    return;
+function openModal(id) {
+  document.getElementById(id + 'Modal') && document.getElementById(id + 'Modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id + 'Modal') && document.getElementById(id + 'Modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function toggleCheck(el) {
+  const icon = el.querySelector('i');
+  if (icon.classList.contains('ti-square')) {
+    icon.classList.remove('ti-square', 'check-required', 'check-optional');
+    icon.classList.add('ti-square-check-filled', 'check-done');
+  } else {
+    icon.classList.remove('ti-square-check-filled', 'check-done');
+    icon.classList.add('ti-square', 'check-required');
   }
-  el.innerHTML = plans.map(p => `
-    <div class="plan-card">
-      <div class="plan-card-header">
-        <div class="plan-icon">${transportIcon(p.transport)}</div>
-        <div class="plan-info">
-          <h3>${p.destination}</h3>
-          <div class="meta">${p.pet_name ? '🐾 '+p.pet_name+' · ' : ''}${formatDate(p.travel_date)}</div>
-        </div>
-        <span class="plan-status status-${p.status||'planned'}">${(p.status||'Planned')}</span>
-      </div>
-      <div class="plan-card-body">
-        <div class="plan-detail-row">
-          ${p.transport ? `<div class="plan-detail">🚗 ${p.transport}</div>` : ''}
-          ${p.return_date ? `<div class="plan-detail">📅 Return: ${formatDate(p.return_date)}</div>` : ''}
-          ${p.accommodation ? `<div class="plan-detail">🏨 ${p.accommodation}</div>` : ''}
-        </div>
-        ${p.notes ? `<p style="font-size:13px;color:#6b7280;margin-top:10px">${p.notes}</p>` : ''}
-        <div class="plan-actions">
-          <button class="btn-sm" onclick="markStatus(${p.id},'ongoing')">Start Trip</button>
-          <button class="btn-sm primary" onclick="markStatus(${p.id},'completed')">Mark Done</button>
-          <button class="btn-sm danger" onclick="deletePlan(${p.id})">Delete</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
 }
-
-function renderDestinations() {
-  document.getElementById('dest-grid').innerHTML = DESTINATIONS.map(d => `
-    <div class="dest-card">
-      <div class="dest-img">${d.emoji}</div>
-      <div class="dest-info">
-        <button class="save-btn" title="Save">🔖</button>
-        <h4>${d.name}</h4>
-        <p>${d.desc}</p>
-        <div class="dest-tags">${d.tags.map(t=>`<span class="dest-tag">${t}</span>`).join('')}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function loadPets() {
-  if (!token) return;
-  try {
-    const res = await fetch(`${API}/pets/my`, { headers:{ Authorization:`Bearer ${token}` } });
-    const data = await res.json();
-    const pets = data.pets || data || [];
-    const sel = document.getElementById('f-pet');
-    pets.forEach(p => { const o = new Option(p.name, p.id); sel.add(o); });
-  } catch(e) {}
-}
-
-function openModal() {
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-}
-
-async function savePlan() {
-  const destination = document.getElementById('f-destination').value.trim();
-  if (!destination) { alert('Please enter a destination'); return; }
-  const body = {
-    destination,
-    travel_date:   document.getElementById('f-travel-date').value || null,
-    return_date:   document.getElementById('f-return-date').value || null,
-    transport:     document.getElementById('f-transport').value,
-    accommodation: document.getElementById('f-accommodation').value.trim(),
-    notes:         document.getElementById('f-notes').value.trim(),
-    pet_id:        document.getElementById('f-pet').value || null,
-  };
-  try {
-    const res = await fetch(`${API}/travel`, {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
-      body: JSON.stringify(body)
-    });
-    if (res.ok) { closeModal(); loadPlans(); }
-    else { const e = await res.json(); alert(e.message || 'Failed to save plan'); }
-  } catch(e) { alert('Network error'); }
-}
-
-async function markStatus(id, status) {
-  try {
-    await fetch(`${API}/travel/${id}/status`, {
-      method:'PATCH',
-      headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
-      body: JSON.stringify({ status })
-    });
-    loadPlans();
-  } catch(e) {}
-}
-
-async function deletePlan(id) {
-  if (!confirm('Delete this travel plan?')) return;
-  try {
-    await fetch(`${API}/travel/${id}`, {
-      method:'DELETE', headers:{ Authorization:`Bearer ${token}` }
-    });
-    loadPlans();
-  } catch(e) {}
-}
-
-function switchTab(name, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
-}
-
-function transportIcon(t) {
-  return { car:'🚗', train:'🚆', flight:'✈️', bus:'🚌', bike:'🏍️' }[t] || '🗺️';
-}
-function formatDate(d) {
-  if (!d) return '';
-  return new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-}
-
-// Close modal on overlay click
-document.getElementById('modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-renderDestinations();
-loadPlans();
-loadPets();
 </script>
+
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
+</div>
+
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
 </body>
 </html>

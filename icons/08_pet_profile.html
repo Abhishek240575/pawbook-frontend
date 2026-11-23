@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -444,7 +444,7 @@ html,body{overflow-x:hidden}
         <button class="pac-btn pac-message" onclick="goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Message</button>
         <button class="pac-btn pac-share" onclick="shareProfile()"><i class="ti ti-share"></i> Share</button>
         <button class="pac-btn pac-bookvet" onclick="goTo('11_vet_booking.html')"><i class="ti ti-star-filled"></i> Book Vet</button>
-        <button class="pac-btn pac-donate" onclick="goTo('04_adoption.html')"><i class="ti ti-heart-filled"></i> Donate</button>
+        <button class="pac-btn pac-donate" onclick="goTo('39_adoption_matching.html')"><i class="ti ti-heart-filled"></i> Donate</button>
         <button class="pac-btn pac-follow btn-icon" onclick="toast('Logged out','info');Auth.logout();goTo('01_login.html')" title="Log Out" style="padding:0 10px"><i class="ti ti-logout"></i></button>
       </div>
     </div>
@@ -735,7 +735,7 @@ html,body{overflow-x:hidden}
           <span style="font-weight:800;color:var(--green)">₹12,500 raised</span>
           <span style="color:var(--muted)">₹20,000 goal</span>
         </div>
-        <button class="btn btn-blue btn-full" onclick="goTo('04_adoption.html')">Donate Now</button>
+        <button class="btn btn-blue btn-full" onclick="goTo('39_adoption_matching.html')">Donate Now</button>
       </div>
     </div>
 
@@ -750,7 +750,7 @@ html,body{overflow-x:hidden}
           <span style="color:var(--muted)">45 Comments</span>
         </div>
         <div style="display:flex;gap:6px">
-          <button class="btn btn-sm" style="background:var(--blue-xlight);color:var(--blue);flex:1" onclick="goTo('04_adoption.html')">Interested</button>
+          <button class="btn btn-sm" style="background:var(--blue-xlight);color:var(--blue);flex:1" onclick="goTo('39_adoption_matching.html')">Interested</button>
           <button class="btn btn-sm btn-gray" style="flex:1">Share</button>
         </div>
       </div>
@@ -1088,7 +1088,7 @@ document.addEventListener('DOMContentLoaded',function(){
   loadDemoFeed();
 });
 </script>
-<script src="api.js"></script>
+<script src="pawbook-api.js"></script>
 <script src="upload.js"></script>
 <script>
 // auth soft
@@ -1556,7 +1556,7 @@ function goTo(p) { window.location.href = p; }
   <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
   <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
   <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
   <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
 </nav>
 <!-- DRAWER OVERLAY -->
@@ -1592,10 +1592,10 @@ function goTo(p) { window.location.href = p; }
     <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
     <div class="drawer-section">Pet Services</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
     <div class="drawer-footer">
@@ -1753,7 +1753,7 @@ function initPetPhotoUpload(petId) {
     // fetch from API if not cached
     var tok = localStorage.getItem("pb_token");
     if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+      fetch("https://pawbook.deemona.com/api/v1/auth/me", {
         headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
       }).then(function(r){ return r.json(); }).then(function(res){
         var ud = res.data || res;
@@ -1779,3 +1779,4 @@ function initPetPhotoUpload(petId) {
 <input type="file" id="petPhotoInput">
 </body>
 </html>
+

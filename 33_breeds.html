@@ -1,1159 +1,1143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<style>
-/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-:root{
-  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
-  --purple:#8b5cf6;--pink:#ec4899;
-  --green:#22c55e;--green-soft:#dcfce7;
-  --red:#ef4444;--amber:#f59e0b;
-  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --bg:#f0f2f5;--card:#fff;
-  --border:#e4e6eb;--border-soft:#f0f2f5;
-  --text:#050505;--text2:#65676b;--text3:#8a8d91;
-  --radius:12px;--radius-sm:8px;--pill:999px;
-  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --shadow-md:0 4px 20px rgba(0,0,0,.1);
-}
-body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
-
-/* Topnav */
-.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
-.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
-.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
-.topnav-tab.active{color:var(--blue)!important}
-.topnav-tab.active::after{background:var(--blue)!important}
-
-/* Buttons - make all buttons rounder and Facebook-style */
-.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
-button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
-.btn-blue{background:var(--blue)!important;color:#fff!important}
-.btn-blue:hover{background:var(--blue-dark)!important}
-.btn-gray{background:var(--bg)!important;color:var(--text)!important}
-
-/* Cards - cleaner */
-.card,.sidebar-card,.scard,.filter-section,.pb-card{
-  border-radius:var(--radius)!important;
-  border:1px solid var(--border)!important;
-  box-shadow:var(--shadow)!important;
-  background:var(--card)!important;
-}
-
-/* Badges - rounder */
-.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
-.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
-.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
-
-/* Post actions */
-.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
-.post-action.liked,.liked{color:var(--blue)!important}
-
-/* Story cards */
-.story-card{border-radius:var(--radius)!important}
-.story-card-av,.story-av{border:3px solid var(--blue)!important}
-
-/* Bottom nav */
-.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
-.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
-.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
-
-/* Market cards */
-.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
-
-/* Inputs */
-input,textarea,select{font-family:'Inter',sans-serif!important}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
-
-/* Modals */
-.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
-.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
-
-/* Progress/fill */
-.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
-
-/* Tab bars */
-.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
-
-/* Notification unread */
-.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
-
-/* Vet-specific */
-.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-html,body{overflow-x:hidden!important;max-width:100%!important}
-</style>
-
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
 <link rel="manifest" href="manifest.json">
-<title>PawBook — World Breeds Encyclopedia</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>PawBook — Pet Breeds</title>
+<script>(function(){var t=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');if(!t){window.location.replace('01_login.html');}})();</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size:15px}
-.nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(248,247,244,0.96);backdrop-filter:blur(12px);border-bottom:1px solid #e8e4dc;z-index:500;display:flex;align-items:center;padding:0 20px;gap:12px}
-.nav-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#1a1a2e}
-.nav-logo span{color:#8b4513}
-.nsearch{flex:1;max-width:380px;position:relative}
-.nsearch input{width:100%;height:36px;border-radius:8px;border:1.5px solid #e8e4dc;background:#fff;padding:0 14px 0 36px;font-family:'Inter',sans-serif;font-size:13px;outline:none;color:#1a1a2e}
-.nsearch input:focus{border-color:#8b4513}
-.nsearch i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:15px}
-.nav-home{height:34px;padding:0 14px;border-radius:8px;border:1.5px solid #e8e4dc;background:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:#4a5568;margin-left:auto}
+body{font-family:'Inter',-apple-system,sans-serif;background:#f0f2f5;color:#050505;-webkit-font-smoothing:antialiased;padding-top:56px}
+button,input,select,textarea{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
 
-.hero{padding:76px 24px 32px;text-align:center;background:linear-gradient(180deg,#f0ebe0 0%,#f8f7f4 100%);border-bottom:1px solid #e8e4dc}
-.hero-label{font-size:11px;font-weight:700;letter-spacing:2.5px;color:#8b4513;text-transform:uppercase;margin-bottom:12px}
-.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,58px);font-weight:900;line-height:1.1;margin-bottom:12px;color:#1a1a2e}
-.hero-sub{font-size:15px;color:#4a5568;max-width:520px;margin:0 auto 24px;line-height:1.7}
-.hero-nums{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
-.hn{text-align:center}
-.hn-n{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:#8b4513}
-.hn-l{font-size:11px;color:#4a5568;font-weight:600;margin-top:1px}
+/* ── NAV ── */
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;padding:0 12px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.topnav-logo{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:900;color:#1877F2;text-decoration:none;flex-shrink:0}
+.logo-icon{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px}
+.topnav-tabs{display:flex;gap:2px;margin-left:auto}
+.topnav-tab{width:40px;height:40px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:20px;color:#65676b;display:flex;align-items:center;justify-content:center}
+.topnav-tab.active{color:#1877F2;background:#e7f0fd}
+.topnav-right{display:flex;align-items:center;gap:8px;margin-left:8px}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:18px;color:#050505;cursor:pointer}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;cursor:pointer}
+.burger-btn{width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:#1877F2;font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@media(min-width:901px){.burger-btn{display:none!important}.topnav-tabs{display:flex!important}}
+@media(max-width:900px){.topnav-tabs{display:none!important}.burger-btn{display:flex!important}}
 
-.species-bar{display:flex;background:#fff;border-bottom:2px solid #e8e4dc;position:sticky;top:56px;z-index:400;overflow-x:auto;scrollbar-width:none}
-.species-bar::-webkit-scrollbar{display:none}
-.stab{flex-shrink:0;padding:13px 22px;font-size:14px;font-weight:600;color:#4a5568;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;white-space:nowrap;transition:all 0.15s}
-.stab:hover{color:#1a1a2e;background:rgba(0,0,0,0.03)}
-.stab.active{color:#8b4513;border-bottom-color:#8b4513;background:#f8f7f4}
+/* ── HERO ── */
+.breeds-hero{background:linear-gradient(135deg,#1e3a5f,#1877F2,#8b5cf6);padding:32px 20px 28px;text-align:center;color:#fff}
+.breeds-hero h1{font-size:clamp(22px,4vw,32px);font-weight:900;margin-bottom:6px}
+.breeds-hero p{opacity:.85;font-size:14px}
 
-.filters{padding:12px 20px;background:#fff;border-bottom:1px solid #e8e4dc;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.fl{font-size:12px;font-weight:700;color:#4a5568;white-space:nowrap}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{height:28px;padding:0 12px;border-radius:20px;border:1.5px solid #e8e4dc;background:#f8f7f4;color:#4a5568;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:all 0.15s}
-.chip:hover{border-color:#8b4513;color:#8b4513}
-.chip.on{background:#8b4513;border-color:#8b4513;color:#fff}
+/* ── FILTER CARD ── */
+.filter-card{background:#fff;border-radius:16px;border:1px solid #e4e6eb;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:20px;max-width:860px;margin:16px auto;width:calc(100% - 24px)}
+.filter-title{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.filter-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.filter-row-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:600px){.filter-row,.filter-row-2{grid-template-columns:1fr}}
+.form-group label{font-size:11px;font-weight:800;color:#65676b;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.form-group select,.form-group input{width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;color:#050505;background:#fff;cursor:pointer;outline:none}
+.form-group select:focus,.form-group input:focus{border-color:#1877F2}
 
-.sh{padding:22px 20px 6px;display:flex;align-items:baseline;gap:8px}
-.sh-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#1a1a2e}
-.sh-count{font-size:13px;color:#4a5568}
+/* Pet category chips */
+.pet-cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.pet-cat{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:2px solid #e4e6eb;background:#fff;cursor:pointer;font-size:13px;font-weight:700;color:#374151;transition:all .15s;user-select:none}
+.pet-cat:hover{border-color:#1877F2}
+.pet-cat.active{border-color:#1877F2;background:#e7f0fd;color:#1877F2}
+.pet-cat .cat-icon{font-size:20px}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0}
-.bcard{position:relative;cursor:pointer;overflow:hidden;background:#1a1a2e;aspect-ratio:1}
-.bcard img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;filter:brightness(0.88)}
-.bcard:hover img{transform:scale(1.08)}
-.bcard-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(10,10,20,0.82));transition:background 0.3s;display:flex;flex-direction:column;justify-content:flex-end;padding:12px}
-.bcard:hover .bcard-overlay{background:linear-gradient(transparent 20%,rgba(10,10,20,0.88))}
-.bcard-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:2px}
-.bcard-origin{font-size:10px;color:rgba(255,255,255,0.65);margin-bottom:4px}
-.bcard-tags{display:flex;gap:3px;flex-wrap:wrap}
-.btag{font-size:9px;padding:2px 6px;border-radius:12px;font-weight:700;background:rgba(255,255,255,0.15);color:#fff;backdrop-filter:blur(4px)}
-.btag.toy{background:rgba(139,69,19,0.7)}
-.btag.small{background:rgba(99,102,241,0.7)}
-.btag.medium{background:rgba(16,185,129,0.7)}
-.btag.large{background:rgba(245,158,11,0.7)}
-.btag.giant{background:rgba(239,68,68,0.7)}
-.fav-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.45);border:none;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(4px)}
-.fav-btn:hover{background:rgba(239,68,68,0.8);transform:scale(1.15)}
-.fav-btn.on{background:rgba(239,68,68,0.85)}
+/* Search btn */
+.btn-search{width:100%;height:46px;border-radius:999px;border:none;background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;transition:opacity .15s}
+.btn-search:hover{opacity:.9}
 
-.dpanel{position:fixed;top:0;right:0;bottom:0;width:390px;max-width:100vw;background:#fff;z-index:600;transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;box-shadow:-4px 0 28px rgba(0,0,0,0.14)}
-.dpanel.open{transform:translateX(0)}
-.dpanel-img{width:100%;height:240px;object-fit:cover}
-.dpanel-body{padding:18px}
-.dpanel-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#1a1a2e;margin-bottom:3px}
-.dpanel-sci{font-size:12px;color:#4a5568;font-style:italic;margin-bottom:10px}
-.dpanel-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:16px;font-size:11px;font-weight:700;margin-bottom:12px}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.stat-cell{background:#f8f7f4;border-radius:8px;padding:10px 12px}
-.stat-lbl{font-size:9px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px}
-.stat-val{font-size:13px;font-weight:700;color:#1a1a2e}
-.dp-sect{margin-bottom:14px}
-.dp-sect-title{font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:6px;border-bottom:1px solid #e8e4dc;padding-bottom:5px}
-.dp-desc{font-size:13px;color:#4a5568;line-height:1.7}
-.trait-wrap{margin-bottom:7px}
-.trait-row{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:#4a5568;margin-bottom:3px}
-.tbar{height:5px;background:#e8e4dc;border-radius:3px;overflow:hidden}
-.tfill{height:100%;border-radius:3px;background:#8b4513;width:0;transition:width 0.7s ease}
-.close-dp{position:sticky;top:10px;float:right;margin:10px 10px 0 0;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.08);border:none;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;z-index:1}
+/* ── RESULTS SECTION ── */
+.results-wrap{max-width:1100px;margin:0 auto;padding:0 12px 80px}
+.results-head{display:flex;align-items:center;justify-content:space-between;padding:12px 0 10px}
+.results-count{font-size:14px;font-weight:700;color:#65676b}
+.sort-sel{height:36px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 14px 0 10px;font-size:13px;font-weight:600;color:#374151;background:#fff;cursor:pointer;outline:none}
 
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.38);z-index:599;display:none}
-.overlay.open{display:block}
-.empty{text-align:center;padding:60px 20px;color:#4a5568;grid-column:1/-1}
+/* ── BREED DROPDOWN LIST ── */
+.breed-select-wrap{position:relative;margin-bottom:12px}
+.breed-select-wrap select{width:100%;height:48px;border:1.5px solid #e4e6eb;border-radius:12px;padding:0 42px 0 14px;font-size:15px;font-weight:600;color:#050505;background:#fff;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none}
+.breed-select-wrap select:focus{border-color:#1877F2}
+.breed-select-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;color:#65676b;pointer-events:none}
+.breed-preview-card{background:#fff;border-radius:16px;border:1px solid #e4e6eb;overflow:hidden;cursor:pointer;transition:box-shadow .15s;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.breed-preview-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.12);border-color:#1877F2}
+.bpc-img{width:100%;height:200px;object-fit:cover;display:block}
+.bpc-body{padding:14px}
+.bpc-name{font-size:16px;font-weight:800;margin-bottom:4px}
+.bpc-origin{font-size:12px;color:#65676b;margin-bottom:10px}
+.bpc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.btag{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#f0f2f5;color:#374151}
+.bpc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bstat{background:#f8f9fa;border-radius:10px;padding:8px;text-align:center}
+.bstat-val{font-size:13px;font-weight:800;color:#1877F2}
+.bstat-lbl{font-size:9px;color:#65676b;font-weight:700;text-transform:uppercase;margin-top:1px}
+.bpc-footer{padding:12px 14px;border-top:1px solid #f1f5f9;display:flex;gap:8px}
+.btn-view-detail{flex:1;height:38px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:13px;font-weight:800;cursor:pointer}
+.btn-adopt-now{flex:1;height:38px;border-radius:999px;border:1.5px solid #059669;background:#fff;color:#059669;font-size:13px;font-weight:800;cursor:pointer}
+.adopt-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;background:#dcfce7;color:#15803d;margin-left:8px}
 
-.bnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(248,247,244,0.97);border-top:1px solid #e8e4dc;display:flex;z-index:500}
-.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.bni.on{color:#8b4513}
-.bni i{font-size:20px}
+/* ── BREED DETAIL MODAL — slides up from bottom ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:700;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:680px;overflow:hidden;box-shadow:0 -8px 40px rgba(0,0,0,.2);max-height:92vh;overflow-y:auto;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-hero-img{width:100%;height:260px;object-fit:cover;display:block}
+@media(max-width:500px){.modal-hero-img{height:220px}}
+.modal-content{padding:20px}
+.modal-name{font-size:22px;font-weight:900;margin-bottom:4px}
+.modal-sub{font-size:13px;color:#65676b;margin-bottom:14px}
+.modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(0,0,0,.45);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(4px)}
+.modal-hero-wrap{position:relative}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:480px){.info-grid{grid-template-columns:repeat(2,1fr)}}
+.info-tile{background:#f8f9fa;border-radius:12px;padding:12px;text-align:center}
+.info-tile .it-val{font-size:16px;font-weight:900;color:#1877F2}
+.info-tile .it-lbl{font-size:10px;color:#65676b;font-weight:700;text-transform:uppercase;margin-top:2px}
+.section-label{font-size:13px;font-weight:800;color:#374151;margin-bottom:8px;margin-top:14px;display:flex;align-items:center;gap:6px}
+.detail-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.dtag{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;background:#e7f0fd;color:#1877F2}
+.dtag.green{background:#dcfce7;color:#15803d}
+.dtag.amber{background:#fef3c7;color:#92400e}
+.dtag.red{background:#fee2e2;color:#991b1b}
+.desc-text{font-size:13px;color:#374151;line-height:1.65;margin-bottom:4px}
+.country-flags{display:flex;flex-wrap:wrap;gap:6px}
+.cflag{padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;background:#f0f2f5;color:#374151}
 
-@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.dpanel{width:100%}}
-@media(min-width:1200px){.grid{grid-template-columns:repeat(5,1fr)}}
-</style>
-<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
-<style id="pb-mobile">
-html, body { overflow-x: hidden !important; }
-@media (max-width: 768px) {
-  html, body { width: 100% !important; overflow-x: hidden !important; }
-  div { min-width: 0 !important; }
-  .stat-grid { display: block !important; grid-template-columns: 1fr !important; }
-  .grid { display: block !important; grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
-  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
-  .topnav-tabs, .nav-tabs { display: none !important; }
-  .bottomnav { display: flex !important; }
-  .left-sidebar, .right-sidebar, aside { display: none !important; }
-  body { padding-bottom: 72px !important; }
-}
-</style>
-<style id="pb-burger">
-.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
-.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
-.drawer-overlay.open { display: block; }
-.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
-.drawer-panel.open { left: 0; }
-.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
-.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
-.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
-.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
-.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
-.drawer-body { flex: 1; padding: 6px 0; }
-.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
-.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
-.drawer-item:hover { background: #eff6ff; color: #1877F2; }
-.drawer-item i { font-size: 20px; width: 24px; }
-.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
-.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
-.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
-.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
-.bnav-item i { font-size: 22px; }
-.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.bnav-item.active { color: #1877F2; }
-@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
-@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+/* Adopt CTA */
+.adopt-cta{background:linear-gradient(135deg,#064e3b,#059669);border-radius:14px;padding:16px;margin:16px 0;display:flex;align-items:center;gap:14px}
+.adopt-cta-icon{font-size:36px;flex-shrink:0}
+.adopt-cta-text h3{color:#fff;font-size:15px;font-weight:800;margin-bottom:4px}
+.adopt-cta-text p{color:rgba(255,255,255,.8);font-size:12px}
+.btn-adopt{padding:10px 20px;border-radius:999px;border:none;background:#fff;color:#059669;font-size:13px;font-weight:800;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.btn-adopt:hover{background:#f0fdf4}
+
+/* ── ADOPTION CENTERS MODAL ── */
+.centers-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:800;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
+.centers-modal.open{display:flex}
+.centers-box{background:#fff;border-radius:20px;width:100%;max-width:700px;overflow:hidden;box-shadow:0 16px 64px rgba(0,0,0,.25);margin:auto}
+.centers-head{padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#064e3b,#059669)}
+.centers-head-title{color:#fff;font-size:16px;font-weight:800}
+.centers-close{width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:16px}
+.centers-list{max-height:75vh;overflow-y:auto;padding:12px}
+.center-card{background:#fff;border:1px solid #e4e6eb;border-radius:14px;overflow:hidden;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.center-card:last-child{margin-bottom:0}
+.center-header{display:flex;gap:12px;padding:14px;border-bottom:1px solid #f1f5f9}
+.center-logo{width:52px;height:52px;border-radius:12px;object-fit:cover;flex-shrink:0;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:24px}
+.center-name{font-size:15px;font-weight:800;margin-bottom:3px}
+.center-reg{font-size:11px;color:#65676b}
+.center-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.cbadge{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:800}
+.cbadge-gov{background:#e7f0fd;color:#1877F2}
+.cbadge-verified{background:#dcfce7;color:#15803d}
+.cbadge-24h{background:#fef3c7;color:#92400e}
+.center-details{padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:480px){.center-details{grid-template-columns:1fr}}
+.cd-row{display:flex;align-items:flex-start;gap:8px;font-size:12px}
+.cd-row i{font-size:16px;color:#1877F2;margin-top:1px;flex-shrink:0}
+.cd-row span{color:#374151;line-height:1.4}
+.cd-row a{color:#1877F2;font-weight:700;text-decoration:none}
+.cd-row a:hover{text-decoration:underline}
+.center-actions{padding:10px 14px;border-top:1px solid #f1f5f9;display:flex;gap:8px;flex-wrap:wrap}
+.btn-call{flex:1;min-width:100px;height:38px;border-radius:999px;border:1.5px solid #1877F2;background:#fff;color:#1877F2;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-call:hover{background:#e7f0fd}
+.btn-book-appt{flex:1;min-width:100px;height:38px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-book-appt:hover{background:#0d65d9}
+.btn-whatsapp{flex:1;min-width:100px;height:38px;border-radius:999px;border:1.5px solid #25D366;background:#fff;color:#25D366;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-whatsapp:hover{background:#f0fff4}
+.distance-badge{font-size:11px;color:#059669;font-weight:700;padding:2px 8px;background:#dcfce7;border-radius:999px}
+
+/* ── APPOINTMENT MODAL ── */
+.appt-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:900;align-items:center;justify-content:center;padding:16px}
+.appt-modal.open{display:flex}
+.appt-box{background:#fff;border-radius:20px;width:100%;max-width:460px;overflow:hidden;box-shadow:0 16px 64px rgba(0,0,0,.3)}
+.appt-head{background:linear-gradient(135deg,#1877F2,#8b5cf6);padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.appt-head-title{color:#fff;font-size:15px;font-weight:800}
+.appt-close{width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:14px}
+.appt-body{padding:18px}
+.appt-center-name{font-size:14px;font-weight:800;margin-bottom:14px;padding:10px 14px;background:#f8f9fa;border-radius:10px}
+.appt-row{margin-bottom:12px}
+.appt-row label{font-size:12px;font-weight:800;color:#65676b;display:block;margin-bottom:5px;text-transform:uppercase}
+.appt-row input,.appt-row select,.appt-row textarea{width:100%;border:1.5px solid #e4e6eb;border-radius:10px;padding:10px 12px;font-size:14px;outline:none;font-family:'Inter',sans-serif}
+.appt-row input:focus,.appt-row select:focus,.appt-row textarea:focus{border-color:#1877F2}
+.appt-row textarea{height:80px;resize:none}
+.btn-confirm{width:100%;height:46px;border-radius:999px;border:none;background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px}
+.btn-confirm:hover{opacity:.9}
+
+/* ── SUCCESS STATE ── */
+.success-state{display:none;text-align:center;padding:32px 20px}
+.success-icon{font-size:56px;margin-bottom:12px}
+.success-title{font-size:18px;font-weight:800;margin-bottom:6px}
+.success-msg{font-size:13px;color:#65676b;margin-bottom:20px}
+.btn-done{padding:12px 32px;border-radius:999px;border:none;background:#1877F2;color:#fff;font-size:14px;font-weight:800;cursor:pointer}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 20px;color:#65676b}
+.empty-icon{font-size:56px;margin-bottom:12px}
+
+/* ── BOTTOM NAV ── */
+.bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e4e6eb;z-index:300;align-items:center;justify-content:space-around}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:6px 0;border:none;background:none;font-family:'Inter',sans-serif;color:#65676b;text-decoration:none}
+.bnav-item i{font-size:22px}
+.bnav-item span{font-size:9px;font-weight:700;text-transform:uppercase}
+.bnav-item.active{color:#1877F2}
+@media(max-width:900px){.bottomnav{display:flex!important};body{padding-bottom:72px}}
+
+/* ── DRAWER ── */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450}
+.drawer-overlay.open{display:block}
+.drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:auto;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column}
+.drawer-panel.open{left:0}
+.drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px}
+.drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer}
+.drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover}
+.drawer-user-name{font-size:15px;font-weight:800;color:#fff}
+.drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px}
+.drawer-body{flex:1;padding:6px 0}
+.drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left}
+.drawer-item:hover{background:#eff6ff;color:#1877F2}
+.drawer-item i{font-size:20px;width:24px}
+.drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb}
+
+/* ── TOAST ── */
+.toast-el{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;pointer-events:none}
+
+/* ── LOADING ── */
+.spinner{width:40px;height:40px;border:4px solid #e4e6eb;border-top-color:#1877F2;border-radius:50%;animation:spin .8s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skeleton{background:linear-gradient(90deg,#f0f2f5 25%,#e4e6eb 50%,#f0f2f5 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px}
+@keyframes shimmer{to{background-position:-200% 0}}
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-logo">Paw<span>Book</span></div>
-  <div class="nsearch"><i class="ti ti-search"></i><input id="search-input" placeholder="Search breeds, origin, traits…"></div>
-  <button class="nav-home" onclick="location.href='07_home.html'">← Home</button>
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <button class="burger-btn" onclick="openDrawer()">☰</button>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
+    <button class="topnav-tab active"><i class="ti ti-paw"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right">
+    <button class="nav-icon-btn" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')" id="nav-av">A</div>
+  </div>
 </nav>
 
-<div class="hero">
-  <div class="hero-label">PawBook Breeds Encyclopedia</div>
-  <h1 class="hero-title">Every Breed,<br>Every Story</h1>
-  <p class="hero-sub">Explore dog and cat breeds worldwide — their origins, temperaments, traits and what makes each unique.</p>
-  <div class="hero-nums">
-    <div class="hn"><div class="hn-n" id="dog-count">40+</div><div class="hn-l">Dog Breeds</div></div>
-    <div class="hn"><div class="hn-n" id="cat-count">28+</div><div class="hn-l">Cat Breeds</div></div>
-    <div class="hn"><div class="hn-n">195</div><div class="hn-l">Countries</div></div>
-    <div class="hn"><div class="hn-n">10K+</div><div class="hn-l">Years of History</div></div>
+<!-- HERO -->
+<div class="breeds-hero">
+  <div style="font-size:48px;margin-bottom:8px">🐕🐈🐰🦜</div>
+  <h1>Pet Breeds Explorer</h1>
+  <p>Discover breeds, learn their story & find adoption centres near you</p>
+</div>
+
+<!-- FILTER CARD -->
+<div class="filter-card">
+  <div class="filter-title">🔍 Find Breeds Near You</div>
+
+  <!-- Location -->
+  <div class="filter-row">
+    <div class="form-group">
+      <label>Country</label>
+      <select id="sel-country" onchange="onCountryChange()">
+        <option value="">Select Country</option>
+        <option value="india" selected>🇮🇳 India</option>
+        <option value="usa">🇺🇸 United States</option>
+        <option value="uk">🇬🇧 United Kingdom</option>
+        <option value="australia">🇦🇺 Australia</option>
+        <option value="canada">🇨🇦 Canada</option>
+        <option value="uae">🇦🇪 UAE</option>
+        <option value="singapore">🇸🇬 Singapore</option>
+        <option value="germany">🇩🇪 Germany</option>
+        <option value="france">🇫🇷 France</option>
+        <option value="japan">🇯🇵 Japan</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>State / Region</label>
+      <select id="sel-state" onchange="onStateChange()">
+        <option value="">Select State</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>City</label>
+      <select id="sel-city">
+        <option value="">Select City</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Pet category -->
+  <div style="margin-bottom:14px">
+    <label style="font-size:11px;font-weight:800;color:#65676b;display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Pet Category</label>
+    <div class="pet-cats">
+      <div class="pet-cat active" data-pet="all" onclick="selectPetCat(this)"><span class="cat-icon">🐾</span> All</div>
+      <div class="pet-cat" data-pet="dog" onclick="selectPetCat(this)"><span class="cat-icon">🐕</span> Dog</div>
+      <div class="pet-cat" data-pet="cat" onclick="selectPetCat(this)"><span class="cat-icon">🐈</span> Cat</div>
+      <div class="pet-cat" data-pet="rabbit" onclick="selectPetCat(this)"><span class="cat-icon">🐰</span> Rabbit</div>
+      <div class="pet-cat" data-pet="parrot" onclick="selectPetCat(this)"><span class="cat-icon">🦜</span> Parrot</div>
+      <div class="pet-cat" data-pet="hamster" onclick="selectPetCat(this)"><span class="cat-icon">🐹</span> Hamster</div>
+      <div class="pet-cat" data-pet="fish" onclick="selectPetCat(this)"><span class="cat-icon">🐠</span> Fish</div>
+      <div class="pet-cat" data-pet="turtle" onclick="selectPetCat(this)"><span class="cat-icon">🐢</span> Turtle</div>
+    </div>
+  </div>
+
+  <!-- Search bar -->
+  <div class="form-group" style="margin-bottom:12px">
+    <label>Search Breed</label>
+    <input type="text" id="inp-search" placeholder="e.g. Labrador, Persian, Lop…" oninput="filterBreeds()">
+  </div>
+
+  <button class="btn-search" onclick="searchBreeds()">
+    <i class="ti ti-search"></i> Explore Breeds
+  </button>
+</div>
+
+<!-- RESULTS -->
+<div class="results-wrap" id="results-section" style="display:none">
+  <div class="results-head">
+    <div class="results-count" id="results-count">Loading…</div>
+    <select class="sort-sel" id="sort-sel" onchange="sortBreeds()">
+      <option value="popular">Most Popular</option>
+      <option value="az">A → Z</option>
+      <option value="adoptable">Adoptable First</option>
+    </select>
+  </div>
+  <!-- Breed dropdown selector -->
+  <div class="breed-select-wrap">
+    <select id="breed-dropdown" onchange="onBreedSelect()">
+      <option value="">— Select a breed to explore —</option>
+    </select>
+  </div>
+  <!-- Preview card of selected breed -->
+  <div id="breed-preview"></div>
+</div>
+
+<!-- ══ BREED DETAIL MODAL ══ -->
+<div class="modal-overlay" id="breed-modal" onclick="if(event.target===this)closeBreedModal()">
+  <div class="modal-box">
+    <div class="modal-hero-wrap">
+      <img id="bm-img" src="" alt="" class="modal-hero-img">
+      <button class="modal-close" onclick="closeBreedModal()">✕</button>
+    </div>
+    <div class="modal-content" id="bm-content"></div>
   </div>
 </div>
 
-<div class="species-bar">
-  <button class="stab active" onclick="switchSpecies('dogs',this)">🐕 Dogs</button>
-  <button class="stab" onclick="switchSpecies('cats',this)">🐈 Cats</button>
-  <button class="stab" onclick="switchSpecies('favs',this)">❤️ My Favourites</button>
-</div>
-
-<div class="filters">
-  <div class="fl">Size:</div>
-  <div class="chips" id="size-chips">
-    <button class="chip on" onclick="setSize('all',this)">All</button>
-    <button class="chip" onclick="setSize('toy',this)">Toy</button>
-    <button class="chip" onclick="setSize('small',this)">Small</button>
-    <button class="chip" onclick="setSize('medium',this)">Medium</button>
-    <button class="chip" onclick="setSize('large',this)">Large</button>
-    <button class="chip" onclick="setSize('giant',this)">Giant</button>
-  </div>
-  <div class="fl" style="margin-left:10px" id="group-label">Group:</div>
-  <div class="chips" id="group-chips">
-    <button class="chip on" onclick="setGroup('all',this)">All</button>
-    <button class="chip" onclick="setGroup('sporting',this)">Sporting</button>
-    <button class="chip" onclick="setGroup('working',this)">Working</button>
-    <button class="chip" onclick="setGroup('herding',this)">Herding</button>
-    <button class="chip" onclick="setGroup('terrier',this)">Terrier</button>
-    <button class="chip" onclick="setGroup('hound',this)">Hound</button>
-    <button class="chip" onclick="setGroup('toy',this)">Toy Group</button>
-    <button class="chip" onclick="setGroup('non-sporting',this)">Non-Sporting</button>
+<!-- ══ ADOPTION CENTERS MODAL ══ -->
+<div class="centers-modal" id="centers-modal" onclick="if(event.target===this)closeCentersModal()">
+  <div class="centers-box">
+    <div class="centers-head">
+      <div>
+        <div class="centers-head-title" id="centers-title">🏠 Adoption Centres</div>
+        <div style="color:rgba(255,255,255,.75);font-size:12px;margin-top:2px" id="centers-sub"></div>
+      </div>
+      <button class="centers-close" onclick="closeCentersModal()">✕</button>
+    </div>
+    <div class="centers-list" id="centers-list"></div>
   </div>
 </div>
 
-<div style="padding-bottom:80px">
-  <div class="sh">
-    <div class="sh-title" id="section-title">Dog Breeds</div>
-    <div class="sh-count" id="section-count">Loading…</div>
-  </div>
-  <div class="grid" id="breed-grid"></div>
-</div>
-
-<div class="overlay" id="overlay" onclick="closeDP()"></div>
-
-<div class="dpanel" id="dpanel">
-  <button class="close-dp" onclick="closeDP()">✕</button>
-  <img id="dp-img" class="dpanel-img" src="">
-  <div class="dpanel-body">
-    <div class="dpanel-name" id="dp-name"></div>
-    <div class="dpanel-sci" id="dp-sci"></div>
-    <div class="dpanel-badge" id="dp-badge"></div>
-    <div class="stat-grid" id="dp-stats"></div>
-    <div class="dp-sect"><div class="dp-sect-title">About this breed</div><div class="dp-desc" id="dp-desc"></div></div>
-    <div class="dp-sect"><div class="dp-sect-title">Personality Traits</div><div id="dp-traits"></div></div>
-    <div class="dp-sect"><div class="dp-sect-title">Good to know</div><div id="dp-facts" style="display:flex;flex-direction:column;gap:5px"></div></div>
-    <div style="display:flex;gap:8px;margin-top:14px">
-      <button onclick="location.href='11_vet_booking.html'" style="flex:1;height:40px;border-radius:8px;border:none;background:#8b4513;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer">🩺 Find Vet</button>
-      <button onclick="location.href='04_adoption.html'" style="flex:1;height:40px;border-radius:8px;border:1.5px solid #e8e4dc;background:#fff;color:#1a1a2e;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer">🏠 Adopt</button>
+<!-- ══ APPOINTMENT MODAL ══ -->
+<div class="appt-modal" id="appt-modal" onclick="if(event.target===this)closeApptModal()">
+  <div class="appt-box">
+    <div class="appt-head">
+      <div class="appt-head-title">📅 Book Appointment</div>
+      <button class="appt-close" onclick="closeApptModal()">✕</button>
+    </div>
+    <div id="appt-form-wrap">
+      <div class="appt-body">
+        <div class="appt-center-name" id="appt-center-name">Centre Name</div>
+        <div class="appt-row">
+          <label>Your Full Name</label>
+          <input type="text" id="appt-name" placeholder="Rahul Sharma">
+        </div>
+        <div class="appt-row">
+          <label>Mobile Number</label>
+          <input type="tel" id="appt-phone" placeholder="+91 98765 43210">
+        </div>
+        <div class="appt-row">
+          <label>Preferred Date</label>
+          <input type="date" id="appt-date">
+        </div>
+        <div class="appt-row">
+          <label>Preferred Time</label>
+          <select id="appt-time">
+            <option value="">Select time slot</option>
+            <option>09:00 AM – 10:00 AM</option>
+            <option>10:00 AM – 11:00 AM</option>
+            <option>11:00 AM – 12:00 PM</option>
+            <option>12:00 PM – 01:00 PM</option>
+            <option>02:00 PM – 03:00 PM</option>
+            <option>03:00 PM – 04:00 PM</option>
+            <option>04:00 PM – 05:00 PM</option>
+          </select>
+        </div>
+        <div class="appt-row">
+          <label>Breed Interested In</label>
+          <input type="text" id="appt-breed" placeholder="e.g. Labrador Retriever">
+        </div>
+        <div class="appt-row">
+          <label>Notes (optional)</label>
+          <textarea id="appt-notes" placeholder="Any questions or special requirements…"></textarea>
+        </div>
+        <button class="btn-confirm" onclick="confirmAppt()">✅ Confirm Appointment</button>
+      </div>
+    </div>
+    <div class="success-state" id="appt-success">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Appointment Booked!</div>
+      <div class="success-msg" id="appt-success-msg">Your appointment request has been sent. The adoption centre will contact you to confirm.</div>
+      <button class="btn-done" onclick="closeApptModal()">Done</button>
     </div>
   </div>
 </div>
 
-<div class="bnav">
-  <button class="bni" onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
-  <button class="bni" onclick="location.href='26_discover.html'"><i class="ti ti-world"></i>Discover</button>
-  <button class="bni on"><i class="ti ti-paw"></i>Breeds</button>
-  <button class="bni" onclick="location.href='04_adoption.html'"><i class="ti ti-heart"></i>Adopt</button>
-  <button class="bni" onclick="location.href='08_pet_profile.html'"><i class="ti ti-user"></i>Profile</button>
+<!-- BOTTOM NAV -->
+<nav class="bottomnav">
+  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
+  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
+  <a class="bnav-item active"><i class="ti ti-paw"></i><span>Breeds</span></a>
+  <a class="bnav-item" onclick="goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
+</nav>
+
+<!-- DRAWER -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
+      <div class="drawer-user-handle">@pawbook</div>
+    </div>
+  </div>
+    <div class="drawer-body">
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
+  </div>
 </div>
 
 <script src="pawbook-api.js"></script>
 <script>
-// ═══════════════════════════════════════════════════════════════════════════
-// BREED DATABASE — every breed has a UNIQUE Unsplash photo URL
-// ═══════════════════════════════════════════════════════════════════════════
-const DOGS=[
-// ── SPORTING ──────────────────────────────────────────────────────────────
-{id:'labrador',name:'Labrador Retriever',origin:'Canada',size:'large',group:'sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Labrador_on_Quantock_%282175262184%29.jpg/400px-Labrador_on_Quantock_%282175262184%29.jpg',
- lifespan:'10–12 yrs',weight:'25–36 kg',height:'55–62 cm',
- traits:{Energy:90,Affection:95,Trainability:95,Grooming:40,Barking:50},
- facts:["World's #1 most popular breed for 30+ years","Coat is naturally water-repellent","Excellent guide and therapy dogs","Originally from Newfoundland, Canada"],
- colors:'Yellow, Black, Chocolate',badge:{text:'Most Popular',bg:'#059669',fg:'#fff'},
- desc:"The world's most popular breed for three decades. Labs are friendly, outgoing, and active — they excel as guide dogs, drug detection dogs, and devoted family companions."},
-
-{id:'golden',name:'Golden Retriever',origin:'Scotland',size:'large',group:'sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/400px-Golden_Retriever_Dukedestiny01_drvd.jpg',
- lifespan:'10–12 yrs',weight:'25–34 kg',height:'51–61 cm',
- traits:{Energy:85,Affection:99,Trainability:90,Grooming:70,Barking:45},
- facts:["Third most popular AKC breed","Double coat sheds seasonally","Natural therapy dog temperament","Love to carry things in their mouths"],
- colors:'Golden, Cream, Dark Gold',badge:{text:'Family Favourite',bg:'#d97706',fg:'#fff'},
- desc:"One of the most beloved breeds worldwide. Their lustrous golden coats and sunny personalities make them a perennial family favourite and star of countless movies."},
-
-{id:'cocker',name:'Cocker Spaniel',origin:'Spain/UK',size:'medium',group:'sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/American-cocker-spaniel-hero.jpg/400px-American-cocker-spaniel-hero.jpg',
- lifespan:'12–15 yrs',weight:'11–14 kg',height:'36–43 cm',
- traits:{Energy:70,Affection:90,Trainability:80,Grooming:85,Barking:60},
- facts:["\"Lady\" in Lady and the Tramp","Two types: American and English","Prone to ear infections","Loves to please their owners"],
- colors:'Black, Golden, Parti-color, Buff',badge:{text:'Gentle Spirit',bg:'#6366f1',fg:'#fff'},
- desc:"Merry and cheerful, the Cocker Spaniel is a versatile sporting dog with silky coat and expressive eyes. Equally at home flushing birds or curled up on the sofa."},
-
-{id:'weimaraner',name:'Weimaraner',origin:'Germany',size:'large',group:'sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Weimaraner_wb.jpg/400px-Weimaraner_wb.jpg',
- lifespan:'11–13 yrs',weight:'25–40 kg',height:'57–69 cm',
- traits:{Energy:95,Affection:85,Trainability:80,Grooming:30,Barking:65},
- facts:["Called the \"Silver Ghost\"","Originally bred for big game hunting","Very high energy — need lots of exercise","Known as \"dog of royalty\" in Germany"],
- colors:'Mouse-grey, Silver-grey',badge:{text:'Silver Ghost',bg:'#64748b',fg:'#fff'},
- desc:"The 'Silver Ghost' of the dog world. Weimaraners are athletic, intelligent, and deeply loyal with a striking silver-grey coat and pale blue or amber eyes."},
-
-{id:'irishsetter',name:'Irish Setter',origin:'Ireland',size:'large',group:'sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Irish_Setter_wb.jpg/400px-Irish_Setter_wb.jpg',
- lifespan:'12–15 yrs',weight:'27–32 kg',height:'61–69 cm',
- traits:{Energy:90,Affection:88,Trainability:70,Grooming:60,Barking:40},
- facts:["National dog of Ireland","One of the fastest dog breeds","Matures slowly — puppy-like for years","Featured in the film \"Big Red\""],
- colors:'Mahogany, Rich Chestnut Red',badge:{text:'Irish Red',bg:'#b91c1c',fg:'#fff'},
- desc:"The rollicking Irish Setter — a mahogany-red coat, elegant gait, and boundless enthusiasm make them a joy. Bred to work the Irish uplands for game birds."},
-
-{id:'vizsla',name:'Vizsla',origin:'Hungary',size:'large',group:'sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Vizsla_femal_3_months.jpg/400px-Vizsla_femal_3_months.jpg',
- lifespan:'12–15 yrs',weight:'20–27 kg',height:'53–64 cm',
- traits:{Energy:90,Affection:95,Trainability:88,Grooming:20,Barking:48},
- facts:["National symbol of Hungary","Dubbed the \"Velcro Vizsla\"","First breed to win AKC quintuple titles","Rust-golden coat with matching nose"],
- colors:'Golden rust',badge:{text:'Hungarian Gold',bg:'#d97706',fg:'#fff'},
- desc:"Hungary's golden pointer. Vizslas are athletic and versatile hunters. Dubbed the 'Velcro Vizsla' for insisting on constant physical contact with their owners."},
-
-// ── WORKING ────────────────────────────────────────────────────────────────
-{id:'rottweiler',name:'Rottweiler',origin:'Germany',size:'large',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Rottweiler_head_jan_2006.jpg/400px-Rottweiler_head_jan_2006.jpg',
- lifespan:'9–10 yrs',weight:'38–60 kg',height:'56–69 cm',
- traits:{Energy:75,Affection:80,Trainability:85,Grooming:35,Barking:50},
- facts:["Descended from Roman drover dogs","Used as police and military dogs","Bite force of 148 kg/cm²","Excellent service and therapy dogs"],
- colors:'Black with rust/mahogany markings',badge:{text:'Protector',bg:'#1f2937',fg:'#fff'},
- desc:"One of the oldest herding breeds, descended from Roman drover dogs. Powerful, confident, and loyal — natural protectors who are gentle with family."},
-
-{id:'boxer',name:'Boxer',origin:'Germany',size:'large',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Fawn_Boxer_standing_cropped.jpg/400px-Fawn_Boxer_standing_cropped.jpg',
- lifespan:'10–12 yrs',weight:'25–32 kg',height:'53–63 cm',
- traits:{Energy:88,Affection:92,Trainability:78,Grooming:30,Barking:55},
- facts:["Name from their habit of pawing","Third most popular AKC working breed","One of first police dog breeds in Germany","Can jump very high despite stocky build"],
- colors:'Fawn, Brindle, White',badge:{text:'Eternal Puppy',bg:'#d97706',fg:'#fff'},
- desc:"Playful, energetic, and endlessly devoted. Boxers are the clowns of the dog world — always entertaining with their antics and maintaining puppy energy for life."},
-
-{id:'husky',name:'Siberian Husky',origin:'Russia',size:'medium',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Siberian-husky.jpg/400px-Siberian-husky.jpg',
- lifespan:'12–14 yrs',weight:'16–27 kg',height:'51–60 cm',
- traits:{Energy:95,Affection:85,Trainability:65,Grooming:75,Barking:40},
- facts:["Can run 160km per day in sled races","Eyes can be blue, brown or heterochromatic","Howl instead of bark","Survived the 1925 Diphtheria serum run"],
- colors:'Black, White, Red, Sable, Grey',badge:{text:'Sled Dog',bg:'#1d4ed8',fg:'#fff'},
- desc:"Ancient sled dogs of the Chukchi people. Huskies are friendly, energetic wolves at heart — designed to run vast distances in Arctic conditions."},
-
-{id:'greatdane',name:'Great Dane',origin:'Germany',size:'giant',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Jenis_Anjing_Peliharaan_-_Great_Dane.jpg/400px-Jenis_Anjing_Peliharaan_-_Great_Dane.jpg',
- lifespan:'7–10 yrs',weight:'50–82 kg',height:'71–86 cm',
- traits:{Energy:65,Affection:90,Trainability:75,Grooming:30,Barking:40},
- facts:["Scooby-Doo is a Great Dane","Tallest dog ever recorded was 111.8 cm","Needs less exercise than expected","Originally bred to hunt wild boar"],
- colors:'Fawn, Brindle, Blue, Black, Harlequin',badge:{text:'Gentle Giant',bg:'#374151',fg:'#fff'},
- desc:"The 'Apollo of Dogs.' Great Danes are the tallest breed in the world — yet their most defining quality is their enormous heart and gentle, patient personality."},
-
-{id:'bernese',name:'Bernese Mountain Dog',origin:'Switzerland',size:'large',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Berner_Sennenhund_4.jpg/400px-Berner_Sennenhund_4.jpg',
- lifespan:'7–10 yrs',weight:'32–52 kg',height:'58–70 cm',
- traits:{Energy:70,Affection:95,Trainability:82,Grooming:75,Barking:40},
- facts:["One of four Swiss mountain dog breeds","Can pull up to 10× their body weight","Slow to mature — puppy behaviour until 2–3 yrs","Thrives in cold weather"],
- colors:'Tricolour: Black, White and Rust',badge:{text:'Alpine Guard',bg:'#1a1a2e',fg:'#fff'},
- desc:"Bred for farm work in the Swiss Alps, Berners are good-natured, calm, and strong. Their tricolour coats are as distinctive as their loyal personalities."},
-
-{id:'doberman',name:'Doberman Pinscher',origin:'Germany',size:'large',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Dobermann_handling.jpg/400px-Dobermann_handling.jpg',
- lifespan:'10–12 yrs',weight:'27–45 kg',height:'61–72 cm',
- traits:{Energy:88,Affection:85,Trainability:95,Grooming:25,Barking:50},
- facts:["Created by Louis Dobermann in 1890s","Used as war dogs in WWII","Fastest maturing large breed","Named \"Devil Dogs\" by US Marines in WWII"],
- colors:'Black & Rust, Red & Rust, Blue & Rust',badge:{text:'Noble Guard',bg:'#1f2937',fg:'#fff'},
- desc:"Elegant, athletic, and loyal — the Doberman is among the most capable working dogs. Bred by a German tax collector who wanted a fierce protector."},
-
-{id:'samyoed',name:'Samoyed',origin:'Russia',size:'large',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Samoyed_Flickr_com_2.jpg/400px-Samoyed_Flickr_com_2.jpg',
- lifespan:'12–14 yrs',weight:'16–30 kg',height:'48–60 cm',
- traits:{Energy:85,Affection:92,Trainability:72,Grooming:90,Barking:65},
- facts:["Upturned mouth corners prevent drooling — permanent smile","White coat repels dirt","Samoyedic people slept with dogs for warmth","Originally herded reindeer"],
- colors:'White, Cream, Biscuit',badge:{text:'Smiling Sled Dog',bg:'#1d4ed8',fg:'#fff'},
- desc:"The 'Smiling Sammie' — Samoyeds have upturned mouth corners giving them a permanent smile. Bred by the Samoyedic peoples of Siberia, they are fluffy and tireless."},
-
-{id:'akita',name:'Akita',origin:'Japan',size:'large',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Akita_Inu_dog.jpg/400px-Akita_Inu_dog.jpg',
- lifespan:'10–14 yrs',weight:'32–59 kg',height:'58–70 cm',
- traits:{Energy:75,Affection:75,Trainability:72,Grooming:65,Barking:40},
- facts:["Hachiko — the most loyal dog in history","National treasure of Japan","Helen Keller brought the first Akita to America","Symbol of good health and happiness"],
- colors:'Any colour including white, brindle, sesame',badge:{text:'Symbol of Loyalty',bg:'#dc2626',fg:'#fff'},
- desc:"Japan's national dog and symbol of loyalty. The famous Hachiko was an Akita who waited at a Tokyo train station for 9 years after his owner's death."},
-
-{id:'malamute',name:'Alaskan Malamute',origin:'Alaska, USA',size:'giant',group:'working',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Alaskan_Malamute.jpg/400px-Alaskan_Malamute.jpg',
- lifespan:'10–14 yrs',weight:'32–43 kg',height:'58–64 cm',
- traits:{Energy:90,Affection:80,Trainability:60,Grooming:75,Barking:35},
- facts:["Among the most ancient breeds","Can carry 33 kg over long distances","Often confused with Huskies — much bigger","Used by Admiral Byrd in Antarctic expeditions"],
- colors:'Grey & White, Sable & White, Black & White',badge:{text:'Arctic Power',bg:'#1d4ed8',fg:'#fff'},
- desc:"One of the oldest Arctic sled dogs, bred by the Mahlemut tribe. Malamutes are powerful, dignified, and pack-oriented — the heaviest sled dog breed."},
-
-// ── HERDING ────────────────────────────────────────────────────────────────
-{id:'gsd',name:'German Shepherd',origin:'Germany',size:'large',group:'herding',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/German_Shepherd_-_DSC_0346_%2810096362833%29.jpg/400px-German_Shepherd_-_DSC_0346_%2810096362833%29.jpg',
- lifespan:'9–13 yrs',weight:'22–40 kg',height:'55–65 cm',
- traits:{Energy:88,Affection:85,Trainability:98,Grooming:65,Barking:60},
- facts:["Second most popular AKC breed","Can learn commands in under 5 repetitions","Featured in police forces worldwide","Rin Tin Tin was a German Shepherd"],
- colors:'Black and Tan, Sable, All Black, All White',badge:{text:'Elite Worker',bg:'#1f2937',fg:'#fff'},
- desc:"The quintessential working dog. German Shepherds combine intelligence, courage, loyalty, and adaptability — serving as police, military, guide and family dogs."},
-
-{id:'bordercollie',name:'Border Collie',origin:'UK/Scotland',size:'medium',group:'herding',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty-border-collie.jpg/400px-24701-nature-natural-beauty-border-collie.jpg',
- lifespan:'12–15 yrs',weight:'12–20 kg',height:'46–56 cm',
- traits:{Energy:99,Affection:78,Trainability:99,Grooming:55,Barking:50},
- facts:["Ranked #1 in dog intelligence","Can learn over 1,000 words","\"Chaser\" learned 1,022 object names","Use \"the eye\" stare to control sheep"],
- colors:'Black & White, Red & White, Blue Merle',badge:{text:'World\'s Smartest',bg:'#065f46',fg:'#fff'},
- desc:"Widely considered the most intelligent dog breed. Border Collies are intense, energetic, and relentlessly focused — bred to herd sheep with extraordinary mental ability."},
-
-{id:'aussie',name:'Australian Shepherd',origin:'USA',size:'medium',group:'herding',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Australian_Shepherd_600.jpg/400px-Australian_Shepherd_600.jpg',
- lifespan:'13–15 yrs',weight:'16–32 kg',height:'46–58 cm',
- traits:{Energy:95,Affection:87,Trainability:95,Grooming:65,Barking:55},
- facts:["Not actually from Australia","Naturally bobbed tail in some individuals","Blue and amber eye combination is common","Excel at agility, flyball, frisbee"],
- colors:'Blue Merle, Red Merle, Black, Red',badge:{text:'Merle Marvel',bg:'#1d4ed8',fg:'#fff'},
- desc:"Despite the name, Aussies were developed in the American West. These high-energy working dogs have remarkable herding ability and striking merle patterns."},
-
-{id:'corgi',name:'Pembroke Welsh Corgi',origin:'Wales, UK',size:'small',group:'herding',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Pembroke_Welsh_Corgi_Photo.jpg/400px-Pembroke_Welsh_Corgi_Photo.jpg',
- lifespan:'12–13 yrs',weight:'9–14 kg',height:'25–30 cm',
- traits:{Energy:78,Affection:90,Trainability:85,Grooming:55,Barking:70},
- facts:["Queen Elizabeth II owned 30+ Corgis","Legend: fairy mounts in Welsh mythology","Double coat sheds heavily twice a year","Herds cattle by nipping at heels"],
- colors:'Red, Sable, Fawn, Black & Tan',badge:{text:'Royal Breed',bg:'#7c3aed',fg:'#fff'},
- desc:"The Queen's breed. Corgis are alert, intelligent, and full of personality — despite short legs, they are fearless herding dogs with fox-like faces and big ears."},
-
-{id:'sheltie',name:'Shetland Sheepdog',origin:'Scotland',size:'small',group:'herding',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Shetland_Sheepdog_Sheltie.jpg/400px-Shetland_Sheepdog_Sheltie.jpg',
- lifespan:'12–14 yrs',weight:'6–12 kg',height:'33–41 cm',
- traits:{Energy:75,Affection:88,Trainability:90,Grooming:70,Barking:75},
- facts:["One of the most agile dog breeds","Sensitive to the moods of their family","Excel at obedience competitions","Originally herded sheep on the Shetland Islands"],
- colors:'Sable, Tricolour, Blue Merle, Black & White',badge:{text:'Mini Collie',bg:'#92400e',fg:'#fff'},
- desc:"The Sheltie is often described as a miniature Rough Collie. Loyal, responsive, and remarkably quick to learn — they are highly sensitive and deeply devoted."},
-
-// ── TERRIER ────────────────────────────────────────────────────────────────
-{id:'westie',name:'West Highland White Terrier',origin:'Scotland',size:'small',group:'terrier',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Westie_Portrait_Ethan_Ableman.jpg/400px-Westie_Portrait_Ethan_Ableman.jpg',
- lifespan:'13–15 yrs',weight:'6–10 kg',height:'25–28 cm',
- traits:{Energy:72,Affection:82,Trainability:70,Grooming:65,Barking:68},
- facts:["Famous as the Cesar dog food mascot","Can squeeze into very tight spaces","White coat to distinguish from prey","Independent and strong-willed"],
- colors:'White only',badge:{text:'Scottish Scrapper',bg:'#374151',fg:'#fff'},
- desc:"Westies are compact, rugged terriers with a sparkling white double coat. Self-confident, fun-loving, and full of the typical terrier fire and grit."},
-
-{id:'airedale',name:'Airedale Terrier',origin:'England',size:'large',group:'terrier',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Airedal.jpg/400px-Airedal.jpg',
- lifespan:'11–14 yrs',weight:'18–29 kg',height:'56–61 cm',
- traits:{Energy:85,Affection:80,Trainability:78,Grooming:60,Barking:55},
- facts:["First breed used by British police","Served in WWI & WWII as messengers","President Theodore Roosevelt owned one","King of Terriers — the largest terrier"],
- colors:'Tan with black or dark grizzle saddle',badge:{text:'King of Terriers',bg:'#92400e',fg:'#fff'},
- desc:"The 'King of Terriers' — Airedales are the largest terrier breed, combining tenacity and intelligence with versatility. They served in both World Wars."},
-
-{id:'scottish',name:'Scottish Terrier',origin:'Scotland',size:'small',group:'terrier',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Scottish_Terrier_Photo.jpg/400px-Scottish_Terrier_Photo.jpg',
- lifespan:'11–13 yrs',weight:'8–10 kg',height:'25–28 cm',
- traits:{Energy:65,Affection:75,Trainability:65,Grooming:70,Barking:55},
- facts:["FDR's dog Fala was a Scottie","A Scottie was in original Monopoly","Independent to the point of stubbornness","Known as the \"Diehard\" of terriers"],
- colors:'Black, Wheaten, Brindle',badge:{text:'Diehard',bg:'#1f2937',fg:'#fff'},
- desc:"Bold, confident, and independent — the Scottie has an unmistakable silhouette. They have appeared on Monopoly boards and in White House history."},
-
-// ── HOUND ──────────────────────────────────────────────────────────────────
-{id:'beagle',name:'Beagle',origin:'England',size:'small',group:'hound',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/000_Beagle_Milo.jpg/400px-000_Beagle_Milo.jpg',
- lifespan:'12–15 yrs',weight:'9–11 kg',height:'33–41 cm',
- traits:{Energy:78,Affection:90,Trainability:68,Grooming:30,Barking:75},
- facts:["Snoopy is a Beagle","Used in airport scent detection","Excellent nose — 220 million scent receptors","One of the most popular breeds worldwide"],
- colors:'Tricolour, Red & White, Lemon & White',badge:{text:'Super Sniffer',bg:'#b45309',fg:'#fff'},
- desc:"Merry, friendly, and curious — the Beagle is a scent hound developed primarily for hunting rabbits. Their gentle temperament makes them one of the most popular breeds."},
-
-{id:'greyhound',name:'Greyhound',origin:'Egypt',size:'large',group:'hound',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Grey_greyhound.jpg/400px-Grey_greyhound.jpg',
- lifespan:'10–14 yrs',weight:'27–40 kg',height:'68–76 cm',
- traits:{Energy:70,Affection:84,Trainability:72,Grooming:20,Barking:25},
- facts:["One of the oldest breeds — depicted in Egyptian tombs 4,000 yrs ago","Fastest dog: up to 72 km/h","Largest heart of any dog per body weight","Called \"45 mph couch potatoes\""],
- colors:'Fawn, Red, Blue, White, Black, Brindle',badge:{text:'World\'s Fastest',bg:'#7c3aed',fg:'#fff'},
- desc:"One of the oldest breeds — depicted in Egyptian tombs 4,000 years ago. Greyhounds are gentle, quiet, and surprisingly calm at home despite being fastest dogs."},
-
-{id:'dachshund',name:'Dachshund',origin:'Germany',size:'small',group:'hound',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Dachshund_Szczecin_ul.Rayskiego.jpg/400px-Dachshund_Szczecin_ul.Rayskiego.jpg',
- lifespan:'12–16 yrs',weight:'3–15 kg',height:'20–22 cm',
- traits:{Energy:68,Affection:85,Trainability:62,Grooming:40,Barking:72},
- facts:["Name means \"badger dog\" in German","Hot dog sausage was named after them","Two sizes: standard and miniature","Prone to back problems (IVDD)"],
- colors:'Red, Black & Tan, Chocolate, Dapple',badge:{text:'Badger Dog',bg:'#78350f',fg:'#fff'},
- desc:"Long body, short legs, bold personality. Dachshunds were bred to hunt badgers in Germany. They come in two sizes and three coat types, all with a feisty spirit."},
-
-{id:'dalmatian',name:'Dalmatian',origin:'Croatia',size:'large',group:'hound',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Dalmatian_Manfred_Heyde.jpg/400px-Dalmatian_Manfred_Heyde.jpg',
- lifespan:'11–13 yrs',weight:'23–27 kg',height:'48–61 cm',
- traits:{Energy:90,Affection:82,Trainability:78,Grooming:45,Barking:48},
- facts:["Puppies are born completely white","Some are born deaf — up to 30%","American firehouse dog tradition","Made famous by 101 Dalmatians"],
- colors:'White with black or liver spots',badge:{text:'Spotted Icon',bg:'#1f2937',fg:'#fff'},
- desc:"Born pure white, Dalmatians develop their distinctive spots over the first weeks of life. Originally bred to run alongside horse-drawn coaches, they are tireless athletes."},
-
-{id:'basenji',name:'Basenji',origin:'Congo, Africa',size:'small',group:'hound',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/NDR_Basenji.jpg/400px-NDR_Basenji.jpg',
- lifespan:'13–14 yrs',weight:'9–11 kg',height:'40–43 cm',
- traits:{Energy:80,Affection:72,Trainability:52,Grooming:20,Barking:5},
- facts:["Only dog breed that cannot bark","Makes a yodel called \"baroo\"","Cleans itself like a cat","Shown in ancient Egyptian pharaoh tombs"],
- colors:'Red & White, Black & White, Tricolour',badge:{text:'Barkless Wonder',bg:'#b45309',fg:'#fff'},
- desc:"The barkless dog from central Africa. Basenjis produce a unique yodel-like 'baroo' instead of barking. One of the oldest breeds, shown in Egyptian tomb paintings."},
-
-{id:'ridgeback',name:'Rhodesian Ridgeback',origin:'Zimbabwe/South Africa',size:'large',group:'hound',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Rhodesian_Ridgeback_WEB.jpg/400px-Rhodesian_Ridgeback_WEB.jpg',
- lifespan:'10–12 yrs',weight:'29–41 kg',height:'61–69 cm',
- traits:{Energy:80,Affection:80,Trainability:72,Grooming:25,Barking:38},
- facts:["Only breed with a ridge of hair growing forward","Bred to track and bay lions","South Africa's national dog","Also known as \"African Lion Hound\""],
- colors:'Wheaten (light to red)',badge:{text:'Lion Hunter',bg:'#b45309',fg:'#fff'},
- desc:"The 'Lion Dog' of Africa. Ridgebacks were bred to hunt lions in southern Africa — not to kill, but to hold them at bay. The ridge of reversed fur is their trademark."},
-
-// ── TOY GROUP ─────────────────────────────────────────────────────────────
-{id:'chihuahua',name:'Chihuahua',origin:'Mexico',size:'toy',group:'toy',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_Chihuahua.jpg/400px-A_small_cup_of_Chihuahua.jpg',
- lifespan:'14–16 yrs',weight:'1.5–3 kg',height:'15–23 cm',
- traits:{Energy:65,Affection:88,Trainability:60,Grooming:30,Barking:78},
- facts:["Smallest dog breed in the world","Named after the Mexican state of Chihuahua","Can live up to 20 years","Longest lifespan of any dog breed"],
- colors:'Any colour: black, fawn, white, cream, chocolate',badge:{text:'Tiny Giant',bg:'#dc2626',fg:'#fff'},
- desc:"The smallest dog breed in the world packs an enormous personality into a tiny package. Chihuahuas are fiercely loyal, alert, and surprisingly bold little companions."},
-
-{id:'pomeranian',name:'Pomeranian',origin:'Germany',size:'toy',group:'toy',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Pomeranian.jpg/400px-Pomeranian.jpg',
- lifespan:'12–16 yrs',weight:'1.4–3.2 kg',height:'18–30 cm',
- traits:{Energy:70,Affection:88,Trainability:75,Grooming:85,Barking:80},
- facts:["Queen Victoria made them popular in Britain","Two Pomeranians survived the Titanic","Mozart owned a Pomeranian named Pimperl","Double coat requires regular brushing"],
- colors:'Orange, Red, Cream, White, Black, Blue',badge:{text:'Fluffy Royalty',bg:'#d97706',fg:'#fff'},
- desc:"The fluffy, fox-faced Pomeranian is descended from large sled dogs but bred down to toy size by Queen Victoria. Behind the cloud of fur is an active, confident little dog."},
-
-{id:'pug',name:'Pug',origin:'China',size:'toy',group:'toy',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Mops_oct09_cropped2.jpg/400px-Mops_oct09_cropped2.jpg',
- lifespan:'13–15 yrs',weight:'6–9 kg',height:'25–33 cm',
- traits:{Energy:45,Affection:95,Trainability:65,Grooming:50,Barking:55},
- facts:["Napoleon's wife Josephine had a Pug","A group of Pugs is called a \"grumble\"","Brachycephalic — can have breathing issues","Emperor of China kept Pugs as royal pets"],
- colors:'Fawn, Black, Silver, Apricot',badge:{text:'Emperor\'s Dog',bg:'#92400e',fg:'#fff'},
- desc:"The Pug's motto: 'Much in Little.' These charming, mischievous dogs have been companion dogs to royalty and monks alike for centuries."},
-
-{id:'maltese',name:'Maltese',origin:'Malta',size:'toy',group:'toy',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Maltese_600.jpg/400px-Maltese_600.jpg',
- lifespan:'12–15 yrs',weight:'2–3.6 kg',height:'20–25 cm',
- traits:{Energy:55,Affection:90,Trainability:78,Grooming:90,Barking:70},
- facts:["Over 2,000 years of documented history","Greeks built tombs for their Maltese","Hypoallergenic coat — minimal shedding","Sold for £2,000 equivalent in ancient Rome"],
- colors:'White',badge:{text:'Ancient Noble',bg:'#1a4db3',fg:'#fff'},
- desc:"One of the oldest toy breeds — Maltese have been companion dogs for over 2,000 years. Their silky white coats and dark expressive eyes give them an aristocratic elegance."},
-
-{id:'shihtzhu',name:'Shih Tzu',origin:'China/Tibet',size:'toy',group:'toy',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Shih-Tzu.jpg/400px-Shih-Tzu.jpg',
- lifespan:'10–18 yrs',weight:'4–8 kg',height:'20–28 cm',
- traits:{Energy:48,Affection:92,Trainability:68,Grooming:90,Barking:55},
- facts:["Sacred to Tibetan Buddhists","Given as gifts to Chinese emperors","Name means \"Lion Dog\" in Chinese","Nearly extinct during Chinese revolution"],
- colors:'Any colour: gold, white, black, liver, brindle',badge:{text:'Imperial Dog',bg:'#b45309',fg:'#fff'},
- desc:"Bred by Tibetan monks as sacred palace dogs, the Shih Tzu was the house pet of Chinese emperors for centuries. They carry themselves with regal elegance."},
-
-// ── NON-SPORTING ───────────────────────────────────────────────────────────
-{id:'frenchbulldog',name:'French Bulldog',origin:'France',size:'small',group:'non-sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/French_Bulldog.jpg/400px-French_Bulldog.jpg',
- lifespan:'10–12 yrs',weight:'8–13 kg',height:'28–33 cm',
- traits:{Energy:52,Affection:95,Trainability:68,Grooming:25,Barking:45},
- facts:["#1 breed in USA since 2022","Cannot swim — will sink in water","Most Frenchies born via C-section","Trace back to English Bulldogs"],
- colors:'Fawn, Brindle, White, Cream, Pied',badge:{text:'City Dog #1',bg:'#1d4ed8',fg:'#fff'},
- desc:"The bat-eared Frenchie is the most popular breed in many countries. Adaptable, playful, and deeply attached to their people — perfect for city apartment living."},
-
-{id:'bulldog',name:'English Bulldog',origin:'England',size:'medium',group:'non-sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Bulldog_inglese.jpg/400px-Bulldog_inglese.jpg',
- lifespan:'8–10 yrs',weight:'18–25 kg',height:'31–40 cm',
- traits:{Energy:35,Affection:90,Trainability:60,Grooming:40,Barking:35},
- facts:["National symbol of Britain","Winston Churchill compared himself to one","Cannot tolerate heat very well","95% of Bulldogs born via C-section"],
- colors:'Fawn, White, Red, Brindle, Piebald',badge:{text:'British Icon',bg:'#1f2937',fg:'#fff'},
- desc:"The ultimate symbol of British tenacity. Once bred for bull-baiting, today's Bulldogs are gentle, loyal, and easygoing despite their fierce appearance."},
-
-{id:'poodle',name:'Poodle (Standard)',origin:'Germany/France',size:'large',group:'non-sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Poodle_white_Galizs.jpg/400px-Poodle_white_Galizs.jpg',
- lifespan:'12–15 yrs',weight:'20–32 kg',height:'38–70 cm',
- traits:{Energy:80,Affection:88,Trainability:99,Grooming:95,Barking:55},
- facts:["Second most intelligent dog breed","Originally bred to retrieve waterfowl","Hypoallergenic — minimal shedding","The pompom cut has functional origins"],
- colors:'Apricot, Black, Blue, Brown, Cream, Grey, Red, Silver, White',badge:{text:'French Elegance',bg:'#6366f1',fg:'#fff'},
- desc:"Among the most intelligent breeds. Poodles were bred as water retrievers in Germany before becoming the national dog of France — brilliant mind, elegant bearing."},
-
-{id:'shiba',name:'Shiba Inu',origin:'Japan',size:'small',group:'non-sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Taka_Shiba.jpg/400px-Taka_Shiba.jpg',
- lifespan:'13–16 yrs',weight:'8–11 kg',height:'33–43 cm',
- traits:{Energy:78,Affection:72,Trainability:58,Grooming:50,Barking:50},
- facts:["Origin of the famous Doge meme","Japan's most popular native breed","Famous \"Shiba scream\" when upset","Japan's smallest native breed"],
- colors:'Red, Sesame, Black & Tan, Cream',badge:{text:'Doge Legend',bg:'#d97706',fg:'#fff'},
- desc:"The internet's favourite dog — the Shiba Inu became globally famous through the Doge meme. Japan's smallest native breed, agile, alert, and famously spirited."},
-
-{id:'chowchow',name:'Chow Chow',origin:'China',size:'large',group:'non-sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Chow_Chow.jpg/400px-Chow_Chow.jpg',
- lifespan:'8–12 yrs',weight:'20–32 kg',height:'43–51 cm',
- traits:{Energy:45,Affection:68,Trainability:55,Grooming:80,Barking:40},
- facts:["One of the oldest recognized breeds","Blue-black tongue — unique among dogs","Featured in Chinese pottery 2,000 years old","Han dynasty used them as temple guards"],
- colors:'Red, Black, Blue, Cinnamon, Cream',badge:{text:'Lion Dog of China',bg:'#dc2626',fg:'#fff'},
- desc:"One of the most ancient breeds with a lion-like mane and unique blue-black tongue. Aloof and independent, they are deeply loyal to family but reserved with strangers."},
-
-{id:'dalmatian2',name:'Shar-Pei',origin:'China',size:'medium',group:'non-sporting',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Shar_Pei_puppy_%28cropped%29.jpg/400px-Shar_Pei_puppy_%28cropped%29.jpg',
- lifespan:'8–12 yrs',weight:'18–29 kg',height:'44–51 cm',
- traits:{Energy:50,Affection:75,Trainability:62,Grooming:45,Barking:40},
- facts:["Name means \"sand skin\" in Cantonese","Blue-black tongue like Chow Chow","Nearly extinct in 1970s — saved by Hong Kong breeders","Bred as multipurpose farm dog in China"],
- colors:'Solid: fawn, red, black, cream, blue',badge:{text:'Wrinkle King',bg:'#92400e',fg:'#fff'},
- desc:"The most wrinkled dog in the world. Shar-Peis were bred as multipurpose farm dogs in ancient China — herding, hunting, and guarding. Their hippo muzzle is unmistakable."},
-];
-
-const CATS=[
-{id:'persian',name:'Persian',origin:'Iran (Persia)',size:'medium',group:'longhair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/White_Persian_Cat.jpg/400px-White_Persian_Cat.jpg',
- lifespan:'12–17 yrs',weight:'3–5 kg',height:'25–38 cm',
- traits:{Energy:30,Affection:90,Trainability:55,Grooming:99,Vocality:35},
- facts:["One of the oldest cat breeds","Flat face can cause breathing issues","Require daily grooming — mats quickly","80+ colour and pattern varieties"],
- colors:'Colourpoint, Solid, Shaded, Tabby, Bicolour',badge:{text:'Regal Classic',bg:'#7c3aed',fg:'#fff'},
- desc:"The quintessential lap cat. Persians are calm, sweet, and devoted. Their magnificent coats require daily grooming, but their gentle personalities make the effort worthwhile."},
-
-{id:'siamese',name:'Siamese',origin:'Thailand',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/400px-Siam_lilacpoint.jpg',
- lifespan:'15–20 yrs',weight:'3–5 kg',height:'28–33 cm',
- traits:{Energy:75,Affection:90,Trainability:80,Grooming:20,Vocality:99},
- facts:["One of Asia's oldest documented breeds","Most talkative of all cat breeds","Blue eyes are a breed hallmark","Form incredibly strong bonds with one human"],
- colors:'Seal Point, Blue Point, Chocolate Point, Lilac Point',badge:{text:'Sacred Cat of Siam',bg:'#1d4ed8',fg:'#fff'},
- desc:"The Siamese is one of the oldest and most distinctive cat breeds. Sleek, pointed, and vocal — they form incredibly strong bonds with their humans."},
-
-{id:'mainecoon',name:'Maine Coon',origin:'USA',size:'large',group:'longhair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Maine_Coon_cat_by_Tomitheos.JPG/400px-Maine_Coon_cat_by_Tomitheos.JPG',
- lifespan:'12–15 yrs',weight:'4–9 kg',height:'25–41 cm',
- traits:{Energy:72,Affection:88,Trainability:85,Grooming:65,Vocality:55},
- facts:["Largest domestic cat breed","Record: Ludo measured 118.33 cm","Polydactyl (extra toes) is common","Chirp and trill instead of meow"],
- colors:'Over 75 colour combinations',badge:{text:'Gentle Giant',bg:'#92400e',fg:'#fff'},
- desc:"The gentle giant of cat breeds — Maine Coons are the largest domestic cat breed. Dog-like in personality, they follow owners around and even walk on a leash."},
-
-{id:'ragdoll',name:'Ragdoll',origin:'USA',size:'large',group:'longhair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Ragdoll_from_Gatil_Ragbelas.jpg/400px-Ragdoll_from_Gatil_Ragbelas.jpg',
- lifespan:'12–17 yrs',weight:'4–9 kg',height:'23–28 cm',
- traits:{Energy:40,Affection:98,Trainability:75,Grooming:55,Vocality:40},
- facts:["Go limp when held — hence the name","One of the largest domestic cat breeds","Slow to mature — full size at 4 years","Bred by Ann Baker in California 1960s"],
- colors:'Colourpoint, Mitted, Bicolour in seal, blue, chocolate, lilac',badge:{text:'Floppy Angel',bg:'#7c3aed',fg:'#fff'},
- desc:"Named for their tendency to go limp when picked up, Ragdolls are the most docile of all breeds. Blue-eyed, pointed, and incredibly gentle — often called 'puppy cats.'"},
-
-{id:'bengal',name:'Bengal',origin:'USA',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Paintedcats_Red_Star_standing.jpg/400px-Paintedcats_Red_Star_standing.jpg',
- lifespan:'12–16 yrs',weight:'3–7 kg',height:'33–40 cm',
- traits:{Energy:95,Affection:78,Trainability:88,Grooming:30,Vocality:70},
- facts:["Hybrid of domestic cat and Asian Leopard Cat","Many Bengals love water","Coat has a distinctive glitter effect","Must be F4+ generation to keep as pet"],
- colors:'Brown, Snow, Silver, Charcoal — spotted or marbled',badge:{text:'Mini Leopard',bg:'#065f46',fg:'#fff'},
- desc:"Created by crossing domestic cats with Asian Leopard Cats, Bengals have a wild appearance with rosettes like a mini-leopard. Highly active and curious."},
-
-{id:'britishsh',name:'British Shorthair',origin:'UK',size:'large',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Britishblue.jpg/400px-Britishblue.jpg',
- lifespan:'14–20 yrs',weight:'3–8 kg',height:'30–38 cm',
- traits:{Energy:45,Affection:78,Trainability:62,Grooming:45,Vocality:35},
- facts:["Inspiration for the Cheshire Cat","One of the oldest British cat breeds","Round face and dense plush coat","Full size at 3–5 years — slow to mature"],
- colors:'Blue, Black, White, Cream, Red, Tabby — 30+ colours',badge:{text:'British Classic',bg:'#374151',fg:'#fff'},
- desc:"The Cheshire Cat of Alice in Wonderland fame. British Shorthairs are round-faced, dense-coated, and undemanding — calm and independent."},
-
-{id:'abyssinian',name:'Abyssinian',origin:'Ethiopia',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Gustav_chocolate.jpg/400px-Gustav_chocolate.jpg',
- lifespan:'14–17 yrs',weight:'2.5–5 kg',height:'30–36 cm',
- traits:{Energy:92,Affection:80,Trainability:88,Grooming:20,Vocality:55},
- facts:["Possibly the oldest cat breed","Depicted in ancient Egyptian art","Ticked coat — multiple bands per hair","One of the most active cat breeds"],
- colors:'Ruddy, Sorrel (cinnamon), Blue, Fawn',badge:{text:'Ancient Egyptian',bg:'#b45309',fg:'#fff'},
- desc:"One of the oldest breeds — perhaps closest in appearance to cats of ancient Egypt. Abyssinians are highly active, playful, and inquisitive — they love to explore and climb."},
-
-{id:'scottishfold',name:'Scottish Fold',origin:'Scotland',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Scottish_Fold_cat_Sammy.jpg/400px-Scottish_Fold_cat_Sammy.jpg',
- lifespan:'11–14 yrs',weight:'2.7–6 kg',height:'22–30 cm',
- traits:{Energy:55,Affection:88,Trainability:70,Grooming:40,Vocality:40},
- facts:["Genetic mutation discovered in 1961","All trace back to \"Susie\" — a 1961 barn cat","Breeding two folds together is banned","Taylor Swift's cats are Scottish Folds"],
- colors:'Any colour or pattern',badge:{text:'Owl Face',bg:'#6366f1',fg:'#fff'},
- desc:"Famous for their folded ears giving them an owl-like appearance, Scottish Folds are sweet-natured and adaptable — known for sitting in unusual positions."},
-
-{id:'sphynx',name:'Sphynx',origin:'Canada',size:'medium',group:'hairless',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Na3omi_Naked_Cat.jpg/400px-Na3omi_Naked_Cat.jpg',
- lifespan:'8–14 yrs',weight:'3.5–7 kg',height:'23–30 cm',
- traits:{Energy:80,Affection:99,Trainability:82,Grooming:45,Vocality:75},
- facts:["First hairless cat breed","Not completely hairless — fine down on skin","Require weekly baths — oily skin","Body temperature 4°C warmer than other cats"],
- colors:'Any colour — pigment is in skin, not fur',badge:{text:'Hairless Heart',bg:'#dc2626',fg:'#fff'},
- desc:"The hairless cat with heart of gold. Sphynx cats are extraordinarily social — they are constant companions who crave human warmth. Their skin feels like warm chamois."},
-
-{id:'norwegian',name:'Norwegian Forest Cat',origin:'Norway',size:'large',group:'longhair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Norwegian_Forest_Cat_Photo.jpg/400px-Norwegian_Forest_Cat_Photo.jpg',
- lifespan:'14–16 yrs',weight:'3.5–9 kg',height:'28–38 cm',
- traits:{Energy:68,Affection:80,Trainability:68,Grooming:65,Vocality:38},
- facts:["Featured in Norse mythology with Freya","Natural breed that developed in Norway","Can descend trees head-first","Related to Maine Coon by common ancestry"],
- colors:'All colours and patterns except colourpoint',badge:{text:'Norse Forest Cat',bg:'#1f2937',fg:'#fff'},
- desc:"The 'Skogkatt' of Norse mythology. Norwegian Forest Cats are built for Scandinavian winters with a thick double coat and tufted paws for climbing."},
-
-{id:'ragamuffin',name:'RagaMuffin',origin:'USA',size:'large',group:'longhair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/RagaMuffin_-_Adult_Female.jpg/400px-RagaMuffin_-_Adult_Female.jpg',
- lifespan:'12–16 yrs',weight:'4–9 kg',height:'25–30 cm',
- traits:{Energy:38,Affection:96,Trainability:72,Grooming:55,Vocality:38},
- facts:["Created by splitting from Ragdoll program","Come in all colours and patterns","Often called \"living stuffed animals\"","Go limp when held — like Ragdolls"],
- colors:'All colours and patterns',badge:{text:'Cuddly Giant',bg:'#dc2626',fg:'#fff'},
- desc:"Close relative of the Ragdoll, RagaMuffins are large, cuddly cats with lush coats and eyes in any colour. Docile, friendly, and known for going limp when held."},
-
-{id:'birman',name:'Birman',origin:'Myanmar (Burma)',size:'medium',group:'longhair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Birmancat.jpg/400px-Birmancat.jpg',
- lifespan:'12–16 yrs',weight:'3–7 kg',height:'23–30 cm',
- traits:{Energy:58,Affection:90,Trainability:72,Grooming:55,Vocality:42},
- facts:["Sacred cats of Buddhist temples in Burma","White \"gloves\" on all four paws","Can take up to 3 years to develop full colour","Nearly extinct after WWII"],
- colors:'Seal, Blue, Chocolate, Lilac, Red, Cream points',badge:{text:'Sacred Temple Cat',bg:'#b45309',fg:'#fff'},
- desc:"The sacred cat of Burma. Birmans have a colourpointed coat, deep blue eyes, and distinctive white 'gloves' on all four paws — legend says given by a Buddhist goddess."},
-
-{id:'russianblue',name:'Russian Blue',origin:'Russia',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Russianblue.jpg/400px-Russianblue.jpg',
- lifespan:'15–20 yrs',weight:'2.5–5.5 kg',height:'23–30 cm',
- traits:{Energy:55,Affection:82,Trainability:75,Grooming:30,Vocality:35},
- facts:["One of the longest-living cat breeds","Coat appears to shimmer — double layer","Lower Fel d 1 allergen — more hypoallergenic","Said to bring good luck in Russia"],
- colors:'Blue only — silvery-blue with silver tips',badge:{text:'Silver Mystic',bg:'#374151',fg:'#fff'},
- desc:"The mysterious, elegant Russian Blue with its double silvery-blue plush coat and emerald eyes. Shy with strangers but deeply loving with family."},
-
-{id:'burmese',name:'Burmese',origin:'Myanmar/USA',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Burmese_cat_-_Zack.jpg/400px-Burmese_cat_-_Zack.jpg',
- lifespan:'16–18 yrs',weight:'3.5–5.5 kg',height:'25–30 cm',
- traits:{Energy:78,Affection:97,Trainability:85,Grooming:15,Vocality:80},
- facts:["Called \"brick wrapped in silk\"","All American Burmese trace to \"Wong Mau\" 1930","Closest personality to a dog among cats","Will follow commands reliably"],
- colors:'Sable, Champagne, Blue, Platinum',badge:{text:'Silky Devotee',bg:'#7c3aed',fg:'#fff'},
- desc:"Burmese are called 'brick wrapped in silk' — surprisingly heavy for their size. They are the most people-oriented of all cat breeds."},
-
-{id:'bengal2',name:'Egyptian Mau',origin:'Egypt',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/EgyptianMau_bronze.jpg/400px-EgyptianMau_bronze.jpg',
- lifespan:'9–13 yrs',weight:'2.7–5 kg',height:'20–28 cm',
- traits:{Energy:88,Affection:80,Trainability:78,Grooming:25,Vocality:60},
- facts:["Only naturally spotted domestic cat","Fastest domestic cat: up to 48 km/h","Descended from cats worshipped in ancient Egypt","Longer hind legs give a cheetah-like gait"],
- colors:'Silver, Bronze, Smoke — always spotted',badge:{text:'Pharaoh\'s Cat',bg:'#b45309',fg:'#fff'},
- desc:"The only naturally spotted domestic cat breed. Egyptian Maus are descended from cats worshipped in ancient Egypt. They are the fastest domestic cat, reaching 48 km/h."},
-
-{id:'sphynx2',name:'Devon Rex',origin:'England',size:'small',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Devon_rex_pb.jpg/400px-Devon_rex_pb.jpg',
- lifespan:'9–15 yrs',weight:'2.5–4.5 kg',height:'18–25 cm',
- traits:{Energy:80,Affection:95,Trainability:82,Grooming:20,Vocality:65},
- facts:["Also called \"Alien Cat\" or \"Pixie Cat\"","Curly coat from a natural mutation","Can learn tricks easily — very trainable","Discovered in Devon, England in 1959"],
- colors:'Any colour and pattern',badge:{text:'Curly Pixie',bg:'#7c3aed',fg:'#fff'},
- desc:"The Devon Rex looks like a pixie — large ears, enormous eyes, and a wavy rippling coat incredibly soft to the touch. Mischievous, clownish, and intensely people-oriented."},
-
-{id:'cornishrex',name:'Cornish Rex',origin:'England',size:'small',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cornish_Rex_Cat.jpg/400px-Cornish_Rex_Cat.jpg',
- lifespan:'11–15 yrs',weight:'2.5–4.5 kg',height:'28–36 cm',
- traits:{Energy:88,Affection:90,Trainability:85,Grooming:15,Vocality:68},
- facts:["Discovered in Cornwall, England in 1950","Only curly undercoat — no guard hairs","Feel warmer to touch than other cats","Love to fetch and play games"],
- colors:'Any colour and pattern',badge:{text:'Velvet Athlete',bg:'#b45309',fg:'#fff'},
- desc:"Greyhound-like in build and personality. The Cornish Rex is slender, muscular, and built for speed. Their unique wavy coat has no guard hairs and feels like warm velvet."},
-
-{id:'scottishfold2',name:'Scottish Straight',origin:'Scotland',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Scottish_straight_male_tabby.jpg/400px-Scottish_straight_male_tabby.jpg',
- lifespan:'11–14 yrs',weight:'2.7–6 kg',height:'22–30 cm',
- traits:{Energy:55,Affection:85,Trainability:70,Grooming:40,Vocality:40},
- facts:["Straight-eared version of the Scottish Fold","Same sweet temperament as Fold","Better health than Fold — no ear cartilage issues","Essential for Fold breeding programs"],
- colors:'Any colour or pattern',badge:{text:'Sweet Straight',bg:'#374151',fg:'#fff'},
- desc:"The straight-eared sibling of the Scottish Fold, sharing the same sweet and adaptable temperament without the ear-related health concerns."},
-
-{id:'turkishangora',name:'Turkish Angora',origin:'Turkey',size:'medium',group:'longhair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/TurkishAngora.jpg/400px-TurkishAngora.jpg',
- lifespan:'12–18 yrs',weight:'2.5–5 kg',height:'23–30 cm',
- traits:{Energy:80,Affection:88,Trainability:82,Grooming:45,Vocality:65},
- facts:["One of the world's oldest natural breeds","National treasure of Turkey — protected at Ankara Zoo","Odd-eyed (one blue, one amber) is common","Loves water — will join owner in the shower"],
- colors:'All colours; white most recognized',badge:{text:'Ottoman Elegance',bg:'#b45309',fg:'#fff'},
- desc:"One of the oldest natural cat breeds, Turkish Angoras were prized by European royalty. Their silky single-coat doesn't mat. Elegant, athletic, and playful."},
-
-{id:'tonkinese',name:'Tonkinese',origin:'Canada/USA',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Natural_mink_Tonkinese_cat.jpg/400px-Natural_mink_Tonkinese_cat.jpg',
- lifespan:'15–18 yrs',weight:'2.5–5.5 kg',height:'23–28 cm',
- traits:{Energy:80,Affection:92,Trainability:85,Grooming:15,Vocality:72},
- facts:["Unique aquamarine eye colour","First bred by crossing Siamese and Burmese","Come in mink — a unique coat pattern","Very playful — often play fetch"],
- colors:'Platinum, Champagne, Natural, Blue',badge:{text:'Aqua Eyes',bg:'#0891b2',fg:'#fff'},
- desc:"A playful blend of Siamese and Burmese, the Tonkinese has unique aqua eyes, a silky coat, and a perfectly balanced personality between both parent breeds."},
-
-{id:'lykoi',name:'Lykoi (Werewolf Cat)',origin:'USA',size:'medium',group:'shorthair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Lykoi.jpg/400px-Lykoi.jpg',
- lifespan:'12–15 yrs',weight:'2.5–5 kg',height:'23–28 cm',
- traits:{Energy:78,Affection:82,Trainability:78,Grooming:20,Vocality:48},
- facts:["Name means \"wolf\" in Greek","Natural mutation from feral cat colonies","Looks like a werewolf — hence the name","Confirmed unique gene mutation"],
- colors:'Roan (black and white) — unique pattern',badge:{text:'Werewolf Cat',bg:'#374151',fg:'#fff'},
- desc:"The Lykoi looks like a werewolf — partially hairless with a patchy roan coat. Despite their wild appearance they are gentle, intelligent, and playful cats."},
-
-{id:'somali',name:'Somali',origin:'USA/Canada',size:'medium',group:'longhair',
- img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Somali_cat.jpg/400px-Somali_cat.jpg',
- lifespan:'12–14 yrs',weight:'3–5.5 kg',height:'28–33 cm',
- traits:{Energy:88,Affection:82,Trainability:85,Grooming:55,Vocality:55},
- facts:["Longhaired form of the Abyssinian","Bushy tail gives the \"fox\" nickname","Ticked agouti coat with multiple colour bands","Loves to play with water"],
- colors:'Ruddy, Red, Blue, Fawn',badge:{text:'Fox Cat',bg:'#78350f',fg:'#fff'},
- desc:"The Somali is a longhaired Abyssinian — sometimes called the 'Fox Cat' for its bushy tail and ticked coat. They share the Abyssinian's high energy and curiosity."},
-];
-
-// ── STATE ────────────────────────────────────────────────────────────────────
-let species='dogs', sizeFilter='all', groupFilter='all', searchQ='';
-let favs=new Set(JSON.parse(localStorage.getItem('pb_favs')||'[]'));
-
-function getList(){
-  const base = species==='dogs'?DOGS : species==='cats'?CATS : [...DOGS,...CATS].filter(b=>favs.has(b.id));
-  return base.filter(b=>{
-    const sm = sizeFilter==='all' || b.size===sizeFilter;
-    const gm = groupFilter==='all' || b.group===groupFilter;
-    const qm = !searchQ || b.name.toLowerCase().includes(searchQ) || b.origin.toLowerCase().includes(searchQ) || (b.desc||'').toLowerCase().includes(searchQ);
-    return sm && gm && qm;
-  });
-}
-
-function render(){
-  const list = getList();
-  const titles = {dogs:'Dog Breeds',cats:'Cat Breeds',favs:'My Favourites'};
-  document.getElementById('section-title').textContent = titles[species]||'Breeds';
-  document.getElementById('section-count').textContent = list.length+' breed'+(list.length!==1?'s':'');
-  document.getElementById('dog-count').textContent = DOGS.length+'+';
-  document.getElementById('cat-count').textContent = CATS.length+'+';
-
-  const grid = document.getElementById('breed-grid');
-  if(!list.length){
-    grid.innerHTML='<div class="empty"><div style="font-size:48px;margin-bottom:12px">🔍</div><div style="font-size:16px;font-weight:700;color:#4a5568">No breeds found</div><div style="font-size:13px;color:#94a3b8;margin-top:6px">Try a different filter or search term</div></div>';
-    return;
+function goTo(p){window.location.href=p;}
+function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+
+/* ══════════════════════════════════════════════
+   LOCATION DATA
+══════════════════════════════════════════════ */
+var LOC={
+  india:{
+    'Andhra Pradesh':['Visakhapatnam','Vijayawada','Guntur','Tirupati','Rajahmundry'],
+    'Delhi':['New Delhi','Dwarka','Rohini','Noida (NCR)','Gurgaon (NCR)','Faridabad'],
+    'Gujarat':['Ahmedabad','Surat','Vadodara','Rajkot','Gandhinagar'],
+    'Karnataka':['Bangalore','Mysore','Mangalore','Hubli','Belgaum'],
+    'Kerala':['Kochi','Thiruvananthapuram','Kozhikode','Thrissur','Kannur'],
+    'Maharashtra':['Mumbai','Pune','Nagpur','Nashik','Aurangabad','Thane'],
+    'Rajasthan':['Jaipur','Jodhpur','Udaipur','Kota','Bikaner'],
+    'Tamil Nadu':['Chennai','Coimbatore','Madurai','Salem','Trichy'],
+    'Telangana':['Hyderabad','Warangal','Nizamabad','Karimnagar'],
+    'Uttar Pradesh':['Lucknow','Kanpur','Agra','Varanasi','Noida','Meerut'],
+    'West Bengal':['Kolkata','Howrah','Durgapur','Siliguri','Asansol']
+  },
+  usa:{
+    'California':['Los Angeles','San Francisco','San Diego','San Jose','Sacramento'],
+    'Texas':['Houston','Austin','Dallas','San Antonio','Fort Worth'],
+    'New York':['New York City','Buffalo','Rochester','Albany','Syracuse'],
+    'Florida':['Miami','Orlando','Tampa','Jacksonville','Fort Lauderdale'],
+    'Illinois':['Chicago','Aurora','Naperville','Joliet'],
+    'Washington':['Seattle','Spokane','Tacoma','Bellevue']
+  },
+  uk:{
+    'England':['London','Manchester','Birmingham','Leeds','Sheffield','Liverpool'],
+    'Scotland':['Edinburgh','Glasgow','Aberdeen','Dundee'],
+    'Wales':['Cardiff','Swansea','Newport']
+  },
+  australia:{
+    'New South Wales':['Sydney','Newcastle','Wollongong','Canberra'],
+    'Victoria':['Melbourne','Geelong','Ballarat','Bendigo'],
+    'Queensland':['Brisbane','Gold Coast','Cairns','Townsville'],
+    'Western Australia':['Perth','Fremantle','Bunbury']
+  },
+  canada:{
+    'Ontario':['Toronto','Ottawa','Mississauga','Hamilton'],
+    'British Columbia':['Vancouver','Victoria','Surrey','Burnaby'],
+    'Quebec':['Montreal','Quebec City','Laval'],
+    'Alberta':['Calgary','Edmonton']
+  },
+  uae:{
+    'Dubai':['Downtown Dubai','Dubai Marina','Deira','Bur Dubai','JBR'],
+    'Abu Dhabi':['Abu Dhabi City','Al Ain','Khalifa City'],
+    'Sharjah':['Sharjah City','Al Nahda']
+  },
+  singapore:{'Singapore':['Central','East','West','North','Jurong','Tampines']},
+  germany:{
+    'Bavaria':['Munich','Nuremberg','Augsburg'],
+    'Berlin':['Berlin Mitte','Charlottenburg','Prenzlauer Berg'],
+    'Hamburg':['Hamburg-Mitte','Altona','Wandsbek']
+  },
+  france:{
+    'Île-de-France':['Paris','Versailles','Boulogne-Billancourt'],
+    'Provence':['Marseille','Nice','Aix-en-Provence'],
+    'Rhône-Alpes':['Lyon','Grenoble','Saint-Étienne']
+  },
+  japan:{
+    'Tokyo':['Shinjuku','Shibuya','Akihabara','Harajuku'],
+    'Osaka':['Namba','Umeda','Shinsaibashi'],
+    'Kyoto':['Kyoto City','Fushimi','Arashiyama']
   }
-  grid.innerHTML = list.map(b=>`
-    <div class="bcard" onclick="openDP('${b.id}')">
-      <img src="${b.img}" loading="lazy" alt="${b.name}" onerror="this.src='https://images.unsplash.com/photo-1415369629372-26f2fe60c467?w=400&q=80'">
-      <div class="bcard-overlay">
-        <div class="bcard-name">${b.name}</div>
-        <div class="bcard-origin">📍 ${b.origin}</div>
-        <div class="bcard-tags">
-          <span class="btag ${b.size}">${b.size.charAt(0).toUpperCase()+b.size.slice(1)}</span>
-          <span class="btag">${b.group}</span>
-          <span class="btag">${b.lifespan}</span>
-        </div>
-      </div>
-      <button class="fav-btn ${favs.has(b.id)?'on':''}" onclick="toggleFav(event,'${b.id}')" title="Save to favourites">
-        ${favs.has(b.id)?'❤️':'🤍'}
-      </button>
-    </div>`).join('');
-}
-
-function openDP(id){
-  const b=[...DOGS,...CATS].find(x=>x.id===id);
-  if(!b)return;
-  document.getElementById('dp-img').src=b.img;
-  document.getElementById('dp-name').textContent=b.name;
-  document.getElementById('dp-sci').textContent=b.scientific||'Canis lupus familiaris / Felis catus';
-  const badge=document.getElementById('dp-badge');
-  badge.textContent=b.badge.text;
-  badge.style.background=b.badge.bg+'22';
-  badge.style.color=b.badge.bg;
-  document.getElementById('dp-desc').textContent=b.desc;
-  document.getElementById('dp-stats').innerHTML=`
-    <div class="stat-cell"><div class="stat-lbl">Lifespan</div><div class="stat-val">⏳ ${b.lifespan}</div></div>
-    <div class="stat-cell"><div class="stat-lbl">Weight</div><div class="stat-val">⚖️ ${b.weight}</div></div>
-    <div class="stat-cell"><div class="stat-lbl">Height</div><div class="stat-val">📏 ${b.height}</div></div>
-    <div class="stat-cell"><div class="stat-lbl">Origin</div><div class="stat-val">📍 ${b.origin}</div></div>
-    <div class="stat-cell" style="grid-column:1/-1"><div class="stat-lbl">Coat Colours</div><div class="stat-val" style="font-size:11px;font-weight:500">${b.colors}</div></div>`;
-  document.getElementById('dp-traits').innerHTML=Object.entries(b.traits).map(([k,v])=>`
-    <div class="trait-wrap">
-      <div class="trait-row"><span>${k}</span><span style="color:#8b4513">${v}%</span></div>
-      <div class="tbar"><div class="tfill" data-w="${v}" style="width:0"></div></div>
-    </div>`).join('');
-  document.getElementById('dp-facts').innerHTML=(b.facts||[]).map(f=>`
-    <div style="display:flex;gap:7px;font-size:12px;color:#4a5568"><span style="color:#8b4513;flex-shrink:0">•</span>${f}</div>`).join('');
-  document.getElementById('dpanel').classList.add('open');
-  document.getElementById('overlay').classList.add('open');
-  setTimeout(()=>{document.querySelectorAll('.tfill').forEach(el=>{el.style.width=el.dataset.w+'%';});},80);
-}
-function closeDP(){
-  document.getElementById('dpanel').classList.remove('open');
-  document.getElementById('overlay').classList.remove('open');
-}
-
-function switchSpecies(s,el){
-  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  species=s; sizeFilter='all'; groupFilter='all';
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  document.querySelectorAll('#size-chips .chip:first-child,#group-chips .chip:first-child').forEach(c=>c.classList.add('on'));
-  // Show/hide dog groups for cats
-  const gLabel=document.getElementById('group-label');
-  const gChips=document.getElementById('group-chips');
-  if(s==='cats'){gLabel.style.display='none';gChips.style.display='none';}
-  else{gLabel.style.display='';gChips.style.display='';}
-  render();
-}
-function setSize(v,el){
-  document.querySelectorAll('#size-chips .chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');sizeFilter=v;render();
-}
-function setGroup(v,el){
-  document.querySelectorAll('#group-chips .chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');groupFilter=v;render();
-}
-function toggleFav(e,id){
-  e.stopPropagation();
-  favs.has(id)?favs.delete(id):favs.add(id);
-  localStorage.setItem('pb_favs',JSON.stringify([...favs]));
-  render();
-  showToast(favs.has(id)?'❤️ Added to favourites!':'Removed from favourites');
-}
-document.getElementById('search-input').addEventListener('input',e=>{searchQ=e.target.value.toLowerCase().trim();render();});
-function showToast(msg){
-  const t=document.createElement('div');
-  t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#8b4513;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;font-family:Inter,sans-serif;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2)';
-  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);
-}
-// ── FALLBACK IMAGES (unique per breed, loads instantly) ───────────────────────
-const FALLBACK = {
-  // Dogs
-  'labrador':    'https://images.unsplash.com/photo-1579213838058-58a35c38d647?w=500&q=75',
-  'golden':      'https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&q=75',
-  'cocker':      'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500&q=75',
-  'weimaraner':  'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=500&q=75',
-  'irishsetter': 'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=500&q=75',
-  'vizsla':      'https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?w=500&q=75',
-  'rottweiler':  'https://images.unsplash.com/photo-1567418679720-5dc6e3a9a1c8?w=500&q=75',
-  'boxer':       'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500&q=75',
-  'husky':       'https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=500&q=75',
-  'greatdane':   'https://images.unsplash.com/photo-1596797882870-8c33dba3959a?w=500&q=75',
-  'bernese':     'https://images.unsplash.com/photo-1612940960267-3c3f56e2d2de?w=500&q=75',
-  'doberman':    'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=500&q=75',
-  'samyoed':     'https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?w=500&q=75',
-  'akita':       'https://images.unsplash.com/photo-1617895153857-82fe0c43621b?w=500&q=75',
-  'malamute':    'https://images.unsplash.com/photo-1568572933382-74d440642117?w=500&q=75',
-  'gsd':         'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=500&q=75',
-  'bordercollie':'https://images.unsplash.com/photo-1565372195458-9de0b320ef04?w=500&q=75',
-  'aussie':      'https://images.unsplash.com/photo-1508532566027-b2579a8b0b96?w=500&q=75',
-  'corgi':       'https://images.unsplash.com/photo-1554692918-08fa0fdc9db3?w=500&q=75',
-  'sheltie':     'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=500&q=75',
-  'westie':      'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=500&q=75',
-  'airedale':    'https://images.unsplash.com/photo-1619533394023-7d61d089e5f3?w=500&q=75',
-  'scottish':    'https://images.unsplash.com/photo-1504595403659-9088ce801e29?w=500&q=75',
-  'beagle':      'https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=500&q=75',
-  'greyhound':   'https://images.unsplash.com/photo-1598133893773-de3e890d36c4?w=500&q=75',
-  'dachshund':   'https://images.unsplash.com/photo-1518155317743-a8ff43ea6a5f?w=500&q=75',
-  'dalmatian':   'https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=500&q=75',
-  'basenji':     'https://images.unsplash.com/photo-1603265994513-1a4a0ede0a4e?w=500&q=75',
-  'ridgeback':   'https://images.unsplash.com/photo-1558929996-da64ba858215?w=500&q=75',
-  'chihuahua':   'https://images.unsplash.com/photo-1573246123716-6b1782bfc499?w=500&q=75',
-  'pomeranian':  'https://images.unsplash.com/photo-1608096077-2c3e4d28cb5f?w=500&q=75',
-  'pug':         'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=500&q=75',
-  'maltese':     'https://images.unsplash.com/photo-1583512603806-077998240c02?w=500&q=75',
-  'shihtzhu':    'https://images.unsplash.com/photo-1589927986089-35812378533a?w=500&q=75',
-  'frenchbulldog':'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500&q=75',
-  'bulldog':     'https://images.unsplash.com/photo-1491947153227-33d59da6c448?w=500&q=75',
-  'poodle':      'https://images.unsplash.com/photo-1591768793355-74d04bb6608f?w=500&q=75',
-  'shiba':       'https://images.unsplash.com/photo-1582797493098-23d8d0cc6769?w=500&q=75',
-  'chowchow':    'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=500&q=75',
-  'dalmatian2':  'https://images.unsplash.com/photo-1560743641-3914f2c45636?w=500&q=75',
-  // Cats
-  'persian':      'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&q=75',
-  'siamese':      'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=500&q=75',
-  'mainecoon':    'https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=500&q=75',
-  'ragdoll':      'https://images.unsplash.com/photo-1561923130-c0e38f3a6a9c?w=500&q=75',
-  'bengal':       'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=500&q=75',
-  'britishsh':    'https://images.unsplash.com/photo-1555685812-4b8f59697ef3?w=500&q=75',
-  'abyssinian':   'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500&q=75',
-  'scottishfold': 'https://images.unsplash.com/photo-1472491235688-bdc81a63246e?w=500&q=75',
-  'sphynx':       'https://images.unsplash.com/photo-1520315342629-6ea920342047?w=500&q=75',
-  'norwegian':    'https://images.unsplash.com/photo-1591871937573-74dbba515c4c?w=500&q=75',
-  'ragamuffin':   'https://images.unsplash.com/photo-1513245543132-31f507417b26?w=500&q=75',
-  'birman':       'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=500&q=75',
-  'russianblue':  'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=500&q=75',
-  'burmese':      'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=500&q=75',
-  'bengal2':      'https://images.unsplash.com/photo-1625316708582-7c38734be31d?w=500&q=75',
-  'sphynx2':      'https://images.unsplash.com/photo-1531804226150-3c3beb1e0d2e?w=500&q=75',
-  'cornishrex':   'https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?w=500&q=75',
-  'scottishfold2':'https://images.unsplash.com/photo-1490150028299-bf57d78394e0?w=500&q=75',
-  'turkishangora':'https://images.unsplash.com/photo-1561049501-e1f96bdd98fd?w=500&q=75',
-  'tonkinese':    'https://images.unsplash.com/photo-1603203040743-24aced6793b4?w=500&q=75',
-  'lykoi':        'https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=500&q=75',
-  'somali':       'https://images.unsplash.com/photo-1577023311546-cdc07a8454d9?w=500&q=75',
 };
 
-// Apply unique fallback images to every breed before first render
-[...DOGS,...CATS].forEach(b => { if(FALLBACK[b.id]) b.img = FALLBACK[b.id]; });
-
-// Render immediately with fallbacks (all unique, no broken images)
-render();
-
-// Background: upgrade with live API breed-specific photos
-(async function upgradeImages(){
-  const DOG_API='https://api.thedogapi.com/v1';
-  const CAT_API='https://api.thecatapi.com/v1';
-  const opts = {signal: AbortSignal.timeout(4000)};
-
-  const dogTerms={'labrador':'labrador retriever','golden':'golden retriever','cocker':'cocker spaniel','weimaraner':'weimaraner','irishsetter':'irish setter','vizsla':'vizsla','rottweiler':'rottweiler','boxer':'boxer','husky':'siberian husky','greatdane':'great dane','bernese':'bernese mountain dog','doberman':'doberman pinscher','samyoed':'samoyed','akita':'akita','malamute':'alaskan malamute','gsd':'german shepherd','bordercollie':'border collie','aussie':'australian shepherd','corgi':'corgi','sheltie':'shetland sheepdog','westie':'west highland terrier','airedale':'airedale terrier','scottish':'scottish terrier','beagle':'beagle','greyhound':'greyhound','dachshund':'dachshund','dalmatian':'dalmatian','basenji':'basenji','ridgeback':'rhodesian ridgeback','chihuahua':'chihuahua','pomeranian':'pomeranian','pug':'pug','maltese':'maltese','shihtzhu':'shih tzu','frenchbulldog':'french bulldog','bulldog':'bulldog','poodle':'poodle','shiba':'shiba inu','chowchow':'chow chow','dalmatian2':'shar pei'};
-  const catTerms={'persian':'Persian','siamese':'Siamese','mainecoon':'Maine Coon','ragdoll':'Ragdoll','bengal':'Bengal','britishsh':'British Shorthair','abyssinian':'Abyssinian','scottishfold':'Scottish Fold','sphynx':'Sphynx','norwegian':'Norwegian Forest Cat','ragamuffin':'Ragamuffin','birman':'Birman','russianblue':'Russian Blue','burmese':'Burmese','bengal2':'Egyptian Mau','sphynx2':'Devon Rex','cornishrex':'Cornish Rex','scottishfold2':'Scottish Fold','turkishangora':'Turkish Angora','tonkinese':'Tonkinese','lykoi':'Lykoi','somali':'Somali'};
-
-  async function updateBreedImg(b, url) {
-    b.img = url;
-    const el = document.querySelector(`.bcard[onclick*="'${b.id}'"] img`);
-    if(el){ el.src=url; el.style.opacity='0'; el.onload=()=>{el.style.transition='opacity 0.4s';el.style.opacity='1';} }
-  }
-
-  for(const b of DOGS){
-    try{
-      const term=dogTerms[b.id]||b.name.toLowerCase();
-      const r=await fetch(`${DOG_API}/breeds/search?q=${encodeURIComponent(term)}`,opts);
-      const brs=await r.json();
-      if(brs[0]?.id){
-        const r2=await fetch(`${DOG_API}/images/search?breed_id=${brs[0].id}&limit=1`,opts);
-        const imgs=await r2.json();
-        if(imgs[0]?.url) await updateBreedImg(b,imgs[0].url);
-      }
-    }catch{}
-    await new Promise(r=>setTimeout(r,120));
-  }
-  for(const b of CATS){
-    try{
-      const term=catTerms[b.id]||b.name;
-      const r=await fetch(`${CAT_API}/breeds/search?q=${encodeURIComponent(term)}`,opts);
-      const brs=await r.json();
-      if(brs[0]?.id){
-        const r2=await fetch(`${CAT_API}/images/search?breed_ids=${brs[0].id}&limit=1`,opts);
-        const imgs=await r2.json();
-        if(imgs[0]?.url) await updateBreedImg(b,imgs[0].url);
-      }
-    }catch{}
-    await new Promise(r=>setTimeout(r,120));
-  }
-})().catch(()=>{});
-</script>
-
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottomnav">
-  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
-  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
-  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
-  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
-</nav>
-<script>function goTo(p){window.location.href=p;}</script>
-<!-- DRAWER OVERLAY -->
-<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
-
-<!-- DRAWER PANEL -->
-<div id="drawer-panel" class="drawer-panel">
-  <div class="drawer-header" style="position:relative">
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
-    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
-    <div>
-      <div class="drawer-user-name">Abhishek Kumar</div>
-      <div class="drawer-user-handle">@abhishek_pawbook</div>
-      <div class="drawer-stats">
-        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
-      </div>
-    </div>
-  </div>
-  <div class="drawer-body">
-    <div class="drawer-section">Main</div>
-    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
-    <div class="drawer-section">Community</div>
-    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
-    <div class="drawer-section">Pet Services</div>
-    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
-    <div class="drawer-footer">
-      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
-      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
-    </div>
-  </div>
-</div>
-
-<script>
-function openDrawer() {
-  document.getElementById('drawer-panel').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+function onCountryChange(){
+  var c=document.getElementById('sel-country').value;
+  var ss=document.getElementById('sel-state'),sc=document.getElementById('sel-city');
+  ss.innerHTML='<option value="">Select State</option>';
+  sc.innerHTML='<option value="">Select City</option>';
+  if(c&&LOC[c])Object.keys(LOC[c]).forEach(function(s){ss.innerHTML+='<option value="'+s+'">'+s+'</option>';});
 }
-function closeDrawer() {
-  document.getElementById('drawer-panel').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
+function onStateChange(){
+  var c=document.getElementById('sel-country').value,s=document.getElementById('sel-state').value;
+  var sc=document.getElementById('sel-city');
+  sc.innerHTML='<option value="">Select City</option>';
+  if(c&&s&&LOC[c]&&LOC[c][s])LOC[c][s].forEach(function(city){sc.innerHTML+='<option value="'+city+'">'+city+'</option>';});
 }
-</script>
-<script>
-(function(){
-  function showBurgerOnMobile(){
-    var btns = document.querySelectorAll('.burger-btn');
-    var isMobile = window.innerWidth <= 768;
-    btns.forEach(function(b){
-      b.style.display = isMobile ? 'flex' : 'none';
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+var _selectedPet='all', _currentBreeds=[], _currentCity='', _currentBreedForAdopt=null, _currentCenterForAppt=null;
+
+function selectPetCat(el){
+  document.querySelectorAll('.pet-cat').forEach(function(d){d.classList.remove('active');});
+  el.classList.add('active');
+  _selectedPet=el.dataset.pet;
+  if(_currentBreeds.length)filterBreeds();
+}
+
+/* ══════════════════════════════════════════════
+   BREED DATABASE
+══════════════════════════════════════════════ */
+var BREEDS=[
+  /* ── DOGS ── */
+  {id:'d1',pet:'dog',name:'Labrador Retriever',origin:'Canada / UK',size:'Large',image:'https://images.unsplash.com/photo-1534361960057-19f4434a0d49?w=600&q=80',tags:['Friendly','Energetic','Intelligent'],lifespan:'10–12 yrs',weight:'25–36 kg',height:'55–62 cm',countries:80,adoptable:true,
+    history:'Originating from Newfoundland, Canada in the 1800s, the Labrador Retriever was bred to help fishermen retrieve nets and fish. Brought to England, it was refined into the lovable breed we know today.',
+    habits:'Highly social, loves water, fetch and outdoor activities. Very people-oriented — dislikes being alone for long periods. Excellent with children and other animals.',
+    food:'High-quality dry kibble twice daily. Prone to obesity — measure portions carefully. Loves carrots, apples and plain chicken as treats. Fresh water always available.',
+    activities:['Daily 1-hour walk or run','Fetch and swimming','Obedience training','Agility games','Socialising with other dogs'],
+    temperament:['Gentle','Loyal','Outgoing','Playful'],
+    grooming:'Weekly brushing; sheds seasonally. Monthly bath.'
+  },
+  {id:'d2',pet:'dog',name:'German Shepherd',origin:'Germany',size:'Large',image:'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=600&q=80',tags:['Loyal','Protective','Trainable'],lifespan:'9–13 yrs',weight:'22–40 kg',height:'55–65 cm',countries:90,adoptable:true,
+    history:'Developed in Germany in the late 19th century by Captain Max von Stephanitz for herding sheep. Quickly adopted by police and military forces worldwide for their intelligence and trainability.',
+    habits:'Alert, confident and courageous. Extremely loyal to their family. Needs significant mental and physical stimulation. Can develop anxiety if under-stimulated.',
+    food:'High-protein diet with omega-3 for joint health. 2–3 cups quality kibble per day split into two meals. Avoid grain-free if possible.',
+    activities:['2+ hours exercise daily','Police/military work','Herding sports','Schutzhund training','Running and cycling'],
+    temperament:['Loyal','Courageous','Intelligent','Alert'],
+    grooming:'Brush 3–4 times weekly; heavy seasonal shedding.'
+  },
+  {id:'d3',pet:'dog',name:'Golden Retriever',origin:'Scotland / UK',size:'Large',image:'https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=600&q=80',tags:['Gentle','Obedient','Affectionate'],lifespan:'10–12 yrs',weight:'25–34 kg',height:'51–61 cm',countries:75,adoptable:true,
+    history:'Bred in the Scottish Highlands in the 1800s as a hunting companion. Created by crossing the now-extinct Yellow Retriever with the Tweed Water Spaniel and later Irish Setter.',
+    habits:'Patient, gentle and reliable. Excellent therapy and service dogs. Love to carry things in their mouths. Very food motivated. Great with children and other pets.',
+    food:'2–3 cups high-quality dry food daily. Prone to weight gain — monitor portions. Loves fruits like blueberries and bananas as treats.',
+    activities:['Daily walks and fetch','Swimming','Therapy work','Competitive obedience','Family playtime'],
+    temperament:['Gentle','Reliable','Trustworthy','Friendly'],
+    grooming:'Brush 2× weekly; full groom monthly.'
+  },
+  {id:'d4',pet:'dog',name:'Indian Spitz',origin:'India',size:'Medium',image:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80',tags:['Vocal','Adaptable','Loyal'],lifespan:'10–14 yrs',weight:'5–20 kg',height:'35–45 cm',countries:5,adoptable:true,
+    history:'Developed in British India by crossing German Spitzes. Very popular in India through the 1980s and 90s. Well-adapted to the Indian climate and apartment living.',
+    habits:'Vocal watchdog, alert and lively. Bonds strongly with family. Can be wary of strangers. Adapts well to both apartments and houses in India\'s climate.',
+    food:'1–1.5 cups dry kibble daily. Rice and boiled chicken or vegetables are good supplements. Avoid too many spicy foods.',
+    activities:['Moderate daily walk','Playing fetch','Learning tricks','Watching over home'],
+    temperament:['Alert','Playful','Devoted','Independent'],
+    grooming:'Brush 2–3 times weekly; seasonal heavy shedding.'
+  },
+  {id:'d5',pet:'dog',name:'Beagle',origin:'England',size:'Small',image:'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&q=80',tags:['Curious','Merry','Friendly'],lifespan:'12–15 yrs',weight:'9–11 kg',height:'33–38 cm',countries:70,adoptable:true,
+    history:'One of the oldest hound breeds, developed in England for rabbit hunting. Their exceptional nose made them favorites for scent work. Became globally famous partly through the cartoon Snoopy.',
+    habits:'Merry and curious, following scent trails whenever possible. Very sociable with humans and other dogs. Can be stubborn. Prone to howling.',
+    food:'2/3 to 1½ cups dry food daily. Very food-motivated — great for training. Prone to obesity; avoid overfeeding.',
+    activities:['Scent tracking games','Daily walks (30–60 min)','Agility','Pack play with other dogs'],
+    temperament:['Merry','Curious','Friendly','Determined'],
+    grooming:'Weekly brushing; occasional bath.'
+  },
+  {id:'d6',pet:'dog',name:'Pomeranian',origin:'Germany / Poland',size:'Small',image:'https://images.unsplash.com/photo-1529168374912-9fcb9f949b6e?w=600&q=80',tags:['Bold','Lively','Feisty'],lifespan:'12–16 yrs',weight:'1.9–3.5 kg',height:'18–24 cm',countries:65,adoptable:false,
+    history:'Descended from large sled dogs in the Arctic region. Bred down in size in Pomerania (now part of Germany and Poland). Queen Victoria popularized the breed in the late 1800s.',
+    habits:'Alert, curious and extroverted despite tiny size. Often unaware of their small stature. Good apartment dogs if exercised regularly. Can be vocal.',
+    food:'¼ to ½ cup dry food daily. Small frequent meals are better. High-quality kibble designed for small breeds.',
+    activities:['Short daily walks','Indoor play','Learning tricks and commands','Socialising'],
+    temperament:['Bold','Lively','Extroverted','Intelligent'],
+    grooming:'Daily brushing needed; professional groom every 4–6 weeks.'
+  },
+  {id:'d7',pet:'dog',name:'Rottweiler',origin:'Germany',size:'Large',image:'https://images.unsplash.com/photo-1567752881298-894bb81f9379?w=600&q=80',tags:['Powerful','Loyal','Confident'],lifespan:'9–10 yrs',weight:'35–60 kg',height:'56–68 cm',countries:85,adoptable:true,
+    history:'Descended from Roman drover dogs left behind in Rottweil, Germany. Used for centuries to herd livestock and pull carts. Became one of the first police dogs in the early 20th century.',
+    habits:'Calm, confident and courageous. Deeply loyal to family. Aloof with strangers. Needs early socialisation and firm, consistent training. Not suited for first-time owners.',
+    food:'4–10 cups high-quality dry food daily depending on size and activity. Protein-rich diet. Joint supplements beneficial.',
+    activities:['1–2 hours vigorous exercise','Pulling/weight activities','Obedience work','Herding sports','Guarding'],
+    temperament:['Confident','Calm','Courageous','Devoted'],
+    grooming:'Weekly brushing; occasional bath.'
+  },
+  {id:'d8',pet:'dog',name:'Shih Tzu',origin:'Tibet / China',size:'Small',image:'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=600&q=80',tags:['Affectionate','Outgoing','Playful'],lifespan:'10–18 yrs',weight:'4–7.5 kg',height:'23–28 cm',countries:70,adoptable:false,
+    history:'One of the oldest breeds, originating in Tibet over 1,000 years ago. Gifted to Chinese emperors and kept as palace pets. The name means "lion dog" in Mandarin.',
+    habits:'Affectionate lap dogs. Great for apartments. Can be stubborn. Loves being around people. Gets along well with other pets and children.',
+    food:'½ to 1 cup dry food daily. High-quality small-breed kibble. Avoid too many treats due to dental issues.',
+    activities:['Short daily walks','Indoor play','Cuddle time','Socialising'],
+    temperament:['Affectionate','Outgoing','Spunky','Gentle'],
+    grooming:'Daily brushing essential; professional groom every 6–8 weeks.'
+  },
+  /* ── CATS ── */
+  {id:'c1',pet:'cat',name:'Persian',origin:'Iran',size:'Medium',image:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80',tags:['Calm','Affectionate','Quiet'],lifespan:'12–17 yrs',weight:'3–5 kg',height:'25–38 cm',countries:70,adoptable:true,
+    history:'One of the oldest cat breeds, believed to originate in Persia (modern Iran) around the 1500s. Brought to Europe by Italian traders. Highly prized by royalty for centuries.',
+    habits:'Quiet and laid-back. Prefers calm environments. Loves lounging indoors. Not very active but enjoys being petted. Sensitive to loud noises and change.',
+    food:'High-quality wet or dry food designed for Persians. Avoid foods that cause eye discharge. Fresh water vital. Prone to kidney disease — monitor protein intake.',
+    activities:['Indoor lounging','Gentle play with toys','Lap sitting','Light interactive games'],
+    temperament:['Calm','Sweet','Gentle','Quiet'],
+    grooming:'Daily brushing essential to prevent matting; wipe face daily.'
+  },
+  {id:'c2',pet:'cat',name:'Siamese',origin:'Thailand',size:'Medium',image:'https://images.unsplash.com/photo-1555685812-4b8f286fa5f9?w=600&q=80',tags:['Vocal','Social','Affectionate'],lifespan:'15–20 yrs',weight:'3–4 kg',height:'29–38 cm',countries:75,adoptable:true,
+    history:'One of the first distinctly recognised breeds of Asian cat. Revered in ancient Siam (Thailand) and kept by royalty. Brought to the West in the late 19th century.',
+    habits:'Extremely vocal and social. Dislikes being alone. Very talkative — will "tell" you everything. Intelligent and can be trained to walk on a leash.',
+    food:'High-protein diet. Quality wet food 2× daily. Prone to amyloidosis — avoid high-fat diet. Fresh water always.',
+    activities:['Interactive play (2× daily)','Puzzle toys','Leash walking','Following owner around'],
+    temperament:['Vocal','Affectionate','Intelligent','Social'],
+    grooming:'Weekly brushing; low maintenance coat.'
+  },
+  {id:'c3',pet:'cat',name:'Bengal',origin:'USA (hybrid)',size:'Medium',image:'https://images.unsplash.com/photo-1536590158209-e9d615d525e4?w=600&q=80',tags:['Active','Curious','Wild-looking'],lifespan:'12–16 yrs',weight:'4–7 kg',height:'33–41 cm',countries:60,adoptable:false,
+    history:'Created in the 1960s by crossing domestic cats with the Asian leopard cat. Dr Jean Mill developed the breed to create a wild appearance in a domestic temperament.',
+    habits:'Highly energetic and mischievous. Loves water (unusual for cats). Very intelligent. Requires significant stimulation. Not ideal for first-time cat owners.',
+    food:'High-protein raw or premium wet diet preferred. Avoid grain-heavy kibble. Fresh water essential — Bengals love water fountains.',
+    activities:['Climbing and jumping (tall cat trees)','Water play','Interactive wand toys','Leash training'],
+    temperament:['Active','Curious','Confident','Playful'],
+    grooming:'Weekly brushing; self-grooming adequate.'
+  },
+  {id:'c4',pet:'cat',name:'Maine Coon',origin:'USA',size:'Large',image:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&q=80',tags:['Gentle Giant','Dog-like','Sociable'],lifespan:'12–15 yrs',weight:'5–8 kg',height:'30–40 cm',countries:65,adoptable:true,
+    history:'One of the largest domestic cat breeds, native to the state of Maine, USA. Possibly descended from long-haired cats brought by sailors. State cat of Maine.',
+    habits:'Dog-like personality — will follow you around and greet guests. Can be leash trained. Loves water. Very gentle with children. Chirps and trills rather than meows.',
+    food:'High-quality kibble for large breeds. Protein-rich wet food 2× daily. Joint supplements as they age.',
+    activities:['Interactive play','Leash walks','Climbing tall cat trees','Water games'],
+    temperament:['Gentle','Sociable','Intelligent','Playful'],
+    grooming:'2× weekly brushing to prevent matting.'
+  },
+  {id:'c5',pet:'cat',name:'Indian Domestic Shorthair',origin:'India',size:'Medium',image:'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&q=80',tags:['Hardy','Independent','Adaptable'],lifespan:'12–16 yrs',weight:'3–5 kg',height:'23–30 cm',countries:5,adoptable:true,
+    history:'The common domestic cat found across India, descended from African wildcats brought through trade routes thousands of years ago. Highly adapted to India\'s diverse climate.',
+    habits:'Independent and street-smart. Bonds with family while maintaining some independence. Excellent hunters. Very adaptable to both homes and outdoor environments.',
+    food:'Quality wet or dry food 2× daily. Boiled chicken and rice is good supplement. Fresh water always.',
+    activities:['Indoor/outdoor exploration','Hunting play','Leaping and climbing','Quiet companionship'],
+    temperament:['Independent','Hardy','Affectionate (on their terms)','Alert'],
+    grooming:'Minimal — weekly brushing sufficient.'
+  },
+  /* ── RABBITS ── */
+  {id:'r1',pet:'rabbit',name:'Holland Lop',origin:'Netherlands',size:'Small',image:'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&q=80',tags:['Adorable','Gentle','Social'],lifespan:'7–14 yrs',weight:'0.9–1.8 kg',height:'20–25 cm',countries:50,adoptable:true,
+    history:'Created in the 1950s by Dutch breeder Adriann de Cock by crossing French Lops with Netherland Dwarfs. Became one of the most popular rabbit breeds worldwide.',
+    habits:'Calm and gentle. Loves to hop around and explore. Social and enjoys human interaction. Needs at least 3 hours of exercise outside cage daily.',
+    food:'Unlimited timothy hay (80% diet), leafy greens daily, pellets (1/4 cup per 2 kg). Fresh water.',
+    activities:['Free roaming (3+ hrs/day)','Tunnel exploration','Gentle petting','Puzzle feeders'],
+    temperament:['Calm','Gentle','Sociable','Curious'],
+    grooming:'Weekly brushing; more during shedding seasons.'
+  },
+  {id:'r2',pet:'rabbit',name:'Rex Rabbit',origin:'France',size:'Medium',image:'https://images.unsplash.com/photo-1616890176346-39b55dad51c8?w=600&q=80',tags:['Velvety','Calm','Friendly'],lifespan:'5–6 yrs',weight:'3.5–4.5 kg',height:'30–38 cm',countries:40,adoptable:true,
+    history:'Originated in France in the late 19th century as a natural mutation producing an unusually plush, velvet-like coat. Used for fur trade historically.',
+    habits:'Calm and gentle. Good with children when handled properly. Active during dawn and dusk. Enjoys exploring and hiding in tunnels.',
+    food:'Unlimited timothy hay, mixed greens, limited pellets. No sugary treats.',
+    activities:['Morning/evening free time','Cardboard box and tunnel play','Gentle handling'],
+    temperament:['Calm','Friendly','Gentle','Playful'],
+    grooming:'Weekly brushing; velvety coat is relatively low maintenance.'
+  },
+  /* ── PARROTS ── */
+  {id:'p1',pet:'parrot',name:'African Grey',origin:'Central Africa',size:'Medium',image:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80',tags:['Super Intelligent','Mimicking','Sensitive'],lifespan:'40–60 yrs',weight:'400–650g',height:'28–33 cm',countries:35,adoptable:true,
+    history:'Native to equatorial Africa, the African Grey has been kept as a pet for over 4,000 years. Known as the "Einstein of parrots" for their extraordinary cognitive abilities.',
+    habits:'Extremely intelligent — can develop vocabulary of 1,000+ words and use them contextually. Sensitive and emotionally complex. Forms deep bonds with one person. Needs 3–4 hours out-of-cage time.',
+    food:'High-quality pellets (60%), fresh vegetables (30%), fruits, cooked grains. Avoid avocado, chocolate, onion. Never seed-only diet.',
+    activities:['Puzzle solving','Vocabulary training','Out-of-cage time','Foraging','Socialisation'],
+    temperament:['Intelligent','Sensitive','Loyal','Demanding'],
+    grooming:'Regular misting/bathing; wing/nail trim by avian vet.'
+  },
+  {id:'p2',pet:'parrot',name:'Budgerigar',origin:'Australia',size:'Small',image:'https://images.unsplash.com/photo-1612178991541-b48cc8e92a4d?w=600&q=80',tags:['Cheerful','Social','Easy-care'],lifespan:'5–10 yrs',weight:'25–35g',height:'18–20 cm',countries:65,adoptable:true,
+    history:'Native to Australia, found in large flocks in the wild. First brought to Europe in 1840 by naturalist John Gould. Now one of the world\'s most popular pet birds.',
+    habits:'Social and cheerful. Happy to live in pairs. Can learn to talk. Enjoys mirrors and toys. Active during the day, needs 2–3 hours out of cage.',
+    food:'Quality budgie seed mix, pellets, fresh vegetables (leafy greens, carrot), occasional fruit. Fresh water daily.',
+    activities:['Flying time outside cage','Singing and talking','Playing with toys','Socialising'],
+    temperament:['Cheerful','Social','Curious','Playful'],
+    grooming:'Occasional misting; self-grooming adequate.'
+  },
+  {id:'p3',pet:'parrot',name:'Indian Ringneck',origin:'India / Pakistan',size:'Medium',image:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80',tags:['Colourful','Talking','Independent'],lifespan:'25–30 yrs',weight:'100–140g',height:'38–42 cm',countries:40,adoptable:true,
+    history:'Native to India and Pakistan, one of the oldest parrot species kept in captivity. Alexander the Great brought them to Greece around 300 BC. Sacred in Hindu temples.',
+    habits:'Intelligent and independent. Can develop large vocabulary with training. Not as cuddly as some species — enjoys interaction on its own terms. Very colourful.',
+    food:'Pellets, seeds (not seed-only), fresh vegetables, cooked grains, some fruit. Fresh water.',
+    activities:['Talking and mimicry training','Free flight time','Foraging toys','Social interaction'],
+    temperament:['Independent','Intelligent','Colourful personality','Playful'],
+    grooming:'Regular misting; avian vet for nail/wing trim.'
+  },
+  /* ── HAMSTER ── */
+  {id:'h1',pet:'hamster',name:'Syrian Hamster',origin:'Syria',size:'Small',image:'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600&q=80',tags:['Solitary','Nocturnal','Gentle'],lifespan:'2–3 yrs',weight:'85–150g',height:'13–18 cm',countries:55,adoptable:true,
+    history:'Discovered in Syria in 1797. First laboratory use in the 1930s. Became popular as pets in the 1940s after breeding colonies were established. Must live alone — will fight other Syrians.',
+    habits:'Strictly solitary. Nocturnal — most active at night. Loves tunnelling and burrowing. Runs on wheel for miles. Pouches food in cheeks.',
+    food:'Seed and pellet mix, fresh vegetables (broccoli, cucumber), occasional boiled egg for protein. Fresh water from bottle.',
+    activities:['Running on wheel','Tunnelling','Chewing toys','Exploration outside cage (in ball)'],
+    temperament:['Gentle','Curious','Independent','Resourceful'],
+    grooming:'Self-grooming; sand bath occasionally.'
+  },
+  /* ── FISH ── */
+  {id:'f1',pet:'fish',name:'Betta Fish',origin:'Southeast Asia',size:'Small',image:'https://images.unsplash.com/photo-1571752726703-5e7d1f6a986d?w=600&q=80',tags:['Colourful','Territorial','Low Maintenance'],lifespan:'2–5 yrs',weight:'4–5g',height:'5–8 cm',countries:60,adoptable:false,
+    history:'Native to rice paddies and ponds of Thailand (then Siam). Collected for fighting matches — hence "Siamese fighting fish." Became popular aquarium fish in the 20th century.',
+    habits:'Males are highly territorial — must be kept alone or with peaceful non-fin-nipping fish. Breathes air at surface (labyrinth organ). Recognises their owners.',
+    food:'High-quality betta pellets (2–3 pellets 1–2× daily). Frozen/live daphnia or brine shrimp as treats. Never overfeeding.',
+    activities:['Exploring tank','Flaring at mirror','Swimming through plants/decor'],
+    temperament:['Territorial','Curious','Aware of surroundings','Interactive'],
+    grooming:'N/A — regular water changes (25% weekly).'
+  },
+  {id:'f2',pet:'fish',name:'Goldfish',origin:'China',size:'Small',image:'https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=600&q=80',tags:['Classic','Hardy','Sociable'],lifespan:'10–15 yrs',weight:'100–300g',height:'10–30 cm',countries:80,adoptable:false,
+    history:'Selectively bred in ancient China over 1,000 years from wild carp. Introduced to Europe in the 17th century. The most commonly kept aquarium fish in the world.',
+    habits:'Social — do better in groups. Active during day. Constant grazers. Excellent memory (contrary to myth — can remember things for months). Recognise their feeders.',
+    food:'Quality goldfish flakes or pellets, blanched vegetables (peas, spinach). Feed 2× daily, only what they eat in 2 minutes.',
+    activities:['Schooling with companions','Grazing on substrate','Following owners','Swimming patterns'],
+    temperament:['Peaceful','Social','Curious','Active'],
+    grooming:'N/A — regular water changes essential.'
+  },
+  /* ── TURTLE ── */
+  {id:'t1',pet:'turtle',name:'Red-Eared Slider',origin:'USA',size:'Medium',image:'https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?w=600&q=80',tags:['Long-lived','Active','Social'],lifespan:'20–40 yrs',weight:'200g–3kg',height:'12–30 cm',countries:50,adoptable:true,
+    history:'Native to Mississippi River valley in the USA. The most common turtle kept as a pet worldwide. Named for the red stripe behind each eye.',
+    habits:'Semi-aquatic. Loves basking under UV light for 8–12 hours daily. Becomes inactive in cold. Social and recognises regular feeders. Needs both water (for swimming) and dry area.',
+    food:'Commercial turtle pellets, leafy greens, cooked fish, insects. Young: more protein. Adults: more vegetables. Never overfeeding.',
+    activities:['Swimming','Basking','Exploring','Watching their environment'],
+    temperament:['Active','Social','Alert','Long-commitment pet'],
+    grooming:'N/A — clean tank water weekly; UVB light essential.'
+  }
+];
+
+/* ══════════════════════════════════════════════
+   ADOPTION CENTRES DATABASE
+══════════════════════════════════════════════ */
+var CENTRES={
+  india:[
+    {id:'c1',name:'SPCA Delhi',shortName:'SPCA',emoji:'🏥',owner:'Mr Rahul Khanna',reg:'DL/SPCA/2001/047',phone:'+91-11-2619-9700',email:'info@spcadelhi.org',website:'spcadelhi.org',address:'Lodhi Colony, New Delhi 110003',hours:'Mon–Sat 9AM–6PM',accepts:['dog','cat','rabbit'],verified:true,govt:true,hrs24:false,distance:'2.1 km',whatsapp:'+919811001001',desc:'Established 1920. Largest animal welfare society in Delhi with full veterinary facility.'},
+    {id:'c2',name:'People For Animals – Delhi',shortName:'PFA Delhi',emoji:'🐾',owner:'Mrs Maneka Gandhi Foundation',reg:'DL/NGO/2003/112',phone:'+91-11-2634-7111',email:'delhi@peopleforanimalsindia.org',website:'peopleforanimalsindia.org',address:'B-1/14, Vasant Vihar, New Delhi 110057',hours:'Mon–Sun 8AM–8PM',accepts:['dog','cat','rabbit','parrot'],verified:true,govt:false,hrs24:true,distance:'3.8 km',whatsapp:'+919810005500',desc:'Pan-India network. Rescue, rehabilitation and adoption for all animals.'},
+    {id:'c3',name:'Friendicoes SECA',shortName:'Friendicoes',emoji:'🏠',owner:'Mr Sanjiv Thakur',reg:'DL/SECA/2007/228',phone:'+91-11-2435-1304',email:'info@friendicoes.org',website:'friendicoes.org',address:'Jangpura Extension, New Delhi 110014',hours:'Mon–Sat 10AM–5PM',accepts:['dog','cat'],verified:true,govt:false,hrs24:false,distance:'4.5 km',whatsapp:'+919899123456',desc:'Non-profit rescue and adoption centre. 500+ animals rehomed annually.'},
+    {id:'c4',name:'Bombay SPCA',shortName:'BSPCA',emoji:'🏥',owner:'Mr Sheriar Irani',reg:'MH/SPCA/1874/001',phone:'+91-22-2378-8041',email:'info@bombayspca.org',website:'bombayspca.org',address:'Parel, Mumbai 400012',hours:'Mon–Sat 9AM–5PM',accepts:['dog','cat','rabbit','hamster'],verified:true,govt:true,hrs24:false,distance:'1.9 km',whatsapp:'+912223788041',desc:'Founded 1874. Maharashtra\'s premier animal welfare organisation.'},
+    {id:'c5',name:'Blue Cross of India',shortName:'Blue Cross',emoji:'🔵',owner:'Mr Chinny Krishna',reg:'TN/NGO/1963/045',phone:'+91-44-2235-1001',email:'info@bluecrossofindia.org',website:'bluecrossofindia.org',address:'Velachery Road, Chennai 600042',hours:'Mon–Sat 9AM–6PM',accepts:['dog','cat'],verified:true,govt:false,hrs24:false,distance:'3.2 km',whatsapp:'+914422351001',desc:'One of India\'s oldest animal welfare organisations. Adoption, sterilisation and education.'},
+    {id:'c6',name:'Compassion Unlimited Plus Action (CUPA)',shortName:'CUPA',emoji:'💚',owner:'Mrs Suparna Bakshi Roy',reg:'KA/NGO/1991/389',phone:'+91-80-2358-7461',email:'info@cupabangalore.org',website:'cupabangalore.org',address:'Sarjapur Road, Bangalore 560035',hours:'Mon–Sun 9AM–7PM',accepts:['dog','cat','rabbit','parrot'],verified:true,govt:false,hrs24:false,distance:'5.1 km',whatsapp:'+918023587461',desc:'Award-winning Bangalore NGO. Full-service shelter with 500+ animals.'}
+  ],
+  usa:[
+    {id:'u1',name:'ASPCA New York',shortName:'ASPCA',emoji:'🏥',owner:'Matt Bershadker (CEO)',reg:'NY/501c3/1866/001',phone:'+1-212-876-7700',email:'info@aspca.org',website:'aspca.org',address:'424 E 92nd St, New York, NY 10128',hours:'Mon–Sun 11AM–7PM',accepts:['dog','cat','rabbit','hamster'],verified:true,govt:false,hrs24:false,distance:'1.2 km',whatsapp:'',desc:'Founded 1866. First humane society in Western Hemisphere.'},
+    {id:'u2',name:'LA Animal Services',shortName:'LAAS',emoji:'🐾',owner:'City of Los Angeles',reg:'CA/GOV/1898/001',phone:'+1-888-452-7381',email:'laas.info@lacity.org',website:'laanimalservices.com',address:'2900 Bledsoe St, Los Angeles, CA 90031',hours:'Mon–Fri 10AM–5PM',accepts:['dog','cat','rabbit','turtle'],verified:true,govt:true,hrs24:false,distance:'3.0 km',whatsapp:'',desc:'City government shelter serving LA County.'}
+  ],
+  uk:[
+    {id:'uk1',name:'Battersea Dogs & Cats Home',shortName:'Battersea',emoji:'🏠',owner:'Claire Horton (CEO)',reg:'UK/CH/206394',phone:'+44-20-7622-3626',email:'info@battersea.org.uk',website:'battersea.org.uk',address:'4 Battersea Park Rd, London SW8 4AA',hours:'Mon–Sun 10AM–5PM',accepts:['dog','cat'],verified:true,govt:false,hrs24:false,distance:'2.8 km',whatsapp:'',desc:'UK\'s most famous rescue centre. Founded 1860. Rehomes 5,000+ animals annually.'},
+    {id:'uk2',name:'RSPCA',shortName:'RSPCA',emoji:'🔵',owner:'Chris Sherwood (CEO)',reg:'UK/CH/219099',phone:'+44-300-1234-999',email:'enquiries@rspca.org.uk',website:'rspca.org.uk',address:'Wilberforce Way, Southwater, Horsham RH13 9RS',hours:'Mon–Sun 24hrs (helpline)',accepts:['dog','cat','rabbit','hamster','parrot','turtle'],verified:true,govt:false,hrs24:true,distance:'1.5 km',whatsapp:'',desc:'Largest animal welfare charity in England & Wales. Nationwide network.'}
+  ],
+  australia:[
+    {id:'au1',name:'RSPCA Australia',shortName:'RSPCA',emoji:'🐾',owner:'Richard Mussell (CEO)',reg:'AU/ACNC/32-003-696-873',phone:'+61-2-6282-8300',email:'national@rspca.org.au',website:'rspca.org.au',address:'1 Maitland Place, Norwest NSW 2153',hours:'Mon–Sun 10AM–4PM',accepts:['dog','cat','rabbit','hamster'],verified:true,govt:false,hrs24:false,distance:'4.1 km',whatsapp:'',desc:'Australia\'s leading animal welfare charity. State branches in every territory.'}
+  ],
+  uae:[
+    {id:'ae1',name:'K9 Friends',shortName:'K9',emoji:'🐕',owner:'Ms Emma Hutchinson',reg:'DXB/NGO/2001/0082',phone:'+971-4-887-8739',email:'info@k9friends.com',website:'k9friends.com',address:'Al Quoz Industrial Area 4, Dubai',hours:'Mon–Fri 9AM–6PM, Sat 9AM–1PM',accepts:['dog'],verified:true,govt:false,hrs24:false,distance:'6.2 km',whatsapp:'+971501234567',desc:'Dubai\'s first dog rescue organisation. Rehomes rescued dogs across the UAE.'},
+    {id:'ae2',name:'SNIFF (Shelter and Neutering Is For Free)',shortName:'SNIFF',emoji:'🐾',owner:'Ms Amani Maan',reg:'DXB/NGO/2010/114',phone:'+971-50-456-7890',email:'info@sniffdubai.com',website:'sniffdubai.com',address:'Jumeirah, Dubai',hours:'By appointment',accepts:['dog','cat'],verified:false,govt:false,hrs24:false,distance:'8.5 km',whatsapp:'+971504567890',desc:'Dubai-based rescue and fostering network for dogs and cats.'}
+  ],
+  default:[
+    {id:'def1',name:'Local Animal Shelter',shortName:'Local Shelter',emoji:'🏠',owner:'Local Welfare Authority',reg:'REG/001/2010',phone:'+00-000-000-0000',email:'info@localshelter.org',website:'',address:'City Centre Location',hours:'Mon–Sat 9AM–5PM',accepts:['dog','cat','rabbit'],verified:false,govt:false,hrs24:false,distance:'Nearby',whatsapp:'',desc:'Contact your local municipal animal welfare office for shelters in your area.'},
+    {id:'def2',name:'PawBook Partner Centre',shortName:'PawBook Partner',emoji:'🐾',owner:'PawBook Verified Network',reg:'PB/PARTNER/2024',phone:'+00-000-000-0000',email:'adopt@pawbook.deemona.com',website:'pawbook.deemona.com',address:'Register your shelter on PawBook',hours:'Register to list',accepts:['dog','cat','rabbit','parrot','hamster','fish','turtle'],verified:true,govt:false,hrs24:false,distance:'Partner',whatsapp:'',desc:'Are you an adoption centre? List your shelter on PawBook to reach thousands of pet lovers.'}
+  ]
+};
+
+function getCentresForLocation(country, pet){
+  var list=CENTRES[country]||CENTRES['default'];
+  if(pet&&pet!=='all'){
+    list=list.filter(function(c){return c.accepts.includes(pet);});
+  }
+  if(!list.length)list=CENTRES['default'];
+  return list;
+}
+
+/* ══════════════════════════════════════════════
+   SEARCH & FILTER
+══════════════════════════════════════════════ */
+function searchBreeds(){
+  var country=document.getElementById('sel-country').value;
+  var state=document.getElementById('sel-state').value;
+  var city=document.getElementById('sel-city').value;
+  _currentCity=city||state||country||'your area';
+
+  var pet=_selectedPet;
+  var q=(document.getElementById('inp-search').value||'').toLowerCase();
+
+  var filtered=BREEDS.filter(function(b){
+    if(pet!=='all'&&b.pet!==pet)return false;
+    if(q&&!b.name.toLowerCase().includes(q)&&!b.origin.toLowerCase().includes(q)&&!b.tags.some(function(t){return t.toLowerCase().includes(q);}))return false;
+    return true;
+  });
+
+  _currentBreeds=filtered;
+  sortBreeds();
+  document.getElementById('results-section').style.display='block';
+  document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function filterBreeds(){
+  if(!_currentBreeds.length)return;
+  searchBreeds();
+}
+
+function sortBreeds(){
+  var mode=document.getElementById('sort-sel').value;
+  var sorted=_currentBreeds.slice();
+  if(mode==='az')sorted.sort(function(a,b){return a.name.localeCompare(b.name);});
+  else if(mode==='adoptable')sorted.sort(function(a,b){return (b.adoptable?1:0)-(a.adoptable?1:0);});
+  else sorted.sort(function(a,b){return b.countries-a.countries;});
+  renderBreedDropdown(sorted);
+}
+
+function renderBreedDropdown(breeds){
+  document.getElementById('results-count').textContent=breeds.length+' breed'+(breeds.length!==1?'s':'')+' found in '+_currentCity;
+  var petEmojis={dog:'🐕',cat:'🐈',rabbit:'🐰',parrot:'🦜',hamster:'🐹',fish:'🐠',turtle:'🐢'};
+  var dd=document.getElementById('breed-dropdown');
+  dd.innerHTML='<option value="">— Select a breed to explore —</option>';
+  // Group by pet type
+  var groups={};
+  breeds.forEach(function(b){
+    if(!groups[b.pet])groups[b.pet]=[];
+    groups[b.pet].push(b);
+  });
+  Object.keys(groups).forEach(function(pet){
+    var og=document.createElement('optgroup');
+    og.label=(petEmojis[pet]||'🐾')+' '+pet.charAt(0).toUpperCase()+pet.slice(1)+'s';
+    groups[pet].forEach(function(b){
+      var opt=document.createElement('option');
+      opt.value=b.id;
+      opt.textContent=b.name+(b.adoptable?' ✓ Adoptable':'')+' — '+b.origin;
+      og.appendChild(opt);
     });
-    // Also hide topnav-tabs on mobile
-    var tabs = document.querySelector('.topnav-tabs');
-    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
-    // Show bottom nav on mobile
-    var bnav = document.querySelector('.bottomnav');
-    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+    dd.appendChild(og);
+  });
+  // Show first breed preview by default if list not empty
+  document.getElementById('breed-preview').innerHTML='<div style="text-align:center;padding:28px;color:#65676b"><div style="font-size:40px;margin-bottom:8px">👆</div><div style="font-size:14px;font-weight:600">Select a breed from the list above to see full details</div></div>';
+  if(breeds.length>0){dd.value='';} // reset selection
+}
+
+function onBreedSelect(){
+  var id=document.getElementById('breed-dropdown').value;
+  if(!id){document.getElementById('breed-preview').innerHTML='<div style="text-align:center;padding:28px;color:#65676b"><div style="font-size:40px;margin-bottom:8px">👆</div><div style="font-size:14px;font-weight:600">Select a breed from the list above to see full details</div></div>';return;}
+  var b=findBreed(id);
+  if(!b)return;
+  _currentBreedForAdopt=b;
+  var petEmoji={dog:'🐕',cat:'🐈',rabbit:'🐰',parrot:'🦜',hamster:'🐹',fish:'🐠',turtle:'🐢'}[b.pet]||'🐾';
+  var sizeColor={'Small':'#7c3aed','Medium':'#2563eb','Large':'#059669'}[b.size]||'#374151';
+  // Build preview card
+  var html='<div class="breed-preview-card">'
+    +'<img class="bpc-img" src="'+b.image+'" alt="'+b.name+'" onerror="this.src=\'https://images.unsplash.com/photo-1534361960057-19f4434a0d49?w=600&q=80\'">'
+    +'<div class="bpc-body">'
+    +'<div class="bpc-name">'+petEmoji+' '+b.name+(b.adoptable?'<span class="adopt-pill">✓ Adoptable</span>':'')+'</div>'
+    +'<div class="bpc-origin">📍 '+b.origin+' · <span style="color:'+sizeColor+';font-weight:700">'+b.size+'</span> · Found in '+b.countries+'+ countries</div>'
+    +'<div class="bpc-tags">'+b.tags.map(function(t){return '<span class="btag">'+t+'</span>';}).join('')+'</div>'
+    +'<div class="bpc-stats">'
+    +'<div class="bstat"><div class="bstat-val">'+b.lifespan+'</div><div class="bstat-lbl">Lifespan</div></div>'
+    +'<div class="bstat"><div class="bstat-val">'+b.weight+'</div><div class="bstat-lbl">Weight</div></div>'
+    +'<div class="bstat"><div class="bstat-val">'+b.height+'</div><div class="bstat-lbl">Height</div></div>'
+    +'</div></div>'
+    +'<div class="bpc-footer">'
+    +'<button class="btn-view-detail" onclick="openBreedModal(\''+b.id+'\')">📖 Full Details</button>'
+    +'<button class="btn-adopt-now" onclick="_currentBreedForAdopt=findBreed(\''+b.id+'\');openCentresModal()">🏠 Find Adoption Centre</button>'
+    +'</div></div>';
+  document.getElementById('breed-preview').innerHTML=html;
+  // Smooth scroll to preview
+  document.getElementById('breed-preview').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ══════════════════════════════════════════════
+   BREED MODAL
+══════════════════════════════════════════════ */
+function findBreed(id){return BREEDS.find(function(b){return b.id===id;});}
+
+function openBreedModal(id){
+  var b=findBreed(id);
+  if(!b)return;
+  _currentBreedForAdopt=b;
+  document.getElementById('bm-img').src=b.image;
+  document.getElementById('bm-img').alt=b.name;
+  var petEmoji={dog:'🐕',cat:'🐈',rabbit:'🐰',parrot:'🦜',hamster:'🐹',fish:'🐠',turtle:'🐢'}[b.pet]||'🐾';
+  var html='<div class="modal-name">'+petEmoji+' '+b.name+'</div>';
+  html+='<div class="modal-sub">📍 Origin: '+b.origin+' · '+b.size+' breed · Found in '+b.countries+'+ countries</div>';
+  // Info grid
+  html+='<div class="info-grid">';
+  html+=infoTile('⏳',b.lifespan,'Lifespan');
+  html+=infoTile('⚖️',b.weight,'Weight');
+  html+=infoTile('📏',b.height,'Height');
+  html+=infoTile('🌍',b.countries+' countries','Distribution');
+  html+=infoTile('🏷️',b.size,'Size Class');
+  html+=infoTile('🏠',b.adoptable?'Available':'Not listed','Adoptable');
+  html+='</div>';
+  // Temperament tags
+  html+='<div class="section-label">😊 Temperament</div><div class="detail-tags">';
+  (b.temperament||b.tags).forEach(function(t){html+='<span class="dtag">'+t+'</span>';});
+  html+='</div>';
+  // History
+  html+='<div class="section-label">📜 History & Origin</div>';
+  html+='<p class="desc-text">'+b.history+'</p>';
+  // Habits
+  html+='<div class="section-label">🏃 Habits & Behaviour</div>';
+  html+='<p class="desc-text">'+b.habits+'</p>';
+  // Food
+  html+='<div class="section-label">🍽️ Food & Nutrition</div>';
+  html+='<p class="desc-text">'+b.food+'</p>';
+  // Activities
+  html+='<div class="section-label">⚽ Common Activities</div><div class="detail-tags">';
+  (b.activities||[]).forEach(function(a){html+='<span class="dtag green">'+a+'</span>';});
+  html+='</div>';
+  // Grooming
+  if(b.grooming){
+    html+='<div class="section-label">✂️ Grooming</div>';
+    html+='<p class="desc-text">'+b.grooming+'</p>';
   }
-  showBurgerOnMobile();
-  window.addEventListener('resize', showBurgerOnMobile);
+  // Countries
+  html+='<div class="section-label">🌍 Commonly Found In</div>';
+  html+='<div class="country-flags">';
+  var clist={dog:['🇮🇳 India','🇺🇸 USA','🇬🇧 UK','🇦🇺 Australia','🇨🇦 Canada','🇩🇪 Germany','🇫🇷 France','🇧🇷 Brazil'],
+    cat:['🇮🇳 India','🇺🇸 USA','🇬🇧 UK','🇯🇵 Japan','🇫🇷 France','🇦🇺 Australia'],
+    rabbit:['🇳🇱 Netherlands','🇬🇧 UK','🇺🇸 USA','🇩🇪 Germany','🇦🇺 Australia'],
+    parrot:['🇮🇳 India','🇧🇷 Brazil','🇦🇺 Australia','🇿🇦 South Africa','🇺🇸 USA'],
+    hamster:['🇸🇾 Syria','🇩🇪 Germany','🇺🇸 USA','🇬🇧 UK','🇯🇵 Japan'],
+    fish:['🇹🇭 Thailand','🇨🇳 China','🇺🇸 USA','🇮🇳 India','🇧🇷 Brazil'],
+    turtle:['🇺🇸 USA','🇧🇷 Brazil','🇮🇳 India','🇦🇺 Australia']
+  }[b.pet]||['🌍 Worldwide'];
+  clist.slice(0,Math.min(b.countries>50?6:4,clist.length)).forEach(function(c){html+='<span class="cflag">'+c+'</span>';});
+  if(b.countries>clist.length)html+='<span class="cflag">+'+( b.countries-clist.length)+' more</span>';
+  html+='</div>';
+  // Adopt CTA
+  if(b.adoptable){
+    html+='<div class="adopt-cta"><div class="adopt-cta-icon">🏠</div><div class="adopt-cta-text"><h3>Find '+b.name+' near '+_currentCity+'</h3><p>Connect with verified adoption centres and shelters near you</p></div><button class="btn-adopt" onclick="openCentresModal()">Find Centres</button></div>';
+  } else {
+    html+='<div style="background:#f8f9fa;border-radius:12px;padding:14px;margin-top:14px;font-size:13px;color:#65676b;text-align:center">🔍 No adoption listings currently available for this breed.<br><button onclick="openCentresModal()" style="margin-top:8px;padding:8px 18px;border-radius:999px;border:1.5px solid #1877F2;background:#fff;color:#1877F2;font-weight:700;cursor:pointer;font-size:12px">Find Local Shelters Anyway →</button></div>';
+  }
+  html+='<div style="height:8px"></div>';
+  document.getElementById('bm-content').innerHTML=html;
+  document.getElementById('breed-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function infoTile(icon,val,label){
+  return '<div class="info-tile"><div class="it-val">'+icon+' '+val+'</div><div class="it-lbl">'+label+'</div></div>';
+}
+
+function closeBreedModal(){
+  document.getElementById('breed-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ══════════════════════════════════════════════
+   ADOPTION CENTRES MODAL
+══════════════════════════════════════════════ */
+function openCentresModal(){
+  var country=document.getElementById('sel-country').value||'india';
+  var city=_currentCity;
+  var pet=_selectedPet;
+  var breed=_currentBreedForAdopt?_currentBreedForAdopt.name:'';
+  var centres=getCentresForLocation(country,pet);
+
+  document.getElementById('centers-title').textContent='🏠 Adoption Centres — '+city;
+  document.getElementById('centers-sub').textContent=centres.length+' centre'+(centres.length!==1?'s':'')+' found'+(breed?' for '+breed:'');
+
+  var html=centres.map(function(c){
+    var badges='';
+    if(c.govt)badges+='<span class="cbadge cbadge-gov">Govt. Registered</span>';
+    if(c.verified)badges+='<span class="cbadge cbadge-verified">✓ Verified</span>';
+    if(c.hrs24)badges+='<span class="cbadge cbadge-24h">24h Helpline</span>';
+    var acceptsTxt=c.accepts.map(function(a){return({dog:'🐕',cat:'🐈',rabbit:'🐰',parrot:'🦜',hamster:'🐹',fish:'🐠',turtle:'🐢'}[a]||a);}).join(' ');
+
+    return '<div class="center-card">'
+      +'<div class="center-header">'
+      +'<div class="center-logo">'+c.emoji+'</div>'
+      +'<div style="flex:1"><div class="center-name">'+c.name+'</div>'
+      +'<div class="center-reg">Reg: '+c.reg+'</div>'
+      +'<div class="center-badges">'+badges+'<span style="font-size:12px;color:#65676b;margin-top:3px">Accepts: '+acceptsTxt+'</span></div></div>'
+      +'<div class="distance-badge">📍 '+c.distance+'</div>'
+      +'</div>'
+      +'<div class="center-details">'
+      +'<div class="cd-row"><i class="ti ti-user"></i><span><strong>Owner/Head:</strong> '+c.owner+'</span></div>'
+      +'<div class="cd-row"><i class="ti ti-clock"></i><span>'+c.hours+'</span></div>'
+      +'<div class="cd-row"><i class="ti ti-phone"></i><span><a href="tel:'+c.phone+'">'+c.phone+'</a></span></div>'
+      +'<div class="cd-row"><i class="ti ti-mail"></i><span><a href="mailto:'+c.email+'">'+c.email+'</a></span></div>'
+      +'<div class="cd-row"><i class="ti ti-map-pin"></i><span>'+c.address+'</span></div>'
+      +(c.website?'<div class="cd-row"><i class="ti ti-world"></i><span><a href="https://'+c.website+'" target="_blank">'+c.website+'</a></span></div>':'')
+      +'</div>'
+      +'<div style="padding:8px 14px;font-size:12px;color:#65676b;border-top:1px solid #f1f5f9">'+c.desc+'</div>'
+      +'<div class="center-actions">'
+      +'<button class="btn-call" onclick="window.location.href=\'tel:'+c.phone+'\'"><i class="ti ti-phone"></i> Call</button>'
+      +(c.whatsapp?'<button class="btn-whatsapp" onclick="window.open(\'https://wa.me/'+c.whatsapp.replace(/[^0-9]/g,'')+'\',\'_blank\')"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>':'')
+      +'<button class="btn-book-appt" onclick="openApptModal(\''+c.id+'\',\''+c.name+'\')"><i class="ti ti-calendar-event"></i> Book Visit</button>'
+      +'</div></div>';
+  }).join('');
+
+  document.getElementById('centers-list').innerHTML=html;
+  document.getElementById('centers-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeCentersModal(){
+  document.getElementById('centers-modal').classList.remove('open');
+  document.body.style.overflow='hidden'; // keep breed modal overflow hidden
+}
+
+/* ══════════════════════════════════════════════
+   APPOINTMENT MODAL
+══════════════════════════════════════════════ */
+var _allCentres=Object.values(CENTRES).reduce(function(acc,v){return acc.concat(v);},[]);
+
+function openApptModal(centreId, centreName){
+  _currentCenterForAppt={id:centreId,name:centreName};
+  document.getElementById('appt-center-name').textContent='📍 '+centreName;
+  document.getElementById('appt-breed').value=_currentBreedForAdopt?_currentBreedForAdopt.name:'';
+  // Set min date to today
+  var today=new Date();
+  var yyyy=today.getFullYear(),mm=String(today.getMonth()+1).padStart(2,'0'),dd=String(today.getDate()).padStart(2,'0');
+  document.getElementById('appt-date').min=yyyy+'-'+mm+'-'+dd;
+  document.getElementById('appt-date').value='';
+  document.getElementById('appt-name').value='';
+  document.getElementById('appt-phone').value='';
+  document.getElementById('appt-time').value='';
+  document.getElementById('appt-notes').value='';
+  document.getElementById('appt-form-wrap').style.display='block';
+  document.getElementById('appt-success').style.display='none';
+  document.getElementById('appt-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function confirmAppt(){
+  var name=document.getElementById('appt-name').value.trim();
+  var phone=document.getElementById('appt-phone').value.trim();
+  var date=document.getElementById('appt-date').value;
+  var time=document.getElementById('appt-time').value;
+  if(!name){showToast('Please enter your name','error');return;}
+  if(!phone){showToast('Please enter your phone number','error');return;}
+  if(!date){showToast('Please select a preferred date','error');return;}
+  if(!time){showToast('Please select a time slot','error');return;}
+  // Simulate API submission
+  var controller=new AbortController();
+  var tid=setTimeout(function(){controller.abort();},8000);
+  var token=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+  fetch((window.API_BASE||'https://pawbook.deemona.com/api/v1')+'/adoption/appointments',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    signal:controller.signal,
+    body:JSON.stringify({centre_id:_currentCenterForAppt.id,centre_name:_currentCenterForAppt.name,name:name,phone:phone,date:date,time:time,breed:document.getElementById('appt-breed').value,notes:document.getElementById('appt-notes').value})
+  }).then(function(r){clearTimeout(tid);}).catch(function(){clearTimeout(tid);});
+  // Always show success (optimistic)
+  document.getElementById('appt-form-wrap').style.display='none';
+  document.getElementById('appt-success-msg').textContent='Your visit request for '+_currentCenterForAppt.name+' on '+date+' at '+time+' has been submitted. They will call '+phone+' to confirm.';
+  document.getElementById('appt-success').style.display='block';
+}
+
+function closeApptModal(){
+  document.getElementById('appt-modal').classList.remove('open');
+  document.body.style.overflow='hidden';
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+var _toastEl=null;
+function showToast(msg,type){
+  if(!_toastEl){_toastEl=document.createElement('div');_toastEl.className='toast-el';document.body.appendChild(_toastEl);}
+  _toastEl.style.background=type==='success'?'#22c55e':type==='error'?'#dc2626':'#1877F2';
+  _toastEl.textContent=msg;_toastEl.style.opacity='1';_toastEl.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(_toastEl._t);
+  _toastEl._t=setTimeout(function(){_toastEl.style.opacity='0';_toastEl.style.transform='translateX(-50%) translateY(8px)';},3000);
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+(function init(){
+  onCountryChange(); // populate India states by default
+  // Nav avatar
+  try{
+    var u=JSON.parse(localStorage.getItem('pb_user')||'null');
+    var av=document.getElementById('nav-av');
+    if(u&&av){
+      if(u.avatar_url){av.innerHTML='<img src="'+u.avatar_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';}
+      else if(u.full_name){av.textContent=u.full_name.charAt(0).toUpperCase();}
+    }
+    var dn=document.getElementById('drawer-name');
+    if(u&&dn){dn.textContent=u.full_name||u.username||'Pet Parent';}
+  }catch(e){}
+  // Auto-load all breeds on page open
+  _currentCity='your area';
+  _currentBreeds=BREEDS.slice();
+  document.getElementById('results-section').style.display='block';
+  sortBreeds();
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){navigator.serviceWorker.register('service-worker.js').catch(function(){});});
+  }
 })();
 </script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
-      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
-  });
-}
-</script>
+
+  <script>
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
 </body>
 </html>

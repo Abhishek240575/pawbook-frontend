@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -179,9 +179,11 @@ function showToast(msg,type){
   <button class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span class="bnav-label">Me</span></button>
 </nav>
 
-<script src="pawbook-api.js"></script>
 <script>
+// api.js removed — define API base directly
+var API_BASE = 'https://pawbook.deemona.com/api/v1';
 function authHeaders(){var t=localStorage.getItem('pb_token');return{'Content-Type':'application/json','Authorization':'Bearer '+t};}
+
 
 var NOTIFS = [
   {id:1,type:'social',category:'new',unread:true,icon:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',badge:'❤️',badgeBg:'#fee2e2',text:'<strong>Priya Sharma</strong> liked your photo of Bruno at the park.',time:'2 minutes ago',thumb:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=80&q=80'},
@@ -297,8 +299,9 @@ function markOneRead(id) {
 
 function markAllRead() {
   NOTIFS.forEach(function(n){ n.unread = false; });
-  // Sync to API
-  fetch(API_BASE+'/notifications/read-all', {method:'PATCH', headers:authHeaders()}).catch(function(){});
+  // Sync to API — only if logged in
+  var token = localStorage.getItem('pb_token');
+  if(token) fetch(API_BASE+'/notifications/read-all', {method:'PATCH', headers:authHeaders()}).catch(function(){});
   renderNotifs();
   showToast('All notifications marked as read', 'success');
 }
@@ -323,34 +326,155 @@ function followBack(id, btn) {
   showToast('Now following!', 'success');
 }
 
-// Init — sync real notifications from API, then render
-(function initNotifications(){
-  fetch(API_BASE+'/notifications', {headers:authHeaders()})
-    .then(function(r){ return r.ok ? r.json() : null; })
-    .catch(function(){ return null; })
-    .then(function(data){
-      if(data && data.length){
-        var typeMap = {like:'social',comment:'social',follow:'social',match:'social',appointment:'health',system:'health'};
-        var apiNotifs = data.map(function(n, i){
-          return {
-            id: 'api_'+(i+1),
-            api_id: n.id,
-            type: typeMap[n.type] || 'social',
-            category: 'new',
-            unread: !n.is_read,
-            icon: '🔔', iconBg: '#dbeafe',
-            badge: n.type==='like'?'❤️':n.type==='comment'?'💬':n.type==='match'?'🐾':n.type==='appointment'?'📅':'📢',
-            badgeBg: '#dbeafe',
-            text: '<strong>'+(n.title||'Notification')+'</strong>'+(n.body?' — '+n.body:''),
-            time: 'Just now'
-          };
-        });
-        // Prepend API notifications (unread ones only, avoid clutter)
-        var fresh = apiNotifs.filter(function(n){ return n.unread; });
-        NOTIFS = fresh.concat(NOTIFS);
+// ── Relative time helper ────────────────────────────────────────
+function relTime(iso) {
+  if(!iso) return 'Just now';
+  var diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if(diff < 60)   return 'Just now';
+  if(diff < 3600) return Math.floor(diff/60) + ' minutes ago';
+  if(diff < 86400) return Math.floor(diff/3600) + ' hours ago';
+  if(diff < 172800) return 'Yesterday';
+  return Math.floor(diff/86400) + ' days ago';
+}
+
+// ── Category bucket by age ───────────────────────────────────────
+function ageBucket(iso) {
+  if(!iso) return 'new';
+  var diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if(diff < 7200)   return 'new';
+  if(diff < 86400)  return 'today';
+  if(diff < 604800) return 'week';
+  return 'older';
+}
+
+// ── Badge emoji by notification type ────────────────────────────
+function typeBadge(type) {
+  var map = {like:'❤️',comment:'💬',follow:'👤',match:'🐾',appointment:'📅',health:'💊',system:'📢',group:'👥',lost:'🐾',achievement:'🏆'};
+  return map[type] || '🔔';
+}
+function typeBadgeBg(type) {
+  var map = {like:'#fee2e2',comment:'#dbeafe',follow:'#dcfce7',match:'#f0fdf4',appointment:'#dcfce7',health:'#fee2e2',system:'#fef3c7',group:'#f3e8ff',achievement:'#fef3c7'};
+  return map[type] || '#dbeafe';
+}
+function typeCategory(type) {
+  var social = ['like','comment','follow','match','group','lost'];
+  var health  = ['appointment','health','system','achievement'];
+  if(social.indexOf(type) !== -1) return 'social';
+  if(health.indexOf(type) !== -1) return 'health';
+  return 'social';
+}
+
+// ── Inject appointment status notifications from vet_booking page ───────
+(function injectApptNotifs(){
+  try {
+    var stored = JSON.parse(localStorage.getItem('pb_notifications') || '[]');
+    if (!stored.length) return;
+    // Convert to NOTIFS format and prepend
+    var apptNotifs = stored.map(function(n, i) {
+      var isConfirmed = n.status === 'confirmed';
+      var dateStr = '';
+      if (n.appt_date) {
+        try { dateStr = ' on ' + new Date(n.appt_date + 'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}); } catch(e){}
       }
-      renderNotifs();
+      return {
+        id: n.id || ('ls_appt_' + i),
+        ls_id: n.id,  // localStorage id for marking read
+        type: 'health',
+        category: ageBucket(n.ts),
+        unread: !n.read,
+        icon: isConfirmed ? '✅' : '❌',
+        iconBg: isConfirmed ? '#ecfdf5' : '#fff5f5',
+        badge: isConfirmed ? '🏥' : '⚠️',
+        badgeBg: isConfirmed ? '#d1fae5' : '#fee2e2',
+        text: isConfirmed
+          ? '<strong>Appointment Confirmed!</strong> Your appointment with <strong>' + n.vet_name + '</strong>' + dateStr + ' has been confirmed by the vet.'
+          : '<strong>Appointment Cancelled</strong> by <strong>' + n.vet_name + '</strong>' + dateStr + (n.reason ? '. Reason: ' + n.reason : '.'),
+        time: relTime(n.ts),
+        btn: { label: 'View Appointments', action: "goTo('11_vet_booking.html')" }
+      };
     });
+    // Prepend to NOTIFS (without duplicating by ls_id)
+    var existingLsIds = NOTIFS.filter(function(n){ return n.ls_id; }).map(function(n){ return n.ls_id; });
+    apptNotifs = apptNotifs.filter(function(n){ return existingLsIds.indexOf(n.ls_id) === -1; });
+    NOTIFS = apptNotifs.concat(NOTIFS);
+    // Mark as read in localStorage when user visits this page
+    var stored2 = JSON.parse(localStorage.getItem('pb_notifications') || '[]');
+    stored2.forEach(function(n){ n.read = true; });
+    localStorage.setItem('pb_notifications', JSON.stringify(stored2));
+  } catch(e) {}
+})();
+
+// ── Init — fetch real notifications, fall back to static demo ───
+(function initNotifications(){
+  var token = localStorage.getItem('pb_token');
+
+  // No token → just show static demo data immediately
+  if(!token) { renderNotifs(); return; }
+
+  // Show static data while API loads (instant feedback)
+  renderNotifs();
+
+  fetch(API_BASE + '/notifications', {
+    headers: authHeaders(),
+    signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined
+  })
+  .then(function(r){
+    if(r.status === 401) {
+      // Token expired — clear and stay on static demo
+      localStorage.removeItem('pb_token');
+      return null;
+    }
+    return r.ok ? r.json() : null;
+  })
+  .catch(function(e){
+    console.warn('[PawBook] Notifications API unavailable — showing demo data', e.message);
+    return null;
+  })
+  .then(function(data){
+    if(!data) return; // keep static demo, already rendered
+
+    var rows = Array.isArray(data) ? data : (data.data || data.notifications || []);
+    if(!rows.length) return; // API returned empty — keep demo data
+
+    var apiNotifs = rows.map(function(n, i){
+      var avatar = n.sender_avatar || n.icon || '🔔';
+      var isUrl  = typeof avatar === 'string' && avatar.startsWith('http');
+      return {
+        id:       'api_' + (n.id || i+1),
+        api_id:   n.id,
+        type:     typeCategory(n.type),
+        category: ageBucket(n.created_at),
+        unread:   !n.is_read,
+        icon:     avatar,
+        iconBg:   isUrl ? undefined : '#dbeafe',
+        badge:    typeBadge(n.type),
+        badgeBg:  typeBadgeBg(n.type),
+        text:     '<strong>' + (n.title || 'Notification') + '</strong>' +
+                  (n.body ? ' — ' + n.body : ''),
+        time:     relTime(n.created_at)
+      };
+    });
+
+    // Merge: real API notifications at top, keep static demo below
+    // Deduplicate static entries that duplicate an API one by title
+    var apiTitles = apiNotifs.map(function(n){ return n.text.replace(/<[^>]+>/g,'').substring(0,30); });
+    var staticKept = NOTIFS.filter(function(n){
+      var t = n.text.replace(/<[^>]+>/g,'').substring(0,30);
+      return apiTitles.indexOf(t) === -1;
+    });
+
+    NOTIFS = apiNotifs.concat(staticKept);
+
+    // Update unread count badge in topnav if element exists
+    var unreadCount = NOTIFS.filter(function(n){ return n.unread; }).length;
+    var badge = document.getElementById('notif-badge');
+    if(badge) { badge.textContent = unreadCount; badge.style.display = unreadCount ? '' : 'none'; }
+
+    renderNotifs();
+    if(apiNotifs.some(function(n){ return n.unread; })) {
+      showToast(apiNotifs.filter(function(n){return n.unread;}).length + ' new notification(s)', 'success');
+    }
+  });
 })();
 </script>
 <!-- DRAWER OVERLAY -->
@@ -387,9 +511,7 @@ function followBack(id, btn) {
     <div class="drawer-section">Pet Services</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
@@ -447,7 +569,7 @@ if ('serviceWorker' in navigator) {
   if(!u) {
     var tok = localStorage.getItem("pb_token");
     if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+      fetch("https://pawbook.deemona.com/api/v1/auth/me", {
         headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
       }).then(function(r){ return r.json(); }).then(function(res){
         var ud = res.data || res;
@@ -468,6 +590,8 @@ if ('serviceWorker' in navigator) {
   }
 })();
 </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
 </body>
 </html>
+
 

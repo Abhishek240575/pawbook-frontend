@@ -1,182 +1,206 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-
-<style>
-/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-:root{
-  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
-  --purple:#8b5cf6;--pink:#ec4899;
-  --green:#22c55e;--green-soft:#dcfce7;
-  --red:#ef4444;--amber:#f59e0b;
-  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --bg:#f0f2f5;--card:#fff;
-  --border:#e4e6eb;--border-soft:#f0f2f5;
-  --text:#050505;--text2:#65676b;--text3:#8a8d91;
-  --radius:12px;--radius-sm:8px;--pill:999px;
-  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --shadow-md:0 4px 20px rgba(0,0,0,.1);
-}
-body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
-
-/* Topnav */
-.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
-.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
-.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
-.topnav-tab.active{color:var(--blue)!important}
-.topnav-tab.active::after{background:var(--blue)!important}
-
-/* Buttons - make all buttons rounder and Facebook-style */
-.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
-button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
-.btn-blue{background:var(--blue)!important;color:#fff!important}
-.btn-blue:hover{background:var(--blue-dark)!important}
-.btn-gray{background:var(--bg)!important;color:var(--text)!important}
-
-/* Cards - cleaner */
-.card,.sidebar-card,.scard,.filter-section,.pb-card{
-  border-radius:var(--radius)!important;
-  border:1px solid var(--border)!important;
-  box-shadow:var(--shadow)!important;
-  background:var(--card)!important;
-}
-
-/* Badges - rounder */
-.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
-.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
-.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
-
-/* Post actions */
-.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
-.post-action.liked,.liked{color:var(--blue)!important}
-
-/* Story cards */
-.story-card{border-radius:var(--radius)!important}
-.story-card-av,.story-av{border:3px solid var(--blue)!important}
-
-/* Bottom nav */
-.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
-.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
-.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
-
-/* Market cards */
-.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
-
-/* Inputs */
-input,textarea,select{font-family:'Inter',sans-serif!important}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
-
-/* Modals */
-.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
-.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
-
-/* Progress/fill */
-.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
-
-/* Tab bars */
-.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
-
-/* Notification unread */
-.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
-
-/* Vet-specific */
-.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-html,body{overflow-x:hidden!important;max-width:100%!important}
-</style>
-
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>PawBook — Nutrition Planner</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
 <link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>PawBook — Meal Planner</title>
+<script>(function(){var t=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');if(!t){window.location.replace('01_login.html');}})();</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <link rel="stylesheet" href="style.css">
 <style>
-.nutr-hero{background:linear-gradient(135deg,#064e3b,#059669,#0d9488);padding:36px 20px;text-align:center;position:relative;overflow:hidden}
-.nutr-hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=1400&q=80') center/cover;opacity:0.1}
-.nutr-hero-inner{position:relative;z-index:1}
-.nutr-hero h1{font-size:36px;font-weight:900;color:#fff;margin-bottom:8px}
-.nutr-page{max-width: 100%;margin: 0;padding:0 16px;display:grid;grid-template-columns:1fr 300px;gap:16px}
-/* Macro ring */
-.macro-ring{position:relative;width:150px;height:150px;margin:0 auto 16px}
-.macro-svg{transform:rotate(-90deg)}
-.macro-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.macro-pct{font-size:22px;font-weight:900;color:var(--text)}
-.macro-lbl{font-size:11px;color:var(--muted)}
-/* Food item */
-.food-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s}
-.food-item:hover{background:#f8f9ff}
-.food-item:last-child{border-bottom:none}
-.food-img{width:56px;height:56px;border-radius:10px;overflow:hidden;flex-shrink:0}
-.food-img img{width:100%;height:100%;object-fit:cover}
-.food-name{font-size:14px;font-weight:700}
-.food-cal{font-size:12px;color:var(--muted)}
-.food-bar{height:6px;border-radius:3px;background:#e4e6eb;margin-top:6px;overflow:hidden}
-.food-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#059669,#0d9488)}
-/* Meal card */
-.meal-slot{background:#f8f9fa;border-radius:10px;padding:14px;margin-bottom:10px}
-.meal-time{font-size:13px;font-weight:800;color:var(--blue);margin-bottom:8px}
-.meal-item{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px}
-.meal-dot{width:10px;height:10px;border-radius:50%;background:#059669;flex-shrink:0}
-</style>
-<link rel="stylesheet" href="mobile.css">
-<style class="pb-mobile-pad">@media(max-width:768px){
-  .nutr-page { display: block !important; grid-template-columns: 1fr !important; }body{padding-bottom:72px}}</style>
-<style id="pb-mobile">
-html, body { overflow-x: hidden !important; }
-@media (max-width: 768px) {
-  html, body { width: 100% !important; overflow-x: hidden !important; }
-  div { min-width: 0 !important; }
-  
-  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
-  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
-  .topnav-tabs, .nav-tabs { display: none !important; }
-  .bottomnav { display: flex !important; }
-  .left-sidebar, .right-sidebar, aside { display: none !important; }
-  body { padding-bottom: 72px !important; }
-}
-</style>
-<style id="pb-burger">
-.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
-.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
-.drawer-overlay.open { display: block; }
-.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
-.drawer-panel.open { left: 0; }
-.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
-.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
-.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
-.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
-.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
-.drawer-body { flex: 1; padding: 6px 0; }
-.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
-.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
-.drawer-item:hover { background: #eff6ff; color: #1877F2; }
-.drawer-item i { font-size: 20px; width: 24px; }
-.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
-.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
-.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
-.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
-.bnav-item i { font-size: 22px; }
-.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.bnav-item.active { color: #1877F2; }
-@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
-@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,sans-serif;background:#f0f2f5;color:#050505;-webkit-font-smoothing:antialiased;padding-top:56px}
+button,input,select,textarea{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+
+/* ── NAV ── */
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;padding:0 12px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.topnav-logo{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:900;color:#1877F2;text-decoration:none;flex-shrink:0}
+.logo-icon{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px}
+.topnav-tabs{display:flex;gap:2px;margin-left:auto}
+.topnav-tab{width:40px;height:40px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:20px;color:#65676b;display:flex;align-items:center;justify-content:center}
+.topnav-tab.active{color:#1877F2;background:#e7f0fd}
+.topnav-right{display:flex;align-items:center;gap:8px;margin-left:8px}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:18px;color:#050505;cursor:pointer}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1877F2,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;cursor:pointer}
+.burger-btn{width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:#1877F2;font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@media(min-width:901px){.burger-btn{display:none!important}.topnav-tabs{display:flex!important}}
+@media(max-width:900px){.topnav-tabs{display:none!important}.burger-btn{display:flex!important}}
+
+/* ── HERO ── */
+.mp-hero{background:linear-gradient(135deg,#064e3b,#059669,#0d9488);padding:32px 20px 28px;text-align:center;color:#fff}
+.mp-hero h1{font-size:clamp(22px,4vw,32px);font-weight:900;margin-bottom:6px}
+.mp-hero p{opacity:.85;font-size:14px}
+
+/* ── SETUP WIZARD ── */
+.setup-card{background:#fff;border-radius:16px;border:1px solid #e4e6eb;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:24px;max-width:720px;margin:20px auto;width:calc(100% - 32px)}
+.setup-title{font-size:17px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.setup-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:600px){.setup-row{grid-template-columns:1fr}}
+.setup-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:500px){.setup-row-2{grid-template-columns:1fr}}
+.form-group label{font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:5px}
+.form-group select,.form-group input{width:100%;height:42px;border:1.5px solid #e4e6eb;border-radius:10px;padding:0 12px;font-size:14px;color:#050505;background:#fff;cursor:pointer;outline:none}
+.form-group select:focus,.form-group input:focus{border-color:#059669}
+
+/* Diet toggle */
+.diet-toggle{display:flex;gap:8px;flex-wrap:wrap}
+.diet-opt{flex:1;min-width:100px;border:2px solid #e4e6eb;border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s;user-select:none}
+.diet-opt:hover{border-color:#059669}
+.diet-opt.active{border-color:#059669;background:#f0fdf4}
+.diet-opt .diet-icon{font-size:28px;margin-bottom:4px}
+.diet-opt .diet-label{font-size:12px;font-weight:700;color:#374151}
+
+/* Duration pills */
+.dur-pills{display:flex;gap:8px;flex-wrap:wrap}
+.dur-pill{padding:10px 20px;border-radius:999px;border:2px solid #e4e6eb;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:#fff}
+.dur-pill:hover{border-color:#059669}
+.dur-pill.active{border-color:#059669;background:#059669;color:#fff}
+
+/* Generate btn */
+.btn-generate{width:100%;height:48px;border-radius:999px;border:none;background:linear-gradient(135deg,#059669,#0d9488);color:#fff;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;transition:opacity .15s}
+.btn-generate:hover{opacity:.9}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── TABS ── */
+.tab-bar{display:flex;background:#fff;border-bottom:1px solid #e4e6eb;position:sticky;top:56px;z-index:300;overflow-x:auto}
+.tab-bar::-webkit-scrollbar{height:0}
+.tab-item{flex:0 0 auto;padding:14px 20px;font-size:13px;font-weight:700;color:#65676b;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab-item.active{color:#059669;border-bottom-color:#059669}
+
+/* ── CONTENT PANELS ── */
+.panel{display:none;padding:16px 16px 80px;max-width:900px;margin:0 auto}
+.panel.active{display:block}
+
+/* ── MEAL PLAN GRID ── */
+.mp-grid{display:flex;flex-direction:column;gap:14px}
+.day-block{background:#fff;border-radius:14px;border:1px solid #e4e6eb;overflow:hidden}
+.day-header{background:linear-gradient(135deg,#064e3b,#059669);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.day-header .day-name{font-size:15px;font-weight:800}
+.day-header .day-kcal{font-size:12px;opacity:.85}
+.courses{display:grid;grid-template-columns:repeat(3,1fr)}
+@media(max-width:600px){.courses{grid-template-columns:1fr}}
+.course{padding:14px;border-right:1px solid #e4e6eb}
+.course:last-child{border-right:none}
+@media(max-width:600px){.course{border-right:none;border-bottom:1px solid #e4e6eb}.course:last-child{border-bottom:none}}
+.course-label{font-size:11px;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.meal-chip{display:inline-flex;align-items:center;gap:5px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#065f46;margin:2px;cursor:pointer;transition:all .12s}
+.meal-chip:hover{background:#dcfce7}
+.meal-chip.selected{background:#059669;color:#fff;border-color:#059669}
+.meal-chip .chip-kcal{font-size:10px;opacity:.7}
+.add-meal-btn{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#059669;background:none;border:1.5px dashed #bbf7d0;border-radius:8px;padding:5px 10px;cursor:pointer;margin-top:4px}
+.add-meal-btn:hover{background:#f0fdf4}
+
+/* ── NUTRITION PANEL ── */
+.nutr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:16px}
+.nutr-tile{background:#fff;border-radius:12px;border:1px solid #e4e6eb;padding:14px;text-align:center}
+.nutr-tile .nt-val{font-size:22px;font-weight:900;color:#059669}
+.nutr-tile .nt-unit{font-size:11px;color:#65676b;margin-bottom:2px}
+.nutr-tile .nt-label{font-size:12px;font-weight:700;color:#374151}
+.nutr-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.nutr-bar-row .nb-label{font-size:13px;font-weight:600;width:80px;flex-shrink:0}
+.nutr-bar-row .nb-track{flex:1;height:8px;background:#e4e6eb;border-radius:4px;overflow:hidden}
+.nutr-bar-row .nb-fill{height:100%;border-radius:4px}
+.nutr-bar-row .nb-val{font-size:12px;font-weight:700;width:50px;text-align:right;flex-shrink:0}
+
+/* ── PANTRY ── */
+.pantry-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.pantry-item{background:#fff;border-radius:12px;border:1px solid #e4e6eb;padding:14px;display:flex;gap:12px;align-items:center}
+.pantry-emoji{font-size:32px;flex-shrink:0}
+.pantry-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.pantry-qty{font-size:12px;color:#059669;font-weight:700}
+.pantry-note{font-size:11px;color:#65676b}
+.pantry-low{border-color:#fca5a5;background:#fff7f7}
+.pantry-low .pantry-qty{color:#dc2626}
+
+/* ── RECIPE MODAL ── */
+.recipe-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:16px}
+.recipe-box{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)}
+.recipe-head{padding:16px 18px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0;z-index:1}
+.recipe-step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.recipe-step:last-child{border-bottom:none}
+.step-num{width:28px;height:28px;border-radius:50%;background:#059669;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* ── MEAL PICKER MODAL ── */
+.picker-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:16px}
+.picker-box{background:#fff;border-radius:16px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.2)}
+.picker-head{padding:14px 16px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0}
+.meal-pick-item{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background .1s}
+.meal-pick-item:hover{background:#f0fdf4}
+.meal-pick-item:last-child{border-bottom:none}
+.mpi-emoji{font-size:28px;flex-shrink:0}
+.mpi-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.mpi-meta{font-size:11px;color:#65676b}
+.mpi-kcal{font-size:13px;font-weight:800;color:#059669;flex-shrink:0}
+
+/* ── VOICE BOT ── */
+.voice-fab{position:fixed;bottom:72px;right:16px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#059669,#0d9488);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 20px rgba(5,150,105,.4);z-index:600;transition:transform .15s}
+.voice-fab:hover{transform:scale(1.08)}
+.voice-fab.listening{animation:pulse-green 1s infinite}
+@keyframes pulse-green{0%,100%{box-shadow:0 4px 20px rgba(5,150,105,.4)}50%{box-shadow:0 4px 32px rgba(5,150,105,.8),0 0 0 12px rgba(5,150,105,.15)}}
+.voice-panel{display:none;position:fixed;bottom:136px;right:16px;width:300px;background:#fff;border-radius:16px;border:1px solid #e4e6eb;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:600;overflow:hidden}
+.voice-panel.open{display:block}
+.vp-head{background:linear-gradient(135deg,#064e3b,#059669);padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.vp-head-title{color:#fff;font-size:14px;font-weight:800}
+.vp-close{width:26px;height:26px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:14px}
+.vp-msgs{height:200px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.vp-msg{max-width:85%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.4}
+.vp-msg.bot{background:#f0fdf4;color:#065f46;border-radius:12px 12px 12px 2px;align-self:flex-start}
+.vp-msg.user{background:#059669;color:#fff;border-radius:12px 12px 2px 12px;align-self:flex-end}
+.vp-input-row{padding:10px 12px;border-top:1px solid #e4e6eb;display:flex;gap:6px}
+.vp-input{flex:1;height:36px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 12px;font-size:13px;outline:none}
+.vp-input:focus{border-color:#059669}
+.vp-send{width:36px;height:36px;border-radius:50%;border:none;background:#059669;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.vp-mic{width:36px;height:36px;border-radius:50%;border:none;background:#f0fdf4;color:#059669;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px}
+.vp-mic.on{background:#059669;color:#fff;animation:pulse-green .8s infinite}
+.vp-quick{padding:6px 12px 10px;display:flex;flex-wrap:wrap;gap:5px}
+.vp-q{padding:4px 10px;border-radius:999px;border:1.5px solid #bbf7d0;background:#f0fdf4;font-size:11px;font-weight:700;color:#065f46;cursor:pointer}
+.vp-q:hover{background:#dcfce7}
+
+/* ── BOTTOM NAV ── */
+.bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e4e6eb;z-index:300;align-items:center;justify-content:space-around}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:6px 0;border:none;background:none;font-family:'Inter',sans-serif;color:#65676b;text-decoration:none}
+.bnav-item i{font-size:22px}
+.bnav-item span{font-size:9px;font-weight:700;text-transform:uppercase}
+.bnav-item.active{color:#1877F2}
+@media(max-width:900px){.bottomnav{display:flex!important};body{padding-bottom:72px}}
+
+/* ── DRAWER ── */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450}
+.drawer-overlay.open{display:block}
+.drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:auto;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column}
+.drawer-panel.open{left:0}
+.drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px}
+.drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer}
+.drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover}
+.drawer-user-name{font-size:15px;font-weight:800;color:#fff}
+.drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px}
+.drawer-body{flex:1;padding:6px 0}
+.drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left}
+.drawer-item:hover{background:#eff6ff;color:#1877F2}
+.drawer-item i{font-size:20px;width:24px}
+.drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px}
+.drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb}
+
+/* ── MISC ── */
+.card{background:#fff;border-radius:14px;border:1px solid #e4e6eb;box-shadow:0 1px 2px rgba(0,0,0,.06);overflow:hidden}
+.section-head{font-size:16px;font-weight:800;padding:14px 16px;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;justify-content:space-between}
+.empty-state{padding:40px;text-align:center;color:#65676b}
+.empty-state .es-icon{font-size:48px;margin-bottom:12px}
+.toast-el{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;pointer-events:none}
 </style>
 </head>
 <body>
+
+<!-- TOP NAV -->
 <nav class="topnav">
   <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
-  <button class="burger-btn" onclick="openDrawer()" aria-label="Menu" style="width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:#1877F2;font-size:28px;align-items:center;justify-content:center;flex-shrink:0;font-weight:900;line-height:1;padding:0;display:flex">☰</button>
-  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search nutrition plans…"></div>
+  <button class="burger-btn" onclick="openDrawer()">☰</button>
   <div class="topnav-tabs">
     <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
     <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
@@ -185,309 +209,1216 @@ html, body { overflow-x: hidden !important; }
     <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
   </div>
   <div class="topnav-right">
-    <button class="nav-icon-btn"><i class="ti ti-bell"></i></button>
-    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div>
+    <button class="nav-icon-btn" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+    <div class="nav-avatar" onclick="goTo('08_pet_profile.html')" id="nav-av">A</div>
   </div>
 </nav>
 
-<div class="nutr-hero">
-  <div class="nutr-hero-inner">
-    <div style="font-size:48px;margin-bottom:10px">🥗🐾</div>
-    <h1>Nutrition Planner</h1>
-    <p style="color:rgba(255,255,255,0.85)">Personalised diet plans crafted by veterinary nutritionists</p>
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
-      <button class="btn" style="background:#fff;color:#059669;padding:10px 20px;font-weight:700" onclick="filterPet('dog',this)">🐕 Dogs</button>
-      <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterPet('cat',this)">🐈 Cats</button>
-      <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:10px 20px;font-weight:700" onclick="filterPet('rabbit',this)">🐰 Rabbits</button>
+<!-- HERO -->
+<div class="mp-hero">
+  <div style="font-size:48px;margin-bottom:8px">🥗🐾</div>
+  <h1>Pet Meal Planner</h1>
+  <p>Personalised meal plans, nutrition info & pantry management</p>
+</div>
+
+<!-- SETUP WIZARD -->
+<div class="setup-card" id="setup-card">
+  <div class="setup-title">⚙️ Set Up Your Pet's Meal Plan</div>
+
+  <!-- Location -->
+  <div class="setup-row">
+    <div class="form-group">
+      <label>Country</label>
+      <select id="sel-country" onchange="onCountryChange()">
+        <option value="">Select Country</option>
+        <option value="india" selected>🇮🇳 India</option>
+        <option value="usa">🇺🇸 United States</option>
+        <option value="uk">🇬🇧 United Kingdom</option>
+        <option value="australia">🇦🇺 Australia</option>
+        <option value="canada">🇨🇦 Canada</option>
+        <option value="uae">🇦🇪 UAE</option>
+        <option value="singapore">🇸🇬 Singapore</option>
+      </select>
     </div>
+    <div class="form-group">
+      <label>State / Region</label>
+      <select id="sel-state" onchange="onStateChange()">
+        <option value="">Select State</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>City</label>
+      <select id="sel-city">
+        <option value="">Select City</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Pet details -->
+  <div class="setup-row-2">
+    <div class="form-group">
+      <label>Pet Type</label>
+      <select id="sel-pet-type" onchange="onPetTypeChange()">
+        <option value="">Select Pet</option>
+        <option value="dog" selected>🐕 Dog</option>
+        <option value="cat">🐈 Cat</option>
+        <option value="rabbit">🐰 Rabbit</option>
+        <option value="parrot">🦜 Parrot / Bird</option>
+        <option value="hamster">🐹 Hamster</option>
+        <option value="fish">🐠 Fish</option>
+        <option value="turtle">🐢 Turtle</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Breed</label>
+      <select id="sel-breed">
+        <option value="mixed">Mixed / Not Sure</option>
+      </select>
+    </div>
+  </div>
+  <div class="setup-row-2">
+    <div class="form-group">
+      <label>Pet Age</label>
+      <select id="sel-age">
+        <option value="puppy">Puppy / Kitten (0–1 yr)</option>
+        <option value="young" selected>Young (1–3 yrs)</option>
+        <option value="adult">Adult (3–7 yrs)</option>
+        <option value="senior">Senior (7+ yrs)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Weight (approx.)</label>
+      <select id="sel-weight">
+        <option value="tiny">Under 5 kg</option>
+        <option value="small" selected>5–10 kg</option>
+        <option value="medium">10–25 kg</option>
+        <option value="large">25–45 kg</option>
+        <option value="giant">45+ kg</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Diet preference -->
+  <div style="margin-bottom:14px">
+    <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:8px">Diet Preference</label>
+    <div class="diet-toggle" id="diet-toggle">
+      <div class="diet-opt active" data-diet="both" onclick="selectDiet(this)">
+        <div class="diet-icon">🌿🍗</div>
+        <div class="diet-label">Both</div>
+      </div>
+      <div class="diet-opt" data-diet="veg" onclick="selectDiet(this)">
+        <div class="diet-icon">🌿</div>
+        <div class="diet-label">Vegetarian</div>
+      </div>
+      <div class="diet-opt" data-diet="nonveg" onclick="selectDiet(this)">
+        <div class="diet-icon">🍗</div>
+        <div class="diet-label">Non-Veg</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan duration -->
+  <div style="margin-bottom:14px">
+    <label style="font-size:12px;font-weight:700;color:#65676b;display:block;margin-bottom:8px">Plan Duration</label>
+    <div class="dur-pills">
+      <div class="dur-pill active" data-dur="1" onclick="selectDur(this)">📅 1 Day</div>
+      <div class="dur-pill" data-dur="7" onclick="selectDur(this)">📆 1 Week</div>
+      <div class="dur-pill" data-dur="30" onclick="selectDur(this)">🗓 1 Month</div>
+    </div>
+  </div>
+
+  <!-- Start date -->
+  <div class="form-group" style="margin-bottom:14px">
+    <label>Start Date</label>
+    <input type="date" id="inp-start-date" style="max-width:200px">
+  </div>
+
+  <button class="btn-generate" onclick="generatePlan()">
+    <i class="ti ti-wand"></i> Generate Meal Plan
+  </button>
+</div>
+
+<!-- TAB BAR (shown after generation) -->
+<div class="tab-bar" id="tab-bar" style="display:none">
+  <div class="tab-item active" onclick="showTab('plan',this)"><i class="ti ti-calendar-event"></i> Meal Plan</div>
+  <div class="tab-item" onclick="showTab('nutrition',this)"><i class="ti ti-chart-pie"></i> Nutrition</div>
+  <div class="tab-item" onclick="showTab('pantry',this)"><i class="ti ti-basket"></i> Pantry</div>
+  <div class="tab-item" onclick="showTab('recipes',this)"><i class="ti ti-chef-hat"></i> Recipes</div>
+</div>
+
+<!-- ══ PANEL: MEAL PLAN ══ -->
+<div class="panel active" id="panel-plan"></div>
+
+<!-- ══ PANEL: NUTRITION ══ -->
+<div class="panel" id="panel-nutrition"></div>
+
+<!-- ══ PANEL: PANTRY ══ -->
+<div class="panel" id="panel-pantry"></div>
+
+<!-- ══ PANEL: RECIPES ══ -->
+<div class="panel" id="panel-recipes"></div>
+
+<!-- ══ MEAL PICKER MODAL ══ -->
+<div class="picker-modal" id="picker-modal" onclick="if(event.target===this)closePicker()">
+  <div class="picker-box">
+    <div class="picker-head">
+      <div style="font-size:15px;font-weight:800" id="picker-title">Choose a Meal</div>
+      <button onclick="closePicker()" style="width:28px;height:28px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:14px">✕</button>
+    </div>
+    <div style="padding:10px 12px;border-bottom:1px solid #e4e6eb">
+      <input id="picker-search" type="text" placeholder="Search meals…" style="width:100%;height:38px;border:1.5px solid #e4e6eb;border-radius:999px;padding:0 14px;font-size:13px;outline:none" oninput="filterPicker()">
+    </div>
+    <div id="picker-list" style="max-height:60vh;overflow-y:auto"></div>
   </div>
 </div>
 
-<div class="nutr-page">
-  <main>
-    <!-- Daily Meal Plan -->
-    <div class="card" style="margin-bottom:14px" id="meal-plan-card">
-      <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:16px;font-weight:800" id="plan-title">🍽 Loading plan…</div>
-        <div style="font-size:13px;color:var(--muted)" id="plan-meta"></div>
+<!-- ══ RECIPE MODAL ══ -->
+<div class="recipe-modal" id="recipe-modal" onclick="if(event.target===this)closeRecipe()">
+  <div class="recipe-box">
+    <div class="recipe-head">
+      <div>
+        <div style="font-size:16px;font-weight:800" id="recipe-title">Recipe</div>
+        <div style="font-size:12px;color:#65676b;margin-top:2px" id="recipe-meta"></div>
       </div>
-      <div class="card-body" id="meal-slots-container">
-        <div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>
-      </div>
+      <button onclick="closeRecipe()" style="width:30px;height:30px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;font-size:14px">✕</button>
     </div>
-
-    <!-- Recommended Foods -->
-    <div class="card" style="margin-bottom:14px">
-      <div style="padding:14px 16px;border-bottom:1px solid var(--border)"><div style="font-size:16px;font-weight:800">✅ Recommended Foods</div></div>
-      <div id="foods-container">
-        <div style="text-align:center;padding:20px;color:var(--muted)">Loading…</div>
-      </div>
-    </div>
-
-    <!-- Foods to Avoid -->
-    <div class="card">
-      <div style="padding:14px 16px;border-bottom:1px solid var(--border)"><div style="font-size:16px;font-weight:800;color:#dc2626">⚠️ Foods to Avoid</div></div>
-      <div class="card-body">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🍫</div><div style="font-size:12px;font-weight:700;color:#dc2626">Chocolate</div></div>
-          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🧅</div><div style="font-size:12px;font-weight:700;color:#dc2626">Onions</div></div>
-          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🍇</div><div style="font-size:12px;font-weight:700;color:#dc2626">Grapes</div></div>
-          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🥑</div><div style="font-size:12px;font-weight:700;color:#dc2626">Avocado</div></div>
-          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🍬</div><div style="font-size:12px;font-weight:700;color:#dc2626">Xylitol</div></div>
-          <div style="background:#fee2e2;border-radius:10px;padding:12px;text-align:center"><div style="font-size:28px">🧄</div><div style="font-size:12px;font-weight:700;color:#dc2626">Garlic</div></div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <aside style="position:sticky;top:72px">
-    <!-- Macros -->
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-body">
-        <div class="card-title">📊 Daily Macro Targets</div>
-        <div style="margin:12px 0">
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Protein</span><span style="color:#059669" id="macro-protein-lbl">—</span></div>
-          <div class="food-bar"><div class="food-bar-fill" id="macro-protein-bar" style="width:0%"></div></div>
-        </div>
-        <div style="margin:12px 0">
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Fat</span><span style="color:#d97706" id="macro-fat-lbl">—</span></div>
-          <div class="food-bar"><div class="food-bar-fill" id="macro-fat-bar" style="width:0%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
-        </div>
-        <div style="margin:12px 0">
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px"><span>Carbs</span><span style="color:var(--blue)" id="macro-carbs-lbl">—</span></div>
-          <div class="food-bar"><div class="food-bar-fill" id="macro-carbs-bar" style="width:0%;background:linear-gradient(90deg,var(--blue),#60a5fa)"></div></div>
-        </div>
-        <div style="background:#e7f3ff;border-radius:8px;padding:10px;margin-top:10px;text-align:center">
-          <div style="font-size:24px;font-weight:900;color:var(--blue)" id="macro-kcal">—</div>
-          <div style="font-size:12px;color:var(--muted)">kcal / day target</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-body">
-        <div class="card-title">🛒 Shop Recommended</div>
-        <button class="btn btn-blue btn-full" onclick="goTo('09_marketplace.html')">Browse Pet Food</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title">👩‍⚕️ Consult Nutritionist</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Get a personalised diet plan from a certified veterinary nutritionist.</p>
-        <button class="btn btn-blue btn-full" onclick="goTo('11_vet_booking.html')">Book Consultation</button>
-      </div>
-    </div>
-  </aside>
+    <div id="recipe-body" style="padding:16px 18px"></div>
+  </div>
 </div>
-<script src="pawbook-api.js"></script>
-<script>function goTo(page){ window.location.href = page; }</script>
-<script>
-function toast(msg,type){var t=document.createElement('div');t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:'+(type==='success'?'#22c55e':'#dc2626')+``;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999``;document.body.appendChild(t);t.textContent=msg;setTimeout(function(){t.remove();},3000);}
 
-function renderPlan(plan) {
-  if (!plan) return;
-  // Header
-  var petLabel = {dog:'🐕 Dog',cat:'🐈 Cat',rabbit:'🐰 Rabbit',bird:'🐦 Bird'}[plan.pet_type] || plan.pet_type;
-  document.getElementById('plan-title').textContent = '🍽 ' + plan.title;
-  document.getElementById('plan-meta').textContent = petLabel + (plan.breed ? ' · ' + plan.breed : '') + (plan.weight_kg ? ' · ' + plan.weight_kg + 'kg' : '');
-  // Macros
-  if (plan.daily_kcal) document.getElementById('macro-kcal').textContent = plan.daily_kcal;
-  if (plan.protein_pct) { document.getElementById('macro-protein-lbl').textContent = plan.protein_pct + '%'; document.getElementById('macro-protein-bar').style.width = plan.protein_pct + '%'; }
-  if (plan.fat_pct)     { document.getElementById('macro-fat-lbl').textContent = plan.fat_pct + '%';     document.getElementById('macro-fat-bar').style.width = plan.fat_pct + '%'; }
-  if (plan.carbs_pct)   { document.getElementById('macro-carbs-lbl').textContent = plan.carbs_pct + '%'; document.getElementById('macro-carbs-bar').style.width = plan.carbs_pct + '%'; }
-  // Meals
-  var container = document.getElementById('meal-slots-container');
-  if (plan.meals && plan.meals.length) {
-    container.innerHTML = plan.meals.map(function(m, i) {
-      var items = (m.items || []).map(function(it) {
-        return '<div class="meal-item"><div class="meal-dot"></div> ' + it.name + (it.quantity_g ? ' — ' + it.quantity_g + (it.unit || 'g') : (it.unit ? ' — ' + it.unit : '')) + '</div>';
-      }).join('');
-      return '<div class="meal-slot"' + (i === plan.meals.length-1 ? ' style="margin-bottom:0"' : '') + '>' +
-        '<div class="meal-time">' + (m.time_label || m.meal_time) + '</div>' + items + '</div>';
-    }).join('');
-  } else {
-    container.innerHTML = '<div style="padding:12px;color:var(--muted);font-size:13px">No meal schedule available for this plan.</div>';
-  }
-}
+<!-- ══ VOICE CHATBOT ══ -->
+<button class="voice-fab" id="voice-fab" onclick="toggleVoicePanel()" title="Ask PawBot">🤖</button>
+<div class="voice-panel" id="voice-panel">
+  <div class="vp-head">
+    <div class="vp-head-title">🐾 PawBot — Meal Assistant</div>
+    <button class="vp-close" onclick="toggleVoicePanel()">✕</button>
+  </div>
+  <div class="vp-msgs" id="vp-msgs"></div>
+  <div class="vp-quick" id="vp-quick">
+    <div class="vp-q" onclick="botAsk('What should I feed my dog today?')">Today's meals?</div>
+    <div class="vp-q" onclick="botAsk('How much protein does my pet need?')">Protein needs?</div>
+    <div class="vp-q" onclick="botAsk('Show me pantry list')">Pantry list</div>
+    <div class="vp-q" onclick="botAsk('Cooking method for chicken rice')">Recipe help</div>
+    <div class="vp-q" onclick="botAsk('Foods to avoid for dogs')">Avoid foods</div>
+  </div>
+  <div class="vp-input-row">
+    <button class="vp-mic" id="vp-mic-btn" onclick="toggleMic()" title="Voice input"><i class="ti ti-microphone"></i></button>
+    <input class="vp-input" id="vp-input" placeholder="Ask PawBot…" onkeydown="if(event.key==='Enter')sendBot()">
+    <button class="vp-send" onclick="sendBot()"><i class="ti ti-send"></i></button>
+  </div>
+</div>
 
-function loadFoods(petType) {
-  fetch(API_BASE + '/nutrition/foods?pet_type=' + petType + '&is_recommended=true&limit=3')
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if (!d || !d.data || !d.data.length) return;
-      var html = d.data.map(function(f, i) {
-        var bar = Math.round((f.rating / 5) * 100);
-        return '<div class="food-item"' + (i===d.data.length-1?' style="border-bottom:none"':'') + '>' +
-          (f.image_url ? '<div class="food-img"><img src="' + f.image_url + '"></div>' : '') +
-          '<div style="flex:1"><div class="food-name">' + f.name + '</div>' +
-          '<div class="food-cal">' + (f.kcal_per_100g||'?') + ' kcal/100g</div>' +
-          '<div class="food-bar"><div class="food-bar-fill" style="width:' + bar + '%"></div></div></div>' +
-          '<div style="font-size:13px;font-weight:700;color:#059669">★ ' + f.rating + '</div></div>';
-      }).join('');
-      document.getElementById('foods-container').innerHTML = html;
-    }).catch(function(){});
-}
-
-function loadPlansForType(petType) {
-  fetch(API_BASE + '/nutrition/plans?pet_type=' + petType)
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if (d && d.data && d.data.length) {
-        // Load full plan with meals
-        return fetch(API_BASE + '/nutrition/plans/' + d.data[0].id);
-      }
-    })
-    .then(function(r){ if(r) return r.json(); })
-    .then(function(d){ if(d && d.data) renderPlan(d.data); })
-    .catch(function(){});
-}
-
-function filterPet(type, btn) {
-  btn.closest('div').querySelectorAll('button').forEach(function(b) {
-    b.style.background = 'rgba(255,255,255,0.2)';
-    b.style.color = '#fff';
-    b.style.border = '1.5px solid rgba(255,255,255,0.5)';
-  });
-  btn.style.background = '#fff';
-  btn.style.color = '#059669';
-  btn.style.border = 'none';
-  loadPlansForType(type);
-  loadFoods(type);
-  var label = {dog:'Dogs', cat:'Cats', rabbit:'Rabbits'}[type] || type;
-  toast('Showing ' + label + ' nutrition plan', 'success');
-}
-
-// Initial load — dogs selected by default
-loadPlansForType('dog');
-loadFoods('dog');
-</script>
-
-<!-- BOTTOM NAV (mobile) -->
+<!-- BOTTOM NAV -->
 <nav class="bottomnav">
   <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
   <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
   <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
   <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
 </nav>
-<!-- DRAWER OVERLAY -->
-<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
 
-<!-- DRAWER PANEL -->
+<!-- DRAWER -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer-panel" class="drawer-panel">
-  <div class="drawer-header" style="position:relative">
+  <div class="drawer-header">
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
     <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
     <div>
       <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
-      <div class="drawer-user-handle">@abhishek_pawbook</div>
-      <div class="drawer-stats">
-        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
-      </div>
+      <div class="drawer-user-handle">@pawbook</div>
     </div>
   </div>
-  <div class="drawer-body">
-    <div class="drawer-section">Main</div>
-    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <div class="drawer-body">
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
-    <div class="drawer-section">Community</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
     <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
-    <div class="drawer-section">Pet Services</div>
-    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
-    <div class="drawer-footer">
-      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
-      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
-    </div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
   </div>
 </div>
 
+<script src="pawbook-api.js"></script>
 <script>
-function openDrawer() {
-  document.getElementById('drawer-panel').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  document.getElementById('drawer-panel').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-</script>
-<script>
-(function(){
-  function showBurgerOnMobile(){
-    var btns = document.querySelectorAll('.burger-btn');
-    var isMobile = window.innerWidth <= 768;
-    btns.forEach(function(b){
-      b.style.display = isMobile ? 'flex' : 'none';
-    });
-    // Also hide topnav-tabs on mobile
-    var tabs = document.querySelector('.topnav-tabs');
-    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
-    // Show bottom nav on mobile
-    var bnav = document.querySelector('.bottomnav');
-    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
+function goTo(p){window.location.href=p;}
+function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+
+/* ══════════════════════════════════════════════
+   LOCATION DATA
+══════════════════════════════════════════════ */
+var LOCATION_DATA = {
+  india:{
+    'Andhra Pradesh':['Visakhapatnam','Vijayawada','Guntur','Tirupati'],
+    'Delhi':['New Delhi','Dwarka','Rohini','Noida (NCR)','Gurgaon (NCR)'],
+    'Gujarat':['Ahmedabad','Surat','Vadodara','Rajkot'],
+    'Karnataka':['Bangalore','Mysore','Mangalore','Hubli'],
+    'Kerala':['Kochi','Thiruvananthapuram','Kozhikode','Thrissur'],
+    'Maharashtra':['Mumbai','Pune','Nagpur','Nashik','Aurangabad'],
+    'Rajasthan':['Jaipur','Jodhpur','Udaipur','Kota'],
+    'Tamil Nadu':['Chennai','Coimbatore','Madurai','Salem'],
+    'Telangana':['Hyderabad','Warangal','Nizamabad'],
+    'Uttar Pradesh':['Lucknow','Kanpur','Agra','Varanasi','Noida'],
+    'West Bengal':['Kolkata','Howrah','Durgapur','Siliguri']
+  },
+  usa:{
+    'California':['Los Angeles','San Francisco','San Diego','San Jose'],
+    'Texas':['Houston','Austin','Dallas','San Antonio'],
+    'New York':['New York City','Buffalo','Rochester','Albany'],
+    'Florida':['Miami','Orlando','Tampa','Jacksonville']
+  },
+  uk:{
+    'England':['London','Manchester','Birmingham','Leeds'],
+    'Scotland':['Edinburgh','Glasgow','Aberdeen'],
+    'Wales':['Cardiff','Swansea']
+  },
+  australia:{
+    'New South Wales':['Sydney','Newcastle','Wollongong'],
+    'Victoria':['Melbourne','Geelong','Ballarat'],
+    'Queensland':['Brisbane','Gold Coast','Cairns']
+  },
+  canada:{
+    'Ontario':['Toronto','Ottawa','Mississauga'],
+    'British Columbia':['Vancouver','Victoria','Surrey'],
+    'Quebec':['Montreal','Quebec City']
+  },
+  uae:{
+    'Dubai':['Downtown','Marina','Deira','Bur Dubai'],
+    'Abu Dhabi':['Abu Dhabi City','Al Ain'],
+    'Sharjah':['Sharjah City']
+  },
+  singapore:{
+    'Singapore':['Central','East','West','North','South']
   }
-  showBurgerOnMobile();
-  window.addEventListener('resize', showBurgerOnMobile);
-})();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
-      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+};
+
+function onCountryChange(){
+  var c=document.getElementById('sel-country').value;
+  var ss=document.getElementById('sel-state');
+  var sc=document.getElementById('sel-city');
+  ss.innerHTML='<option value="">Select State</option>';
+  sc.innerHTML='<option value="">Select City</option>';
+  if(!c||!LOCATION_DATA[c])return;
+  Object.keys(LOCATION_DATA[c]).forEach(function(s){
+    ss.innerHTML+='<option value="'+s+'">'+s+'</option>';
+  });
+}
+function onStateChange(){
+  var c=document.getElementById('sel-country').value;
+  var s=document.getElementById('sel-state').value;
+  var sc=document.getElementById('sel-city');
+  sc.innerHTML='<option value="">Select City</option>';
+  if(!c||!s||!LOCATION_DATA[c]||!LOCATION_DATA[c][s])return;
+  LOCATION_DATA[c][s].forEach(function(city){
+    sc.innerHTML+='<option value="'+city+'">'+city+'</option>';
   });
 }
 
-// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
-(function initDrawerUser(){
-  var u = null;
-  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
-  if(!u) {
-    // fetch from API if not cached
-    var tok = localStorage.getItem("pb_token");
-    if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
-        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
-      }).then(function(r){ return r.json(); }).then(function(res){
-        var ud = res.data || res;
-        if(ud && ud.username) {
-          localStorage.setItem("pb_user", JSON.stringify(ud));
-          populateDrawer(ud);
-        }
-      }).catch(function(){});
+/* ══════════════════════════════════════════════
+   PET BREED DATA
+══════════════════════════════════════════════ */
+var BREEDS = {
+  dog:['Labrador Retriever','German Shepherd','Golden Retriever','Beagle','Poodle','Bulldog','Rottweiler','Dobermann','Indian Spitz','Pomeranian','Shih Tzu','Dachshund','Mixed Breed'],
+  cat:['Persian','Siamese','Bengal','Maine Coon','Ragdoll','British Shorthair','Indian Domestic','Mixed Breed'],
+  rabbit:['Holland Lop','Lionhead','Rex','New Zealand White','Dutch','Mixed Breed'],
+  parrot:['African Grey','Macaw','Cockatiel','Budgerigar','Lovebird','Conure','Indian Ringneck'],
+  hamster:['Syrian','Dwarf','Roborovski','Chinese'],
+  fish:['Goldfish','Betta','Koi','Guppy','Oscar','Angelfish'],
+  turtle:['Red-Eared Slider','Box Turtle','Map Turtle','Painted Turtle']
+};
+function onPetTypeChange(){
+  var t=document.getElementById('sel-pet-type').value;
+  var sb=document.getElementById('sel-breed');
+  sb.innerHTML='<option value="mixed">Mixed / Not Sure</option>';
+  if(!t||!BREEDS[t])return;
+  BREEDS[t].forEach(function(b){sb.innerHTML+='<option value="'+b+'">'+b+'</option>';});
+}
+
+/* ══════════════════════════════════════════════
+   SETUP STATE
+══════════════════════════════════════════════ */
+var _diet='both', _dur=1, _planData=null, _pickerCtx=null;
+
+function selectDiet(el){
+  document.querySelectorAll('.diet-opt').forEach(function(d){d.classList.remove('active');});
+  el.classList.add('active');
+  _diet=el.dataset.diet;
+}
+function selectDur(el){
+  document.querySelectorAll('.dur-pill').forEach(function(d){d.classList.remove('active');});
+  el.classList.add('active');
+  _dur=parseInt(el.dataset.dur);
+}
+
+/* ══════════════════════════════════════════════
+   MEAL DATABASE  (Veg + Non-Veg, Pet-specific)
+══════════════════════════════════════════════ */
+var MEALS = {
+  dog:{
+    veg:{
+      breakfast:[
+        {id:'dv1',name:'Oatmeal & Banana',emoji:'🥣',kcal:180,protein:6,fat:3,carbs:32,fiber:4,amount:'1 cup',unit:'cooked',tags:['grain','fruit'],desc:'Plain oatmeal cooked in water with sliced banana. No sugar, no milk.'},
+        {id:'dv2',name:'Sweet Potato Mash',emoji:'🍠',kcal:130,protein:2,fat:0.5,carbs:30,fiber:4,amount:'100g',unit:'cooked',tags:['veggie'],desc:'Boiled and mashed sweet potato. Plain, no butter.'},
+        {id:'dv3',name:'Brown Rice & Pumpkin',emoji:'🍚',kcal:200,protein:5,fat:1,carbs:42,fiber:3,amount:'1 cup',unit:'cooked',tags:['grain','veggie'],desc:'Cooked brown rice mixed with steamed pumpkin puree.'},
+        {id:'dv4',name:'Carrot & Apple Bits',emoji:'🥕',kcal:80,protein:1,fat:0.3,carbs:18,fiber:3,amount:'100g',unit:'fresh',tags:['veggie','fruit'],desc:'Raw carrot and apple pieces as a crunchy breakfast snack.'}
+      ],
+      lunch:[
+        {id:'dv5',name:'Lentil & Rice Bowl',emoji:'🍛',kcal:280,protein:12,fat:2,carbs:52,fiber:8,amount:'200g',unit:'cooked',tags:['legume','grain'],desc:'Boiled moong dal with plain rice. No onion, no garlic, no spices.'},
+        {id:'dv6',name:'Steamed Vegetables',emoji:'🥦',kcal:120,protein:4,fat:0.5,carbs:24,fiber:6,amount:'150g',unit:'cooked',tags:['veggie'],desc:'Broccoli, carrots, peas and green beans steamed plain.'},
+        {id:'dv7',name:'Paneer Crumbles',emoji:'🧀',kcal:260,protein:18,fat:18,carbs:3,fiber:0,amount:'80g',unit:'fresh',tags:['dairy'],desc:'Plain paneer crumbled — excellent protein source for dogs. No salt.'}
+      ],
+      dinner:[
+        {id:'dv8',name:'Rice & Peas',emoji:'🍚',kcal:220,protein:7,fat:1,carbs:44,fiber:5,amount:'180g',unit:'cooked',tags:['grain','legume'],desc:'Plain white rice with boiled green peas. Easy to digest.'},
+        {id:'dv9',name:'Tofu & Spinach',emoji:'🥬',kcal:150,protein:14,fat:8,carbs:5,fiber:2,amount:'120g',unit:'cooked',tags:['protein','veggie'],desc:'Boiled firm tofu crumbled with steamed spinach. No sauces.'},
+        {id:'dv10',name:'Banana & Yoghurt Bowl',emoji:'🍌',kcal:160,protein:5,fat:3,carbs:30,fiber:2,amount:'150g',unit:'fresh',tags:['fruit','dairy'],desc:'Plain yoghurt (no sugar) mixed with mashed banana. Probiotic-rich.'}
+      ],
+      snacks:[
+        {id:'dvs1',name:'Baby Carrots',emoji:'🥕',kcal:35,protein:1,fat:0,carbs:8,fiber:2,amount:'50g',unit:'raw',tags:['veggie'],desc:'Raw baby carrots — great low-cal crunchy treat.'},
+        {id:'dvs2',name:'Blueberries',emoji:'🫐',kcal:40,protein:0.5,fat:0.3,carbs:9,fiber:2,amount:'50g',unit:'fresh',tags:['fruit'],desc:'Fresh blueberries — antioxidant rich. No more than 10% of daily calories.'},
+        {id:'dvs3',name:'Peanut Butter Lick',emoji:'🥜',kcal:95,protein:4,fat:8,carbs:3,fiber:1,amount:'1 tbsp',unit:'',tags:['nut'],desc:'Unsalted, xylitol-free peanut butter. Check label carefully.'}
+      ]
+    },
+    nonveg:{
+      breakfast:[
+        {id:'dn1',name:'Boiled Egg & Rice',emoji:'🥚',kcal:250,protein:18,fat:10,carbs:28,fiber:1,amount:'1 egg + 100g rice',unit:'',tags:['egg','grain'],desc:'One whole boiled egg served with plain white rice. No salt.'},
+        {id:'dn2',name:'Chicken & Oats',emoji:'🍗',kcal:290,protein:25,fat:8,carbs:28,fiber:3,amount:'150g',unit:'cooked',tags:['poultry','grain'],desc:'Boiled shredded chicken breast mixed with plain cooked oats.'},
+        {id:'dn3',name:'Scrambled Eggs',emoji:'🍳',kcal:200,protein:16,fat:14,carbs:2,fiber:0,amount:'2 eggs',unit:'cooked',tags:['egg'],desc:'Plain scrambled eggs cooked without butter or oil. No salt.'}
+      ],
+      lunch:[
+        {id:'dn4',name:'Chicken & Rice Bowl',emoji:'🍚',kcal:380,protein:35,fat:8,carbs:40,fiber:2,amount:'250g',unit:'cooked',tags:['poultry','grain'],desc:'Classic dog-friendly meal. Boiled chicken breast shredded over plain white rice.'},
+        {id:'dn5',name:'Lamb & Sweet Potato',emoji:'🍖',kcal:420,protein:32,fat:16,carbs:28,fiber:4,amount:'200g',unit:'cooked',tags:['meat','veggie'],desc:'Lean boiled lamb mince with mashed sweet potato. No seasonings.'},
+        {id:'dn6',name:'Tuna & Brown Rice',emoji:'🐟',kcal:320,protein:28,fat:6,carbs:38,fiber:2,amount:'200g',unit:'cooked',tags:['fish','grain'],desc:'Canned tuna (in water, no salt) mixed with cooked brown rice.'}
+      ],
+      dinner:[
+        {id:'dn7',name:'Beef & Vegetable Stew',emoji:'🥩',kcal:400,protein:36,fat:14,carbs:22,fiber:4,amount:'220g',unit:'cooked',tags:['meat','veggie'],desc:'Lean ground beef boiled with carrots, peas and potatoes. No onion, no garlic.'},
+        {id:'dn8',name:'Salmon & Pumpkin',emoji:'🐟',kcal:350,protein:30,fat:12,carbs:26,fiber:3,amount:'200g',unit:'cooked',tags:['fish','veggie'],desc:'Poached salmon fillet with steamed pumpkin. Rich in omega-3.'},
+        {id:'dn9',name:'Turkey Mince & Rice',emoji:'🦃',kcal:360,protein:34,fat:8,carbs:38,fiber:2,amount:'220g',unit:'cooked',tags:['poultry','grain'],desc:'Boiled ground turkey mixed with plain white rice. Light and digestible.'}
+      ],
+      snacks:[
+        {id:'dns1',name:'Chicken Jerky Strip',emoji:'🍗',kcal:60,protein:12,fat:1,carbs:0,fiber:0,amount:'1 strip (20g)',unit:'',tags:['poultry'],desc:'Plain oven-dried chicken strip. No salt, no spices. Great training treat.'},
+        {id:'dns2',name:'Hard-Boiled Egg Half',emoji:'🥚',kcal:80,protein:7,fat:5,carbs:1,fiber:0,amount:'half egg',unit:'',tags:['egg'],desc:'Half a boiled egg — protein-packed mid-day snack.'},
+        {id:'dns3',name:'Beef Bone Broth',emoji:'🍲',kcal:30,protein:5,fat:1,carbs:0,fiber:0,amount:'50ml',unit:'warm',tags:['meat'],desc:'Unsalted bone broth — hydrating and joint-supporting. No onion.'}
+      ]
     }
+  },
+  cat:{
+    veg:{
+      breakfast:[
+        {id:'cv1',name:'Pumpkin & Rice Mash',emoji:'🍠',kcal:120,protein:3,fat:1,carbs:26,fiber:3,amount:'80g',unit:'cooked',tags:['veggie','grain'],desc:'Steamed pumpkin mashed with plain cooked rice. Use as supplement only — cats need meat.'},
+        {id:'cv2',name:'Cooked Peas & Carrots',emoji:'🫛',kcal:90,protein:4,fat:0.5,carbs:18,fiber:4,amount:'80g',unit:'steamed',tags:['veggie'],desc:'Soft steamed peas and diced carrots. Supplement to main protein meal.'}
+      ],
+      lunch:[
+        {id:'cv3',name:'Tofu & Rice',emoji:'🧀',kcal:180,protein:12,fat:8,carbs:14,fiber:1,amount:'100g',unit:'cooked',tags:['protein','grain'],desc:'Boiled firm tofu with plain rice. Cats need taurine — supplement if going veg.'},
+        {id:'cv4',name:'Lentil Soup (plain)',emoji:'🍲',kcal:160,protein:9,fat:1,carbs:28,fiber:7,amount:'100g',unit:'cooked',tags:['legume'],desc:'Thin boiled moong lentil. No salt, no spices. Occasional only.'}
+      ],
+      dinner:[
+        {id:'cv5',name:'Sweet Potato Bits',emoji:'🍠',kcal:100,protein:2,fat:0.3,carbs:23,fiber:3,amount:'80g',unit:'cooked',tags:['veggie'],desc:'Plain boiled sweet potato cubes. Occasional treat alongside protein.'}
+      ],
+      snacks:[
+        {id:'cvs1',name:'Melon Cubes',emoji:'🍈',kcal:30,protein:0.5,fat:0,carbs:7,fiber:1,amount:'30g',unit:'fresh',tags:['fruit'],desc:'Small pieces of watermelon or cantaloupe. Remove seeds. Occasional treat.'}
+      ]
+    },
+    nonveg:{
+      breakfast:[
+        {id:'ctn1',name:'Chicken & Liver',emoji:'🍗',kcal:220,protein:28,fat:10,carbs:0,fiber:0,amount:'80g',unit:'cooked',tags:['poultry'],desc:'Boiled chicken breast with a small amount of cooked liver for taurine.'},
+        {id:'ctn2',name:'Tuna Flakes',emoji:'🐟',kcal:180,protein:26,fat:6,carbs:0,fiber:0,amount:'60g',unit:'canned in water',tags:['fish'],desc:'Drained tuna in water. Occasional only — not daily due to mercury.'},
+        {id:'ctn3',name:'Scrambled Eggs',emoji:'🥚',kcal:160,protein:14,fat:11,carbs:1,fiber:0,amount:'2 eggs',unit:'cooked',tags:['egg'],desc:'Plain scrambled eggs, no butter, no salt. Good protein start to day.'}
+      ],
+      lunch:[
+        {id:'ctn4',name:'Salmon & Rice',emoji:'🐟',kcal:300,protein:30,fat:12,carbs:20,fiber:1,amount:'150g',unit:'cooked',tags:['fish','grain'],desc:'Poached salmon flaked over plain white rice. Omega-3 rich.'},
+        {id:'ctn5',name:'Turkey Mince',emoji:'🦃',kcal:260,protein:32,fat:10,carbs:0,fiber:0,amount:'100g',unit:'cooked',tags:['poultry'],desc:'Boiled ground turkey — lean protein cats love. No seasoning.'},
+        {id:'ctn6',name:'Chicken & Pumpkin',emoji:'🍗',kcal:280,protein:30,fat:8,carbs:16,fiber:3,amount:'150g',unit:'cooked',tags:['poultry','veggie'],desc:'Boiled chicken with steamed pumpkin for fibre and digestion.'}
+      ],
+      dinner:[
+        {id:'ctn7',name:'Beef & Liver Stew',emoji:'🥩',kcal:350,protein:36,fat:16,carbs:4,fiber:1,amount:'150g',unit:'cooked',tags:['meat'],desc:'Lean ground beef with a small piece of cooked liver. No onion, no garlic.'},
+        {id:'ctn8',name:'Sardines & Rice',emoji:'🐠',kcal:290,protein:28,fat:14,carbs:18,fiber:1,amount:'130g',unit:'cooked',tags:['fish','grain'],desc:'Canned sardines in water (drained) with plain rice. Calcium-rich.'}
+      ],
+      snacks:[
+        {id:'ctns1',name:'Cooked Shrimp',emoji:'🍤',kcal:40,protein:8,fat:0.5,carbs:0,fiber:0,amount:'2–3 pieces',unit:'',tags:['seafood'],desc:'Plain boiled shrimp, no shell, no tail. Remove all traces of seasoning.'},
+        {id:'ctns2',name:'Chicken Liver Bite',emoji:'🍗',kcal:50,protein:7,fat:2,carbs:1,fiber:0,amount:'1 piece (15g)',unit:'cooked',tags:['poultry'],desc:'Tiny boiled chicken liver — taurine-packed. Max 5% of daily diet.'}
+      ]
+    }
+  },
+  rabbit:{
+    veg:{
+      breakfast:[
+        {id:'rv1',name:'Hay & Leafy Greens',emoji:'🌿',kcal:60,protein:3,fat:0.5,carbs:12,fiber:14,amount:'Unlimited hay + 1 cup greens',unit:'',tags:['hay','veggie'],desc:'Timothy hay should be 80% of diet. Add romaine lettuce or cilantro.'},
+        {id:'rv2',name:'Fresh Carrot Tops',emoji:'🥕',kcal:40,protein:2,fat:0,carbs:8,fiber:3,amount:'Small handful',unit:'fresh',tags:['veggie'],desc:'Carrot tops (the leafy part) are more nutritious than the root. Preferred morning treat.'}
+      ],
+      lunch:[
+        {id:'rv3',name:'Mixed Greens Bowl',emoji:'🥗',kcal:50,protein:3,fat:0.5,carbs:10,fiber:5,amount:'2 cups',unit:'fresh',tags:['veggie'],desc:'Rotate: romaine, kale, parsley, dill. Avoid iceberg lettuce. Wash well.'},
+        {id:'rv4',name:'Pellets (plain)',emoji:'🟡',kcal:120,protein:14,fat:2,carbs:22,fiber:18,amount:'1/4 cup',unit:'',tags:['pellet'],desc:'High-fibre timothy hay pellets. Limit to 1/4 cup per 2kg body weight.'}
+      ],
+      dinner:[
+        {id:'rv5',name:'Apple Slice (no seeds)',emoji:'🍎',kcal:30,protein:0,fat:0,carbs:8,fiber:1,amount:'1 small slice',unit:'seedless',tags:['fruit'],desc:'Thin slice of apple without seeds (seeds contain cyanide). Occasional treat.'},
+        {id:'rv6',name:'Timothy Hay & Herbs',emoji:'🌾',kcal:55,protein:3,fat:0.5,carbs:11,fiber:16,amount:'Large handful',unit:'',tags:['hay'],desc:'Fresh timothy hay with a sprig of fresh mint or basil. Good for digestion.'}
+      ],
+      snacks:[
+        {id:'rvs1',name:'Strawberry',emoji:'🍓',kcal:20,protein:0,fat:0,carbs:5,fiber:1,amount:'1 berry',unit:'fresh',tags:['fruit'],desc:'One small strawberry. High sugar — limit to 2× per week.'},
+        {id:'rvs2',name:'Dried Chamomile',emoji:'🌼',kcal:5,protein:0,fat:0,carbs:1,fiber:0,amount:'Pinch',unit:'dried',tags:['herb'],desc:'Dried chamomile flowers — calming herb snack. Sprinkle on hay.'}
+      ]
+    },
+    nonveg:{
+      breakfast:[
+        {id:'rnv1',name:'⚠️ Note: Rabbits are herbivores',emoji:'🌿',kcal:0,protein:0,fat:0,carbs:0,fiber:0,amount:'N/A',unit:'',tags:[],desc:'Rabbits are strict herbivores. No meat, fish, eggs or dairy. Please switch to Vegetarian diet.'}
+      ],
+      lunch:[{id:'rnv2',name:'See Veg options',emoji:'🥗',kcal:50,protein:3,fat:0,carbs:10,fiber:5,amount:'2 cups',unit:'fresh',tags:['veggie'],desc:'Rabbits must eat only plant-based foods.'}],
+      dinner:[{id:'rnv3',name:'Timothy Hay',emoji:'🌾',kcal:55,protein:3,fat:0.5,carbs:11,fiber:16,amount:'Large handful',unit:'',tags:['hay'],desc:'Hay should make up 80% of a rabbit\'s diet.'}],
+      snacks:[{id:'rnvs1',name:'Carrot Bite',emoji:'🥕',kcal:15,protein:0,fat:0,carbs:4,fiber:1,amount:'1 small piece',unit:'',tags:['veggie'],desc:'Small piece of carrot. High sugar so limit to small amounts.'}]
+    }
+  },
+  parrot:{
+    veg:{
+      breakfast:[
+        {id:'pv1',name:'Fresh Fruit Mix',emoji:'🍓',kcal:80,protein:1,fat:0.5,carbs:18,fiber:3,amount:'2–3 tbsp',unit:'diced',tags:['fruit'],desc:'Mix of apple (no seeds), mango, papaya, berries. No avocado ever.'},
+        {id:'pv2',name:'Cooked Grain Mix',emoji:'🌾',kcal:120,protein:5,fat:1,carbs:24,fiber:3,amount:'2 tbsp',unit:'cooked',tags:['grain'],desc:'Cooked brown rice, quinoa and millet. No salt. Cool before serving.'}
+      ],
+      lunch:[
+        {id:'pv3',name:'Veggie & Legume Bowl',emoji:'🥦',kcal:100,protein:6,fat:1,carbs:18,fiber:5,amount:'3 tbsp',unit:'cooked',tags:['veggie','legume'],desc:'Steamed broccoli, carrots, peas and cooked lentils. Rich in vitamins.'},
+        {id:'pv4',name:'Leafy Greens',emoji:'🥬',kcal:30,protein:3,fat:0,carbs:5,fiber:3,amount:'Small handful',unit:'fresh',tags:['veggie'],desc:'Kale, Swiss chard, spinach. Rotate daily. High in Vitamin A.'}
+      ],
+      dinner:[
+        {id:'pv5',name:'Seed Mix (limited)',emoji:'🌻',kcal:150,protein:5,fat:12,carbs:8,fiber:2,amount:'1 tsp',unit:'',tags:['seed'],desc:'Small amount of mixed seeds (sunflower, millet). Seeds are high fat — limit to 10% of diet.'}
+      ],
+      snacks:[
+        {id:'pvs1',name:'Almond (1 piece)',emoji:'🌰',kcal:25,protein:1,fat:2,carbs:1,fiber:0.5,amount:'1 piece',unit:'unsalted',tags:['nut'],desc:'One unsalted, unroasted almond. No salted nuts ever.'},
+        {id:'pvs2',name:'Pomegranate Seeds',emoji:'💎',kcal:20,protein:0.5,fat:0,carbs:5,fiber:1,amount:'1 tbsp',unit:'fresh',tags:['fruit'],desc:'Antioxidant-rich pomegranate arils — favourite parrot treat.'}
+      ]
+    },
+    nonveg:{
+      breakfast:[
+        {id:'pnv1',name:'Boiled Egg Bits',emoji:'🥚',kcal:80,protein:7,fat:5,carbs:1,fiber:0,amount:'1/4 egg',unit:'cooked',tags:['egg'],desc:'Small pieces of hard-boiled egg. Parrots are omnivores and can eat small amounts of egg.'},
+        {id:'pnv2',name:'Fruit & Egg Mix',emoji:'🍓',kcal:120,protein:8,fat:5,carbs:12,fiber:2,amount:'2 tbsp mix',unit:'',tags:['egg','fruit'],desc:'Diced fruits with small boiled egg pieces.'}
+      ],
+      lunch:[
+        {id:'pnv3',name:'Cooked Chicken Bits',emoji:'🍗',kcal:60,protein:12,fat:1,carbs:0,fiber:0,amount:'1 tsp',unit:'cooked',tags:['poultry'],desc:'Tiny pieces of plain boiled chicken — protein supplement. Very small amounts only.'}
+      ],
+      dinner:[{id:'pnv4',name:'Veggie & Grain Bowl',emoji:'🥦',kcal:100,protein:5,fat:1,carbs:18,fiber:4,amount:'3 tbsp',unit:'cooked',tags:['veggie','grain'],desc:'Main dinner should still be plant-based.'}],
+      snacks:[{id:'pvs1',name:'Almond (1 piece)',emoji:'🌰',kcal:25,protein:1,fat:2,carbs:1,fiber:0.5,amount:'1 piece',unit:'unsalted',tags:['nut'],desc:'One unsalted almond.'}]
+    }
+  }
+};
+
+// Generic fallback for hamster, fish, turtle
+['hamster','fish','turtle'].forEach(function(p){
+  MEALS[p]={veg:{breakfast:[{id:p+'v1',name:'Species-appropriate diet',emoji:'🌿',kcal:50,protein:5,fat:2,carbs:8,fiber:3,amount:'See guide',unit:'',tags:[],desc:'Consult your vet for a species-specific nutrition plan.'}],lunch:[{id:p+'v2',name:'Pellet food',emoji:'🟡',kcal:80,protein:8,fat:3,carbs:12,fiber:5,amount:'As per pack',unit:'',tags:['pellet'],desc:'Use a high-quality commercially prepared pellet appropriate for your pet.'}],dinner:[{id:p+'v3',name:'Fresh vegetables',emoji:'🥦',kcal:40,protein:2,fat:0,carbs:8,fiber:4,amount:'Small amount',unit:'',tags:['veggie'],desc:'Small fresh veggie portions as supplement.'}],snacks:[{id:p+'vs1',name:'Treat',emoji:'⭐',kcal:20,protein:1,fat:0.5,carbs:4,fiber:1,amount:'Tiny bit',unit:'',tags:[],desc:'Species-appropriate occasional treat.'}]},nonveg:{breakfast:[{id:p+'n1',name:'Protein food',emoji:'🍗',kcal:60,protein:8,fat:3,carbs:2,fiber:0,amount:'See guide',unit:'',tags:[],desc:'Appropriate protein source for your pet type.'}],lunch:[{id:p+'n2',name:'Pellet food',emoji:'🟡',kcal:80,protein:8,fat:3,carbs:12,fiber:5,amount:'As per pack',unit:'',tags:['pellet'],desc:'High-quality commercial pellet.'}],dinner:[{id:p+'n3',name:'Mixed diet',emoji:'🍽',kcal:70,protein:7,fat:3,carbs:8,fiber:2,amount:'Small serving',unit:'',tags:[],desc:'Balanced mixed diet as recommended by vet.'}],snacks:[{id:p+'ns1',name:'Treat',emoji:'⭐',kcal:20,protein:1,fat:0.5,carbs:4,fiber:1,amount:'Tiny bit',unit:'',tags:[],desc:'Appropriate treat.'}]}};
+});
+
+/* ══════════════════════════════════════════════
+   GENERATE PLAN
+══════════════════════════════════════════════ */
+function getMealsForType(petType, diet, course){
+  var pet=MEALS[petType]||MEALS['dog'];
+  var veg=pet.veg[course]||[];
+  var nv=pet.nonveg[course]||[];
+  if(diet==='veg') return veg;
+  if(diet==='nonveg') return nv;
+  return veg.concat(nv);
+}
+function pickRandom(arr, n){
+  var shuffled=arr.slice().sort(function(){return 0.5-Math.random();});
+  return shuffled.slice(0,n);
+}
+
+var _generatedDays=[];
+
+function generatePlan(){
+  var petType=document.getElementById('sel-pet-type').value||'dog';
+  var dur=_dur;
+  var startVal=document.getElementById('inp-start-date').value;
+  var startDate=startVal?new Date(startVal):new Date();
+
+  // Build days
+  _generatedDays=[];
+  var COURSES=['breakfast','lunch','dinner'];
+  var snackPool=getMealsForType(petType,_diet,'snacks');
+
+  for(var i=0;i<dur;i++){
+    var d=new Date(startDate);
+    d.setDate(d.getDate()+i);
+    var meals={};
+    var dayKcal=0;
+    COURSES.forEach(function(c){
+      var pool=getMealsForType(petType,_diet,c);
+      var pick=pickRandom(pool,1)[0]||pool[0];
+      meals[c]=pick?[pick]:[];
+      if(pick)dayKcal+=pick.kcal;
+    });
+    var snack=pickRandom(snackPool,1)[0];
+    if(snack){meals.snacks=[snack];dayKcal+=snack.kcal;}
+    _generatedDays.push({date:d,meals:meals,kcal:dayKcal});
+  }
+
+  _planData={petType:petType,diet:_diet,dur:dur,startDate:startDate};
+
+  // Hide setup, show tabs
+  document.getElementById('setup-card').style.display='none';
+  document.getElementById('tab-bar').style.display='flex';
+
+  renderMealPlan();
+  renderNutrition();
+  renderPantry();
+  renderRecipes();
+  showTab('plan',document.querySelector('.tab-item'));
+  showToast('✅ '+dur+'-day meal plan generated!','success');
+}
+
+/* ══════════════════════════════════════════════
+   RENDER MEAL PLAN
+══════════════════════════════════════════════ */
+var DAY_NAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDate(d){return DAY_NAMES[d.getDay()]+', '+d.getDate()+' '+MONTH_NAMES[d.getMonth()];}
+
+function renderMealPlan(){
+  var c=document.getElementById('panel-plan');
+  var courseLabels={breakfast:'🌅 Breakfast',lunch:'☀️ Lunch',dinner:'🌙 Dinner',snacks:'🍎 Snack'};
+  var html='<div style="padding:14px 0 8px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:17px;font-weight:800">📅 Your Meal Plan</div><button onclick="resetPlan()" style="padding:7px 16px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:12px;font-weight:700;cursor:pointer;color:#65676b">⚙️ Change Settings</button></div>';
+  html+='<div class="mp-grid">';
+
+  var maxDaysToShow=_generatedDays.length>7?7:_generatedDays.length;
+  var showAll=false;
+
+  _generatedDays.forEach(function(day,di){
+    if(di>=maxDaysToShow&&!showAll)return;
+    html+='<div class="day-block"><div class="day-header"><div class="day-name">'+fmtDate(day.date)+'</div><div class="day-kcal">~'+day.kcal+' kcal</div></div><div class="courses">';
+    ['breakfast','lunch','dinner'].forEach(function(course){
+      html+='<div class="course"><div class="course-label">'+courseLabels[course]+'</div>';
+      (day.meals[course]||[]).forEach(function(meal){
+        html+='<div class="meal-chip" title="Click to see nutrition" onclick="showMealDetail(\''+meal.id+'\',\''+di+'\',\''+course+'\')">';
+        html+=meal.emoji+' <span>'+meal.name+'</span>';
+        html+='</div>';
+      });
+      html+='<button class="add-meal-btn" onclick="openPicker('+di+',\''+course+'\')"><i class="ti ti-plus" style="font-size:11px"></i> Change</button>';
+      html+='</div>';
+    });
+    html+='</div>';
+    // Snack row
+    if(day.meals.snacks&&day.meals.snacks.length){
+      html+='<div style="padding:8px 14px;border-top:1px solid #f1f5f9;display:flex;align-items:center;gap:8px"><span style="font-size:11px;font-weight:800;color:#f59e0b;text-transform:uppercase">🍎 Snack</span>';
+      day.meals.snacks.forEach(function(meal){
+        html+='<div class="meal-chip" onclick="showMealDetail(\''+meal.id+'\',\''+di+'\',\'snacks\')">'+meal.emoji+' '+meal.name+'</div>';
+      });
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+
+  if(_generatedDays.length>7&&!showAll){
+    html+='<div style="text-align:center;padding:16px"><button onclick="showAllDays()" style="padding:10px 24px;border-radius:999px;border:1.5px solid #059669;background:#fff;color:#059669;font-size:13px;font-weight:700;cursor:pointer">Show All '+_generatedDays.length+' Days</button></div>';
+  }
+  html+='</div>';
+  c.innerHTML=html;
+}
+
+function showAllDays(){
+  var maxDaysToShow=_generatedDays.length;
+  // Re-render with all days
+  var saved=0;
+  _generatedDays.forEach(function(){saved++;});
+  // Simple trick — just call renderMealPlan with override
+  var orig=_generatedDays.length;
+  document.querySelector('[onclick="showAllDays()"]').outerHTML='';
+  var grid=document.querySelector('.mp-grid');
+  var courseLabels={breakfast:'🌅 Breakfast',lunch:'☀️ Lunch',dinner:'🌙 Dinner'};
+  _generatedDays.slice(7).forEach(function(day,di){
+    var realDi=di+7;
+    var html='<div class="day-block"><div class="day-header"><div class="day-name">'+fmtDate(day.date)+'</div><div class="day-kcal">~'+day.kcal+' kcal</div></div><div class="courses">';
+    ['breakfast','lunch','dinner'].forEach(function(course){
+      html+='<div class="course"><div class="course-label">'+courseLabels[course]+'</div>';
+      (day.meals[course]||[]).forEach(function(meal){
+        html+='<div class="meal-chip" onclick="showMealDetail(\''+meal.id+'\',\''+realDi+'\',\''+course+'\')">'+meal.emoji+' '+meal.name+'</div>';
+      });
+      html+='<button class="add-meal-btn" onclick="openPicker('+realDi+',\''+course+'\')"><i class="ti ti-plus" style="font-size:11px"></i> Change</button>';
+      html+='</div>';
+    });
+    html+='</div>';
+    if(day.meals.snacks&&day.meals.snacks.length){
+      html+='<div style="padding:8px 14px;border-top:1px solid #f1f5f9;display:flex;align-items:center;gap:8px"><span style="font-size:11px;font-weight:800;color:#f59e0b;text-transform:uppercase">🍎 Snack</span>';
+      day.meals.snacks.forEach(function(meal){
+        html+='<div class="meal-chip" onclick="showMealDetail(\''+meal.id+'\',\''+realDi+'\',\'snacks\')">'+meal.emoji+' '+meal.name+'</div>';
+      });
+      html+='</div>';
+    }
+    html+='</div>';
+    grid.insertAdjacentHTML('beforeend',html);
+  });
+}
+
+function resetPlan(){
+  document.getElementById('setup-card').style.display='block';
+  document.getElementById('tab-bar').style.display='none';
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('panel-plan').classList.add('active');
+}
+
+/* ══════════════════════════════════════════════
+   MEAL DETAIL — NUTRITION
+══════════════════════════════════════════════ */
+function findMealById(id){
+  var pet=MEALS[_planData?_planData.petType:'dog']||MEALS['dog'];
+  var all=[];
+  ['veg','nonveg'].forEach(function(d){
+    ['breakfast','lunch','dinner','snacks'].forEach(function(c){
+      if(pet[d]&&pet[d][c])all=all.concat(pet[d][c]);
+    });
+  });
+  return all.find(function(m){return m.id===id;})||null;
+}
+
+function showMealDetail(mealId,dayIdx,course){
+  var meal=findMealById(mealId);
+  if(!meal)return;
+  var recipeExists=!!meal.desc;
+  var html='<div style="background:#f0fdf4;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">';
+  html+='<div style="font-size:48px">'+meal.emoji+'</div>';
+  html+='<div><div style="font-size:17px;font-weight:800;margin-bottom:4px">'+meal.name+'</div>';
+  html+='<div style="font-size:13px;color:#065f46;font-weight:600">📏 Serving: '+meal.amount+' '+meal.unit+'</div></div></div>';
+  // Nutrition grid
+  html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px">';
+  html+=nutrTile('🔥 '+meal.kcal,'kcal','Calories','#059669');
+  html+=nutrTile('💪 '+meal.protein+'g','per serving','Protein','#2563eb');
+  html+=nutrTile('🫙 '+meal.fat+'g','per serving','Fat','#d97706');
+  html+=nutrTile('🌾 '+meal.carbs+'g','per serving','Carbohydrates','#7c3aed');
+  if(meal.fiber)html+=nutrTile('🌿 '+meal.fiber+'g','per serving','Fibre','#059669');
+  html+='</div>';
+  // Bars
+  var total=meal.protein+meal.fat+meal.carbs;
+  html+='<div style="margin-bottom:16px">';
+  html+=barRow('Protein',meal.protein,total,'#2563eb');
+  html+=barRow('Fat',meal.fat,total,'#d97706');
+  html+=barRow('Carbs',meal.carbs,total,'#7c3aed');
+  html+='</div>';
+  // Description / cooking note
+  if(meal.desc){
+    html+='<div style="background:#f8f9fa;border-radius:10px;padding:12px;margin-bottom:16px;font-size:13px;color:#374151;line-height:1.5">';
+    html+='<div style="font-weight:800;margin-bottom:4px">📝 Preparation Note</div>'+meal.desc+'</div>';
+  }
+  html+='<div style="display:flex;gap:8px">';
+  html+='<button onclick="openRecipe(\''+mealId+'\')" style="flex:1;height:40px;border-radius:999px;border:none;background:#059669;color:#fff;font-size:13px;font-weight:700;cursor:pointer"><i class="ti ti-chef-hat"></i> Cooking Method</button>';
+  html+='<button onclick="closeRecipe()" style="flex:1;height:40px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer">Close</button>';
+  html+='</div>';
+  document.getElementById('recipe-title').textContent=meal.name;
+  document.getElementById('recipe-meta').textContent='🐾 '+meal.amount+' '+meal.unit+' · '+meal.kcal+' kcal';
+  document.getElementById('recipe-body').innerHTML=html;
+  document.getElementById('recipe-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function nutrTile(val,unit,label,color){
+  return '<div style="background:#f8f9fa;border-radius:10px;padding:12px;text-align:center"><div style="font-size:18px;font-weight:900;color:'+color+'">'+val+'</div><div style="font-size:10px;color:#65676b">'+unit+'</div><div style="font-size:12px;font-weight:700;color:#374151;margin-top:2px">'+label+'</div></div>';
+}
+function barRow(label,val,total,color){
+  var pct=total>0?Math.round((val/total)*100):0;
+  return '<div class="nutr-bar-row"><div class="nb-label">'+label+'</div><div class="nb-track"><div class="nb-fill" style="width:'+pct+'%;background:'+color+'"></div></div><div class="nb-val" style="color:'+color+'">'+val+'g</div></div>';
+}
+
+/* ══════════════════════════════════════════════
+   RENDER NUTRITION SUMMARY
+══════════════════════════════════════════════ */
+function renderNutrition(){
+  if(!_generatedDays.length)return;
+  var totals={kcal:0,protein:0,fat:0,carbs:0,fiber:0};
+  var allMeals=[];
+  _generatedDays.forEach(function(day){
+    ['breakfast','lunch','dinner','snacks'].forEach(function(c){
+      (day.meals[c]||[]).forEach(function(m){
+        totals.kcal+=m.kcal;totals.protein+=m.protein;totals.fat+=m.fat;totals.carbs+=m.carbs;totals.fiber+=(m.fiber||0);
+        allMeals.push(m);
+      });
+    });
+  });
+  var n=_generatedDays.length;
+  var avg={kcal:Math.round(totals.kcal/n),protein:Math.round(totals.protein/n),fat:Math.round(totals.fat/n),carbs:Math.round(totals.carbs/n),fiber:Math.round(totals.fiber/n)};
+  var total=avg.protein+avg.fat+avg.carbs;
+  var c=document.getElementById('panel-nutrition');
+  var html='<div style="padding:14px 0 8px"><div style="font-size:17px;font-weight:800">📊 Daily Nutrition Averages</div><div style="font-size:13px;color:#65676b;margin-top:2px">Average across your '+n+'-day plan</div></div>';
+  html+='<div class="nutr-grid">';
+  html+=bigTile('🔥','kcal/day',avg.kcal,'#059669');
+  html+=bigTile('💪','g protein',avg.protein,'#2563eb');
+  html+=bigTile('🫙','g fat',avg.fat,'#d97706');
+  html+=bigTile('🌾','g carbs',avg.carbs,'#7c3aed');
+  html+=bigTile('🌿','g fibre',avg.fiber,'#059669');
+  html+='</div>';
+  html+='<div class="card" style="margin-bottom:14px"><div class="section-head">Macro Breakdown (avg)</div><div style="padding:16px">';
+  html+=barRow('Protein',avg.protein,total,'#2563eb');
+  html+=barRow('Fat',avg.fat,total,'#d97706');
+  html+=barRow('Carbs',avg.carbs,total,'#7c3aed');
+  html+='</div></div>';
+  // Most frequent meals
+  var freq={};
+  allMeals.forEach(function(m){freq[m.name]=(freq[m.name]||0)+1;});
+  var top=Object.entries(freq).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+  html+='<div class="card"><div class="section-head">Top Meals in This Plan</div><div style="padding:12px 16px">';
+  top.forEach(function(e){
+    var m=allMeals.find(function(x){return x.name===e[0];});
+    html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f1f5f9">';
+    html+='<span style="font-size:24px">'+(m?m.emoji:'🍽')+'</span>';
+    html+='<div style="flex:1"><div style="font-size:14px;font-weight:700">'+e[0]+'</div>';
+    html+='<div style="font-size:12px;color:#65676b">'+(m?m.kcal+' kcal · '+m.protein+'g protein':'')+'</div></div>';
+    html+='<div style="font-size:12px;font-weight:700;color:#059669">×'+e[1]+' days</div>';
+    html+='</div>';
+  });
+  html+='</div></div>';
+  c.innerHTML=html;
+}
+function bigTile(icon,unit,val,color){
+  return '<div class="nutr-tile"><div class="nt-val" style="color:'+color+'">'+icon+' '+val+'</div><div class="nt-unit">'+unit+'</div></div>';
+}
+
+/* ══════════════════════════════════════════════
+   RENDER PANTRY
+══════════════════════════════════════════════ */
+var PANTRY_DATA={
+  // petType → ingredient → {emoji, perDay_g, unit, low_threshold}
+  dog:{
+    'Chicken Breast':{emoji:'🍗',perDay:150,unit:'g'},
+    'Brown Rice':{emoji:'🍚',perDay:100,unit:'g'},
+    'Boiled Eggs':{emoji:'🥚',perDay:50,unit:'g',pack:'dozen'},
+    'Carrots':{emoji:'🥕',perDay:50,unit:'g'},
+    'Pumpkin':{emoji:'🎃',perDay:60,unit:'g'},
+    'Spinach':{emoji:'🥬',perDay:30,unit:'g'},
+    'Oatmeal':{emoji:'🥣',perDay:40,unit:'g'},
+    'Paneer':{emoji:'🧀',perDay:40,unit:'g'},
+    'Peanut Butter':{emoji:'🥜',perDay:15,unit:'g'},
+    'Plain Yoghurt':{emoji:'🥛',perDay:30,unit:'ml'}
+  },
+  cat:{
+    'Chicken Breast':{emoji:'🍗',perDay:80,unit:'g'},
+    'Salmon':{emoji:'🐟',perDay:60,unit:'g'},
+    'Tuna (canned)':{emoji:'🐠',perDay:40,unit:'g',pack:'cans'},
+    'Chicken Liver':{emoji:'🍗',perDay:15,unit:'g'},
+    'Brown Rice':{emoji:'🍚',perDay:30,unit:'g'},
+    'Pumpkin':{emoji:'🎃',perDay:20,unit:'g'},
+    'Boiled Eggs':{emoji:'🥚',perDay:30,unit:'g'},
+    'Plain Yoghurt':{emoji:'🥛',perDay:20,unit:'ml'}
+  },
+  rabbit:{
+    'Timothy Hay':{emoji:'🌾',perDay:100,unit:'g',pack:'kg bags'},
+    'Romaine Lettuce':{emoji:'🥬',perDay:50,unit:'g'},
+    'Carrots':{emoji:'🥕',perDay:30,unit:'g'},
+    'Fresh Herbs (parsley/cilantro)':{emoji:'🌿',perDay:10,unit:'g'},
+    'Rabbit Pellets':{emoji:'🟡',perDay:30,unit:'g',pack:'kg bags'},
+    'Apple (no seeds)':{emoji:'🍎',perDay:15,unit:'g'}
+  },
+  parrot:{
+    'Mixed Fruits':{emoji:'🍓',perDay:30,unit:'g'},
+    'Mixed Vegetables':{emoji:'🥦',perDay:30,unit:'g'},
+    'Parrot Pellets':{emoji:'🟡',perDay:20,unit:'g'},
+    'Mixed Seeds (limited)':{emoji:'🌻',perDay:5,unit:'g'},
+    'Cooked Grains':{emoji:'🌾',perDay:20,unit:'g'}
+  }
+};
+
+function renderPantry(){
+  if(!_planData)return;
+  var petType=_planData.petType;
+  var dur=_planData.dur;
+  var ingr=PANTRY_DATA[petType]||PANTRY_DATA['dog'];
+  var c=document.getElementById('panel-pantry');
+  var html='<div style="padding:14px 0 8px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:17px;font-weight:800">🛒 Pantry Shopping List</div><div style="font-size:13px;color:#65676b">For '+dur+' days</div></div>';
+  html+='<div style="background:#fffbeb;border-radius:12px;border:1px solid #fde68a;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#92400e"><strong>💡 Tip:</strong> Quantities are estimates. Adjust based on your pet\'s actual weight and activity level. Always consult your vet for precise portions.</div>';
+  html+='<div class="pantry-grid">';
+  Object.keys(ingr).forEach(function(name){
+    var item=ingr[name];
+    var totalQty=Math.ceil(item.perDay*dur);
+    var displayQty,packQty,packLabel='';
+    if(item.unit==='g'&&totalQty>=1000){displayQty=(totalQty/1000).toFixed(1)+' kg';}
+    else if(item.unit==='ml'&&totalQty>=1000){displayQty=(totalQty/1000).toFixed(1)+' L';}
+    else{displayQty=totalQty+' '+item.unit;}
+    var isLow=(item.perDay*7>500); // flag items you need a lot of
+    html+='<div class="pantry-item'+(isLow?' pantry-low':'')+'"><div class="pantry-emoji">'+item.emoji+'</div><div><div class="pantry-name">'+name+'</div><div class="pantry-qty">'+displayQty+'</div><div class="pantry-note">'+(isLow?'⚠️ Stock up':'✅ Standard')+'</div></div></div>';
+  });
+  html+='</div>';
+  // Weekly summary card
+  html+='<div class="card" style="margin-top:16px"><div class="section-head">📦 Storage Tips</div><div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;font-size:13px;color:#374151">';
+  html+='<div>🧊 <strong>Freezer:</strong> Batch-cook chicken, beef or fish and freeze in daily portions to save time.</div>';
+  html+='<div>🥫 <strong>Pantry:</strong> Keep dry ingredients (rice, oats, pellets) in airtight containers away from moisture.</div>';
+  html+='<div>🥬 <strong>Fridge:</strong> Fresh vegetables stay good for 3–5 days. Buy twice a week for freshness.</div>';
+  html+='<div>📅 <strong>Meal Prep:</strong> Prepare 2–3 days of meals in advance. Reheat to room temperature before serving.</div>';
+  html+='</div></div>';
+  c.innerHTML=html;
+}
+
+/* ══════════════════════════════════════════════
+   RECIPES PANEL
+══════════════════════════════════════════════ */
+var RECIPES={
+  'Chicken & Rice Bowl':{emoji:'🍚',prep:'5 min',cook:'20 min',serves:'1 dog meal',ingredients:['200g boneless chicken breast (no skin)','100g white rice','Water for boiling'],steps:['Rinse the rice thoroughly under cold water.','Bring 2 cups of water to a boil. Add rice, reduce heat, cover and cook for 18 minutes.','In a separate pot, place chicken breast in cold water. Bring to boil and simmer for 15 minutes until fully cooked through (no pink).','Remove chicken and let cool for 5 minutes. Shred with two forks into small, bite-sized pieces.','Mix shredded chicken with cooked rice. Cool to room temperature before serving.','Store leftovers in refrigerator for up to 3 days. Reheat to room temp before feeding.'],tip:'No salt, oil, onion or garlic ever. The 2:1 rice-to-chicken ratio helps with digestion.'},
+  'Boiled Egg & Rice':{emoji:'🥚',prep:'2 min',cook:'15 min',serves:'1 dog/cat meal',ingredients:['1 large egg','100g white rice','Water'],steps:['Cook rice as normal — boil 1 cup water, add rice, simmer 15 min covered.','Place egg in cold water, bring to boil, then simmer 10 minutes for a fully hard-boiled egg.','Remove egg, cool under cold running water for 2 minutes. Peel carefully.','Slice or crumble egg over cooked rice.','Serve at room temperature. No seasoning.'],tip:'Egg provides complete protein. Yolk contains healthy fats. Remove eggshell completely.'},
+  'Lentil & Rice Bowl':{emoji:'🍛',prep:'5 min',cook:'25 min',serves:'1 dog meal',ingredients:['50g moong dal (yellow lentils)','100g white rice','2 cups water'],steps:['Rinse lentils and rice separately until water runs clear.','Combine lentils and water in a pot. Bring to boil, skim any foam, reduce heat and simmer 15 minutes.','Add rinsed rice to the lentil pot. Add 1 more cup water if needed. Cover and cook 15 more minutes.','Stir well — the mixture should be soft and porridge-like.','Cool completely. Serve at room temperature.'],tip:'No salt, no turmeric, no spices. Moong dal is the safest legume for dogs. Avoid rajma (kidney beans).'},
+  'Lamb & Sweet Potato':{emoji:'🍖',prep:'5 min',cook:'25 min',serves:'1 dog meal',ingredients:['150g lean lamb mince','150g sweet potato','Water'],steps:['Peel and cube sweet potato into 2cm pieces.','Boil sweet potato in water for 12–15 minutes until very tender. Drain and mash.','In a dry pan or pot, cook lamb mince with ½ cup water over medium heat, stirring to break up clumps, for 12–15 minutes until fully cooked through.','Drain any excess fat from the lamb. Let cool.','Mix lamb with mashed sweet potato. Serve at room temperature.'],tip:'Remove all visible fat before cooking. Lamb is easy to digest and great for dogs with chicken allergies.'},
+  'Salmon & Pumpkin':{emoji:'🐟',prep:'5 min',cook:'15 min',serves:'1 dog/cat meal',ingredients:['150g fresh salmon fillet (or canned in water)','100g pumpkin','Water'],steps:['Peel and cube pumpkin. Steam or boil for 10 minutes until soft. Mash roughly.','If using fresh salmon: place in a pot, cover with cold water, bring to gentle simmer. Poach 10 minutes until fish flakes easily.','Remove salmon from water. Check carefully for ALL bones — even small pin bones. Remove every bone.','Flake salmon into small pieces.','Mix flaked salmon with pumpkin mash. Cool to room temperature.'],tip:'Never feed raw salmon — it can contain parasites. Canned salmon in spring water is a safe quick option. Remove all bones.'},
+  'Hay & Leafy Greens':{emoji:'🌿',prep:'2 min',cook:'0 min',serves:'1 rabbit meal',ingredients:['Large handful timothy hay (unlimited)','1 cup romaine lettuce','Small sprig parsley or cilantro','Clean water'],steps:['Provide fresh timothy hay at all times — this should be the bulk (80%) of diet.','Wash all leafy greens thoroughly under cold running water.','Tear or cut romaine into large pieces. Remove any wilted leaves.','Place greens in a ceramic or metal bowl (not plastic).','Serve fresh herbs (parsley, cilantro, dill) in small amounts alongside greens.','Change greens daily. Remove any uneaten greens after 4 hours.'],tip:'Never feed iceberg lettuce — it causes diarrhoea. Spinach and kale in moderation only due to oxalates. Always have fresh water available.'},
+  'Beef & Vegetable Stew':{emoji:'🥩',prep:'10 min',cook:'30 min',serves:'1–2 dog meals',ingredients:['200g lean beef mince','1 medium carrot (diced)','50g peas','1 small potato (diced)','2 cups water'],steps:['Peel and dice carrot and potato into small 1cm cubes.','Place beef mince in a large pot with water. Break up with a spoon. Bring to boil.','Add diced carrot and potato. Reduce heat and simmer 20 minutes.','Add peas in the last 5 minutes of cooking.','Drain excess liquid/fat. The stew should be chunky but not soupy.','Cool completely before serving. Refrigerate for up to 2 days.'],tip:'No onion, no garlic, no salt ever. Leaner the beef, better. Drain all fat after cooking.'},
+  'Mixed Greens Bowl':{emoji:'🥗',prep:'3 min',cook:'0 min',serves:'1 rabbit/parrot meal',ingredients:['1 cup romaine lettuce','½ cup kale or Swiss chard','Few sprigs parsley','1 small piece carrot'],steps:['Wash all vegetables under cold water. Dry with paper towel.','Tear romaine into large pieces.','Chop or tear kale into smaller pieces.','Add fresh parsley sprigs.','Grate or slice carrot into thin pieces.','Combine in a bowl. Serve immediately. Remove uneaten food after 3–4 hours.'],tip:'Rotate greens daily to provide varied nutrients. Never repeat the same greens 3 days in a row.'}
+};
+
+function renderRecipes(){
+  var c=document.getElementById('panel-recipes');
+  var html='<div style="padding:14px 0 8px"><div style="font-size:17px;font-weight:800">👨‍🍳 Cooking Methods</div><div style="font-size:13px;color:#65676b;margin-top:2px">Step-by-step guides for your pet\'s meals</div></div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">';
+  Object.keys(RECIPES).forEach(function(name){
+    var r=RECIPES[name];
+    html+='<div class="card" style="cursor:pointer;transition:box-shadow .15s" onclick="openRecipeByName(\''+name.replace(/'/g,"\\'")+'\')" onmouseover="this.style.boxShadow=\'0 4px 20px rgba(0,0,0,.12)\'" onmouseout="this.style.boxShadow=\'\'">';
+    html+='<div style="padding:14px"><div style="font-size:32px;margin-bottom:8px">'+r.emoji+'</div>';
+    html+='<div style="font-size:14px;font-weight:800;margin-bottom:4px">'+name+'</div>';
+    html+='<div style="font-size:12px;color:#65676b">⏱ Prep: '+r.prep+' · Cook: '+r.cook+'</div>';
+    html+='<div style="font-size:12px;color:#65676b;margin-top:2px">🍽 '+r.serves+'</div>';
+    html+='<div style="margin-top:10px;padding:6px 12px;border-radius:999px;background:#f0fdf4;color:#059669;font-size:12px;font-weight:700;display:inline-block">View Recipe →</div>';
+    html+='</div></div>';
+  });
+  html+='</div>';
+  c.innerHTML=html;
+}
+
+function openRecipeByName(name){
+  var r=RECIPES[name];
+  if(!r)return;
+  var html='<div style="background:#f0fdf4;border-radius:12px;padding:14px;margin-bottom:16px;display:flex;gap:12px;align-items:center">';
+  html+='<div style="font-size:40px">'+r.emoji+'</div>';
+  html+='<div><div style="font-size:13px;color:#065f46"><strong>⏱ Prep:</strong> '+r.prep+' · <strong>Cook:</strong> '+r.cook+'</div><div style="font-size:13px;color:#065f46;margin-top:2px"><strong>🍽 Serves:</strong> '+r.serves+'</div></div></div>';
+  html+='<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:800;margin-bottom:8px">🧂 Ingredients</div>';
+  r.ingredients.forEach(function(ing){
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;border-bottom:1px solid #f1f5f9"><div style="width:6px;height:6px;border-radius:50%;background:#059669;flex-shrink:0"></div>'+ing+'</div>';
+  });
+  html+='</div><div style="margin-bottom:14px"><div style="font-size:14px;font-weight:800;margin-bottom:8px">👨‍🍳 Steps</div>';
+  r.steps.forEach(function(step,i){
+    html+='<div class="recipe-step"><div class="step-num">'+(i+1)+'</div><div style="font-size:13px;color:#374151;line-height:1.5">'+step+'</div></div>';
+  });
+  html+='</div>';
+  if(r.tip){
+    html+='<div style="background:#fffbeb;border-radius:10px;padding:12px;border:1px solid #fde68a;font-size:13px;color:#92400e"><strong>💡 Tip:</strong> '+r.tip+'</div>';
+  }
+  document.getElementById('recipe-title').textContent=name;
+  document.getElementById('recipe-meta').textContent='⏱ '+r.prep+' prep · '+r.cook+' cook';
+  document.getElementById('recipe-body').innerHTML=html;
+  document.getElementById('recipe-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function openRecipe(mealId){
+  var meal=findMealById(mealId);
+  if(!meal)return;
+  // Try to find a recipe by meal name
+  var recipeName=Object.keys(RECIPES).find(function(k){return k.toLowerCase()===meal.name.toLowerCase();});
+  if(recipeName){openRecipeByName(recipeName);return;}
+  // Generic recipe from description
+  var r={emoji:meal.emoji,prep:'5 min',cook:'15–20 min',serves:'1 pet meal',
+    ingredients:['Main ingredient: see description below','Fresh water for cooking','No salt, no oil, no spices'],
+    steps:['Read the preparation note carefully for this meal.','Wash all ingredients thoroughly.','Cook using boiling or steaming — no frying, no seasoning.','Cool completely to room temperature before serving.','Store leftovers in refrigerator for up to 2 days.'],
+    tip:meal.desc};
+  var html='<div style="background:#f0fdf4;border-radius:12px;padding:14px;margin-bottom:16px"><div style="font-size:40px;margin-bottom:6px">'+meal.emoji+'</div><div style="font-size:13px;color:#065f46"><strong>Serving:</strong> '+meal.amount+' '+meal.unit+'</div></div>';
+  html+='<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:800;margin-bottom:8px">🧂 Ingredients</div>';
+  r.ingredients.forEach(function(ing){html+='<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;border-bottom:1px solid #f1f5f9"><div style="width:6px;height:6px;border-radius:50%;background:#059669;flex-shrink:0"></div>'+ing+'</div>';});
+  html+='</div><div style="margin-bottom:14px"><div style="font-size:14px;font-weight:800;margin-bottom:8px">👨‍🍳 Steps</div>';
+  r.steps.forEach(function(step,i){html+='<div class="recipe-step"><div class="step-num">'+(i+1)+'</div><div style="font-size:13px;color:#374151;line-height:1.5">'+step+'</div></div>';});
+  html+='</div>';
+  if(r.tip){html+='<div style="background:#fffbeb;border-radius:10px;padding:12px;border:1px solid #fde68a;font-size:13px;color:#92400e"><strong>💡 Note:</strong> '+r.tip+'</div>';}
+  document.getElementById('recipe-title').textContent=meal.name;
+  document.getElementById('recipe-meta').textContent='🐾 '+meal.amount+' '+meal.unit;
+  document.getElementById('recipe-body').innerHTML=html;
+  document.getElementById('recipe-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeRecipe(){document.getElementById('recipe-modal').style.display='none';document.body.style.overflow='';}
+
+/* ══════════════════════════════════════════════
+   MEAL PICKER MODAL
+══════════════════════════════════════════════ */
+var _pickerDay=null,_pickerCourse=null,_allPickerMeals=[];
+
+function openPicker(dayIdx,course){
+  _pickerDay=dayIdx;_pickerCourse=course;
+  var courseNames={breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner',snacks:'Snack'};
+  document.getElementById('picker-title').textContent='Choose '+courseNames[course];
+  _allPickerMeals=getMealsForType(_planData.petType,_planData.diet,course);
+  document.getElementById('picker-search').value='';
+  renderPickerList(_allPickerMeals);
+  document.getElementById('picker-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closePicker(){document.getElementById('picker-modal').style.display='none';document.body.style.overflow='';}
+function filterPicker(){
+  var q=document.getElementById('picker-search').value.toLowerCase();
+  renderPickerList(_allPickerMeals.filter(function(m){return m.name.toLowerCase().includes(q)||(m.tags||[]).some(function(t){return t.includes(q);});}));
+}
+function renderPickerList(meals){
+  var html=meals.map(function(m){
+    return '<div class="meal-pick-item" onclick="selectMeal(\''+m.id+'\')">'+
+      '<div class="mpi-emoji">'+m.emoji+'</div>'+
+      '<div style="flex:1"><div class="mpi-name">'+m.name+'</div>'+
+      '<div class="mpi-meta">📏 '+m.amount+' '+m.unit+' · '+m.protein+'g protein</div></div>'+
+      '<div class="mpi-kcal">'+m.kcal+' kcal</div></div>';
+  }).join('');
+  document.getElementById('picker-list').innerHTML=html||'<div style="padding:20px;text-align:center;color:#65676b">No meals found</div>';
+}
+function selectMeal(mealId){
+  var meal=_allPickerMeals.find(function(m){return m.id===mealId;});
+  if(!meal)return;
+  var day=_generatedDays[_pickerDay];
+  if(!day)return;
+  day.meals[_pickerCourse]=[meal];
+  // Recalc day kcal
+  var kcal=0;
+  ['breakfast','lunch','dinner','snacks'].forEach(function(c){(day.meals[c]||[]).forEach(function(m){kcal+=m.kcal;});});
+  day.kcal=kcal;
+  closePicker();
+  renderMealPlan();
+  renderNutrition();
+  renderPantry();
+  showToast('✅ Meal updated!','success');
+}
+
+/* ══════════════════════════════════════════════
+   TAB SWITCHING
+══════════════════════════════════════════════ */
+function showTab(id,el){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active');});
+  if(el)el.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+var _toastEl=null;
+function showToast(msg,type){
+  if(!_toastEl){_toastEl=document.createElement('div');_toastEl.className='toast-el';document.body.appendChild(_toastEl);}
+  _toastEl.style.background=type==='success'?'#22c55e':type==='error'?'#dc2626':'#059669';
+  _toastEl.textContent=msg;_toastEl.style.opacity='1';_toastEl.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(_toastEl._t);
+  _toastEl._t=setTimeout(function(){_toastEl.style.opacity='0';_toastEl.style.transform='translateX(-50%) translateY(8px)';},3000);
+}
+
+/* ══════════════════════════════════════════════
+   VOICE CHATBOT
+══════════════════════════════════════════════ */
+var _botHistory=[];
+var _micActive=false;
+var _recognition=null;
+
+function toggleVoicePanel(){
+  var p=document.getElementById('voice-panel');
+  p.classList.toggle('open');
+  if(p.classList.contains('open')&&_botHistory.length===0){
+    addBotMsg('👋 Hi! I\'m PawBot, your pet meal assistant. I can help you plan meals, suggest recipes, check nutrition info, and manage your pantry. What would you like to know?');
+  }
+}
+
+function addBotMsg(msg){
+  _botHistory.push({role:'bot',msg:msg});
+  renderBotMsgs();
+}
+function addUserMsg(msg){
+  _botHistory.push({role:'user',msg:msg});
+  renderBotMsgs();
+}
+function renderBotMsgs(){
+  var c=document.getElementById('vp-msgs');
+  c.innerHTML=_botHistory.map(function(m){
+    return '<div class="vp-msg '+m.role+'">'+m.msg+'</div>';
+  }).join('');
+  c.scrollTop=c.scrollHeight;
+}
+
+function sendBot(){
+  var inp=document.getElementById('vp-input');
+  var msg=inp.value.trim();
+  if(!msg)return;
+  inp.value='';
+  botAsk(msg);
+}
+
+function botAsk(question){
+  addUserMsg(question);
+  // Add typing indicator
+  _botHistory.push({role:'bot',msg:'<span style="opacity:.5">typing…</span>'});
+  renderBotMsgs();
+  setTimeout(function(){
+    _botHistory.pop(); // remove typing
+    var reply=getBotReply(question.toLowerCase());
+    addBotMsg(reply);
+  },700+Math.random()*500);
+}
+
+function getBotReply(q){
+  var pet=_planData?_planData.petType:'your pet';
+  var petEmoji={dog:'🐕',cat:'🐈',rabbit:'🐰',parrot:'🦜',hamster:'🐹',fish:'🐠',turtle:'🐢'}[pet]||'🐾';
+
+  if(q.includes('today')&&q.includes('meal')||q.includes('what should i feed')){
+    if(_generatedDays.length){
+      var d=_generatedDays[0];
+      var bf=(d.meals.breakfast||[])[0];var ln=(d.meals.lunch||[])[0];var dn=(d.meals.dinner||[])[0];
+      return petEmoji+' For today, I suggest:<br>🌅 <b>Breakfast:</b> '+(bf?bf.emoji+' '+bf.name:'Not set')+'<br>☀️ <b>Lunch:</b> '+(ln?ln.emoji+' '+ln.name:'Not set')+'<br>🌙 <b>Dinner:</b> '+(dn?dn.emoji+' '+dn.name:'Not set')+'<br><br>Total: ~'+d.kcal+' kcal. Tap any meal chip in the plan to see full nutrition!';
+    }
+    return 'Please generate a meal plan first! Tap the ⚙️ button above to set up your plan.';
+  }
+  if(q.includes('protein')){
+    return '💪 Protein needs vary by pet:<br>🐕 <b>Dogs:</b> 18–25% of daily calories (adult)<br>🐈 <b>Cats:</b> 25–35% (obligate carnivores — higher protein need!)<br>🐰 <b>Rabbits:</b> ~12–14% from hay and leafy greens<br>🦜 <b>Parrots:</b> ~10–15% from legumes, seeds and occasional egg<br><br>Cats MUST have meat — they cannot synthesise taurine from plants.';
+  }
+  if(q.includes('pantry')||q.includes('shopping')||q.includes('ingredients')){
+    if(_planData){
+      showTab('pantry',document.querySelectorAll('.tab-item')[2]);
+      return '🛒 I\'ve opened the Pantry tab for you! You\'ll find the full shopping list for your '+_planData.dur+'-day plan. I also added storage tips at the bottom.';
+    }
+    return 'Generate a meal plan first and I\'ll calculate exactly what ingredients you\'ll need for the whole duration!';
+  }
+  if(q.includes('recipe')||q.includes('cook')||q.includes('cooking method')||q.includes('how to')){
+    showTab('recipes',document.querySelectorAll('.tab-item')[3]);
+    return '👨‍🍳 Opened the Recipes tab! You\'ll find step-by-step cooking methods for all major meals. You can also tap any meal chip in the plan and hit "Cooking Method" for that specific meal.';
+  }
+  if(q.includes('avoid')||q.includes('toxic')||q.includes('dangerous')||q.includes('not eat')){
+    return '⚠️ <b>Dangerous foods for pets:</b><br>🐕 Dogs: <b>Chocolate, grapes/raisins, onion, garlic, xylitol (sugar-free gum), avocado, macadamia nuts, alcohol</b><br>🐈 Cats: <b>Onion, garlic, grapes, chocolate, raw fish (parasites), milk (most cats are lactose intolerant)</b><br>🐰 Rabbits: <b>Iceberg lettuce, potato, rhubarb, onion, garlic, chocolate</b><br><br>When in doubt, don\'t feed it! 🚫';
+  }
+  if(q.includes('calorie')||q.includes('kcal')||q.includes('how much food')){
+    return '🔥 Daily calorie guidelines:<br>🐕 Small dog (5–10kg): <b>400–600 kcal</b><br>🐕 Medium dog (10–25kg): <b>700–1000 kcal</b><br>🐕 Large dog (25kg+): <b>1200–1800 kcal</b><br>🐈 Average cat (3–5kg): <b>200–300 kcal</b><br>🐰 Rabbit: <b>Unlimited hay + 1 cup greens per 2kg</b><br><br>Adjust by ±10–20% based on activity level and life stage.';
+  }
+  if(q.includes('nutrition')||q.includes('vitamins')||q.includes('mineral')){
+    if(_planData){
+      showTab('nutrition',document.querySelectorAll('.tab-item')[1]);
+      return '📊 I\'ve opened the Nutrition tab! You can see the daily average protein, fat, carbs and fibre across your '+_planData.dur+'-day plan.';
+    }
+    return 'Generate a meal plan first and I\'ll show you the full nutritional breakdown — daily averages for protein, fat, carbs, fibre and calories.';
+  }
+  if(q.includes('water')||q.includes('hydration')){
+    return '💧 <b>Daily water needs:</b><br>🐕 Dogs: <b>50–60 ml per kg</b> body weight per day (a 10kg dog needs ~500ml)<br>🐈 Cats: <b>40–60 ml per kg</b> (many cats prefer running water — consider a fountain)<br>🐰 Rabbits: <b>100 ml per kg</b> (they drink a lot!)<br><br>Always have fresh, clean water available. Change it at least twice daily.';
+  }
+  if(q.includes('puppy')||q.includes('kitten')){
+    return '🐣 Puppies and kittens have special nutritional needs:<br>• Feed <b>3–4 times daily</b> (not 2 like adults)<br>• Higher protein and fat for growth<br>• DHA for brain development<br>• Calcium & phosphorus for bones (balanced ratio is critical)<br>• Avoid adult food — it has wrong nutrient ratios<br><br>Always use age-appropriate food and consult your vet for specific amounts.';
+  }
+  if(q.includes('veg')||q.includes('vegetarian')){
+    return '🌿 <b>Vegetarian diet for pets:</b><br>🐕 <b>Dogs</b> can eat a balanced vegetarian diet with careful supplementation (B12, taurine, L-carnitine, zinc)<br>🐈 <b>Cats CANNOT be vegetarian</b> — they are obligate carnivores and will develop serious health problems<br>🐰 <b>Rabbits ARE herbivores</b> — hay, leafy greens and pellets only<br>🦜 <b>Parrots</b> thrive mostly on a plant-based diet with occasional egg<br><br>Always consult a veterinary nutritionist before switching to a veg diet.';
+  }
+  if(q.includes('plan')||q.includes('generate')||q.includes('meal plan')){
+    document.getElementById('setup-card').style.display='block';
+    document.getElementById('tab-bar').style.display='none';
+    return '⚙️ I\'ve scrolled you back to the setup form! Choose your pet type, diet preference and plan duration, then tap "Generate Meal Plan".';
+  }
+  if(q.includes('hello')||q.includes('hi ')||q.includes('hey')){
+    return 'Hello! 👋 I\'m PawBot. Ask me about meal planning, nutrition, recipes, pantry management, or what foods to avoid for your pet. How can I help?';
+  }
+  // Default fallback
+  return petEmoji+' Great question! For the best advice, I\'d suggest:<br>• 🐾 Generating a personalised meal plan above<br>• 📊 Checking the Nutrition tab for detailed breakdowns<br>• 👨‍🍳 Visiting the Recipes tab for cooking methods<br>• 🛒 Looking at the Pantry tab for shopping lists<br><br>Or ask me about: <i>protein needs, toxic foods, water intake, puppy diet, vegetarian options</i> and more!';
+}
+
+function toggleMic(){
+  if(_micActive){
+    if(_recognition)_recognition.stop();
+    _micActive=false;
+    document.getElementById('vp-mic-btn').classList.remove('on');
     return;
   }
-  populateDrawer(u);
-  function populateDrawer(ud){
-    var dn = document.getElementById("drawer-name");
-    var dh = document.getElementById("drawer-handle");
-    var da = document.getElementById("drawer-av");
-    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
-    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
-    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    showToast('Voice input not supported in this browser. Try Chrome.','error');
+    return;
+  }
+  _recognition=new SR();
+  _recognition.lang='en-IN';
+  _recognition.continuous=false;
+  _recognition.interimResults=false;
+  _recognition.onstart=function(){_micActive=true;document.getElementById('vp-mic-btn').classList.add('on');};
+  _recognition.onresult=function(e){
+    var t=e.results[0][0].transcript;
+    document.getElementById('vp-input').value=t;
+    _micActive=false;document.getElementById('vp-mic-btn').classList.remove('on');
+    botAsk(t);
+  };
+  _recognition.onerror=function(){_micActive=false;document.getElementById('vp-mic-btn').classList.remove('on');showToast('Voice error. Try again.','error');};
+  _recognition.onend=function(){_micActive=false;document.getElementById('vp-mic-btn').classList.remove('on');};
+  _recognition.start();
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+(function init(){
+  // Set today as default start date
+  var today=new Date();
+  var yyyy=today.getFullYear();
+  var mm=String(today.getMonth()+1).padStart(2,'0');
+  var dd=String(today.getDate()).padStart(2,'0');
+  document.getElementById('inp-start-date').value=yyyy+'-'+mm+'-'+dd;
+
+  // Load India states by default
+  onCountryChange();
+  onPetTypeChange();
+
+  // Nav avatar
+  try{
+    var u=JSON.parse(localStorage.getItem('pb_user')||'null');
+    var av=document.getElementById('nav-av');
+    if(u&&av){
+      if(u.avatar_url){av.innerHTML='<img src="'+u.avatar_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';}
+      else if(u.full_name){av.textContent=u.full_name.charAt(0).toUpperCase();}
+    }
+    var dn=document.getElementById('drawer-name');
+    if(u&&dn){dn.textContent=u.full_name||u.username||'Pet Parent';}
+  }catch(e){}
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){
+      navigator.serviceWorker.register('service-worker.js').catch(function(){});
+    });
   }
 })();
 </script>
-</body></html>
 
+  <script>
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
+</body>
+</html>

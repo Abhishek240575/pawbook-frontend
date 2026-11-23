@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -154,7 +154,7 @@ img{max-width:100%;display:block}
 
 html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
-<script src="api.js"></script>
+<script src="pawbook-api.js"></script>
 <script src="upload.js"></script>
 <script>
 (function(){
@@ -526,7 +526,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
 <style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
 <style id="pb-mobile">
 html, body { overflow-x: hidden !important; }
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   html, body { width: 100% !important; overflow-x: hidden !important; }
   div { min-width: 0 !important; }
 
@@ -561,8 +561,8 @@ html, body { overflow-x: hidden !important; }
 .bnav-item i { font-size: 22px; }
 .bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
 .bnav-item.active { color: #1877F2; }
-@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
-@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+@media (max-width: 900px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
+@media (min-width: 901px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
 </style>
 </head>
 <body>
@@ -924,7 +924,7 @@ function goTo(p) { window.location.href = p; }
   <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
   <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
   <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
   <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
 </nav>
 <!-- DRAWER OVERLAY -->
@@ -960,10 +960,10 @@ function goTo(p) { window.location.href = p; }
     <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
     <div class="drawer-section">Pet Services</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
     <div class="drawer-footer">
@@ -1021,7 +1021,7 @@ if ('serviceWorker' in navigator) {
     // fetch from API if not cached
     var tok = localStorage.getItem("pb_token");
     if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+      fetch("https://pawbook.deemona.com/api/v1/auth/me", {
         headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
       }).then(function(r){ return r.json(); }).then(function(res){
         var ud = res.data || res;
@@ -1046,3 +1046,4 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+

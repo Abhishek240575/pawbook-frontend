@@ -154,11 +154,15 @@ img{max-width:100%;display:block}
 
 html,body{overflow-x:hidden!important;max-width:100%!important}
 </style>
-<script src="pawbook-api.js"></script>
-<script src="upload.js"></script>
 <script>
 (function(){
-  fetch(API_BASE+'/saved',{headers:authHeaders()})
+  var token = localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+  if(!token){ window.location.replace('01_login.html'); }
+})();
+</script>
+<script>
+(function(){
+  fetch((window.API_BASE||'https://pawbook.deemona.com/api/v1')+'/saved',{headers:(window.authHeaders?window.authHeaders():{Authorization:'Bearer '+(localStorage.getItem('pb_token')||'')})})
     .then(function(r){return r.json();})
     .then(function(d){if(d&&d.data)localStorage.setItem('pb_saved',JSON.stringify(d.data));})
     .catch(function(){});
@@ -489,11 +493,6 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
 .post-thumb{aspect-ratio:1;overflow:hidden;cursor:pointer;position:relative}
 .post-thumb img{width:100%;height:100%;object-fit:cover}
 .post-thumb-bar{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.5));padding:8px 6px 4px;color:#fff;font-size:10px;font-weight:700}
-.fund-card{background:#fff;border-radius:14px;margin:8px 16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.fund-img{width:100%;height:140px;object-fit:cover}
-.fund-body{padding:12px 14px}
-.fund-bar{height:8px;background:#e2e8f0;border-radius:4px;margin:8px 0;overflow:hidden}
-.fund-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#10b981,#059669)}
 .memory-card{background:linear-gradient(135deg,#1a4db3,#6366f1);border-radius:14px;margin:8px 16px;padding:20px;color:#fff;position:relative;overflow:hidden}
 .memory-card::before{content:'🌟';position:absolute;top:12px;right:16px;font-size:32px;opacity:0.3}
 .activity-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1f5f9}
@@ -505,7 +504,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
 <style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
 <style id="pb-mobile">
 html, body { overflow-x: hidden !important; }
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   html, body { width: 100% !important; overflow-x: hidden !important; }
   div { min-width: 0 !important; }
   .post-grid { display: block !important; grid-template-columns: 1fr !important; }
@@ -529,7 +528,7 @@ html, body { overflow-x: hidden !important; }
 .drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
 .drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
 .drawer-body { flex: 1; padding: 6px 0; }
-.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
+.drawer-section { font-size: 10px; font-weight: 800; color: #1877F2; text-transform: uppercase; letter-spacing: .8px; padding: 16px 18px 4px; margin-top: 4px; border-top: 1px solid #e4e6eb; }
 .drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
 .drawer-item:hover { background: #eff6ff; color: #1877F2; }
 .drawer-item i { font-size: 20px; width: 24px; }
@@ -540,8 +539,8 @@ html, body { overflow-x: hidden !important; }
 .bnav-item i { font-size: 22px; }
 .bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
 .bnav-item.active { color: #1877F2; }
-@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
-@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+@media (max-width: 900px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
+@media (min-width: 901px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
 </style>
 </head>
 <body>
@@ -554,7 +553,6 @@ html, body { overflow-x: hidden !important; }
   <!-- Tabs -->
   <div class="tabs">
     <div class="tab active" onclick="showTab('saved',this)">🔖 Saved</div>
-    <div class="tab" onclick="showTab('fundraising',this)">❤️ Fundraising</div>
     <div class="tab" onclick="showTab('memory',this)">🌟 Memories</div>
     <div class="tab" onclick="showTab('activity',this)">📊 Activity</div>
     <div class="tab" onclick="showTab('birthdays',this)">🎂 Birthdays</div>
@@ -571,74 +569,6 @@ html, body { overflow-x: hidden !important; }
       <div style="font-size:48px;margin-bottom:10px">🔖</div>
       <div style="font-weight:700;margin-bottom:6px">No saved posts yet</div>
       <div style="font-size:13px">Tap the 🔖 icon on any post to save it here</div>
-    </div>
-  </div>
-
-  <!-- FUNDRAISING -->
-  <div id="tab-fundraising" style="display:none">
-    <div class="card" style="margin-top:8px">
-      <div class="section-title">❤️ Support a Cause</div>
-      <div style="font-size:13px;color:#64748b;line-height:1.6">Your donations help shelters, rescue animals, and support veterinary care for pets in need across India.</div>
-    </div>
-
-    <div id="fund-list">
-      <div class="fund-card">
-        <img class="fund-img" src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=600&q=80">
-        <div class="fund-body">
-          <div style="display:inline-block;background:#fee2e2;color:#dc2626;font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;margin-bottom:6px">🔴 URGENT</div>
-          <div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:2px">Emergency Vet Fund for Strays</div>
-          <div style="font-size:12px;color:#64748b;margin-bottom:8px">by SPCA Delhi</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px">
-            <span style="color:#10b981">₹87K raised</span><span style="color:#64748b">of ₹150K</span>
-          </div>
-          <div class="fund-bar"><div class="fund-fill" style="width:58%"></div></div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:12px">
-            <span>234 donors</span><span>12 days left</span>
-          </div>
-          <div style="display:flex;gap:8px">
-            <button onclick="openDonateModal(null,'Emergency Vet Fund')" style="height:30px;padding:0 14px;border-radius:999px;border:none;background:#10b981;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">❤️ Donate Now</button>
-            <button onclick="shareF('Emergency Vet Fund')" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="fund-card">
-        <img class="fund-img" src="https://images.unsplash.com/photo-1444212477490-ca407925329e?w=600&q=80">
-        <div class="fund-body">
-          <div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:2px">Build New Shelter for 200 Animals</div>
-          <div style="font-size:12px;color:#64748b;margin-bottom:8px">by Hopeful Tails</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px">
-            <span style="color:#10b981">₹342K raised</span><span style="color:#64748b">of ₹500K</span>
-          </div>
-          <div class="fund-bar"><div class="fund-fill" style="width:68%"></div></div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:12px">
-            <span>891 donors</span><span>45 days left</span>
-          </div>
-          <div style="display:flex;gap:8px">
-            <button onclick="openDonateModal(null,'Build New Shelter')" style="height:30px;padding:0 14px;border-radius:999px;border:none;background:#10b981;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">❤️ Donate Now</button>
-            <button onclick="shareF('Build New Shelter')" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="fund-card">
-        <img class="fund-img" src="https://images.unsplash.com/photo-1551717743-49959800b1f6?w=600&q=80">
-        <div class="fund-body">
-          <div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:2px">Vaccination Drive for 1000 Strays</div>
-          <div style="font-size:12px;color:#64748b;margin-bottom:8px">by People for Animals</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px">
-            <span style="color:#10b981">₹46K raised</span><span style="color:#64748b">of ₹100K</span>
-          </div>
-          <div class="fund-bar"><div class="fund-fill" style="width:46%"></div></div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:12px">
-            <span>156 donors</span><span>30 days left</span>
-          </div>
-          <div style="display:flex;gap:8px">
-            <button onclick="openDonateModal(null,'Vaccination Drive')" style="height:30px;padding:0 14px;border-radius:999px;border:none;background:#10b981;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">❤️ Donate Now</button>
-            <button onclick="shareF('Vaccination Drive')" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -822,32 +752,9 @@ html, body { overflow-x: hidden !important; }
   <button onclick="location.href='08_pet_profile.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-user" style="font-size:20px"></i>Profile</button>
 </div>
 
-<!-- DONATE MODAL -->
-<div id="donate-modal" class="pb-modal-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#fff;border-radius:16px;width:100%;max-width:400px;overflow:hidden">
-    <div style="padding:16px 18px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-      <div style="font-size:16px;font-weight:800" id="donate-modal-title">Donate</div>
-      <button onclick="closeDonateModal()" style="width:30px;height:30px;border-radius:50%;border:none;background:#f1f5f9;cursor:pointer;font-size:16px">✕</button>
-    </div>
-    <div style="padding:18px">
-      <div style="font-size:13px;font-weight:700;color:#64748b;margin-bottom:10px">Choose amount</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-        <button onclick="setDonateAmount(100)" class="donate-amt-btn" style="height:44px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer">₹100</button>
-        <button onclick="setDonateAmount(250)" class="donate-amt-btn" style="height:44px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer">₹250</button>
-        <button onclick="setDonateAmount(500)" class="donate-amt-btn" style="height:44px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer">₹500</button>
-        <button onclick="setDonateAmount(1000)" class="donate-amt-btn" style="height:44px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer">₹1000</button>
-      </div>
-      <input type="number" id="donate-custom" placeholder="Or enter custom amount (₹)" style="width:100%;height:44px;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;margin-bottom:14px;outline:none">
-      <button onclick="submitDonate()" style="width:100%;height:44px;border-radius:999px;border:none;background:#10b981;color:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:800;cursor:pointer">❤️ Donate Now</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ── STATE VARIABLES ────────────────────────────────────────
-var _donateCampaignId = null;
-var _donateAmount = 0;
-var _tabLoaded = {saved:false,fundraising:false,memory:false,activity:false,birthdays:false};
+var _tabLoaded = {saved:false,memory:false,activity:false,birthdays:false};
 
 // ── HELPER FUNCTIONS ───────────────────────────────────────
 function relativeTime(dateStr) {
@@ -882,14 +789,13 @@ function showToast(msg, type) {
 function showTab(tab, el) {
   document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
   el.classList.add('active');
-  ['saved','fundraising','memory','activity','birthdays'].forEach(function(t){
+  ['saved','memory','activity','birthdays'].forEach(function(t){
     document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
   });
   if(tab==='saved') { loadSavedPosts(); return; }
   if(_tabLoaded[tab]) return;
   _tabLoaded[tab] = true;
-  if(tab==='fundraising') loadFundraising();
-  else if(tab==='memory') loadMemories();
+  if(tab==='memory') loadMemories();
   else if(tab==='activity') loadActivity();
   else if(tab==='birthdays') loadBirthdays();
 }
@@ -947,106 +853,6 @@ function loadSavedPosts() {
 function clearSaved() {
   if(!confirm('Remove all saved posts?')) return;
   showToast('Use the unsave button on each post to remove individual saved posts.');
-}
-
-// ── FUNDRAISING TAB ───────────────────────────────────────
-function loadFundraising() {
-  fetch(API_BASE+'/fundraising', {headers: authHeaders()})
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      var items = (d && d.data) ? d.data : [];
-      if(!items.length) return; // keep fallback HTML
-      var fundImgs = [
-        'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=600&q=80',
-        'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=600&q=80',
-        'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=600&q=80'
-      ];
-      var html = items.map(function(c, i) {
-        var pct = c.goal_amount ? Math.round((c.raised_amount/c.goal_amount)*100) : 0;
-        if(pct>100) pct=100;
-        var img = c.image_url || fundImgs[i % fundImgs.length];
-        var urgentBadge = c.is_urgent ? '<div style="display:inline-block;background:#fee2e2;color:#dc2626;font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;margin-bottom:6px">🔴 URGENT</div>' : '';
-        var daysLabel = c.days_until_end != null ? c.days_until_end+' days left' : '';
-        return '<div class="fund-card">'
-          +'<img class="fund-img" src="'+img+'" onerror="this.src=\''+fundImgs[i%fundImgs.length]+'\'">'
-          +'<div class="fund-body">'
-          +urgentBadge
-          +'<div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:2px">'+escHtml(c.title||'Campaign')+'</div>'
-          +'<div style="font-size:12px;color:#64748b;margin-bottom:8px">by '+escHtml(c.organizer_name||'')+'</div>'
-          +'<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px">'
-          +'<span style="color:#10b981">'+formatAmount(c.raised_amount)+' raised</span><span style="color:#64748b">of '+formatAmount(c.goal_amount)+'</span>'
-          +'</div>'
-          +'<div class="fund-bar"><div class="fund-fill" style="width:'+pct+'%"></div></div>'
-          +'<div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:12px">'
-          +'<span>'+(c.donor_count||0)+' donors</span><span>'+daysLabel+'</span>'
-          +'</div>'
-          +'<div style="display:flex;gap:8px">'
-          +'<button onclick="openDonateModal(\''+c.campaign_id+'\',\''+escAttr(c.title)+'\')" style="height:30px;padding:0 14px;border-radius:999px;border:none;background:#10b981;color:#fff;font-family:\'Poppins\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">❤️ Donate Now</button>'
-          +'<button onclick="shareF(\''+escAttr(c.title)+'\')" style="height:30px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:\'Poppins\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>'
-          +'</div>'
-          +'</div></div>';
-      }).join('');
-      document.getElementById('fund-list').innerHTML = html;
-    })
-    .catch(function(){}); // keep fallback HTML on error
-}
-
-function openDonateModal(campaignId, title) {
-  _donateCampaignId = campaignId || null;
-  _donateAmount = 0;
-  document.getElementById('donate-modal-title').textContent = 'Donate — '+(title||'Campaign');
-  document.getElementById('donate-custom').value = '';
-  document.querySelectorAll('.donate-amt-btn').forEach(function(b){
-    b.style.background='#fff'; b.style.borderColor='#e2e8f0'; b.style.color='#1e293b';
-  });
-  var modal = document.getElementById('donate-modal');
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeDonateModal() {
-  var modal = document.getElementById('donate-modal');
-  modal.style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-function setDonateAmount(amt) {
-  _donateAmount = amt;
-  document.getElementById('donate-custom').value = '';
-  document.querySelectorAll('.donate-amt-btn').forEach(function(b){
-    var isSelected = b.textContent.indexOf(''+amt) !== -1 && b.textContent.indexOf('₹'+amt) !== -1;
-    if(b.textContent === '₹'+amt) {
-      b.style.background='#10b981'; b.style.borderColor='#10b981'; b.style.color='#fff';
-    } else {
-      b.style.background='#fff'; b.style.borderColor='#e2e8f0'; b.style.color='#1e293b';
-    }
-  });
-}
-
-function submitDonate() {
-  var customVal = document.getElementById('donate-custom').value;
-  var amount = customVal ? Number(customVal) : _donateAmount;
-  if(!amount || amount <= 0) { showToast('Please select or enter an amount.','error'); return; }
-
-  if(_donateCampaignId) {
-    fetch(API_BASE+'/fundraising/'+_donateCampaignId+'/donate', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({amount: amount})
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      closeDonateModal();
-      showToast('❤️ Thank you for donating '+formatAmount(amount)+'! Your contribution matters.');
-    })
-    .catch(function() {
-      closeDonateModal();
-      showToast('❤️ Thank you for donating '+formatAmount(amount)+'! Your contribution matters.');
-    });
-  } else {
-    closeDonateModal();
-    showToast('❤️ Thank you for donating '+formatAmount(amount)+'! Your contribution matters.');
-  }
 }
 
 // ── MEMORY TAB ────────────────────────────────────────────
@@ -1112,8 +918,7 @@ function loadActivity() {
         'comment': {icon:'💬', bg:'#dbeafe'},
         'follow': {icon:'👤', bg:'#dcfce7'},
         'post': {icon:'📸', bg:'#fef3c7'},
-        'save': {icon:'🔖', bg:'#f3e8ff'},
-        'donate': {icon:'❤️‍🔥', bg:'#fee2e2'}
+        'save': {icon:'🔖', bg:'#f3e8ff'}
       };
       var html = items.map(function(a) {
         var map = iconMap[a.action_type] || {icon:'🐾', bg:'#f3e8ff'};
@@ -1221,7 +1026,7 @@ loadSavedPosts();
   <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
   <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
   <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" onclick="goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
   <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
 </nav>
 <!-- DRAWER OVERLAY -->
@@ -1242,32 +1047,62 @@ loadSavedPosts();
       </div>
     </div>
   </div>
-  <div class="drawer-body">
-    <div class="drawer-section">Main</div>
-    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+    <div class="drawer-body">
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
-    <div class="drawer-section">Community</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
     <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
-    <div class="drawer-section">Pet Services</div>
-    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
-    <div class="drawer-footer">
-      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
-      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
-    </div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
   </div>
 </div>
 
@@ -1319,7 +1154,7 @@ if ('serviceWorker' in navigator) {
     // fetch from API if not cached
     var tok = localStorage.getItem("pb_token");
     if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
+      fetch("https://pawbook.deemona.com/api/v1/auth/me", {
         headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
       }).then(function(r){ return r.json(); }).then(function(res){
         var ud = res.data || res;
@@ -1342,5 +1177,20 @@ if ('serviceWorker' in navigator) {
   }
 })();
 </script>
+<script>
+if(typeof API_BASE==='undefined') window.API_BASE='https://pawbook.deemona.com/api/v1';
+if(typeof AuthAPI==='undefined') window.AuthAPI={me:function(){return Promise.resolve({ok:false,data:null});}};
+if(typeof authHeaders==='undefined') window.authHeaders=function(){var t=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token')||'';return{'Authorization':'Bearer '+t,'Content-Type':'application/json'};};
+if(typeof toast==='undefined') window.toast=function(m){};
+</script>
+<script src="pawbook-api.js"></script>
+<script src="upload.js"></script>
+
+  <script>
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
 </body>
 </html>
+

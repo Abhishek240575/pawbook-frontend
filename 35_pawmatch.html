@@ -1,46 +1,85 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1877F2">
+<meta name="theme-color" content="#e11d48">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
 <link rel="manifest" href="manifest.json">
-<title>PawMatch - Find Your Pet's Perfect Match</title>
+<title>PawMatch – Find Your Pet's Perfect Match</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+(function(){
+  var t=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+  if(!t){window.location.replace('01_login.html');}
+})();
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;padding-top:56px;padding-bottom:72px;overflow-x:hidden}
+:root{
+  --pink:#e11d48;--pink2:#f97316;--green:#16a34a;--blue:#3b82f6;--purple:#a855f7;--gold:#f59e0b;
+  --bg:#f8f0f3;--white:#fff;--border:#ede0e5;--text:#1a1a2e;--muted:#6b7280;--card:#fff;
+  --grad:linear-gradient(135deg,#e11d48,#f97316);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;padding-top:56px;padding-bottom:70px;overflow-x:hidden;color:var(--text)}
 
-/* TOPNAV */
-.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e4e6eb;display:flex;align-items:center;padding:0 16px;gap:10px;z-index:200;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.topnav-logo{font-size:18px;font-weight:900;color:#1a56db;text-decoration:none;display:flex;align-items:center;gap:6px;flex-shrink:0}
-.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#1a56db,#0d9488);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+/* ── TOP NAV ── */
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:8px;z-index:400;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.topnav-logo{font-size:17px;font-weight:900;color:#1a56db;text-decoration:none;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,#1a56db,#0d9488);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
 .topnav-center{flex:1;text-align:center}
-.topnav-title{font-size:16px;font-weight:800;background:linear-gradient(135deg,#e11d48,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#65676b;position:relative}
-.nav-badge{position:absolute;top:2px;right:2px;width:16px;height:16px;background:#e11d48;color:#fff;border-radius:50%;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.topnav-title{font-size:17px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.3px}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--muted);position:relative}
+.nav-badge{position:absolute;top:1px;right:1px;min-width:16px;height:16px;background:var(--pink);color:#fff;border-radius:50%;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 3px}
 
-/* TABS */
-.pm-tabs{display:flex;background:#fff;border-bottom:2px solid #e4e6eb;position:sticky;top:56px;z-index:150}
-.pm-tab{flex:1;height:44px;border:none;background:none;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:#65676b;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s}
-.pm-tab.active{color:#e11d48;border-bottom-color:#e11d48}
+/* ── TABS ── */
+.pm-tabs{display:flex;background:var(--white);border-bottom:2px solid var(--border);position:sticky;top:56px;z-index:300}
+.pm-tab{flex:1;height:44px;border:none;background:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;padding:0 4px}
+.pm-tab.active{color:var(--pink);border-bottom-color:var(--pink)}
 
-/* FILTER BAR */
-.filter-bar{padding:10px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;background:#fff;border-bottom:1px solid #e4e6eb}
+/* ── FILTER BAR ── */
+.filter-bar{padding:8px 14px;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;background:var(--white);border-bottom:1px solid var(--border)}
 .filter-bar::-webkit-scrollbar{display:none}
-.fpill{height:32px;padding:0 14px;border-radius:999px;border:1.5px solid #e4e6eb;background:#fff;color:#65676b;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif;flex-shrink:0;transition:all .15s}
-.fpill.active,.fpill:hover{background:#e11d48;color:#fff;border-color:#e11d48}
+.fpill{height:30px;padding:0 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;flex-shrink:0;transition:all .15s}
+.fpill.active,.fpill:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
 
-/* MAIN */
-.match-wrap{max-width:480px;margin:0 auto;padding:16px 16px 80px}
+/* ── DISCOVER WRAP ── */
+.discover-wrap{max-width:480px;margin:0 auto;padding:14px 14px 80px}
 
-/* CARD STACK */
-.card-stack{position:relative;height:520px;margin-bottom:16px}
-.pet-card{position:absolute;inset:0;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.18);cursor:grab;user-select:none;touch-action:none}
+/* ── SETUP CARD (before pet profile) ── */
+.setup-card{background:var(--white);border-radius:20px;box-shadow:0 4px 20px rgba(225,29,72,.1);padding:22px 20px;margin-bottom:16px}
+.setup-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:4px}
+.setup-sub{font-size:12px;color:var(--muted);margin-bottom:18px}
+.form-row{margin-bottom:13px}
+.form-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.4px}
+.form-select,.form-input,.form-textarea{width:100%;height:44px;border:1.5px solid var(--border);border-radius:12px;padding:0 14px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text);background:var(--white);appearance:none;-webkit-appearance:none;outline:none;transition:border-color .15s}
+.form-select:focus,.form-input:focus,.form-textarea:focus{border-color:var(--pink)}
+.form-textarea{height:80px;padding:12px 14px;resize:none;line-height:1.5}
+.select-wrap{position:relative}
+.select-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:14px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.toggle-row{display:flex;gap:8px;flex-wrap:wrap}
+.toggle-pill{height:34px;padding:0 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.toggle-pill.active{background:var(--pink);color:#fff;border-color:var(--pink)}
+.photo-upload-row{display:flex;gap:8px;flex-wrap:wrap}
+.photo-slot{width:72px;height:72px;border-radius:12px;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;background:#fdf2f5;flex-shrink:0;transition:border-color .15s}
+.photo-slot:hover{border-color:var(--pink)}
+.photo-slot img{width:100%;height:100%;object-fit:cover}
+.photo-add-icon{font-size:22px;color:#ccc}
+.section-divider{height:1px;background:var(--border);margin:16px 0}
+.btn-find{width:100%;height:50px;border-radius:999px;border:none;background:var(--grad);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.2px;margin-top:6px;transition:opacity .15s}
+.btn-find:hover{opacity:.9}
+.btn-find:disabled{opacity:.5;cursor:not-allowed}
+.match-counter{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+.match-counter strong{color:var(--pink)}
+
+/* ── CARD STACK ── */
+.card-stack{position:relative;height:510px;margin-bottom:14px}
+.pet-card{position:absolute;inset:0;border-radius:22px;overflow:hidden;background:var(--card);box-shadow:0 8px 32px rgba(0,0,0,.18);cursor:grab;user-select:none;touch-action:none}
 .pet-card:active{cursor:grabbing}
 .pet-card.is-flying{transition:transform .4s ease,opacity .4s ease}
 .pet-card:nth-child(1){z-index:3}
@@ -48,125 +87,202 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
 .pet-card:nth-child(3){z-index:1;transform:scale(.92) translateY(16px)}
 .pet-card:nth-child(n+4){display:none}
 
-/* CARD PHOTO */
-.card-photo{width:100%;height:360px;object-fit:cover;display:block;pointer-events:none;background:#e4e6eb}
+/* ── CARD PHOTO ── */
+.card-photo{width:100%;height:340px;object-fit:cover;display:block;pointer-events:none;background:#e4e6eb}
 .card-photo-wrap{position:relative;overflow:hidden}
-.card-like-label{position:absolute;top:24px;left:20px;padding:6px 14px;border:3px solid #16a34a;border-radius:8px;color:#16a34a;font-size:20px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(-15deg);background:rgba(255,255,255,.9);z-index:10;pointer-events:none}
-.card-nope-label{position:absolute;top:24px;right:20px;padding:6px 14px;border:3px solid #e11d48;border-radius:8px;color:#e11d48;font-size:20px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(15deg);background:rgba(255,255,255,.9);z-index:10;pointer-events:none}
-.card-super-label{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);padding:6px 20px;border:3px solid #f59e0b;border-radius:8px;color:#f59e0b;font-size:18px;font-weight:900;letter-spacing:1px;opacity:0;background:rgba(255,255,255,.9);z-index:10;pointer-events:none;white-space:nowrap}
+.card-like-label{position:absolute;top:22px;left:18px;padding:5px 13px;border:3px solid #16a34a;border-radius:8px;color:#16a34a;font-size:19px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(-15deg);background:rgba(255,255,255,.92);z-index:10;pointer-events:none}
+.card-nope-label{position:absolute;top:22px;right:18px;padding:5px 13px;border:3px solid var(--pink);border-radius:8px;color:var(--pink);font-size:19px;font-weight:900;letter-spacing:1px;opacity:0;transform:rotate(15deg);background:rgba(255,255,255,.92);z-index:10;pointer-events:none}
+.card-super-label{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);padding:5px 18px;border:3px solid var(--gold);border-radius:8px;color:var(--gold);font-size:17px;font-weight:900;letter-spacing:1px;opacity:0;background:rgba(255,255,255,.92);z-index:10;pointer-events:none;white-space:nowrap}
+.match-pct-badge{position:absolute;top:14px;right:14px;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;z-index:8;display:flex;align-items:center;gap:4px}
+.card-photo-dots{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:8;pointer-events:none}
+.cpd{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);transition:all .2s}
+.cpd-active{background:#fff;transform:scale(1.3)}
+.card-tap-left{position:absolute;top:0;left:0;width:36%;height:100%;z-index:7;cursor:pointer}
+.card-tap-right{position:absolute;top:0;right:0;width:36%;height:100%;z-index:7;cursor:pointer}
 
-/* CARD INFO */
-.card-info{padding:14px 16px 12px;background:#fff}
-.card-name-row{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
-.card-name{font-size:22px;font-weight:900;color:#1a1a2e}
-.card-age{font-size:16px;font-weight:700;color:#65676b}
-.card-breed{font-size:13px;font-weight:600;color:#65676b;margin-bottom:6px}
-.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.card-tag{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#f0f2f5;color:#1a1a2e}
-.card-bio{font-size:13px;color:#444;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card-owner{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #f0f2f5}
-.owner-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #e4e6eb;background:#e4e6eb}
-.owner-name{font-size:12px;font-weight:700;color:#65676b}
-.card-dist{margin-left:auto;font-size:11px;color:#94a3b8;font-weight:600}
+/* ── CARD INFO ── */
+.card-info{padding:12px 15px 10px;background:var(--white)}
+.card-name-row{display:flex;align-items:center;gap:7px;margin-bottom:3px}
+.card-name{font-size:21px;font-weight:900;color:var(--text)}
+.card-age{font-size:15px;font-weight:700;color:var(--muted)}
+.card-compat{font-size:11px;font-weight:800;color:#16a34a;background:#f0fdf4;padding:2px 8px;border-radius:999px}
+.card-breed-row{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.card-tag{padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700;background:#fdf2f5;color:var(--pink)}
+.card-tag.green{background:#f0fdf4;color:#16a34a}
+.card-tag.blue{background:#eff6ff;color:#3b82f6}
+.card-bio{font-size:12px;color:#555;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-owner{display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px solid #f5e9ed}
+.owner-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid var(--border);background:#e4e6eb}
+.owner-name{font-size:11px;font-weight:700;color:var(--muted)}
+.card-dist{margin-left:auto;font-size:10px;color:#94a3b8;font-weight:600}
 
-/* ACTION BUTTONS */
-.action-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:16px}
-.act-btn{border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .15s,box-shadow .15s;background:#fff}
+/* ── ACTION ROW ── */
+.action-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px}
+.act-btn{border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.13);transition:transform .15s,box-shadow .15s;background:var(--white)}
 .act-btn:hover{transform:scale(1.12)}
 .act-btn:active{transform:scale(.95)}
-.act-undo{width:44px;height:44px;color:#f59e0b;font-size:20px}
-.act-nope{width:56px;height:56px;color:#e11d48;font-size:26px}
-.act-super{width:44px;height:44px;color:#3b82f6;font-size:20px}
-.act-like{width:56px;height:56px;color:#16a34a;font-size:26px}
-.act-boost{width:44px;height:44px;color:#a855f7;font-size:20px}
+.act-undo{width:44px;height:44px;color:var(--gold);font-size:19px}
+.act-nope{width:56px;height:56px;color:var(--pink);font-size:25px}
+.act-super{width:44px;height:44px;color:var(--blue);font-size:19px}
+.act-like{width:56px;height:56px;color:var(--green);font-size:25px}
+.act-boost{width:44px;height:44px;color:var(--purple);font-size:19px}
 
-/* MATCH MODAL */
-.match-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:800;display:none;align-items:center;justify-content:center;padding:24px}
-.match-overlay.show{display:flex}
-.match-box{background:linear-gradient(135deg,#e11d48,#f97316);border-radius:24px;padding:28px 24px;text-align:center;max-width:360px;width:100%;position:relative}
-.match-title{font-size:32px;font-weight:900;color:#fff;margin-bottom:4px}
-.match-sub{font-size:14px;color:rgba(255,255,255,.85);margin-bottom:20px}
-.match-avatars{display:flex;align-items:center;justify-content:center;margin-bottom:20px;position:relative;gap:0}
-.match-avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.3)}
-.match-heart{font-size:28px;position:absolute;left:50%;transform:translateX(-50%);z-index:10;animation:hbeat .6s ease infinite alternate}
-@keyframes hbeat{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.25)}}
-.match-pet-names{font-size:15px;font-weight:800;color:#fff;margin-bottom:20px}
-.match-btn-send{width:100%;height:48px;border-radius:999px;border:none;background:#fff;color:#e11d48;font-size:15px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif;margin-bottom:10px}
-.match-btn-skip{width:100%;height:40px;border-radius:999px;border:2px solid rgba(255,255,255,.5);background:transparent;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+/* ── MATCH MODAL ── */
+.match-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:800;display:none;align-items:center;justify-content:center;padding:20px}
+.match-overlay.show{display:flex;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.match-box{background:linear-gradient(160deg,#e11d48,#f97316,#f59e0b);border-radius:28px;padding:28px 22px;text-align:center;max-width:360px;width:100%;position:relative}
+.match-paws{font-size:44px;margin-bottom:6px}
+.match-title{font-size:30px;font-weight:900;color:#fff;margin-bottom:3px}
+.match-sub{font-size:13px;color:rgba(255,255,255,.88);margin-bottom:18px}
+.match-avatars{display:flex;align-items:center;justify-content:center;margin-bottom:16px;gap:0}
+.match-avatar{width:84px;height:84px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.match-heart{font-size:26px;position:absolute;left:50%;transform:translateX(-50%);z-index:10;animation:hbeat .6s ease infinite alternate}
+@keyframes hbeat{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.3)}}
+.match-pet-names{font-size:14px;font-weight:800;color:#fff;margin-bottom:10px}
+.match-compat{background:rgba(255,255,255,.2);border-radius:12px;padding:10px 16px;margin-bottom:16px;text-align:left}
+.match-compat-title{font-size:10px;font-weight:800;color:rgba(255,255,255,.8);text-transform:uppercase;margin-bottom:6px}
+.match-compat-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.match-compat-row span{font-size:12px;color:#fff;font-weight:600}
+.match-compat-bar{flex:1;height:5px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden}
+.match-compat-fill{height:100%;border-radius:3px;background:#fff}
+/* MEETUP SUGGESTION */
+.meetup-box{background:rgba(255,255,255,.18);border-radius:14px;padding:11px 14px;margin-bottom:16px;text-align:left}
+.meetup-title{font-size:10px;font-weight:800;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px}
+.meetup-place{display:flex;align-items:center;gap:9px;padding:7px 10px;background:rgba(255,255,255,.18);border-radius:10px;margin-bottom:5px;cursor:pointer;transition:background .15s}
+.meetup-place:last-child{margin-bottom:0}
+.meetup-place:hover{background:rgba(255,255,255,.28)}
+.meetup-emoji{font-size:20px}
+.meetup-info{flex:1}
+.meetup-name{font-size:12px;font-weight:800;color:#fff}
+.meetup-desc{font-size:10px;color:rgba(255,255,255,.75)}
+.meetup-dist{font-size:10px;color:rgba(255,255,255,.65);font-weight:600}
+.match-btn-send{width:100%;height:46px;border-radius:999px;border:none;background:#fff;color:var(--pink);font-size:14px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:9px}
+.match-btn-skip{width:100%;height:38px;border-radius:999px;border:2px solid rgba(255,255,255,.45);background:transparent;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
 
-/* CONFETTI */
-.confetti-piece{position:fixed;border-radius:2px;animation:cfall 1.2s ease forwards;pointer-events:none;z-index:900}
+/* ── CONFETTI ── */
+.confetti-piece{position:fixed;border-radius:2px;animation:cfall 1.3s ease forwards;pointer-events:none;z-index:900}
 @keyframes cfall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
-/* MATCHES / LIKED GRID */
-.matches-wrap{display:none;padding:16px}
-.matches-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+/* ── MATCHES GRID ── */
+.matches-wrap{display:none;padding:14px}
+.matches-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .match-thumb{border-radius:12px;overflow:hidden;position:relative;aspect-ratio:1;cursor:pointer;background:#e4e6eb}
 .match-thumb img{width:100%;height:100%;object-fit:cover}
-.match-thumb-name{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font-size:11px;font-weight:700}
+.match-thumb-name{position:absolute;bottom:0;left:0;right:0;padding:5px 7px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff;font-size:10px;font-weight:700}
+.match-new-dot{position:absolute;top:6px;right:6px;width:10px;height:10px;background:var(--pink);border-radius:50%;border:2px solid #fff}
 
-/* DETAIL OVERLAY */
-.detail-overlay{position:fixed;inset:0;background:#fff;z-index:600;display:none;flex-direction:column;overflow-y:auto}
+/* ── DETAIL OVERLAY ── */
+.detail-overlay{position:fixed;inset:0;background:var(--white);z-index:600;display:none;flex-direction:column;overflow-y:auto}
 .detail-overlay.show{display:flex}
-.detail-header{position:sticky;top:0;background:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #e4e6eb;z-index:10}
-.detail-back{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px}
-.detail-photo{width:100%;height:300px;object-fit:cover;background:#e4e6eb}
-.detail-body{padding:16px}
-.detail-section-title{font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;margin-top:16px}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.detail-chip{background:#f8fafc;border-radius:10px;padding:10px 12px}
-.detail-chip-label{font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:2px}
-.detail-chip-val{font-size:13px;font-weight:700;color:#1a1a2e}
-.detail-action-row{display:flex;gap:10px;margin-top:20px}
-.detail-nope{flex:1;height:48px;border-radius:999px;border:2px solid #e11d48;background:#fff;color:#e11d48;font-size:14px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif}
-.detail-like{flex:2;height:48px;border-radius:999px;border:none;background:linear-gradient(135deg,#e11d48,#f97316);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif}
+.detail-header{position:sticky;top:0;background:var(--white);padding:13px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);z-index:10}
+.detail-back{width:36px;height:36px;border-radius:50%;border:none;background:#f5f5f5;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px}
+.detail-photo{width:100%;height:290px;object-fit:cover;background:#e4e6eb}
+.detail-photo-strip{display:flex;gap:5px;padding:7px 14px;overflow-x:auto;scrollbar-width:none;background:#111}
+.detail-photo-strip::-webkit-scrollbar{display:none}
+.dstrip-thumb{width:66px;height:66px;border-radius:7px;object-fit:cover;cursor:pointer;border:2.5px solid transparent;flex-shrink:0;opacity:.7;transition:all .15s}
+.dstrip-thumb.active{border-color:var(--pink);opacity:1}
+.detail-body{padding:15px}
+.detail-compat-banner{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:14px;padding:12px 15px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.compat-score{font-size:32px;font-weight:900;color:#16a34a}
+.compat-label{font-size:11px;font-weight:800;color:#16a34a}
+.compat-reason{font-size:11px;color:#166534;margin-top:2px}
+.detail-section-title{font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin:14px 0 7px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.detail-chip{background:#fafafa;border-radius:10px;padding:9px 11px}
+.detail-chip-label{font-size:9px;font-weight:700;color:#94a3b8;margin-bottom:2px}
+.detail-chip-val{font-size:12px;font-weight:700;color:var(--text)}
+.meetup-suggestions{margin-top:4px}
+.meetup-suggestion-card{display:flex;align-items:center;gap:11px;background:#fdf2f5;border-radius:12px;padding:11px 13px;margin-bottom:8px;cursor:pointer;transition:background .15s}
+.meetup-suggestion-card:hover{background:#fce7ef}
+.meetup-suggestion-emoji{font-size:26px}
+.meetup-suggestion-info{flex:1}
+.meetup-suggestion-name{font-size:13px;font-weight:800;color:var(--text)}
+.meetup-suggestion-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.meetup-suggestion-tags{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+.meetup-suggestion-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--border);color:var(--muted)}
+.detail-action-row{display:flex;gap:9px;margin-top:18px;position:sticky;bottom:0;padding:12px 0 4px;background:var(--white)}
+.detail-nope{flex:1;height:46px;border-radius:999px;border:2px solid var(--pink);background:var(--white);color:var(--pink);font-size:13px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif}
+.detail-like{flex:2;height:46px;border-radius:999px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif}
 
-/* TOAST */
-.pm-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(26,22,30,.92);color:#fff;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;pointer-events:none}
+/* ── TOAST ── */
+.pm-toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(26,22,30,.92);color:#fff;padding:10px 18px;border-radius:999px;font-size:12px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:92vw;text-align:center;pointer-events:none}
 .pm-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* EMPTY */
-.empty-state{text-align:center;padding:60px 20px}
-.empty-state .emoji{font-size:64px;margin-bottom:12px}
-.empty-state h3{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:6px}
-.empty-state p{font-size:13px;color:#65676b;margin-bottom:20px}
-.refresh-btn{height:44px;padding:0 28px;border-radius:999px;border:none;background:linear-gradient(135deg,#e11d48,#f97316);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif}
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:50px 20px}
+.empty-state .emoji{font-size:60px;margin-bottom:10px}
+.empty-state h3{font-size:19px;font-weight:800;color:var(--text);margin-bottom:5px}
+.empty-state p{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+.refresh-btn{height:42px;padding:0 26px;border-radius:999px;border:none;background:var(--grad);color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif}
 
-/* BOTTOM NAV */
-.bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e4e6eb;z-index:300;align-items:center;justify-content:space-around}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:6px 0;border:none;background:none;font-family:'Poppins',sans-serif;color:#65676b;text-decoration:none;transition:color .15s}
-.bnav-item i{font-size:22px}
+/* ── BOTTOM NAV ── */
+.bottomnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--white);border-top:1px solid var(--border);z-index:300;align-items:center;justify-content:space-around}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:5px 0;border:none;background:none;font-family:'Inter',sans-serif;color:var(--muted);text-decoration:none;transition:color .15s}
+.bnav-item i{font-size:21px}
 .bnav-item span{font-size:9px;font-weight:700;text-transform:uppercase}
-.bnav-item.active{color:#e11d48}
+.bnav-item.active{color:var(--pink)}
 @media(max-width:768px){.bottomnav{display:flex}}
 
-/* PHOTO CAROUSEL DOTS */
-.card-photo-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:8;pointer-events:none}
-.cpd{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);transition:background .2s,transform .2s}
-.cpd-active{background:#fff;transform:scale(1.25)}
+/* ── LIKED TAB ── */
+.liked-blur-wrap{position:relative}
+.liked-upgrade-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;background:rgba(255,255,255,.08)}
+.upgrade-btn{background:var(--grad);color:#fff;border:none;border-radius:999px;padding:7px 16px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
 
-/* PHOTO TAP ZONES */
-.card-tap-left{position:absolute;top:0;left:0;width:38%;height:100%;z-index:7;cursor:pointer}
-.card-tap-right{position:absolute;top:0;right:0;width:38%;height:100%;z-index:7;cursor:pointer}
+/* ── PROFILE SETUP STEP INDICATOR ── */
+.step-bar{display:flex;gap:5px;margin-bottom:16px}
+.step-dot{flex:1;height:4px;border-radius:3px;background:var(--border);transition:background .3s}
+.step-dot.done{background:var(--pink)}
 
-/* DETAIL PHOTO STRIP */
-.detail-photo-strip{display:flex;gap:6px;padding:8px 16px;overflow-x:auto;scrollbar-width:none;background:#000}
-.detail-photo-strip::-webkit-scrollbar{display:none}
-.detail-strip-thumb{width:72px;height:72px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid transparent;flex-shrink:0;opacity:.7;transition:opacity .15s,border-color .15s}
-.detail-strip-thumb.active{border-color:#e11d48;opacity:1}
+/* ── ABOUT SECTION ── */
+.about-me-block{background:linear-gradient(135deg,#fdf2f5,#fff5f7);border-radius:16px;padding:14px 15px;margin-bottom:12px;border:1px solid #fde8ef}
+.about-me-title{font-size:11px;font-weight:800;color:var(--pink);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.about-me-text{font-size:12px;color:var(--text);line-height:1.6}
 
-@media(max-width:480px){
-  .card-stack{height:480px}
-  .card-photo{height:310px}
-  .card-name{font-size:20px}
-  .act-like,.act-nope{width:52px;height:52px;font-size:24px}
+/* ── MATCH SCORE RING ── */
+.score-ring-wrap{display:flex;align-items:center;gap:14px}
+.score-ring{position:relative;width:60px;height:60px;flex-shrink:0}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#16a34a}
+
+@media(max-width:420px){
+  .card-stack{height:470px}
+  .card-photo{height:300px}
+  .card-name{font-size:19px}
+  .act-like,.act-nope{width:52px;height:52px;font-size:23px}
+  .form-row-3{grid-template-columns:1fr 1fr}
 }
+
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
 </style>
-<script src="pawbook-api.js"></script>
 </head>
 <body>
 
-<!-- TOPNAV -->
+<!-- TOP NAV -->
 <nav class="topnav">
   <a class="topnav-logo" href="07_home.html">
     <div class="logo-icon">🐾</div> PawBook
@@ -174,7 +290,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
   <div class="topnav-center">
     <div class="topnav-title">🐾 PawMatch</div>
   </div>
-  <button class="nav-icon-btn" onclick="openFilters()" title="Filters"><i class="ti ti-adjustments-horizontal"></i></button>
+  <button class="nav-icon-btn" id="filter-btn" onclick="openFiltersPanel()" title="Filters" style="display:none"><i class="ti ti-adjustments-horizontal"></i></button>
   <button class="nav-icon-btn" onclick="showTab('matches')" title="Matches">
     <i class="ti ti-heart"></i>
     <span class="nav-badge" id="match-badge" style="display:none">0</span>
@@ -188,103 +304,330 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
   <button class="pm-tab" id="tab-btn-liked" onclick="showTab('liked')">⭐ Liked You</button>
 </div>
 
-<!-- FILTER BAR (only shown on discover) -->
-<div class="filter-bar" id="filter-bar">
-  <button class="fpill active" onclick="setFilter('all',this)">All Pets</button>
-  <button class="fpill" onclick="setFilter('dog',this)">🐕 Dogs</button>
-  <button class="fpill" onclick="setFilter('cat',this)">🐈 Cats</button>
-  <button class="fpill" onclick="setFilter('rabbit',this)">🐰 Rabbits</button>
-  <button class="fpill" onclick="setFilter('bird',this)">🦜 Birds</button>
-  <button class="fpill" onclick="setFilter('hamster',this)">🐹 Hamsters</button>
-  <button class="fpill" onclick="setFilter('fish',this)">🐟 Fish</button>
-  <button class="fpill" onclick="setFilter('nearby',this)">📍 Nearby</button>
+<!-- FILTER BAR (shown after setup) -->
+<div class="filter-bar" id="filter-bar" style="display:none">
+  <button class="fpill active" onclick="setFilter('all',this)">All Breeds</button>
+  <button class="fpill" id="fpill-same-breed" onclick="setFilter('same-breed',this)" style="display:none">Same Breed</button>
+  <button class="fpill" onclick="setFilter('nearby',this)">📍 Near Me</button>
   <button class="fpill" onclick="setFilter('playdate',this)">🎾 Playdate</button>
   <button class="fpill" onclick="setFilter('breeding',this)">🌸 Breeding</button>
+  <button class="fpill" onclick="setFilter('companion',this)">🤝 Companion</button>
+  <button class="fpill" onclick="setFilter('high-match',this)">💚 High Match</button>
 </div>
 
-<!-- DISCOVER TAB -->
-<div id="tab-discover-content" class="match-wrap">
-  <div class="card-stack" id="card-stack"></div>
-  <div class="action-row">
-    <button class="act-btn act-undo" onclick="undoSwipe()" title="Undo"><i class="ti ti-arrow-back-up"></i></button>
-    <button class="act-btn act-nope" onclick="swipeCard('left')" title="Pass"><i class="ti ti-x"></i></button>
-    <button class="act-btn act-super" onclick="swipeCard('super')" title="Super Like"><i class="ti ti-star"></i></button>
-    <button class="act-btn act-like" onclick="swipeCard('right')" title="Like"><i class="ti ti-heart"></i></button>
-    <button class="act-btn act-boost" onclick="boostProfile()" title="Boost"><i class="ti ti-bolt"></i></button>
+<!-- ══════════════════════════ DISCOVER TAB ══════════════════════════ -->
+<div id="tab-discover-content" class="discover-wrap">
+
+  <!-- ── SETUP CARD (shown until profile complete) ── -->
+  <div id="setup-panel">
+    <div class="setup-card">
+      <div class="setup-title">🐾 Set Up Your Pet's Profile</div>
+      <div class="setup-sub">Fill in details so PawMatch can find the perfect companions for your furry friend!</div>
+      <div class="step-bar">
+        <div class="step-dot done" id="step1"></div>
+        <div class="step-dot" id="step2"></div>
+        <div class="step-dot" id="step3"></div>
+        <div class="step-dot" id="step4"></div>
+      </div>
+
+      <!-- LOCATION -->
+      <div class="form-row">
+        <label class="form-label">📍 Your Location</label>
+        <div class="form-row-3">
+          <div class="select-wrap">
+            <select class="form-select" id="sel-country" onchange="onCountryChange()">
+              <option value="">Country</option>
+              <option value="india">🇮🇳 India</option>
+              <option value="usa">🇺🇸 USA</option>
+              <option value="uk">🇬🇧 UK</option>
+              <option value="canada">🇨🇦 Canada</option>
+              <option value="australia">🇦🇺 Australia</option>
+              <option value="uae">🇦🇪 UAE</option>
+              <option value="singapore">🇸🇬 Singapore</option>
+              <option value="germany">🇩🇪 Germany</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <select class="form-select" id="sel-state" onchange="onStateChange()" disabled>
+              <option value="">State</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <select class="form-select" id="sel-city" onchange="onCityChange()" disabled>
+              <option value="">City</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- PET CATEGORY & BREED -->
+      <div class="form-row-2">
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label">🐾 Pet Type</label>
+          <div class="select-wrap">
+            <select class="form-select" id="sel-species" onchange="onSpeciesChange()">
+              <option value="">Select type</option>
+              <option value="dog">🐕 Dog</option>
+              <option value="cat">🐈 Cat</option>
+              <option value="rabbit">🐰 Rabbit</option>
+              <option value="bird">🦜 Bird / Parrot</option>
+              <option value="hamster">🐹 Hamster</option>
+              <option value="fish">🐟 Fish</option>
+              <option value="turtle">🐢 Turtle</option>
+              <option value="guinea_pig">🐾 Guinea Pig</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label">🏷️ Breed</label>
+          <div class="select-wrap">
+            <select class="form-select" id="sel-breed" onchange="onBreedChange()" disabled>
+              <option value="">Select breed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- PET NAME & AGE -->
+      <div class="form-row-2">
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label">🏷️ Pet's Name</label>
+          <input class="form-input" type="text" id="inp-petname" placeholder="e.g. Buddy" maxlength="30" oninput="checkForm()">
+        </div>
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label">🎂 Age</label>
+          <div class="select-wrap">
+            <select class="form-select" id="sel-age" onchange="checkForm()">
+              <option value="">Age</option>
+              <option>3 months</option><option>6 months</option><option>1 yr</option>
+              <option>1.5 yrs</option><option>2 yrs</option><option>3 yrs</option>
+              <option>4 yrs</option><option>5 yrs</option><option>6 yrs</option>
+              <option>7 yrs</option><option>8+ yrs</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- GENDER & SIZE -->
+      <div class="form-row" style="margin-top:12px">
+        <label class="form-label">⚧ Gender</label>
+        <div class="toggle-row" id="gender-row">
+          <button class="toggle-pill" onclick="pickToggle('gender','Male',this)">♂ Male</button>
+          <button class="toggle-pill" onclick="pickToggle('gender','Female',this)">♀ Female</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">📏 Size</label>
+        <div class="toggle-row" id="size-row">
+          <button class="toggle-pill" onclick="pickToggle('size','Tiny',this)">Tiny</button>
+          <button class="toggle-pill" onclick="pickToggle('size','Small',this)">Small</button>
+          <button class="toggle-pill" onclick="pickToggle('size','Medium',this)">Medium</button>
+          <button class="toggle-pill" onclick="pickToggle('size','Large',this)">Large</button>
+        </div>
+      </div>
+
+      <!-- HEALTH -->
+      <div class="form-row">
+        <label class="form-label">💉 Health Status</label>
+        <div class="toggle-row">
+          <button class="toggle-pill" id="tog-vacc" onclick="toggleHealth('vaccinated')">✅ Vaccinated</button>
+          <button class="toggle-pill" id="tog-neut" onclick="toggleHealth('neutered')">✅ Neutered/Spayed</button>
+          <button class="toggle-pill" id="tog-vet" onclick="toggleHealth('vet_checked')">🩺 Vet Checked</button>
+        </div>
+      </div>
+
+      <!-- PURPOSE / LOOKING FOR -->
+      <div class="form-row">
+        <label class="form-label">💞 Looking For (select all that apply)</label>
+        <div class="toggle-row" id="purpose-row">
+          <button class="toggle-pill" onclick="pickMulti('purpose','Playdate',this)">🎾 Playdate</button>
+          <button class="toggle-pill" onclick="pickMulti('purpose','Best Friend',this)">🤝 Best Friend</button>
+          <button class="toggle-pill" onclick="pickMulti('purpose','Breeding',this)">🌸 Breeding</button>
+          <button class="toggle-pill" onclick="pickMulti('purpose','Companion',this)">❤️ Companion</button>
+          <button class="toggle-pill" onclick="pickMulti('purpose','Training Buddy',this)">🏅 Training Buddy</button>
+          <button class="toggle-pill" onclick="pickMulti('purpose','Adoption',this)">🏠 Adoption</button>
+        </div>
+      </div>
+
+      <!-- PET PERSONALITY -->
+      <div class="form-row">
+        <label class="form-label">✨ Personality Traits</label>
+        <div class="toggle-row" id="traits-row">
+          <button class="toggle-pill" onclick="pickMulti('traits','Friendly',this)">😊 Friendly</button>
+          <button class="toggle-pill" onclick="pickMulti('traits','Playful',this)">🎉 Playful</button>
+          <button class="toggle-pill" onclick="pickMulti('traits','Calm',this)">😌 Calm</button>
+          <button class="toggle-pill" onclick="pickMulti('traits','Energetic',this)">⚡ Energetic</button>
+          <button class="toggle-pill" onclick="pickMulti('traits','Protective',this)">🛡️ Protective</button>
+          <button class="toggle-pill" onclick="pickMulti('traits','Shy',this)">🙈 Shy</button>
+          <button class="toggle-pill" onclick="pickMulti('traits','Curious',this)">🔍 Curious</button>
+          <button class="toggle-pill" onclick="pickMulti('traits','Affectionate',this)">🥰 Affectionate</button>
+        </div>
+      </div>
+
+      <!-- BIO -->
+      <div class="form-row">
+        <label class="form-label">📝 About Your Pet (bio)</label>
+        <textarea class="form-textarea" id="inp-bio" placeholder="Tell other pet owners about your furry friend — their hobbies, favourite activities, what makes them special..." maxlength="300" oninput="checkForm()"></textarea>
+      </div>
+
+      <!-- OWNER NAME -->
+      <div class="form-row-2">
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label">👤 Your Name</label>
+          <input class="form-input" type="text" id="inp-owner" placeholder="Owner name" maxlength="40">
+        </div>
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label">📱 Contact</label>
+          <input class="form-input" type="tel" id="inp-phone" placeholder="+91 9999..." maxlength="20">
+        </div>
+      </div>
+
+      <!-- PHOTOS -->
+      <div class="form-row" style="margin-top:12px">
+        <label class="form-label">📸 Pet Photos (up to 3)</label>
+        <div class="photo-upload-row" id="photo-slots">
+          <div class="photo-slot" onclick="fakeUpload(0)"><span class="photo-add-icon">📷</span></div>
+          <div class="photo-slot" onclick="fakeUpload(1)"><span class="photo-add-icon">📷</span></div>
+          <div class="photo-slot" onclick="fakeUpload(2)"><span class="photo-add-icon">📷</span></div>
+          <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;padding-left:4px;line-height:1.4">First photo appears on<br>your profile card</div>
+        </div>
+      </div>
+
+      <button class="btn-find" id="btn-find" onclick="findMatches()" disabled>🔍 Find Matches for My Pet</button>
+      <div class="match-counter" id="match-counter" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── DECK + ACTIONS (shown after setup) ── -->
+  <div id="deck-panel" style="display:none">
+    <div class="card-stack" id="card-stack"></div>
+    <div class="action-row">
+      <button class="act-btn act-undo" onclick="undoSwipe()" title="Undo"><i class="ti ti-arrow-back-up"></i></button>
+      <button class="act-btn act-nope" onclick="swipeCard('left')" title="Pass"><i class="ti ti-x"></i></button>
+      <button class="act-btn act-super" onclick="swipeCard('super')" title="Super Like"><i class="ti ti-star"></i></button>
+      <button class="act-btn act-like" onclick="swipeCard('right')" title="Like"><i class="ti ti-heart"></i></button>
+      <button class="act-btn act-boost" onclick="boostProfile()" title="Boost"><i class="ti ti-bolt"></i></button>
+    </div>
+    <div style="text-align:center;margin-top:2px">
+      <button onclick="backToSetup()" style="background:none;border:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;text-decoration:underline">✏️ Edit my pet's profile</button>
+    </div>
   </div>
 </div>
 
-<!-- MATCHES TAB -->
+<!-- ══════════════════════════ MATCHES TAB ══════════════════════════ -->
 <div id="tab-matches-content" class="matches-wrap">
-  <div style="font-size:16px;font-weight:800;color:#1a1a2e;margin-bottom:4px">Your Matches 💕</div>
-  <div style="font-size:13px;color:#65676b;margin-bottom:16px">Start a conversation with your matches</div>
+  <div style="font-size:15px;font-weight:900;color:var(--text);margin-bottom:3px">Your Matches 💕</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Start a conversation with these fur-riends!</div>
   <div class="matches-grid" id="matches-grid"></div>
-  <div id="no-matches" style="display:none;text-align:center;padding:40px 0;color:#94a3b8;font-size:14px">
-    <div style="font-size:48px;margin-bottom:12px">💔</div>
+  <div id="no-matches" style="display:none;text-align:center;padding:36px 0;color:#94a3b8;font-size:13px">
+    <div style="font-size:46px;margin-bottom:10px">💔</div>
     No matches yet. Keep swiping!
   </div>
 </div>
 
-<!-- LIKED YOU TAB -->
+<!-- ══════════════════════════ LIKED YOU TAB ══════════════════════════ -->
 <div id="tab-liked-content" class="matches-wrap">
-  <div style="font-size:16px;font-weight:800;color:#1a1a2e;margin-bottom:4px">Liked You ⭐</div>
-  <div style="font-size:13px;color:#65676b;margin-bottom:16px">These pets want to meet yours!</div>
+  <div style="font-size:15px;font-weight:900;color:var(--text);margin-bottom:3px">Liked You ⭐</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:14px">These pets want to meet yours!</div>
   <div class="matches-grid" id="liked-grid"></div>
 </div>
 
-<!-- MATCH MODAL -->
+<!-- ══════════════════════════ MATCH MODAL ══════════════════════════ -->
 <div class="match-overlay" id="match-overlay" onclick="if(event.target===this)closeMatchModal()">
   <div class="match-box">
-    <div style="font-size:48px;margin-bottom:6px">🎉</div>
+    <div class="match-paws">🎉</div>
     <div class="match-title">It's a Match!</div>
-    <div class="match-sub">You and <span id="match-pet-name">Buddy</span> liked each other!</div>
-    <div class="match-avatars">
-      <img id="match-my-avatar" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80" class="match-avatar" style="margin-right:-20px;z-index:2">
-      <div class="match-heart">❤️</div>
-      <img id="match-their-avatar" src="" class="match-avatar" style="margin-left:-20px;z-index:1">
+    <div class="match-sub">You and <strong id="match-pet-name">Buddy</strong> liked each other!</div>
+    <div class="match-avatars" style="position:relative">
+      <img id="match-my-avatar" src="https://images.unsplash.com/photo-1534361960057-19f4434a0d49?w=200&q=80" class="match-avatar" style="margin-right:-18px;z-index:2">
+      <div class="match-heart" style="position:relative;left:0;transform:none;padding:0 4px;z-index:3">❤️</div>
+      <img id="match-their-avatar" src="" class="match-avatar" style="margin-left:-18px;z-index:1">
     </div>
     <div class="match-pet-names" id="match-names-text"></div>
-    <button class="match-btn-send" onclick="sendMessage()">💬 Send a Message</button>
-    <button class="match-btn-skip" onclick="closeMatchModal()">Keep Swiping</button>
+
+    <!-- COMPATIBILITY BREAKDOWN -->
+    <div class="match-compat">
+      <div class="match-compat-title">🧬 Compatibility Score</div>
+      <div class="match-compat-row"><span style="width:80px;flex-shrink:0">Breed</span><div class="match-compat-bar"><div class="match-compat-fill" id="mc-breed" style="width:0%"></div></div><span id="mc-breed-pct" style="width:28px;text-align:right">0%</span></div>
+      <div class="match-compat-row"><span style="width:80px;flex-shrink:0">Temperament</span><div class="match-compat-bar"><div class="match-compat-fill" id="mc-temp" style="width:0%"></div></div><span id="mc-temp-pct" style="width:28px;text-align:right">0%</span></div>
+      <div class="match-compat-row"><span style="width:80px;flex-shrink:0">Energy Level</span><div class="match-compat-bar"><div class="match-compat-fill" id="mc-energy" style="width:0%"></div></div><span id="mc-energy-pct" style="width:28px;text-align:right">0%</span></div>
+      <div class="match-compat-row"><span style="width:80px;flex-shrink:0">Purpose</span><div class="match-compat-bar"><div class="match-compat-fill" id="mc-purpose" style="width:0%"></div></div><span id="mc-purpose-pct" style="width:28px;text-align:right">0%</span></div>
+    </div>
+
+    <!-- MEETUP SUGGESTIONS -->
+    <div class="meetup-box">
+      <div class="meetup-title">📍 Suggested First Meetups in <span id="meetup-city">your city</span></div>
+      <div id="meetup-places-modal"></div>
+    </div>
+
+    <button class="match-btn-send" onclick="sendMessage()">💬 Message Owner</button>
+    <button class="match-btn-skip" onclick="closeMatchModal()">Keep Swiping 🐾</button>
   </div>
 </div>
 
-<!-- DETAIL OVERLAY -->
+<!-- ══════════════════════════ DETAIL OVERLAY ══════════════════════════ -->
 <div class="detail-overlay" id="detail-overlay">
   <div class="detail-header">
     <button class="detail-back" onclick="closeDetail()">✕</button>
-    <div style="font-size:16px;font-weight:800" id="detail-header-name">Buddy</div>
-    <div style="margin-left:auto;display:flex;gap:8px">
-      <button class="act-btn act-nope" style="width:40px;height:40px;font-size:20px" onclick="closeDetail();swipeCard('left')"><i class="ti ti-x"></i></button>
-      <button class="act-btn act-like" style="width:40px;height:40px;font-size:20px" onclick="closeDetail();swipeCard('right')"><i class="ti ti-heart"></i></button>
+    <div style="font-size:15px;font-weight:800" id="detail-header-name">Buddy</div>
+    <div style="margin-left:auto;display:flex;gap:7px">
+      <button class="act-btn act-nope" style="width:38px;height:38px;font-size:18px" onclick="closeDetail();swipeCard('left')"><i class="ti ti-x"></i></button>
+      <button class="act-btn act-like" style="width:38px;height:38px;font-size:18px" onclick="closeDetail();swipeCard('right')"><i class="ti ti-heart"></i></button>
     </div>
   </div>
   <img class="detail-photo" id="detail-photo" src="" alt="">
   <div class="detail-photo-strip" id="detail-photo-strip" style="display:none"></div>
   <div class="detail-body">
+    <!-- COMPAT BANNER -->
+    <div class="detail-compat-banner" id="detail-compat-banner">
+      <div>
+        <div class="compat-score" id="detail-compat-score">—</div>
+        <div class="compat-label">Match Score</div>
+      </div>
+      <div style="flex:1">
+        <div class="compat-reason" id="detail-compat-reason">Calculating compatibility…</div>
+      </div>
+    </div>
+
     <div class="card-name-row">
       <div class="card-name" id="detail-name"></div>
       <div class="card-age" id="detail-age"></div>
       <span id="detail-verified"></span>
     </div>
-    <div class="card-breed" id="detail-breed"></div>
-    <div class="detail-section-title">About</div>
-    <div style="font-size:13px;color:#444;line-height:1.6" id="detail-bio"></div>
+    <div class="card-breed-row" id="detail-breed"></div>
+
+    <div class="about-me-block">
+      <div class="about-me-title">About</div>
+      <div class="about-me-text" id="detail-bio"></div>
+    </div>
+
     <div class="detail-section-title">Details</div>
     <div class="detail-grid" id="detail-grid"></div>
-    <div class="detail-section-title">Looking for</div>
+
+    <div class="detail-section-title">Looking For</div>
     <div class="card-tags" id="detail-tags"></div>
+
+    <div class="detail-section-title">Personality</div>
+    <div class="card-tags" id="detail-traits"></div>
+
     <div class="detail-section-title">Owner</div>
     <div style="display:flex;align-items:center;gap:10px">
-      <img id="detail-owner-avatar" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #e4e6eb;background:#e4e6eb">
+      <img id="detail-owner-avatar" src="" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--border);background:#e4e6eb">
       <div>
-        <div style="font-size:14px;font-weight:700" id="detail-owner-name"></div>
-        <div style="font-size:12px;color:#65676b" id="detail-dist"></div>
+        <div style="font-size:13px;font-weight:700" id="detail-owner-name"></div>
+        <div style="font-size:11px;color:var(--muted)" id="detail-dist"></div>
       </div>
     </div>
+
+    <div class="detail-section-title">🗓️ Suggested Meetup Spots</div>
+    <div class="meetup-suggestions" id="detail-meetup-spots"></div>
+
     <div class="detail-action-row">
       <button class="detail-nope" onclick="closeDetail();swipeCard('left')">✕ Pass</button>
-      <button class="detail-like" onclick="closeDetail();swipeCard('right')">❤️ Like</button>
+      <button class="detail-like" onclick="closeDetail();swipeCard('right')">❤️ Like &amp; Match!</button>
     </div>
   </div>
 </div>
@@ -297,672 +640,1118 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f5;min-height:100vh;paddin
   <a class="bnav-item" href="07_home.html"><i class="ti ti-home"></i><span>Home</span></a>
   <a class="bnav-item" href="03_groups.html"><i class="ti ti-users"></i><span>Groups</span></a>
   <a class="bnav-item active" href="35_pawmatch.html"><i class="ti ti-heart"></i><span>Match</span></a>
-  <a class="bnav-item" href="05_lost_pet.html"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
+  <a class="bnav-item" href="38_lost_pet_network.html"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
   <a class="bnav-item" href="08_pet_profile.html"><i class="ti ti-user-circle"></i><span>Profile</span></a>
 </nav>
 
 <script>
-/* ── PET DATA ── */
+/* ══════════════════════════════════════════════════════════
+   LOCATION DATA
+══════════════════════════════════════════════════════════ */
+var LOC = {
+  india:{
+    'Maharashtra':['Mumbai','Pune','Nagpur','Nashik','Aurangabad'],
+    'Delhi':['New Delhi','Dwarka','Rohini','Noida (NCR)','Gurgaon (NCR)'],
+    'Karnataka':['Bengaluru','Mysuru','Hubli','Mangaluru'],
+    'Tamil Nadu':['Chennai','Coimbatore','Madurai','Salem'],
+    'Telangana':['Hyderabad','Warangal','Nizamabad'],
+    'Gujarat':['Ahmedabad','Surat','Vadodara','Rajkot'],
+    'West Bengal':['Kolkata','Howrah','Durgapur','Siliguri'],
+    'Rajasthan':['Jaipur','Jodhpur','Udaipur','Kota'],
+    'Punjab':['Chandigarh','Ludhiana','Amritsar','Jalandhar'],
+    'Kerala':['Thiruvananthapuram','Kochi','Kozhikode','Thrissur']
+  },
+  usa:{
+    'California':['Los Angeles','San Francisco','San Diego','San Jose','Sacramento'],
+    'New York':['New York City','Buffalo','Albany','Rochester'],
+    'Texas':['Austin','Houston','Dallas','San Antonio','Fort Worth'],
+    'Florida':['Miami','Orlando','Tampa','Jacksonville'],
+    'Illinois':['Chicago','Aurora','Naperville','Joliet'],
+    'Washington':['Seattle','Spokane','Tacoma','Bellevue'],
+    'Georgia':['Atlanta','Savannah','Augusta','Columbus']
+  },
+  uk:{
+    'England':['London','Manchester','Birmingham','Leeds','Liverpool','Bristol','Sheffield'],
+    'Scotland':['Edinburgh','Glasgow','Aberdeen','Dundee'],
+    'Wales':['Cardiff','Swansea','Newport'],
+    'Northern Ireland':['Belfast','Derry']
+  },
+  canada:{
+    'Ontario':['Toronto','Ottawa','Mississauga','Brampton','Hamilton'],
+    'British Columbia':['Vancouver','Victoria','Surrey','Burnaby'],
+    'Quebec':['Montreal','Quebec City','Laval','Gatineau'],
+    'Alberta':['Calgary','Edmonton','Red Deer']
+  },
+  australia:{
+    'New South Wales':['Sydney','Newcastle','Wollongong','Central Coast'],
+    'Victoria':['Melbourne','Geelong','Ballarat','Bendigo'],
+    'Queensland':['Brisbane','Gold Coast','Sunshine Coast','Townsville'],
+    'Western Australia':['Perth','Fremantle','Bunbury']
+  },
+  uae:{
+    'Dubai':['Downtown Dubai','Jumeirah','Deira','Bur Dubai','Al Quoz'],
+    'Abu Dhabi':['Abu Dhabi City','Al Ain','Khalifa City'],
+    'Sharjah':['Sharjah City','Al Majaz','Al Nahda']
+  },
+  singapore:{
+    'Central Region':['Orchard','Marina Bay','Chinatown','Little India'],
+    'East Region':['Tampines','Changi','Pasir Ris'],
+    'North Region':['Woodlands','Yishun','Sembawang']
+  },
+  germany:{
+    'Bavaria':['Munich','Nuremberg','Augsburg','Regensburg'],
+    'Berlin':['Mitte','Charlottenburg','Prenzlauer Berg','Kreuzberg'],
+    'Hamburg':['Hamburg City','Altona','Eimsbüttel'],
+    'North Rhine-Westphalia':['Cologne','Düsseldorf','Dortmund','Essen']
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
+   BREED DATA
+══════════════════════════════════════════════════════════ */
+var BREEDS = {
+  dog:['Labrador Retriever','Golden Retriever','German Shepherd','Indian Spitz','Beagle','Pomeranian',
+       'Rottweiler','Shih Tzu','Siberian Husky','Dobermann','Poodle','French Bulldog','Dachshund',
+       'Boxer','Border Collie','Cocker Spaniel','Chihuahua','Great Dane','Maltese','Pugs'],
+  cat:['Persian','Siamese','Bengal','Maine Coon','Indian Domestic Shorthair','Scottish Fold',
+       'Ragdoll','British Shorthair','Abyssinian','Birman','Russian Blue','Norwegian Forest'],
+  rabbit:['Holland Lop','Rex Rabbit','Mini Lop','Netherlanddwarf','Lionhead','Angora'],
+  bird:['African Grey','Budgerigar','Indian Ringneck','Cockatiel','Cockatoo','Lovebird','Macaw','Conure'],
+  hamster:['Syrian Hamster','Dwarf Campbell Russian','Roborovski','Chinese Hamster'],
+  fish:['Betta Fish','Goldfish','Guppy','Angelfish','Oscar','Molly','Platy','Tetra'],
+  turtle:['Red-Eared Slider','Box Turtle','Painted Turtle','Mud Turtle'],
+  guinea_pig:['American Guinea Pig','Peruvian','Teddy','Silkie','Abyssinian GP']
+};
+
+/* ══════════════════════════════════════════════════════════
+   ENERGY MAP (breed → energy label)
+══════════════════════════════════════════════════════════ */
+var ENERGY_MAP = {
+  'Labrador Retriever':'High','Golden Retriever':'High','German Shepherd':'Very High',
+  'Indian Spitz':'Medium','Beagle':'High','Pomeranian':'Medium','Rottweiler':'Medium',
+  'Shih Tzu':'Low','Siberian Husky':'Very High','Dobermann':'Very High','Poodle':'High',
+  'French Bulldog':'Low','Dachshund':'Medium','Boxer':'High','Border Collie':'Very High',
+  'Cocker Spaniel':'Medium','Chihuahua':'Medium','Great Dane':'Low','Maltese':'Low','Pugs':'Low',
+  'Persian':'Low','Siamese':'High','Bengal':'Very High','Maine Coon':'Medium',
+  'Indian Domestic Shorthair':'Medium','Scottish Fold':'Low','Ragdoll':'Low',
+  'British Shorthair':'Low','Abyssinian':'High','Birman':'Medium','Russian Blue':'Medium',
+  'African Grey':'High','Budgerigar':'High','Indian Ringneck':'High','Cockatiel':'Medium',
+  'default':'Medium'
+};
+
+/* ══════════════════════════════════════════════════════════
+   DEMO PET DATA (shown as matches)
+══════════════════════════════════════════════════════════ */
 var DEMO_PETS = [
-  {id:1,name:'Buddy',age:'3 yrs',species:'dog',breed:'Golden Retriever',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'1.2 km',city:'Delhi',lookingFor:['Playdate','Best Friend'],bio:'Hey! I\'m Buddy. I love fetch, belly rubs, and meeting new friends at the park. Super friendly with other dogs and kids!',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80','https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80','https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=600&q=80'],owner:'Priya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.8},
-  {id:2,name:'Luna',age:'2 yrs',species:'cat',breed:'Persian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.8 km',city:'Delhi',lookingFor:['Companion','Indoor Play'],bio:'Fluffy Persian who loves sunbeams and slow mornings. I take time to warm up but once I do, I\'m your best cuddle buddy.',photos:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80','https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&q=80','https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&q=80'],owner:'Rahul Dev',ownerAvatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.6},
-  {id:3,name:'Max',age:'5 yrs',species:'dog',breed:'German Shepherd',gender:'Male',size:'Large',vaccinated:true,neutered:false,distance:'2.3 km',city:'Gurgaon',lookingFor:['Breeding','Playdate'],bio:'Trained GSD who loves jogging, hiking, and protecting my family. Looking for a female GSD for breeding or a running buddy.',photos:['https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=600&q=80','https://images.unsplash.com/photo-1568572933382-74d440642117?w=600&q=80','https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=600&q=80'],owner:'Vikram Singh',ownerAvatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80',energy:'Very High',friendly:'Friendly',matchChance:0.7},
-  {id:4,name:'Coco',age:'1 yr',species:'rabbit',breed:'Holland Lop',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'3.1 km',city:'Delhi',lookingFor:['Companion','Playdate'],bio:'Fluffy Holland Lop who binkies when happy! I love fresh veggies, cardboard boxes, and other friendly bunnies. Let\'s hop around!',photos:['https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&q=80','https://images.unsplash.com/photo-1518715308788-3005759c61d4?w=600&q=80','https://images.unsplash.com/photo-1452857297128-d9c29adba80b?w=600&q=80'],owner:'Ananya Bose',ownerAvatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',energy:'Medium',friendly:'Very Friendly',matchChance:0.9},
-  {id:5,name:'Tweety',age:'2 yrs',species:'bird',breed:'Cockatiel',gender:'Male',size:'Tiny',vaccinated:false,neutered:false,distance:'1.5 km',city:'Noida',lookingFor:['Companion','Singing Partner'],bio:'I love whistling songs and learning new words! Very social and would love a bird friend or a human who likes serenades.',photos:['https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80','https://images.unsplash.com/photo-1544923246-3433ef1bfe7e?w=600&q=80','https://images.unsplash.com/photo-1522858547137-f1dcec554f55?w=600&q=80'],owner:'Meera Pillai',ownerAvatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80',energy:'High',friendly:'Very Social',matchChance:0.75},
-  {id:6,name:'Bruno',age:'4 yrs',species:'dog',breed:'Labrador',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'0.5 km',city:'Delhi',lookingFor:['Playdate','Swimming Buddy'],bio:'Bruno loves water! Swimming, puddles, or just a water bowl - I\'m in. Looking for an equally adventurous dog for weekend trips.',photos:['https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=600&q=80','https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&q=80','https://images.unsplash.com/photo-1583511655826-05700d52f4d9?w=600&q=80'],owner:'Arjun Nair',ownerAvatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80',energy:'Very High',friendly:'Very Friendly',matchChance:0.85},
-  {id:7,name:'Whiskers',age:'6 yrs',species:'cat',breed:'Maine Coon',gender:'Male',size:'Large',vaccinated:true,neutered:true,distance:'4.2 km',city:'Faridabad',lookingFor:['Companion','Lazy Sundays'],bio:'King of the couch. I like feather toys, treats, and occasionally knocking things off shelves. For cats who appreciate the finer things.',photos:['https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&q=80','https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?w=600&q=80','https://images.unsplash.com/photo-1472491235688-bdc81a63246e?w=600&q=80'],owner:'Sunita Kapoor',ownerAvatar:'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=80&q=80',energy:'Low',friendly:'Selective',matchChance:0.5},
-  {id:8,name:'Nibbles',age:'8 mo',species:'hamster',breed:'Syrian',gender:'Female',size:'Tiny',vaccinated:false,neutered:false,distance:'2.0 km',city:'Delhi',lookingFor:['Companion'],bio:'I run on my wheel at 3am and stuff my cheeks with food for fun. Looking for a fellow hamster friend for supervised playdates.',photos:['https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600&q=80','https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=600&q=80','https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=600&q=80'],owner:'Kabir Ahmed',ownerAvatar:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&q=80',energy:'Nocturnal',friendly:'Shy but Sweet',matchChance:0.65},
-  {id:9,name:'Goldie',age:'1 yr',species:'fish',breed:'Fantail Goldfish',gender:'Female',size:'Tiny',vaccinated:false,neutered:false,distance:'1.1 km',city:'Delhi',lookingFor:['Tank Mate'],bio:'I swim in circles all day and look stunning doing it. Looking for a peaceful tank mate who won\'t eat my fins.',photos:['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80','https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600&q=80','https://images.unsplash.com/photo-1485431142439-206ba3a9383e?w=600&q=80'],owner:'Pooja Iyer',ownerAvatar:'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=80&q=80',energy:'Calm',friendly:'Peaceful',matchChance:0.55},
-  {id:10,name:'Bella',age:'2 yrs',species:'dog',breed:'Beagle',gender:'Female',size:'Medium',vaccinated:true,neutered:true,distance:'1.8 km',city:'Delhi',lookingFor:['Playdate','Sniffing Adventures'],bio:'Bella loves sniffing EVERYTHING. Every walk is a new adventure for my nose. Playful, curious, and great with other dogs!',photos:['https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=600&q=80','https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=600&q=80','https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=600&q=80'],owner:'Deepa Reddy',ownerAvatar:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&q=80',energy:'High',friendly:'Very Friendly',matchChance:0.88},
-  {id:11,name:'Simba',age:'3 yrs',species:'cat',breed:'Bengal',gender:'Male',size:'Medium',vaccinated:true,neutered:false,distance:'2.7 km',city:'Gurgaon',lookingFor:['Breeding','Companion'],bio:'Bengal with wild markings and wilder energy. I love climbing, chirping at birds, and playing fetch. Looking for a female Bengal.',photos:['https://images.unsplash.com/photo-1518791841217-8f162f1912da?w=600&q=80','https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=600&q=80','https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=600&q=80'],owner:'Rajan Mehta',ownerAvatar:'https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&q=80',energy:'Very High',friendly:'Playful',matchChance:0.7},
-  {id:12,name:'Daisy',age:'1.5 yrs',species:'dog',breed:'Pomeranian',gender:'Female',size:'Small',vaccinated:true,neutered:true,distance:'0.9 km',city:'Delhi',lookingFor:['Playdate','Fashion Buddy'],bio:'I have a wardrobe and I\'m not ashamed. Love dress-up, photos, and strutting in the park. Looking for a small dog who matches my vibe.',photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80','https://images.unsplash.com/photo-1581888227599-779811939961?w=600&q=80','https://images.unsplash.com/photo-1591160690555-5debfba289f0?w=600&q=80'],owner:'Kavya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80',energy:'Medium',friendly:'Very Social',matchChance:0.82}
+  {id:1,name:'Buddy',age:'3 yrs',species:'dog',breed:'Golden Retriever',gender:'Male',size:'Large',
+   vaccinated:true,neutered:true,energy:'High',distance:'1.2 km',city:'Mumbai',
+   lookingFor:['Playdate','Best Friend'],traits:['Friendly','Playful','Energetic'],
+   bio:"Hey! I'm Buddy. I love fetch, belly rubs, and meeting new friends at the park. Super friendly with other dogs and kids!",
+   photos:['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80','https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80','https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=600&q=80'],
+   owner:'Priya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',matchChance:.82},
+  {id:2,name:'Luna',age:'2 yrs',species:'cat',breed:'Persian',gender:'Female',size:'Small',
+   vaccinated:true,neutered:true,energy:'Low',distance:'0.8 km',city:'Delhi',
+   lookingFor:['Companion','Indoor Play'],traits:['Calm','Affectionate','Shy'],
+   bio:"Fluffy Persian who loves sunbeams and slow mornings. I take time to warm up but once I do, I'm your best cuddle buddy.",
+   photos:['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80','https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&q=80'],
+   owner:'Rahul Dev',ownerAvatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',matchChance:.65},
+  {id:3,name:'Max',age:'5 yrs',species:'dog',breed:'German Shepherd',gender:'Male',size:'Large',
+   vaccinated:true,neutered:false,energy:'Very High',distance:'2.3 km',city:'Bengaluru',
+   lookingFor:['Breeding','Playdate'],traits:['Protective','Energetic','Curious'],
+   bio:"Trained GSD who loves jogging, hiking, and protecting my family. Looking for a female GSD for breeding or a running buddy.",
+   photos:['https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=600&q=80','https://images.unsplash.com/photo-1568572933382-74d440642117?w=600&q=80'],
+   owner:'Vikram Singh',ownerAvatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80',matchChance:.72},
+  {id:4,name:'Coco',age:'1 yr',species:'rabbit',breed:'Holland Lop',gender:'Female',size:'Small',
+   vaccinated:true,neutered:true,energy:'Medium',distance:'3.1 km',city:'Pune',
+   lookingFor:['Companion','Playdate'],traits:['Playful','Friendly','Curious'],
+   bio:"Fluffy Holland Lop who binkies when happy! I love fresh veggies, cardboard boxes, and other friendly bunnies.",
+   photos:['https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&q=80','https://images.unsplash.com/photo-1518715308788-3005759c61d4?w=600&q=80'],
+   owner:'Ananya Bose',ownerAvatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',matchChance:.88},
+  {id:5,name:'Tweety',age:'2 yrs',species:'bird',breed:'Cockatiel',gender:'Male',size:'Tiny',
+   vaccinated:false,neutered:false,energy:'High',distance:'1.5 km',city:'Chennai',
+   lookingFor:['Companion','Playdate'],traits:['Playful','Friendly','Curious'],
+   bio:"I love whistling songs and learning new words! Very social and would love a bird friend or a human who likes serenades.",
+   photos:['https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600&q=80'],
+   owner:'Meera Pillai',ownerAvatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80',matchChance:.70},
+  {id:6,name:'Bruno',age:'4 yrs',species:'dog',breed:'Labrador Retriever',gender:'Male',size:'Large',
+   vaccinated:true,neutered:true,energy:'High',distance:'0.5 km',city:'Mumbai',
+   lookingFor:['Playdate','Best Friend'],traits:['Friendly','Energetic','Affectionate'],
+   bio:"Bruno loves water! Swimming, puddles, or just a water bowl - I'm in. Looking for an equally adventurous dog for weekend trips.",
+   photos:['https://images.unsplash.com/photo-1534361960057-19f4434a0d49?w=600&q=80','https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&q=80'],
+   owner:'Arjun Nair',ownerAvatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80',matchChance:.85},
+  {id:7,name:'Whiskers',age:'6 yrs',species:'cat',breed:'Maine Coon',gender:'Male',size:'Large',
+   vaccinated:true,neutered:true,energy:'Low',distance:'4.2 km',city:'Kolkata',
+   lookingFor:['Companion'],traits:['Calm','Affectionate'],
+   bio:"King of the couch. I like feather toys, treats, and occasionally knocking things off shelves.",
+   photos:['https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&q=80','https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?w=600&q=80'],
+   owner:'Sunita Kapoor',ownerAvatar:'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=80&q=80',matchChance:.55},
+  {id:8,name:'Nibbles',age:'8 mo',species:'hamster',breed:'Syrian Hamster',gender:'Female',size:'Tiny',
+   vaccinated:false,neutered:false,energy:'Medium',distance:'2.0 km',city:'Hyderabad',
+   lookingFor:['Companion'],traits:['Shy','Curious'],
+   bio:"I run on my wheel at 3am and stuff my cheeks with food for fun.",
+   photos:['https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600&q=80'],
+   owner:'Kabir Ahmed',ownerAvatar:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&q=80',matchChance:.60},
+  {id:9,name:'Goldie',age:'1 yr',species:'fish',breed:'Goldfish',gender:'Female',size:'Tiny',
+   vaccinated:false,neutered:false,energy:'Low',distance:'1.1 km',city:'Delhi',
+   lookingFor:['Companion'],traits:['Calm'],
+   bio:"I swim in circles all day and look stunning doing it.",
+   photos:['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80'],
+   owner:'Pooja Iyer',ownerAvatar:'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=80&q=80',matchChance:.50},
+  {id:10,name:'Bella',age:'2 yrs',species:'dog',breed:'Beagle',gender:'Female',size:'Medium',
+   vaccinated:true,neutered:true,energy:'High',distance:'1.8 km',city:'Jaipur',
+   lookingFor:['Playdate','Best Friend'],traits:['Friendly','Playful','Energetic','Curious'],
+   bio:"Bella loves sniffing EVERYTHING. Every walk is a new adventure for my nose.",
+   photos:['https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=600&q=80','https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=600&q=80'],
+   owner:'Deepa Reddy',ownerAvatar:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&q=80',matchChance:.88},
+  {id:11,name:'Simba',age:'3 yrs',species:'cat',breed:'Bengal',gender:'Male',size:'Medium',
+   vaccinated:true,neutered:false,energy:'Very High',distance:'2.7 km',city:'Chennai',
+   lookingFor:['Breeding','Companion'],traits:['Energetic','Playful','Curious'],
+   bio:"Bengal with wild markings and wilder energy. I love climbing, chirping at birds, and playing fetch.",
+   photos:['https://images.unsplash.com/photo-1518791841217-8f162f1912da?w=600&q=80'],
+   owner:'Rajan Mehta',ownerAvatar:'https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&q=80',matchChance:.70},
+  {id:12,name:'Daisy',age:'1.5 yrs',species:'dog',breed:'Pomeranian',gender:'Female',size:'Small',
+   vaccinated:true,neutered:true,energy:'Medium',distance:'0.9 km',city:'Delhi',
+   lookingFor:['Playdate','Best Friend'],traits:['Friendly','Playful','Affectionate'],
+   bio:"I have a wardrobe and I'm not ashamed. Love dress-up, photos, and strutting in the park.",
+   photos:['https://images.unsplash.com/photo-1529168374912-9fcb9f949b6e?w=600&q=80','https://images.unsplash.com/photo-1581888227599-779811939961?w=600&q=80'],
+   owner:'Kavya Sharma',ownerAvatar:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80',matchChance:.82},
+  {id:13,name:'Rocky',age:'2 yrs',species:'dog',breed:'Labrador Retriever',gender:'Male',size:'Large',
+   vaccinated:true,neutered:true,energy:'High',distance:'1.3 km',city:'Mumbai',
+   lookingFor:['Playdate','Best Friend','Breeding'],traits:['Friendly','Energetic','Affectionate'],
+   bio:"Rocky is a classic yellow Lab who loves the beach, swimming, and making new friends everywhere he goes!",
+   photos:['https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=600&q=80','https://images.unsplash.com/photo-1583511655826-05700d52f4d9?w=600&q=80'],
+   owner:'Nikhil Joshi',ownerAvatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80',matchChance:.90},
+  {id:14,name:'Nala',age:'3 yrs',species:'cat',breed:'Siamese',gender:'Female',size:'Medium',
+   vaccinated:true,neutered:true,energy:'High',distance:'1.0 km',city:'Pune',
+   lookingFor:['Companion','Playdate'],traits:['Affectionate','Curious','Playful'],
+   bio:"Nala is a talkative Siamese who loves to follow her humans around and 'help' with everything.",
+   photos:['https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=600&q=80'],
+   owner:'Sneha Patil',ownerAvatar:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&q=80',matchChance:.74},
+  {id:15,name:'Kira',age:'1 yr',species:'dog',breed:'German Shepherd',gender:'Female',size:'Large',
+   vaccinated:true,neutered:false,energy:'Very High',distance:'3.5 km',city:'Bengaluru',
+   lookingFor:['Breeding','Training Buddy'],traits:['Protective','Curious','Energetic'],
+   bio:"Kira is a sharp, obedient GSD currently in agility training. Looking for a breeding partner.",
+   photos:['https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=600&q=80'],
+   owner:'Pradeep Kumar',ownerAvatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80',matchChance:.78}
 ];
 
-/* ── API CONFIG ── */
+/* ══════════════════════════════════════════════════════════
+   MEETUP PLACES DATABASE (by city keyword)
+══════════════════════════════════════════════════════════ */
+var MEETUP_DB = {
+  default:[
+    {emoji:'🌳',name:'Central City Park',desc:'Open lawns, dog-friendly zone, shaded benches',tags:['Off-leash area','Water bowls','Parking']},
+    {emoji:'☕',name:'Paws & Brews Café',desc:'Pet-friendly café where owners can relax together',tags:['Treats for pets','Outdoor seating','Instagram-worthy']},
+    {emoji:'🏖️',name:'Dog Beach / Lake Shore',desc:'Water-loving pets will have a blast here!',tags:['Swimming','Fetch','Sunrise walks']},
+    {emoji:'🛍️',name:'PetSmart / Pet Bazaar',desc:'Supervised indoor meetup near the grooming section',tags:['Indoor','AC','Treats nearby']},
+    {emoji:'🌿',name:'Nature Trail / Greenway',desc:'Scenic walking trail perfect for energetic breeds',tags:['Exercise','Fresh air','Long walks']}
+  ],
+  mumbai:[
+    {emoji:'🌊',name:'Bandra Bandstand',desc:'Iconic waterfront promenade — evening dog walks',tags:['Sunset view','Wide walkway','Pet-friendly']},
+    {emoji:'🌳',name:'Sanjay Gandhi National Park',desc:'Nature trails & green spaces for active pets',tags:['Dog-friendly','Nature','Hiking']},
+    {emoji:'☕',name:'The Good Dog Bar, Bandra',desc:'Mumbai\'s first dog-friendly pub & café',tags:['Fenced yard','Dog menu','Social']},
+    {emoji:'🏖️',name:'Girgaon Chowpatty',desc:'Open beach — evening strolls with your pup',tags:['Beach','Evening walk','Relaxed']},
+    {emoji:'🌿',name:'Mahim Nature Park',desc:'Quiet garden ideal for calm breed meetups',tags:['Shaded','Peaceful','Water available']}
+  ],
+  delhi:[
+    {emoji:'🌸',name:'Lodhi Garden',desc:'Historic garden with wide lawns & shaded paths',tags:['Morning walks','Off-leash zones','Historic']},
+    {emoji:'🌊',name:'DDA Park, Dwarka',desc:'Large open park popular with dog owners',tags:['Spacious','Dog meetups','Water']},
+    {emoji:'☕',name:'Café Turtle / Full Circle',desc:'Dog-friendly café in Khan Market',tags:['Indoor seating','Treats','Social']},
+    {emoji:'🌿',name:'Nehru Park, Chanakyapuri',desc:'Well-maintained lawns & jogging track',tags:['Morning','Jogging','Open space']},
+    {emoji:'🏕️',name:'Garden of Five Senses',desc:'Beautiful themed garden — great for photos!',tags:['Scenic','Photo-worthy','Calm']}
+  ],
+  bengaluru:[
+    {emoji:'🌳',name:'Cubbon Park',desc:'Central park with dedicated dog zone, wide paths',tags:['Dog zone','Shaded','Morning walks']},
+    {emoji:'☕',name:'Pawspace, Indiranagar',desc:'Dedicated dog café & play centre',tags:['Dog play area','Treats','Indoor']},
+    {emoji:'🌿',name:'Nandi Hills',desc:'Weekend trip for adventurous dogs & their owners',tags:['Adventure','Hiking','Cool weather']},
+    {emoji:'🏕️',name:'Lalbagh Botanical Garden',desc:'Beautiful garden — great for calm breed meetups',tags:['Scenic','Peaceful','Shaded']},
+    {emoji:'🛍️',name:'Total Environment Windmills',desc:'Open gated community park popular with dog clubs',tags:['Gated','Safe','Meetups']}
+  ],
+  london:[
+    {emoji:'🌳',name:'Hyde Park',desc:'The classic London dog walk — acres of open space',tags:['Off-leash','Iconic','Dog-friendly']},
+    {emoji:'🌿',name:'Hampstead Heath',desc:'Wild parkland perfect for active breeds',tags:['Swimming pond','Trails','Open space']},
+    {emoji:'☕',name:'The Muddy Paws Café',desc:'Dog-friendly café in East London',tags:['Treats','Dog menu','Friendly staff']}
+  ],
+  nyc:[
+    {emoji:'🌳',name:'Central Park Dog Area',desc:'Designated off-leash area in Central Park',tags:['Off-leash','Iconic','Social']},
+    {emoji:'🌊',name:'Fort Tilden Beach',desc:'Dog-friendly beach — great for water-loving breeds',tags:['Beach','Swimming','Open space']},
+    {emoji:'☕',name:'Bark & Brew, Brooklyn',desc:'Dog-friendly taproom with outdoor yard',tags:['Outdoor yard','Social','Weekend fun']}
+  ]
+};
 
-function authHeaders(){var t=localStorage.getItem('pb_token');return{'Content-Type':'application/json','Authorization':'Bearer '+t};}
-
-/* ── LOAD REAL PETS FROM localStorage (saved by 08_pet_profile.html) ── */
-function loadRealPets(){
-  try{
-    var stored = JSON.parse(localStorage.getItem('pawmatch_mypets')||'[]');
-    var enabled = JSON.parse(localStorage.getItem('pawmatch_enabled')||'{}');
-    // Filter to only pets the user enabled (all enabled by default)
-    var real = stored.filter(function(p){ return enabled[p.id]!==false; });
-    if(real.length){
-      // Normalise to PETS schema
-      return real.map(function(p,i){
-        return {
-          id: p.id||('real_'+i),
-          name: p.name||'Pet',
-          age: p.age||'',
-          species: (p.species||'dog').toLowerCase(),
-          breed: p.breed||p.species||'',
-          gender: p.gender||'',
-          size: p.size||'',
-          vaccinated: p.vaccinated||false,
-          neutered: p.neutered||false,
-          distance: p.location||'Nearby',
-          city: p.city||'',
-          lookingFor: p.lookingFor||['Playdate'],
-          bio: p.bio||'Hi, I am '+p.name+'! 🐾',
-          photos: [p.photo||'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80'],
-          owner: p.owner||'',
-          ownerAvatar: '',
-          energy: p.energy||'',
-          friendly: p.friendly||'',
-          matchChance: p.matchChance||0.6
-        };
-      });
-    }
-  }catch(e){}
-  return null;
-}
-
-var _realPets = loadRealPets();
-// Merge: real pets first, then demo pets (filtered to exclude same species if real exist)
-var PETS = _realPets && _realPets.length
-  ? _realPets.concat(DEMO_PETS.filter(function(d){
-      return !_realPets.some(function(r){ return r.name===d.name; });
-    }))
-  : DEMO_PETS;
-
-/* ── STATE ── */
-var deck = [];
-var currentFilter = 'all';
-var matchedPets = [];
-var swipeHistory = [];
-var activePetIdx = 0;
-
-try { matchedPets = JSON.parse(localStorage.getItem('pawmatch_matches') || '[]'); } catch(e) { matchedPets = []; }
-
-// Sync matches from API on load
-(function syncMatchesFromAPI(){
-  var myPetId = localStorage.getItem('pawmatch_active_pet_id');
-  if(!myPetId) return;
-  fetch(API_BASE+'/pawmatch/matches?pet_id='+myPetId, {headers:authHeaders()})
-    .then(function(r){ return r.ok ? r.json() : null; })
-    .catch(function(){ return null; })
-    .then(function(data){
-      if(!data || !data.length) return;
-      var apiMatches = data.map(function(m){
-        var isA = (String(m.pet_a_id) === String(myPetId));
-        return {
-          id: isA ? m.pet_b_id : m.pet_a_id,
-          name: isA ? m.pet_b_name : m.pet_a_name,
-          photo: isA ? (m.pet_b_photos&&m.pet_b_photos[0]) : (m.pet_a_photos&&m.pet_a_photos[0]),
-          owner: isA ? m.owner_b_name : m.owner_a_name,
-          matchedAt: m.matched_at,
-          isNew: false
-        };
-      });
-      // Merge without duplicates
-      apiMatches.forEach(function(am){
-        if(!matchedPets.some(function(lm){ return String(lm.id)===String(am.id); })){
-          matchedPets.push(am);
-        }
-      });
-      try { localStorage.setItem('pawmatch_matches', JSON.stringify(matchedPets)); } catch(e){}
-      updateMatchBadge();
-    });
-})();
-
-/* ── HELPERS ── */
-var EMOJI = {dog:'🐕',cat:'🐈',rabbit:'🐰',bird:'🦜',hamster:'🐹',fish:'🐟'};
-
-function filteredDeck() {
-  if(currentFilter === 'all') return deck;
-  if(['dog','cat','rabbit','bird','hamster','fish'].indexOf(currentFilter) >= 0) {
-    return deck.filter(function(p){ return p.species === currentFilter; });
+function getMeetupPlaces(city) {
+  if(!city) return MEETUP_DB.default;
+  var key = city.toLowerCase().replace(/\s+/g,'').replace(/[^a-z]/g,'');
+  for(var k in MEETUP_DB){
+    if(key.indexOf(k)>=0 || k.indexOf(key)>=0) return MEETUP_DB[k];
   }
-  if(currentFilter === 'nearby') return deck.filter(function(p){ return parseFloat(p.distance) < 2; });
-  if(currentFilter === 'playdate') return deck.filter(function(p){
-    return p.lookingFor.some(function(l){ return l.toLowerCase().indexOf('play') >= 0; });
-  });
-  if(currentFilter === 'breeding') return deck.filter(function(p){
-    return p.lookingFor.some(function(l){ return l.toLowerCase().indexOf('breed') >= 0; });
-  });
-  return deck;
+  return MEETUP_DB.default;
 }
 
-/* ── RENDER DECK ── */
-function renderDeck() {
+/* ══════════════════════════════════════════════════════════
+   STATE VARIABLES
+══════════════════════════════════════════════════════════ */
+var MY_PET = null;      // filled by findMatches()
+var PETS   = [];        // current filtered deck
+var deck   = [];
+var currentFilter = 'all';
+var matchedPets   = [];
+var swipeHistory  = [];
+var activePetIdx  = 0;
+
+// toggles
+var _health  = {vaccinated:false,neutered:false,vet_checked:false};
+var _purpose = [];
+var _traits  = [];
+var _gender  = '';
+var _size    = '';
+var _photos  = [null,null,null];
+
+try{ matchedPets = JSON.parse(localStorage.getItem('pawmatch_matches')||'[]'); }catch(e){ matchedPets=[]; }
+
+/* ══════════════════════════════════════════════════════════
+   LOCATION DROPDOWNS
+══════════════════════════════════════════════════════════ */
+function onCountryChange(){
+  var country = document.getElementById('sel-country').value;
+  var ss = document.getElementById('sel-state');
+  var sc = document.getElementById('sel-city');
+  ss.innerHTML = '<option value="">State / Province</option>';
+  sc.innerHTML = '<option value="">City</option>';
+  ss.disabled = !country;
+  sc.disabled = true;
+  if(country && LOC[country]){
+    Object.keys(LOC[country]).sort().forEach(function(st){
+      ss.innerHTML += '<option value="'+st+'">'+st+'</option>';
+    });
+    ss.disabled = false;
+  }
+  updateStepBar();
+}
+
+function onStateChange(){
+  var country = document.getElementById('sel-country').value;
+  var state   = document.getElementById('sel-state').value;
+  var sc      = document.getElementById('sel-city');
+  sc.innerHTML = '<option value="">City</option>';
+  sc.disabled  = true;
+  if(country && state && LOC[country] && LOC[country][state]){
+    LOC[country][state].forEach(function(c){
+      sc.innerHTML += '<option value="'+c+'">'+c+'</option>';
+    });
+    sc.disabled = false;
+  }
+  updateStepBar();
+}
+
+function onCityChange(){ updateStepBar(); checkForm(); }
+
+/* ══════════════════════════════════════════════════════════
+   SPECIES / BREED DROPDOWNS
+══════════════════════════════════════════════════════════ */
+function onSpeciesChange(){
+  var sp = document.getElementById('sel-species').value;
+  var sb = document.getElementById('sel-breed');
+  sb.innerHTML = '<option value="">Select breed</option>';
+  sb.disabled  = !sp;
+  if(sp && BREEDS[sp]){
+    BREEDS[sp].forEach(function(b){
+      sb.innerHTML += '<option value="'+b+'">'+b+'</option>';
+    });
+    sb.disabled = false;
+  }
+  updateStepBar();
+  checkForm();
+}
+
+function onBreedChange(){ updateStepBar(); checkForm(); }
+
+/* ══════════════════════════════════════════════════════════
+   TOGGLE HELPERS
+══════════════════════════════════════════════════════════ */
+function pickToggle(key, val, btn){
+  if(key==='gender') _gender=val;
+  if(key==='size')   _size=val;
+  var row = btn.closest('.toggle-row') || btn.parentElement;
+  row.querySelectorAll('.toggle-pill').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  checkForm();
+}
+
+function pickMulti(key, val, btn){
+  var arr = key==='purpose'?_purpose:_traits;
+  btn.classList.toggle('active');
+  var idx = arr.indexOf(val);
+  if(idx>=0) arr.splice(idx,1); else arr.push(val);
+  checkForm();
+}
+
+function toggleHealth(key){
+  _health[key] = !_health[key];
+  document.getElementById('tog-'+key.replace('_checked','')).classList.toggle('active', _health[key]);
+}
+
+/* ══════════════════════════════════════════════════════════
+   STEP BAR
+══════════════════════════════════════════════════════════ */
+function updateStepBar(){
+  var country = document.getElementById('sel-country').value;
+  var city    = document.getElementById('sel-city').value;
+  var species = document.getElementById('sel-species').value;
+  var breed   = document.getElementById('sel-breed').value;
+  var name    = document.getElementById('inp-petname').value.trim();
+  var steps   = [country||city, species||breed, name, _gender||_size||_purpose.length>0];
+  for(var i=0;i<4;i++){
+    document.getElementById('step'+(i+1)).classList.toggle('done',!!steps[i]);
+  }
+}
+
+function checkForm(){
+  updateStepBar();
+  var name    = document.getElementById('inp-petname').value.trim();
+  var species = document.getElementById('sel-species').value;
+  var breed   = document.getElementById('sel-breed').value;
+  var ready   = name && species && breed;
+  document.getElementById('btn-find').disabled = !ready;
+}
+
+/* ══════════════════════════════════════════════════════════
+   FAKE PHOTO UPLOAD (demo)
+══════════════════════════════════════════════════════════ */
+var DEMO_OWNER_PHOTOS = [
+  'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80',
+  'https://images.unsplash.com/photo-1534361960057-19f4434a0d49?w=200&q=80',
+  'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&q=80'
+];
+function fakeUpload(idx){
+  var url = DEMO_OWNER_PHOTOS[idx % DEMO_OWNER_PHOTOS.length];
+  _photos[idx] = url;
+  var slot = document.getElementById('photo-slots').children[idx];
+  slot.innerHTML = '<img src="'+url+'" alt="">';
+  pmToast('Photo '+(idx+1)+' added!','like');
+}
+
+/* ══════════════════════════════════════════════════════════
+   COMPATIBILITY ALGORITHM
+══════════════════════════════════════════════════════════ */
+function calcCompatibility(mine, theirs){
+  var score = 0;
+  var reasons = [];
+
+  // 1. Same breed bonus
+  var sameBreed = mine.breed && theirs.breed && mine.breed.toLowerCase()===theirs.breed.toLowerCase();
+  var breedScore = sameBreed ? 100 : (mine.species===theirs.species ? 55 : 10);
+  score += breedScore * 0.3;
+  if(sameBreed) reasons.push('Same breed — perfect genetic match');
+
+  // 2. Energy match
+  var energyOrder=['Low','Medium','High','Very High'];
+  var myEI   = energyOrder.indexOf(mine.energy||'Medium');
+  var thEI   = energyOrder.indexOf(theirs.energy||'Medium');
+  var energyDiff = Math.abs(myEI - thEI);
+  var energyScore = energyDiff===0?100:energyDiff===1?75:energyDiff===2?40:15;
+  score += energyScore * 0.2;
+  if(energyDiff<=1) reasons.push('Compatible energy levels');
+
+  // 3. Purpose overlap
+  var myPurp   = mine.lookingFor||[];
+  var thPurp   = theirs.lookingFor||[];
+  var common   = myPurp.filter(function(p){ return thPurp.some(function(q){ return q.toLowerCase()===p.toLowerCase(); }); });
+  var purposeScore = common.length>0 ? Math.min(100, common.length*50) : 20;
+  score += purposeScore * 0.25;
+  if(common.length) reasons.push('Both looking for '+common[0]);
+
+  // 4. Gender complement (opposite gender for breeding/companion, same for playdate)
+  var tempScore = 70;
+  if(mine.gender && theirs.gender){
+    var opposite = mine.gender !== theirs.gender;
+    if(myPurp.indexOf('Breeding')>=0 && opposite) { tempScore = 100; reasons.push('Ideal breeding pair'); }
+    else if(myPurp.indexOf('Playdate')>=0 && !opposite) { tempScore = 85; }
+    else { tempScore = 65; }
+  }
+  score += tempScore * 0.15;
+
+  // 5. Health (vaccinated preferred)
+  var healthScore = (mine.vaccinated && theirs.vaccinated) ? 100 : theirs.vaccinated ? 80 : 50;
+  score += healthScore * 0.1;
+
+  var total = Math.round(Math.min(99, Math.max(30, score)));
+  return {
+    total:total,
+    breed:breedScore,
+    energy:energyScore,
+    purpose:purposeScore,
+    temp:tempScore,
+    reasons:reasons,
+    label: total>=85?'Excellent Match':total>=70?'Great Match':total>=55?'Good Match':'Potential Match'
+  };
+}
+
+/* ══════════════════════════════════════════════════════════
+   FIND MATCHES
+══════════════════════════════════════════════════════════ */
+function findMatches(){
+  var name    = document.getElementById('inp-petname').value.trim();
+  var species = document.getElementById('sel-species').value;
+  var breed   = document.getElementById('sel-breed').value;
+  var age     = document.getElementById('sel-age').value;
+  var city    = document.getElementById('sel-city').value || document.getElementById('sel-state').value || 'your city';
+  var country = document.getElementById('sel-country').value;
+  var owner   = document.getElementById('inp-owner').value.trim() || 'Pet Owner';
+  var bio     = document.getElementById('inp-bio').value.trim() || 'Looking for new pet friends!';
+  var energy  = ENERGY_MAP[breed] || ENERGY_MAP.default;
+
+  MY_PET = {
+    id:'me',name:name,species:species,breed:breed,age:age||'',
+    gender:_gender,size:_size,energy:energy,
+    vaccinated:_health.vaccinated,neutered:_health.neutered,
+    lookingFor:_purpose.length?_purpose:['Playdate'],
+    traits:_traits,bio:bio,
+    photos:_photos.filter(Boolean).length ? _photos.filter(Boolean) : ['https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&q=80'],
+    owner:owner,city:city,country:country,distance:'0 km',matchChance:.8
+  };
+
+  // Try save to API (fire and forget)
+  var token = localStorage.getItem('pb_token');
+  if(token){
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 8000);
+    fetch(typeof API_BASE!=='undefined'?API_BASE+'/pawmatch/pets':'/api/v1/pawmatch/pets',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({
+        name:MY_PET.name,species:MY_PET.species,breed:MY_PET.breed,age:MY_PET.age,
+        gender:MY_PET.gender,size:MY_PET.size,energy:MY_PET.energy,
+        looking_for:MY_PET.lookingFor,bio:MY_PET.bio,city:MY_PET.city,
+        vaccinated:MY_PET.vaccinated,neutered:MY_PET.neutered
+      }),signal:ctrl.signal
+    }).catch(function(){});
+  }
+
+  // Filter and score DEMO_PETS
+  var scored = DEMO_PETS
+    .filter(function(p){ return p.id!=='me'; })
+    .map(function(p){
+      var compat = calcCompatibility(MY_PET,p);
+      return Object.assign({},p,{_compat:compat,_score:compat.total});
+    })
+    .sort(function(a,b){ return b._score - a._score; });
+
+  PETS = scored;
+  deck = PETS.slice();
+
+  // Show same-breed filter pill
+  var hasSameBreed = scored.some(function(p){ return p.breed===breed; });
+  var fpSB = document.getElementById('fpill-same-breed');
+  if(hasSameBreed && fpSB){ fpSB.textContent='🏆 '+breed; fpSB.style.display=''; }
+
+  var matchCount = scored.filter(function(p){ return p._score>=60; }).length;
+
+  // Switch view
+  document.getElementById('setup-panel').style.display='none';
+  document.getElementById('deck-panel').style.display='block';
+  document.getElementById('filter-bar').style.display='flex';
+  document.getElementById('filter-btn').style.display='flex';
+
+  renderDeck();
+  pmToast('🐾 Found '+matchCount+' matches for '+name+'!','like');
+
+  // Load from API in background
+  loadDiscoverAPI();
+}
+
+function backToSetup(){
+  document.getElementById('setup-panel').style.display='block';
+  document.getElementById('deck-panel').style.display='none';
+  document.getElementById('filter-bar').style.display='none';
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER DECK
+══════════════════════════════════════════════════════════ */
+var EMOJI = {dog:'🐕',cat:'🐈',rabbit:'🐰',bird:'🦜',hamster:'🐹',fish:'🐟',turtle:'🐢',guinea_pig:'🐾'};
+
+function filteredDeck(){
+  var base = PETS.slice();
+  if(currentFilter==='same-breed') return base.filter(function(p){ return MY_PET && p.breed===MY_PET.breed; });
+  if(['dog','cat','rabbit','bird','hamster','fish'].indexOf(currentFilter)>=0) return base.filter(function(p){ return p.species===currentFilter; });
+  if(currentFilter==='nearby') return base.filter(function(p){ return parseFloat(p.distance)<2; });
+  if(currentFilter==='playdate') return base.filter(function(p){ return (p.lookingFor||[]).some(function(l){ return l.toLowerCase().indexOf('play')>=0; }); });
+  if(currentFilter==='breeding') return base.filter(function(p){ return (p.lookingFor||[]).some(function(l){ return l.toLowerCase().indexOf('breed')>=0; }); });
+  if(currentFilter==='companion') return base.filter(function(p){ return (p.lookingFor||[]).some(function(l){ return l.toLowerCase().indexOf('comp')>=0; }); });
+  if(currentFilter==='high-match') return base.filter(function(p){ return (p._score||0)>=70; });
+  return base;
+}
+
+function renderDeck(){
   var stack = document.getElementById('card-stack');
-  stack.innerHTML = '';
+  stack.innerHTML='';
   var fd = filteredDeck();
   activePetIdx = 0;
-
-  if(!fd.length) {
-    stack.innerHTML = '<div class="empty-state"><div class="emoji">🐾</div><h3>No pets found</h3><p>Try a different filter</p><button class="refresh-btn" onclick="resetDeck()">🔄 Reset</button></div>';
+  if(!fd.length){
+    stack.innerHTML='<div class="empty-state"><div class="emoji">🐾</div><h3>No matches found</h3><p>Try a different filter or reset your deck</p><button class="refresh-btn" onclick="resetDeck()">🔄 Reset</button></div>';
     return;
   }
-
-  var toShow = fd.slice(0, Math.min(3, fd.length));
-  // Build bottom-to-top
-  for(var i = toShow.length - 1; i >= 0; i--) {
-    stack.appendChild(buildCard(toShow[i], i));
-  }
+  var toShow = fd.slice(0, Math.min(3,fd.length));
+  for(var i=toShow.length-1;i>=0;i--) stack.appendChild(buildCard(toShow[i],i));
 }
 
-function buildCard(pet, stackPos) {
+function buildCard(pet, stackPos){
   var card = document.createElement('div');
   card.className = 'pet-card';
   card.dataset.petId = pet.id;
+  var em = EMOJI[pet.species]||'🐾';
+  var compat = pet._compat || (MY_PET ? calcCompatibility(MY_PET,pet) : null);
+  var score  = compat ? compat.total : pet.matchChance ? Math.round(pet.matchChance*100) : '';
+  var scoreColor = score>=85?'#16a34a':score>=65?'#f59e0b':'#e11d48';
 
-  var em = EMOJI[pet.species] || '🐾';
-  var dotsHtml = '';
+  var photoDotsHtml = '';
+  if(pet.photos.length>1){
+    photoDotsHtml = '<div class="card-photo-dots">'+pet.photos.map(function(_,i){ return '<span class="cpd'+(i===0?' cpd-active':'')+'" data-idx="'+i+'"></span>'; }).join('')+'</div>';
+  }
+  var tapZones = pet.photos.length>1 ? '<div class="card-tap-left"></div><div class="card-tap-right"></div>' : '';
 
-  var photoDots = pet.photos.length > 1
-    ? '<div class="card-photo-dots">' + pet.photos.map(function(_,i){ return '<span class="cpd'+(i===0?' cpd-active':'')+'" data-idx="'+i+'"></span>'; }).join('') + '</div>'
-    : '';
-  var photoTapZones = pet.photos.length > 1
-    ? '<div class="card-tap-left"></div><div class="card-tap-right"></div>'
-    : '';
+  var tagsHtml = (pet.lookingFor||[]).map(function(t){ return '<span class="card-tag">'+t+'</span>'; }).join('');
+  var traitHtml= (pet.traits||[]).slice(0,2).map(function(t){ return '<span class="card-tag blue">'+t+'</span>'; }).join('');
 
   card.innerHTML =
-    '<div class="card-photo-wrap">' +
-      '<img class="card-photo" id="cphoto-' + pet.id + '" src="' + pet.photos[0] + '" alt="' + pet.name + '" data-idx="0" data-count="' + pet.photos.length + '" data-photos=\'' + JSON.stringify(pet.photos) + '\'>' +
-      photoDots +
-      photoTapZones +
-      '<div class="card-like-label" id="ll-' + pet.id + '">LIKE 💚</div>' +
-      '<div class="card-nope-label" id="nl-' + pet.id + '">NOPE ✕</div>' +
-      '<div class="card-super-label" id="sl-' + pet.id + '">⭐ SUPER LIKE</div>' +
-    '</div>' +
-    '<div class="card-info">' +
-      '<div class="card-name-row">' +
-        '<div class="card-name">' + pet.name + '</div>' +
-        '<div class="card-age">' + pet.age + '</div>' +
-        (pet.vaccinated ? '<span title="Vaccinated">✅</span>' : '') +
-      '</div>' +
-      '<div class="card-breed">' + em + ' ' + pet.breed + ' · ' + pet.gender + ' · ' + pet.size + '</div>' +
-      '<div class="card-tags">' + pet.lookingFor.map(function(t){ return '<span class="card-tag">'+t+'</span>'; }).join('') + '</div>' +
-      '<div class="card-bio">' + pet.bio + '</div>' +
-      '<div class="card-owner">' +
-        '<img class="owner-avatar" src="' + pet.ownerAvatar + '" alt="">' +
-        '<div class="owner-name">👤 ' + pet.owner + '</div>' +
-        '<div class="card-dist">📍 ' + pet.distance + '</div>' +
-      '</div>' +
+    '<div class="card-photo-wrap">'+
+      '<img class="card-photo" id="cphoto-'+pet.id+'" src="'+pet.photos[0]+'" alt="'+pet.name+'" data-idx="0" data-count="'+pet.photos.length+'" data-photos=\''+JSON.stringify(pet.photos)+'\'>'  +
+      (score ? '<div class="match-pct-badge" style="background:linear-gradient(135deg,'+scoreColor+','+scoreColor+'dd)">💚 '+score+'% match</div>' : '') +
+      photoDotsHtml + tapZones +
+      '<div class="card-like-label" id="ll-'+pet.id+'">LIKE 💚</div>'+
+      '<div class="card-nope-label" id="nl-'+pet.id+'">NOPE ✕</div>'+
+      '<div class="card-super-label" id="sl-'+pet.id+'">⭐ SUPER LIKE</div>'+
+    '</div>'+
+    '<div class="card-info">'+
+      '<div class="card-name-row">'+
+        '<div class="card-name">'+pet.name+'</div>'+
+        '<div class="card-age">'+pet.age+'</div>'+
+        (pet.vaccinated?'<span title="Vaccinated" style="font-size:14px">✅</span>':'')+
+        (score?'<span class="card-compat">'+score+'%</span>':'')+
+      '</div>'+
+      '<div class="card-breed-row">'+em+' '+pet.breed+' · '+pet.gender+' · '+pet.size+' · '+pet.city+'</div>'+
+      '<div class="card-tags">'+tagsHtml+traitHtml+'</div>'+
+      '<div class="card-bio">'+pet.bio+'</div>'+
+      '<div class="card-owner">'+
+        '<img class="owner-avatar" src="'+pet.ownerAvatar+'" alt="">'+
+        '<div class="owner-name">👤 '+pet.owner+'</div>'+
+        '<div class="card-dist">📍 '+pet.distance+'</div>'+
+      '</div>'+
     '</div>';
 
-  // Click opens detail (only if not dragging)
-  card.addEventListener('click', function(e) {
-    if(!card._dragged) openDetail(pet);
-    card._dragged = false;
-  });
-
-  attachDrag(card, pet);
+  card.addEventListener('click',function(e){ if(!card._dragged) openDetail(pet); card._dragged=false; });
+  attachDrag(card,pet);
   return card;
 }
 
-/* ── DRAG ── */
-function attachDrag(card, pet) {
-  var sx=0, sy=0, dx=0, dy=0, down=false;
-
-  function start(e) {
-    down = true;
-    card._dragged = false;
-    var pt = e.touches ? e.touches[0] : e;
-    sx = pt.clientX; sy = pt.clientY;
-    dx = 0; dy = 0;
-  }
-
-  function move(e) {
+/* ══════════════════════════════════════════════════════════
+   DRAG & SWIPE
+══════════════════════════════════════════════════════════ */
+function attachDrag(card,pet){
+  var sx=0,sy=0,dx=0,dy=0,down=false;
+  function start(e){ down=true;card._dragged=false;var pt=e.touches?e.touches[0]:e;sx=pt.clientX;sy=pt.clientY;dx=0;dy=0; }
+  function move(e){
     if(!down) return;
-    var pt = e.touches ? e.touches[0] : e;
-    dx = pt.clientX - sx;
-    dy = pt.clientY - sy;
-    if(Math.abs(dx) > 5 || Math.abs(dy) > 5) card._dragged = true;
+    var pt=e.touches?e.touches[0]:e;
+    dx=pt.clientX-sx;dy=pt.clientY-sy;
+    if(Math.abs(dx)>5||Math.abs(dy)>5) card._dragged=true;
     if(!card._dragged) return;
-
-    var rot = dx * 0.08;
-    card.style.transform = 'translateX('+dx+'px) translateY('+dy+'px) rotate('+rot+'deg)';
-    card.style.zIndex = 10;
-
-    // Labels
-    var ll = document.getElementById('ll-'+pet.id);
-    var nl = document.getElementById('nl-'+pet.id);
-    var sl = document.getElementById('sl-'+pet.id);
-    if(ll && nl && sl) {
-      ll.style.opacity = dx > 40 ? Math.min(1,(dx-40)/60) : 0;
-      nl.style.opacity = dx < -40 ? Math.min(1,(-dx-40)/60) : 0;
-      sl.style.opacity = dy < -60 ? Math.min(1,(-dy-60)/60) : 0;
-    }
-
+    var rot=dx*.08;
+    card.style.transform='translateX('+dx+'px) translateY('+dy+'px) rotate('+rot+'deg)';
+    card.style.zIndex=10;
+    var ll=document.getElementById('ll-'+pet.id);
+    var nl=document.getElementById('nl-'+pet.id);
+    var sl=document.getElementById('sl-'+pet.id);
+    if(ll) ll.style.opacity=dx>40?Math.min(1,(dx-40)/60):0;
+    if(nl) nl.style.opacity=dx<-40?Math.min(1,(-dx-40)/60):0;
+    if(sl) sl.style.opacity=dy<-60?Math.min(1,(-dy-60)/60):0;
     if(e.cancelable) e.preventDefault();
   }
-
-  function end(e) {
-    if(!down) return;
-    down = false;
-
-    var ll = document.getElementById('ll-'+pet.id);
-    var nl = document.getElementById('nl-'+pet.id);
-    var sl = document.getElementById('sl-'+pet.id);
-    if(ll) ll.style.opacity = 0;
-    if(nl) nl.style.opacity = 0;
-    if(sl) sl.style.opacity = 0;
-
-    var threshold = window.innerWidth * 0.28;
-    if(dx > threshold) {
-      flyCard(card, pet, 'right');
-    } else if(dx < -threshold) {
-      flyCard(card, pet, 'left');
-    } else if(dy < -100) {
-      flyCard(card, pet, 'super');
-    } else {
-      card.style.transform = '';
-      card.style.zIndex = '';
-      // Short tap on photo area → cycle photo
-      if(!card._dragged && pet.photos && pet.photos.length > 1) {
-        var pt = e && e.changedTouches ? e.changedTouches[0] : null;
-        var clientX = pt ? pt.clientX : sx;
-        var photo = document.getElementById('cphoto-'+pet.id);
-        if(photo && clientX) {
-          var rect = photo.getBoundingClientRect();
-          // Only if tap was in the photo area (not card-info below)
-          if(pt && pt.clientY < rect.bottom) {
-            var relX = clientX - rect.left;
-            var w = rect.width;
-            if(relX < w * 0.38) {
-              cycleCardPhoto(null, pet.id, 'prev');
-              card._dragged = true; // suppress openDetail
-            } else if(relX > w * 0.62) {
-              cycleCardPhoto(null, pet.id, 'next');
-              card._dragged = true; // suppress openDetail
-            }
+  function end(e){
+    if(!down) return; down=false;
+    var ll=document.getElementById('ll-'+pet.id);
+    var nl=document.getElementById('nl-'+pet.id);
+    var sl=document.getElementById('sl-'+pet.id);
+    if(ll) ll.style.opacity=0; if(nl) nl.style.opacity=0; if(sl) sl.style.opacity=0;
+    var threshold=window.innerWidth*.28;
+    if(dx>threshold) flyCard(card,pet,'right');
+    else if(dx<-threshold) flyCard(card,pet,'left');
+    else if(dy<-100) flyCard(card,pet,'super');
+    else {
+      card.style.transform=''; card.style.zIndex='';
+      if(!card._dragged && pet.photos && pet.photos.length>1){
+        var pt2=e&&e.changedTouches?e.changedTouches[0]:null;
+        var cX=pt2?pt2.clientX:sx;
+        var photo=document.getElementById('cphoto-'+pet.id);
+        if(photo && cX){
+          var rect=photo.getBoundingClientRect();
+          if(!pt2||pt2.clientY<rect.bottom){
+            var rel=cX-rect.left,w=rect.width;
+            if(rel<w*.36){ cycleCardPhoto(null,pet.id,'prev');card._dragged=true; }
+            else if(rel>w*.64){ cycleCardPhoto(null,pet.id,'next');card._dragged=true; }
           }
         }
       }
     }
   }
-
-  card.addEventListener('mousedown', start);
-  card.addEventListener('touchstart', start, {passive:true});
-  window.addEventListener('mousemove', move);
-  window.addEventListener('touchmove', move, {passive:false});
-  window.addEventListener('mouseup', function(e){ end(e); });
-  window.addEventListener('touchend', function(e){ end(e); });
+  card.addEventListener('mousedown',start);
+  card.addEventListener('touchstart',start,{passive:true});
+  window.addEventListener('mousemove',move);
+  window.addEventListener('touchmove',move,{passive:false});
+  window.addEventListener('mouseup',function(e){end(e);});
+  window.addEventListener('touchend',function(e){end(e);});
 }
 
-function flyCard(card, pet, direction) {
-  swipeHistory.push({pet:pet, direction:direction});
+function flyCard(card,pet,direction){
+  swipeHistory.push({pet:pet,direction:direction});
   card.classList.add('is-flying');
-
-  // Record swipe to API (fire-and-forget)
-  var myPetId = localStorage.getItem('pawmatch_active_pet_id');
-  if(myPetId) {
-    var dir = (direction === 'right' || direction === 'up') ? 'right' : 'left';
-    fetch(API_BASE+'/pawmatch/swipe', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ swiper_pet_id: myPetId, swiped_pet_id: pet.id, direction: dir })
-    }).then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(data){
-        // If backend reports a match, show the match overlay
-        if(data && data.data && data.data.matched){
-          document.getElementById('match-pet-name').textContent = pet.name;
-          document.getElementById('match-overlay').classList.add('show');
-        }
-      })
-      .catch(function(){});
-  }
-
-  if(direction === 'right') {
-    card.style.transform = 'translateX(150%) rotate(20deg)';
-    card.style.opacity = '0';
-    handleLike(pet, false);
-  } else if(direction === 'left') {
-    card.style.transform = 'translateX(-150%) rotate(-20deg)';
-    card.style.opacity = '0';
-    pmToast('Passed on ' + pet.name, 'nope');
-  } else {
-    card.style.transform = 'translateY(-150%) scale(.8)';
-    card.style.opacity = '0';
-    handleLike(pet, true);
-    pmToast('⭐ Super Liked ' + pet.name + '!', 'super');
-  }
-
-  // Remove card and replenish after animation
-  setTimeout(function() {
-    card.remove();
-    replenishStack();
-    updateCardScale();
-  }, 420);
+  if(direction==='right'){ card.style.transform='translateX(150%) rotate(20deg)'; card.style.opacity='0'; handleLike(pet,false); }
+  else if(direction==='left'){ card.style.transform='translateX(-150%) rotate(-20deg)'; card.style.opacity='0'; pmToast('Passed on '+pet.name,'nope'); }
+  else { card.style.transform='translateY(-150%) scale(.8)'; card.style.opacity='0'; handleLike(pet,true); pmToast('⭐ Super Liked '+pet.name+'!','super'); }
+  setTimeout(function(){ card.remove(); replenishStack(); updateCardScale(); },420);
 }
 
-function replenishStack() {
-  var fd = filteredDeck();
-  var stack = document.getElementById('card-stack');
-  var existing = stack.querySelectorAll('.pet-card');
+function replenishStack(){
+  var fd=filteredDeck();
+  var stack=document.getElementById('card-stack');
+  var existing=stack.querySelectorAll('.pet-card');
   activePetIdx++;
-
-  // Show next card if we have more
-  var nextIdx = activePetIdx + existing.length;
-  if(nextIdx < fd.length) {
-    var newCard = buildCard(fd[nextIdx], 0);
-    stack.insertBefore(newCard, stack.firstChild);
-  }
-
-  if(!stack.querySelector('.pet-card')) {
-    setTimeout(function() {
-      if(!stack.querySelector('.pet-card')) {
-        stack.innerHTML = '<div class="empty-state"><div class="emoji">🎉</div><h3>You\'ve seen them all!</h3><p>Check your matches or reset</p><button class="refresh-btn" onclick="resetDeck()">🔄 Reset</button></div>';
-      }
-    }, 100);
+  var nextIdx=activePetIdx+existing.length;
+  if(nextIdx<fd.length){ var nc=buildCard(fd[nextIdx],0); stack.insertBefore(nc,stack.firstChild); }
+  if(!stack.querySelector('.pet-card')){
+    setTimeout(function(){
+      if(!stack.querySelector('.pet-card')) stack.innerHTML='<div class="empty-state"><div class="emoji">🎉</div><h3>You\'ve seen them all!</h3><p>Check your matches or reset the deck</p><button class="refresh-btn" onclick="resetDeck()">🔄 Reset</button></div>';
+    },100);
   }
 }
 
-function updateCardScale() {
-  var cards = document.querySelectorAll('#card-stack .pet-card');
-  var len = cards.length;
-  // top card = last in DOM
-  for(var i=0; i<len; i++) {
-    var fromTop = len - 1 - i;
-    cards[i].style.transform = fromTop === 0 ? '' : 'scale('+(1-fromTop*0.04)+') translateY('+(fromTop*8)+'px)';
-    cards[i].style.zIndex = len - fromTop;
+function updateCardScale(){
+  var cards=document.querySelectorAll('#card-stack .pet-card'),len=cards.length;
+  for(var i=0;i<len;i++){
+    var fromTop=len-1-i;
+    cards[i].style.transform=fromTop===0?'':'scale('+(1-fromTop*.04)+') translateY('+(fromTop*8)+'px)';
+    cards[i].style.zIndex=len-fromTop;
   }
 }
 
-/* ── SWIPE CARD (button) ── */
-function swipeCard(direction) {
-  var fd = filteredDeck();
-  if(activePetIdx >= fd.length) return;
-  var topCards = document.querySelectorAll('#card-stack .pet-card');
+function swipeCard(direction){
+  var fd=filteredDeck();
+  if(activePetIdx>=fd.length) return;
+  var topCards=document.querySelectorAll('#card-stack .pet-card');
   if(!topCards.length) return;
-  var topCard = topCards[topCards.length - 1]; // last = top (z-index highest)
-  var petId = parseInt(topCard.dataset.petId);
-  var pet = PETS.filter(function(p){ return p.id === petId; })[0];
+  var topCard=topCards[topCards.length-1];
+  var petId=topCard.dataset.petId;
+  petId = isNaN(parseInt(petId)) ? petId : parseInt(petId);
+  var pet=PETS.filter(function(p){ return String(p.id)===String(petId); })[0];
   if(!pet) return;
-  flyCard(topCard, pet, direction);
+  flyCard(topCard,pet,direction);
 }
 
-function undoSwipe() {
-  if(!swipeHistory.length) { pmToast('Nothing to undo!', 'info'); return; }
-  var last = swipeHistory.pop();
-  // Re-add to deck front and re-render
-  var idx = deck.indexOf(last.pet);
-  if(idx < 0) deck.unshift(last.pet);
-  activePetIdx = Math.max(0, activePetIdx - 1);
+function undoSwipe(){
+  if(!swipeHistory.length){ pmToast('Nothing to undo!','info'); return; }
+  var last=swipeHistory.pop();
+  var idx=deck.indexOf(last.pet);
+  if(idx<0) deck.unshift(last.pet);
+  activePetIdx=Math.max(0,activePetIdx-1);
   renderDeck();
-  pmToast('Undone!', 'info');
+  pmToast('Undone!','info');
 }
 
-/* ── LIKE / MATCH ── */
-function handleLike(pet, isSuper) {
-  pmToast((isSuper ? '⭐ Super Liked ' : '❤️ Liked ') + pet.name + '!', 'like');
-  var chance = pet.matchChance + (isSuper ? 0.25 : 0);
-  if(Math.random() < chance) {
-    setTimeout(function() { triggerMatch(pet); }, 550);
-  }
+/* ══════════════════════════════════════════════════════════
+   LIKE / MATCH
+══════════════════════════════════════════════════════════ */
+function handleLike(pet,isSuper){
+  pmToast((isSuper?'⭐ Super Liked ':'❤️ Liked ')+pet.name+'!','like');
+  var chance=(pet.matchChance||.65)+(isSuper?.25:0);
+  var compat=pet._compat||(MY_PET?calcCompatibility(MY_PET,pet):null);
+  if(compat) chance = Math.max(chance, compat.total/120);
+  if(Math.random()<chance) setTimeout(function(){ triggerMatch(pet); },550);
 }
 
-function triggerMatch(pet) {
-  var alreadyMatched = matchedPets.some(function(m){ return m.id === pet.id; });
-  if(!alreadyMatched) {
-    matchedPets.push({id:pet.id, name:pet.name, photo:pet.photos[0], breed:pet.breed, owner:pet.owner, matchedAt:new Date().toISOString(), isNew:true});
-    try { localStorage.setItem('pawmatch_matches', JSON.stringify(matchedPets)); } catch(e){}
+function triggerMatch(pet){
+  var already=matchedPets.some(function(m){ return String(m.id)===String(pet.id); });
+  if(!already){
+    matchedPets.push({id:pet.id,name:pet.name,photo:pet.photos[0],breed:pet.breed,owner:pet.owner,matchedAt:new Date().toISOString(),isNew:true});
+    try{ localStorage.setItem('pawmatch_matches',JSON.stringify(matchedPets)); }catch(e){}
   }
   updateMatchBadge();
-  document.getElementById('match-their-avatar').src = pet.photos[0];
-  document.getElementById('match-pet-name').textContent = pet.name;
-  document.getElementById('match-names-text').textContent = 'Your pet ❤️ ' + pet.name;
+
+  // Populate modal
+  document.getElementById('match-their-avatar').src=pet.photos[0];
+  document.getElementById('match-pet-name').textContent=pet.name;
+  var myName=MY_PET?MY_PET.name:'your pet';
+  document.getElementById('match-names-text').textContent=myName+' ❤️ '+pet.name;
+
+  // Set my avatar
+  var myPhoto=MY_PET&&MY_PET.photos&&MY_PET.photos[0]?MY_PET.photos[0]:'https://images.unsplash.com/photo-1534361960057-19f4434a0d49?w=200&q=80';
+  document.getElementById('match-my-avatar').src=myPhoto;
+
+  // Compatibility bars
+  var compat=MY_PET?calcCompatibility(MY_PET,pet):{total:75,breed:75,energy:75,purpose:75,temp:75,reasons:[]};
+  ['breed','energy','purpose','temp'].forEach(function(k){
+    var pct=Math.min(100,compat[k]||75);
+    var el=document.getElementById('mc-'+k);
+    var pctEl=document.getElementById('mc-'+k+'-pct');
+    if(el) el.style.width=pct+'%';
+    if(pctEl) pctEl.textContent=pct+'%';
+  });
+
+  // Meetup suggestions
+  var city=(MY_PET&&MY_PET.city)||pet.city||'your city';
+  document.getElementById('meetup-city').textContent=city;
+  var places=getMeetupPlaces(city).slice(0,3);
+  document.getElementById('meetup-places-modal').innerHTML=places.map(function(pl){
+    return '<div class="meetup-place" onclick="pmToast(\'📍 '+pl.name+' – great choice!\',\'like\')">'+'<div class="meetup-emoji">'+pl.emoji+'</div>'+'<div class="meetup-info"><div class="meetup-name">'+pl.name+'</div><div class="meetup-desc">'+pl.desc+'</div></div>'+'<div class="meetup-dist">📍</div>'+'</div>';
+  }).join('');
+
   document.getElementById('match-overlay').classList.add('show');
   launchConfetti();
 }
 
-function closeMatchModal() {
-  document.getElementById('match-overlay').classList.remove('show');
-}
+function closeMatchModal(){ document.getElementById('match-overlay').classList.remove('show'); }
 
-function sendMessage() {
+function sendMessage(){
   closeMatchModal();
-  pmToast('💬 Message sent! Check your inbox.', 'like');
+  pmToast('💬 Message sent! Check your inbox.','like');
 }
 
-function launchConfetti() {
-  var colors = ['#e11d48','#f97316','#f59e0b','#16a34a','#3b82f6','#a855f7','#fff'];
-  for(var i=0; i<60; i++) {
-    (function(i) {
-      var p = document.createElement('div');
-      p.className = 'confetti-piece';
-      p.style.left = (Math.random()*100) + 'vw';
-      p.style.background = colors[Math.floor(Math.random()*colors.length)];
-      p.style.width = (6+Math.random()*8) + 'px';
-      p.style.height = (6+Math.random()*8) + 'px';
-      p.style.animationDelay = (Math.random()*0.5) + 's';
-      p.style.animationDuration = (0.9+Math.random()*0.6) + 's';
+function launchConfetti(){
+  var colors=['#e11d48','#f97316','#f59e0b','#16a34a','#3b82f6','#a855f7','#fff'];
+  for(var i=0;i<70;i++){
+    (function(i){
+      var p=document.createElement('div');
+      p.className='confetti-piece';
+      p.style.left=(Math.random()*100)+'vw';
+      p.style.background=colors[Math.floor(Math.random()*colors.length)];
+      p.style.width=(5+Math.random()*9)+'px';
+      p.style.height=(5+Math.random()*9)+'px';
+      p.style.animationDelay=(Math.random()*.5)+'s';
+      p.style.animationDuration=(.9+Math.random()*.7)+'s';
       document.body.appendChild(p);
-      setTimeout(function(){ if(p.parentNode) p.parentNode.removeChild(p); }, 1500);
+      setTimeout(function(){ if(p.parentNode) p.parentNode.removeChild(p); },1600);
     })(i);
   }
 }
 
-/* ── TABS ── */
-function showTab(tab) {
-  var tabs = ['discover','matches','liked'];
-  tabs.forEach(function(t) {
-    var content = document.getElementById('tab-'+t+'-content');
-    var btn = document.getElementById('tab-btn-'+t);
-    if(content) content.style.display = t === tab ? 'block' : 'none';
-    if(btn) btn.classList.toggle('active', t === tab);
-  });
-  var filterBar = document.getElementById('filter-bar');
-  if(filterBar) filterBar.style.display = tab === 'discover' ? 'flex' : 'none';
-  if(tab === 'matches') renderMatchesGrid();
-  if(tab === 'liked') renderLikedGrid();
-}
-
-function updateMatchBadge() {
-  var badge = document.getElementById('match-badge');
-  var newCount = matchedPets.filter(function(m){ return m.isNew; }).length;
-  badge.textContent = newCount;
-  badge.style.display = newCount > 0 ? 'flex' : 'none';
-}
-
-/* ── MATCHES GRID ── */
-function renderMatchesGrid() {
-  var grid = document.getElementById('matches-grid');
-  var noEl = document.getElementById('no-matches');
-  grid.innerHTML = '';
-  if(!matchedPets.length) { noEl.style.display = 'block'; return; }
-  noEl.style.display = 'none';
-  matchedPets.forEach(function(m) {
-    m.isNew = false;
-    var div = document.createElement('div');
-    div.className = 'match-thumb';
-    div.innerHTML = '<img src="'+m.photo+'" alt="'+m.name+'"><div class="match-thumb-name">'+m.name+'</div>';
-    div.onclick = function(){ pmToast('💬 Opening chat with '+m.name+'...','like'); };
-    grid.appendChild(div);
-  });
-  try { localStorage.setItem('pawmatch_matches', JSON.stringify(matchedPets)); } catch(e){}
-  updateMatchBadge();
-}
-
-function renderLikedGrid() {
-  var grid = document.getElementById('liked-grid');
-  grid.innerHTML = '';
-  var likers = PETS.filter(function(p,i){ return i%2===0; }).slice(0,6);
-  likers.forEach(function(pet) {
-    var div = document.createElement('div');
-    div.className = 'match-thumb';
-    div.innerHTML =
-      '<img src="'+pet.photos[0]+'" alt="'+pet.name+'" style="filter:blur(7px)">' +
-      '<div class="match-thumb-name">'+pet.name+'</div>' +
-      '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">' +
-        '<button style="background:linear-gradient(135deg,#e11d48,#f97316);color:#fff;border:none;border-radius:999px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:Poppins,sans-serif" onclick="pmToast(\'Upgrade to PawMatch Pro to see who liked you!\',\'info\')">See Who</button>' +
-      '</div>';
-    grid.appendChild(div);
-  });
-}
-
-/* ── DETAIL ── */
-/* ── PHOTO CAROUSEL ── */
-function cycleCardPhoto(e, petId, dir) {
-  if(e) { e.stopPropagation(); }
-  var img = document.getElementById('cphoto-' + petId);
+/* ══════════════════════════════════════════════════════════
+   DETAIL OVERLAY
+══════════════════════════════════════════════════════════ */
+function cycleCardPhoto(e,petId,dir){
+  if(e) e.stopPropagation();
+  var img=document.getElementById('cphoto-'+petId);
   if(!img) return;
-  var idx = parseInt(img.dataset.idx) || 0;
-  var count = parseInt(img.dataset.count) || 1;
+  var idx=parseInt(img.dataset.idx)||0;
+  var count=parseInt(img.dataset.count)||1;
   var photos;
-  try { photos = JSON.parse(img.dataset.photos); } catch(err) { return; }
-  if(dir === 'next') idx = (idx + 1) % count;
-  else idx = (idx - 1 + count) % count;
-  img.src = photos[idx];
-  img.dataset.idx = idx;
-  // Update dots
-  var card = img.closest('.pet-card');
-  if(card) {
-    card.querySelectorAll('.cpd').forEach(function(dot, i){
-      dot.classList.toggle('cpd-active', i === idx);
-    });
-  }
+  try{ photos=JSON.parse(img.dataset.photos); }catch(err){ return; }
+  if(dir==='next') idx=(idx+1)%count; else idx=(idx-1+count)%count;
+  img.src=photos[idx]; img.dataset.idx=idx;
+  var card=img.closest('.pet-card');
+  if(card) card.querySelectorAll('.cpd').forEach(function(dot,i){ dot.classList.toggle('cpd-active',i===idx); });
 }
 
-function openDetail(pet) {
-  var em = EMOJI[pet.species] || '🐾';
+function openDetail(pet){
+  var em=EMOJI[pet.species]||'🐾';
+  var compat=pet._compat||(MY_PET?calcCompatibility(MY_PET,pet):null);
   document.getElementById('detail-overlay').classList.add('show');
-  document.getElementById('detail-header-name').textContent = pet.name + ' ' + em;
-  // Build photo strip if multiple photos
-  var strip = document.getElementById('detail-photo-strip');
-  if(strip) {
-    if(pet.photos && pet.photos.length > 1) {
-      strip.innerHTML = pet.photos.map(function(ph, i){
-        return '<img class="detail-strip-thumb'+(i===0?' active':'')+'" src="'+ph+'" data-idx="'+i+'" onclick="detailSetPhoto(this,\''+ph+'\')">';
-      }).join('');
-      strip.style.display = 'flex';
-    } else {
-      strip.style.display = 'none';
-    }
+  document.getElementById('detail-header-name').textContent=pet.name+' '+em;
+
+  // Photos
+  var strip=document.getElementById('detail-photo-strip');
+  if(pet.photos&&pet.photos.length>1){
+    strip.innerHTML=pet.photos.map(function(ph,i){ return '<img class="dstrip-thumb'+(i===0?' active':'')+'" src="'+ph+'" data-idx="'+i+'" onclick="detailSetPhoto(this,\''+ph+'\')">'; }).join('');
+    strip.style.display='flex';
+  } else { strip.style.display='none'; }
+  document.getElementById('detail-photo').src=pet.photos?pet.photos[0]:'';
+
+  // Compat banner
+  if(compat){
+    document.getElementById('detail-compat-score').textContent=compat.total+'%';
+    document.getElementById('detail-compat-reason').textContent=compat.reasons.length?compat.reasons[0]:compat.label;
+    document.getElementById('detail-compat-banner').style.display='flex';
+  } else {
+    document.getElementById('detail-compat-banner').style.display='none';
   }
-  document.getElementById('detail-photo').src = pet.photos ? pet.photos[0] : '';
-  document.getElementById('detail-name').textContent = pet.name;
-  document.getElementById('detail-age').textContent = pet.age;
-  document.getElementById('detail-verified').textContent = pet.vaccinated ? '✅' : '';
-  document.getElementById('detail-breed').textContent = em + ' ' + pet.breed + ' · ' + pet.gender + ' · ' + pet.size + ' · ' + pet.city;
-  document.getElementById('detail-bio').textContent = pet.bio;
-  document.getElementById('detail-owner-avatar').src = pet.ownerAvatar;
-  document.getElementById('detail-owner-name').textContent = pet.owner;
-  document.getElementById('detail-dist').textContent = '📍 ' + pet.distance + ' away';
-  document.getElementById('detail-grid').innerHTML =
-    '<div class="detail-chip"><div class="detail-chip-label">Energy</div><div class="detail-chip-val">'+pet.energy+'</div></div>' +
-    '<div class="detail-chip"><div class="detail-chip-label">Friendliness</div><div class="detail-chip-val">'+pet.friendly+'</div></div>' +
-    '<div class="detail-chip"><div class="detail-chip-label">Vaccinated</div><div class="detail-chip-val">'+(pet.vaccinated?'✅ Yes':'❌ No')+'</div></div>' +
-    '<div class="detail-chip"><div class="detail-chip-label">Neutered</div><div class="detail-chip-val">'+(pet.neutered?'✅ Yes':'❌ No')+'</div></div>';
-  document.getElementById('detail-tags').innerHTML = pet.lookingFor.map(function(t){ return '<span class="card-tag">'+t+'</span>'; }).join('');
+
+  document.getElementById('detail-name').textContent=pet.name;
+  document.getElementById('detail-age').textContent=pet.age;
+  document.getElementById('detail-verified').textContent=pet.vaccinated?'✅':'';
+  document.getElementById('detail-breed').textContent=em+' '+pet.breed+' · '+pet.gender+' · '+pet.size+' · '+pet.city;
+  document.getElementById('detail-bio').textContent=pet.bio;
+  document.getElementById('detail-owner-avatar').src=pet.ownerAvatar||'';
+  document.getElementById('detail-owner-name').textContent=pet.owner;
+  document.getElementById('detail-dist').textContent='📍 '+pet.distance+' away';
+  document.getElementById('detail-grid').innerHTML=
+    '<div class="detail-chip"><div class="detail-chip-label">Energy</div><div class="detail-chip-val">'+(pet.energy||'—')+'</div></div>'+
+    '<div class="detail-chip"><div class="detail-chip-label">Vaccinated</div><div class="detail-chip-val">'+(pet.vaccinated?'✅ Yes':'❌ No')+'</div></div>'+
+    '<div class="detail-chip"><div class="detail-chip-label">Neutered</div><div class="detail-chip-val">'+(pet.neutered?'✅ Yes':'❌ No')+'</div></div>'+
+    '<div class="detail-chip"><div class="detail-chip-label">Size</div><div class="detail-chip-val">'+(pet.size||'—')+'</div></div>';
+  document.getElementById('detail-tags').innerHTML=(pet.lookingFor||[]).map(function(t){ return '<span class="card-tag">'+t+'</span>'; }).join('');
+  document.getElementById('detail-traits').innerHTML=(pet.traits||[]).map(function(t){ return '<span class="card-tag blue">'+t+'</span>'; }).join('');
+
+  // Meetup spots
+  var city=(MY_PET&&MY_PET.city)||pet.city||'';
+  var places=getMeetupPlaces(city).slice(0,4);
+  document.getElementById('detail-meetup-spots').innerHTML=places.map(function(pl){
+    return '<div class="meetup-suggestion-card" onclick="pmToast(\'📍 '+pl.name+' – added to your plan!\',\'like\')">'+'<div class="meetup-suggestion-emoji">'+pl.emoji+'</div>'+'<div class="meetup-suggestion-info"><div class="meetup-suggestion-name">'+pl.name+'</div><div class="meetup-suggestion-desc">'+pl.desc+'</div>'+'<div class="meetup-suggestion-tags">'+pl.tags.map(function(t){ return '<span class="meetup-suggestion-tag">'+t+'</span>'; }).join('')+'</div></div>'+'</div>';
+  }).join('');
 }
 
-function detailSetPhoto(thumb, src) {
-  document.getElementById('detail-photo').src = src;
-  document.querySelectorAll('.detail-strip-thumb').forEach(function(t){ t.classList.remove('active'); });
+function detailSetPhoto(thumb,src){
+  document.getElementById('detail-photo').src=src;
+  document.querySelectorAll('.dstrip-thumb').forEach(function(t){ t.classList.remove('active'); });
   thumb.classList.add('active');
 }
 
-function closeDetail() {
-  document.getElementById('detail-overlay').classList.remove('show');
+function closeDetail(){ document.getElementById('detail-overlay').classList.remove('show'); }
+
+/* ══════════════════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════════════════ */
+function showTab(tab){
+  ['discover','matches','liked'].forEach(function(t){
+    var c=document.getElementById('tab-'+t+'-content');
+    var b=document.getElementById('tab-btn-'+t);
+    if(c) c.style.display=t===tab?'block':'none';
+    if(b) b.classList.toggle('active',t===tab);
+  });
+  var fb=document.getElementById('filter-bar');
+  if(fb) fb.style.display=(tab==='discover'&&document.getElementById('deck-panel').style.display==='block')?'flex':'none';
+  if(tab==='matches') renderMatchesGrid();
+  if(tab==='liked')   renderLikedGrid();
 }
 
-/* ── MISC ── */
-function setFilter(filter, btn) {
-  currentFilter = filter;
+function updateMatchBadge(){
+  var badge=document.getElementById('match-badge');
+  var n=matchedPets.filter(function(m){ return m.isNew; }).length;
+  badge.textContent=n; badge.style.display=n>0?'flex':'none';
+}
+
+function renderMatchesGrid(){
+  var grid=document.getElementById('matches-grid');
+  var noEl=document.getElementById('no-matches');
+  grid.innerHTML='';
+  if(!matchedPets.length){ noEl.style.display='block'; return; }
+  noEl.style.display='none';
+  matchedPets.forEach(function(m){
+    m.isNew=false;
+    var div=document.createElement('div');
+    div.className='match-thumb';
+    div.innerHTML='<img src="'+m.photo+'" alt="'+m.name+'"><div class="match-thumb-name">'+m.name+'</div>';
+    div.onclick=function(){ pmToast('💬 Opening chat with '+m.name+'...','like'); };
+    grid.appendChild(div);
+  });
+  try{ localStorage.setItem('pawmatch_matches',JSON.stringify(matchedPets)); }catch(e){}
+  updateMatchBadge();
+}
+
+function renderLikedGrid(){
+  var grid=document.getElementById('liked-grid');
+  grid.innerHTML='';
+  var likers=DEMO_PETS.filter(function(p,i){ return i%2===0; }).slice(0,6);
+  likers.forEach(function(pet){
+    var div=document.createElement('div');
+    div.className='match-thumb liked-blur-wrap';
+    div.innerHTML=
+      '<img src="'+pet.photos[0]+'" alt="'+pet.name+'" style="filter:blur(8px)">'+
+      '<div class="match-thumb-name">'+pet.name+'</div>'+
+      '<div class="liked-upgrade-overlay"><button class="upgrade-btn" onclick="pmToast(\'🌟 Upgrade to PawMatch Pro!\',\'super\')">See Who</button></div>';
+    grid.appendChild(div);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   MISC
+══════════════════════════════════════════════════════════ */
+function setFilter(filter,btn){
+  currentFilter=filter;
   document.querySelectorAll('.fpill').forEach(function(b){ b.classList.remove('active'); });
   if(btn) btn.classList.add('active');
-  deck = PETS.slice();
-  activePetIdx = 0;
+  activePetIdx=0;
   renderDeck();
 }
 
-function resetDeck() {
-  deck = PETS.slice();
-  activePetIdx = 0;
+function resetDeck(){
+  activePetIdx=0; currentFilter='all';
+  document.querySelectorAll('.fpill').forEach(function(b,i){ b.classList.toggle('active',i===0); });
   renderDeck();
 }
 
-function boostProfile() {
-  pmToast('⚡ Profile Boosted! Visible to 10x more pets near you.', 'super');
+function boostProfile(){
+  pmToast('⚡ Profile Boosted! Visible to 10x more pets near you.','super');
 }
 
-function openFilters() {
-  pmToast('Advanced filters: age, breed, distance, purpose', 'info');
+function openFiltersPanel(){
+  pmToast('Advanced filters: age, breed, distance, energy level','info');
 }
 
-function pmToast(msg, type) {
-  var t = document.getElementById('pm-toast');
-  t.textContent = msg;
-  t.style.background = type==='like' ? '#16a34a' : type==='nope' ? '#e11d48' : type==='super' ? '#3b82f6' : 'rgba(26,22,30,.92)';
+function pmToast(msg,type){
+  var t=document.getElementById('pm-toast');
+  t.textContent=msg;
+  var bg=type==='like'?'#16a34a':type==='nope'?'#e11d48':type==='super'?'#3b82f6':'rgba(26,22,30,.92)';
+  t.style.background=bg;
   t.classList.add('show');
   clearTimeout(t._timer);
-  t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
+  t._timer=setTimeout(function(){ t.classList.remove('show'); },2600);
 }
 
-/* ── LOAD DISCOVER FROM API ── */
-function petFromApi(p) {
+/* ══════════════════════════════════════════════════════════
+   API DISCOVER BACKGROUND LOAD
+══════════════════════════════════════════════════════════ */
+function petFromApi(p){
   return {
-    id:          p.pet_id || p.id,
-    name:        p.name || p.pet_name || 'Pet',
-    age:         p.age || '',
-    species:     (p.species || 'dog').toLowerCase(),
-    breed:       p.breed || '',
-    gender:      p.gender || '',
-    size:        p.size || '',
-    vaccinated:  !!p.vaccinated,
-    neutered:    !!p.neutered,
-    distance:    p.distance_km ? p.distance_km.toFixed(1)+' km' : 'Nearby',
-    city:        p.city || '',
-    lookingFor:  p.looking_for || ['Playdate'],
-    bio:         p.bio || 'Hi! I\'m '+p.name+' 🐾',
-    photos:      (p.photos && p.photos.length) ? p.photos : [p.photo_url || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80'],
-    owner:       p.owner_name || p.owner || '',
-    ownerAvatar: p.owner_avatar || '',
-    energy:      p.energy_level || '',
-    friendly:    p.friendly || '',
-    matchChance: 0.7
+    id:p.pet_id||p.id,name:p.name||p.pet_name||'Pet',age:p.age||'',
+    species:(p.species||'dog').toLowerCase(),breed:p.breed||'',gender:p.gender||'',size:p.size||'',
+    vaccinated:!!p.vaccinated,neutered:!!p.neutered,energy:p.energy_level||'Medium',
+    distance:p.distance_km?p.distance_km.toFixed(1)+' km':'Nearby',city:p.city||'',
+    lookingFor:p.looking_for||['Playdate'],traits:p.traits||[],bio:p.bio||'Hi! I\'m '+p.name+' 🐾',
+    photos:(p.photos&&p.photos.length)?p.photos:[p.photo_url||'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=80'],
+    owner:p.owner_name||p.owner||'',ownerAvatar:p.owner_avatar||'',matchChance:.7
   };
 }
 
-function loadDiscover() {
-  var myPetId = localStorage.getItem('pawmatch_active_pet_id');
-  if(!myPetId) {
-    // No pet selected — use demo data
-    deck = PETS.slice();
-    renderDeck();
-    return;
-  }
-  fetch(API_BASE+'/pawmatch/discover?pet_id='+myPetId, { headers: authHeaders() })
-    .then(function(r){ return r.ok ? r.json() : null; })
+function loadDiscoverAPI(){
+  var token=localStorage.getItem('pb_token');
+  var petId=localStorage.getItem('pawmatch_active_pet_id');
+  if(!token) return;
+  var base=typeof API_BASE!=='undefined'?API_BASE:'/api/v1';
+  var url=base+'/pawmatch/discover'+(petId?'?pet_id='+petId:'');
+  var ctrl=new AbortController(); setTimeout(function(){ ctrl.abort(); },8000);
+  fetch(url,{headers:{'Authorization':'Bearer '+token},signal:ctrl.signal})
+    .then(function(r){ return r.ok?r.json():null; })
     .then(function(data){
-      var rows = (data && (data.data || data)) || [];
-      if(Array.isArray(rows) && rows.length) {
-        PETS = rows.map(petFromApi);
+      var rows=(data&&(data.data||data))||[];
+      if(Array.isArray(rows)&&rows.length){
+        var apiPets=rows.map(petFromApi).map(function(p){
+          if(MY_PET){ var c=calcCompatibility(MY_PET,p); p._compat=c; p._score=c.total; }
+          return p;
+        });
+        PETS=apiPets.concat(DEMO_PETS.filter(function(d){ return !apiPets.some(function(a){ return String(a.id)===String(d.id); }); }));
+        PETS.sort(function(a,b){ return (b._score||0)-(a._score||0); });
+        deck=PETS.slice();
+        renderDeck();
       }
-      // Always fall back to DEMO_PETS if API returns nothing
-      if(!PETS || !PETS.length) PETS = DEMO_PETS;
-      deck = PETS.slice();
-      activePetIdx = 0;
-      renderDeck();
     })
-    .catch(function(){
-      deck = PETS.slice(); // fallback
-      renderDeck();
-    });
+    .catch(function(){});
 }
 
-/* ── INIT ── */
-document.addEventListener('DOMContentLoaded', function() {
+/* ══════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',function(){
   updateMatchBadge();
-  document.getElementById('tab-matches-content').style.display = 'none';
-  document.getElementById('tab-liked-content').style.display = 'none';
-  loadDiscover(); // loads from API (or falls back to DEMO_PETS)
+  document.getElementById('tab-matches-content').style.display='none';
+  document.getElementById('tab-liked-content').style.display='none';
 });
 </script>
+
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
     navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
-      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+      .then(function(reg){ console.log('[SW] Registered:',reg.scope); })
+      .catch(function(err){ console.warn('[SW] Registration failed:',err); });
   });
 }
 </script>
+<script src="pawbook-api.js"></script>
+
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
+</div>
+
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
 </body>
 </html>
-

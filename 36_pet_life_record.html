@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Digital Twin – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
+  --pb-green:#22c55e;--pb-green-soft:#dcfce7;--pb-red:#ef4444;--pb-red-soft:#fee2e2;
+  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;--pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
+  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;--pb-orange:#f97316;--pb-orange-soft:#ffedd5;
+  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
+  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
+  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
+  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
+  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --pb-shadow-md:0 4px 20px rgba(0,0,0,.1);--pb-nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
+a{text-decoration:none;color:inherit}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+input,textarea,select{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+
+/* NAV */
+.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
+.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pb-nav-search{flex:1;max-width:240px;height:40px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
+.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;width:100%;color:var(--pb-text)}
+.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
+.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
+.pb-nav-tab.active{color:var(--pb-blue)}
+.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-blue);border-radius:3px 3px 0 0}
+.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s}
+.pb-icon-btn:hover{background:var(--pb-border)}
+.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+
+/* BUTTONS */
+.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
+.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
+.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
+.pb-btn-green{background:var(--pb-green);color:#fff}
+.pb-btn-red{background:var(--pb-red);color:#fff}
+.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
+
+/* LAYOUT */
+.plr-layout{max-width:1100px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:300px 1fr;gap:20px}
+@media(max-width:768px){.plr-layout{grid-template-columns:1fr}.plr-sidebar{display:none}}
+
+/* CARDS */
+.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
+.pb-card-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
+.pb-card-header h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+
+/* SIDEBAR — PET SELECTOR */
+.pet-selector{padding:16px}
+.pet-card{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--pb-radius-sm);cursor:pointer;transition:background .15s;border:2px solid transparent}
+.pet-card:hover{background:var(--pb-bg)}
+.pet-card.selected{background:var(--pb-blue-soft);border-color:var(--pb-blue)}
+.pet-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.pet-info{flex:1;min-width:0}
+.pet-name{font-size:14px;font-weight:700;color:var(--pb-text)}
+.pet-breed{font-size:12px;color:var(--pb-text2)}
+.pet-score-badge{width:36px;height:36px;border-radius:50%;background:var(--pb-green-soft);color:var(--pb-green);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* HEALTH SCORE RING */
+.health-score-wrap{padding:24px 20px 16px;display:flex;flex-direction:column;align-items:center;gap:0}
+.score-ring-container{position:relative;width:120px;height:120px}
+.score-ring-container svg{transform:rotate(-90deg)}
+.score-ring-bg{fill:none;stroke:#f0f2f5;stroke-width:10}
+.score-ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);stroke:url(#scoreGrad)}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-size:28px;font-weight:900;color:var(--pb-text)}
+.score-label{font-size:10px;font-weight:600;color:var(--pb-text2);text-transform:uppercase;letter-spacing:.5px}
+.score-status{font-size:14px;font-weight:700;color:var(--pb-green);margin-top:8px}
+.score-updated{font-size:11px;color:var(--pb-text3);margin-top:2px}
+
+/* STAT PILLARS */
+.stat-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 20px 16px}
+.stat-pillar{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:10px;text-align:center}
+.stat-pillar-val{font-size:16px;font-weight:800;color:var(--pb-text)}
+.stat-pillar-label{font-size:10px;color:var(--pb-text2);font-weight:500;margin-top:2px}
+
+/* ALERT CHIPS */
+.alerts-section{padding:0 20px 16px;display:flex;flex-direction:column;gap:6px}
+.alert-chip{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--pb-radius-sm);font-size:12px;font-weight:600}
+.alert-chip.red{background:var(--pb-red-soft);color:var(--pb-red)}
+.alert-chip.amber{background:var(--pb-amber-soft);color:#92400e}
+.alert-chip.green{background:var(--pb-green-soft);color:#166534}
+.alert-chip.blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
+
+/* MAIN TABS */
+.plr-tabs{display:flex;gap:4px;padding:0 20px;border-bottom:1px solid var(--pb-border);overflow-x:auto;scrollbar-width:none}
+.plr-tabs::-webkit-scrollbar{display:none}
+.plr-tab{padding:14px 14px;font-size:13px;font-weight:600;color:var(--pb-text2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
+.plr-tab:hover{color:var(--pb-text)}
+.plr-tab.active{color:var(--pb-blue);border-bottom-color:var(--pb-blue)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* TIMELINE */
+.timeline{padding:20px}
+.tl-item{display:flex;gap:14px;padding-bottom:20px;position:relative}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:17px;top:36px;bottom:0;width:2px;background:var(--pb-border)}
+.tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;z-index:1}
+.tl-dot.blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
+.tl-dot.green{background:var(--pb-green-soft);color:var(--pb-green)}
+.tl-dot.amber{background:var(--pb-amber-soft);color:var(--pb-amber)}
+.tl-dot.red{background:var(--pb-red-soft);color:var(--pb-red)}
+.tl-dot.purple{background:var(--pb-purple-soft);color:var(--pb-purple)}
+.tl-dot.teal{background:var(--pb-teal-soft);color:var(--pb-teal)}
+.tl-body{flex:1;min-width:0}
+.tl-title{font-size:14px;font-weight:700;color:var(--pb-text)}
+.tl-meta{font-size:12px;color:var(--pb-text2);margin-top:2px}
+.tl-note{font-size:12px;color:var(--pb-text3);margin-top:4px;line-height:1.5}
+.tl-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--pb-pill);font-size:11px;font-weight:600;margin-top:6px}
+.tl-tag.vax{background:var(--pb-blue-soft);color:var(--pb-blue)}
+.tl-tag.vet{background:var(--pb-teal-soft);color:var(--pb-teal)}
+.tl-tag.med{background:var(--pb-purple-soft);color:var(--pb-purple)}
+.tl-tag.weight{background:var(--pb-amber-soft);color:var(--pb-amber)}
+.tl-tag.note{background:var(--pb-bg);color:var(--pb-text2)}
+
+/* VAX TABLE */
+.vax-grid{padding:20px;display:flex;flex-direction:column;gap:12px}
+.vax-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
+.vax-status{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.vax-status.done{background:var(--pb-green)}
+.vax-status.due{background:var(--pb-amber)}
+.vax-status.overdue{background:var(--pb-red)}
+.vax-name{font-size:14px;font-weight:600;flex:1}
+.vax-date{font-size:12px;color:var(--pb-text2)}
+.vax-next{font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--pb-pill)}
+.vax-next.soon{background:var(--pb-amber-soft);color:#92400e}
+.vax-next.ok{background:var(--pb-green-soft);color:#166534}
+.vax-next.overdue{background:var(--pb-red-soft);color:var(--pb-red)}
+
+/* WEIGHT CHART */
+.weight-chart-wrap{padding:20px}
+.weight-bars{display:flex;align-items:flex-end;gap:8px;height:120px;margin-bottom:8px}
+.weight-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.weight-bar{width:100%;border-radius:4px 4px 0 0;background:var(--pb-blue-soft);transition:height .6s;position:relative;min-height:4px}
+.weight-bar.latest{background:var(--pb-blue)}
+.weight-bar-label{font-size:10px;color:var(--pb-text3);white-space:nowrap}
+.weight-val{font-size:11px;font-weight:700;color:var(--pb-text2)}
+
+/* MEDICATIONS */
+.med-list{padding:20px;display:flex;flex-direction:column;gap:12px}
+.med-card{padding:14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;gap:12px;align-items:flex-start}
+.med-icon{width:40px;height:40px;border-radius:var(--pb-radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.med-info{flex:1}
+.med-name{font-size:14px;font-weight:700}
+.med-dose{font-size:12px;color:var(--pb-text2);margin-top:2px}
+.med-next{font-size:11px;font-weight:600;color:var(--pb-blue);margin-top:4px}
+.med-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--pb-pill)}
+.med-status.active{background:var(--pb-green-soft);color:#166534}
+.med-status.paused{background:var(--pb-amber-soft);color:#92400e}
+
+/* ACTIVITY TAB */
+.activity-wrap{padding:20px;display:flex;flex-direction:column;gap:16px}
+.activity-today{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.act-stat{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:14px;text-align:center}
+.act-stat-icon{font-size:24px;margin-bottom:6px}
+.act-stat-val{font-size:20px;font-weight:800;color:var(--pb-text)}
+.act-stat-label{font-size:11px;color:var(--pb-text2);font-weight:500}
+.act-weekly{display:flex;align-items:flex-end;gap:6px;height:80px}
+.act-day-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.act-day-bar{width:100%;border-radius:4px 4px 0 0;background:var(--pb-blue-soft);min-height:4px}
+.act-day-bar.today{background:var(--pb-blue)}
+.act-day-label{font-size:10px;color:var(--pb-text3)}
+.act-log{display:flex;flex-direction:column;gap:8px}
+.act-log-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)}
+.act-log-icon{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.act-log-info{flex:1}
+.act-log-title{font-size:13px;font-weight:600}
+.act-log-meta{font-size:11px;color:var(--pb-text2)}
+.act-log-cal{font-size:12px;font-weight:700;color:var(--pb-orange)}
+
+/* NUTRITION TAB */
+.nutrition-wrap{padding:20px;display:flex;flex-direction:column;gap:16px}
+.nut-plan{padding:14px;border-radius:var(--pb-radius-sm);border:2px solid var(--pb-blue);background:var(--pb-blue-soft)}
+.nut-plan-title{font-size:14px;font-weight:700;color:var(--pb-blue);display:flex;align-items:center;gap:6px}
+.nut-plan-desc{font-size:12px;color:var(--pb-text2);margin-top:4px}
+.nut-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.nut-macro{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:10px;text-align:center}
+.nut-macro-val{font-size:15px;font-weight:800;color:var(--pb-text)}
+.nut-macro-label{font-size:10px;color:var(--pb-text2);margin-top:2px}
+.nut-schedule{display:flex;flex-direction:column;gap:8px}
+.nut-meal{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)}
+.nut-meal-time{font-size:12px;font-weight:700;color:var(--pb-blue);width:60px;flex-shrink:0}
+.nut-meal-info{flex:1}
+.nut-meal-name{font-size:13px;font-weight:600}
+.nut-meal-qty{font-size:11px;color:var(--pb-text2)}
+.nut-meal-done{width:24px;height:24px;border-radius:50%;border:2px solid var(--pb-border);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .15s}
+.nut-meal-done.checked{background:var(--pb-green);border-color:var(--pb-green);color:#fff}
+.nut-foods{display:flex;flex-wrap:wrap;gap:8px}
+.nut-food-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--pb-pill);background:var(--pb-bg);font-size:12px;font-weight:600}
+.nut-food-chip.ok{background:var(--pb-green-soft);color:#166534}
+.nut-food-chip.avoid{background:var(--pb-red-soft);color:var(--pb-red)}
+
+/* VET VISITS TAB */
+.vet-visits-wrap{padding:20px;display:flex;flex-direction:column;gap:16px}
+.vet-visit-card{padding:14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
+.vet-visit-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.vet-visit-icon{width:36px;height:36px;border-radius:var(--pb-radius-sm);background:var(--pb-teal-soft);color:var(--pb-teal);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.vet-visit-title{font-size:14px;font-weight:700;flex:1}
+.vet-visit-date{font-size:12px;color:var(--pb-text2)}
+.vet-visit-vet{font-size:12px;color:var(--pb-text2);display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.vet-visit-notes{font-size:12px;color:var(--pb-text3);line-height:1.6;padding:8px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)}
+.vet-visit-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.vet-visit-tag{padding:3px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:600;background:var(--pb-teal-soft);color:var(--pb-teal)}
+.upcoming-visit{padding:14px;border-radius:var(--pb-radius-sm);border:2px solid var(--pb-amber);background:var(--pb-amber-soft);display:flex;align-items:center;gap:12px}
+.upcoming-visit-info{flex:1}
+.upcoming-visit-title{font-size:14px;font-weight:700;color:#92400e}
+.upcoming-visit-meta{font-size:12px;color:#92400e;margin-top:2px}
+
+/* DOCUMENTS */
+.doc-grid{padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.doc-item{border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:14px;text-align:center;cursor:pointer;transition:all .15s}
+.doc-item:hover{border-color:var(--pb-blue);background:var(--pb-blue-soft)}
+.doc-icon{font-size:28px;margin-bottom:8px}
+.doc-name{font-size:12px;font-weight:600;color:var(--pb-text)}
+.doc-date{font-size:11px;color:var(--pb-text3);margin-top:2px}
+
+/* PASSPORT BANNER */
+.passport-banner{margin:20px;padding:16px;border-radius:var(--pb-radius);background:var(--pb-grad);color:#fff;display:flex;align-items:center;gap:14px}
+.passport-banner-icon{font-size:32px;flex-shrink:0}
+.passport-banner-info{flex:1}
+.passport-banner-title{font-size:15px;font-weight:800}
+.passport-banner-sub{font-size:12px;opacity:.85;margin-top:2px}
+.passport-btn{padding:8px 16px;border-radius:var(--pb-pill);background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s}
+.passport-btn:hover{background:rgba(255,255,255,.3)}
+
+/* BREED ALERT CARD */
+.breed-alerts{padding:16px 20px;display:flex;flex-direction:column;gap:8px}
+.breed-alert{display:flex;gap:10px;padding:10px 12px;border-radius:var(--pb-radius-sm);border-left:3px solid}
+.breed-alert.warning{background:var(--pb-amber-soft);border-color:var(--pb-amber)}
+.breed-alert.info{background:var(--pb-blue-soft);border-color:var(--pb-blue)}
+.breed-alert.tip{background:var(--pb-teal-soft);border-color:var(--pb-teal)}
+.breed-alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.breed-alert-title{font-size:13px;font-weight:700}
+.breed-alert-desc{font-size:11px;color:var(--pb-text2);margin-top:2px}
+
+/* BOTTOM NAV */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);z-index:300}
+@media(max-width:768px){.bnav{display:flex}}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;color:var(--pb-text3);cursor:pointer;border:none;background:transparent;transition:color .15s}
+.bnav-item.active,.bnav-item:hover{color:var(--pb-blue)}
+.bnav-item i{font-size:22px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:flex-end;justify-content:center}
+@media(min-width:600px){.modal-overlay{align-items:center}}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:slideUp .25s ease}
+@media(min-width:600px){.modal{border-radius:16px}}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
+.modal-header h3{font-size:16px;font-weight:800}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:13px;font-weight:600;color:var(--pb-text)}
+.form-input{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;transition:border .15s}
+.form-input:focus{border-color:var(--pb-blue)}
+.form-select{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;background:#fff}
+.form-textarea{border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:10px 12px;font-size:14px;outline:none;resize:vertical;min-height:80px}
+.form-textarea:focus{border-color:var(--pb-blue)}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--pb-border);display:flex;gap:8px;justify-content:flex-end}
+
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="pb-nav">
+  <div class="pb-nav-logo" onclick="location.href='07_home.html'">
+    <div class="pb-nav-logo-icon">🐾</div>
+    <span>PawBook</span>
+  </div>
+  <div class="pb-nav-search">
+    <i class="ti ti-search" style="color:var(--pb-text3);font-size:16px"></i>
+    <input type="text" placeholder="Search records…">
+  </div>
+  <div class="pb-nav-tabs">
+    <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
+    <button class="pb-nav-tab active"><i class="ti ti-heart-rate-monitor"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='09_marketplace.html'"><i class="ti ti-shopping-bag"></i></button>
+  </div>
+  <div class="pb-nav-right">
+    <button class="pb-icon-btn" onclick="openModal('addEventModal')" title="Add Record"><i class="ti ti-plus"></i></button>
+    <button class="pb-icon-btn" onclick="openModal('shareModal')" title="Share Passport"><i class="ti ti-share"></i></button>
+    <div class="pb-avatar">A</div>
+  </div>
+</nav>
+
+<!-- MAIN LAYOUT -->
+<div class="plr-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="plr-sidebar">
+    <!-- Pet Selector -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-paw" style="color:var(--pb-blue)"></i> My Pets</h3>
+        <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="openModal('addPetModal')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div class="pet-selector">
+        <div class="pet-card selected" onclick="selectPet(this,'Bruno')">
+          <div class="pet-avatar">🐕</div>
+          <div class="pet-info">
+            <div class="pet-name">Bruno</div>
+            <div class="pet-breed">Labrador · 3 yrs</div>
+          </div>
+          <div class="pet-score-badge">87</div>
+        </div>
+        <div class="pet-card" onclick="selectPet(this,'Whiskers')">
+          <div class="pet-avatar">🐈</div>
+          <div class="pet-info">
+            <div class="pet-name">Whiskers</div>
+            <div class="pet-breed">Persian · 5 yrs</div>
+          </div>
+          <div class="pet-score-badge" style="background:var(--pb-amber-soft);color:var(--pb-amber)">72</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Health Score -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-activity" style="color:var(--pb-green)"></i> Health Score</h3>
+        <span style="font-size:11px;color:var(--pb-text3)">Updated today</span>
+      </div>
+      <div class="health-score-wrap">
+        <div class="score-ring-container">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#1877F2"/>
+                <stop offset="100%" style="stop-color:#22c55e"/>
+              </linearGradient>
+            </defs>
+            <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="score-ring-fill" id="scoreRing" cx="60" cy="60" r="50"
+              stroke-dasharray="314" stroke-dashoffset="314"/>
+          </svg>
+          <div class="score-center">
+            <div class="score-num" id="scoreNum">0</div>
+            <div class="score-label">/ 100</div>
+          </div>
+        </div>
+        <div class="score-status" id="scoreStatus">Excellent</div>
+        <div class="score-updated">Last updated: Today, 9:00 AM</div>
+      </div>
+      <div class="stat-pillars">
+        <div class="stat-pillar">
+          <div class="stat-pillar-val">28.4<span style="font-size:10px;font-weight:500">kg</span></div>
+          <div class="stat-pillar-label">Weight</div>
+        </div>
+        <div class="stat-pillar">
+          <div class="stat-pillar-val">3<span style="font-size:10px;font-weight:500">yr</span></div>
+          <div class="stat-pillar-label">Age</div>
+        </div>
+        <div class="stat-pillar">
+          <div class="stat-pillar-val" style="color:var(--pb-green)">✓ 8</div>
+          <div class="stat-pillar-label">Vaccines</div>
+        </div>
+      </div>
+      <!-- Breed Alerts -->
+      <div style="padding:0 20px 16px">
+        <div style="font-size:12px;font-weight:700;color:var(--pb-text2);margin-bottom:8px;display:flex;align-items:center;gap:4px"><i class="ti ti-dna"></i> Breed Alerts · Labrador</div>
+        <div class="breed-alerts" style="padding:0;gap:6px">
+          <div class="breed-alert warning">
+            <div class="breed-alert-icon">⚠️</div>
+            <div>
+              <div class="breed-alert-title">Hip Dysplasia Screen</div>
+              <div class="breed-alert-desc">Recommended at age 3–4. Book a vet check.</div>
+            </div>
+          </div>
+          <div class="breed-alert info">
+            <div class="breed-alert-icon">ℹ️</div>
+            <div>
+              <div class="breed-alert-title">Weight Watch</div>
+              <div class="breed-alert-desc">Labradors prone to obesity. Ideal: 25–32 kg.</div>
+            </div>
+          </div>
+          <div class="breed-alert tip">
+            <div class="breed-alert-icon">💡</div>
+            <div>
+              <div class="breed-alert-title">Joint Supplement</div>
+              <div class="breed-alert-desc">Omega-3 & glucosamine recommended after age 3.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="pb-card">
+      <div class="pb-card-header"><h3><i class="ti ti-bolt" style="color:var(--pb-amber)"></i> Quick Actions</h3></div>
+      <div style="padding:12px;display:flex;flex-direction:column;gap:6px">
+        <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add Health Event</button>
+        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i> Book Vet Visit</button>
+        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="openModal('shareModal')"><i class="ti ti-id-badge"></i> Share Health Passport</button>
+        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="location.href='37_pet_ai_health_agent.html'"><i class="ti ti-robot"></i> Ask AI Health Agent</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- Health Passport Banner -->
+    <div class="passport-banner pb-card" style="margin:0 0 16px;border-radius:var(--pb-radius)">
+      <div class="passport-banner-icon">📋</div>
+      <div class="passport-banner-info">
+        <div class="passport-banner-title">Bruno's Digital Health Passport</div>
+        <div class="passport-banner-sub">Complete lifecycle record · 8 vaccines · 12 vet visits · Last updated today</div>
+      </div>
+      <button class="passport-btn" onclick="openModal('shareModal')"><i class="ti ti-share" style="font-size:13px"></i> Share</button>
+    </div>
+
+    <!-- Active Alerts -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-alert-triangle" style="color:var(--pb-amber)"></i> Active Alerts</h3>
+        <span style="font-size:12px;font-weight:700;padding:3px 10px;background:var(--pb-amber-soft);color:#92400e;border-radius:var(--pb-pill)">2 pending</span>
+      </div>
+      <div class="alerts-section">
+        <div class="alert-chip amber"><i class="ti ti-vaccine"></i> Rabies booster due in 12 days (Nov 23)</div>
+        <div class="alert-chip amber"><i class="ti ti-stethoscope"></i> Annual wellness check overdue by 3 weeks</div>
+        <div class="alert-chip green"><i class="ti ti-pill"></i> Heartgard taken · Next dose: Dec 1</div>
+        <div class="alert-chip blue"><i class="ti ti-trophy"></i> Bruno achieved 7-day activity streak! 🎉</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="pb-card">
+      <div class="plr-tabs">
+        <button class="plr-tab active" onclick="switchTab('timeline')">📋 Timeline</button>
+        <button class="plr-tab" onclick="switchTab('vaccinations')">💉 Vaccines</button>
+        <button class="plr-tab" onclick="switchTab('activity')">🏃 Activity</button>
+        <button class="plr-tab" onclick="switchTab('nutrition')">🥩 Nutrition</button>
+        <button class="plr-tab" onclick="switchTab('vetvisits')">🏥 Vet Visits</button>
+        <button class="plr-tab" onclick="switchTab('medications')">💊 Medications</button>
+        <button class="plr-tab" onclick="switchTab('weight')">⚖️ Weight</button>
+        <button class="plr-tab" onclick="switchTab('documents')">📄 Documents</button>
+      </div>
+
+      <!-- TIMELINE TAB -->
+      <div id="tab-timeline" class="tab-content active">
+        <div style="padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">Complete health history</span>
+          <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add</button>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot green"><i class="ti ti-vaccine"></i></div>
+            <div class="tl-body">
+              <div class="tl-title">Leptospirosis Vaccine</div>
+              <div class="tl-meta">Nov 1, 2026 · Dr. Priya Sharma, Paws Clinic</div>
+              <div class="tl-note">Annual booster administered. No adverse reactions. Next due Nov 2027.</div>
+              <span class="tl-tag vax"><i class="ti ti-vaccine"></i> Vaccination</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot teal"><i class="ti ti-stethoscope"></i></div>
+            <div class="tl-body">
+              <div class="tl-title">Annual Wellness Check</div>
+              <div class="tl-meta">Oct 15, 2026 · Dr. Priya Sharma, Paws Clinic</div>
+              <div class="tl-note">Weight: 28.4 kg (ideal range). Heart, lungs clear. Blood work normal. Hip joints: mild early-stage concern noted — monitoring recommended.</div>
+              <span class="tl-tag vet"><i class="ti ti-stethoscope"></i> Vet Visit</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot purple"><i class="ti ti-pill"></i></div>
+            <div class="tl-body">
+              <div class="tl-title">Heartgard Plus – Monthly Dose</div>
+              <div class="tl-meta">Nov 1, 2026</div>
+              <div class="tl-note">Heartworm prevention. 1 chewable tablet. Next dose: Dec 1.</div>
+              <span class="tl-tag med"><i class="ti ti-pill"></i> Medication</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot amber"><i class="ti ti-scale"></i></div>
+            <div class="tl-body">
+              <div class="tl-title">Weight Check</div>
+              <div class="tl-meta">Oct 10, 2026</div>
+              <div class="tl-note">28.4 kg — stable. Down 0.3 kg from last month. Good progress.</div>
+              <span class="tl-tag weight"><i class="ti ti-scale"></i> Weight</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot blue"><i class="ti ti-vaccine"></i></div>
+            <div class="tl-body">
+              <div class="tl-title">Bordetella (Kennel Cough) Vaccine</div>
+              <div class="tl-meta">Sep 20, 2026 · Dr. Priya Sharma</div>
+              <div class="tl-note">Intranasal vaccine. Prior to dog show registration. No side effects.</div>
+              <span class="tl-tag vax"><i class="ti ti-vaccine"></i> Vaccination</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot red"><i class="ti ti-urgent"></i></div>
+            <div class="tl-body">
+              <div class="tl-title">Emergency – Swallowed Object</div>
+              <div class="tl-meta">Aug 3, 2026 · Animal Emergency, Delhi</div>
+              <div class="tl-note">Swallowed small plastic toy piece. X-ray confirmed passage. Monitored for 24 hrs. Full recovery. No surgery needed.</div>
+              <span class="tl-tag" style="background:var(--pb-red-soft);color:var(--pb-red)"><i class="ti ti-urgent"></i> Emergency</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VACCINATIONS TAB -->
+      <div id="tab-vaccinations" class="tab-content">
+        <div style="padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">Vaccination schedule · Labrador · 3 yrs</span>
+          <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add</button>
+        </div>
+        <div class="vax-grid">
+          <div class="vax-row">
+            <div class="vax-status done"></div>
+            <div style="flex:1">
+              <div class="vax-name">Rabies</div>
+              <div class="vax-date">Last: Nov 11, 2025</div>
+            </div>
+            <span class="vax-next soon">Due Nov 23</span>
+          </div>
+          <div class="vax-row">
+            <div class="vax-status done"></div>
+            <div style="flex:1">
+              <div class="vax-name">DHPPiL (5-in-1)</div>
+              <div class="vax-date">Last: Mar 5, 2026</div>
+            </div>
+            <span class="vax-next ok">Due Mar 2027</span>
+          </div>
+          <div class="vax-row">
+            <div class="vax-status done"></div>
+            <div style="flex:1">
+              <div class="vax-name">Leptospirosis</div>
+              <div class="vax-date">Last: Nov 1, 2026</div>
+            </div>
+            <span class="vax-next ok">Due Nov 2027</span>
+          </div>
+          <div class="vax-row">
+            <div class="vax-status done"></div>
+            <div style="flex:1">
+              <div class="vax-name">Bordetella</div>
+              <div class="vax-date">Last: Sep 20, 2026</div>
+            </div>
+            <span class="vax-next ok">Due Sep 2027</span>
+          </div>
+          <div class="vax-row">
+            <div class="vax-status overdue"></div>
+            <div style="flex:1">
+              <div class="vax-name">Canine Influenza</div>
+              <div class="vax-date">Last: Oct 2025</div>
+            </div>
+            <span class="vax-next overdue">3 wks overdue</span>
+          </div>
+          <div class="vax-row" style="border:1px dashed var(--pb-border);background:var(--pb-bg)">
+            <div class="vax-status" style="background:var(--pb-text3)"></div>
+            <div style="flex:1">
+              <div class="vax-name" style="color:var(--pb-text2)">Tick-borne Encephalitis</div>
+              <div class="vax-date">Recommended for Labradors in Delhi</div>
+            </div>
+            <span class="vax-next" style="background:var(--pb-bg);color:var(--pb-text2)">Not given</span>
+          </div>
+        </div>
+        <!-- Intelligence section -->
+        <div style="margin:0 20px 20px;padding:14px;border-radius:var(--pb-radius-sm);background:var(--pb-blue-soft);border:1px solid var(--pb-blue)">
+          <div style="font-size:13px;font-weight:700;color:var(--pb-blue);display:flex;align-items:center;gap:6px;margin-bottom:6px"><i class="ti ti-sparkles"></i> Vaccination Intelligence · Age 3</div>
+          <div style="font-size:12px;color:var(--pb-text2);line-height:1.6">At age 3, Labradors should consider: hip screening, annual dental check, and tick prevention especially in Delhi's monsoon season (Jul–Sep). Canine influenza is currently overdue — book a vet visit soon.</div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY TAB -->
+      <div id="tab-activity" class="tab-content">
+        <div class="activity-wrap">
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:12px">Today's Activity</div>
+            <div class="activity-today">
+              <div class="act-stat">
+                <div class="act-stat-icon">🚶</div>
+                <div class="act-stat-val">4.2<span style="font-size:12px;font-weight:500">km</span></div>
+                <div class="act-stat-label">Distance</div>
+              </div>
+              <div class="act-stat">
+                <div class="act-stat-icon">⏱️</div>
+                <div class="act-stat-val">48<span style="font-size:12px;font-weight:500">min</span></div>
+                <div class="act-stat-label">Active Time</div>
+              </div>
+              <div class="act-stat">
+                <div class="act-stat-icon">🔥</div>
+                <div class="act-stat-val">320<span style="font-size:12px;font-weight:500">cal</span></div>
+                <div class="act-stat-label">Calories</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">This Week</div>
+            <div class="act-weekly">
+              <div class="act-day-col">
+                <div class="act-day-bar" style="height:55%"></div>
+                <div class="act-day-label">Mon</div>
+              </div>
+              <div class="act-day-col">
+                <div class="act-day-bar" style="height:70%"></div>
+                <div class="act-day-label">Tue</div>
+              </div>
+              <div class="act-day-col">
+                <div class="act-day-bar" style="height:40%"></div>
+                <div class="act-day-label">Wed</div>
+              </div>
+              <div class="act-day-col">
+                <div class="act-day-bar" style="height:90%"></div>
+                <div class="act-day-label">Thu</div>
+              </div>
+              <div class="act-day-col">
+                <div class="act-day-bar" style="height:65%"></div>
+                <div class="act-day-label">Fri</div>
+              </div>
+              <div class="act-day-col">
+                <div class="act-day-bar" style="height:80%"></div>
+                <div class="act-day-label">Sat</div>
+              </div>
+              <div class="act-day-col">
+                <div class="act-day-bar today" style="height:60%"></div>
+                <div class="act-day-label">Sun</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Activity Log</div>
+            <div class="act-log">
+              <div class="act-log-item">
+                <div class="act-log-icon">🏃</div>
+                <div class="act-log-info">
+                  <div class="act-log-title">Morning Run</div>
+                  <div class="act-log-meta">Today · 6:30 AM · 2.8 km · 28 min</div>
+                </div>
+                <div class="act-log-cal">210 cal</div>
+              </div>
+              <div class="act-log-item">
+                <div class="act-log-icon">🎾</div>
+                <div class="act-log-info">
+                  <div class="act-log-title">Fetch Play Session</div>
+                  <div class="act-log-meta">Today · 5:30 PM · 20 min</div>
+                </div>
+                <div class="act-log-cal">110 cal</div>
+              </div>
+              <div class="act-log-item">
+                <div class="act-log-icon">🚶</div>
+                <div class="act-log-info">
+                  <div class="act-log-title">Evening Walk</div>
+                  <div class="act-log-meta">Yesterday · 7:00 PM · 1.4 km · 20 min</div>
+                </div>
+                <div class="act-log-cal">95 cal</div>
+              </div>
+              <div class="act-log-item">
+                <div class="act-log-icon">🏊</div>
+                <div class="act-log-info">
+                  <div class="act-log-title">Swimming Session</div>
+                  <div class="act-log-meta">Nov 9 · 10:00 AM · 30 min</div>
+                </div>
+                <div class="act-log-cal">280 cal</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:12px;background:var(--pb-teal-soft);border-radius:var(--pb-radius-sm);border-left:3px solid var(--pb-teal)">
+            <div style="font-size:13px;font-weight:700;color:var(--pb-teal)">🎯 Activity Goal</div>
+            <div style="font-size:12px;color:var(--pb-text2);margin-top:4px">Labradors need 60–90 min of exercise daily. Bruno is at 48 min today. Try a short evening walk to hit the goal.</div>
+          </div>
+          <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center" onclick="openModal('addActivityModal')"><i class="ti ti-plus"></i> Log Activity</button>
+        </div>
+      </div>
+
+      <!-- NUTRITION TAB -->
+      <div id="tab-nutrition" class="tab-content">
+        <div class="nutrition-wrap">
+          <div class="nut-plan">
+            <div class="nut-plan-title"><i class="ti ti-sparkles"></i> AI Nutrition Plan · Bruno</div>
+            <div class="nut-plan-desc">Labrador · 3 yrs · 28.4 kg · Moderately active · Hip concern noted</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Daily Macros</div>
+            <div class="nut-macros">
+              <div class="nut-macro">
+                <div class="nut-macro-val">1,480</div>
+                <div class="nut-macro-label">Calories</div>
+              </div>
+              <div class="nut-macro">
+                <div class="nut-macro-val">115g</div>
+                <div class="nut-macro-label">Protein</div>
+              </div>
+              <div class="nut-macro">
+                <div class="nut-macro-val">54g</div>
+                <div class="nut-macro-label">Fat</div>
+              </div>
+              <div class="nut-macro">
+                <div class="nut-macro-val">160g</div>
+                <div class="nut-macro-label">Carbs</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Meal Schedule</div>
+            <div class="nut-schedule">
+              <div class="nut-meal">
+                <div class="nut-meal-time">7:00 AM</div>
+                <div class="nut-meal-info">
+                  <div class="nut-meal-name">Morning Meal</div>
+                  <div class="nut-meal-qty">Royal Canin Labrador Adult · 180g + Omega-3 supplement</div>
+                </div>
+                <div class="nut-meal-done checked" onclick="toggleMeal(this)">✓</div>
+              </div>
+              <div class="nut-meal">
+                <div class="nut-meal-time">1:00 PM</div>
+                <div class="nut-meal-info">
+                  <div class="nut-meal-name">Afternoon Snack</div>
+                  <div class="nut-meal-qty">Dental chew · 1 piece</div>
+                </div>
+                <div class="nut-meal-done checked" onclick="toggleMeal(this)">✓</div>
+              </div>
+              <div class="nut-meal">
+                <div class="nut-meal-time">6:00 PM</div>
+                <div class="nut-meal-info">
+                  <div class="nut-meal-name">Evening Meal</div>
+                  <div class="nut-meal-qty">Royal Canin Labrador Adult · 180g</div>
+                </div>
+                <div class="nut-meal-done" onclick="toggleMeal(this)"></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Safe & Avoid</div>
+            <div class="nut-foods">
+              <span class="nut-food-chip ok">✓ Chicken</span>
+              <span class="nut-food-chip ok">✓ Rice</span>
+              <span class="nut-food-chip ok">✓ Carrots</span>
+              <span class="nut-food-chip ok">✓ Blueberries</span>
+              <span class="nut-food-chip ok">✓ Pumpkin</span>
+              <span class="nut-food-chip avoid">✗ Chocolate</span>
+              <span class="nut-food-chip avoid">✗ Grapes</span>
+              <span class="nut-food-chip avoid">✗ Onions</span>
+              <span class="nut-food-chip avoid">✗ Avocado</span>
+              <span class="nut-food-chip avoid">✗ Xylitol</span>
+            </div>
+          </div>
+          <div style="padding:12px;background:var(--pb-blue-soft);border-radius:var(--pb-radius-sm);border-left:3px solid var(--pb-blue)">
+            <div style="font-size:13px;font-weight:700;color:var(--pb-blue)">🦴 Hip Health Nutrition Note</div>
+            <div style="font-size:12px;color:var(--pb-text2);margin-top:4px">Given Bruno's mild hip concern, the plan includes Omega-3 (fish oil) and glucosamine-rich foods. Avoid high-calorie treats to maintain ideal weight and reduce joint stress.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VET VISITS TAB -->
+      <div id="tab-vetvisits" class="tab-content">
+        <div class="vet-visits-wrap">
+          <div class="upcoming-visit">
+            <div style="font-size:28px">📅</div>
+            <div class="upcoming-visit-info">
+              <div class="upcoming-visit-title">Annual Wellness Check – Overdue</div>
+              <div class="upcoming-visit-meta">Was due Oct 20 · Dr. Priya Sharma · Paws Clinic, Delhi</div>
+            </div>
+            <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="location.href='11_vet_booking.html'">Book Now</button>
+          </div>
+          <div class="vet-visit-card">
+            <div class="vet-visit-header">
+              <div class="vet-visit-icon"><i class="ti ti-stethoscope"></i></div>
+              <div>
+                <div class="vet-visit-title">Annual Wellness Check</div>
+                <div class="vet-visit-date">Oct 15, 2026</div>
+              </div>
+            </div>
+            <div class="vet-visit-vet"><i class="ti ti-user" style="font-size:12px"></i> Dr. Priya Sharma · Paws Animal Clinic, South Delhi</div>
+            <div class="vet-visit-notes">Weight stable at 28.4 kg. Heart and lungs clear. CBC normal. Mild early hip joint concern — recommend monitoring. Hip X-ray suggested at next visit. Dental health good. Ears clean. No skin issues noted.</div>
+            <div class="vet-visit-tags">
+              <span class="vet-visit-tag">Wellness</span>
+              <span class="vet-visit-tag">Blood Work</span>
+              <span class="vet-visit-tag">Hip Check</span>
+            </div>
+          </div>
+          <div class="vet-visit-card">
+            <div class="vet-visit-header">
+              <div class="vet-visit-icon" style="background:var(--pb-red-soft);color:var(--pb-red)"><i class="ti ti-urgent"></i></div>
+              <div>
+                <div class="vet-visit-title">Emergency – Swallowed Object</div>
+                <div class="vet-visit-date">Aug 3, 2026</div>
+              </div>
+            </div>
+            <div class="vet-visit-vet"><i class="ti ti-user" style="font-size:12px"></i> Dr. Arvind Kumar · Animal Emergency Hospital, Delhi</div>
+            <div class="vet-visit-notes">Bruno swallowed a small plastic piece. X-ray confirmed small intestine location. Conservative management chosen — monitored 24 hrs. Passed naturally. No complications. Advised pet-proofing home environment.</div>
+            <div class="vet-visit-tags">
+              <span class="vet-visit-tag" style="background:var(--pb-red-soft);color:var(--pb-red)">Emergency</span>
+              <span class="vet-visit-tag" style="background:var(--pb-red-soft);color:var(--pb-red)">X-Ray</span>
+            </div>
+          </div>
+          <div class="vet-visit-card">
+            <div class="vet-visit-header">
+              <div class="vet-visit-icon"><i class="ti ti-stethoscope"></i></div>
+              <div>
+                <div class="vet-visit-title">Vaccination + Check-up</div>
+                <div class="vet-visit-date">Mar 5, 2026</div>
+              </div>
+            </div>
+            <div class="vet-visit-vet"><i class="ti ti-user" style="font-size:12px"></i> Dr. Priya Sharma · Paws Animal Clinic</div>
+            <div class="vet-visit-notes">Annual DHPPiL booster. Full physical exam normal. Weight 28.7 kg — slightly high, recommended portion control. All vitals normal.</div>
+            <div class="vet-visit-tags">
+              <span class="vet-visit-tag">Vaccination</span>
+              <span class="vet-visit-tag">Wellness</span>
+            </div>
+          </div>
+          <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add Vet Visit</button>
+        </div>
+      </div>
+
+      <!-- MEDICATIONS TAB -->
+      <div id="tab-medications" class="tab-content">
+        <div class="med-list">
+          <div style="font-size:13px;font-weight:600;color:var(--pb-text2)">Active Medications</div>
+          <div class="med-card">
+            <div class="med-icon" style="background:var(--pb-blue-soft);color:var(--pb-blue)">💊</div>
+            <div class="med-info">
+              <div class="med-name">Heartgard Plus</div>
+              <div class="med-dose">1 chewable tablet · Monthly · Heartworm prevention</div>
+              <div class="med-next">Next dose: Dec 1, 2026</div>
+            </div>
+            <span class="med-status active">Active</span>
+          </div>
+          <div class="med-card">
+            <div class="med-icon" style="background:var(--pb-teal-soft);color:var(--pb-teal)">🐛</div>
+            <div class="med-info">
+              <div class="med-name">NexGard</div>
+              <div class="med-dose">1 chewable tablet · Monthly · Flea & tick prevention</div>
+              <div class="med-next">Next dose: Nov 25, 2026</div>
+            </div>
+            <span class="med-status active">Active</span>
+          </div>
+          <div class="med-card">
+            <div class="med-icon" style="background:var(--pb-orange-soft);color:var(--pb-orange)">🐟</div>
+            <div class="med-info">
+              <div class="med-name">Omega-3 Fish Oil</div>
+              <div class="med-dose">1 capsule daily with morning meal · Joint & coat health</div>
+              <div class="med-next">Ongoing supplement</div>
+            </div>
+            <span class="med-status active">Active</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:var(--pb-text2);margin-top:4px">Past Medications</div>
+          <div class="med-card" style="opacity:.7">
+            <div class="med-icon" style="background:var(--pb-bg);color:var(--pb-text3)">💉</div>
+            <div class="med-info">
+              <div class="med-name">Amoxicillin</div>
+              <div class="med-dose">1 tablet twice daily · 10-day course · Post-emergency Aug 2026</div>
+              <div class="med-next">Completed Aug 13, 2026</div>
+            </div>
+            <span class="med-status paused">Completed</span>
+          </div>
+          <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add Medication</button>
+        </div>
+      </div>
+
+      <!-- WEIGHT TAB -->
+      <div id="tab-weight" class="tab-content">
+        <div class="weight-chart-wrap">
+          <div style="font-size:13px;font-weight:600;color:var(--pb-text2);margin-bottom:12px">Weight History (last 6 months)</div>
+          <div class="weight-bars" id="weightBars"></div>
+          <div style="font-size:11px;color:var(--pb-text3);text-align:center;margin-bottom:16px">Ideal range: 25–32 kg for adult Labrador</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
+              <span style="font-size:13px;font-weight:600">Jun 2026</span><span style="font-size:13px;font-weight:700">29.1 kg</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
+              <span style="font-size:13px;font-weight:600">Jul 2026</span><span style="font-size:13px;font-weight:700">29.0 kg</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
+              <span style="font-size:13px;font-weight:600">Aug 2026</span><span style="font-size:13px;font-weight:700">28.9 kg</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
+              <span style="font-size:13px;font-weight:600">Sep 2026</span><span style="font-size:13px;font-weight:700">28.7 kg</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
+              <span style="font-size:13px;font-weight:600">Oct 2026</span><span style="font-size:13px;font-weight:700">28.4 kg</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-blue-soft);border-radius:var(--pb-radius-sm);border:1px solid var(--pb-blue)">
+              <span style="font-size:13px;font-weight:700;color:var(--pb-blue)">Nov 2026 (Latest)</span><span style="font-size:13px;font-weight:800;color:var(--pb-blue)">28.4 kg</span>
+            </div>
+          </div>
+          <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center;margin-top:16px" onclick="openModal('addWeightModal')"><i class="ti ti-plus"></i> Log Weight</button>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS TAB -->
+      <div id="tab-documents" class="tab-content">
+        <div style="padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">Health documents & records</span>
+          <button class="pb-btn pb-btn-blue pb-btn-sm"><i class="ti ti-upload"></i> Upload</button>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-item"><div class="doc-icon">📋</div><div class="doc-name">Vaccination Certificate</div><div class="doc-date">Nov 2026</div></div>
+          <div class="doc-item"><div class="doc-icon">🧪</div><div class="doc-name">Blood Work Report</div><div class="doc-date">Oct 2026</div></div>
+          <div class="doc-item"><div class="doc-icon">📷</div><div class="doc-name">Hip X-Ray</div><div class="doc-date">Aug 2026</div></div>
+          <div class="doc-item"><div class="doc-icon">💊</div><div class="doc-name">Prescription</div><div class="doc-date">Aug 2026</div></div>
+          <div class="doc-item"><div class="doc-icon">📄</div><div class="doc-name">Insurance Policy</div><div class="doc-date">Jan 2026</div></div>
+          <div class="doc-item" style="border:2px dashed var(--pb-border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;min-height:90px">
+            <div style="font-size:24px;color:var(--pb-text3)">+</div>
+            <div class="doc-name" style="color:var(--pb-text3)">Add Document</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
+  <button class="bnav-item" onclick="location.href='13_messages.html'"><i class="ti ti-message-circle"></i><span>Messages</span></button>
+  <button class="bnav-item active"><i class="ti ti-heart-rate-monitor"></i><span>Health</span></button>
+  <button class="bnav-item" onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i><span>Vet</span></button>
+  <button class="bnav-item" onclick="location.href='02_profile.html'"><i class="ti ti-user"></i><span>Profile</span></button>
+</nav>
+
+<!-- ADD EVENT MODAL -->
+<div class="modal-overlay" id="addEventModal" onclick="closeModalOutside(event,'addEventModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Health Event</h3>
+      <button class="modal-close" onclick="closeModal('addEventModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Event Type</label>
+        <select class="form-select">
+          <option>Vaccination</option>
+          <option>Vet Visit</option>
+          <option>Medication</option>
+          <option>Weight Check</option>
+          <option>Emergency</option>
+          <option>Surgery</option>
+          <option>Lab Test</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Title / Name</label>
+        <input type="text" class="form-input" placeholder="e.g. Rabies Booster, Annual Check-up">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input type="date" class="form-input" id="eventDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Vet / Clinic (optional)</label>
+        <input type="text" class="form-input" placeholder="Dr. Name, Clinic Name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" placeholder="Findings, instructions, next steps…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('addEventModal')">Cancel</button>
+      <button class="pb-btn pb-btn-blue" onclick="closeModal('addEventModal')"><i class="ti ti-check"></i> Save Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PET MODAL -->
+<div class="modal-overlay" id="addPetModal" onclick="closeModalOutside(event,'addPetModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add a Pet</h3>
+      <button class="modal-close" onclick="closeModal('addPetModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Pet Name</label><input type="text" class="form-input" placeholder="Buddy, Luna, Max…"></div>
+      <div class="form-group"><label class="form-label">Species</label>
+        <select class="form-select"><option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Breed</label><input type="text" class="form-input" placeholder="Labrador, Persian, Indie…"></div>
+      <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input"></div>
+      <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" class="form-input" placeholder="e.g. 12.5"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('addPetModal')">Cancel</button>
+      <button class="pb-btn pb-btn-blue" onclick="closeModal('addPetModal')"><i class="ti ti-check"></i> Add Pet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD WEIGHT MODAL -->
+<div class="modal-overlay" id="addWeightModal" onclick="closeModalOutside(event,'addWeightModal')">
+  <div class="modal">
+    <div class="modal-header"><h3>Log Weight</h3><button class="modal-close" onclick="closeModal('addWeightModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" class="form-input" placeholder="e.g. 28.4" step="0.1"></div>
+      <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input"></div>
+      <div class="form-group"><label class="form-label">Notes (optional)</label><textarea class="form-textarea" placeholder="After grooming, before meal…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('addWeightModal')">Cancel</button>
+      <button class="pb-btn pb-btn-blue" onclick="closeModal('addWeightModal')"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD ACTIVITY MODAL -->
+<div class="modal-overlay" id="addActivityModal" onclick="closeModalOutside(event,'addActivityModal')">
+  <div class="modal">
+    <div class="modal-header"><h3>Log Activity</h3><button class="modal-close" onclick="closeModal('addActivityModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Activity Type</label>
+        <select class="form-select"><option>Walk</option><option>Run</option><option>Fetch / Play</option><option>Swimming</option><option>Training</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Duration (minutes)</label><input type="number" class="form-input" placeholder="e.g. 30"></div>
+      <div class="form-group"><label class="form-label">Distance (km, optional)</label><input type="number" class="form-input" placeholder="e.g. 2.5" step="0.1"></div>
+      <div class="form-group"><label class="form-label">Date & Time</label><input type="datetime-local" class="form-input"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('addActivityModal')">Cancel</button>
+      <button class="pb-btn pb-btn-blue" onclick="closeModal('addActivityModal')"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE / PASSPORT MODAL -->
+<div class="modal-overlay" id="shareModal" onclick="closeModalOutside(event,'shareModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🛂 Share Health Passport</h3>
+      <button class="modal-close" onclick="closeModal('shareModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center;padding:16px 0">
+        <div style="font-size:48px;margin-bottom:8px">📋</div>
+        <div style="font-size:16px;font-weight:800">Bruno's Health Passport</div>
+        <div style="font-size:13px;color:var(--pb-text2);margin-top:4px">Labrador · Male · 3 years · 28.4 kg</div>
+        <div style="font-size:12px;color:var(--pb-text3);margin-top:4px">8 vaccines · 12 vet visits · Last updated today</div>
+      </div>
+      <div style="padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px;text-align:center;color:var(--pb-text2)">
+        Share this link with your vet for instant access to Bruno's complete health history.
+      </div>
+      <div style="display:flex;gap:6px">
+        <input type="text" class="form-input" value="https://pawbook.deemona.com/passport/bruno-3x7k" readonly style="flex:1;background:var(--pb-bg);font-size:12px">
+        <button class="pb-btn pb-btn-blue" onclick="this.textContent='Copied!'">Copy</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
+        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center"><i class="ti ti-mail"></i> Email to Vet</button>
+        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center"><i class="ti ti-download"></i> Download PDF</button>
+        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center"><i class="ti ti-qrcode"></i> Show QR Code</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab switching
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.plr-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Modal helpers
+function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+function closeModalOutside(e,id) { if(e.target.id===id) closeModal(id); }
+
+// Pet selector
+function selectPet(el, pet) {
+  document.querySelectorAll('.pet-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  // In production: reload data for selected pet
+}
+
+// Animate health score ring on load
+function animateScore(target) {
+  const ring = document.getElementById('scoreRing');
+  const numEl = document.getElementById('scoreNum');
+  const circumference = 314;
+  let current = 0;
+  const increment = target / 60;
+  const timer = setInterval(() => {
+    current = Math.min(current + increment, target);
+    const offset = circumference - (current / 100) * circumference;
+    ring.style.strokeDashoffset = offset;
+    numEl.textContent = Math.round(current);
+    if (current >= target) clearInterval(timer);
+  }, 16);
+}
+
+// Weight chart bars
+function renderWeightBars() {
+  const data = [
+    {month:'Jun',val:29.1},{month:'Jul',val:29.0},{month:'Aug',val:28.9},
+    {month:'Sep',val:28.7},{month:'Oct',val:28.4},{month:'Nov',val:28.4}
+  ];
+  const max = 32, min = 24;
+  const container = document.getElementById('weightBars');
+  if (!container) return;
+  container.innerHTML = data.map((d,i) => {
+    const pct = ((d.val - min) / (max - min)) * 100;
+    const isLatest = i === data.length - 1;
+    return `<div class="weight-bar-col">
+      <div class="weight-val">${d.val}</div>
+      <div class="weight-bar${isLatest?' latest':''}" style="height:${pct}%"></div>
+      <div class="weight-bar-label">${d.month}</div>
+    </div>`;
+  }).join('');
+}
+
+// Meal toggle
+function toggleMeal(el) {
+  el.classList.toggle('checked');
+  el.textContent = el.classList.contains('checked') ? '✓' : '';
+}
+
+// Set today's date in forms
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.querySelectorAll('input[type="date"]').forEach(el => { if(!el.value) el.value = today; });
+  setTimeout(() => animateScore(87), 300);
+  renderWeightBars();
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(r => console.log('[SW] Registered:', r.scope))
+      .catch(e => console.warn('[SW] Failed:', e));
+  });
+}
+</script>
+
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
+</div>
+
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
+</body>
+</html>

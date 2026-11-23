@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Pet Assistant – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
+  --pb-green:#22c55e;--pb-green-soft:#dcfce7;
+  --pb-red:#ef4444;--pb-red-soft:#fee2e2;
+  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;
+  --pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
+  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;
+  --pb-indigo:#6366f1;
+  --pb-voice-grad:linear-gradient(135deg,#0f172a,#1e1b4b,#312e81);
+  --pb-voice-accent:linear-gradient(135deg,#6366f1,#8b5cf6,#06b6d4);
+  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
+  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
+  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
+  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --pb-shadow-md:0 4px 20px rgba(0,0,0,.12);
+  --pb-nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
+a{text-decoration:none;color:inherit}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+input,textarea,select{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+
+/* ── NAV ── */
+.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
+.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-voice-accent);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pb-nav-search{flex:1;max-width:220px;height:38px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
+.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;width:100%;color:var(--pb-text)}
+.pb-nav-search input::placeholder{color:var(--pb-text3)}
+.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
+.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
+.pb-nav-tab.active{color:var(--pb-indigo)}
+.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-indigo);border-radius:3px 3px 0 0}
+.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s}
+.pb-icon-btn:hover{background:var(--pb-border)}
+.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-voice-accent);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ── BUTTONS ── */
+.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
+.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
+.pb-btn-indigo{background:var(--pb-indigo);color:#fff}.pb-btn-indigo:hover{background:#4f46e5}
+.pb-btn-purple{background:var(--pb-purple);color:#fff}.pb-btn-purple:hover{background:#7c3aed}
+.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
+.pb-btn-teal{background:var(--pb-teal);color:#fff}.pb-btn-teal:hover{background:#0d9488}
+.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
+.pb-btn-dark{background:#1e1b4b;color:#fff}.pb-btn-dark:hover{background:#312e81}
+
+/* ── LAYOUT ── */
+.va-layout{max-width:1100px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:300px 1fr;gap:20px}
+@media(max-width:768px){.va-layout{grid-template-columns:1fr}.va-sidebar{display:none}}
+.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
+.pb-card-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
+.pb-card-header h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+
+/* ── VOICE CONSOLE ── */
+.voice-console{background:var(--pb-voice-grad);border-radius:var(--pb-radius);overflow:hidden;margin-bottom:16px;position:relative}
+.vc-header{padding:20px 24px 0;position:relative;z-index:2}
+.vc-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.vc-status-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse-green 1.5s ease-in-out infinite}
+@keyframes pulse-green{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+.vc-title{font-size:24px;font-weight:900;color:#fff;margin-bottom:6px}
+.vc-sub{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:0}
+
+/* ── VISUALIZER ── */
+.vc-visualizer-wrap{padding:24px;display:flex;flex-direction:column;align-items:center;position:relative;z-index:2}
+.vc-pet-select{display:flex;gap:8px;margin-bottom:20px}
+.vc-pet-btn{padding:8px 16px;border-radius:var(--pb-pill);border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:all .15s}
+.vc-pet-btn:hover,.vc-pet-btn.active{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.5)}
+.vc-orb-wrap{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.vc-orb-ring{position:absolute;border-radius:50%;border:2px solid rgba(99,102,241,.4);animation:orb-ring 2s ease-in-out infinite}
+.vc-orb-ring:nth-child(1){width:200px;height:200px;animation-delay:0s}
+.vc-orb-ring:nth-child(2){width:170px;height:170px;animation-delay:.3s;border-color:rgba(139,92,246,.4)}
+.vc-orb-ring:nth-child(3){width:140px;height:140px;animation-delay:.6s;border-color:rgba(6,182,212,.4)}
+@keyframes orb-ring{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.04);opacity:.8}}
+.vc-orb{width:110px;height:110px;border-radius:50%;background:var(--pb-voice-accent);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;cursor:pointer;transition:all .2s;box-shadow:0 0 40px rgba(99,102,241,.5)}
+.vc-orb:hover{box-shadow:0 0 60px rgba(99,102,241,.7);transform:scale(1.04)}
+.vc-orb.listening{animation:orb-listen .4s ease-in-out infinite alternate}
+@keyframes orb-listen{from{box-shadow:0 0 40px rgba(99,102,241,.5);transform:scale(1)}to{box-shadow:0 0 80px rgba(99,102,241,.9);transform:scale(1.08)}}
+.vc-orb-emoji{font-size:36px;position:relative;z-index:1}
+.vc-orb-label{font-size:11px;color:rgba(255,255,255,.6);margin-top:-16px;margin-bottom:12px}
+
+/* ── WAVEFORM ── */
+.waveform{display:flex;align-items:center;gap:3px;height:40px;margin-bottom:20px}
+.wave-bar{width:4px;border-radius:2px;background:rgba(99,102,241,.6);transition:height .1s}
+.wave-bar.active{background:linear-gradient(to top,#6366f1,#06b6d4)}
+
+/* ── TRANSCRIPT ── */
+.vc-transcript{background:rgba(255,255,255,.07);border-radius:var(--pb-radius-sm);padding:14px 16px;width:100%;margin-bottom:16px;min-height:60px;text-align:center}
+.vc-transcript-text{font-size:14px;color:rgba(255,255,255,.9);line-height:1.5}
+.vc-transcript-hint{font-size:12px;color:rgba(255,255,255,.4);font-style:italic}
+
+/* ── MIC CONTROLS ── */
+.vc-controls{display:flex;gap:10px;align-items:center;margin-bottom:20px}
+.vc-mic-btn{width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all .2s}
+.vc-mic-btn-main{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 16px rgba(99,102,241,.5)}
+.vc-mic-btn-main:hover{box-shadow:0 4px 24px rgba(99,102,241,.7);transform:scale(1.06)}
+.vc-mic-btn-main.active{background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 4px 24px rgba(239,68,68,.5);animation:mic-pulse .5s ease-in-out infinite alternate}
+@keyframes mic-pulse{from{transform:scale(1)}to{transform:scale(1.08)}}
+.vc-ctrl-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .15s}
+.vc-ctrl-btn:hover{background:rgba(255,255,255,.2)}
+.vc-ctrl-btn.active{background:rgba(99,102,241,.4);border-color:rgba(99,102,241,.8)}
+
+/* ── QUICK COMMANDS ── */
+.vc-quick{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:0 16px 20px}
+.vc-quick-btn{padding:7px 14px;border-radius:var(--pb-pill);border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;white-space:nowrap}
+.vc-quick-btn:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
+
+/* ── CONVERSATION / RESPONSE ── */
+.vc-response{padding:20px 24px;border-top:1px solid rgba(255,255,255,.08);position:relative;z-index:2}
+.vc-response-label{font-size:11px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.vc-msg{display:flex;gap:10px;margin-bottom:12px}
+.vc-msg-user{flex-direction:row-reverse}
+.vc-msg-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px}
+.vc-ai-avatar{background:linear-gradient(135deg,#6366f1,#06b6d4)}
+.vc-user-avatar{background:rgba(255,255,255,.15);font-size:12px;font-weight:700;color:#fff}
+.vc-bubble{max-width:80%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5}
+.vc-bubble-ai{background:rgba(255,255,255,.12);color:rgba(255,255,255,.92);border-radius:4px 14px 14px 14px}
+.vc-bubble-user{background:rgba(99,102,241,.5);color:#fff;border-radius:14px 4px 14px 14px}
+.vc-typing{display:flex;gap:5px;align-items:center;padding:10px 14px;background:rgba(255,255,255,.12);border-radius:4px 14px 14px 14px;width:fit-content}
+.vc-typing-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);animation:typing .9s ease-in-out infinite}
+.vc-typing-dot:nth-child(2){animation-delay:.18s}
+.vc-typing-dot:nth-child(3){animation-delay:.36s}
+@keyframes typing{0%,80%,100%{transform:scale(0.8);opacity:.5}40%{transform:scale(1.2);opacity:1}}
+
+/* ── LANGUAGE SELECTOR ── */
+.vc-lang-bar{display:flex;gap:6px;padding:0 24px 20px;overflow-x:auto;scrollbar-width:none}
+.vc-lang-bar::-webkit-scrollbar{display:none}
+.vc-lang-btn{padding:5px 12px;border-radius:var(--pb-pill);border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);cursor:pointer;font-size:11px;font-weight:700;white-space:nowrap;transition:all .15s}
+.vc-lang-btn:hover{background:rgba(255,255,255,.18)}
+.vc-lang-btn.active{background:rgba(99,102,241,.5);border-color:rgba(99,102,241,.8);color:#fff}
+
+/* ── FEATURES GRID ── */
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
+.feature-card{padding:14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);cursor:pointer;transition:all .15s;display:flex;gap:10px;align-items:flex-start}
+.feature-card:hover{border-color:var(--pb-indigo);background:rgba(99,102,241,.04);transform:translateY(-1px)}
+.feature-icon{width:38px;height:38px;border-radius:var(--pb-radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.feature-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.feature-desc{font-size:11px;color:var(--pb-text2);line-height:1.4}
+
+/* ── HISTORY ── */
+.history-list{padding:16px;display:flex;flex-direction:column;gap:8px}
+.history-item{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);cursor:pointer;transition:background .15s}
+.history-item:hover{background:rgba(99,102,241,.08)}
+.history-icon{width:34px;height:34px;border-radius:50%;background:var(--pb-voice-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.history-info{flex:1}
+.history-query{font-size:13px;font-weight:600;margin-bottom:2px}
+.history-time{font-size:11px;color:var(--pb-text3)}
+.history-pet{font-size:11px;font-weight:600;color:var(--pb-indigo);background:rgba(99,102,241,.1);padding:2px 8px;border-radius:var(--pb-pill);flex-shrink:0}
+
+/* ── REMINDERS ── */
+.reminder-list{padding:16px;display:flex;flex-direction:column;gap:8px}
+.reminder-item{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
+.reminder-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.reminder-info{flex:1}
+.reminder-title{font-size:13px;font-weight:700}
+.reminder-time{font-size:11px;color:var(--pb-text3);display:flex;align-items:center;gap:4px;margin-top:2px}
+
+/* ── VOICE SETTINGS ── */
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--pb-border)}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:14px;font-weight:600}
+.settings-desc{font-size:12px;color:var(--pb-text2)}
+.toggle-switch{width:44px;height:24px;border-radius:12px;background:var(--pb-indigo);cursor:pointer;position:relative;flex-shrink:0;transition:background .2s}
+.toggle-switch::after{content:'';position:absolute;top:3px;left:22px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-switch.off{background:var(--pb-border)}.toggle-switch.off::after{left:3px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;transition:all .2s}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:var(--pb-shadow-md)}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.modal-header h3{font-size:17px;font-weight:800}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--pb-text2)}
+.modal-body{padding:20px 24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--pb-border);display:flex;gap:10px;justify-content:flex-end}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--pb-text2);margin-bottom:6px}
+.form-input{width:100%;height:40px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--pb-indigo)}
+.form-select{width:100%;height:40px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;background:#fff}
+.command-example{padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px;color:var(--pb-text2);display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.cmd-icon{font-size:16px;flex-shrink:0}
+.cmd-text strong{color:var(--pb-text);display:block;font-size:12px;margin-bottom:2px}
+
+/* ── BOTTOM NAV ── */
+.pb-bnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);display:flex;z-index:400}
+.pb-bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--pb-text3);font-size:10px;font-weight:600;transition:color .15s;border:none;background:transparent}
+.pb-bnav-item i{font-size:22px}
+.pb-bnav-item.active{color:var(--pb-indigo)}
+.pb-bnav-fab{width:48px;height:48px;border-radius:50%;background:var(--pb-voice-accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(99,102,241,.4);margin:-16px auto 0}
+
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="pb-nav">
+  <div class="pb-nav-logo">
+    <div class="pb-nav-logo-icon">🐾</div>
+    <span>PawBook</span>
+  </div>
+  <div class="pb-nav-search">
+    <i class="ti ti-search" style="color:var(--pb-text3);font-size:16px"></i>
+    <input type="text" placeholder="Ask anything about your pet...">
+  </div>
+  <div class="pb-nav-tabs">
+    <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='37_pet_ai_health_agent.html'"><i class="ti ti-robot"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='38_lost_pet_network.html'"><i class="ti ti-map-pin"></i></button>
+    <button class="pb-nav-tab active"><i class="ti ti-microphone"></i></button>
+  </div>
+  <div class="pb-nav-right">
+    <button class="pb-icon-btn" onclick="openModal('settingsModal')"><i class="ti ti-settings"></i></button>
+    <div class="pb-avatar">A</div>
+  </div>
+</nav>
+
+<!-- MAIN LAYOUT -->
+<div class="va-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="va-sidebar">
+
+    <!-- Voice History -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-history" style="color:var(--pb-indigo)"></i> Recent Queries</h3>
+        <button class="pb-btn pb-btn-gray pb-btn-sm">Clear</button>
+      </div>
+      <div class="history-list">
+        <div class="history-item">
+          <div class="history-icon"><i class="ti ti-microphone"></i></div>
+          <div class="history-info">
+            <div class="history-query">"Is Rocky due for vaccination?"</div>
+            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> 10 mins ago</div>
+          </div>
+          <span class="history-pet">Rocky</span>
+        </div>
+        <div class="history-item">
+          <div class="history-icon"><i class="ti ti-microphone"></i></div>
+          <div class="history-info">
+            <div class="history-query">"Log Rocky's weight as 28 kg"</div>
+            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> 1 hr ago</div>
+          </div>
+          <span class="history-pet">Rocky</span>
+        </div>
+        <div class="history-item">
+          <div class="history-icon"><i class="ti ti-microphone"></i></div>
+          <div class="history-info">
+            <div class="history-query">"Set medicine reminder for Mittens"</div>
+            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> Yesterday</div>
+          </div>
+          <span class="history-pet">Mittens</span>
+        </div>
+        <div class="history-item">
+          <div class="history-icon"><i class="ti ti-microphone"></i></div>
+          <div class="history-info">
+            <div class="history-query">"Find vet near me open now"</div>
+            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> 2 days ago</div>
+          </div>
+          <span class="history-pet">Both</span>
+        </div>
+        <div class="history-item">
+          <div class="history-icon"><i class="ti ti-microphone"></i></div>
+          <div class="history-info">
+            <div class="history-query">"Mittens ate less today, is it okay?"</div>
+            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> 3 days ago</div>
+          </div>
+          <span class="history-pet">Mittens</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Voice Reminders -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-bell" style="color:var(--pb-amber)"></i> Voice Reminders</h3>
+        <button class="pb-btn pb-btn-indigo pb-btn-sm" onclick="openModal('reminderModal')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div class="reminder-list">
+        <div class="reminder-item">
+          <div class="reminder-dot" style="background:var(--pb-red)"></div>
+          <div class="reminder-info">
+            <div class="reminder-title">🐱 Mittens — Deworming</div>
+            <div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> Today, 8:00 PM</div>
+          </div>
+        </div>
+        <div class="reminder-item">
+          <div class="reminder-dot" style="background:var(--pb-amber)"></div>
+          <div class="reminder-info">
+            <div class="reminder-title">🐕 Rocky — Vet Visit</div>
+            <div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> Tomorrow, 10:00 AM</div>
+          </div>
+        </div>
+        <div class="reminder-item">
+          <div class="reminder-dot" style="background:var(--pb-blue)"></div>
+          <div class="reminder-info">
+            <div class="reminder-title">🐕 Rocky — Flea treatment</div>
+            <div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> Nov 15, 2026</div>
+          </div>
+        </div>
+        <div class="reminder-item">
+          <div class="reminder-dot" style="background:var(--pb-green)"></div>
+          <div class="reminder-info">
+            <div class="reminder-title">🐱 Mittens — Rabies booster</div>
+            <div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> Nov 20, 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Voice Settings -->
+    <div class="pb-card">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-adjustments" style="color:var(--pb-teal)"></i> Settings</h3>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Wake Word</div><div class="settings-desc">"Hey PawBook"</div></div>
+        <div class="toggle-switch" onclick="this.classList.toggle('off')"></div>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Auto-read responses</div><div class="settings-desc">Speak replies aloud</div></div>
+        <div class="toggle-switch" onclick="this.classList.toggle('off')"></div>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Noise cancellation</div><div class="settings-desc">Filter background noise</div></div>
+        <div class="toggle-switch" onclick="this.classList.toggle('off')"></div>
+      </div>
+      <div class="settings-row" style="border-bottom:none">
+        <div><div class="settings-label">Hindi + English</div><div class="settings-desc">Hinglish mode active</div></div>
+        <div class="toggle-switch" onclick="this.classList.toggle('off')"></div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- Voice Console -->
+    <div class="voice-console">
+      <div class="vc-header">
+        <div class="vc-label"><span class="vc-status-dot"></span> AI Voice Assistant · Active</div>
+        <div class="vc-title">🎤 PawBook Voice</div>
+        <div class="vc-sub">Ask anything about Rocky & Mittens — health, reminders, vets, food, and more</div>
+      </div>
+
+      <!-- Pet selector -->
+      <div class="vc-visualizer-wrap">
+        <div class="vc-pet-select">
+          <button class="vc-pet-btn active" id="petRocky" onclick="selectPet('rocky',this)">🐕 Rocky</button>
+          <button class="vc-pet-btn" id="petMittens" onclick="selectPet('mittens',this)">🐱 Mittens</button>
+          <button class="vc-pet-btn" id="petBoth" onclick="selectPet('both',this)">🐾 Both</button>
+        </div>
+
+        <!-- Orb -->
+        <div class="vc-orb-wrap">
+          <div class="vc-orb-ring"></div>
+          <div class="vc-orb-ring"></div>
+          <div class="vc-orb-ring"></div>
+          <div class="vc-orb" id="vcOrb" onclick="toggleMic()">
+            <span class="vc-orb-emoji" id="orbEmoji">🐕</span>
+          </div>
+        </div>
+        <div class="vc-orb-label" id="orbLabel">Tap orb or mic to speak</div>
+
+        <!-- Waveform -->
+        <div class="waveform" id="waveform">
+          <!-- bars injected by JS -->
+        </div>
+
+        <!-- Transcript -->
+        <div class="vc-transcript">
+          <div class="vc-transcript-text" id="transcriptText"></div>
+          <div class="vc-transcript-hint" id="transcriptHint">Listening for your voice command…</div>
+        </div>
+
+        <!-- Mic controls -->
+        <div class="vc-controls">
+          <button class="vc-ctrl-btn" title="Text input" onclick="openModal('textInputModal')"><i class="ti ti-keyboard"></i></button>
+          <button class="vc-mic-btn vc-mic-btn-main" id="micBtn" onclick="toggleMic()"><i class="ti ti-microphone" id="micIcon"></i></button>
+          <button class="vc-ctrl-btn" title="Stop & clear" onclick="stopListening()"><i class="ti ti-square"></i></button>
+        </div>
+
+      </div>
+
+      <!-- Language bar -->
+      <div class="vc-lang-bar">
+        <button class="vc-lang-btn active" onclick="setLang(this)">🇮🇳 Hinglish</button>
+        <button class="vc-lang-btn" onclick="setLang(this)">🇬🇧 English</button>
+        <button class="vc-lang-btn" onclick="setLang(this)">🇮🇳 हिंदी</button>
+        <button class="vc-lang-btn" onclick="setLang(this)">বাংলা</button>
+        <button class="vc-lang-btn" onclick="setLang(this)">తెలుగు</button>
+        <button class="vc-lang-btn" onclick="setLang(this)">தமிழ்</button>
+        <button class="vc-lang-btn" onclick="setLang(this)">मराठी</button>
+      </div>
+
+      <!-- Quick commands -->
+      <div class="vc-quick">
+        <button class="vc-quick-btn" onclick="quickCommand(this,'Is Rocky due for any vaccine?')">💉 Vaccine status</button>
+        <button class="vc-quick-btn" onclick="quickCommand(this,'Log Rocky weight 28 kg')">⚖️ Log weight</button>
+        <button class="vc-quick-btn" onclick="quickCommand(this,'Find nearest vet open now')">🏥 Nearest vet</button>
+        <button class="vc-quick-btn" onclick="quickCommand(this,'Set medicine reminder for Mittens at 8 PM')">⏰ Set reminder</button>
+        <button class="vc-quick-btn" onclick="quickCommand(this,'What should Rocky eat today?')">🍖 Diet advice</button>
+        <button class="vc-quick-btn" onclick="quickCommand(this,'Rocky seems lethargic today')">🩺 Health check</button>
+        <button class="vc-quick-btn" onclick="quickCommand(this,'Show upcoming appointments')">📅 Appointments</button>
+        <button class="vc-quick-btn" onclick="quickCommand(this,'Emergency! Rocky is not breathing normally')">🚨 Emergency</button>
+      </div>
+
+      <!-- AI Response Area -->
+      <div class="vc-response" id="vcResponse" style="display:none">
+        <div class="vc-response-label">🤖 AI Response</div>
+        <div id="conversationArea"></div>
+      </div>
+
+    </div>
+
+    <!-- Features Card -->
+    <div class="pb-card">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-sparkles" style="color:var(--pb-indigo)"></i> What You Can Ask</h3>
+        <button class="pb-btn pb-btn-indigo pb-btn-sm" onclick="openModal('commandsModal')"><i class="ti ti-list"></i> All Commands</button>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--pb-purple-soft)">💊</div>
+          <div>
+            <div class="feature-title">Medicine Reminders</div>
+            <div class="feature-desc">"Give Mittens her medicine at 8 PM daily"</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--pb-blue-soft)">💉</div>
+          <div>
+            <div class="feature-title">Vaccination Tracking</div>
+            <div class="feature-desc">"Is Rocky's rabies vaccine due?"</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--pb-green-soft)">🍖</div>
+          <div>
+            <div class="feature-title">Diet & Nutrition</div>
+            <div class="feature-desc">"What food is safe for Rocky today?"</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--pb-teal-soft)">🏥</div>
+          <div>
+            <div class="feature-title">Vet Finder</div>
+            <div class="feature-desc">"Find nearest vet clinic open right now"</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--pb-amber-soft)">⚖️</div>
+          <div>
+            <div class="feature-title">Health Logging</div>
+            <div class="feature-desc">"Log Rocky's weight as 28 kg today"</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--pb-red-soft)">🚨</div>
+          <div>
+            <div class="feature-title">Emergency Guide</div>
+            <div class="feature-desc">"Rocky ate chocolate — what do I do?"</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(99,102,241,.12)">📅</div>
+          <div>
+            <div class="feature-title">Appointment Booking</div>
+            <div class="feature-desc">"Book a vet checkup for next Monday"</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--pb-pink-soft)">💬</div>
+          <div>
+            <div class="feature-title">Hinglish Support</div>
+            <div class="feature-desc">"Rocky ko aaj kya khilana chahiye?"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── TEXT INPUT MODAL ── -->
+<div class="modal-overlay" id="textInputModal" onclick="closeModalOutside(event,'textInputModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="ti ti-keyboard" style="color:var(--pb-indigo)"></i> Type Your Query</h3>
+      <button class="modal-close" onclick="closeModal('textInputModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Ask anything about your pets</label>
+        <input type="text" class="form-input" id="textQueryInput" placeholder="e.g. Is Rocky's vaccine due this month?" style="font-size:15px;height:48px">
+      </div>
+      <div style="font-size:12px;color:var(--pb-text3);margin-bottom:12px">Supports English and Hindi</div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--pb-text2);margin-bottom:8px">Try these:</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Rocky weight log</span>
+          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Nearest vet now</span>
+          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Medicine reminder 8pm</span>
+          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Rocky ki vaccine kab thi?</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('textInputModal')">Cancel</button>
+      <button class="pb-btn pb-btn-indigo" onclick="submitTextQuery()"><i class="ti ti-send"></i> Ask AI</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── REMINDER MODAL ── -->
+<div class="modal-overlay" id="reminderModal" onclick="closeModalOutside(event,'reminderModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>⏰ Set Voice Reminder</h3>
+      <button class="modal-close" onclick="closeModal('reminderModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="padding:12px;background:rgba(99,102,241,.08);border-radius:var(--pb-radius-sm);border:1px solid #c7d2fe;font-size:13px;color:#3730a3;margin-bottom:16px">
+        <strong>🎤 Or just say:</strong> "Set a medicine reminder for Rocky every day at 7 PM"
+      </div>
+      <div class="form-group">
+        <label class="form-label">Select Pet</label>
+        <select class="form-select"><option>Rocky (Golden Retriever)</option><option>Mittens (Persian Cat)</option><option>Both pets</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reminder Type</label>
+        <select class="form-select"><option>Medicine / Medication</option><option>Vaccination</option><option>Vet appointment</option><option>Grooming</option><option>Feeding time</option><option>Custom</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input"></div>
+        <div class="form-group"><label class="form-label">Time</label><input type="time" class="form-input" value="20:00"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Repeat</label>
+        <select class="form-select"><option>Once</option><option>Daily</option><option>Weekly</option><option>Monthly</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Note (optional)</label>
+        <input type="text" class="form-input" placeholder="e.g. Give with food, 1 tablet">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('reminderModal')">Cancel</button>
+      <button class="pb-btn pb-btn-indigo" onclick="closeModal('reminderModal')"><i class="ti ti-bell"></i> Set Reminder</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── COMMANDS MODAL ── -->
+<div class="modal-overlay" id="commandsModal" onclick="closeModalOutside(event,'commandsModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🎤 All Voice Commands</h3>
+      <button class="modal-close" onclick="closeModal('commandsModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" style="padding:0 24px 20px">
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Health & Medical</div>
+      <div class="command-example"><div class="cmd-icon">💉</div><div class="cmd-text"><strong>"Is Rocky due for vaccination?"</strong>Checks the full vaccination schedule and tells you what's pending</div></div>
+      <div class="command-example"><div class="cmd-icon">🩺</div><div class="cmd-text"><strong>"Rocky is scratching his ear a lot"</strong>AI diagnoses potential cause and suggests if a vet visit is needed</div></div>
+      <div class="command-example"><div class="cmd-icon">🚨</div><div class="cmd-text"><strong>"Mittens ate onion, what do I do?"</strong>Immediate emergency guidance with nearest emergency vet</div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Logging & Tracking</div>
+      <div class="command-example"><div class="cmd-icon">⚖️</div><div class="cmd-text"><strong>"Log Rocky's weight as 28 kilograms"</strong>Saves to health record and shows trend vs last entry</div></div>
+      <div class="command-example"><div class="cmd-icon">💊</div><div class="cmd-text"><strong>"Mark Mittens' medicine as given"</strong>Logs medication dose in the health record</div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Reminders & Schedule</div>
+      <div class="command-example"><div class="cmd-icon">⏰</div><div class="cmd-text"><strong>"Remind me to give Mittens medicine every night at 9"</strong>Creates a daily repeating reminder with push notification</div></div>
+      <div class="command-example"><div class="cmd-icon">📅</div><div class="cmd-text"><strong>"Book a vet appointment for Rocky next Monday"</strong>Opens scheduling with nearby vets</div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Hinglish Examples 🇮🇳</div>
+      <div class="command-example"><div class="cmd-icon">🇮🇳</div><div class="cmd-text"><strong>"Rocky ko aaj kya khilana chahiye?"</strong>Diet and nutrition advice in Hindi</div></div>
+      <div class="command-example"><div class="cmd-icon">🇮🇳</div><div class="cmd-text"><strong>"Mittens ki vaccine kab lagni hai?"</strong>Upcoming vaccination schedule query</div></div>
+    </div>
+    <div class="modal-footer"><button class="pb-btn pb-btn-indigo" style="width:100%;justify-content:center" onclick="closeModal('commandsModal')">Got it!</button></div>
+  </div>
+</div>
+
+<!-- ── SETTINGS MODAL ── -->
+<div class="modal-overlay" id="settingsModal" onclick="closeModalOutside(event,'settingsModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>⚙️ Voice Assistant Settings</h3>
+      <button class="modal-close" onclick="closeModal('settingsModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Assistant Name</label><input type="text" class="form-input" value="Pawie" placeholder="Give your assistant a name"></div>
+      <div class="form-group"><label class="form-label">Wake Word</label><select class="form-select"><option>Hey PawBook</option><option>Hey Pawie</option><option>OK PawBook</option><option>Custom</option></select></div>
+      <div class="form-group"><label class="form-label">Voice Response Speed</label><select class="form-select"><option>Normal</option><option>Slow</option><option>Fast</option></select></div>
+      <div class="form-group"><label class="form-label">Primary Language</label><select class="form-select"><option>Hinglish (Hindi + English)</option><option>English only</option><option>Hindi only</option><option>Bengali</option><option>Telugu</option><option>Tamil</option></select></div>
+      <div class="form-group"><label class="form-label">Default Pet Context</label><select class="form-select"><option>Rocky (Golden Retriever)</option><option>Mittens (Persian Cat)</option><option>Ask every time</option></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('settingsModal')">Cancel</button>
+      <button class="pb-btn pb-btn-indigo" onclick="closeModal('settingsModal')"><i class="ti ti-check"></i> Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="pb-bnav">
+  <button class="pb-bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
+  <button class="pb-bnav-item" onclick="location.href='36_pet_life_record.html'"><i class="ti ti-heart-rate-monitor"></i><span>Health</span></button>
+  <button class="pb-bnav-fab" id="fabMic" onclick="toggleMic()"><i class="ti ti-microphone" id="fabIcon"></i></button>
+  <button class="pb-bnav-item" onclick="location.href='39_adoption_matching.html'"><i class="ti ti-heart"></i><span>Adopt</span></button>
+  <button class="pb-bnav-item active"><i class="ti ti-microphone"></i><span>Voice</span></button>
+</nav>
+
+<script>
+// ── WAVEFORM INIT ──
+const wf = document.getElementById('waveform');
+const NUM_BARS = 32;
+for(let i=0;i<NUM_BARS;i++){
+  const b = document.createElement('div');
+  b.className = 'wave-bar';
+  b.style.height = '4px';
+  wf.appendChild(b);
+}
+
+// ── STATE ──
+let isListening = false;
+let waveInterval = null;
+let currentPet = 'rocky';
+const petEmojis = {rocky:'🐕', mittens:'🐱', both:'🐾'};
+
+// ── MIC TOGGLE ──
+function toggleMic(){
+  isListening = !isListening;
+  const btn = document.getElementById('micBtn');
+  const icon = document.getElementById('micIcon');
+  const orb = document.getElementById('vcOrb');
+  const orbLabel = document.getElementById('orbLabel');
+  const fabBtn = document.getElementById('fabMic');
+  const fabIcon = document.getElementById('fabIcon');
+  const hint = document.getElementById('transcriptHint');
+  const txt = document.getElementById('transcriptText');
+
+  if(isListening){
+    btn.classList.add('active');
+    orb.classList.add('listening');
+    icon.className = 'ti ti-player-stop-filled';
+    fabIcon.className = 'ti ti-player-stop-filled';
+    orbLabel.textContent = 'Listening… speak now';
+    hint.textContent = '';
+    txt.textContent = '';
+    startWave();
+    // Simulate detecting voice after 2.5s
+    setTimeout(()=>{
+      if(isListening) simulateVoice();
+    }, 2500);
+  } else {
+    stopListening();
+  }
+}
+
+function stopListening(){
+  isListening = false;
+  const btn = document.getElementById('micBtn');
+  const icon = document.getElementById('micIcon');
+  const orb = document.getElementById('vcOrb');
+  const orbLabel = document.getElementById('orbLabel');
+  const fabIcon = document.getElementById('fabIcon');
+  btn.classList.remove('active');
+  orb.classList.remove('listening');
+  icon.className = 'ti ti-microphone';
+  fabIcon.className = 'ti ti-microphone';
+  orbLabel.textContent = 'Tap orb or mic to speak';
+  stopWave();
+}
+
+function startWave(){
+  waveInterval = setInterval(()=>{
+    document.querySelectorAll('.wave-bar').forEach((b,i)=>{
+      const h = isListening ? (Math.random() * 32 + 4) : 4;
+      b.style.height = h + 'px';
+      b.classList.toggle('active', isListening);
+    });
+  }, 80);
+}
+
+function stopWave(){
+  clearInterval(waveInterval);
+  document.querySelectorAll('.wave-bar').forEach(b=>{
+    b.style.height = '4px';
+    b.classList.remove('active');
+  });
+}
+
+// ── PET SELECT ──
+function selectPet(pet, el){
+  currentPet = pet;
+  document.querySelectorAll('.vc-pet-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('orbEmoji').textContent = petEmojis[pet];
+}
+
+// ── LANGUAGE ──
+function setLang(el){
+  document.querySelectorAll('.vc-lang-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── SIMULATE VOICE DETECTION ──
+const sampleQueries = [
+  "Is Rocky due for vaccination?",
+  "Rocky seems lethargic today",
+  "Log Rocky's weight as 28 kg",
+  "Find nearest vet open now",
+  "Set medicine reminder for Mittens",
+  "What should Rocky eat today?",
+];
+
+const aiResponses = {
+  "Is Rocky due for vaccination?": "🐕 <strong>Rocky's vaccination status:</strong><br>✅ Rabies — Done (Jan 2026, next due Jan 2027)<br>⚠️ Leptospirosis booster — Due in <strong>18 days</strong> (Nov 29, 2026)<br>✅ Parvovirus — Done (Feb 2026)<br><br>I've added a reminder for the Leptospirosis booster. Would you like me to book an appointment with Dr. Sharma?",
+  "Rocky seems lethargic today": "🩺 <strong>AI Health Assessment for Rocky:</strong><br>Lethargy can be caused by several factors. Key questions:<br>• Any change in eating or drinking habits?<br>• Any vomiting or loose stools?<br>• Any recent activity changes?<br><br>⚠️ If lethargy persists over 24 hours, a vet visit is recommended. <strong>Nearest vet: Dr. Sharma Pet Clinic — 1.2 km, open now.</strong>",
+  "Log Rocky's weight as 28 kg": "✅ <strong>Weight logged successfully!</strong><br>Rocky — 28 kg on Nov 11, 2026<br>📉 Down 0.5 kg from last entry (28.5 kg, Oct 25)<br>📊 Healthy range for Golden Retriever: 25–34 kg ✓<br><br>Keep maintaining his current diet. I'll add this to Rocky's health record.",
+  "Find nearest vet open now": "🏥 <strong>Nearest vets open right now:</strong><br>1. <strong>Dr. Sharma Pet Clinic</strong> — 1.2 km · Open till 9 PM · ⭐ 4.8<br>2. <strong>PawCare Animal Hospital</strong> — 2.8 km · Open 24 hrs · ⭐ 4.6<br>3. <strong>Green Paws Vet</strong> — 3.4 km · Open till 8 PM · ⭐ 4.5<br><br>Would you like me to call or book an appointment?",
+  "Set medicine reminder for Mittens": "⏰ <strong>Reminder set for Mittens!</strong><br>Daily medicine reminder — 8:00 PM<br>Repeat: Every day<br>Push notification: ON<br><br>✅ I'll notify you every evening at 8 PM. You can say 'Mark Mittens' medicine done' to log each dose.",
+  "What should Rocky eat today?": "🍖 <strong>Rocky's diet for today:</strong><br>Weight: 28 kg | Activity: Moderate<br><br>✅ Recommended:<br>• Morning: 200g dry kibble + 50g boiled chicken<br>• Evening: 180g dry kibble + 1 tbsp pumpkin puree<br><br>❌ Avoid today: No table scraps — his last checkup showed slightly elevated cholesterol.<br>💧 Fresh water: Keep full at all times.",
+};
+
+function simulateVoice(){
+  if(!isListening) return;
+  const query = sampleQueries[Math.floor(Math.random() * sampleQueries.length)];
+  const txt = document.getElementById('transcriptText');
+  const hint = document.getElementById('transcriptHint');
+
+  // Show transcript
+  txt.textContent = '"' + query + '"';
+  hint.textContent = '';
+  stopListening();
+
+  setTimeout(()=>{ showAIResponse(query, aiResponses[query] || "I'm processing your query about " + (currentPet === 'rocky' ? 'Rocky' : 'Mittens') + ". Please wait a moment…"); }, 600);
+}
+
+function quickCommand(btn, text){
+  const txt = document.getElementById('transcriptText');
+  const hint = document.getElementById('transcriptHint');
+  txt.textContent = '"' + text + '"';
+  hint.textContent = '';
+  const response = aiResponses[text] || "Processing: <em>" + text + "</em><br>AI is analyzing Rocky's health records to answer this query…";
+  setTimeout(()=>{ showAIResponse(text, response); }, 500);
+}
+
+function showAIResponse(userText, aiText){
+  const area = document.getElementById('conversationArea');
+  const resp = document.getElementById('vcResponse');
+  resp.style.display = 'block';
+
+  // User msg
+  const userMsg = document.createElement('div');
+  userMsg.className = 'vc-msg vc-msg-user';
+  userMsg.innerHTML = `<div class="vc-msg-avatar vc-user-avatar">A</div><div class="vc-bubble vc-bubble-user">${userText}</div>`;
+  area.appendChild(userMsg);
+
+  // Typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'vc-msg';
+  typingDiv.id = 'typingIndicator';
+  typingDiv.innerHTML = `<div class="vc-msg-avatar vc-ai-avatar"><i class="ti ti-microphone" style="font-size:14px;color:#fff"></i></div><div class="vc-typing"><div class="vc-typing-dot"></div><div class="vc-typing-dot"></div><div class="vc-typing-dot"></div></div>`;
+  area.appendChild(typingDiv);
+  area.scrollTop = area.scrollHeight;
+
+  setTimeout(()=>{
+    document.getElementById('typingIndicator')?.remove();
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'vc-msg';
+    aiMsg.innerHTML = `<div class="vc-msg-avatar vc-ai-avatar"><i class="ti ti-microphone" style="font-size:14px;color:#fff"></i></div><div class="vc-bubble vc-bubble-ai">${aiText}</div>`;
+    area.appendChild(aiMsg);
+    area.scrollTop = area.scrollHeight;
+  }, 1600);
+}
+
+// ── TEXT QUERY ──
+function submitTextQuery(){
+  const input = document.getElementById('textQueryInput');
+  const text = input.value.trim();
+  if(!text) return;
+  closeModal('textInputModal');
+  document.getElementById('transcriptText').textContent = '"' + text + '"';
+  document.getElementById('transcriptHint').textContent = '';
+  const response = aiResponses[text] || "Processing: <em>" + text + "</em><br>AI is analyzing your pet records to answer this query…";
+  setTimeout(()=>{ showAIResponse(text, response); }, 400);
+  input.value = '';
+}
+document.getElementById('textQueryInput')?.addEventListener('keydown', e=>{
+  if(e.key === 'Enter') submitTextQuery();
+});
+
+// ── MODAL ──
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+function closeModalOutside(e,id){if(e.target.id===id)closeModal(id)}
+</script>
+
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
+</div>
+
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
+</body>
+</html>

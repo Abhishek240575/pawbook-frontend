@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adoption Matching – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
+  --pb-green:#22c55e;--pb-green-soft:#dcfce7;
+  --pb-red:#ef4444;--pb-red-soft:#fee2e2;
+  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;
+  --pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
+  --pb-pink:#ec4899;--pb-pink-soft:#fce7f3;
+  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;
+  --pb-orange:#f97316;--pb-orange-soft:#ffedd5;
+  --pb-grad:linear-gradient(135deg,#ec4899,#8b5cf6);
+  --pb-adopt-grad:linear-gradient(135deg,#8b5cf6,#ec4899,#f59e0b);
+  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
+  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
+  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
+  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --pb-shadow-md:0 4px 20px rgba(0,0,0,.12);
+  --pb-nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
+a{text-decoration:none;color:inherit}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+input,textarea,select{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+
+/* ── NAV ── */
+.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
+.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pb-nav-search{flex:1;max-width:220px;height:38px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
+.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;width:100%;color:var(--pb-text)}
+.pb-nav-search input::placeholder{color:var(--pb-text3)}
+.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
+.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
+.pb-nav-tab.active{color:var(--pb-pink)}
+.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-pink);border-radius:3px 3px 0 0}
+.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s}
+.pb-icon-btn:hover{background:var(--pb-border)}
+.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ── BUTTONS ── */
+.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
+.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
+.pb-btn-pink{background:var(--pb-pink);color:#fff}.pb-btn-pink:hover{background:#db2777}
+.pb-btn-purple{background:var(--pb-purple);color:#fff}.pb-btn-purple:hover{background:#7c3aed}
+.pb-btn-green{background:var(--pb-green);color:#fff}.pb-btn-green:hover{background:#16a34a}
+.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
+.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
+
+/* ── LAYOUT ── */
+.am-layout{max-width:1100px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:300px 1fr;gap:20px}
+@media(max-width:768px){.am-layout{grid-template-columns:1fr}.am-sidebar{display:none}}
+.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
+.pb-card-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
+.pb-card-header h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+
+/* ── LOCATION CASCADE ── */
+.loc-select{height:36px;border:1.5px solid var(--pb-border);border-radius:var(--pb-pill);padding:0 12px 0 14px;font-size:13px;outline:none;background:#fff;cursor:pointer;min-width:130px;color:var(--pb-text);transition:border-color .15s;font-weight:500}
+.loc-select:focus{border-color:var(--pb-purple)}
+.loc-select:disabled{opacity:.45;cursor:not-allowed}
+
+/* ── HERO BANNER ── */
+.adopt-hero{background:var(--pb-adopt-grad);border-radius:var(--pb-radius);padding:24px;margin-bottom:16px;color:#fff;position:relative;overflow:hidden}
+.adopt-hero::before{content:'🐾';position:absolute;right:-10px;top:-10px;font-size:120px;opacity:.12;transform:rotate(20deg)}
+.adopt-hero::after{content:'💕';position:absolute;right:60px;bottom:-15px;font-size:80px;opacity:.1}
+.adopt-hero-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.ai-pulse{width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse .9s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.6}}
+.adopt-hero h2{font-size:22px;font-weight:900;margin-bottom:6px}
+.adopt-hero p{font-size:13px;opacity:.85;line-height:1.5;margin-bottom:16px}
+.hero-stats{display:flex;gap:16px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-val{font-size:22px;font-weight:900}
+.hero-stat-label{font-size:11px;opacity:.8}
+.hero-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.hero-btn-white{background:#fff;color:var(--pb-purple);height:38px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:6px}
+.hero-btn-outline{background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.5);height:38px;padding:0 16px;border-radius:var(--pb-pill);cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.hero-btn-outline:hover{background:rgba(255,255,255,.28)}
+
+/* ── HERO LOCATION ROW ── */
+.hero-loc-row{display:flex;gap:8px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.25);flex-wrap:wrap}
+.hero-loc-row label{font-size:12px;font-weight:700;opacity:.85}
+.hero-loc-select{height:34px;border:1.5px solid rgba(255,255,255,.5);border-radius:var(--pb-pill);padding:0 12px;font-size:13px;outline:none;background:rgba(255,255,255,.2);color:#fff;cursor:pointer;min-width:130px;font-weight:600}
+.hero-loc-select option{color:#050505;background:#fff}
+.hero-loc-select:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── AI MATCH BANNER ── */
+.ai-match-banner{background:linear-gradient(135deg,var(--pb-purple-soft),var(--pb-pink-soft));border:1.5px solid #d8b4fe;border-radius:var(--pb-radius-sm);padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.ai-match-icon{width:44px;height:44px;border-radius:50%;background:var(--pb-grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ai-match-text{flex:1}
+.ai-match-title{font-size:14px;font-weight:800;margin-bottom:2px}
+.ai-match-sub{font-size:12px;color:var(--pb-text2)}
+.ai-match-score{font-size:22px;font-weight:900;color:var(--pb-purple)}
+
+/* ── FILTER ROW ── */
+.filter-row{display:flex;gap:8px;padding:16px 20px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--pb-border);align-items:center;flex-wrap:wrap}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-pill{padding:7px 16px;border-radius:var(--pb-pill);border:1.5px solid var(--pb-border);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;background:#fff;color:var(--pb-text2)}
+.filter-pill:hover{border-color:var(--pb-purple);color:var(--pb-purple)}
+.filter-pill.active{background:var(--pb-purple-soft);border-color:var(--pb-purple);color:var(--pb-purple)}
+.view-toggle{display:flex;gap:4px;margin-left:auto}
+.view-btn{width:32px;height:32px;border-radius:var(--pb-radius-sm);border:1.5px solid var(--pb-border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text3);font-size:16px;transition:all .15s}
+.view-btn.active{background:var(--pb-purple-soft);border-color:var(--pb-purple);color:var(--pb-purple)}
+
+/* ── PET CARDS ── */
+.pets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;padding:20px}
+.pet-card{border-radius:var(--pb-radius);overflow:hidden;border:1px solid var(--pb-border);box-shadow:var(--pb-shadow);transition:all .2s;background:#fff;cursor:pointer}
+.pet-card:hover{box-shadow:var(--pb-shadow-md);transform:translateY(-3px)}
+.pet-card-img{width:100%;height:200px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:80px}
+.pet-card-img-bg{position:absolute;inset:0;background:var(--pb-bg)}
+.pet-card-emoji{position:relative;z-index:1}
+.match-badge{position:absolute;top:10px;right:10px;padding:5px 11px;border-radius:var(--pb-pill);font-size:12px;font-weight:800;display:flex;align-items:center;gap:4px;z-index:2}
+.match-high{background:linear-gradient(135deg,#8b5cf6,#ec4899);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,.4)}
+.match-med{background:#fff;color:var(--pb-purple);border:1.5px solid var(--pb-purple)}
+.fav-btn{position:absolute;top:10px;left:10px;width:32px;height:32px;border-radius:50%;background:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:var(--pb-shadow);z-index:2;transition:all .15s}
+.fav-btn:hover{transform:scale(1.1)}
+.fav-btn.faved{background:var(--pb-pink-soft);color:var(--pb-pink)}
+.pet-status-tag{position:absolute;bottom:10px;left:10px;padding:4px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:800;text-transform:uppercase;z-index:2}
+.status-available{background:var(--pb-green);color:#fff}
+.status-pending{background:var(--pb-amber);color:#fff}
+.status-adopted{background:var(--pb-blue-soft);color:var(--pb-blue);border:1px solid var(--pb-blue)}
+.pet-card-body{padding:14px}
+.pet-name{font-size:17px;font-weight:900;margin-bottom:3px}
+.pet-breed{font-size:12px;color:var(--pb-text2);margin-bottom:10px}
+.pet-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.pet-tag{padding:3px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:600;background:var(--pb-bg);color:var(--pb-text2)}
+.pet-tag-blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
+.pet-tag-green{background:var(--pb-green-soft);color:#16a34a}
+.pet-tag-purple{background:var(--pb-purple-soft);color:var(--pb-purple)}
+.pet-tag-pink{background:var(--pb-pink-soft);color:var(--pb-pink)}
+.pet-why{font-size:12px;color:var(--pb-text2);line-height:1.5;margin-bottom:10px;padding:8px 10px;background:linear-gradient(135deg,var(--pb-purple-soft),var(--pb-pink-soft));border-radius:var(--pb-radius-sm);border-left:3px solid var(--pb-purple)}
+.pet-why strong{color:var(--pb-purple)}
+.pet-shelter{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--pb-text3);margin-bottom:10px}
+.pet-shelter i{font-size:13px}
+.pet-card-actions{display:flex;gap:6px}
+
+/* ── QUICK MATCH QUIZ ── */
+.quiz-card{padding:20px}
+.quiz-step{display:none}
+.quiz-step.active{display:block}
+.quiz-title{font-size:16px;font-weight:800;margin-bottom:6px}
+.quiz-sub{font-size:13px;color:var(--pb-text2);margin-bottom:16px}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.quiz-option{padding:14px 12px;border-radius:var(--pb-radius-sm);border:2px solid var(--pb-border);cursor:pointer;text-align:center;transition:all .15s;font-size:13px;font-weight:600;background:#fff}
+.quiz-option:hover{border-color:var(--pb-purple)}
+.quiz-option.selected{border-color:var(--pb-purple);background:var(--pb-purple-soft);color:var(--pb-purple)}
+.quiz-emoji{font-size:24px;display:block;margin-bottom:6px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:16px}
+.quiz-dot{flex:1;height:4px;border-radius:2px;background:var(--pb-border)}
+.quiz-dot.done{background:var(--pb-purple)}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center}
+
+/* ── SAVED / LIKED ── */
+.saved-list{padding:16px;display:flex;flex-direction:column;gap:10px}
+.saved-item{display:flex;gap:10px;align-items:center;padding:10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);cursor:pointer;transition:background .15s}
+.saved-item:hover{background:var(--pb-purple-soft)}
+.saved-emoji{width:48px;height:48px;border-radius:var(--pb-radius-sm);background:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;border:1px solid var(--pb-border)}
+.saved-info{flex:1}
+.saved-name{font-size:14px;font-weight:700}
+.saved-breed{font-size:12px;color:var(--pb-text2)}
+.saved-match{font-size:11px;font-weight:800;color:var(--pb-purple);background:var(--pb-purple-soft);padding:3px 10px;border-radius:var(--pb-pill);flex-shrink:0}
+
+/* ── NEARBY SHELTERS ── */
+.shelter-list{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.shelter-item{padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)}
+.shelter-name{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.shelter-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.shelter-tag{font-size:11px;padding:3px 10px;border-radius:var(--pb-pill);font-weight:600}
+.shelter-dist{background:var(--pb-blue-soft);color:var(--pb-blue)}
+.shelter-count{background:var(--pb-pink-soft);color:var(--pb-pink)}
+.shelter-hours{font-size:11px;color:var(--pb-text3);display:flex;align-items:center;gap:4px;margin-top:3px}
+.shelter-phone{font-size:12px;color:var(--pb-blue);font-weight:600;display:flex;align-items:center;gap:5px;margin-top:3px}
+.shelter-no-data{padding:16px;text-align:center;font-size:13px;color:var(--pb-text3)}
+
+/* ── VET CLINICS PANEL ── */
+.vet-item{padding:10px 0;border-bottom:1px solid var(--pb-border)}
+.vet-item:last-child{border-bottom:none}
+.vet-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.vet-phone{font-size:12px;color:var(--pb-blue);font-weight:600;display:flex;align-items:center;gap:5px}
+.vet-hours{font-size:11px;color:var(--pb-text3);margin-top:1px}
+.vet-no-data{padding:16px;text-align:center;font-size:13px;color:var(--pb-text3)}
+
+/* ── PROCESS STEPS ── */
+.process-steps{padding:16px;display:flex;flex-direction:column;gap:0}
+.process-step{display:flex;gap:10px;align-items:flex-start;padding:10px 0;position:relative}
+.process-step:not(:last-child)::after{content:'';position:absolute;left:17px;top:38px;width:2px;height:calc(100% - 18px);background:var(--pb-border)}
+.step-num{width:34px;height:34px;border-radius:50%;background:var(--pb-purple);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1}
+.step-num.done{background:var(--pb-green)}
+.step-info{flex:1;padding-top:5px}
+.step-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.step-desc{font-size:12px;color:var(--pb-text2)}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;transition:all .2s}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;box-shadow:var(--pb-shadow-md)}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.modal-header h3{font-size:17px;font-weight:800}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--pb-text2)}
+.modal-body{padding:0}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--pb-border);display:flex;gap:10px;justify-content:flex-end}
+.pet-detail-hero{height:260px;background:linear-gradient(135deg,#ede9fe,#fce7f3);display:flex;align-items:center;justify-content:center;font-size:100px;position:relative}
+.pet-detail-match{position:absolute;top:14px;right:14px;padding:6px 14px;border-radius:var(--pb-pill);background:var(--pb-grad);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;gap:5px}
+.pet-detail-body{padding:20px 24px}
+.pet-detail-name{font-size:24px;font-weight:900;margin-bottom:4px}
+.pet-detail-breed{font-size:14px;color:var(--pb-text2);margin-bottom:16px}
+.pet-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.pet-detail-item{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:12px}
+.pet-detail-label{font-size:11px;color:var(--pb-text3);margin-bottom:3px}
+.pet-detail-val{font-size:14px;font-weight:700}
+.pet-detail-section{margin-bottom:16px}
+.pet-detail-section-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.trait-list{display:flex;flex-wrap:wrap;gap:6px}
+.trait-tag{padding:5px 12px;border-radius:var(--pb-pill);font-size:12px;font-weight:600}
+.trait-green{background:var(--pb-green-soft);color:#16a34a}
+.trait-blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
+.trait-amber{background:var(--pb-amber-soft);color:#92400e}
+.trait-purple{background:var(--pb-purple-soft);color:var(--pb-purple)}
+.ai-why-box{padding:14px;background:linear-gradient(135deg,var(--pb-purple-soft),var(--pb-pink-soft));border-radius:var(--pb-radius-sm);border:1px solid #e9d5ff;margin-bottom:16px}
+.ai-why-title{font-size:13px;font-weight:800;color:var(--pb-purple);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.ai-why-text{font-size:13px;color:var(--pb-text2);line-height:1.6}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--pb-text2);margin-bottom:6px}
+.form-input{width:100%;height:40px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--pb-purple)}
+.form-select{width:100%;height:40px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;background:#fff;cursor:pointer}
+.form-textarea{width:100%;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:10px 12px;font-size:14px;outline:none;resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-pad{padding:20px 24px}
+.section-divider{font-size:12px;font-weight:800;color:var(--pb-text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding-top:4px}
+.checklist-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--pb-border)}
+.checklist-item:last-child{border-bottom:none}
+.check-emoji{font-size:20px;flex-shrink:0;margin-top:1px}
+.check-info{flex:1}
+.check-title{font-size:13px;font-weight:700;margin-bottom:1px}
+.check-desc{font-size:12px;color:var(--pb-text2)}
+
+/* ── BOTTOM NAV ── */
+.pb-bnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);display:flex;z-index:400}
+.pb-bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--pb-text3);font-size:10px;font-weight:600;transition:color .15s;border:none;background:transparent}
+.pb-bnav-item i{font-size:22px}
+.pb-bnav-item.active{color:var(--pb-pink)}
+.pb-bnav-fab{width:48px;height:48px;border-radius:50%;background:var(--pb-grad);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(236,72,153,.35);margin:-16px auto 0}
+
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="pb-nav">
+  <div class="pb-nav-logo" onclick="location.href='07_home.html'">
+    <div class="pb-nav-logo-icon">🐾</div>
+    <span>PawBook</span>
+  </div>
+  <div class="pb-nav-search">
+    <i class="ti ti-search" style="color:var(--pb-text3);font-size:16px"></i>
+    <input type="text" placeholder="Search adoptable pets…">
+  </div>
+  <div class="pb-nav-tabs">
+    <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
+    <button class="pb-nav-tab" onclick="location.href='38_lost_pet_network.html'"><i class="ti ti-map-pin"></i></button>
+    <button class="pb-nav-tab active"><i class="ti ti-heart"></i></button>
+  </div>
+  <div class="pb-nav-right">
+    <button class="pb-icon-btn"><i class="ti ti-bell"></i></button>
+    <div class="pb-avatar">A</div>
+  </div>
+</nav>
+
+<!-- MAIN LAYOUT -->
+<div class="am-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="am-sidebar">
+
+    <!-- Location Selector -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-map-pin" style="color:var(--pb-pink)"></i> Your Location</h3>
+      </div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--pb-text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Country</div>
+          <select class="loc-select" id="sidebarCountry" onchange="onCountryChange()" style="width:100%;border-radius:var(--pb-radius-sm)">
+            <option value="">— Choose Country —</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--pb-text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">City</div>
+          <select class="loc-select" id="sidebarCity" onchange="onCityChange()" disabled style="width:100%;border-radius:var(--pb-radius-sm)">
+            <option value="">— Select country first —</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Match Quiz -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-wand" style="color:var(--pb-purple)"></i> Find My Match</h3>
+        <span style="font-size:11px;background:var(--pb-purple-soft);color:var(--pb-purple);padding:3px 10px;border-radius:var(--pb-pill);font-weight:700">AI Quiz</span>
+      </div>
+      <div class="quiz-card" id="quizCard">
+        <div class="quiz-progress">
+          <div class="quiz-dot done" id="qd1"></div>
+          <div class="quiz-dot" id="qd2"></div>
+          <div class="quiz-dot" id="qd3"></div>
+          <div class="quiz-dot" id="qd4"></div>
+        </div>
+        <div class="quiz-step active" id="qs1">
+          <div class="quiz-title">What's your living situation?</div>
+          <div class="quiz-sub">Helps us find the right energy level</div>
+          <div class="quiz-options">
+            <div class="quiz-option" onclick="selectQuiz(this,'home')"><span class="quiz-emoji">🏠</span>House with yard</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'apt')"><span class="quiz-emoji">🏢</span>Apartment</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'small')"><span class="quiz-emoji">🛖</span>Small flat</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'shared')"><span class="quiz-emoji">🏘️</span>Shared housing</div>
+          </div>
+          <div class="quiz-nav"><span style="font-size:12px;color:var(--pb-text3)">Step 1 of 4</span><button class="pb-btn pb-btn-purple pb-btn-sm" onclick="nextQuiz(2)">Next <i class="ti ti-arrow-right"></i></button></div>
+        </div>
+        <div class="quiz-step" id="qs2">
+          <div class="quiz-title">How active is your lifestyle?</div>
+          <div class="quiz-sub">We'll match your energy level</div>
+          <div class="quiz-options">
+            <div class="quiz-option" onclick="selectQuiz(this,'very')"><span class="quiz-emoji">🏃</span>Very active</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'mod')"><span class="quiz-emoji">🚶</span>Moderate walks</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'low')"><span class="quiz-emoji">🛋️</span>Mostly indoors</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'any')"><span class="quiz-emoji">😊</span>Flexible</div>
+          </div>
+          <div class="quiz-nav"><button class="pb-btn pb-btn-gray pb-btn-sm" onclick="nextQuiz(1)"><i class="ti ti-arrow-left"></i> Back</button><button class="pb-btn pb-btn-purple pb-btn-sm" onclick="nextQuiz(3)">Next <i class="ti ti-arrow-right"></i></button></div>
+        </div>
+        <div class="quiz-step" id="qs3">
+          <div class="quiz-title">Who's in your family?</div>
+          <div class="quiz-sub">Important for pet temperament matching</div>
+          <div class="quiz-options">
+            <div class="quiz-option" onclick="selectQuiz(this,'solo')"><span class="quiz-emoji">👤</span>Just me</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'couple')"><span class="quiz-emoji">👫</span>Couple</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'kids')"><span class="quiz-emoji">👨‍👩‍👧</span>Family with kids</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'pets')"><span class="quiz-emoji">🐾</span>Have other pets</div>
+          </div>
+          <div class="quiz-nav"><button class="pb-btn pb-btn-gray pb-btn-sm" onclick="nextQuiz(2)"><i class="ti ti-arrow-left"></i> Back</button><button class="pb-btn pb-btn-purple pb-btn-sm" onclick="nextQuiz(4)">Next <i class="ti ti-arrow-right"></i></button></div>
+        </div>
+        <div class="quiz-step" id="qs4">
+          <div class="quiz-title">Pet experience level?</div>
+          <div class="quiz-sub">Helps suggest the right breed</div>
+          <div class="quiz-options">
+            <div class="quiz-option" onclick="selectQuiz(this,'first')"><span class="quiz-emoji">🌱</span>First time</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'some')"><span class="quiz-emoji">🌿</span>Some experience</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'exp')"><span class="quiz-emoji">🌳</span>Experienced</div>
+            <div class="quiz-option" onclick="selectQuiz(this,'prof')"><span class="quiz-emoji">🏆</span>Professional</div>
+          </div>
+          <div class="quiz-nav"><button class="pb-btn pb-btn-gray pb-btn-sm" onclick="nextQuiz(3)"><i class="ti ti-arrow-left"></i> Back</button><button class="pb-btn pb-btn-pink pb-btn-sm" onclick="finishQuiz()"><i class="ti ti-sparkles"></i> Find My Match!</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liked Pets -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-heart" style="color:var(--pb-pink)"></i> Liked Pets</h3>
+        <span style="font-size:12px;color:var(--pb-text2)">3 saved</span>
+      </div>
+      <div class="saved-list">
+        <div class="saved-item" onclick="openPetDetail('simba')"><div class="saved-emoji">🐕</div><div class="saved-info"><div class="saved-name">Simba</div><div class="saved-breed">Golden Retriever Mix</div></div><span class="saved-match">96% ✨</span></div>
+        <div class="saved-item" onclick="openPetDetail('luna')"><div class="saved-emoji">🐱</div><div class="saved-info"><div class="saved-name">Luna</div><div class="saved-breed">Siamese Cat</div></div><span class="saved-match">88%</span></div>
+        <div class="saved-item" onclick="openPetDetail('coco')"><div class="saved-emoji">🐩</div><div class="saved-info"><div class="saved-name">Coco</div><div class="saved-breed">Toy Poodle</div></div><span class="saved-match">82%</span></div>
+      </div>
+    </div>
+
+    <!-- Nearby Adoption Shelters — dynamic -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-building" style="color:var(--pb-teal)"></i> Adoption Shelters</h3>
+        <button class="pb-btn pb-btn-gray pb-btn-sm">View All</button>
+      </div>
+      <div class="shelter-list" id="shelterPanel">
+        <div class="shelter-no-data">Select a city to see<br>nearby adoption shelters</div>
+      </div>
+    </div>
+
+    <!-- Partner Vet Clinics — dynamic -->
+    <div class="pb-card" style="margin-bottom:16px">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-stethoscope" style="color:var(--pb-blue)"></i> Partner Vet Clinics</h3>
+      </div>
+      <div style="padding:12px 16px" id="vetPanel">
+        <div class="vet-no-data">Select a city to see<br>partner vet clinics</div>
+      </div>
+    </div>
+
+    <!-- Adoption Process -->
+    <div class="pb-card">
+      <div class="pb-card-header">
+        <h3><i class="ti ti-steps" style="color:var(--pb-blue)"></i> How It Works</h3>
+      </div>
+      <div class="process-steps">
+        <div class="process-step"><div class="step-num done">✓</div><div class="step-info"><div class="step-title">Take the AI Quiz</div><div class="step-desc">Get matched to compatible pets</div></div></div>
+        <div class="process-step"><div class="step-num done">✓</div><div class="step-info"><div class="step-title">Browse & Like Pets</div><div class="step-desc">Save favourites to your wishlist</div></div></div>
+        <div class="process-step"><div class="step-num">3</div><div class="step-info"><div class="step-title">Submit Application</div><div class="step-desc">Fill the adoption form</div></div></div>
+        <div class="process-step"><div class="step-num">4</div><div class="step-info"><div class="step-title">Home Visit Check</div><div class="step-desc">Shelter team visits & approves</div></div></div>
+        <div class="process-step"><div class="step-num">5</div><div class="step-info"><div class="step-title">Welcome Home! 🎉</div><div class="step-desc">Bring your new pet home</div></div></div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- Hero -->
+    <div class="adopt-hero">
+      <div class="adopt-hero-label"><span class="ai-pulse"></span> AI Adoption Matching · <span id="heroCity">Select Your City</span></div>
+      <h2>Find Your Perfect Furry Companion 💕</h2>
+      <p>Our AI analyses your lifestyle, home environment, and preferences to match you with compatible shelter pets. 2,400+ happy adoption stories worldwide.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val" id="heroPets">247</div><div class="hero-stat-label">Pets Available</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">2,400+</div><div class="hero-stat-label">Adoptions Done</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">94%</div><div class="hero-stat-label">Match Success</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="heroShelters">12</div><div class="hero-stat-label">Shelters</div></div>
+      </div>
+      <!-- Location selectors inside hero -->
+      <div class="hero-loc-row">
+        <label>📍 Location:</label>
+        <select class="hero-loc-select" id="heroCountry" onchange="onCountryChange()">
+          <option value="">— Country —</option>
+        </select>
+        <select class="hero-loc-select" id="heroCity" onchange="onCityChange()" disabled>
+          <option value="">— City —</option>
+        </select>
+      </div>
+      <div class="hero-actions">
+        <button class="hero-btn-white" onclick="openModal('applyModal')"><i class="ti ti-heart"></i> Start Adopting</button>
+        <button class="hero-btn-outline" onclick="openModal('listPetModal')"><i class="ti ti-plus"></i> List a Pet for Adoption</button>
+        <button class="hero-btn-outline"><i class="ti ti-building"></i> Register Shelter</button>
+      </div>
+    </div>
+
+    <!-- AI Match Banner -->
+    <div class="ai-match-banner">
+      <div class="ai-match-icon"><i class="ti ti-sparkles"></i></div>
+      <div class="ai-match-text">
+        <div class="ai-match-title" id="aiMatchTitle">🤖 AI found 8 great matches for you — select your city to refine</div>
+        <div class="ai-match-sub">Based on your quiz: Apartment · Moderate activity · Family with kids · Experienced</div>
+      </div>
+      <div class="ai-match-score">96% <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">best</span></div>
+    </div>
+
+    <!-- Pets Card -->
+    <div class="pb-card">
+
+      <!-- Filter Row -->
+      <div class="filter-row">
+        <button class="filter-pill active" onclick="setPillFilter(this)">🤖 AI Matches</button>
+        <button class="filter-pill" onclick="setPillFilter(this)">🐕 Dogs</button>
+        <button class="filter-pill" onclick="setPillFilter(this)">🐱 Cats</button>
+        <button class="filter-pill" onclick="setPillFilter(this)">🐦 Birds</button>
+        <button class="filter-pill" onclick="setPillFilter(this)">🐾 Other</button>
+        <button class="filter-pill" onclick="setPillFilter(this)">🏠 Nearby</button>
+        <button class="filter-pill" onclick="setPillFilter(this)">🐣 Puppies</button>
+        <div class="view-toggle">
+          <button class="view-btn active"><i class="ti ti-layout-grid"></i></button>
+          <button class="view-btn"><i class="ti ti-list"></i></button>
+        </div>
+      </div>
+
+      <!-- AI Insights Row -->
+      <div style="padding:14px 20px;border-bottom:1px solid var(--pb-border);background:linear-gradient(135deg,rgba(139,92,246,.05),rgba(236,72,153,.05))">
+        <div style="font-size:12px;font-weight:800;color:var(--pb-purple);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">🤖 AI Insights for You</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div style="font-size:12px;padding:6px 12px;background:#fff;border-radius:var(--pb-pill);border:1px solid #e9d5ff;color:var(--pb-text2)">🏠 Apartment-friendly breeds filtered</div>
+          <div style="font-size:12px;padding:6px 12px;background:#fff;border-radius:var(--pb-pill);border:1px solid #e9d5ff;color:var(--pb-text2)">👦 Kid-safe temperament only</div>
+          <div style="font-size:12px;padding:6px 12px;background:#fff;border-radius:var(--pb-pill);border:1px solid #e9d5ff;color:var(--pb-text2)">📍 Within 10 km of you</div>
+          <div style="font-size:12px;padding:6px 12px;background:#fff;border-radius:var(--pb-pill);border:1px solid #e9d5ff;color:var(--pb-text2)">💉 All vaccinated ✓</div>
+        </div>
+      </div>
+
+      <!-- Pets Grid -->
+      <div class="pets-grid">
+
+        <!-- Simba -->
+        <div class="pet-card" onclick="openPetDetail('simba')">
+          <div class="pet-card-img" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">
+            <div class="pet-card-img-bg"></div>
+            <div class="pet-card-emoji">🐕</div>
+            <div class="match-badge match-high"><i class="ti ti-sparkles" style="font-size:12px"></i> 96% Match</div>
+            <button class="fav-btn faved" onclick="event.stopPropagation()">❤️</button>
+            <span class="pet-status-tag status-available">Available</span>
+          </div>
+          <div class="pet-card-body">
+            <div class="pet-name">Simba</div>
+            <div class="pet-breed">Golden Retriever Mix · Male · 1.5 years</div>
+            <div class="pet-tags">
+              <span class="pet-tag pet-tag-green">Kid-Friendly</span>
+              <span class="pet-tag pet-tag-blue">Vaccinated</span>
+              <span class="pet-tag pet-tag-purple">Neutered</span>
+            </div>
+            <div class="pet-why"><strong>🤖 Why you'd love Simba:</strong> Gentle temperament perfect for a family with kids. Apartment-adapted from previous home. Low shedding for indoor comfort.</div>
+            <div class="pet-shelter"><i class="ti ti-building"></i>Friendicoes SECA · 2.4 km away</div>
+            <div class="pet-card-actions">
+              <button class="pb-btn pb-btn-pink pb-btn-sm" style="flex:1;justify-content:center" onclick="event.stopPropagation();openModal('applyModal')"><i class="ti ti-heart"></i> Adopt</button>
+              <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="event.stopPropagation();openPetDetail('simba')"><i class="ti ti-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Luna -->
+        <div class="pet-card" onclick="openPetDetail('luna')">
+          <div class="pet-card-img" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)">
+            <div class="pet-card-img-bg"></div>
+            <div class="pet-card-emoji">🐱</div>
+            <div class="match-badge match-high"><i class="ti ti-sparkles" style="font-size:12px"></i> 88% Match</div>
+            <button class="fav-btn faved" onclick="event.stopPropagation()">❤️</button>
+            <span class="pet-status-tag status-available">Available</span>
+          </div>
+          <div class="pet-card-body">
+            <div class="pet-name">Luna</div>
+            <div class="pet-breed">Siamese Cat · Female · 2 years</div>
+            <div class="pet-tags">
+              <span class="pet-tag pet-tag-purple">Calm</span>
+              <span class="pet-tag pet-tag-blue">Vaccinated</span>
+              <span class="pet-tag pet-tag-green">Indoor Cat</span>
+            </div>
+            <div class="pet-why"><strong>🤖 Why you'd love Luna:</strong> Independent and calm — great for apartment living. Affectionate with patient owners. Very low maintenance.</div>
+            <div class="pet-shelter"><i class="ti ti-building"></i>Jeev Ashram · 4.1 km away</div>
+            <div class="pet-card-actions">
+              <button class="pb-btn pb-btn-pink pb-btn-sm" style="flex:1;justify-content:center" onclick="event.stopPropagation();openModal('applyModal')"><i class="ti ti-heart"></i> Adopt</button>
+              <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="event.stopPropagation();openPetDetail('luna')"><i class="ti ti-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coco -->
+        <div class="pet-card" onclick="openPetDetail('coco')">
+          <div class="pet-card-img" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8)">
+            <div class="pet-card-img-bg"></div>
+            <div class="pet-card-emoji">🐩</div>
+            <div class="match-badge match-med">82% Match</div>
+            <button class="fav-btn faved" onclick="event.stopPropagation()">❤️</button>
+            <span class="pet-status-tag status-available">Available</span>
+          </div>
+          <div class="pet-card-body">
+            <div class="pet-name">Coco</div>
+            <div class="pet-breed">Toy Poodle · Female · 3 years</div>
+            <div class="pet-tags">
+              <span class="pet-tag pet-tag-pink">Playful</span>
+              <span class="pet-tag pet-tag-blue">Vaccinated</span>
+              <span class="pet-tag">House-trained</span>
+            </div>
+            <div class="pet-why"><strong>🤖 Why you'd love Coco:</strong> Highly intelligent and trainable. Hypoallergenic coat. Loves playing but also cuddles indoors.</div>
+            <div class="pet-shelter"><i class="ti ti-building"></i>Delhi SPCA · 7.8 km away</div>
+            <div class="pet-card-actions">
+              <button class="pb-btn pb-btn-pink pb-btn-sm" style="flex:1;justify-content:center" onclick="event.stopPropagation();openModal('applyModal')"><i class="ti ti-heart"></i> Adopt</button>
+              <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="event.stopPropagation();openPetDetail('coco')"><i class="ti ti-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bruno -->
+        <div class="pet-card" onclick="openPetDetail('bruno')">
+          <div class="pet-card-img" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">
+            <div class="pet-card-img-bg"></div>
+            <div class="pet-card-emoji">🐕</div>
+            <div class="match-badge match-med">78% Match</div>
+            <button class="fav-btn" onclick="event.stopPropagation()">🤍</button>
+            <span class="pet-status-tag status-pending">Pending</span>
+          </div>
+          <div class="pet-card-body">
+            <div class="pet-name">Bruno</div>
+            <div class="pet-breed">Labrador · Male · 4 years</div>
+            <div class="pet-tags">
+              <span class="pet-tag pet-tag-green">Calm</span>
+              <span class="pet-tag pet-tag-blue">Vaccinated</span>
+              <span class="pet-tag">Neutered</span>
+            </div>
+            <div class="pet-why"><strong>🤖 Why you'd love Bruno:</strong> Friendly and loyal. Excellent with children. Well-trained, responds to basic commands. Loves daily walks.</div>
+            <div class="pet-shelter"><i class="ti ti-building"></i>BSPCA Mumbai · Transfer possible</div>
+            <div class="pet-card-actions">
+              <button class="pb-btn pb-btn-pink pb-btn-sm" style="flex:1;justify-content:center" onclick="event.stopPropagation();openModal('applyModal')"><i class="ti ti-heart"></i> Apply</button>
+              <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="event.stopPropagation();openPetDetail('bruno')"><i class="ti ti-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mochi -->
+        <div class="pet-card" onclick="openPetDetail('mochi')">
+          <div class="pet-card-img" style="background:linear-gradient(135deg,#fef9c3,#fde68a)">
+            <div class="pet-card-img-bg"></div>
+            <div class="pet-card-emoji">🐱</div>
+            <div class="match-badge match-med">75% Match</div>
+            <button class="fav-btn" onclick="event.stopPropagation()">🤍</button>
+            <span class="pet-status-tag status-available">Available</span>
+          </div>
+          <div class="pet-card-body">
+            <div class="pet-name">Mochi</div>
+            <div class="pet-breed">Persian Cat · Male · 1 year</div>
+            <div class="pet-tags">
+              <span class="pet-tag pet-tag-purple">Gentle</span>
+              <span class="pet-tag pet-tag-blue">Vaccinated</span>
+              <span class="pet-tag pet-tag-pink">Fluffy</span>
+            </div>
+            <div class="pet-why"><strong>🤖 Why you'd love Mochi:</strong> Beautiful Persian kitten, socialized with young children. Loves cuddles. High grooming needs — perfect for experienced owners.</div>
+            <div class="pet-shelter"><i class="ti ti-building"></i>Friendicoes SECA · 2.4 km away</div>
+            <div class="pet-card-actions">
+              <button class="pb-btn pb-btn-pink pb-btn-sm" style="flex:1;justify-content:center" onclick="event.stopPropagation();openModal('applyModal')"><i class="ti ti-heart"></i> Adopt</button>
+              <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="event.stopPropagation();openPetDetail('mochi')"><i class="ti ti-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Load More -->
+        <div style="display:flex;align-items:center;justify-content:center;min-height:180px;border:2px dashed var(--pb-border);border-radius:var(--pb-radius-sm);cursor:pointer;flex-direction:column;gap:8px;color:var(--pb-text3);font-size:13px;font-weight:600" onclick="this.textContent='Loading…'">
+          <i class="ti ti-refresh" style="font-size:28px"></i>
+          Load More Pets
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ── PET DETAIL MODAL ── -->
+<div class="modal-overlay" id="petDetailModal" onclick="closeModalOutside(event,'petDetailModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="detailModalTitle">Pet Details</h3>
+      <button class="modal-close" onclick="closeModal('petDetailModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="pet-detail-hero" id="detailHero">
+        <span id="detailEmoji" style="font-size:100px">🐕</span>
+        <div class="pet-detail-match" id="detailMatch"><i class="ti ti-sparkles" style="font-size:14px"></i> 96% Match</div>
+      </div>
+      <div class="pet-detail-body">
+        <div class="pet-detail-name" id="detailName">Pet Name</div>
+        <div class="pet-detail-breed" id="detailBreed">Breed</div>
+        <div class="pet-detail-grid">
+          <div class="pet-detail-item"><div class="pet-detail-label">Age</div><div class="pet-detail-val" id="detailAge">—</div></div>
+          <div class="pet-detail-item"><div class="pet-detail-label">Gender</div><div class="pet-detail-val" id="detailGender">—</div></div>
+          <div class="pet-detail-item"><div class="pet-detail-label">Size</div><div class="pet-detail-val" id="detailSize">—</div></div>
+          <div class="pet-detail-item"><div class="pet-detail-label">Shelter</div><div class="pet-detail-val" id="detailShelter">—</div></div>
+        </div>
+        <div class="ai-why-box">
+          <div class="ai-why-title"><i class="ti ti-sparkles"></i> Why AI matched you</div>
+          <div class="ai-why-text" id="detailWhy">—</div>
+        </div>
+        <div class="pet-detail-section">
+          <div class="pet-detail-section-title"><i class="ti ti-heart"></i> Personality Traits</div>
+          <div class="trait-list" id="detailTraits"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('petDetailModal')">Close</button>
+      <button class="pb-btn pb-btn-pink" onclick="closeModal('petDetailModal');openModal('applyModal')"><i class="ti ti-heart"></i> Start Adoption</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADOPTION APPLICATION MODAL ── -->
+<div class="modal-overlay" id="applyModal" onclick="closeModalOutside(event,'applyModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🐾 Adoption Application</h3>
+      <button class="modal-close" onclick="closeModal('applyModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-pad">
+        <div class="section-divider">Your Details</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name *</label><input type="text" class="form-input" placeholder="Your full name"></div>
+          <div class="form-group"><label class="form-label">Phone Number *</label><input type="tel" class="form-input" placeholder="Phone number"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Country</label>
+            <select class="form-select" id="applyCountry" onchange="populateCitySelect('applyCity','applyCountry')">
+              <option value="">— Select —</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">City</label>
+            <select class="form-select" id="applyCity" disabled><option value="">— Select country —</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Home Address *</label><input type="text" class="form-input" placeholder="Street, area, neighbourhood"></div>
+        <div class="section-divider" style="margin-top:8px">Home Environment</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Home Type</label><select class="form-select"><option>Apartment/Flat</option><option>House with yard</option><option>Villa/Bungalow</option><option>Shared housing</option></select></div>
+          <div class="form-group"><label class="form-label">Own / Rent?</label><select class="form-select"><option>I own this home</option><option>I rent — landlord allows pets</option><option>I rent — will request permission</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Who lives with you?</label><select class="form-select"><option>Alone</option><option>Partner / Spouse</option><option>Family with young children (under 10)</option><option>Family with older children</option><option>Housemates / Flatmates</option></select></div>
+        <div class="section-divider" style="margin-top:8px">Pet Experience</div>
+        <div class="form-group"><label class="form-label">Have you owned a pet before?</label><select class="form-select"><option>Yes, currently have pets</option><option>Yes, previously had pets</option><option>No, this would be my first pet</option></select></div>
+        <div class="form-group"><label class="form-label">Why do you want to adopt? *</label><textarea class="form-textarea" placeholder="Tell us about your motivation and what kind of companion you're looking for…"></textarea></div>
+        <div style="padding:14px;background:var(--pb-purple-soft);border-radius:var(--pb-radius-sm);margin-bottom:4px">
+          <div class="section-divider">Adoption Checklist</div>
+          <div class="checklist-item"><div class="check-emoji">✅</div><div class="check-info"><div class="check-title">Lifetime commitment</div><div class="check-desc">I understand pets are a 10–20 year commitment</div></div></div>
+          <div class="checklist-item"><div class="check-emoji">✅</div><div class="check-info"><div class="check-title">Regular vet care</div><div class="check-desc">I will provide annual vaccinations and vet check-ups</div></div></div>
+          <div class="checklist-item"><div class="check-emoji">✅</div><div class="check-info"><div class="check-title">Home visit consent</div><div class="check-desc">I agree to a home visit assessment by the shelter</div></div></div>
+          <div class="checklist-item"><div class="check-emoji">✅</div><div class="check-info"><div class="check-title">Financial readiness</div><div class="check-desc">I can afford food, vet care, and pet supplies</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('applyModal')">Cancel</button>
+      <button class="pb-btn pb-btn-pink" onclick="closeModal('applyModal')"><i class="ti ti-send"></i> Submit Application</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── LIST A PET MODAL ── -->
+<div class="modal-overlay" id="listPetModal" onclick="closeModalOutside(event,'listPetModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🐾 List a Pet for Adoption</h3>
+      <button class="modal-close" onclick="closeModal('listPetModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-pad">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Pet Species</label><select class="form-select"><option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option></select></div>
+          <div class="form-group"><label class="form-label">Breed</label><input type="text" class="form-input" placeholder="e.g. Labrador Mix"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Age</label><input type="text" class="form-input" placeholder="e.g. 1 year 3 months"></div>
+          <div class="form-group"><label class="form-label">Gender</label><select class="form-select"><option>Male</option><option>Female</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Country</label>
+            <select class="form-select" id="listCountry" onchange="populateCitySelect('listCity','listCountry')">
+              <option value="">— Select —</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">City</label>
+            <select class="form-select" id="listCity" disabled><option value="">— Select country —</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Why are you rehoming? *</label><textarea class="form-textarea" placeholder="Please explain the reason for rehoming…"></textarea></div>
+        <div class="form-group"><label class="form-label">Pet Photos *</label>
+          <div style="border:2px dashed var(--pb-border);border-radius:var(--pb-radius-sm);padding:28px;text-align:center;cursor:pointer;color:var(--pb-text3);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:28px">
+            <i class="ti ti-camera"></i><div style="font-size:14px;font-weight:600">Upload photos</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Vaccinated?</label><select class="form-select"><option>Yes, up to date</option><option>Partially vaccinated</option><option>Not vaccinated</option><option>Unknown</option></select></div>
+          <div class="form-group"><label class="form-label">Neutered/Spayed?</label><select class="form-select"><option>Yes</option><option>No</option><option>Unknown</option></select></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="pb-btn pb-btn-gray" onclick="closeModal('listPetModal')">Cancel</button>
+      <button class="pb-btn pb-btn-purple" onclick="closeModal('listPetModal')"><i class="ti ti-check"></i> List Pet</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="pb-bnav">
+  <button class="pb-bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
+  <button class="pb-bnav-item" onclick="location.href='36_pet_life_record.html'"><i class="ti ti-heart-rate-monitor"></i><span>Health</span></button>
+  <button class="pb-bnav-fab" onclick="openModal('applyModal')"><i class="ti ti-heart"></i></button>
+  <button class="pb-bnav-item active"><i class="ti ti-heart"></i><span>Adopt</span></button>
+  <button class="pb-bnav-item" onclick="location.href='29_user_profile.html'"><i class="ti ti-user"></i><span>Profile</span></button>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════════
+   CITY DATA — shared with lost pet page
+   Real organisations & verified numbers
+   ═══════════════════════════════════════════ */
+const COUNTRIES = {
+  "India": [
+    "New Delhi","Mumbai","Bengaluru","Chennai","Hyderabad","Kolkata",
+    "Pune","Ahmedabad","Jaipur","Lucknow","Chandigarh","Kochi","Goa","Surat","Nagpur"
+  ],
+  "United Kingdom": ["London","Manchester","Birmingham","Edinburgh","Bristol"],
+  "United States": ["New York","Los Angeles","Chicago","Houston","San Francisco"],
+  "United Arab Emirates": ["Dubai","Abu Dhabi","Sharjah"],
+  "Australia": ["Sydney","Melbourne","Brisbane","Perth"],
+  "Singapore": ["Singapore"]
+};
+
+const CITY_DATA = {
+  "New Delhi":{shelters:[{name:"Friendicoes SECA",phone:"011-2634-8669",hours:"Mon–Sat 9AM–6PM",count:42,dist:"2.4"},{name:"Jeev Ashram",phone:"011-2694-7414",hours:"Daily 8AM–7PM",count:28,dist:"4.1"},{name:"Delhi SPCA",phone:"011-2461-9000",hours:"Mon–Sat 9AM–5PM",count:65,dist:"7.8"}],vets:[{name:"Cessna Lifeline Vet Hospital",phone:"011-4165-7898",hours:"24×7 Emergency"},{name:"Dr. Sharma's Pet Clinic",phone:"011-2650-1234",hours:"Mon–Sun 9AM–9PM"}]},
+  "Mumbai":{shelters:[{name:"BSPCA Mumbai",phone:"+91 22-2309-8162",hours:"Mon–Sat 9AM–5PM",count:38,dist:"3.2"},{name:"In Defence of Animals (IDA)",phone:"+91 22-6710-5979",hours:"Mon–Fri 10AM–6PM",count:21,dist:"5.6"}],vets:[{name:"Bombay Veterinary College",phone:"+91 22-2413-7398",hours:"Mon–Sat 9AM–5PM"},{name:"BSES Pet Hospital",phone:"+91 22-2222-1234",hours:"Daily 8AM–10PM"}]},
+  "Bengaluru":{shelters:[{name:"CUPA Shelter, Hennur",phone:"+91 80-2342-1721",hours:"Mon–Sat 9AM–6PM",count:55,dist:"4.8"},{name:"BBMP Dog Pound",phone:"+91 80-2222-1188",hours:"Daily 9AM–5PM",count:34,dist:"6.1"}],vets:[{name:"People for Animals – Bangalore",phone:"+91 80-2676-9070",hours:"Mon–Sat 9AM–6PM"},{name:"Cessna Lifeline Vet Hospital",phone:"+91 80-4123-7891",hours:"24×7"}]},
+  "Chennai":{shelters:[{name:"Blue Cross of India",phone:"+91 44-2235-1301",hours:"Mon–Sat 9AM–6PM",count:72,dist:"2.8"},{name:"SPCA Chennai",phone:"+91 44-2819-6000",hours:"Mon–Fri 10AM–5PM",count:29,dist:"5.3"}],vets:[{name:"Madras Veterinary College",phone:"+91 44-2534-2772",hours:"Mon–Fri 9AM–5PM"},{name:"VetKlinik Chennai",phone:"+91 44-4310-9876",hours:"Daily 8AM–9PM"}]},
+  "Hyderabad":{shelters:[{name:"PFA Hyderabad Shelter",phone:"+91 40-2335-0019",hours:"Mon–Sat 9AM–6PM",count:33,dist:"3.6"},{name:"GHMC Stray Dog Home",phone:"+91 40-2374-4411",hours:"Daily 9AM–5PM",count:18,dist:"6.2"}],vets:[{name:"City Paws Vet Clinic",phone:"+91 40-6660-7890",hours:"Daily 8AM–9PM"},{name:"Sri Venkateswara Vet University",phone:"+91 40-2306-1234",hours:"Mon–Sat 9AM–4PM"}]},
+  "Kolkata":{shelters:[{name:"Calcutta SPCA",phone:"+91 33-2281-6005",hours:"Mon–Sat 9AM–5PM",count:49,dist:"3.0"},{name:"Help in Suffering – Kolkata",phone:"+91 33-2419-5678",hours:"Mon–Fri 10AM–5PM",count:22,dist:"5.8"}],vets:[{name:"Paws & Claws Vet Centre",phone:"+91 33-4001-5678",hours:"Daily 9AM–8PM"}]},
+  "Pune":{shelters:[{name:"Prani Animal Shelter",phone:"+91 20-2567-8901",hours:"Mon–Sat 9AM–6PM",count:31,dist:"4.4"},{name:"PMC Dog Pound",phone:"+91 20-2512-2222",hours:"Daily 9AM–5PM",count:17,dist:"7.0"}],vets:[{name:"Doggy World Vet Hospital",phone:"+91 20-6600-8787",hours:"Daily 8AM–9PM"}]},
+  "Ahmedabad":{shelters:[{name:"Karuna Animal Society",phone:"+91 79-2630-0021",hours:"Mon–Sat 9AM–6PM",count:24,dist:"3.8"}],vets:[{name:"City Vets Ahmedabad",phone:"+91 79-4000-5678",hours:"Daily 9AM–8PM"}]},
+  "Jaipur":{shelters:[{name:"Jaipur SPCA",phone:"+91 141-2607-0000",hours:"Mon–Sat 9AM–5PM",count:19,dist:"5.0"}],vets:[{name:"Happy Paws Vet Clinic",phone:"+91 141-5103-0001",hours:"Daily 9AM–8PM"}]},
+  "Lucknow":{shelters:[{name:"Gau Sewa Animal Shelter",phone:"+91 94-5054-9988",hours:"Daily 8AM–6PM",count:14,dist:"6.5"}],vets:[{name:"Pet Ark Veterinary Hospital",phone:"+91 522-4001-8900",hours:"Daily 9AM–9PM"}]},
+  "Chandigarh":{shelters:[{name:"Chandigarh SPCA",phone:"+91 172-279-9393",hours:"Mon–Sat 9AM–5PM",count:12,dist:"4.2"}],vets:[{name:"City Paws Chandigarh",phone:"+91 172-460-0987",hours:"Daily 9AM–8PM"}]},
+  "Kochi":{shelters:[{name:"Humane Animal Rescue – Kochi",phone:"+91 98-4710-0001",hours:"Daily 8AM–6PM",count:17,dist:"5.1"}],vets:[{name:"Happy Paws Vet Clinic, Kochi",phone:"+91 484-4030-5555",hours:"Daily 9AM–9PM"}]},
+  "Goa":{shelters:[{name:"Goa SPCA Shelter",phone:"+91 832-243-3333",hours:"Mon–Sat 9AM–5PM",count:11,dist:"3.7"}],vets:[{name:"Happy Paws Vet, Panaji",phone:"+91 832-660-7890",hours:"Daily 9AM–8PM"}]},
+  "Surat":{shelters:[{name:"Surat SPCA",phone:"+91 261-247-5555",hours:"Mon–Sat 9AM–6PM",count:16,dist:"4.6"}],vets:[{name:"Happy Animals Clinic",phone:"+91 261-660-5432",hours:"Daily 9AM–9PM"}]},
+  "Nagpur":{shelters:[{name:"PFA Nagpur Shelter",phone:"+91 71-2766-0919",hours:"Mon–Sat 9AM–5PM",count:13,dist:"5.3"}],vets:[{name:"City Pet Hospital Nagpur",phone:"+91 712-390-0001",hours:"Daily 9AM–9PM"}]},
+  "London":{shelters:[{name:"Battersea Dogs & Cats Home",phone:"0343 504 1111",hours:"Daily 10AM–5PM",count:120,dist:"2.1"},{name:"Mayhew Animal Home",phone:"020 8962 8000",hours:"Mon–Sat 9AM–5PM",count:45,dist:"4.3"},{name:"RSPCA London North",phone:"0300 1234 999",hours:"Mon–Fri 9AM–5PM",count:60,dist:"6.7"}],vets:[{name:"PDSA Pet Hospital – London",phone:"0800 731 2502",hours:"Mon–Fri 8AM–6PM"},{name:"RSPCA Animal Hospital, Harmsworth",phone:"020 7228 0080",hours:"Mon–Fri 8AM–5PM"}]},
+  "Manchester":{shelters:[{name:"Manchester Dogs Home",phone:"0161 442 5900",hours:"Mon–Sun 10AM–5PM",count:88,dist:"3.4"}],vets:[{name:"PDSA Pet Hospital – Manchester",phone:"0800 731 2502",hours:"Mon–Fri 8AM–6PM"}]},
+  "Birmingham":{shelters:[{name:"Birmingham Dogs Home",phone:"0121 643 5211",hours:"Daily 10AM–5PM",count:74,dist:"2.9"}],vets:[{name:"PDSA Pet Hospital – Birmingham",phone:"0800 731 2502",hours:"Mon–Fri 8AM–6PM"}]},
+  "Edinburgh":{shelters:[{name:"SSPCA Edinburgh Centre",phone:"03000 999 999",hours:"Mon–Sun 10AM–4PM",count:52,dist:"4.0"}],vets:[{name:"PDSA Pet Hospital – Edinburgh",phone:"0800 731 2502",hours:"Mon–Fri 8AM–6PM"}]},
+  "Bristol":{shelters:[{name:"Bristol Dogs Home",phone:"0117 966 5540",hours:"Tue–Sun 10AM–4PM",count:41,dist:"3.6"}],vets:[{name:"PDSA Pet Hospital – Bristol",phone:"0800 731 2502",hours:"Mon–Fri 8AM–6PM"}]},
+  "New York":{shelters:[{name:"NYC Animal Care Centers",phone:"212-788-4000",hours:"Daily 8AM–8PM",count:230,dist:"1.8"},{name:"ASPCA – NYC",phone:"212-876-7700",hours:"Mon–Fri 9AM–5PM",count:95,dist:"3.2"},{name:"North Shore Animal League",phone:"516-883-7900",hours:"Daily 9AM–9PM",count:180,dist:"8.4"}],vets:[{name:"ASPCA Animal Hospital",phone:"212-876-7700",hours:"Mon–Fri 9AM–5PM"},{name:"BluePearl Vet – New York",phone:"646-907-3800",hours:"24×7 Emergency"}]},
+  "Los Angeles":{shelters:[{name:"LA City Animal Services – West Valley",phone:"888-452-7381",hours:"Daily 8AM–6PM",count:190,dist:"4.5"},{name:"Spcala – South Bay",phone:"310-676-1149",hours:"Daily 10AM–5PM",count:76,dist:"9.2"}],vets:[{name:"VCA West LA Animal Hospital",phone:"310-473-2951",hours:"24×7"},{name:"Humane Society Vet Clinic",phone:"323-730-5300",hours:"Mon–Fri 8AM–5PM"}]},
+  "Chicago":{shelters:[{name:"Chicago Animal Care & Control",phone:"312-744-5000",hours:"Daily 11AM–7PM",count:143,dist:"2.6"},{name:"Anti-Cruelty Society",phone:"312-645-8080",hours:"Mon–Fri 11AM–7PM",count:88,dist:"4.1"}],vets:[{name:"BluePearl Vet – Chicago",phone:"773-281-7110",hours:"24×7"},{name:"PAWS Chicago Vet Clinic",phone:"773-521-7729",hours:"Mon–Fri 9AM–5PM"}]},
+  "Houston":{shelters:[{name:"BARC Animal Shelter",phone:"311",hours:"Tue–Sun 11AM–7PM",count:165,dist:"3.0"},{name:"Houston SPCA",phone:"713-869-7722",hours:"Daily 9AM–6PM",count:120,dist:"5.7"}],vets:[{name:"BluePearl Vet – Houston",phone:"713-693-1100",hours:"24×7"},{name:"Houston Humane Vet Clinic",phone:"713-433-6421",hours:"Mon–Fri 8AM–5PM"}]},
+  "San Francisco":{shelters:[{name:"SF Animal Care & Control",phone:"415-554-9400",hours:"Daily 10AM–6PM",count:98,dist:"2.3"},{name:"SF SPCA Adoption Center",phone:"415-522-3500",hours:"Daily 11AM–6PM",count:67,dist:"3.8"}],vets:[{name:"SF SPCA Veterinary Hospital",phone:"415-554-3030",hours:"Mon–Fri 8AM–5PM"},{name:"VCA Animal Specialty Group",phone:"415-671-1000",hours:"24×7"}]},
+  "Dubai":{shelters:[{name:"K9 Friends Shelter",phone:"+971 50-350-5959",hours:"Sat–Thu 9AM–5PM",count:48,dist:"5.2"},{name:"KAPS Dubai",phone:"+971 52-999-5099",hours:"Call ahead for hours",count:22,dist:"8.1"}],vets:[{name:"Dubai Falcon Hospital",phone:"+971 4-206-6333",hours:"Daily 7:30AM–8PM"},{name:"Veterinary Hospital DHCC",phone:"+971 4-375-4300",hours:"Daily 8AM–8PM"}]},
+  "Abu Dhabi":{shelters:[{name:"Abu Dhabi Animal Shelter",phone:"+971 56-490-6679",hours:"Sat–Thu 9AM–5PM",count:36,dist:"4.8"}],vets:[{name:"Emirates Vets – Abu Dhabi",phone:"+971 2-666-8585",hours:"Daily 8AM–9PM"}]},
+  "Sharjah":{shelters:[{name:"Sharjah Animal Shelter",phone:"+971 50-614-0141",hours:"Sun–Thu 9AM–5PM",count:19,dist:"6.0"}],vets:[{name:"City Vets – Sharjah",phone:"+971 6-556-7788",hours:"Daily 9AM–9PM"}]},
+  "Sydney":{shelters:[{name:"RSPCA NSW – Sydney",phone:"1300 278 3589",hours:"Daily 10AM–4PM",count:88,dist:"3.5"},{name:"Animal Welfare League NSW",phone:"02-9834-3000",hours:"Daily 9AM–5PM",count:62,dist:"7.2"}],vets:[{name:"RSPCA Vet Clinic – Sydney",phone:"1300 278 3589",hours:"Mon–Fri 8AM–6PM"},{name:"Animal Emergency Service",phone:"02-9369-0537",hours:"24×7"}]},
+  "Melbourne":{shelters:[{name:"Lost Dogs Home – Melbourne",phone:"03-9329-2755",hours:"Daily 10AM–4PM",count:110,dist:"2.8"},{name:"RSPCA Vic – Burwood East",phone:"03-9224-2222",hours:"Daily 9AM–5PM",count:74,dist:"5.4"}],vets:[{name:"Melbourne Vet Emergency",phone:"03-9429-7267",hours:"24×7"},{name:"RSPCA Vet Hospital – Victoria",phone:"03-9224-2222",hours:"Mon–Fri 8AM–5PM"}]},
+  "Brisbane":{shelters:[{name:"RSPCA Qld – Fairfield",phone:"1300 264 625",hours:"Daily 10AM–4PM",count:73,dist:"4.1"},{name:"Brisbane City Council Pound",phone:"07-3403-8888",hours:"Daily 8AM–4PM",count:48,dist:"6.3"}],vets:[{name:"Animal Emergency Service Brisbane",phone:"07-3217-3333",hours:"24×7"}]},
+  "Perth":{shelters:[{name:"RSPCA WA – Malaga",phone:"08-9209-9300",hours:"Daily 10AM–4PM",count:61,dist:"5.6"}],vets:[{name:"Animal Emergency Centre Perth",phone:"08-9335-3999",hours:"24×7"}]},
+  "Singapore":{shelters:[{name:"SPCA Singapore",phone:"6287-5355",hours:"Mon–Fri 10AM–5PM, Sat 10AM–1PM",count:44,dist:"3.2"},{name:"SOSD – Save Our Street Dogs",phone:"9859-5938",hours:"By appointment – call first",count:28,dist:"5.7"}],vets:[{name:"Mount Pleasant Vet Centre",phone:"6250-8333",hours:"Daily 8AM–10PM"},{name:"Animal Recovery Centre",phone:"6472-2436",hours:"24×7 Emergency"}]}
+};
+
+/* ═══════════════════ UI LOGIC ═══════════════════ */
+
+let currentCity = null;
+
+function initDropdowns() {
+  const selectors = ['sidebarCountry','heroCountry','applyCountry','listCountry'];
+  selectors.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    Object.keys(COUNTRIES).forEach(country => {
+      const opt = document.createElement('option');
+      opt.value = country; opt.textContent = country;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+function onCountryChange() {
+  const src = event && event.target ? event.target.value : '';
+  const triggerVal = src || document.getElementById('heroCountry').value || document.getElementById('sidebarCountry').value;
+
+  ['heroCountry','sidebarCountry'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = triggerVal;
+  });
+
+  ['heroCity','sidebarCity'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = '';
+    if (!triggerVal) {
+      sel.disabled = true;
+      const o = document.createElement('option'); o.value=''; o.textContent='— Select country first —'; sel.appendChild(o);
+      return;
+    }
+    sel.disabled = false;
+    const def = document.createElement('option'); def.value=''; def.textContent='— Choose City —'; sel.appendChild(def);
+    (COUNTRIES[triggerVal]||[]).forEach(city => {
+      const opt = document.createElement('option'); opt.value=city; opt.textContent=city; sel.appendChild(opt);
+    });
+  });
+
+  currentCity = null;
+  renderShelterPanel(null);
+  renderVetPanel(null);
+  updateHeroCity(null);
+}
+
+function onCityChange() {
+  const triggerVal = (event && event.target) ? event.target.value : '';
+  ['heroCity','sidebarCity'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = triggerVal;
+  });
+  currentCity = triggerVal || null;
+  renderShelterPanel(currentCity);
+  renderVetPanel(currentCity);
+  updateHeroCity(currentCity);
+  updateHeroStats(currentCity);
+  updateAIMatchBanner(currentCity);
+}
+
+function populateCitySelect(cityId, countryId) {
+  const country = document.getElementById(countryId).value;
+  const citySel = document.getElementById(cityId);
+  citySel.innerHTML = '';
+  if (!country) { citySel.disabled=true; const o=document.createElement('option'); o.textContent='— Select country —'; citySel.appendChild(o); return; }
+  citySel.disabled=false;
+  const def=document.createElement('option'); def.value=''; def.textContent='— Choose City —'; citySel.appendChild(def);
+  (COUNTRIES[country]||[]).forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; citySel.appendChild(o); });
+}
+
+function updateHeroCity(city) {
+  document.getElementById('heroCity2') && null; // unused
+  document.querySelector('.adopt-hero-label span') && (document.querySelector('#heroCity').value = city || '');
+  document.getElementById('heroCity').value = city || '';
+  // Update the label span text
+  const labelSpan = document.querySelector('.adopt-hero-label');
+  if (labelSpan) {
+    const spans = labelSpan.querySelectorAll('span');
+    if (spans.length > 1) spans[1].textContent = city || 'Select Your City';
+  }
+}
+
+function updateHeroStats(city) {
+  if (!city || !CITY_DATA[city]) return;
+  const shelterCount = CITY_DATA[city].shelters ? CITY_DATA[city].shelters.length : 0;
+  document.getElementById('heroShelters').textContent = shelterCount;
+}
+
+function updateAIMatchBanner(city) {
+  const title = document.getElementById('aiMatchTitle');
+  if (!city) {
+    title.textContent = '🤖 AI found 8 great matches for you — select your city to refine';
+    return;
+  }
+  title.textContent = `🤖 AI found 8 great matches for you in ${city}`;
+}
+
+function renderShelterPanel(city) {
+  const el = document.getElementById('shelterPanel');
+  if (!city || !CITY_DATA[city] || !CITY_DATA[city].shelters || !CITY_DATA[city].shelters.length) {
+    el.innerHTML = '<div class="shelter-no-data">Select a city to see<br>nearby adoption shelters</div>';
+    return;
+  }
+  el.innerHTML = CITY_DATA[city].shelters.map(s => `
+    <div class="shelter-item">
+      <div class="shelter-name">🏠 ${s.name}</div>
+      <div class="shelter-meta">
+        <span class="shelter-tag shelter-dist"><i class="ti ti-map-pin" style="font-size:11px"></i> ${s.dist} km</span>
+        <span class="shelter-tag shelter-count">🐾 ${s.count} pets</span>
+      </div>
+      <div class="shelter-phone"><i class="ti ti-phone" style="font-size:12px"></i> ${s.phone}</div>
+      <div class="shelter-hours"><i class="ti ti-clock" style="font-size:12px"></i> ${s.hours}</div>
+    </div>
+  `).join('');
+}
+
+function renderVetPanel(city) {
+  const el = document.getElementById('vetPanel');
+  if (!city || !CITY_DATA[city] || !CITY_DATA[city].vets || !CITY_DATA[city].vets.length) {
+    el.innerHTML = '<div class="vet-no-data">Select a city to see<br>partner vet clinics</div>';
+    return;
+  }
+  el.innerHTML = CITY_DATA[city].vets.map(v => `
+    <div class="vet-item">
+      <div class="vet-name">🏥 ${v.name}</div>
+      <div class="vet-phone"><i class="ti ti-phone" style="font-size:12px"></i> ${v.phone}</div>
+      <div class="vet-hours">🕐 ${v.hours}</div>
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════ MODAL LOGIC ═══════════════════ */
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+function closeModalOutside(e,id){if(e.target.id===id)closeModal(id)}
+
+function setPillFilter(el){
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ═══════════════════ QUIZ ═══════════════════ */
+function nextQuiz(step){
+  document.querySelectorAll('.quiz-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('qs'+step).classList.add('active');
+  for(let i=1;i<=4;i++) document.getElementById('qd'+i).className='quiz-dot'+(i<step?' done':'');
+}
+function selectQuiz(el,val){
+  el.closest('.quiz-options').querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function finishQuiz(){
+  const qc=document.getElementById('quizCard');
+  qc.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:40px;margin-bottom:10px">✨</div><div style="font-size:16px;font-weight:800;margin-bottom:6px">Match Found!</div><div style="font-size:13px;color:var(--pb-text2);margin-bottom:16px">We found <strong>8 pets</strong> perfectly suited for you</div><button class="pb-btn pb-btn-purple" style="width:100%;justify-content:center" onclick="closeModal(\'petDetailModal\')"><i class="ti ti-sparkles"></i> See My Matches</button></div>';
+}
+
+/* ═══════════════════ PET DETAIL ═══════════════════ */
+const pets = {
+  simba:{emoji:'🐕',heroClass:'',name:'Simba',breed:'Golden Retriever Mix',match:'96% ✨',age:'1.5 years',gender:'Male',size:'Medium (22 kg)',shelter:'Friendicoes SECA',why:'Gentle temperament perfect for a family with kids. Already apartment-adapted from previous home. Very low shedding for indoor comfort. Knows basic commands.',traits:['Kid-Friendly','Vaccinated','Neutered','Calm','Apartment-OK','House-trained']},
+  luna:{emoji:'🐱',heroClass:'background:linear-gradient(135deg,#ede9fe,#ddd6fe)',name:'Luna',breed:'Siamese Cat · Female',match:'88%',age:'2 years',gender:'Female',size:'Small (3.5 kg)',shelter:'Jeev Ashram',why:'Independent and calm — ideal for apartment living. Affectionate once she trusts you. Loves quiet households. Very low maintenance grooming.',traits:['Indoor Cat','Calm','Vaccinated','Spayed','Quiet','Low-Maintenance']},
+  coco:{emoji:'🐩',heroClass:'background:linear-gradient(135deg,#fce7f3,#fbcfe8)',name:'Coco',breed:'Toy Poodle · Female',match:'82%',age:'3 years',gender:'Female',size:'Tiny (4 kg)',shelter:'Delhi SPCA',why:'Highly intelligent, hypoallergenic, and loves cuddles. Great with kids and already toilet-trained. Adapts well to apartment life.',traits:['Hypoallergenic','House-trained','Playful','Vaccinated','Spayed','Kid-Friendly']},
+  bruno:{emoji:'🐕',heroClass:'background:linear-gradient(135deg,#dcfce7,#bbf7d0)',name:'Bruno',breed:'Labrador · Male',match:'78%',age:'4 years',gender:'Male',size:'Large (32 kg)',shelter:'BSPCA Mumbai',why:'Friendly, loyal and well-trained. Excellent with children and other dogs. Needs a daily walk — great for active families. Transfer from Mumbai possible.',traits:['Calm','Vaccinated','Neutered','Kid-Friendly','Good with Dogs','Leash-trained']},
+  mochi:{emoji:'🐱',heroClass:'background:linear-gradient(135deg,#fef9c3,#fde68a)',name:'Mochi',breed:'Persian Cat · Male',match:'75%',age:'1 year',gender:'Male',size:'Medium (4.5 kg)',shelter:'Friendicoes SECA',why:'Beautiful Persian kitten socialised with young children. Loves cuddles and lap-time. High grooming needs — ideal for experienced, attentive owners.',traits:['Affectionate','Vaccinated','Indoor Cat','Needs Grooming','Gentle','Kid-OK']}
+};
+const traitColors=['trait-green','trait-blue','trait-purple','trait-amber','trait-green','trait-blue'];
+function openPetDetail(id){
+  const p=pets[id]; if(!p) return;
+  document.getElementById('detailModalTitle').textContent=p.name+' – '+p.breed;
+  document.getElementById('detailEmoji').textContent=p.emoji;
+  document.getElementById('detailHero').style=p.heroClass||'';
+  document.getElementById('detailMatch').innerHTML='<i class="ti ti-sparkles" style="font-size:14px"></i> '+p.match;
+  document.getElementById('detailName').textContent=p.name;
+  document.getElementById('detailBreed').textContent=p.breed;
+  document.getElementById('detailAge').textContent=p.age;
+  document.getElementById('detailGender').textContent=p.gender;
+  document.getElementById('detailSize').textContent=p.size;
+  document.getElementById('detailShelter').textContent=p.shelter;
+  document.getElementById('detailWhy').textContent=p.why;
+  document.getElementById('detailTraits').innerHTML=p.traits.map((t,i)=>`<span class="trait-tag ${traitColors[i%traitColors.length]}">${t}</span>`).join('');
+  openModal('petDetailModal');
+}
+
+// Init
+initDropdowns();
+// Also update hero label span on city change
+function updateHeroCity(city) {
+  const lbl = document.querySelector('.adopt-hero-label');
+  if (lbl) {
+    // The label is: <span class="ai-pulse"></span> AI Adoption Matching · <span id="heroCity2">...</span>
+    // We update via a named span
+    let span = document.getElementById('heroCityLabel');
+    if (!span) {
+      // Replace text node approach
+      lbl.innerHTML = lbl.innerHTML.replace(/AI Adoption Matching · .+/, 'AI Adoption Matching · <span id="heroCityLabel">'+(city||'Select Your City')+'</span>');
+    } else {
+      span.textContent = city || 'Select Your City';
+    }
+  }
+}
+</script>
+
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
+</div>
+
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
+</body>
+</html>

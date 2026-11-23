@@ -1,910 +1,1795 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-
-<style>
-/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-:root{
-  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
-  --purple:#8b5cf6;--pink:#ec4899;
-  --green:#22c55e;--green-soft:#dcfce7;
-  --red:#ef4444;--amber:#f59e0b;
-  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --bg:#f0f2f5;--card:#fff;
-  --border:#e4e6eb;--border-soft:#f0f2f5;
-  --text:#050505;--text2:#65676b;--text3:#8a8d91;
-  --radius:12px;--radius-sm:8px;--pill:999px;
-  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --shadow-md:0 4px 20px rgba(0,0,0,.1);
-}
-body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
-
-/* Topnav */
-.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
-.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
-.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
-.topnav-tab.active{color:var(--blue)!important}
-.topnav-tab.active::after{background:var(--blue)!important}
-
-/* Buttons - make all buttons rounder and Facebook-style */
-.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
-button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
-.btn-blue{background:var(--blue)!important;color:#fff!important}
-.btn-blue:hover{background:var(--blue-dark)!important}
-.btn-gray{background:var(--bg)!important;color:var(--text)!important}
-
-/* Cards - cleaner */
-.card,.sidebar-card,.scard,.filter-section,.pb-card{
-  border-radius:var(--radius)!important;
-  border:1px solid var(--border)!important;
-  box-shadow:var(--shadow)!important;
-  background:var(--card)!important;
-}
-
-/* Badges - rounder */
-.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
-.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
-.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
-
-/* Post actions */
-.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
-.post-action.liked,.liked{color:var(--blue)!important}
-
-/* Story cards */
-.story-card{border-radius:var(--radius)!important}
-.story-card-av,.story-av{border:3px solid var(--blue)!important}
-
-/* Bottom nav */
-.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
-.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
-.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
-
-/* Market cards */
-.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
-
-/* Inputs */
-input,textarea,select{font-family:'Inter',sans-serif!important}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
-
-/* Modals */
-.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
-.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
-
-/* Progress/fill */
-.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
-
-/* Tab bars */
-.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
-
-/* Notification unread */
-.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
-
-/* Vet-specific */
-.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-html,body{overflow-x:hidden!important;max-width:100%!important}
-</style>
-
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1877F2">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="manifest.json">
 <title>PawBook — Live</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <style>
+:root{
+  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
+  --pb-green:#22c55e;--pb-red:#ef4444;--pb-amber:#f59e0b;
+  --pb-purple:#8b5cf6;--pb-pink:#ec4899;--pb-orange:#f97316;
+  --live-grad:linear-gradient(135deg,#ef4444,#dc2626);
+  --teams-bg:#1a1a2e;--teams-panel:#16213e;--teams-card:#0f3460;
+  --teams-ctrl:#1a1a2e;--teams-border:rgba(255,255,255,.1);
+  --pb-bg:#0a0a0a;--pb-card:#1a1a1a;--pb-border:#2a2a2a;
+  --pb-reel-grad:linear-gradient(135deg,#f97316,#ec4899,#8b5cf6);
+  --radius:12px;--pill:999px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Poppins',sans-serif;background:#0a0a12;color:#fff;height:100vh;overflow:hidden}
-
-/* ── BROWSE MODE ── */
-.live-browse{height:100vh;overflow-y:auto;background:#0a0a12;padding-bottom:70px}
-.live-header{padding:60px 16px 16px;display:flex;align-items:center;justify-content:space-between}
-.live-header h1{font-size:22px;font-weight:900}
-.go-live-btn{height:38px;padding:0 18px;border-radius:20px;border:none;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
-.live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-
-/* Featured live */
-.featured-live{margin:0 16px 16px;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;height:220px}
-.featured-live img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:0;filter:none}
-.featured-overlay{position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,0.8))}
-.featured-live-badge{position:absolute;top:12px;left:12px;background:#ef4444;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px}
-.featured-live-info{position:absolute;bottom:12px;left:12px;right:12px}
-.featured-live-title{font-size:16px;font-weight:800;margin-bottom:4px}
-.featured-live-meta{font-size:12px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:8px}
-.viewer-count{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.5);padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700}
-
-/* Live grid */
-.live-section-title{padding:4px 16px 10px;font-size:15px;font-weight:800;color:rgba(255,255,255,0.9)}
-.live-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px 16px}
-.live-card{border-radius:12px;overflow:hidden;position:relative;cursor:pointer;aspect-ratio:9/16}
-/* Background image - must fill card completely, no oval */
-.live-card img.live-bg{
-  position:absolute;top:0;left:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  display:block;
-  border-radius:0;
-  filter:none;
-  z-index:0;
+body{font-family:'Inter',-apple-system,sans-serif;background:#050507;color:#fff;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh}
+/* Mobile card frame on desktop */
+@media(min-width:431px){
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,#0d0d0f 0,#0d0d0f 2px,transparent 2px,transparent 12px);z-index:-1}
+  .pb-nav{border-radius:16px 16px 0 0;box-shadow:0 -2px 0 0 rgba(255,255,255,.06)}
+  .pb-bnav{border-radius:0 0 16px 16px;box-shadow:0 8px 32px rgba(0,0,0,.8)}
+  .view{border-radius:0;box-shadow:4px 0 0 rgba(255,255,255,.03),-4px 0 0 rgba(255,255,255,.03)}
+  /* Card outline — sits behind nav+view+bnav */
+  body::after{content:'';position:fixed;top:calc(50vh - 50%);left:50%;transform:translateX(-50%);width:432px;height:calc(100vh + 2px);border-radius:18px;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 24px 80px rgba(0,0,0,.9);pointer-events:none;z-index:999}
 }
-.live-card:hover img.live-bg{transform:scale(1.04);transition:transform 0.3s}
-.live-card-overlay{position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,0.85));z-index:1}
-.live-badge{position:absolute;top:8px;left:8px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;z-index:2}
-.live-card-info{position:absolute;bottom:8px;left:8px;right:8px;z-index:2}
-.live-card-name{font-size:12px;font-weight:800;margin-bottom:2px}
-.live-card-topic{font-size:10px;color:rgba(255,255,255,0.7)}
-.live-av{width:28px;height:28px;border-radius:50%;border:2px solid #ef4444;object-fit:cover;position:absolute;top:8px;right:8px;z-index:2}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+input,select,textarea{font-family:'Inter',sans-serif}
 
-/* ── STREAM MODE ── */
-.stream-view{position:fixed;inset:0;background:#000;z-index:200;display:none;flex-direction:column}
-.stream-view.active{display:flex}
-.stream-video-area{flex:1;position:relative;overflow:hidden}
-.stream-video-bg{width:100%;height:100%;object-fit:cover;filter:brightness(0.85)}
-.stream-overlay{position:absolute;inset:0}
+/* ═══ NAV ═══ */
+.pb-nav{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:56px;background:rgba(10,10,10,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:600}
+.pb-nav-logo{font-size:20px;font-weight:900;display:flex;align-items:center;gap:8px}
+.pb-nav-logo-icon{width:34px;height:34px;border-radius:9px;background:var(--live-grad);display:flex;align-items:center;justify-content:center;font-size:16px}
+.pb-nav-logo-text{background:var(--live-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pb-nav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:#1a1a1a;color:#ccc;font-size:18px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.pb-icon-btn:hover{background:#2a2a2a;color:#fff}
+.pb-avatar-sm{width:36px;height:36px;border-radius:50%;background:var(--pb-reel-grad);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
-/* Top bar */
-.stream-topbar{position:absolute;top:0;left:0;right:0;padding:48px 14px 14px;background:linear-gradient(rgba(0,0,0,0.6),transparent);display:flex;align-items:center;gap:10px;z-index:10}
-.stream-av{width:38px;height:38px;border-radius:50%;border:2px solid #ef4444;object-fit:cover}
-.stream-name{font-size:14px;font-weight:800}
-.stream-sub{font-size:11px;color:rgba(255,255,255,0.7)}
-.stream-live-pill{background:#ef4444;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.follow-stream-btn{height:30px;padding:0 14px;border-radius:15px;border:1.5px solid rgba(255,255,255,0.7);background:transparent;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
-.follow-stream-btn.following{background:rgba(255,255,255,0.15)}
-.stream-close{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* ═══ VIEWS ═══ */
+.view{position:fixed;top:56px;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;display:none;z-index:100}
+.view.active{display:flex}
 
-/* Viewer count bar */
-.stream-stats{position:absolute;top:100px;left:14px;display:flex;gap:8px;z-index:10}
-.stat-pill{background:rgba(0,0,0,0.55);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:5px}
-.stat-pill i{font-size:13px}
+/* Mobile container — centres content on desktop */
+.mob-wrap{width:100%;max-width:430px;margin:0 auto}
 
-/* Comments feed */
-.stream-comments{position:absolute;bottom:100px;left:0;right:0;padding:0 14px;z-index:10;pointer-events:none}
-.comment-feed{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow:hidden;justify-content:flex-end}
-.comment-item{display:flex;align-items:flex-start;gap:8px;animation:slideUp 0.3s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.comment-av{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
-.comment-bubble{background:rgba(0,0,0,0.5);border-radius:16px;padding:5px 10px;font-size:12px;line-height:1.4;pointer-events:auto}
-.comment-author{font-weight:700;color:#fbbf24;font-size:11px}
+/* ══════════════════════════════════════════════
+   VIEW 1 — BROWSE
+══════════════════════════════════════════════ */
+#browse-view{flex-direction:column;overflow-y:auto;background:var(--pb-bg);padding-bottom:70px;align-items:center}
+.browse-header{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between;width:100%;max-width:430px}
+.browse-header h1{font-size:16px;font-weight:900;display:flex;align-items:center;gap:7px}
+.go-live-btn{height:36px;padding:0 16px;border-radius:var(--pill);border:none;background:var(--live-grad);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;gap:6px;transition:.15s;white-space:nowrap}
+.go-live-btn:hover{opacity:.88}
+.live-dot-sm{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-/* Emoji reactions */
-.emoji-burst{position:absolute;pointer-events:none;font-size:24px;animation:floatUp 2s ease forwards;z-index:20}
-@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-200px) scale(1.5)}}
+/* Featured */
+.featured-wrap{margin:0 0 10px;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;height:120px;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#0f3460 100%);width:100%}
+.featured-wrap img{display:none}
+.featured-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,.2) 100%)}
+.featured-pet-icon{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:44px;opacity:.5}
+.featured-badge{position:absolute;top:10px;left:12px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:var(--pill);display:flex;align-items:center;gap:4px}
+.featured-info{position:absolute;bottom:0;top:0;left:12px;right:80px;display:flex;flex-direction:column;justify-content:center;padding-top:22px}
+.featured-title{font-size:14px;font-weight:900;margin-bottom:4px;line-height:1.3}
+.featured-meta{font-size:11px;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:8px}
+.vcnt{display:flex;align-items:center;gap:3px;background:rgba(0,0,0,.5);padding:2px 7px;border-radius:var(--pill);font-size:10px;font-weight:700}
 
-/* Bottom bar */
-.stream-bottom{position:absolute;bottom:0;left:0;right:0;padding:0 14px 30px;background:linear-gradient(transparent,rgba(0,0,0,0.7));z-index:10}
-.stream-input-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
-.stream-comment-input{flex:1;height:40px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.12);color:#fff;padding:0 16px;font-family:'Poppins',sans-serif;font-size:13px;outline:none}
-.stream-comment-input::placeholder{color:rgba(255,255,255,0.5)}
-.stream-send-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.stream-reactions{display:flex;gap:10px;justify-content:center}
-.react-btn{font-size:26px;cursor:pointer;transition:transform 0.15s;-webkit-tap-highlight-color:transparent}
-.react-btn:active{transform:scale(1.4)}
-.share-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto}
+/* Grid */
+.section-title{padding:4px 0 8px;font-size:12px;font-weight:800;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.05em;width:100%}
+.live-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;padding:0 0 12px}
+.live-card{border-radius:10px;overflow:hidden;position:relative;cursor:pointer;height:130px}
+.live-card img.lc-bg,.lc-av{display:none}
+.lc-overlay{position:absolute;inset:0;background:linear-gradient(transparent 25%,rgba(0,0,0,.88));z-index:1}
+.lc-badge{position:absolute;top:6px;left:6px;background:#ef4444;color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:var(--pill);display:flex;align-items:center;gap:3px;z-index:2}
+.lc-info{position:absolute;bottom:6px;left:8px;right:8px;z-index:2}
+.lc-name{font-size:11px;font-weight:800;line-height:1.2}
+.lc-topic{font-size:9px;color:rgba(255,255,255,.6);margin-top:1px}
+.lc-emoji{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-size:34px;z-index:1}
+.lc-vcnt{margin-top:2px;display:inline-flex;align-items:center;gap:3px;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:var(--pill);font-size:9px;font-weight:700}
 
-/* ── GO LIVE MODE ── */
-.go-live-view{position:fixed;inset:0;background:#000;z-index:300;display:none;flex-direction:column}
-.go-live-view.active{display:flex}
-.camera-preview{flex:1;background:#111;position:relative;display:flex;align-items:center;justify-content:center}
-.camera-placeholder{text-align:center;color:rgba(255,255,255,0.5)}
-.go-live-controls{padding:20px 20px 40px;background:#111}
-.live-title-input{width:100%;height:46px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;padding:0 14px;font-family:'Poppins',sans-serif;font-size:14px;outline:none;margin-bottom:10px}
-.live-title-input::placeholder{color:rgba(255,255,255,0.4)}
-.category-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:16px}
-.category-chips::-webkit-scrollbar{display:none}
-.cat-chip{flex-shrink:0;height:32px;padding:0 14px;border-radius:16px;border:1.5px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.7);font-size:12px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap}
-.cat-chip.on{background:#ef4444;border-color:#ef4444;color:#fff}
-.start-live-btn{width:100%;height:52px;border-radius:26px;border:none;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+/* Soon */
+.soon-list{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.soon-card{background:rgba(255,255,255,.06);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.soon-av{width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;display:none}
+.soon-av-emoji{width:48px;height:48px;border-radius:50%;background:var(--pb-reel-grad);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.soon-info{flex:1}
+.soon-title{font-size:13px;font-weight:800}
+.soon-meta{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+.remind-btn{height:30px;padding:0 14px;border-radius:var(--pill);border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
 
-/* Bottom nav */
-.bnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(10,10,18,0.95);border-top:1px solid rgba(255,255,255,0.08);display:flex;z-index:100}
-.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
-.bni.on{color:#ef4444}
-.bni i{font-size:20px}
+/* ══════════════════════════════════════════════
+   VIEW 2 — PRE-LIVE REGISTRATION
+══════════════════════════════════════════════ */
+#register-view{flex-direction:column;background:linear-gradient(160deg,#0d0d1a 0%,#1a0a0a 100%);overflow-y:auto;padding-bottom:40px}
+.reg-header{padding:20px 20px 0;display:flex;align-items:center;gap:12px;position:sticky;top:0;background:linear-gradient(160deg,#0d0d1a,#0d0d1a);z-index:10;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
+.reg-back-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+.reg-title-block{flex:1}
+.reg-title{font-size:18px;font-weight:900}
+.reg-subtitle{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+.reg-live-pill{background:#ef4444;color:#fff;font-size:11px;font-weight:800;padding:5px 12px;border-radius:var(--pill);display:flex;align-items:center;gap:5px}
 
-/* OVERRIDE - force all card/thumb images rectangular */
-.live-card img.live-bg,
-.live-card > img,
-.featured-live > img,
-.stream-video-bg {
-  border-radius: 0 !important;
-  filter: none !important;
-  -webkit-filter: none !important;
-  object-fit: cover !important;
-  width: 100% !important;
-  height: 100% !important;
+/* Steps */
+.steps-bar{display:flex;align-items:center;gap:0;padding:16px 20px;position:relative}
+.step-node{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;position:relative;z-index:2}
+.step-circle{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:#1a1a1a;color:rgba(255,255,255,.4);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:.3s}
+.step-circle.done{background:#ef4444;border-color:#ef4444;color:#fff}
+.step-circle.active{background:transparent;border-color:#ef4444;color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.2)}
+.step-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-align:center;white-space:nowrap}
+.step-label.active{color:#ef4444}
+.step-label.done{color:rgba(255,255,255,.7)}
+.steps-line{position:absolute;top:32px;left:calc(50% + 16px);right:calc(50% + 16px);height:2px;background:rgba(255,255,255,.1);z-index:1}
+.steps-bar-wrap{position:relative}
+.steps-progress-line{position:absolute;top:32px;left:calc(16.66%);height:2px;background:#ef4444;z-index:1;transition:width .4s;width:0}
+
+/* Form cards */
+.form-step{display:none;padding:0 20px;animation:fadeIn .25s ease}
+.form-step.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.form-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;margin-bottom:14px}
+.form-card-title{font-size:14px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.9)}
+.form-card-title i{font-size:18px;color:#ef4444}
+.form-group{margin-bottom:14px}
+.form-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;display:block}
+.form-label .req{color:#ef4444}
+.form-input,.form-select{width:100%;height:44px;border-radius:10px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;padding:0 14px;font-size:14px;outline:none;transition:.2s;appearance:none}
+.form-input:focus,.form-select:focus{border-color:#ef4444;background:rgba(239,68,68,.06)}
+.form-input::placeholder{color:rgba(255,255,255,.3)}
+.form-select option{background:#1a1a1a;color:#fff}
+.form-select:disabled{opacity:.4;cursor:not-allowed}
+.form-textarea{width:100%;min-height:80px;border-radius:10px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;padding:12px 14px;font-size:14px;outline:none;resize:vertical;transition:.2s;line-height:1.5}
+.form-textarea:focus{border-color:#ef4444}
+.form-textarea::placeholder{color:rgba(255,255,255,.3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Camera preview in register */
+.cam-preview-box{background:#0a0a0a;border-radius:12px;overflow:hidden;aspect-ratio:4/3;position:relative;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.1);margin-bottom:14px}
+.cam-placeholder{text-align:center;color:rgba(255,255,255,.4)}
+.cam-placeholder i{font-size:48px;margin-bottom:8px;display:block}
+.cam-placeholder p{font-size:13px;margin-bottom:12px}
+.cam-enable-btn{height:38px;padding:0 20px;border-radius:var(--pill);border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:13px;font-weight:700}
+#cam-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.cam-active-badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);color:#22c55e;font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--pill);display:none;align-items:center;gap:5px}
+.cam-active-badge.show{display:flex}
+.cam-dot-green{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 1.2s infinite}
+
+/* Privacy chips */
+.privacy-chips{display:flex;gap:8px;flex-wrap:wrap}
+.priv-chip{padding:7px 14px;border-radius:var(--pill);border:1.5px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;transition:.2s}
+.priv-chip.on{border-color:#ef4444;background:rgba(239,68,68,.12);color:#ef4444}
+
+/* Role chips */
+.role-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.role-chip{padding:10px 8px;border-radius:12px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);font-size:12px;font-weight:700;cursor:pointer;transition:.2s;text-align:center}
+.role-chip.selected{border-color:#ef4444;background:rgba(239,68,68,.15);color:#fff;box-shadow:0 0 0 1px #ef4444}
+
+/* Category chips */
+.live-cat-chips{display:flex;gap:8px;flex-wrap:wrap}
+.lcat{padding:7px 14px;border-radius:var(--pill);border:1.5px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.lcat.on{border-color:#ef4444;background:rgba(239,68,68,.12);color:#ef4444}
+
+/* Step nav buttons */
+.step-nav{display:flex;gap:10px;padding:8px 20px 20px}
+.btn-prev{flex:1;height:48px;border-radius:var(--pill);border:1.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.8);font-size:14px;font-weight:700}
+.btn-next{flex:2;height:48px;border-radius:var(--pill);border:none;background:var(--live-grad);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s}
+.btn-next:disabled{opacity:.4;cursor:not-allowed}
+.btn-next:not(:disabled):hover{opacity:.88;transform:translateY(-1px)}
+.btn-golive{flex:1;height:52px;border-radius:var(--pill);border:none;background:var(--live-grad);color:#fff;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:10px;transition:.15s;box-shadow:0 4px 20px rgba(239,68,68,.4)}
+.btn-golive:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn-golive:not(:disabled):hover{opacity:.88;transform:translateY(-2px);box-shadow:0 6px 24px rgba(239,68,68,.5)}
+.validation-msg{font-size:12px;color:#ef4444;margin-top:4px;display:none}
+
+/* ══════════════════════════════════════════════
+   VIEW 3 — TEAMS-STYLE LIVE SESSION
+══════════════════════════════════════════════ */
+#live-session-view{flex-direction:column;background:#000;overflow:hidden}
+
+/* Top meeting bar — floating overlay on video */
+.ms-topbar{position:absolute;top:0;left:0;right:0;height:52px;background:linear-gradient(rgba(0,0,0,.7),transparent);display:flex;align-items:center;padding:0 14px;gap:10px;z-index:15;flex-shrink:0}
+.ms-meeting-title{font-size:14px;font-weight:800;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ms-live-pill{background:#ef4444;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:var(--pill);display:flex;align-items:center;gap:5px;flex-shrink:0;animation:pulsePill 2s infinite}
+@keyframes pulsePill{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
+.ms-duration{font-size:12px;font-weight:700;color:rgba(255,255,255,.7);flex-shrink:0}
+.ms-viewers{font-size:12px;font-weight:700;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:4px;flex-shrink:0}
+
+/* ══ LIVE SESSION — Full-screen Instagram/FB Live style ══ */
+.ms-content{flex:1;position:relative;overflow:hidden;min-height:0}
+
+/* Video fills everything */
+.ms-video-area{position:absolute;inset:0;background:#000}
+.ms-main-video{position:absolute;inset:0}
+.ms-main-video video{width:100%;height:100%;object-fit:cover;display:block}
+.ms-main-video-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#111;color:rgba(255,255,255,.4);gap:12px}
+.ms-main-video-placeholder i{font-size:64px}
+.ms-host-name-overlay{position:absolute;bottom:84px;left:90px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:var(--pill);display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px);z-index:10}
+.ms-host-name-overlay .host-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;animation:blink 1s infinite;flex-shrink:0}
+.ms-screen-label{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(239,68,68,.85);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:var(--pill);display:none;z-index:10}
+
+/* Participant strip — small tiles bottom-left above controls */
+.ms-participant-strip{position:absolute;bottom:80px;left:8px;display:flex;flex-direction:column;gap:6px;z-index:10}
+.ms-part-tile{width:64px;height:80px;flex-shrink:0;border-radius:10px;overflow:hidden;position:relative;background:#1a1a1a;border:2px solid rgba(255,255,255,.2);transition:.2s;cursor:pointer}
+.ms-part-tile.speaking{border-color:#22c55e}
+.ms-part-tile-name{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:8px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.ms-part-tile-av-fallback{width:100%;height:100%;background:var(--pb-reel-grad);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}
+
+/* Chat overlay — slides in from right */
+.ms-right-panel{position:absolute;top:0;bottom:0;right:0;width:100%;background:rgba(10,10,18,.92);backdrop-filter:blur(12px);display:flex;flex-direction:column;z-index:20;transform:translateX(100%);transition:transform .3s ease}
+.ms-right-panel.mobile-open{transform:translateX(0)}
+.ms-panel-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.ms-ptab{flex:1;height:44px;border:none;background:transparent;color:rgba(255,255,255,.5);font-size:12px;font-weight:700;cursor:pointer;position:relative;transition:.2s}
+.ms-ptab.active{color:#fff}
+.ms-ptab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:#ef4444;border-radius:2px 2px 0 0}
+.ms-ptab-badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#ef4444;color:#fff;font-size:9px;font-weight:800;margin-left:4px}
+/* Close panel button */
+.ms-panel-close{width:36px;height:36px;border:none;background:transparent;color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+
+/* Chat panel */
+.ms-chat-panel,.ms-participants-panel{display:none;flex-direction:column;flex:1;min-height:0}
+.ms-chat-panel.active,.ms-participants-panel.active{display:flex}
+.ms-chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.ms-chat-msgs::-webkit-scrollbar{width:3px}
+.ms-chat-msgs::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+.ms-chat-msg{display:flex;gap:8px;animation:slideUp .25s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ms-chat-av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;margin-top:1px}
+.ms-chat-body{flex:1}
+.ms-chat-author{font-size:11px;font-weight:800;margin-bottom:2px}
+.ms-chat-author.me-label{color:#60a5fa}
+.ms-chat-author.other-label{color:#fbbf24}
+.ms-chat-text{font-size:13px;color:rgba(255,255,255,.85);line-height:1.4}
+.ms-chat-time{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px}
+.ms-chat-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.ms-chat-input{flex:1;height:38px;border-radius:20px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#fff;padding:0 14px;font-size:13px;outline:none;transition:.2s}
+.ms-chat-input:focus{border-color:#ef4444}
+.ms-chat-input::placeholder{color:rgba(255,255,255,.35)}
+.ms-chat-send{width:38px;height:38px;border-radius:50%;border:none;background:#ef4444;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ms-reactions-row{display:flex;gap:6px;padding:6px 12px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.ms-react-btn{font-size:20px;cursor:pointer;transition:.15s;padding:4px;border-radius:8px}
+.ms-react-btn:hover{background:rgba(255,255,255,.1);transform:scale(1.3)}
+.ms-participants-panel{padding:12px;gap:8px;overflow-y:auto}
+.ms-part-row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;transition:.15s}
+.ms-part-row:hover{background:rgba(255,255,255,.05)}
+.ms-part-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+.ms-part-info{flex:1}
+.ms-part-name{font-size:13px;font-weight:700}
+.ms-part-role{font-size:11px;color:rgba(255,255,255,.45)}
+.ms-part-icons{display:flex;gap:4px;color:rgba(255,255,255,.4);font-size:14px}
+
+/* Emoji float */
+.emoji-float{position:fixed;pointer-events:none;font-size:28px;animation:floatUp 2.5s ease forwards;z-index:999}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-220px) scale(1.6)}}
+
+/* ════ CONTROLS BAR — floating at bottom ════ */
+.ms-controls{position:absolute;bottom:0;left:0;right:0;height:76px;background:linear-gradient(transparent,rgba(0,0,0,.85));display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px 8px;z-index:15}
+.ctrl-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:56px;height:56px;border-radius:14px;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;transition:.2s;padding:6px;backdrop-filter:blur(8px)}
+.ctrl-btn:hover{background:rgba(255,255,255,.22)}
+.ctrl-btn.off{background:rgba(239,68,68,.25);color:#ef4444}
+.ctrl-btn span{font-size:8px;font-weight:700;color:rgba(255,255,255,.6);line-height:1}
+.ctrl-btn.off span{color:#ef4444}
+.ctrl-end{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:56px;height:56px;border-radius:14px;border:none;background:#ef4444;color:#fff;font-size:20px;cursor:pointer;transition:.2s;padding:6px}
+.ctrl-end:hover{background:#dc2626;transform:scale(1.05)}
+.ctrl-end span{font-size:8px;font-weight:700;color:rgba(255,255,255,.8)}
+
+/* Stream viewer view */
+#stream-viewer-view{flex-direction:column;background:#000;overflow:hidden}
+.sv-video-wrap{flex:1;position:relative;overflow:hidden}
+.sv-video-bg{display:none}
+.sv-bg-gradient{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:120px;opacity:.25}
+.sv-overlay{position:absolute;inset:0}
+.sv-topbar{position:absolute;top:0;left:0;right:0;padding:14px;background:linear-gradient(rgba(0,0,0,.7),transparent);display:flex;align-items:center;gap:10px;z-index:10}
+.sv-av{display:none}
+.sv-av-emoji{width:38px;height:38px;border-radius:50%;border:2px solid #ef4444;flex-shrink:0;background:var(--pb-reel-grad);display:flex;align-items:center;justify-content:center;font-size:17px}
+.sv-name{font-size:14px;font-weight:800}
+.sv-sub{font-size:11px;color:rgba(255,255,255,.65)}
+.sv-live-pill{background:#ef4444;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:var(--pill);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.sv-close{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sv-stats{position:absolute;top:76px;left:14px;display:flex;gap:8px;z-index:10}
+.sv-stat{background:rgba(0,0,0,.55);border-radius:var(--pill);padding:4px 10px;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:5px}
+.sv-comments{position:absolute;bottom:110px;left:0;right:0;padding:0 14px;z-index:10;pointer-events:none}
+.sv-comment-feed{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow:hidden;justify-content:flex-end}
+.sv-comment-item{display:flex;align-items:flex-start;gap:8px}
+.sv-comment-av{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.sv-comment-bubble{background:rgba(0,0,0,.55);border-radius:16px;padding:5px 10px;font-size:12px;line-height:1.4;pointer-events:auto}
+.sv-comment-author{font-weight:700;color:#fbbf24;font-size:11px}
+.sv-bottom{position:absolute;bottom:0;left:0;right:0;padding:0 14px 24px;background:linear-gradient(transparent,rgba(0,0,0,.75));z-index:10}
+.sv-input-row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.sv-comment-input{flex:1;height:40px;border-radius:20px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;padding:0 16px;font-size:13px;outline:none}
+.sv-comment-input::placeholder{color:rgba(255,255,255,.45)}
+.sv-send-btn{width:40px;height:40px;border-radius:50%;background:var(--live-grad);border:none;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sv-reacts{display:flex;gap:10px;justify-content:center}
+.sv-react{font-size:26px;cursor:pointer;transition:.15s}
+.sv-react:active{transform:scale(1.4)}
+
+/* ═══ BOTTOM NAV ═══ */
+.pb-bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:56px;background:rgba(10,10,18,.97);border-top:1px solid rgba(255,255,255,.08);display:flex;z-index:500;border-radius:0}
+.pb-bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:rgba(255,255,255,.4);font-size:9px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em}
+.pb-bni.on{color:#ef4444}
+.pb-bni i{font-size:20px}
+.bni-icon{font-size:19px;line-height:1}
+
+/* Toast */
+.pb-toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:var(--pill);font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;pointer-events:none;transition:opacity .3s;border:1px solid rgba(255,255,255,.12)}
+.pb-toast.err{background:#7f1d1d;border-color:#ef4444}
+
+/* Responsive */
+@media(max-width:768px){
+  .ms-right-panel{width:0;overflow:hidden;position:fixed;right:0;top:56px;bottom:72px;z-index:300;transition:.3s;border-left:1px solid var(--teams-border)}
+  .ms-right-panel.mobile-open{width:280px}
+  .ms-participant-strip{display:none}
+  .ms-topbar{padding:0 10px}
+  .ms-controls{gap:4px;padding:0 8px}
+  .ctrl-btn{width:52px;font-size:18px}
+  .ctrl-end{width:52px;font-size:18px}
 }
-</style>
-<link rel="stylesheet" href="mobile.css">
-<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
-<style id="pb-mobile">
-html, body { overflow-x: hidden !important; }
-@media (max-width: 768px) {
-  html, body { width: 100% !important; overflow-x: hidden !important; }
-  div { min-width: 0 !important; }
-  .live-grid { display: block !important; grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
-  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
-  .topnav-tabs, .nav-tabs { display: none !important; }
-  .bottomnav { display: flex !important; }
-  .left-sidebar, .right-sidebar, aside { display: none !important; }
-  body { padding-bottom: 72px !important; }
-}
-</style>
-<style id="pb-burger">
-.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
-.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
-.drawer-overlay.open { display: block; }
-.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
-.drawer-panel.open { left: 0; }
-.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
-.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
-.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
-.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
-.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
-.drawer-body { flex: 1; padding: 6px 0; }
-.drawer-section { font-size: 10px; font-weight: 800; color: #8a8d91; text-transform: uppercase; letter-spacing: .6px; padding: 12px 18px 4px; }
-.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
-.drawer-item:hover { background: #eff6ff; color: #1877F2; }
-.drawer-item i { font-size: 20px; width: 24px; }
-.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
-.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
-.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
-.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
-.bnav-item i { font-size: 22px; }
-.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.bnav-item.active { color: #1877F2; }
-@media (max-width: 768px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
-@media (min-width: 769px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
 </style>
 </head>
 <body>
 
-<!-- ── BROWSE MODE ── -->
-<div class="live-browse" id="browse-view">
-  <div class="live-header">
+<!-- ═══ NAV ═══ -->
+<nav class="pb-nav">
+  <button class="pb-icon-btn" onclick="location.href='07_home.html'" title="Home" style="background:rgba(255,255,255,.08);flex-shrink:0;font-size:17px">🏠</button>
+  <div class="pb-nav-logo" onclick="showView('browse')" style="cursor:pointer">
+    <div class="pb-nav-logo-icon">🔴</div>
+    <span class="pb-nav-logo-text">PawBook Live</span>
+  </div>
+  <div class="pb-nav-right">
+    <button class="pb-icon-btn" onclick="showView('browse')" style="font-size:17px">⊞</button>
+    <div class="pb-avatar-sm" id="nav-av">P</div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     VIEW 1 — BROWSE
+══════════════════════════════════════════ -->
+<div class="view active" id="browse-view">
+  <div class="mob-wrap" style="padding:0 16px">
+  <div class="browse-header" style="padding:12px 0 8px;max-width:none">
     <h1>🔴 Live Now</h1>
-    <button class="go-live-btn" onclick="openGoLive()">
-      <div class="live-dot"></div> Go Live
+    <button class="go-live-btn" onclick="startGoLive()">
+      <div class="live-dot-sm"></div> Go Live
     </button>
   </div>
 
   <!-- Featured -->
-  <div class="featured-live" onclick="openStream(0)">
-    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=95">
+  <div class="featured-wrap" onclick="openStreamViewer(0)" style="background:linear-gradient(135deg,#0f172a,#1e3a5f,#0f3460)">
+    <div class="featured-pet-icon">🩺</div>
     <div class="featured-overlay"></div>
-    <div class="featured-live-badge"><div class="live-dot"></div> LIVE</div>
-    <div class="featured-live-info">
-      <div class="featured-live-title">Dr. Priya's Live Vet Q&A 🩺</div>
-      <div class="featured-live-meta">
-        <span>Dr. Priya Sharma</span>
-        <div class="viewer-count"><i class="ti ti-eye" style="font-size:12px"></i> 2.4K</div>
+    <div class="featured-badge"><div class="live-dot-sm"></div> LIVE</div>
+    <div class="featured-info">
+      <div class="featured-title">Dr. Priya's Live Vet Q&A 🩺</div>
+      <div class="featured-meta">
+        <span>Dr. Priya Sharma · Delhi</span>
+        <div class="vcnt"><i class="ti ti-eye" style="font-size:11px"></i> 2.4K</div>
       </div>
     </div>
   </div>
 
-  <div class="live-section-title">🔥 Trending Streams</div>
-  <div class="live-grid" id="live-grid">
-    <div class="live-card" onclick="openStream(1)">
-      <img class="live-bg" src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=95">
-      <div class="live-card-overlay"></div>
-      <div class="live-badge"><div class="live-dot" style="background:#fff"></div> LIVE</div>
-      <img class="live-av" src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=800&q=95">
-      <div class="live-card-info">
-        <div class="live-card-name">Rahul & Bruno 🐕</div>
-        <div class="live-card-topic">Dog park meetup!</div>
-        <div class="viewer-count" style="margin-top:4px"><i class="ti ti-eye" style="font-size:10px"></i> 847</div>
+  <div class="section-title">🔥 Trending Now</div>
+  <div class="live-grid">
+    <div class="live-card" onclick="openStreamViewer(1)" style="background:linear-gradient(145deg,#1a2e1a,#2d4a1e,#1a3a1a)">
+      <div class="lc-emoji">🐕</div>
+      <div class="lc-overlay"></div>
+      <div class="lc-badge"><div class="live-dot-sm"></div> LIVE</div>
+      <div class="lc-info">
+        <div class="lc-name">Rahul & Bruno 🐕</div>
+        <div class="lc-topic">Dog park meetup!</div>
+        <div class="lc-vcnt"><i class="ti ti-eye" style="font-size:10px"></i> 847</div>
       </div>
     </div>
-    <div class="live-card" onclick="openStream(2)">
-      <img class="live-bg" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=95">
-      <div class="live-card-overlay"></div>
-      <div class="live-badge"><div class="live-dot" style="background:#fff"></div> LIVE</div>
-      <img class="live-av" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&q=95">
-      <div class="live-card-info">
-        <div class="live-card-name">Priya & Luna 🐈</div>
-        <div class="live-card-topic">Cat grooming tips</div>
-        <div class="viewer-count" style="margin-top:4px"><i class="ti ti-eye" style="font-size:10px"></i> 1.2K</div>
+    <div class="live-card" onclick="openStreamViewer(2)" style="background:linear-gradient(145deg,#2a1a2e,#4a1e4a,#2a1a3a)">
+      <div class="lc-emoji">🐈</div>
+      <div class="lc-overlay"></div>
+      <div class="lc-badge"><div class="live-dot-sm"></div> LIVE</div>
+      <div class="lc-info">
+        <div class="lc-name">Priya & Luna 🐈</div>
+        <div class="lc-topic">Cat grooming tips</div>
+        <div class="lc-vcnt"><i class="ti ti-eye" style="font-size:10px"></i> 1.2K</div>
       </div>
     </div>
-    <div class="live-card" onclick="openStream(3)">
-      <img class="live-bg" src="https://images.unsplash.com/photo-1444212477490-ca407925329e?w=800&q=95">
-      <div class="live-card-overlay"></div>
-      <div class="live-badge"><div class="live-dot" style="background:#fff"></div> LIVE</div>
-      <img class="live-av" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=800&q=95">
-      <div class="live-card-info">
-        <div class="live-card-name">BirdLover Mumbai 🦜</div>
-        <div class="live-card-topic">Parrot training session</div>
-        <div class="viewer-count" style="margin-top:4px"><i class="ti ti-eye" style="font-size:10px"></i> 523</div>
+    <div class="live-card" onclick="openStreamViewer(3)" style="background:linear-gradient(145deg,#1a1a2e,#1e2a4a,#0f1a3a)">
+      <div class="lc-emoji">🦜</div>
+      <div class="lc-overlay"></div>
+      <div class="lc-badge"><div class="live-dot-sm"></div> LIVE</div>
+      <div class="lc-info">
+        <div class="lc-name">BirdLover Mumbai 🦜</div>
+        <div class="lc-topic">Parrot training</div>
+        <div class="lc-vcnt"><i class="ti ti-eye" style="font-size:10px"></i> 523</div>
       </div>
     </div>
-    <div class="live-card" onclick="openStream(4)">
-      <img class="live-bg" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=95">
-      <div class="live-card-overlay"></div>
-      <div class="live-badge"><div class="live-dot" style="background:#fff"></div> LIVE</div>
-      <img class="live-av" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=800&q=95">
-      <div class="live-card-info">
-        <div class="live-card-name">Hopeful Tails 🏠</div>
-        <div class="live-card-topic">Adoption event — meet 20 pets!</div>
-        <div class="viewer-count" style="margin-top:4px"><i class="ti ti-eye" style="font-size:10px"></i> 3.1K</div>
+    <div class="live-card" onclick="openStreamViewer(4)" style="background:linear-gradient(145deg,#2e1a1a,#4a1e1e,#3a0f0f)">
+      <div class="lc-emoji">🏠</div>
+      <div class="lc-overlay"></div>
+      <div class="lc-badge"><div class="live-dot-sm"></div> LIVE</div>
+      <div class="lc-info">
+        <div class="lc-name">Hopeful Tails 🏠</div>
+        <div class="lc-topic">Adoption event!</div>
+        <div class="lc-vcnt"><i class="ti ti-eye" style="font-size:10px"></i> 3.1K</div>
       </div>
     </div>
   </div>
 
-  <div class="live-section-title" style="margin-top:8px">📅 Starting Soon</div>
-  <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
-    <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="toast('🔔 You\'ll be notified when this starts!')">
-      <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=95" style="width:48px;height:48px;border-radius:50%;object-fit:cover">
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:800">Dr. Arjun's Exotic Pet Care</div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px">Starts in 25 min · Reptiles & Birds</div>
+  <div class="section-title" style="margin-top:4px">📅 Starting Soon</div>
+  <div class="soon-list">
+    <div class="soon-card">
+      <div class="soon-av-emoji" style="background:linear-gradient(135deg,#0f3460,#533483)">🦎</div>
+      <div class="soon-info">
+        <div class="soon-title">Dr. Arjun's Exotic Pet Care</div>
+        <div class="soon-meta">Starts in 25 min · Reptiles & Birds</div>
       </div>
-      <button onclick="event.stopPropagation();this.textContent=this.textContent==='Remind'?'✓ Set':'Remind';toast(this.textContent==='✓ Set'?'🔔 Reminder set!':'Reminder removed')" style="height:30px;padding:0 14px;border-radius:15px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Remind</button>
+      <button class="remind-btn" onclick="toggleRemind(this)">Remind</button>
     </div>
-    <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="toast('🔔 You\'ll be notified!')">
-      <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=95" style="width:48px;height:48px;border-radius:50%;object-fit:cover">
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:800">PawBook Delhi Dog Meetup Live</div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px">Starts in 2 hrs · Meetup & Play</div>
+    <div class="soon-card">
+      <div class="soon-av-emoji" style="background:linear-gradient(135deg,#1a3a1a,#2d5a1e)">🐕</div>
+      <div class="soon-info">
+        <div class="soon-title">PawBook Delhi Dog Meetup</div>
+        <div class="soon-meta">Starts in 2 hrs · Meetup & Play</div>
       </div>
-      <button onclick="event.stopPropagation();this.textContent=this.textContent==='Remind'?'✓ Set':'Remind';toast(this.textContent==='✓ Set'?'🔔 Reminder set!':'Reminder removed')" style="height:30px;padding:0 14px;border-radius:15px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Remind</button>
+      <button class="remind-btn" onclick="toggleRemind(this)">Remind</button>
     </div>
   </div>
-</div>
+  <div style="height:70px"></div>
+  </div><!-- /mob-wrap -->
+</div><!-- /browse-view -->
 
-<!-- ── STREAM VIEW ── -->
-<div class="stream-view" id="stream-view">
-  <div class="stream-video-area">
-    <img class="stream-video-bg" id="stream-bg" src="">
-    <div class="stream-overlay">
-      <!-- Top bar -->
-      <div class="stream-topbar">
-        <img class="stream-av" id="stream-av" src="">
-        <div>
-          <div class="stream-name" id="stream-name"></div>
-          <div class="stream-sub" id="stream-sub"></div>
+<!-- ══════════════════════════════════════════
+     VIEW 2 — PRE-LIVE REGISTRATION
+══════════════════════════════════════════ -->
+<div class="view" id="register-view">
+  <div class="reg-header">
+    <button class="reg-back-btn" onclick="showView('browse')"><i class="ti ti-arrow-left"></i></button>
+    <div class="reg-title-block">
+      <div class="reg-title">Go Live Setup</div>
+      <div class="reg-subtitle">Complete registration to start your broadcast</div>
+    </div>
+    <div class="reg-live-pill"><div class="live-dot-sm"></div> Pre-Live</div>
+  </div>
+
+  <!-- Steps indicator -->
+  <div class="steps-bar-wrap">
+    <div class="steps-bar">
+      <div class="step-node">
+        <div class="step-circle active" id="sc1">1</div>
+        <div class="step-label active" id="sl1">Owner Info</div>
+      </div>
+      <div class="step-node" id="step2-node">
+        <div class="step-circle" id="sc2">2</div>
+        <div class="step-label" id="sl2">Pet Details</div>
+      </div>
+      <div class="step-node">
+        <div class="step-circle" id="sc3">3</div>
+        <div class="step-label" id="sl3">Live Setup</div>
+      </div>
+      <div class="step-node">
+        <div class="step-circle" id="sc4">4</div>
+        <div class="step-label" id="sl4">Camera</div>
+      </div>
+    </div>
+    <div class="steps-progress-line" id="steps-progress"></div>
+  </div>
+
+  <!-- STEP 1: Owner Info -->
+  <div class="form-step active" id="step1">
+    <div class="form-card">
+      <div class="form-card-title"><i class="ti ti-user-circle"></i> Owner Information</div>
+      <div class="form-group">
+        <label class="form-label">Full Name <span class="req">*</span></label>
+        <input class="form-input" id="ownerName" placeholder="Your full name" oninput="validateStep1()">
+        <div class="validation-msg" id="v-ownerName">Please enter your name</div>
+      </div>
+      <!-- Role picker -->
+      <div class="form-group">
+        <label class="form-label">Going live as <span class="req">*</span></label>
+        <div class="role-chips" id="roleChips">
+          <button class="role-chip" data-role="pet_owner" onclick="selectRole(this)">🐾 Pet Owner</button>
+          <button class="role-chip" data-role="vet" onclick="selectRole(this)">🩺 Vet / Doctor</button>
+          <button class="role-chip" data-role="trainer" onclick="selectRole(this)">🎓 Trainer / Expert</button>
+          <button class="role-chip" data-role="other" onclick="selectRole(this)">🧑 Other</button>
         </div>
-        <div class="stream-live-pill"><div class="live-dot"></div> LIVE</div>
-        <button class="follow-stream-btn" id="follow-stream-btn" onclick="toggleFollowStream(this)">Follow</button>
-        <button class="stream-close" onclick="closeStream()">✕</button>
       </div>
-
-      <!-- Stats -->
-      <div class="stream-stats">
-        <div class="stat-pill"><i class="ti ti-eye"></i> <span id="viewer-count">1,247</span></div>
-        <div class="stat-pill"><i class="ti ti-heart"></i> <span id="heart-count">3,891</span></div>
-        <div class="stat-pill" style="background:rgba(239,68,68,0.4)">🔴 <span id="stream-duration">00:00</span></div>
+      <div class="form-group">
+        <label class="form-label">Address / Area <span class="req">*</span></label>
+        <input class="form-input" id="ownerAddress" placeholder="Street address or area" oninput="validateStep1()">
       </div>
-
-      <!-- Comment feed -->
-      <div class="stream-comments">
-        <div class="comment-feed" id="comment-feed"></div>
+      <div class="form-group">
+        <label class="form-label">Country <span class="req">*</span></label>
+        <select class="form-select" id="regCountry" onchange="onRegCountryChange(); validateStep1()">
+          <option value="">Select country</option>
+        </select>
       </div>
-
-      <!-- Bottom -->
-      <div class="stream-bottom">
-        <div class="stream-input-row">
-          <input class="stream-comment-input" id="stream-comment-input" placeholder="Say something…" onkeydown="if(event.key==='Enter')sendStreamComment()">
-          <button class="stream-send-btn" onclick="sendStreamComment()"><i class="ti ti-send"></i></button>
-          <button class="share-btn" onclick="shareStream()"><i class="ti ti-share"></i></button>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">State / Region <span class="req">*</span></label>
+          <select class="form-select" id="regState" onchange="onRegStateChange(); validateStep1()" disabled>
+            <option value="">Select state</option>
+          </select>
         </div>
-        <div class="stream-reactions">
-          <span class="react-btn" onclick="sendReaction(this,'❤️')">❤️</span>
-          <span class="react-btn" onclick="sendReaction(this,'🐾')">🐾</span>
-          <span class="react-btn" onclick="sendReaction(this,'🔥')">🔥</span>
-          <span class="react-btn" onclick="sendReaction(this,'😍')">😍</span>
-          <span class="react-btn" onclick="sendReaction(this,'👏')">👏</span>
-          <span class="react-btn" onclick="sendReaction(this,'🎉')">🎉</span>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">City <span class="req">*</span></label>
+          <select class="form-select" id="regCity" onchange="validateStep1()" disabled>
+            <option value="">Select city</option>
+          </select>
         </div>
       </div>
     </div>
+    <div class="step-nav">
+      <button class="btn-next" id="next1" onclick="nextFromStep1()" disabled>
+        <span id="next1Label">Next</span> →
+      </button>
+    </div>
   </div>
-</div>
 
-<!-- ── GO LIVE VIEW ── -->
-<div class="go-live-view" id="go-live-view">
-  <div style="padding:52px 16px 14px;display:flex;align-items:center;gap:12px;background:#111">
-    <button onclick="closeGoLive()" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer"><i class="ti ti-arrow-left"></i></button>
-    <div style="font-size:17px;font-weight:800">Go Live</div>
-  </div>
-  <div class="camera-preview">
-    <div class="camera-placeholder">
-      <div style="font-size:64px;margin-bottom:16px">📷</div>
-      <div style="font-size:16px;font-weight:700;margin-bottom:8px">Camera Preview</div>
-      <div style="font-size:13px;opacity:0.6">Allow camera access to go live</div>
-      <button onclick="requestCamera()" style="margin-top:16px;height:40px;padding:0 24px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Enable Camera</button>
+  <!-- STEP 2: Pet Details -->
+  <div class="form-step" id="step2">
+    <div class="form-card">
+      <div class="form-card-title"><i class="ti ti-paw"></i> Pet Information</div>
+      <div class="form-group">
+        <label class="form-label">Pet Name <span class="req">*</span></label>
+        <input class="form-input" id="petName" placeholder="Your pet's name" oninput="validateStep2()">
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Category <span class="req">*</span></label>
+          <select class="form-select" id="petCategory" onchange="onPetCategoryChange(); validateStep2()">
+            <option value="">Select type</option>
+            <option value="dog">🐕 Dog</option>
+            <option value="cat">🐈 Cat</option>
+            <option value="bird">🦜 Bird</option>
+            <option value="rabbit">🐇 Rabbit</option>
+            <option value="fish">🐟 Fish</option>
+            <option value="reptile">🦎 Reptile</option>
+            <option value="hamster">🐹 Hamster</option>
+            <option value="other">🐾 Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Breed <span class="req">*</span></label>
+          <select class="form-select" id="petBreed" onchange="validateStep2()" disabled>
+            <option value="">Select breed</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Age</label>
+          <input class="form-input" id="petAge" placeholder="e.g. 2 years">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Gender</label>
+          <select class="form-select" id="petGender">
+            <option value="">Select</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:14px">
+        <label class="form-label">Colour / Markings</label>
+        <input class="form-input" id="petColor" placeholder="e.g. Golden with white paws">
+      </div>
     </div>
-    <video id="camera-feed" autoplay muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none"></video>
-  </div>
-  <div class="go-live-controls">
-    <input class="live-title-input" id="live-title" placeholder="What's your live about? 🐾">
-    <div class="category-chips" id="cat-chips">
-      <button class="cat-chip on" onclick="toggleCat(this)">🩺 Vet Tips</button>
-      <button class="cat-chip" onclick="toggleCat(this)">🐕 Dog Life</button>
-      <button class="cat-chip" onclick="toggleCat(this)">🐈 Cat Life</button>
-      <button class="cat-chip" onclick="toggleCat(this)">🏠 Adoption</button>
-      <button class="cat-chip" onclick="toggleCat(this)">🎓 Training</button>
-      <button class="cat-chip" onclick="toggleCat(this)">🎉 Meetup</button>
-      <button class="cat-chip" onclick="toggleCat(this)">🌿 Nutrition</button>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="goStep(1)"><i class="ti ti-arrow-left"></i> Back</button>
+      <button class="btn-next" id="next2" onclick="goStep(3)" disabled>
+        Next: Live Setup <i class="ti ti-arrow-right"></i>
+      </button>
     </div>
-    <button class="start-live-btn" onclick="startLive()">
-      <div class="live-dot" style="width:10px;height:10px"></div>
-      Start Live Stream
+  </div>
+
+  <!-- STEP 3: Live Setup -->
+  <div class="form-step" id="step3">
+    <div class="form-card">
+      <div class="form-card-title"><i class="ti ti-broadcast"></i> Live Setup</div>
+      <div class="form-group">
+        <label class="form-label">Live Title <span class="req">*</span></label>
+        <input class="form-input" id="liveTitle" placeholder="What's your live about? 🐾" oninput="validateStep3()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="liveDesc" placeholder="Tell viewers what to expect…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <div class="live-cat-chips">
+          <button class="lcat on" onclick="toggleLcat(this)">🩺 Vet Tips</button>
+          <button class="lcat" onclick="toggleLcat(this)">🐕 Dog Life</button>
+          <button class="lcat" onclick="toggleLcat(this)">🐈 Cat Life</button>
+          <button class="lcat" onclick="toggleLcat(this)">🏠 Adoption</button>
+          <button class="lcat" onclick="toggleLcat(this)">🎓 Training</button>
+          <button class="lcat" onclick="toggleLcat(this)">🎉 Meetup</button>
+          <button class="lcat" onclick="toggleLcat(this)">🌿 Nutrition</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Who can watch?</label>
+        <div class="privacy-chips">
+          <button class="priv-chip on" onclick="togglePriv(this)">🌍 Public</button>
+          <button class="priv-chip" onclick="togglePriv(this)">👥 Followers</button>
+          <button class="priv-chip" onclick="togglePriv(this)">🔒 Only Me</button>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="selectedRole==='pet_owner'?goStep(2):goStep(1)">← Back</button>
+      <button class="btn-next" id="next3" onclick="goStep(4)" disabled>
+        Next: Camera →
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Camera + Go Live -->
+  <div class="form-step" id="step4">
+    <div class="form-card">
+      <div class="form-card-title"><i class="ti ti-camera"></i> Camera Preview</div>
+      <div class="cam-preview-box">
+        <div class="cam-placeholder" id="cam-placeholder">
+          <i class="ti ti-camera"></i>
+          <p>Allow camera access to preview</p>
+          <button class="cam-enable-btn" onclick="enableCamera()">Enable Camera</button>
+        </div>
+        <video id="cam-video" autoplay muted playsinline></video>
+        <div class="cam-active-badge" id="cam-active-badge">
+          <div class="cam-dot-green"></div> Camera Ready
+        </div>
+      </div>
+      <!-- Summary card -->
+      <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,.07)">
+        <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Your Live Summary</div>
+        <div id="live-summary" style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.8"></div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="goStep(3)"><i class="ti ti-arrow-left"></i> Back</button>
+      <button class="btn-golive" id="btn-golive" onclick="launchLiveSession()">
+        <div class="live-dot-sm"></div> Go Live Now
+      </button>
+    </div>
+  </div>
+</div><!-- /register-view -->
+
+<!-- ══════════════════════════════════════════
+     VIEW 3 — TEAMS-STYLE LIVE SESSION (HOST)
+══════════════════════════════════════════ -->
+<div class="view" id="live-session-view">
+  <!-- Full-screen container -->
+  <div class="ms-content">
+    <!-- Video fills everything -->
+    <div class="ms-video-area">
+      <div class="ms-main-video" id="ms-main-video">
+        <video id="ms-local-video" autoplay muted playsinline style="display:none"></video>
+        <div class="ms-main-video-placeholder" id="ms-main-placeholder">
+          <i class="ti ti-video-off"></i>
+          <div style="font-size:14px;font-weight:700">Camera not active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top bar overlaid on video -->
+    <div class="ms-topbar">
+      <div class="ms-live-pill"><div class="live-dot-sm"></div> LIVE</div>
+      <div class="ms-meeting-title" id="ms-meeting-title">PawBook Live</div>
+      <div class="ms-viewers">👁 <span id="ms-viewer-count">0</span></div>
+      <div class="ms-duration" id="ms-duration">00:00</div>
+      <button class="pb-icon-btn" onclick="toggleMobilePanel()" style="background:rgba(255,255,255,.15);font-size:17px">💬</button>
+    </div>
+
+    <!-- Host name + screen share labels -->
+    <div class="ms-host-name-overlay" id="ms-host-name-overlay">
+      <div class="host-dot"></div>
+      <span id="ms-host-label">You (Host)</span>
+    </div>
+    <div class="ms-screen-label" id="ms-screen-label">📺 Screen Share</div>
+
+    <!-- Participant strip (floating, bottom-left) -->
+    <div class="ms-participant-strip" id="ms-participant-strip"></div>
+
+    <!-- Chat/Participants overlay panel -->
+    <div class="ms-right-panel" id="ms-right-panel">
+      <div class="ms-panel-tabs">
+        <button class="ms-ptab active" id="tab-chat" onclick="switchPanelTab('chat')">
+          Chat <span class="ms-ptab-badge" id="chat-badge" style="display:none">0</span>
+        </button>
+        <button class="ms-ptab" id="tab-parts" onclick="switchPanelTab('parts')">
+          Participants (<span id="parts-count">1</span>)
+        </button>
+        <button class="ms-panel-close" onclick="toggleMobilePanel()">✕</button>
+      </div>
+
+      <!-- Chat -->
+      <div class="ms-chat-panel active" id="chat-panel">
+        <div class="ms-chat-msgs" id="ms-chat-msgs"></div>
+        <div class="ms-reactions-row">
+          <span class="ms-react-btn" onclick="sendReact('❤️')">❤️</span>
+          <span class="ms-react-btn" onclick="sendReact('🐾')">🐾</span>
+          <span class="ms-react-btn" onclick="sendReact('🔥')">🔥</span>
+          <span class="ms-react-btn" onclick="sendReact('😍')">😍</span>
+          <span class="ms-react-btn" onclick="sendReact('👏')">👏</span>
+          <span class="ms-react-btn" onclick="sendReact('🎉')">🎉</span>
+        </div>
+        <div class="ms-chat-input-row">
+          <input class="ms-chat-input" id="ms-chat-input" placeholder="Message everyone…" onkeydown="if(event.key==='Enter')sendChatMsg()">
+          <button class="ms-chat-send" onclick="sendChatMsg()"><i class="ti ti-send"></i></button>
+        </div>
+      </div>
+
+      <!-- Participants -->
+      <div class="ms-participants-panel" id="parts-panel">
+        <div id="parts-list"><!-- Filled by JS --></div>
+      </div>
+    </div>
+
+    <!-- Controls bar floating at bottom -->
+    <div class="ms-controls">
+    <button class="ctrl-btn" id="ctrl-mic" onclick="toggleMic()" title="Mute">
+      <i class="ti ti-microphone" id="mic-icon"></i>
+      <span id="mic-lbl">Mute</span>
+    </button>
+    <button class="ctrl-btn" id="ctrl-cam" onclick="toggleCam()" title="Camera">
+      <i class="ti ti-video" id="cam-icon"></i>
+      <span id="cam-lbl">Camera</span>
+    </button>
+    <button class="ctrl-btn" id="ctrl-screen" onclick="toggleScreen()" title="Share Screen">
+      <i class="ti ti-screen-share" id="screen-icon"></i>
+      <span>Share</span>
+    </button>
+    <button class="ctrl-btn" id="ctrl-hand" onclick="toggleHand()" title="Raise Hand">
+      <i class="ti ti-hand-stop" id="hand-icon"></i>
+      <span id="hand-lbl">Hand</span>
+    </button>
+    <button class="ctrl-btn" id="ctrl-record" onclick="toggleRecord()" title="Record">
+      <i class="ti ti-circle-dot" id="record-icon"></i>
+      <span id="record-lbl">Record</span>
+    </button>
+    <button class="ctrl-end" onclick="confirmEndLive()" title="End Live">
+      <i class="ti ti-phone-off"></i>
+      <span>End</span>
     </button>
   </div>
-</div>
+</div><!-- /live-session-view -->
+
+<!-- ══════════════════════════════════════════
+     VIEW 4 — STREAM VIEWER
+══════════════════════════════════════════ -->
+<div class="view" id="stream-viewer-view">
+  <div class="sv-video-wrap">
+    <img class="sv-video-bg" id="sv-bg" src="" alt="">
+    <!-- Real Agora video — hidden until host publishes -->
+    <video id="sv-live-video" autoplay playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:2"></video>
+    <div class="sv-bg-gradient" id="sv-bg-emoji">🐾</div>
+    <div class="sv-overlay">
+      <div class="sv-topbar">
+        <div class="sv-av-emoji" id="sv-av-emoji">🐾</div>
+        <div>
+          <div class="sv-name" id="sv-name"></div>
+          <div class="sv-sub" id="sv-sub"></div>
+        </div>
+        <div class="sv-live-pill"><div class="live-dot-sm"></div> LIVE</div>
+        <button class="sv-close" onclick="leaveStreamViewer()">✕</button>
+      </div>
+      <div class="sv-stats">
+        <div class="sv-stat"><i class="ti ti-eye"></i> <span id="sv-viewers">0</span></div>
+        <div class="sv-stat"><i class="ti ti-heart"></i> <span id="sv-hearts">0</span></div>
+        <div class="sv-stat" style="background:rgba(239,68,68,.4)">🔴 <span id="sv-dur">00:00</span></div>
+      </div>
+      <div class="sv-comments">
+        <div class="sv-comment-feed" id="sv-comment-feed"></div>
+      </div>
+      <div class="sv-bottom">
+        <div class="sv-input-row">
+          <input class="sv-comment-input" id="sv-comment-input" placeholder="Say something…" onkeydown="if(event.key==='Enter')svSendComment()">
+          <button class="sv-send-btn" onclick="svSendComment()"><i class="ti ti-send"></i></button>
+        </div>
+        <div class="sv-reacts">
+          <span class="sv-react" onclick="svReact(this,'❤️')">❤️</span>
+          <span class="sv-react" onclick="svReact(this,'🐾')">🐾</span>
+          <span class="sv-react" onclick="svReact(this,'🔥')">🔥</span>
+          <span class="sv-react" onclick="svReact(this,'😍')">😍</span>
+          <span class="sv-react" onclick="svReact(this,'👏')">👏</span>
+          <span class="sv-react" onclick="svReact(this,'🎉')">🎉</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /stream-viewer-view -->
 
 <!-- Bottom nav -->
-<div class="bnav">
-  <button class="bni" onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
-  <button class="bni" onclick="location.href='27_stories.html'"><i class="ti ti-circle-dot"></i>Stories</button>
-  <button class="bni" onclick="location.href='28_reels.html'"><i class="ti ti-player-play"></i>Reels</button>
-  <button class="bni on"><i class="ti ti-live-view"></i>Live</button>
-  <button class="bni" onclick="location.href='08_pet_profile.html'"><i class="ti ti-user"></i>Profile</button>
+<div class="pb-bnav" id="pb-bnav">
+  <button class="pb-bni" onclick="location.href='07_home.html'"><span class="bni-icon">🏠</span>Home</button>
+  <button class="pb-bni" onclick="location.href='27_stories.html'"><span class="bni-icon">◉</span>Stories</button>
+  <button class="pb-bni" onclick="location.href='28_reels.html'"><span class="bni-icon">▶</span>Reels</button>
+  <button class="pb-bni on"><span class="bni-icon">🔴</span>Live</button>
+  <button class="pb-bni" onclick="location.href='08_pet_profile.html'"><span class="bni-icon">👤</span>Profile</button>
 </div>
 
-<script src="pawbook-api.js"></script>
-<script src="socket.js"></script>
-<!-- Agora Web SDK v4 — free tier: 10K min/month -->
-<script src="https://cdn.jsdelivr.net/npm/agora-rtc-sdk-ng@4.21.0/AgoraRTC_N-production.min.js"></script>
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N-production.min.js"></script>
+<script src="pawbook-api.js" onerror="console.warn('[PawBook] API script not loaded')"></script>
+<script src="socket.js" onerror="console.warn('[PawBook] Socket script not loaded')"></script>
+
 <script>
-function goTo(p){location.href=p;}
+/* ═══════════════════════════════════════════════════════
+   PB_CITIES — 3-level country→state→city
+═══════════════════════════════════════════════════════ */
+const PB_CITIES = {
+  'India': {
+    'Delhi': ['New Delhi','Gurgaon','Noida','Faridabad','Ghaziabad'],
+    'Maharashtra': ['Mumbai','Pune','Nagpur','Nashik','Aurangabad'],
+    'Karnataka': ['Bangalore','Mysore','Hubli','Mangalore','Belgaum'],
+    'Tamil Nadu': ['Chennai','Coimbatore','Madurai','Tiruchirappalli','Salem'],
+    'Telangana': ['Hyderabad','Warangal','Nizamabad','Khammam'],
+    'Gujarat': ['Ahmedabad','Surat','Vadodara','Rajkot','Bhavnagar'],
+    'Rajasthan': ['Jaipur','Jodhpur','Udaipur','Kota','Bikaner'],
+    'West Bengal': ['Kolkata','Howrah','Durgapur','Asansol','Siliguri'],
+    'Uttar Pradesh': ['Lucknow','Kanpur','Agra','Varanasi','Prayagraj'],
+    'Punjab': ['Chandigarh','Ludhiana','Amritsar','Jalandhar','Patiala'],
+    'Kerala': ['Thiruvananthapuram','Kochi','Kozhikode','Thrissur','Kollam'],
+  },
+  'USA': {
+    'California': ['Los Angeles','San Francisco','San Diego','San Jose','Sacramento'],
+    'New York': ['New York City','Buffalo','Rochester','Albany','Syracuse'],
+    'Texas': ['Houston','Dallas','Austin','San Antonio','Fort Worth'],
+    'Florida': ['Miami','Orlando','Tampa','Jacksonville','Fort Lauderdale'],
+    'Illinois': ['Chicago','Aurora','Rockford','Joliet','Naperville'],
+  },
+  'UK': {
+    'England': ['London','Manchester','Birmingham','Leeds','Liverpool'],
+    'Scotland': ['Edinburgh','Glasgow','Aberdeen','Dundee','Inverness'],
+    'Wales': ['Cardiff','Swansea','Newport','St David\'s','Bangor'],
+  },
+  'Australia': {
+    'New South Wales': ['Sydney','Newcastle','Wollongong','Canberra','Albury'],
+    'Victoria': ['Melbourne','Geelong','Ballarat','Bendigo','Shepparton'],
+    'Queensland': ['Brisbane','Gold Coast','Sunshine Coast','Townsville','Cairns'],
+    'Western Australia': ['Perth','Fremantle','Bunbury','Albany','Geraldton'],
+  },
+  'Canada': {
+    'Ontario': ['Toronto','Ottawa','Hamilton','Mississauga','Brampton'],
+    'British Columbia': ['Vancouver','Victoria','Kelowna','Kamloops','Abbotsford'],
+    'Quebec': ['Montreal','Quebec City','Laval','Gatineau','Longueuil'],
+    'Alberta': ['Calgary','Edmonton','Red Deer','Lethbridge','St. Albert'],
+  },
+  'Singapore': {
+    'Singapore': ['Singapore City','Jurong','Tampines','Woodlands','Pasir Ris'],
+  },
+  'UAE': {
+    'Dubai': ['Dubai City','Deira','Bur Dubai','Jumeirah','Al Qusais'],
+    'Abu Dhabi': ['Abu Dhabi City','Al Ain','Khalifa City','Mussafah','Ruwais'],
+  },
+};
 
-const STREAMS=[
-  {name:'Dr. Priya Sharma',sub:'Veterinary Clinic · Q&A Session',av:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=95',bg:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=95',viewers:2418,topic:'Vet Q&A 🩺'},
-  {name:'Rahul & Bruno',sub:'Dog Parent · Park Meetup',av:'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?w=800&q=95',bg:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=95',viewers:847,topic:'Dog Park 🐕'},
-  {name:'Priya M. & Luna',sub:'Cat Mom · Grooming Tips',av:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&q=95',bg:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=95',viewers:1247,topic:'Cat Grooming 🐈'},
-  {name:'BirdLover Mumbai',sub:'Parrot Trainer · Live Demo',av:'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=800&q=95',bg:'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=800&q=95',viewers:523,topic:'Parrot Training 🦜'},
-  {name:'Hopeful Tails Shelter',sub:'Adoption Event · Meet the Pets',av:'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=800&q=95',bg:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=95',viewers:3124,topic:'Adoption Drive 🏠'},
+/* ═══════════════════════════════════════════════════════
+   PET BREEDS
+═══════════════════════════════════════════════════════ */
+const PB_BREEDS = {
+  dog: ['Labrador Retriever','German Shepherd','Golden Retriever','Bulldog','Poodle','Beagle','Rottweiler','Yorkshire Terrier','Boxer','Dachshund','Shih Tzu','Siberian Husky','Great Dane','Dobermann','Pomeranian','Indian Pariah','Rajapalayam','Mudhol Hound','Mixed Breed','Other'],
+  cat: ['Persian','Siamese','Maine Coon','Bengal','Ragdoll','British Shorthair','Scottish Fold','Sphynx','Russian Blue','Abyssinian','Indian Domestic Cat','Mixed Breed','Other'],
+  bird: ['African Grey Parrot','Cockatiel','Budgerigar (Budgie)','Lovebird','Cockatoo','Macaw','Conure','Ringneck Parakeet','Finch','Canary','Mynah','Other'],
+  rabbit: ['Holland Lop','Dutch Rabbit','Lionhead','Rex','Flemish Giant','Angora','New Zealand White','Mixed Breed','Other'],
+  fish: ['Goldfish','Betta','Guppy','Koi','Angelfish','Oscar','Clownfish','Molly','Platy','Tetra','Other'],
+  reptile: ['Ball Python','Bearded Dragon','Leopard Gecko','Blue-Tongue Skink','Corn Snake','Tortoise','Water Monitor','Chameleon','Other'],
+  hamster: ['Syrian Hamster','Dwarf Hamster','Roborovski','Chinese Hamster','Other'],
+  other: ['Mixed Species','Other'],
+};
+
+/* ═══════════════════════════════════════════════════════
+   STREAMS DATA
+═══════════════════════════════════════════════════════ */
+const STREAMS = [
+  {name:'Dr. Priya Sharma',sub:'Veterinary Clinic · Q&A Session',emoji:'🩺',avEmoji:'👩‍⚕️',bg:'linear-gradient(135deg,#0f172a,#1e3a5f,#0f3460)',viewers:2418},
+  {name:'Rahul & Bruno',sub:'Dog Parent · Park Meetup',emoji:'🐕',avEmoji:'👦',bg:'linear-gradient(135deg,#1a2e1a,#2d4a1e,#1a3a1a)',viewers:847},
+  {name:'Priya M. & Luna',sub:'Cat Mom · Grooming Tips',emoji:'🐈',avEmoji:'👩',bg:'linear-gradient(135deg,#2a1a2e,#4a1e4a,#2a1a3a)',viewers:1247},
+  {name:'BirdLover Mumbai',sub:'Parrot Trainer · Live Demo',emoji:'🦜',avEmoji:'🧑',bg:'linear-gradient(135deg,#1a1a2e,#1e2a4a,#0f1a3a)',viewers:523},
+  {name:'Hopeful Tails Shelter',sub:'Adoption Event · Meet the Pets',emoji:'🏠',avEmoji:'🏡',bg:'linear-gradient(135deg,#2e1a1a,#4a1e1e,#3a0f0f)',viewers:3124},
 ];
 
-const FAKE_COMMENTS=[
-  ['Luna Fan','Your Luna is so adorable! 😍','#f59e0b'],['DelhiDogs','Bruno looks so happy 🐾','#6366f1'],
-  ['PetMom99','Can you recommend puppy food?','#10b981'],['Dr_Arjun','Great tips as always!','#ef4444'],
-  ['AnanyaB','Watching from Bengaluru 🐕','#8b5cf6'],['VetStudent','This is so helpful, thank you!','#1a4db3'],
-  ['BrunoLover','My dog does this too!! 😂','#d97706'],['CatDad42','What food do you recommend for cats?','#6366f1'],
+const FAKE_COMMENTS = [
+  ['Luna Fan','Your pet is so adorable! 😍','#f59e0b'],
+  ['DelhiDogs','Bruno looks so happy 🐾','#6366f1'],
+  ['PetMom99','Can you recommend puppy food?','#10b981'],
+  ['Dr_Arjun','Great tips as always!','#ef4444'],
+  ['AnanyaB','Watching from Bengaluru 🐕','#8b5cf6'],
+  ['VetStudent','This is so helpful!','#1a4db3'],
+  ['BrunoLover','My dog does this too!! 😂','#d97706'],
+  ['CatDad42','What food is best for cats?','#6366f1'],
 ];
 
-/* ── STATE ────────────────────────────────────────────────────────────────── */
-let durationInterval=null, streamSeconds=0, viewerCount=0, heartCount=0;
-let activeStreamId=null, agoraClient=null, localTracks=[], cameraStream=null;
-let socketBound=false;
+const FAKE_PARTICIPANTS = [
+  {name:'AnanyaB',role:'Viewer',color:'#6366f1'},
+  {name:'DelhiDogs',role:'Viewer',color:'#f59e0b'},
+  {name:'PetMom99',role:'Viewer',color:'#10b981'},
+  {name:'Luna Fan',role:'Viewer',color:'#8b5cf6'},
+  {name:'VetStudent',role:'Viewer',color:'#ef4444'},
+];
 
-/* ── AGORA CONFIG ─────────────────────────────────────────────────────────── */
-// Agora App ID stored on backend; fetch it at go-live time.
-// Frontend just requests a token from /live/:id/token (backend generates RTC token).
-const AGORA_CHAN_PREFIX='pb_live_';
+/* ═══════════════════════════════════════════════════════
+   AGORA CONFIG — replace with your App ID from agora.io
+═══════════════════════════════════════════════════════ */
+const AGORA_APP_ID = 'YOUR_AGORA_APP_ID'; // ← paste your Agora App ID here
 
-/* ── HELPERS ──────────────────────────────────────────────────────────────── */
-function fmt(n){if(n>=1000)return(n/1000).toFixed(1)+'K';return String(n);}
-function authHeaders(){var t=localStorage.getItem('pb_token')||'';return{'Authorization':'Bearer '+t,'Content-Type':'application/json'};}
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+let currentStep = 1;
+let cameraStream = null;          // local getUserMedia stream (Step 4 preview only)
+let isMicOn = true, isCamOn = true, isScreenSharing = false, isHandRaised = false, isRecording = false;
+let liveTimerInterval = null, liveSeconds = 0;
+let liveViewerCount = 0;
+let commentSimInterval = null;
+let livePanelOpen = false;
+let msgCount = 0;
+let svTimerInterval = null, svSeconds = 0;
 
-function updateStats(){
-  document.getElementById('viewer-count').textContent=fmt(viewerCount);
-  document.getElementById('heart-count').textContent=fmt(heartCount);
-}
-function updateDuration(){
-  var m=Math.floor(streamSeconds/60).toString().padStart(2,'0');
-  var s=(streamSeconds%60).toString().padStart(2,'0');
-  document.getElementById('stream-duration').textContent=m+':'+s;
-}
-function addComment(author,text,color,isMe){
-  var feed=document.getElementById('comment-feed');
-  var div=document.createElement('div');
-  div.className='comment-item';
-  div.innerHTML='<div class="comment-av" style="background:'+(color||'#1a4db3')+'">'+author[0]+'</div>'
-    +'<div class="comment-bubble"><div class="comment-author" style="color:'+(isMe?'#60a5fa':'#fbbf24')+'">'+(isMe?'You':author)+'</div>'+text+'</div>';
-  feed.appendChild(div);
-  while(feed.children.length>6)feed.removeChild(feed.firstChild);
-}
+const regData = {};
 
-/* ── SOCKET.IO LIVE EVENTS ────────────────────────────────────────────────── */
-function bindSocket(streamId){
-  if(socketBound)return;
-  if(typeof PawSocket==='undefined')return;
-  var sock=PawSocket.get();
-  if(!sock)return;
-  socketBound=true;
-  sock.emit('live:join',{stream_id:streamId});
-  sock.on('live:comment',function(d){
-    if(d.stream_id!==streamId)return;
-    addComment(d.author||'Viewer',d.text||'','#6366f1',false);
-  });
-  sock.on('live:reaction',function(d){
-    if(d.stream_id!==streamId)return;
-    heartCount=(d.total_hearts||heartCount+1);
-    updateStats();
-    burstEmoji(d.emoji||'❤️');
-  });
-  sock.on('live:viewer_count',function(d){
-    if(d.stream_id!==streamId)return;
-    viewerCount=d.count||viewerCount;
-    updateStats();
-  });
-  sock.on('live:ended',function(d){
-    if(d.stream_id!==streamId)return;
-    toast('This stream has ended','error');
-    setTimeout(closeStream,2000);
-  });
-}
-function unbindSocket(streamId){
-  socketBound=false;
-  if(typeof PawSocket==='undefined')return;
-  var sock=PawSocket.get();
-  if(!sock)return;
-  sock.emit('live:leave',{stream_id:streamId});
-  sock.off('live:comment');sock.off('live:reaction');
-  sock.off('live:viewer_count');sock.off('live:ended');
+/* ── Agora state ── */
+let agoraClient = null;           // host RTC client
+let agoraLocalAudioTrack = null;
+let agoraLocalVideoTrack = null;
+let agoraScreenTrack = null;
+let agoraViewerClient = null;     // viewer RTC client
+let agoraChannelName = '';
+
+/* Generate a safe Agora channel name from live title */
+function makeChannelName(title) {
+  return 'pb_' + (title||'live').toLowerCase().replace(/[^a-z0-9]/g,'_').substring(0,40) + '_' + Date.now();
 }
 
-/* ── BROWSE → WATCH ───────────────────────────────────────────────────────── */
-function openStream(idx){
-  var s=STREAMS[idx];
-  // Try to fetch real stream from API first; fall back to static data
-  fetch(API_BASE+'/live?limit=10',{headers:authHeaders()})
-    .then(function(r){return r.json();})
-    .then(function(res){
-      var streams=res.data||res.streams||[];
-      var real=streams[idx]||null;
-      if(real){_showStream(real.id,real.host_name||s.name,real.title||s.sub,real.avatar_url||s.av,real.thumbnail||s.bg,real.viewer_count||s.viewers);}
-      else{_showStream(null,s.name,s.sub,s.av,s.bg,s.viewers);}
-    })
-    .catch(function(){_showStream(null,s.name,s.sub,s.av,s.bg,s.viewers);});
-}
-
-function _showStream(streamId,name,sub,av,bg,viewers){
-  activeStreamId=streamId;
-  document.getElementById('stream-view').classList.add('active');
-  var bgEl=document.getElementById('stream-bg');
-  bgEl.src=bg;bgEl.style.display='block';
-  document.getElementById('stream-av').src=av;
-  document.getElementById('stream-name').textContent=name;
-  document.getElementById('stream-sub').textContent=sub;
-  viewerCount=viewers||0;heartCount=Math.floor((viewers||0)*1.6);
-  updateStats();
-  streamSeconds=0;updateDuration();
-  clearInterval(durationInterval);
-  durationInterval=setInterval(function(){streamSeconds++;updateDuration();},1000);
-  // Seed a few static comments so screen isn't empty
-  setTimeout(function(){
-    var c=FAKE_COMMENTS[Math.floor(Math.random()*FAKE_COMMENTS.length)];
-    addComment(c[0],c[1],c[2]);
-  },1200);
-  if(streamId)bindSocket(streamId);
-}
-
-function closeStream(){
-  document.getElementById('stream-view').classList.remove('active');
-  clearInterval(durationInterval);
-  document.getElementById('comment-feed').innerHTML='';
-  if(activeStreamId)unbindSocket(activeStreamId);
-  // If this was our own stream, stop Agora publish
-  if(agoraClient&&localTracks.length){
-    localTracks.forEach(function(t){t.stop();t.close();});
-    localTracks=[];
-    agoraClient.leave().catch(function(){});
-    // POST end to backend
-    if(activeStreamId){
-      fetch(API_BASE+'/live/'+activeStreamId+'/end',{method:'POST',headers:authHeaders()}).catch(function(){});
-    }
-    // Replace Agora video with static bg image again
-    document.getElementById('stream-bg').style.display='block';
-    var vEl=document.getElementById('agora-remote-video');
-    if(vEl)vEl.remove();
-  }
-  activeStreamId=null;
-}
-
-/* ── COMMENT SEND ─────────────────────────────────────────────────────────── */
-function sendStreamComment(){
-  var input=document.getElementById('stream-comment-input');
-  var text=(input.value||'').trim();if(!text)return;
-  input.value='';
-  var user=typeof Auth!=='undefined'?Auth.getUser():null;
-  var name=user?user.full_name||user.name||'You':'You';
-  addComment(name,text,'#1a4db3',true);
-  // Send via socket
-  if(typeof PawSocket!=='undefined'&&activeStreamId){
-    var sock=PawSocket.get();
-    if(sock)sock.emit('live:comment',{stream_id:activeStreamId,text:text,author:name});
-  }
-  // Also POST to REST
-  if(activeStreamId){
-    fetch(API_BASE+'/live/'+activeStreamId+'/comments',{method:'POST',headers:authHeaders(),body:JSON.stringify({content:text})}).catch(function(){});
+/* ═══════════════════════════════════════════════════════
+   VIEW SWITCHING
+═══════════════════════════════════════════════════════ */
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id+'-view').classList.add('active');
+  const bnav = document.getElementById('pb-bnav');
+  if(id === 'live-session') {
+    bnav.style.display = 'none';
+  } else if(id === 'stream-viewer') {
+    bnav.style.display = 'none';
+  } else {
+    bnav.style.display = 'flex';
   }
 }
 
-/* ── REACTIONS ────────────────────────────────────────────────────────────── */
-function sendReaction(el,emoji){
-  el.style.transform='scale(1.5)';
-  setTimeout(function(){el.style.transform='scale(1)';},300);
-  heartCount+=Math.floor(Math.random()*5+3);
-  updateStats();
-  burstEmoji(emoji);
-  if(typeof PawSocket!=='undefined'&&activeStreamId){
-    var sock=PawSocket.get();
-    if(sock)sock.emit('live:reaction',{stream_id:activeStreamId,emoji:emoji});
-  }
-}
-function burstEmoji(emoji){
-  var burst=document.createElement('div');
-  burst.className='emoji-burst';burst.textContent=emoji;
-  burst.style.left=Math.random()*60+20+'%';burst.style.bottom='120px';
-  document.getElementById('stream-view').appendChild(burst);
-  setTimeout(function(){burst.remove();},2000);
-}
-
-function toggleFollowStream(btn){
-  btn.classList.toggle('following');
-  btn.textContent=btn.classList.contains('following')?'Following':'Follow';
-  if(btn.classList.contains('following'))toast('✓ Following! You\'ll be notified.');
-}
-function shareStream(){
-  var url=location.href+(activeStreamId?'?stream_id='+activeStreamId:'');
-  if(navigator.share){navigator.share({title:'PawBook Live',text:'Join this live stream!',url:url}).catch(function(){});}
-  else{navigator.clipboard&&navigator.clipboard.writeText(url);toast('🔗 Link copied!');}
-}
-
-/* ── GO LIVE ──────────────────────────────────────────────────────────────── */
-function openGoLive(){document.getElementById('go-live-view').classList.add('active');}
-function closeGoLive(){
-  document.getElementById('go-live-view').classList.remove('active');
-  // Stop camera preview
-  if(cameraStream){cameraStream.getTracks().forEach(function(t){t.stop();});cameraStream=null;}
-  var v=document.getElementById('camera-feed');
-  v.srcObject=null;v.style.display='none';
-  document.querySelector('.camera-placeholder').style.display='flex';
-}
-
-function requestCamera(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    toast('Camera not supported in this browser','error');return;
-  }
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true})
-    .then(function(stream){
-      cameraStream=stream;
-      var v=document.getElementById('camera-feed');
-      v.srcObject=stream;v.style.display='block';
-      document.querySelector('.camera-placeholder').style.display='none';
-      toast('📷 Camera ready! Set a title and go live.');
-    })
-    .catch(function(e){
-      console.warn('[Live] Camera error:',e.message);
-      toast('Camera denied — check browser permissions','error');
+/* ═══════════════════════════════════════════════════════
+   POPULATE COUNTRIES
+═══════════════════════════════════════════════════════ */
+function initCountryDropdowns() {
+  const countryIds = ['regCountry'];
+  countryIds.forEach(id => {
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    Object.keys(PB_CITIES).forEach(c => {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      sel.appendChild(o);
     });
+  });
 }
 
-function toggleCat(btn){
-  document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('on');});
+function onRegCountryChange() {
+  const country = document.getElementById('regCountry').value;
+  const stateSel = document.getElementById('regState');
+  const citySel = document.getElementById('regCity');
+  stateSel.innerHTML = '<option value="">Select state</option>';
+  citySel.innerHTML = '<option value="">Select city</option>';
+  citySel.disabled = true;
+  if(!country || !PB_CITIES[country]) { stateSel.disabled = true; return; }
+  stateSel.disabled = false;
+  Object.keys(PB_CITIES[country]).forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    stateSel.appendChild(o);
+  });
+}
+
+function onRegStateChange() {
+  const country = document.getElementById('regCountry').value;
+  const state = document.getElementById('regState').value;
+  const citySel = document.getElementById('regCity');
+  citySel.innerHTML = '<option value="">Select city</option>';
+  if(!country || !state || !PB_CITIES[country] || !PB_CITIES[country][state]) {
+    citySel.disabled = true; return;
+  }
+  citySel.disabled = false;
+  PB_CITIES[country][state].forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    citySel.appendChild(o);
+  });
+}
+
+function onPetCategoryChange() {
+  const cat = document.getElementById('petCategory').value;
+  const breedSel = document.getElementById('petBreed');
+  breedSel.innerHTML = '<option value="">Select breed</option>';
+  if(!cat || !PB_BREEDS[cat]) { breedSel.disabled = true; return; }
+  breedSel.disabled = false;
+  PB_BREEDS[cat].forEach(b => {
+    const o = document.createElement('option');
+    o.value = b; o.textContent = b;
+    breedSel.appendChild(o);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   GO LIVE FLOW
+═══════════════════════════════════════════════════════ */
+function startGoLive() {
+  currentStep = 1;
+  renderStep(1);
+  showView('register');
+}
+
+/* ── Role selection ── */
+let selectedRole = '';  // 'pet_owner' | 'vet' | 'trainer' | 'other'
+
+function selectRole(btn) {
+  document.querySelectorAll('.role-chip').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedRole = btn.dataset.role;
+  // Update next button label
+  const isPetOwner = selectedRole === 'pet_owner';
+  document.getElementById('next1Label').textContent = isPetOwner ? 'Next: Pet Details' : 'Next: Live Setup';
+  // Show/dim step 2 node
+  const s2node = document.getElementById('step2-node');
+  if(s2node) s2node.style.opacity = isPetOwner ? '1' : '0.3';
+  validateStep1();
+}
+
+function nextFromStep1() {
+  if(selectedRole === 'pet_owner') {
+    goStep(2);
+  } else {
+    // Skip step 2, go to step 3
+    goStep(3);
+  }
+}
+
+function goStep(n) {
+  currentStep = n;
+  renderStep(n);
+  if(n === 4) renderLiveSummary();
+  const rv = document.getElementById('register-view');
+  if(rv) rv.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderStep(n) {
+  const isPetOwner = selectedRole === 'pet_owner';
+  // Visible steps: if not pet owner, steps are logically 1→3→4 displayed as 1→2→3
+  for(let i=1;i<=4;i++) {
+    const fs = document.getElementById('step'+i);
+    const sc = document.getElementById('sc'+i);
+    const sl = document.getElementById('sl'+i);
+    if(!fs||!sc||!sl) continue;
+    fs.classList.toggle('active', i===n);
+    sc.classList.remove('active','done');
+    sl.classList.remove('active','done');
+    if(i < n) { sc.classList.add('done'); sc.innerHTML='✓'; sl.classList.add('done'); }
+    else if(i === n) { sc.classList.add('active'); sc.textContent = i; sl.classList.add('active'); }
+    else { sc.textContent = i; }
+  }
+  // Step 2 node visibility
+  const s2node = document.getElementById('step2-node');
+  if(s2node) s2node.style.opacity = isPetOwner ? '1' : '0.3';
+  // Progress line
+  const prog = document.getElementById('steps-progress');
+  if(prog) prog.style.width = ((n-1)/3 * 66.66) + '%';
+}
+
+function validateStep1() {
+  const name = (document.getElementById('ownerName').value||'').trim();
+  const addr = (document.getElementById('ownerAddress').value||'').trim();
+  const country = document.getElementById('regCountry').value;
+  const state = document.getElementById('regState').value;
+  const city = document.getElementById('regCity').value;
+  const ok = name && addr && country && state && city && selectedRole;
+  document.getElementById('next1').disabled = !ok;
+}
+
+function validateStep2() {
+  const petN = (document.getElementById('petName').value||'').trim();
+  const cat = document.getElementById('petCategory').value;
+  const breed = document.getElementById('petBreed').value;
+  document.getElementById('next2').disabled = !(petN && cat && breed);
+}
+
+function validateStep3() {
+  const title = (document.getElementById('liveTitle').value||'').trim();
+  document.getElementById('next3').disabled = !title;
+}
+
+/* Camera */
+async function enableCamera() {
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) {
+    toast('Camera not supported in this browser','err'); return;
+  }
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:1280,height:720},audio:true});
+    const v = document.getElementById('cam-video');
+    v.srcObject = cameraStream; v.style.display = 'block';
+    document.getElementById('cam-placeholder').style.display = 'none';
+    document.getElementById('cam-active-badge').classList.add('show');
+    toast('📷 Camera ready! Click Go Live when ready.');
+  } catch(e) {
+    console.warn('[Live] Camera error:', e.message);
+    toast('Camera denied — check browser permissions','err');
+  }
+}
+
+function renderLiveSummary() {
+  const name = document.getElementById('ownerName').value||'—';
+  const addr = document.getElementById('ownerAddress').value||'—';
+  const country = document.getElementById('regCountry').value||'—';
+  const state = document.getElementById('regState').value||'—';
+  const city = document.getElementById('regCity').value||'—';
+  const petN = document.getElementById('petName').value||'—';
+  const petCatSel = document.getElementById('petCategory');
+  const petCat = petCatSel.options[petCatSel.selectedIndex]?.text||'—';
+  const petBreedSel = document.getElementById('petBreed');
+  const petBreed = petBreedSel.options[petBreedSel.selectedIndex]?.text||'—';
+  const petAge = document.getElementById('petAge').value||'—';
+  const title = document.getElementById('liveTitle').value||'—';
+  const el = document.getElementById('live-summary');
+  if(el) el.innerHTML = [
+    `👤 <b>Owner:</b> ${name}`,
+    `📍 <b>Location:</b> ${city}, ${state}, ${country}`,
+    `🐾 <b>Pet:</b> ${petN} (${petCat} · ${petBreed})`,
+    `🎂 <b>Age:</b> ${petAge}`,
+    `📺 <b>Title:</b> ${title}`,
+  ].join('<br>');
+  // Store for session
+  regData.ownerName = name; regData.petName = petN; regData.liveTitle = title;
+  regData.city = city; regData.state = state; regData.country = country;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAUNCH LIVE SESSION  (Agora host)
+═══════════════════════════════════════════════════════ */
+async function launchLiveSession() {
+  const title = document.getElementById('liveTitle').value || 'PawBook Live';
+  const ownerName = document.getElementById('ownerName').value || 'You';
+  const petName = document.getElementById('petName').value || '';
+
+  document.getElementById('ms-meeting-title').textContent =
+    petName ? title + ' — ' + petName : title;
+  document.getElementById('ms-host-label').textContent = ownerName + ' (Host)';
+
+  // Switch to live session UI first
+  showView('live-session');
+
+  // Start timer
+  liveSeconds = 0;
+  clearInterval(liveTimerInterval);
+  liveTimerInterval = setInterval(function() {
+    liveSeconds++;
+    const m = Math.floor(liveSeconds/60).toString().padStart(2,'0');
+    const s = (liveSeconds%60).toString().padStart(2,'0');
+    document.getElementById('ms-duration').textContent = m+':'+s;
+  }, 1000);
+
+  renderParticipantStrip(ownerName);
+  renderParticipantsList(ownerName);
+  setTimeout(function() {
+    addChatMsg('PawBook', 'Welcome to your live stream! 🎉', '#ef4444', false, true);
+  }, 500);
+
+  /* ── Agora: join as host ── */
+  if(!window.AgoraRTC) {
+    toast('Agora SDK not loaded — running in preview mode','err');
+    _fallbackLocalPreview();
+    return;
+  }
+  if(AGORA_APP_ID === 'YOUR_AGORA_APP_ID') {
+    toast('⚠️ Set AGORA_APP_ID in code to go live. Running preview mode.');
+    _fallbackLocalPreview();
+    return;
+  }
+
+  try {
+    agoraChannelName = makeChannelName(title);
+
+    agoraClient = AgoraRTC.createClient({mode:'live', codec:'vp8'});
+    agoraClient.setClientRole('host');
+
+    /* Viewer count — update on user join/leave */
+    agoraClient.on('user-joined', function() { _updateViewerCount(); });
+    agoraClient.on('user-left',   function() { _updateViewerCount(); });
+    agoraClient.on('user-published', async function(user, mediaType) {
+      // Other hosts joining — subscribe and show in participant strip
+      await agoraClient.subscribe(user, mediaType);
+    });
+
+    // Join channel (token = null = testing mode; use token server in production)
+    await agoraClient.join(AGORA_APP_ID, agoraChannelName, null, null);
+
+    // Create tracks
+    [agoraLocalAudioTrack, agoraLocalVideoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks(
+      {encoderConfig: 'music_standard'},
+      {encoderConfig: {width:1280, height:720, frameRate:30, bitrateMax:1500}}
+    );
+
+    // Play local video in the main video element
+    const msVideo = document.getElementById('ms-local-video');
+    const msPlaceholder = document.getElementById('ms-main-placeholder');
+    agoraLocalVideoTrack.play('ms-local-video');
+    if(msVideo) msVideo.style.display = 'block';
+    if(msPlaceholder) msPlaceholder.style.display = 'none';
+    isCamOn = true; isMicOn = true;
+
+    // Publish to channel
+    await agoraClient.publish([agoraLocalAudioTrack, agoraLocalVideoTrack]);
+
+    // Store channel info so viewers can join
+    regData.agoraChannel = agoraChannelName;
+    regData.liveTitle = title;
+
+    _updateViewerCount();
+    toast('🔴 You are now LIVE on Agora!');
+
+  } catch(e) {
+    console.error('[Agora] Host error:', e);
+    toast('Live failed: ' + e.message, 'err');
+    _fallbackLocalPreview();
+  }
+}
+
+function _fallbackLocalPreview() {
+  // No Agora — just show local camera stream
+  const msVideo = document.getElementById('ms-local-video');
+  const msPlaceholder = document.getElementById('ms-main-placeholder');
+  if(cameraStream) {
+    if(msVideo) { msVideo.srcObject = cameraStream; msVideo.style.display = 'block'; }
+    if(msPlaceholder) msPlaceholder.style.display = 'none';
+    isCamOn = true;
+  } else {
+    if(msVideo) msVideo.style.display = 'none';
+    if(msPlaceholder) msPlaceholder.style.display = 'flex';
+    isCamOn = false;
+  }
+  liveViewerCount = 0;
+  document.getElementById('ms-viewer-count').textContent = '0';
+}
+
+function _updateViewerCount() {
+  if(!agoraClient) return;
+  liveViewerCount = agoraClient.remoteUsers.length;
+  document.getElementById('ms-viewer-count').textContent = liveViewerCount;
+  document.getElementById('parts-count').textContent = liveViewerCount + 1; // +1 for host
+}
+
+/* ═══════════════════════════════════════════════════════
+   PARTICIPANTS
+═══════════════════════════════════════════════════════ */
+function renderParticipantStrip(ownerName) {
+  const strip = document.getElementById('ms-participant-strip');
+  if(!strip) return;
+  strip.innerHTML = '';
+  // Host tile
+  const hostTile = document.createElement('div');
+  hostTile.className = 'ms-part-tile';
+  hostTile.style.width = '120px';
+  hostTile.innerHTML = `<div class="ms-part-tile-av-fallback">${(ownerName||'Y')[0].toUpperCase()}</div><div class="ms-part-tile-name">${ownerName} (You)</div>`;
+  strip.appendChild(hostTile);
+  // Viewer tiles
+  FAKE_PARTICIPANTS.forEach(p => {
+    const tile = document.createElement('div');
+    tile.className = 'ms-part-tile';
+    tile.style.width = '120px';
+    tile.innerHTML = `<div class="ms-part-tile-av-fallback" style="background:${p.color}">${p.name[0]}</div><div class="ms-part-tile-name">${p.name}</div>`;
+    strip.appendChild(tile);
+  });
+}
+
+function renderParticipantsList(ownerName) {
+  const list = document.getElementById('parts-list');
+  if(!list) return;
+  list.innerHTML = '';
+  const all = [{name:ownerName+' (You)',role:'Host',color:'#ef4444'}, ...FAKE_PARTICIPANTS];
+  all.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'ms-part-row';
+    row.innerHTML = `<div class="ms-part-av" style="background:${p.color}">${p.name[0]}</div>
+      <div class="ms-part-info"><div class="ms-part-name">${p.name}</div><div class="ms-part-role">${p.role}</div></div>
+      <div class="ms-part-icons"><i class="ti ti-microphone"></i><i class="ti ti-video" style="margin-left:4px"></i></div>`;
+    list.appendChild(row);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   CHAT
+═══════════════════════════════════════════════════════ */
+function addChatMsg(author, text, color, isMe, isSystem) {
+  const feed = document.getElementById('ms-chat-msgs');
+  if(!feed) return;
+  const div = document.createElement('div');
+  div.className = 'ms-chat-msg';
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const avBg = isSystem ? '#ef4444' : (color || '#6366f1');
+  const authorClass = isMe ? 'me-label' : (isSystem ? '' : 'other-label');
+  const displayName = isMe ? 'You' : author;
+  div.innerHTML = `<div class="ms-chat-av" style="background:${avBg}">${(isSystem?'🔴':author[0])}</div>
+    <div class="ms-chat-body">
+      <div class="ms-chat-author ${authorClass}">${displayName}</div>
+      <div class="ms-chat-text">${text}</div>
+      <div class="ms-chat-time">${now}</div>
+    </div>`;
+  feed.appendChild(div);
+  feed.scrollTop = feed.scrollHeight;
+  msgCount++;
+  // Update badge if not on chat tab
+  const badge = document.getElementById('chat-badge');
+  if(badge && document.getElementById('chat-panel') && !document.getElementById('chat-panel').classList.contains('active')) {
+    badge.style.display = 'inline-flex';
+    badge.textContent = msgCount;
+  }
+}
+
+function sendChatMsg() {
+  const inp = document.getElementById('ms-chat-input');
+  const text = (inp.value||'').trim();
+  if(!text) return;
+  inp.value = '';
+  addChatMsg('You', text, '#1a4db3', true, false);
+}
+
+/* ═══════════════════════════════════════════════════════
+   REACTIONS
+═══════════════════════════════════════════════════════ */
+function sendReact(emoji) {
+  floatEmoji(emoji, document.getElementById('live-session-view'));
+}
+
+function floatEmoji(emoji, container) {
+  const el = document.createElement('div');
+  el.className = 'emoji-float';
+  el.textContent = emoji;
+  el.style.left = (20 + Math.random()*60) + '%';
+  el.style.bottom = '90px';
+  (container || document.body).appendChild(el);
+  setTimeout(function() { el.remove(); }, 2600);
+}
+
+/* ═══════════════════════════════════════════════════════
+   CONTROLS
+═══════════════════════════════════════════════════════ */
+async function toggleMic() {
+  isMicOn = !isMicOn;
+  if(agoraLocalAudioTrack) {
+    await agoraLocalAudioTrack.setEnabled(isMicOn);
+  } else if(cameraStream) {
+    cameraStream.getAudioTracks().forEach(t => t.enabled = isMicOn);
+  }
+  const btn = document.getElementById('ctrl-mic');
+  btn.classList.toggle('off', !isMicOn);
+  document.getElementById('mic-icon').className = isMicOn ? 'ti ti-microphone' : 'ti ti-microphone-off';
+  document.getElementById('mic-lbl').textContent = isMicOn ? 'Mute' : 'Unmuted';
+  toast(isMicOn ? '🎙️ Mic on' : '🔇 Mic muted');
+}
+
+async function toggleCam() {
+  isCamOn = !isCamOn;
+  if(agoraLocalVideoTrack) {
+    await agoraLocalVideoTrack.setEnabled(isCamOn);
+  } else if(cameraStream) {
+    cameraStream.getVideoTracks().forEach(t => t.enabled = isCamOn);
+  }
+  const msVideo = document.getElementById('ms-local-video');
+  const msPlaceholder = document.getElementById('ms-main-placeholder');
+  if(msVideo) msVideo.style.display = isCamOn ? 'block' : 'none';
+  if(msPlaceholder) msPlaceholder.style.display = isCamOn ? 'none' : 'flex';
+  document.getElementById('ctrl-cam').classList.toggle('off', !isCamOn);
+  document.getElementById('cam-icon').className = isCamOn ? 'ti ti-video' : 'ti ti-video-off';
+  toast(isCamOn ? '📷 Camera on' : '📷 Camera off');
+}
+
+async function toggleScreen() {
+  if(!isScreenSharing) {
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      toast('Screen share not supported','err'); return;
+    }
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({video:true,audio:false});
+      isScreenSharing = true;
+      const screenLabel = document.getElementById('ms-screen-label');
+      if(screenLabel) screenLabel.style.display = 'block';
+      document.getElementById('ctrl-screen').classList.add('off');
+      document.getElementById('screen-icon').className = 'ti ti-screen-share-off';
+
+      if(agoraClient && agoraLocalVideoTrack) {
+        // Replace Agora video track with screen track
+        agoraScreenTrack = await AgoraRTC.createScreenVideoTrack({encoderConfig:'1080p_1'}, 'disable');
+        await agoraClient.unpublish(agoraLocalVideoTrack);
+        await agoraClient.publish(agoraScreenTrack);
+        agoraScreenTrack.play('ms-local-video');
+      } else {
+        const msVideo = document.getElementById('ms-local-video');
+        if(msVideo) { msVideo.srcObject = screenStream; msVideo.style.display = 'block'; }
+        document.getElementById('ms-main-placeholder').style.display = 'none';
+      }
+      toast('📺 Screen sharing started');
+
+      screenStream.getVideoTracks()[0].onended = () => _stopScreen();
+    } catch(e) { toast('Screen share cancelled','err'); }
+  } else {
+    _stopScreen();
+  }
+}
+
+async function _stopScreen() {
+  isScreenSharing = false;
+  const screenLabel = document.getElementById('ms-screen-label');
+  if(screenLabel) screenLabel.style.display = 'none';
+  document.getElementById('ctrl-screen').classList.remove('off');
+  document.getElementById('screen-icon').className = 'ti ti-screen-share';
+  if(agoraClient && agoraScreenTrack) {
+    await agoraClient.unpublish(agoraScreenTrack);
+    agoraScreenTrack.stop(); agoraScreenTrack.close(); agoraScreenTrack = null;
+    if(agoraLocalVideoTrack && isCamOn) {
+      await agoraClient.publish(agoraLocalVideoTrack);
+      agoraLocalVideoTrack.play('ms-local-video');
+    }
+  } else {
+    const msVideo = document.getElementById('ms-local-video');
+    if(cameraStream && msVideo) msVideo.srcObject = cameraStream;
+  }
+  toast('📺 Screen sharing stopped');
+}
+
+function toggleHand() {
+  isHandRaised = !isHandRaised;
+  document.getElementById('ctrl-hand').classList.toggle('off', isHandRaised);
+  document.getElementById('hand-icon').className = isHandRaised ? 'ti ti-hand-finger' : 'ti ti-hand-stop';
+  document.getElementById('hand-lbl').textContent = isHandRaised ? 'Lower' : 'Hand';
+  toast(isHandRaised ? '✋ Hand raised' : '✋ Hand lowered');
+}
+
+function toggleRecord() {
+  isRecording = !isRecording;
+  document.getElementById('ctrl-record').classList.toggle('off', isRecording);
+  document.getElementById('record-icon').className = isRecording ? 'ti ti-player-stop' : 'ti ti-circle-dot';
+  document.getElementById('record-lbl').textContent = isRecording ? 'Stop' : 'Record';
+  toast(isRecording ? '⏺️ Recording started' : '⏹️ Recording stopped');
+}
+
+function confirmEndLive() {
+  if(confirm('End your live session? All viewers will be disconnected.')) {
+    endLiveSession();
+  }
+}
+
+async function endLiveSession() {
+  clearInterval(liveTimerInterval);
+  clearInterval(commentSimInterval);
+
+  // Stop Agora
+  if(agoraLocalAudioTrack) { agoraLocalAudioTrack.stop(); agoraLocalAudioTrack.close(); agoraLocalAudioTrack = null; }
+  if(agoraLocalVideoTrack) { agoraLocalVideoTrack.stop(); agoraLocalVideoTrack.close(); agoraLocalVideoTrack = null; }
+  if(agoraScreenTrack)     { agoraScreenTrack.stop(); agoraScreenTrack.close(); agoraScreenTrack = null; }
+  if(agoraClient)          { await agoraClient.leave(); agoraClient = null; }
+
+  // Stop local preview stream
+  if(cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+
+  const msVideo = document.getElementById('ms-local-video');
+  if(msVideo) { msVideo.srcObject = null; msVideo.style.display = 'none'; }
+  document.getElementById('ms-chat-msgs').innerHTML = '';
+  showView('browse');
+  toast('✅ Live session ended. Great broadcast!');
+}
+
+/* ═══════════════════════════════════════════════════════
+   PANEL TABS
+═══════════════════════════════════════════════════════ */
+function switchPanelTab(tab) {
+  document.getElementById('chat-panel').classList.toggle('active', tab==='chat');
+  document.getElementById('parts-panel').classList.toggle('active', tab==='parts');
+  document.getElementById('tab-chat').classList.toggle('active', tab==='chat');
+  document.getElementById('tab-parts').classList.toggle('active', tab==='parts');
+  if(tab==='chat') {
+    msgCount = 0;
+    const badge = document.getElementById('chat-badge');
+    if(badge) badge.style.display = 'none';
+  }
+}
+
+function toggleMobilePanel() {
+  const panel = document.getElementById('ms-right-panel');
+  livePanelOpen = !livePanelOpen;
+  panel.classList.toggle('mobile-open', livePanelOpen);
+}
+
+/* ═══════════════════════════════════════════════════════
+   STREAM VIEWER (watch others' streams)
+═══════════════════════════════════════════════════════ */
+async function leaveStreamViewer() {
+  clearInterval(svTimerInterval);
+  if(agoraViewerClient) { await agoraViewerClient.leave(); agoraViewerClient = null; }
+  const svVideo = document.getElementById('sv-live-video');
+  if(svVideo) { svVideo.srcObject = null; svVideo.style.display = 'none'; }
+  showView('browse');
+}
+
+async function openStreamViewer(idx) {
+  const s = STREAMS[idx];
+  const svWrap = document.querySelector('#stream-viewer-view .sv-video-wrap');
+  if(svWrap) svWrap.style.background = s.bg;
+  const bgEmoji = document.getElementById('sv-bg-emoji');
+  if(bgEmoji) bgEmoji.textContent = s.emoji;
+  const avEmoji = document.getElementById('sv-av-emoji');
+  if(avEmoji) avEmoji.textContent = s.avEmoji;
+  document.getElementById('sv-name').textContent = s.name;
+  document.getElementById('sv-sub').textContent = s.sub;
+  document.getElementById('sv-viewers').textContent = fmtNum(s.viewers);
+  document.getElementById('sv-hearts').textContent = fmtNum(Math.floor(s.viewers*1.6));
+  svSeconds = 0;
+  document.getElementById('sv-dur').textContent = '00:00';
+  document.getElementById('sv-comment-feed').innerHTML = '';
+  clearInterval(svTimerInterval);
+  svTimerInterval = setInterval(function(){
+    svSeconds++;
+    const m=Math.floor(svSeconds/60).toString().padStart(2,'0');
+    const sc=(svSeconds%60).toString().padStart(2,'0');
+    document.getElementById('sv-dur').textContent=m+':'+sc;
+  },1000);
+  // Auto comments (always show — real chat overlay even with Agora)
+  setTimeout(function(){
+    const c=FAKE_COMMENTS[Math.floor(Math.random()*FAKE_COMMENTS.length)];
+    svAddComment(c[0],c[1],c[2]);
+  },1800);
+
+  /* ── Agora: join channel as audience if stream has a real channel ── */
+  if(window.AgoraRTC && AGORA_APP_ID !== 'YOUR_AGORA_APP_ID' && s.agoraChannel) {
+    try {
+      if(agoraViewerClient) { await agoraViewerClient.leave(); agoraViewerClient = null; }
+      agoraViewerClient = AgoraRTC.createClient({mode:'live', codec:'vp8'});
+      agoraViewerClient.setClientRole('audience');
+
+      agoraViewerClient.on('user-published', async function(user, mediaType) {
+        await agoraViewerClient.subscribe(user, mediaType);
+        if(mediaType === 'video') {
+          const svVideo = document.getElementById('sv-live-video');
+          if(svVideo) { svVideo.style.display = 'block'; }
+          user.videoTrack.play('sv-live-video');
+          // Hide gradient background when real video plays
+          const svWrapEl = document.querySelector('#stream-viewer-view .sv-video-wrap');
+          if(svWrapEl) svWrapEl.style.background = 'none';
+        }
+        if(mediaType === 'audio') user.audioTrack.play();
+      });
+
+      agoraViewerClient.on('user-unpublished', function(user, mediaType) {
+        if(mediaType === 'video') {
+          const svVideo = document.getElementById('sv-live-video');
+          if(svVideo) svVideo.style.display = 'none';
+        }
+      });
+
+      await agoraViewerClient.join(AGORA_APP_ID, s.agoraChannel, null, null);
+    } catch(e) {
+      console.warn('[Agora] Viewer join failed:', e.message);
+    }
+  }
+
+  showView('stream-viewer');
+}
+
+function svAddComment(author, text, color) {
+  const feed = document.getElementById('sv-comment-feed');
+  if(!feed) return;
+  const div = document.createElement('div');
+  div.className = 'sv-comment-item';
+  div.innerHTML = `<div class="sv-comment-av" style="background:${color||'#6366f1'}">${author[0]}</div>
+    <div class="sv-comment-bubble"><div class="sv-comment-author">${author}</div>${text}</div>`;
+  feed.appendChild(div);
+  while(feed.children.length>5) feed.removeChild(feed.firstChild);
+}
+
+function svSendComment() {
+  const inp = document.getElementById('sv-comment-input');
+  const text = (inp.value||'').trim();
+  if(!text) return;
+  inp.value='';
+  svAddComment('You', text, '#1a4db3');
+}
+
+function svReact(el, emoji) {
+  el.style.transform = 'scale(1.5)';
+  setTimeout(function(){ el.style.transform='scale(1)'; }, 300);
+  const burst = document.createElement('div');
+  burst.className = 'emoji-float';
+  burst.textContent = emoji;
+  burst.style.left = (20+Math.random()*60)+'%';
+  burst.style.bottom = '110px';
+  document.getElementById('stream-viewer-view').appendChild(burst);
+  setTimeout(function(){ burst.remove(); }, 2600);
+}
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+function fmtNum(n) { return n>=1000?(n/1000).toFixed(1)+'K':String(n); }
+
+function toggleRemind(btn) {
+  const on = btn.textContent === '✓ Set';
+  btn.textContent = on ? 'Remind' : '✓ Set';
+  toast(on ? 'Reminder removed' : '🔔 Reminder set!');
+}
+
+function toggleLcat(btn) {
+  document.querySelectorAll('.lcat').forEach(c => c.classList.remove('on'));
   btn.classList.add('on');
 }
 
-/* ── START LIVE (Agora WebRTC broadcaster) ────────────────────────────────── */
-async function startLive(){
-  var title=(document.getElementById('live-title').value||'').trim();
-  if(!title){toast('Add a title for your stream!','error');return;}
+function togglePriv(btn) {
+  document.querySelectorAll('.priv-chip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+}
 
-  var startBtn=document.querySelector('.start-live-btn');
-  startBtn.disabled=true;startBtn.textContent='Starting…';
+function toast(msg, type) {
+  const existing = document.querySelectorAll('.pb-toast');
+  existing.forEach(e => e.remove());
+  const t = document.createElement('div');
+  t.className = 'pb-toast' + (type==='err'?' err':'');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.remove(); }, 300); }, 2500);
+}
 
-  try{
-    // 1. Create stream on backend → get stream_id + Agora token
-    var res=await fetch(API_BASE+'/live',{
-      method:'POST',
-      headers:authHeaders(),
-      body:JSON.stringify({title:title,category:document.querySelector('.cat-chip.on')?.textContent||''})
-    });
-    var data=await res.json();
-    var streamId=data.data?.stream_id||data.stream_id||('local_'+Date.now());
-    var agoraToken=data.data?.agora_token||data.agora_token||null;
-    var agoraAppId=data.data?.agora_app_id||data.agora_app_id||null;
-    var channel=AGORA_CHAN_PREFIX+streamId;
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function() {
+  initCountryDropdowns();
+  validateStep3(); // sets initial disabled state for next3
 
-    activeStreamId=streamId;
-    localStorage.setItem('pb_active_stream_id',streamId);
+  // Service worker
+  if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').catch(function(){});
+  }
 
-    // 2. If Agora creds available, publish via WebRTC
-    if(agoraAppId&&typeof AgoraRTC!=='undefined'){
-      AgoraRTC.setLogLevel(3); // warn only
-      agoraClient=AgoraRTC.createClient({mode:'live',codec:'h264'});
-      await agoraClient.setClientRole('host');
-      await agoraClient.join(agoraAppId,channel,agoraToken||null,null);
-      var [microTrack,cameraTrack]=await AgoraRTC.createMicrophoneAndCameraTracks(
-        {encoderConfig:'speech_standard'},
-        {encoderConfig:'480p_2',facingMode:'user'}
-      );
-      localTracks=[microTrack,cameraTrack];
-      // Show local camera in preview area of stream view
-      cameraTrack.play('agora-local-video');
-      await agoraClient.publish(localTracks);
-      // Hide the static bg, show live video
-      document.getElementById('stream-bg').style.display='none';
-      toast('🔴 You are now LIVE with Agora WebRTC!');
-    } else {
-      // Fallback: use local camera preview via HTML5 (no WebRTC relay)
-      if(cameraStream){
-        var vEl=document.getElementById('camera-feed');
-        // Clone video into stream view
-        var sv=document.createElement('video');
-        sv.id='agora-local-video';sv.autoplay=true;sv.muted=true;sv.playsInline=true;
-        sv.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1';
-        sv.srcObject=cameraStream;
-        document.querySelector('.stream-video-area').appendChild(sv);
-        document.getElementById('stream-bg').style.display='none';
-      }
-      toast('🔴 You are now LIVE!');
+  // User avatar from localStorage
+  try {
+    const u = JSON.parse(localStorage.getItem('pb_user')||'null');
+    if(u && u.full_name) {
+      const av = document.getElementById('nav-av');
+      if(av) av.textContent = u.full_name[0].toUpperCase();
+      const on = document.getElementById('ownerName');
+      if(on && !on.value) on.value = u.full_name;
+      validateStep1();
     }
-
-    closeGoLive();
-    // Show stream view with user's own info
-    var user=typeof Auth!=='undefined'?Auth.getUser():null;
-    _showStream(streamId,user?user.full_name||user.name||'Your Live':'Your Live',title,
-      user&&user.avatar_url?user.avatar_url:'',
-      '',1);
-    addComment('PawBook','Welcome to your live stream! 🎉','#ef4444');
-    bindSocket(streamId);
-
-  }catch(e){
-    console.error('[Live] startLive error:',e);
-    toast('Could not start stream — check connection','error');
-  }
-  startBtn.disabled=false;startBtn.innerHTML='<div class="live-dot" style="width:10px;height:10px"></div>Start Live Stream';
-}
-
-/* ── TOAST ────────────────────────────────────────────────────────────────── */
-function toast(msg,type){
-  var t=document.createElement('div');
-  t.style.cssText='position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:'
-    +(type==='error'?'#dc2626':'#1a4db3')+';color:#fff;padding:10px 20px;border-radius:24px;'
-    +'font-size:13px;font-weight:700;z-index:9999;font-family:\'Poppins\',sans-serif;white-space:nowrap;pointer-events:none';
-  t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},2500);
-}
-
-/* ── Agora local video container (hidden until go-live) ───────────────────── */
-document.addEventListener('DOMContentLoaded',function(){
-  var area=document.querySelector('.stream-video-area');
-  if(area){
-    var lv=document.createElement('div');
-    lv.id='agora-local-video';
-    lv.style.cssText='position:absolute;inset:0;width:100%;height:100%;display:none;z-index:2';
-    area.appendChild(lv);
-  }
+  } catch(e){}
 });
 </script>
 
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottomnav">
-  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
-  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
-  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
-  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
-</nav>
-<!-- DRAWER OVERLAY -->
-<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<!-- ═══ DESIGN OVERRIDE (mobile.css compat) ═══ -->
+<style>
+@media(max-width:768px){
+  body{padding-bottom:0!important}
+  .pb-bnav{display:flex}
+}
+@media(min-width:769px){
+  .pb-bnav{display:none}
+}
 
-<!-- DRAWER PANEL -->
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
+</style>
+<link rel="stylesheet" href="mobile.css">
+
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer-panel" class="drawer-panel">
   <div class="drawer-header" style="position:relative">
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
-    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
     <div>
-      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
-      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
       <div class="drawer-stats">
-        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
       </div>
     </div>
   </div>
   <div class="drawer-body">
-    <div class="drawer-section">Main</div>
-    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Home Feed</button>
+
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+
+    <div class="drawer-section">My Pet</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
+
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
+
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
-    <div class="drawer-section">Community</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
     <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved & Activity</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
-    <div class="drawer-section">Pet Services</div>
-    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
-    <div class="drawer-footer">
-      <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
-      <button class="drawer-item" style="color:#dc2626" onclick="if(confirm('Log out?')){window.location.href='01_login.html';}"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
-    </div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('09_marketplace.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
   </div>
 </div>
 
-<script>
-function openDrawer() {
-  document.getElementById('drawer-panel').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  document.getElementById('drawer-panel').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-</script>
-<script>
-(function(){
-  function showBurgerOnMobile(){
-    var btns = document.querySelectorAll('.burger-btn');
-    var isMobile = window.innerWidth <= 768;
-    btns.forEach(function(b){
-      b.style.display = isMobile ? 'flex' : 'none';
-    });
-    // Also hide topnav-tabs on mobile
-    var tabs = document.querySelector('.topnav-tabs');
-    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
-    // Show bottom nav on mobile
-    var bnav = document.querySelector('.bottomnav');
-    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
-  }
-  showBurgerOnMobile();
-  window.addEventListener('resize', showBurgerOnMobile);
-})();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
-      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
-  });
-}
-
-// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
-(function initDrawerUser(){
-  var u = null;
-  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
-  if(!u) {
-    // fetch from API if not cached
-    var tok = localStorage.getItem("pb_token");
-    if(tok) {
-      fetch("https://pawbook-api-cquc.onrender.com/api/v1/auth/me", {
-        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
-      }).then(function(r){ return r.json(); }).then(function(res){
-        var ud = res.data || res;
-        if(ud && ud.username) {
-          localStorage.setItem("pb_user", JSON.stringify(ud));
-          populateDrawer(ud);
-        }
-      }).catch(function(){});
-    }
-    return;
-  }
-  populateDrawer(u);
-  function populateDrawer(ud){
-    var dn = document.getElementById("drawer-name");
-    var dh = document.getElementById("drawer-handle");
-    var da = document.getElementById("drawer-av");
-    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
-    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
-    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
-  }
-})();
-</script>
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script src="pawbook-ai-widget.v4.js?v=5"></script>
 </body>
 </html>
