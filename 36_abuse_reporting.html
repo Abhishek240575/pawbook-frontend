@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PawBook">
+<link rel="manifest" href="manifest.json">
+<title>PawBook — Report Animal Abuse</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size:14px}
+
+/* ── TOPNAV ── */
+.topnav{position:sticky;top:0;z-index:200;height:56px;background:#1a56db;display:flex;align-items:center;padding:0 16px;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.topnav-logo{display:flex;align-items:center;gap:8px;color:#fff;font-size:20px;font-weight:800;text-decoration:none;flex-shrink:0}
+.logo-icon{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px}
+.topnav-search{flex:1;max-width:280px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);border-radius:20px;padding:6px 14px}
+.topnav-search input{background:transparent;border:none;outline:none;color:#fff;font-size:13px;font-family:'Poppins',sans-serif;width:100%}
+.topnav-search input::placeholder{color:rgba(255,255,255,0.65)}
+.topnav-search i{color:rgba(255,255,255,0.65);font-size:16px}
+.topnav-tabs{flex:1;display:flex;justify-content:center;gap:2px}
+.topnav-tab{width:100px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);cursor:pointer;font-size:22px;border:none;background:transparent}
+.topnav-tab:hover{background:rgba(255,255,255,0.1);color:#fff}
+.topnav-tab.active{color:#fff;border-bottom:3px solid #fff}
+.topnav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-icon-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:18px}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:#fff;color:#1a56db;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#7f1d1d 0%,#991b1b 50%,#b91c1c 100%);padding:28px 0;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1400&q=80') center/cover;opacity:0.1}
+.hero-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:16px;padding:0 20px}
+.hero-badge{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#dc2626,#7f1d1d);border:4px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 4px 16px rgba(0,0,0,0.3);flex-shrink:0}
+.hero-text-title{font-size:28px;font-weight:900;color:#fff;text-align:left;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.hero-text-sub{font-size:14px;color:rgba(255,255,255,0.88);text-align:left;margin-top:4px}
+
+/* ── TOP ACTION STRIP ── */
+.action-strip{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.act-card{padding:16px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:filter 0.15s;border-right:1px solid rgba(255,255,255,0.2)}
+.act-card:last-child{border-right:none}
+.act-card:hover{filter:brightness(0.92)}
+.act-icon{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.act-title{font-size:13px;font-weight:800;color:#fff;line-height:1.2}
+.act-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:2px}
+.act-red   {background:linear-gradient(135deg,#dc2626,#991b1b)}
+.act-orange{background:linear-gradient(135deg,#b45309,#92400e)}
+.act-blue  {background:linear-gradient(135deg,#1a56db,#0f2057)}
+.act-teal  {background:linear-gradient(135deg,#0e7490,#0369a1)}
+
+/* ── LAYOUT ── */
+.page-wrap{max-width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 300px;gap:16px;padding:16px;align-items:start}
+.main-col{}
+.side-col{position:sticky;top:72px}
+
+/* ── CARD BASE ── */
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;overflow:hidden;margin-bottom:14px}
+.card-head{padding:14px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #e4e6eb}
+.card-head-title{font-size:16px;font-weight:800;color:#0f2057}
+.card-body{padding:16px}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:0;background:#fff;border-bottom:2px solid #e4e6eb}
+.tab-btn{flex:1;padding:14px 8px;text-align:center;font-size:13px;font-weight:700;color:#65676b;cursor:pointer;border:none;background:transparent;font-family:'Poppins',sans-serif;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.15s}
+.tab-btn.active{color:#dc2626;border-bottom-color:#dc2626}
+.tab-btn i{display:block;font-size:20px;margin-bottom:4px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── FORM ── */
+.form-section{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;margin-bottom:14px}
+.form-section-title{font-size:15px;font-weight:800;color:#0f2057;margin-bottom:16px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid #e4e6eb}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field-label{font-size:13px;font-weight:700;color:#333;display:block;margin-bottom:6px}
+.field-input{width:100%;height:46px;border:1.5px solid #dde1e7;border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;color:#1a1a2e}
+.field-input:focus{border-color:#dc2626;background:#fff}
+.field-select{width:100%;height:46px;border:1.5px solid #dde1e7;border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;cursor:pointer;color:#1a1a2e}
+.field-select:focus{border-color:#dc2626}
+.field-textarea{width:100%;border:1.5px solid #dde1e7;border-radius:8px;padding:12px 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;resize:vertical;min-height:90px;color:#1a1a2e}
+.field-textarea:focus{border-color:#dc2626;background:#fff}
+.field-hint{font-size:11px;color:#65676b;margin-top:4px}
+
+/* Category pills */
+.category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.cat-pill{padding:10px 8px;border-radius:10px;border:2px solid #e4e6eb;background:#f8f9fa;text-align:center;cursor:pointer;transition:all 0.15s;font-size:12px;font-weight:700;color:#333}
+.cat-pill:hover{border-color:#dc2626;background:#fef2f2}
+.cat-pill.selected{border-color:#dc2626;background:#fef2f2;color:#dc2626}
+.cat-pill i{display:block;font-size:20px;margin-bottom:4px}
+
+/* Emergency toggle */
+.emergency-toggle{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fef2f2;border-radius:12px;border:2px solid #fecaca;cursor:pointer;margin-bottom:14px}
+.emergency-toggle.active{background:#fee2e2;border-color:#dc2626}
+.toggle-icon{width:48px;height:48px;border-radius:50%;background:#dc2626;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.toggle-info{flex:1}
+.toggle-title{font-size:14px;font-weight:800;color:#991b1b}
+.toggle-sub{font-size:12px;color:#b91c1c;margin-top:2px}
+.toggle-switch{width:48px;height:26px;border-radius:13px;background:#e4e6eb;position:relative;transition:background 0.2s;flex-shrink:0}
+.toggle-switch.on{background:#dc2626}
+.toggle-knob{width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+.toggle-switch.on .toggle-knob{left:24px}
+
+/* Privacy options */
+.privacy-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.priv-opt{padding:12px 10px;border-radius:10px;border:2px solid #e4e6eb;background:#f8f9fa;text-align:center;cursor:pointer;transition:all 0.15s}
+.priv-opt:hover{border-color:#1a56db;background:#eff6ff}
+.priv-opt.selected{border-color:#1a56db;background:#eff6ff}
+.priv-opt i{font-size:22px;color:#65676b;display:block;margin-bottom:6px}
+.priv-opt.selected i{color:#1a56db}
+.priv-opt-title{font-size:12px;font-weight:800;color:#333}
+.priv-opt-sub{font-size:11px;color:#65676b;margin-top:2px}
+
+/* Upload box */
+.upload-box{border:2px dashed #dde1e7;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.15s;background:#fafafa}
+.upload-box:hover{border-color:#dc2626;background:#fef2f2}
+.upload-box i{font-size:36px;color:#dc2626;display:block;margin-bottom:8px}
+.upload-box-title{font-size:14px;font-weight:700;color:#333}
+.upload-box-sub{font-size:12px;color:#65676b;margin-top:4px}
+#evidence-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ev-thumb{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;border:1px solid #dde1e7}
+.ev-thumb img{width:100%;height:100%;object-fit:cover}
+.ev-thumb-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* Map */
+#abuse-map{width:100%;height:260px;border-radius:12px;border:1.5px solid #dde1e7;margin-top:14px;z-index:1}
+.loc-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.coord-badge{display:inline-flex;align-items:center;gap:5px;background:#f0f4ff;border:1px solid #c7d7fc;border-radius:8px;padding:6px 12px;font-size:12px;color:#1a56db;font-weight:600;margin-top:8px}
+.suggest-wrap{position:relative}
+.suggest-box{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #dc2626;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:500;max-height:180px;overflow-y:auto;display:none}
+.suggest-box div{padding:10px 14px;font-size:13px;cursor:pointer;font-family:'Poppins',sans-serif}
+.suggest-box div:hover{background:#fef2f2;color:#dc2626;font-weight:700}
+
+/* Witness row */
+.witness-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px;background:#f8f9fa;border-radius:10px;border:1px solid #e4e6eb;margin-bottom:10px;position:relative}
+.witness-del{position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:#fee2e2;color:#dc2626;border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.add-witness-btn{width:100%;padding:10px;border-radius:8px;border:2px dashed #dde1e7;background:#f8f9fa;color:#65676b;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.15s}
+.add-witness-btn:hover{border-color:#1a56db;color:#1a56db;background:#eff6ff}
+
+/* Consent checkboxes */
+.consent-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #e4e6eb}
+.consent-row:last-child{border-bottom:none}
+.consent-cb{width:20px;height:20px;border-radius:4px;border:2px solid #dde1e7;flex-shrink:0;cursor:pointer;margin-top:1px;accent-color:#dc2626}
+.consent-text{font-size:13px;color:#333;line-height:1.5}
+.consent-text strong{color:#1a1a2e}
+
+/* Submit bar */
+.submit-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid #e4e6eb;padding:14px 16px;display:flex;gap:12px;z-index:100}
+.submit-btn{flex:1;padding:16px;font-size:16px;font-weight:800;background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'Poppins',sans-serif;box-shadow:0 4px 12px rgba(220,38,38,0.35);transition:opacity 0.15s}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed}
+.draft-btn{padding:16px 20px;border-radius:12px;border:2px solid #dde1e7;background:#fff;color:#65676b;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+
+/* ── MY REPORTS TAB ── */
+.report-item{display:flex;gap:14px;padding:16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
+.report-item:hover{background:#fef2f2}
+.report-item:last-child{border-bottom:none}
+.report-ref{font-size:12px;font-weight:800;color:#1a56db;font-family:monospace}
+.report-cat{font-size:14px;font-weight:800;color:#1a1a2e;margin:4px 0}
+.report-loc{font-size:12px;color:#65676b}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800}
+.status-submitted{background:#fef9c3;color:#854d0e}
+.status-under_review{background:#dbeafe;color:#1e40af}
+.status-verified_for_referral{background:#ede9fe;color:#6d28d9}
+.status-referred{background:#fce7f3;color:#9d174d}
+.status-action_in_progress{background:#d1fae5;color:#065f46}
+.status-resolved{background:#dcfce7;color:#15803d}
+.status-closed{background:#f3f4f6;color:#374151}
+.report-date{font-size:11px;color:#65676b;margin-top:6px}
+
+/* ── ORGANIZATIONS TAB ── */
+.org-item{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid #e4e6eb;align-items:flex-start}
+.org-item:last-child{border-bottom:none}
+.org-logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#1a56db,#0f2057);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;color:#fff}
+.org-name{font-size:14px;font-weight:800;color:#0f2057}
+.org-type-badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#eff6ff;color:#1a56db;margin:4px 0}
+.org-meta{font-size:12px;color:#65676b}
+.org-call-btn{padding:7px 16px;border-radius:8px;background:#1a56db;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:'Poppins',sans-serif;margin-left:auto;flex-shrink:0;align-self:center}
+
+/* ── SIDEBAR ── */
+.tip-card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;padding:16px;margin-bottom:14px}
+.tip-title{font-size:15px;font-weight:800;color:#0f2057;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.tip-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #e4e6eb}
+.tip-item:last-child{border-bottom:none}
+.tip-num{width:24px;height:24px;border-radius:50%;background:#fef2f2;color:#dc2626;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tip-text{font-size:12px;color:#333;line-height:1.5}
+
+.helpline-card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;overflow:hidden;margin-bottom:14px}
+.helpline-head{background:linear-gradient(135deg,#dc2626,#991b1b);padding:14px 16px;display:flex;align-items:center;gap:8px}
+.helpline-head-title{font-size:15px;font-weight:800;color:#fff}
+.helpline-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
+.helpline-item:hover{background:#fef2f2}
+.helpline-item:last-child{border-bottom:none}
+.hl-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hl-name{font-size:13px;font-weight:800;color:#0f2057}
+.hl-num{font-size:12px;color:#dc2626;font-weight:700;margin-top:2px}
+.hl-call{margin-left:auto;padding:5px 12px;border-radius:6px;background:#fef2f2;color:#dc2626;font-size:12px;font-weight:700;border:1.5px solid #fecaca}
+
+/* ── SUCCESS MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:#fff;border-radius:20px;padding:32px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.modal-icon{font-size:56px;margin-bottom:16px}
+.modal-title{font-size:22px;font-weight:900;color:#0f2057;margin-bottom:8px}
+.modal-sub{font-size:14px;color:#65676b;margin-bottom:20px;line-height:1.6}
+.modal-ref{background:#fef2f2;border:2px solid #fecaca;border-radius:10px;padding:12px 20px;font-size:16px;font-weight:900;color:#dc2626;font-family:monospace;margin-bottom:20px;letter-spacing:1px}
+.modal-actions{display:flex;gap:10px}
+.modal-btn-primary{flex:1;padding:14px;border-radius:10px;background:linear-gradient(135deg,#1a56db,#0f2057);color:#fff;font-size:14px;font-weight:800;border:none;cursor:pointer;font-family:'Poppins',sans-serif}
+.modal-btn-secondary{flex:1;padding:14px;border-radius:10px;border:2px solid #dde1e7;background:#fff;color:#65676b;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;color:#fff;z-index:10000;white-space:nowrap;font-family:'Poppins',sans-serif;max-width:90vw;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.3s}
+.toast.show{opacity:1}
+.toast.success{background:#16a34a}
+.toast.error{background:#dc2626}
+.toast.info{background:#1a56db}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 20px}
+.empty-state i{font-size:52px;color:#e4e6eb;display:block;margin-bottom:12px}
+.empty-state-title{font-size:16px;font-weight:800;color:#333;margin-bottom:6px}
+.empty-state-sub{font-size:13px;color:#65676b}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.page-wrap{grid-template-columns:1fr}.side-col{position:static}}
+@media(max-width:600px){
+  .hero-text-title{font-size:22px}
+  .action-strip{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+  .category-grid{grid-template-columns:repeat(2,1fr)}
+  .privacy-opts{grid-template-columns:1fr}
+  .loc-row{grid-template-columns:1fr}
+  .tab-btn{font-size:11px;padding:12px 4px}
+  .tab-btn i{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOPNAV ── -->
+<nav class="topnav">
+  <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
+  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search…"></div>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
+    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
+    <button class="topnav-tab" onclick="goTo('05_lost_pet.html')"><i class="ti ti-map-pin"></i></button>
+    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
+    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
+  </div>
+  <div class="topnav-right">
+    <div class="nav-avatar" onclick="goTo('29_user_profile.html')" id="nav-avatar">A</div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🛡️</div>
+    <div>
+      <div class="hero-text-title">Animal Welfare & Abuse Reporting</div>
+      <div class="hero-text-sub">Report animal cruelty — every voice counts. Reports are handled with strict confidentiality.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ACTION STRIP ── -->
+<div class="action-strip">
+  <div class="act-card act-red" onclick="switchTab('report')">
+    <div class="act-icon"><i class="ti ti-alert-triangle" style="color:#fff"></i></div>
+    <div><div class="act-title">Report Abuse</div><div class="act-sub">File a new report</div></div>
+  </div>
+  <div class="act-card act-orange" onclick="switchTab('my')">
+    <div class="act-icon"><i class="ti ti-clipboard-list" style="color:#fff"></i></div>
+    <div><div class="act-title">My Reports</div><div class="act-sub">Track your cases</div></div>
+  </div>
+  <div class="act-card act-blue" onclick="switchTab('orgs')">
+    <div class="act-icon"><i class="ti ti-building-community" style="color:#fff"></i></div>
+    <div><div class="act-title">Organizations</div><div class="act-sub">Welfare NGOs</div></div>
+  </div>
+  <div class="act-card act-teal" onclick="document.getElementById('helpline-card').scrollIntoView({behavior:'smooth'})">
+    <div class="act-icon"><i class="ti ti-phone-call" style="color:#fff"></i></div>
+    <div><div class="act-title">Helplines</div><div class="act-sub">Emergency contacts</div></div>
+  </div>
+</div>
+
+<!-- ── MAIN LAYOUT ── -->
+<div class="page-wrap">
+  <div class="main-col">
+
+    <!-- TAB BAR -->
+    <div class="card" style="overflow:visible">
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-report" onclick="switchTab('report')">
+          <i class="ti ti-alert-triangle"></i>File Report
+        </button>
+        <button class="tab-btn" id="tab-my" onclick="switchTab('my')">
+          <i class="ti ti-clipboard-list"></i>My Reports
+        </button>
+        <button class="tab-btn" id="tab-orgs" onclick="switchTab('orgs')">
+          <i class="ti ti-building-community"></i>Organizations
+        </button>
+      </div>
+
+      <!-- ══ TAB: FILE REPORT ══ -->
+      <div class="tab-panel active" id="panel-report">
+
+        <!-- Emergency Toggle -->
+        <div style="padding:16px 16px 0">
+          <div class="emergency-toggle" id="emergency-toggle" onclick="toggleEmergency()">
+            <div class="toggle-icon">🚨</div>
+            <div class="toggle-info">
+              <div class="toggle-title">This is an Emergency</div>
+              <div class="toggle-sub">Animal in immediate danger — will alert authorities faster</div>
+            </div>
+            <div class="toggle-switch" id="toggle-sw"><div class="toggle-knob"></div></div>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="form-section" style="margin:16px 16px 0">
+          <div class="form-section-title"><i class="ti ti-tag"></i> Type of Abuse *</div>
+          <div class="category-grid" id="cat-grid">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- Animal Details -->
+        <div class="form-section" style="margin:14px 16px 0">
+          <div class="form-section-title"><i class="ti ti-paw"></i> Animal Details</div>
+          <div class="form-grid">
+            <div>
+              <label class="field-label">Species</label>
+              <select id="f-species" class="field-select">
+                <option value="">Select species</option>
+                <option>Dog</option><option>Cat</option><option>Cow</option>
+                <option>Horse</option><option>Bird</option><option>Monkey</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Breed / Type</label>
+              <input id="f-breed" class="field-input" placeholder="e.g. Labrador, Street dog">
+            </div>
+            <div>
+              <label class="field-label">Number of Animals</label>
+              <input id="f-count" class="field-input" type="number" min="1" value="1">
+            </div>
+            <div>
+              <label class="field-label">Incident Date</label>
+              <input id="f-date" class="field-input" type="date">
+            </div>
+          </div>
+          <div style="margin-top:14px">
+            <label class="field-label">What happened? *</label>
+            <textarea id="f-desc" class="field-textarea" placeholder="Describe the abuse or neglect in as much detail as possible. Include appearance of the animal, what you witnessed, and any other relevant information."></textarea>
+          </div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+            <input type="checkbox" id="f-ongoing" style="width:18px;height:18px;accent-color:#dc2626;cursor:pointer">
+            <label for="f-ongoing" style="font-size:13px;font-weight:700;color:#333;cursor:pointer">This situation is still ongoing</label>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-section" style="margin:14px 16px 0">
+          <div class="form-section-title"><i class="ti ti-map-pin"></i> Location of Incident *</div>
+          <div class="suggest-wrap">
+            <input id="f-address" class="field-input" placeholder="Search address or locality…" oninput="onAddressInput()" autocomplete="off">
+            <div class="suggest-box" id="addr-suggest"></div>
+          </div>
+          <div class="loc-row" style="margin-top:12px">
+            <div>
+              <label class="field-label">City</label>
+              <input id="f-city" class="field-input" placeholder="City">
+            </div>
+            <div>
+              <label class="field-label">State</label>
+              <input id="f-state" class="field-input" placeholder="State">
+            </div>
+          </div>
+          <button onclick="useMyLocation()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid #1a56db;background:#eff6ff;color:#1a56db;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+            <i class="ti ti-current-location"></i> Use My Current Location
+          </button>
+          <div id="coord-display" style="display:none">
+            <div class="coord-badge"><i class="ti ti-map-pin" style="font-size:14px"></i> <span id="coord-text"></span></div>
+          </div>
+          <div id="abuse-map"></div>
+        </div>
+
+        <!-- Evidence -->
+        <div class="form-section" style="margin:14px 16px 0">
+          <div class="form-section-title"><i class="ti ti-photo"></i> Evidence (Photos / Videos)</div>
+          <div class="upload-box" onclick="document.getElementById('ev-file-input').click()">
+            <i class="ti ti-cloud-upload"></i>
+            <div class="upload-box-title">Upload Photos or Videos</div>
+            <div class="upload-box-sub">JPG, PNG, MP4 — max 10MB each. All evidence is kept confidential.</div>
+          </div>
+          <input type="file" id="ev-file-input" accept="image/*,video/*" multiple style="display:none" onchange="onEvidenceSelected(event)">
+          <div id="evidence-preview"></div>
+          <div class="field-hint" style="margin-top:8px"><i class="ti ti-lock" style="font-size:12px;color:#dc2626"></i> Evidence is encrypted and only accessible to authorized welfare officers</div>
+        </div>
+
+        <!-- Witnesses -->
+        <div class="form-section" style="margin:14px 16px 0">
+          <div class="form-section-title"><i class="ti ti-users"></i> Witness Information <span style="font-size:12px;font-weight:500;color:#65676b">(Optional)</span></div>
+          <div id="witnesses-container"></div>
+          <button class="add-witness-btn" onclick="addWitness()"><i class="ti ti-plus"></i> Add Witness</button>
+        </div>
+
+        <!-- Privacy -->
+        <div class="form-section" style="margin:14px 16px 0">
+          <div class="form-section-title"><i class="ti ti-eye"></i> Report Visibility</div>
+          <div class="privacy-opts">
+            <div class="priv-opt selected" id="priv-private" onclick="selectPrivacy('private')">
+              <i class="ti ti-eye-off"></i>
+              <div class="priv-opt-title">Private</div>
+              <div class="priv-opt-sub">Only welfare officers can see</div>
+            </div>
+            <div class="priv-opt" id="priv-confidential" onclick="selectPrivacy('confidential')">
+              <i class="ti ti-lock"></i>
+              <div class="priv-opt-title">Confidential</div>
+              <div class="priv-opt-sub">Hidden from public, shared with orgs</div>
+            </div>
+            <div class="priv-opt" id="priv-public" onclick="selectPrivacy('public')">
+              <i class="ti ti-world"></i>
+              <div class="priv-opt-title">Public Awareness</div>
+              <div class="priv-opt-sub">Shared to raise community awareness</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Consents -->
+        <div class="form-section" style="margin:14px 16px 0">
+          <div class="form-section-title"><i class="ti ti-checks"></i> Your Consents</div>
+          <div class="consent-row">
+            <input type="checkbox" class="consent-cb" id="c-identity">
+            <div class="consent-text"><strong>Identity Sharing</strong> — I consent to sharing my identity with assigned welfare organizations for follow-up.</div>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" class="consent-cb" id="c-evidence" checked>
+            <div class="consent-text"><strong>Evidence Sharing</strong> — I consent to sharing uploaded evidence with authorized welfare officers and legal authorities.</div>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" class="consent-cb" id="c-followup" checked>
+            <div class="consent-text"><strong>Follow-up Contact</strong> — I agree to be contacted for updates on this case.</div>
+          </div>
+        </div>
+
+        <div style="height:80px"></div><!-- spacer for sticky bar -->
+      </div><!-- /panel-report -->
+
+      <!-- ══ TAB: MY REPORTS ══ -->
+      <div class="tab-panel" id="panel-my">
+        <div id="my-reports-list">
+          <div class="empty-state">
+            <i class="ti ti-clipboard-list"></i>
+            <div class="empty-state-title">Loading your reports…</div>
+            <div class="empty-state-sub">Please wait</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TAB: ORGANIZATIONS ══ -->
+      <div class="tab-panel" id="panel-orgs">
+        <div style="padding:14px 16px;border-bottom:1px solid #e4e6eb;display:flex;gap:10px">
+          <input id="org-search-city" class="field-input" style="flex:1" placeholder="Filter by city…" oninput="loadOrgs()">
+          <input id="org-search-state" class="field-input" style="flex:1" placeholder="Filter by state…" oninput="loadOrgs()">
+        </div>
+        <div id="orgs-list">
+          <div class="empty-state">
+            <i class="ti ti-building-community"></i>
+            <div class="empty-state-title">Loading organizations…</div>
+            <div class="empty-state-sub">Please wait</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /card tabs -->
+  </div><!-- /main-col -->
+
+  <!-- ── SIDEBAR ── -->
+  <div class="side-col">
+
+    <!-- Helplines -->
+    <div class="helpline-card" id="helpline-card">
+      <div class="helpline-head">
+        <i class="ti ti-phone-call" style="color:#fff;font-size:20px"></i>
+        <div class="helpline-head-title">Animal Welfare Helplines</div>
+      </div>
+      <div class="helpline-item" onclick="window.open('tel:+911800200141')">
+        <div class="hl-icon" style="background:#fef2f2"><span style="font-size:20px">🇮🇳</span></div>
+        <div>
+          <div class="hl-name">AWBI Helpline</div>
+          <div class="hl-num">1800-200-141</div>
+        </div>
+        <div class="hl-call">Call</div>
+      </div>
+      <div class="helpline-item" onclick="window.open('tel:+911800110066')">
+        <div class="hl-icon" style="background:#eff6ff"><span style="font-size:20px">🏛️</span></div>
+        <div>
+          <div class="hl-name">PCA Act Helpline</div>
+          <div class="hl-num">1800-110-066</div>
+        </div>
+        <div class="hl-call">Call</div>
+      </div>
+      <div class="helpline-item" onclick="window.open('tel:100')">
+        <div class="hl-icon" style="background:#fef9c3"><span style="font-size:20px">👮</span></div>
+        <div>
+          <div class="hl-name">Police Emergency</div>
+          <div class="hl-num">100</div>
+        </div>
+        <div class="hl-call">Call</div>
+      </div>
+      <div class="helpline-item" onclick="window.open('tel:+911800110264')">
+        <div class="hl-icon" style="background:#f0fdf4"><span style="font-size:20px">🌿</span></div>
+        <div>
+          <div class="hl-name">Wildlife Crime</div>
+          <div class="hl-num">1800-110-264</div>
+        </div>
+        <div class="hl-call">Call</div>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="tip-card">
+      <div class="tip-title"><i class="ti ti-bulb" style="color:#f59e0b"></i> How to Report Effectively</div>
+      <div class="tip-item">
+        <div class="tip-num">1</div>
+        <div class="tip-text"><strong>Document safely</strong> — Take photos/videos from a safe distance. Don't confront the abuser.</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">2</div>
+        <div class="tip-text"><strong>Be specific</strong> — Include exact location, time, description of perpetrator if visible.</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">3</div>
+        <div class="tip-text"><strong>Note witnesses</strong> — Add any witness contact info to strengthen the case.</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">4</div>
+        <div class="tip-text"><strong>Your identity is protected</strong> — All reports are confidential by default.</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">5</div>
+        <div class="tip-text"><strong>Emergency?</strong> — Toggle the emergency flag to alert authorities immediately.</div>
+      </div>
+    </div>
+
+    <!-- Legal info -->
+    <div class="tip-card">
+      <div class="tip-title"><i class="ti ti-gavel" style="color:#1a56db"></i> Legal Framework</div>
+      <div style="font-size:12px;color:#333;line-height:1.6">
+        Animal cruelty is punishable under <strong>Section 11 of the Prevention of Cruelty to Animals Act, 1960</strong> and <strong>Section 428/429 of IPC</strong>. Offenders face fines up to ₹25,000 and imprisonment up to 5 years.
+      </div>
+    </div>
+
+  </div><!-- /side-col -->
+</div><!-- /page-wrap -->
+
+<!-- ── SUBMIT BAR (only visible on report tab) ── -->
+<div class="submit-bar" id="submit-bar">
+  <button class="draft-btn" onclick="saveDraft()"><i class="ti ti-device-floppy"></i> Save Draft</button>
+  <button class="submit-btn" onclick="submitReport()" id="submit-btn">
+    <i class="ti ti-send"></i> Submit Report
+  </button>
+</div>
+
+<!-- ── SUCCESS MODAL ── -->
+<div class="modal-overlay" id="success-modal">
+  <div class="modal-box">
+    <div class="modal-icon">✅</div>
+    <div class="modal-title">Report Submitted</div>
+    <div class="modal-sub">Your report has been received. Our welfare team will review it within 24–48 hours. You'll receive updates at every stage.</div>
+    <div class="modal-ref" id="modal-ref-num">PB-ABR-20241121-0001</div>
+    <div class="modal-actions">
+      <button class="modal-btn-secondary" onclick="closeModal()">Close</button>
+      <button class="modal-btn-primary" onclick="switchTab('my');closeModal()"><i class="ti ti-clipboard-list"></i> Track Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const API_BASE = 'https://pawbook.deemona.com/api/v1';
+const GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk';
+
+function goTo(p){window.location.href=p;}
+function getToken(){return localStorage.getItem('pb_token')||'';}
+function authHdr(){return{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'};}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+function showToast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(type||'success')+' show';
+  setTimeout(function(){t.className='toast';},3000);
+}
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+var state={
+  categoryId:null,
+  isEmergency:false,
+  privacy:'private',
+  lat:null,lng:null,
+  evidenceFiles:[],
+  witnesses:[],
+};
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+function switchTab(t){
+  ['report','my','orgs'].forEach(function(id){
+    document.getElementById('tab-'+id).classList.remove('active');
+    document.getElementById('panel-'+id).classList.remove('active');
+  });
+  document.getElementById('tab-'+t).classList.add('active');
+  document.getElementById('panel-'+t).classList.add('active');
+  document.getElementById('submit-bar').style.display = t==='report'?'flex':'none';
+  if(t==='my') loadMyReports();
+  if(t==='orgs') loadOrgs();
+}
+
+// ── CATEGORIES ────────────────────────────────────────────────────────────
+var catIcons={
+  'Physical Abuse':'ti-hand-stop',
+  'Animal Neglect':'ti-droplet-off',
+  'Abandonment':'ti-door-exit',
+  'Cruel Confinement':'ti-lock',
+  'Illegal Breeding':'ti-dna',
+  'Animal Fighting':'ti-sword',
+  'Poisoning':'ti-skull',
+  'Commercial Exploitation':'ti-building-store',
+  'Hoarding':'ti-stack-2',
+  'Cruel Transportation':'ti-truck',
+  'Other':'ti-dots-circle-horizontal',
+};
+
+fetch(API_BASE+'/abuse-reports/categories')
+  .then(function(r){return r.json();})
+  .then(function(res){
+    if(!res.success) return;
+    var g=document.getElementById('cat-grid');
+    g.innerHTML='';
+    res.data.forEach(function(c){
+      var icon=catIcons[c.name]||'ti-alert-circle';
+      var d=document.createElement('div');
+      d.className='cat-pill';
+      d.id='cat-'+c.category_id;
+      d.innerHTML='<i class="ti '+icon+'" style="color:#dc2626"></i>'+c.name;
+      d.onclick=function(){selectCategory(c.category_id,d);};
+      g.appendChild(d);
+    });
+  })
+  .catch(function(){});
+
+function selectCategory(id,el){
+  document.querySelectorAll('.cat-pill').forEach(function(p){p.classList.remove('selected');});
+  el.classList.add('selected');
+  state.categoryId=id;
+}
+
+// ── EMERGENCY TOGGLE ──────────────────────────────────────────────────────
+function toggleEmergency(){
+  state.isEmergency=!state.isEmergency;
+  var sw=document.getElementById('toggle-sw');
+  var tog=document.getElementById('emergency-toggle');
+  sw.className='toggle-switch'+(state.isEmergency?' on':'');
+  tog.className='emergency-toggle'+(state.isEmergency?' active':'');
+}
+
+// ── PRIVACY ───────────────────────────────────────────────────────────────
+function selectPrivacy(v){
+  state.privacy=v;
+  ['private','confidential','public'].forEach(function(p){
+    document.getElementById('priv-'+p).classList.toggle('selected',p===v);
+  });
+}
+
+// ── MAP ───────────────────────────────────────────────────────────────────
+var map=null,marker=null;
+function initMap(lat,lng){
+  if(!map){
+    map=L.map('abuse-map').setView([lat||20.5937,lng||78.9629],lat?15:5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+    map.on('click',function(e){setMapPin(e.latlng.lat,e.latlng.lng);});
+  } else if(lat){
+    map.setView([lat,lng],15);
+  }
+  if(lat){ setMapPin(lat,lng); }
+}
+function setMapPin(lat,lng){
+  state.lat=lat; state.lng=lng;
+  if(marker) map.removeLayer(marker);
+  marker=L.marker([lat,lng]).addTo(map);
+  document.getElementById('coord-display').style.display='block';
+  document.getElementById('coord-text').textContent=lat.toFixed(5)+', '+lng.toFixed(5);
+}
+
+document.addEventListener('DOMContentLoaded',function(){initMap(null,null);});
+
+function useMyLocation(){
+  if(!navigator.geolocation){showToast('Geolocation not supported','error');return;}
+  showToast('Getting your location…','info');
+  navigator.geolocation.getCurrentPosition(function(p){
+    var lat=p.coords.latitude,lng=p.coords.longitude;
+    initMap(lat,lng);
+    reverseGeocode(lat,lng);
+  },function(){showToast('Could not get location','error');});
+}
+
+function reverseGeocode(lat,lng){
+  fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.address){
+        var a=d.address;
+        document.getElementById('f-address').value=d.display_name||'';
+        document.getElementById('f-city').value=a.city||a.town||a.village||'';
+        document.getElementById('f-state').value=a.state||'';
+      }
+    }).catch(function(){});
+}
+
+var addrTimer=null;
+function onAddressInput(){
+  clearTimeout(addrTimer);
+  addrTimer=setTimeout(function(){
+    var q=document.getElementById('f-address').value;
+    if(q.length<3){document.getElementById('addr-suggest').style.display='none';return;}
+    fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=in')
+      .then(function(r){return r.json();})
+      .then(function(res){
+        var box=document.getElementById('addr-suggest');
+        box.innerHTML=''; box.style.display=res.length?'block':'none';
+        res.forEach(function(r){
+          var d=document.createElement('div');
+          d.textContent=r.display_name;
+          d.onclick=function(){
+            document.getElementById('f-address').value=r.display_name;
+            box.style.display='none';
+            initMap(parseFloat(r.lat),parseFloat(r.lon));
+            reverseGeocode(parseFloat(r.lat),parseFloat(r.lon));
+          };
+          box.appendChild(d);
+        });
+      }).catch(function(){});
+  },400);
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.suggest-wrap')) document.getElementById('addr-suggest').style.display='none';
+});
+
+// ── EVIDENCE ──────────────────────────────────────────────────────────────
+function onEvidenceSelected(e){
+  var files=Array.from(e.target.files);
+  files.forEach(function(f){
+    if(f.size>10*1024*1024){showToast(f.name+' exceeds 10MB','error');return;}
+    state.evidenceFiles.push(f);
+    var r=new FileReader();
+    r.onload=function(ev){
+      var wrap=document.createElement('div');
+      wrap.className='ev-thumb';
+      wrap.innerHTML='<img src="'+ev.target.result+'"><button class="ev-thumb-del" onclick="removeEvidence(this)">×</button>';
+      document.getElementById('evidence-preview').appendChild(wrap);
+    };
+    r.readAsDataURL(f);
+  });
+  e.target.value='';
+}
+function removeEvidence(btn){
+  var idx=Array.from(document.getElementById('evidence-preview').children).indexOf(btn.parentElement);
+  state.evidenceFiles.splice(idx,1);
+  btn.parentElement.remove();
+}
+
+// ── WITNESSES ─────────────────────────────────────────────────────────────
+var witnessCount=0;
+function addWitness(){
+  witnessCount++;
+  var id='w'+witnessCount;
+  var row=document.createElement('div');
+  row.className='witness-row';
+  row.id=id;
+  row.innerHTML='<button class="witness-del" onclick="removeWitness(\''+id+'\')"><i class="ti ti-x"></i></button>'
+    +'<div><label class="field-label">Name</label><input class="field-input" id="'+id+'-name" placeholder="Witness name"></div>'
+    +'<div><label class="field-label">Phone</label><input class="field-input" id="'+id+'-phone" placeholder="+91 …"></div>'
+    +'<div style="grid-column:1/-1"><label class="field-label">Email</label><input class="field-input" id="'+id+'-email" placeholder="witness@email.com"></div>'
+    +'<div style="grid-column:1/-1"><label class="field-label">Statement</label><textarea class="field-textarea" id="'+id+'-stmt" placeholder="What did this witness see?"></textarea></div>';
+  document.getElementById('witnesses-container').appendChild(row);
+  state.witnesses.push(id);
+}
+function removeWitness(id){
+  document.getElementById(id).remove();
+  state.witnesses=state.witnesses.filter(function(w){return w!==id;});
+}
+
+// ── UPLOAD EVIDENCE TO SERVER ─────────────────────────────────────────────
+async function uploadEvidenceFiles(){
+  if(!state.evidenceFiles.length) return [];
+  var results=[];
+  for(var i=0;i<state.evidenceFiles.length;i++){
+    var f=state.evidenceFiles[i];
+    var fd=new FormData();
+    fd.append('file',f);
+    try{
+      var r=await fetch(API_BASE+'/upload',{method:'POST',headers:{'Authorization':'Bearer '+getToken()},body:fd});
+      var j=await r.json();
+      if(j.url||j.data&&j.data.url){
+        var url=j.url||j.data.url;
+        var ftype=f.type.startsWith('image')?'image':f.type.startsWith('video')?'video':'document';
+        results.push({file_url:url,file_type:ftype,file_size:f.size,original_name:f.name});
+      }
+    }catch(e){console.warn('upload err',e);}
+  }
+  return results;
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────
+async function submitReport(){
+  if(!state.categoryId){showToast('Please select type of abuse','error');return;}
+  var desc=document.getElementById('f-desc').value.trim();
+  if(!desc){showToast('Please describe what happened','error');return;}
+  var address=document.getElementById('f-address').value.trim();
+  if(!address&&!state.lat){showToast('Please add the incident location','error');return;}
+
+  var btn=document.getElementById('submit-btn');
+  btn.disabled=true; btn.innerHTML='<i class="ti ti-loader-2" style="animation:spin 1s linear infinite"></i> Submitting…';
+
+  // Upload evidence files first
+  var evidenceArr=await uploadEvidenceFiles();
+
+  // Collect witnesses
+  var witnessArr=state.witnesses.map(function(id){
+    return{
+      name:document.getElementById(id+'-name').value||null,
+      phone:document.getElementById(id+'-phone').value||null,
+      email:document.getElementById(id+'-email').value||null,
+      statement:document.getElementById(id+'-stmt').value||null,
+    };
+  }).filter(function(w){return w.name||w.phone;});
+
+  var payload={
+    category_id:state.categoryId,
+    description:desc,
+    animal_species:document.getElementById('f-species').value||null,
+    animal_breed:document.getElementById('f-breed').value||null,
+    animal_count:parseInt(document.getElementById('f-count').value)||1,
+    incident_date:document.getElementById('f-date').value||null,
+    is_ongoing:document.getElementById('f-ongoing').checked,
+    is_emergency:state.isEmergency,
+    reporting_pref:state.privacy,
+    location:{
+      latitude:state.lat,longitude:state.lng,
+      address:address,
+      city:document.getElementById('f-city').value||null,
+      state:document.getElementById('f-state').value||null,
+    },
+    evidence:evidenceArr,
+    witnesses:witnessArr,
+    consent:{
+      identity_sharing:document.getElementById('c-identity').checked,
+      evidence_sharing:document.getElementById('c-evidence').checked,
+      follow_up_contact:document.getElementById('c-followup').checked,
+    },
+  };
+
+  try{
+    var r=await fetch(API_BASE+'/abuse-reports',{method:'POST',headers:authHdr(),body:JSON.stringify(payload)});
+    var j=await r.json();
+    if(j.success){
+      document.getElementById('modal-ref-num').textContent=j.data.reference_number;
+      document.getElementById('success-modal').classList.add('show');
+      localStorage.removeItem('pb_abuse_draft');
+    } else {
+      showToast(j.message||'Submission failed','error');
+    }
+  } catch(e){
+    showToast('Network error. Please try again.','error');
+  } finally {
+    btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i> Submit Report';
+  }
+}
+
+function closeModal(){document.getElementById('success-modal').classList.remove('show');}
+
+// ── DRAFT ─────────────────────────────────────────────────────────────────
+function saveDraft(){
+  try{
+    var d={
+      categoryId:state.categoryId,
+      isEmergency:state.isEmergency,
+      privacy:state.privacy,
+      lat:state.lat,lng:state.lng,
+      desc:document.getElementById('f-desc').value,
+      address:document.getElementById('f-address').value,
+      city:document.getElementById('f-city').value,
+      fstate:document.getElementById('f-state').value,
+      species:document.getElementById('f-species').value,
+      breed:document.getElementById('f-breed').value,
+      count:document.getElementById('f-count').value,
+      date:document.getElementById('f-date').value,
+    };
+    localStorage.setItem('pb_abuse_draft',JSON.stringify(d));
+    showToast('Draft saved','success');
+  }catch(e){showToast('Could not save draft','error');}
+}
+
+function loadDraft(){
+  try{
+    var d=JSON.parse(localStorage.getItem('pb_abuse_draft')||'null');
+    if(!d) return;
+    if(d.desc) document.getElementById('f-desc').value=d.desc;
+    if(d.address) document.getElementById('f-address').value=d.address;
+    if(d.city) document.getElementById('f-city').value=d.city;
+    if(d.fstate) document.getElementById('f-state').value=d.fstate;
+    if(d.species) document.getElementById('f-species').value=d.species;
+    if(d.breed) document.getElementById('f-breed').value=d.breed;
+    if(d.count) document.getElementById('f-count').value=d.count;
+    if(d.date) document.getElementById('f-date').value=d.date;
+    if(d.isEmergency&&d.isEmergency!==state.isEmergency) toggleEmergency();
+    if(d.privacy) selectPrivacy(d.privacy);
+    if(d.lat&&d.lng){ state.lat=d.lat; state.lng=d.lng; initMap(d.lat,d.lng); }
+    if(d.categoryId){
+      state.categoryId=d.categoryId;
+      setTimeout(function(){
+        var el=document.getElementById('cat-'+d.categoryId);
+        if(el) el.classList.add('selected');
+      },500);
+    }
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',loadDraft);
+
+// ── MY REPORTS ────────────────────────────────────────────────────────────
+function loadMyReports(){
+  var container=document.getElementById('my-reports-list');
+  if(!getToken()){
+    container.innerHTML='<div class="empty-state"><i class="ti ti-lock"></i><div class="empty-state-title">Login Required</div><div class="empty-state-sub">Please log in to view your reports</div></div>';
+    return;
+  }
+  fetch(API_BASE+'/abuse-reports/my',{headers:authHdr()})
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(!res.success||!res.data.length){
+        container.innerHTML='<div class="empty-state"><i class="ti ti-clipboard-list"></i><div class="empty-state-title">No Reports Yet</div><div class="empty-state-sub">You haven\'t filed any reports. Use the "File Report" tab to submit one.</div></div>';
+        return;
+      }
+      container.innerHTML=res.data.map(function(r){
+        return '<div class="report-item">'
+          +'<div style="flex:1">'
+          +'<div class="report-ref">'+r.reference_number+'</div>'
+          +'<div class="report-cat">'+(r.category_name||'Abuse Report')+'</div>'
+          +'<div class="report-loc"><i class="ti ti-map-pin" style="font-size:12px"></i> '+(r.city?(r.city+(r.state?', '+r.state:'')):'Location not specified')+'</div>'
+          +'<div style="margin-top:8px"><span class="status-badge status-'+r.status+'">'+statusLabel(r.status)+'</span>'+(r.is_emergency?' <span style="color:#dc2626;font-size:11px;font-weight:800"><i class="ti ti-alert-triangle"></i> EMERGENCY</span>':'')+'</div>'
+          +'<div class="report-date"><i class="ti ti-calendar" style="font-size:12px"></i> '+new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+'</div>'
+          +'</div>'
+          +'<i class="ti ti-chevron-right" style="color:#65676b;font-size:18px;align-self:center"></i>'
+          +'</div>';
+      }).join('');
+    })
+    .catch(function(){
+      container.innerHTML='<div class="empty-state"><i class="ti ti-wifi-off"></i><div class="empty-state-title">Could not load reports</div><div class="empty-state-sub">Check your connection and try again</div></div>';
+    });
+}
+
+function statusLabel(s){
+  var m={'submitted':'Submitted','under_review':'Under Review','verified_for_referral':'Verified','referred':'Referred','action_in_progress':'In Progress','resolved':'Resolved','closed':'Closed'};
+  return m[s]||s;
+}
+
+// ── ORGANIZATIONS ─────────────────────────────────────────────────────────
+function loadOrgs(){
+  var city=document.getElementById('org-search-city').value;
+  var st=document.getElementById('org-search-state').value;
+  var url=API_BASE+'/abuse-reports/organizations';
+  var params=[];
+  if(city) params.push('city='+encodeURIComponent(city));
+  if(st) params.push('state='+encodeURIComponent(st));
+  if(params.length) url+='?'+params.join('&');
+
+  fetch(url)
+    .then(function(r){return r.json();})
+    .then(function(res){
+      var container=document.getElementById('orgs-list');
+      if(!res.success||!res.data.length){
+        container.innerHTML='<div class="empty-state"><i class="ti ti-building-community"></i><div class="empty-state-title">No organizations found</div><div class="empty-state-sub">Try a different city or state</div></div>';
+        return;
+      }
+      var orgIcons={'ngo':'🌱','rescue':'🚑','government':'🏛️','shelter':'🏠','other':'🤝'};
+      container.innerHTML=res.data.map(function(o){
+        return '<div class="org-item">'
+          +'<div class="org-logo">'+(orgIcons[o.org_type]||'🏢')+'</div>'
+          +'<div style="flex:1">'
+          +'<div class="org-name">'+o.name+'</div>'
+          +'<span class="org-type-badge">'+o.org_type.toUpperCase()+'</span>'
+          +(o.city?'<div class="org-meta"><i class="ti ti-map-pin" style="font-size:12px"></i> '+o.city+(o.state?', '+o.state:'')+'</div>':'')
+          +(o.coverage_area?'<div class="org-meta" style="margin-top:2px"><i class="ti ti-map" style="font-size:12px"></i> Covers: '+o.coverage_area+'</div>':'')
+          +'</div>'
+          +(o.phone?'<button class="org-call-btn" onclick="window.open(\'tel:'+o.phone+'\')"><i class="ti ti-phone"></i></button>':'')
+          +'</div>';
+      }).join('');
+    })
+    .catch(function(){
+      document.getElementById('orgs-list').innerHTML='<div class="empty-state"><i class="ti ti-wifi-off"></i><div class="empty-state-title">Could not load</div><div class="empty-state-sub">Check your connection</div></div>';
+    });
+}
+
+// ── NAV AVATAR ────────────────────────────────────────────────────────────
+(function(){
+  var u=null;
+  try{u=JSON.parse(localStorage.getItem('pb_user')||'null');}catch(e){}
+  if(u){
+    var av=document.getElementById('nav-avatar');
+    if(av) av.textContent=(u.full_name||u.username||'A')[0].toUpperCase();
+  }
+})();
+
+// ── PWA ───────────────────────────────────────────────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('service-worker.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
