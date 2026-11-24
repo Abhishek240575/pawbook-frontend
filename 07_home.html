@@ -535,6 +535,7 @@ if(typeof toast === 'undefined'){
           <li onclick="goTo('42_shop.html')"><i class="ti ti-building-store"></i> Marketplace</li>
           <li onclick="goTo('45_shop_brands.html')"><i class="ti ti-building-store"></i> Shop by Brand</li>
           <li onclick="goTo('50_seller_hub.html')"><i class="ti ti-briefcase"></i> Sell on PawBook</li>
+          <li class="pb-admin-only" style="display:none" onclick="goTo('48_shop_admin.html')"><i class="ti ti-shield-check"></i> Shop admin<span class="pb-admin-n" style="display:none;margin-left:auto;background:#e53935;color:#fff;border-radius:999px;font-size:11px;font-weight:800;padding:1px 8px"></span></li>
           <li onclick="goTo('27_register_business.html')"><i class="ti ti-building"></i> Register Your Business</li>
           <li onclick="goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</li>
           <li onclick="goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</li>
@@ -1225,6 +1226,7 @@ function pbLike(btn) {
       <button class="drawer-item" onclick="closeDrawer();goTo('42_shop.html')"><i class="ti ti-building-store"></i> Marketplace</button>
       <button class="drawer-item" onclick="closeDrawer();goTo('45_shop_brands.html')"><i class="ti ti-building-store"></i> Shop by Brand</button>
       <button class="drawer-item" onclick="closeDrawer();goTo('50_seller_hub.html')"><i class="ti ti-briefcase"></i> Sell on PawBook</button>
+    <button class="drawer-item pb-admin-only" style="display:none" onclick="closeDrawer();goTo('48_shop_admin.html')"><i class="ti ti-shield-check"></i> Shop admin<span class="pb-admin-n" style="display:none;margin-left:auto;background:#e53935;color:#fff;border-radius:999px;font-size:11px;font-weight:800;padding:1px 8px"></span></button>
       <button class="drawer-item" onclick="closeDrawer();goTo('27_register_business.html')"><i class="ti ti-building"></i> Register Your Business</button>
       <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
       <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
@@ -1528,5 +1530,15 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 <script src="pawbook-ai-widget.v4.js?v=5"></script>
+<script>/* PB admin-only sidebar link */(function(){try{var t=localStorage.getItem('pb_token');if(!t)return;var u=JSON.parse(localStorage.getItem('pb_user')||'null')||{};
+var A='https://pawbook.deemona.com/api/v1/shop/admin/',o={headers:{Authorization:'Bearer '+t},credentials:'include'};
+var g=function(p){return fetch(A+p,o).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});};
+var show=function(){document.querySelectorAll('.pb-admin-only').forEach(function(e){e.style.display='';});
+Promise.all([g('kyc?status=submitted'),g('listings?status=pending')]).then(function(r){var n=(((r[0]||{}).data||{}).kyc||[]).length+((((r[1]||{}).data||{}).counts||{}).pending||0);
+if(n)document.querySelectorAll('.pb-admin-n').forEach(function(e){e.textContent=n;e.style.display='';});});};
+if(u.role==='admin')return show();if(u.role)return;
+var k='pb_is_admin:'+t.slice(-12),c=null;try{c=sessionStorage.getItem(k);}catch(e){}
+if(c==='1')return show();if(c==='0')return;
+g('settings').then(function(d){var a=!!(d&&d.success!==false);try{sessionStorage.setItem(k,a?'1':'0');}catch(e){}if(a)show();});}catch(e){}})();</script>
 </body>
 </html>
