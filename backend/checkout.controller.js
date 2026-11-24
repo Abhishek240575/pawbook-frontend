@@ -9,6 +9,7 @@ const db = require('../config/db');
 const { query } = db;
 const R = require('../utils/response');
 const getClient = db.getClient || (() => db.pool.connect());
+const exp = () => require('./experience.controller');
 
 const FREE_DELIVERY_FROM = 499;   // same rule the shop has always shown
 const DELIVERY_FEE = 49;
@@ -51,16 +52,17 @@ function priceLine(row) {
   line.line_total = money(line.price * line.quantity);
   return line;
 }
-function summarise(lines) {
+function summarise(lines, discount) {
   const ok = lines.filter(l => !l.issue);
   const subtotal = money(ok.reduce((s, l) => s + l.price * l.quantity, 0));
   const mrpTotal = money(ok.reduce((s, l) => s + (l.mrp && l.mrp > l.price ? l.mrp : l.price) * l.quantity, 0));
   const delivery_fee = ok.length && subtotal < FREE_DELIVERY_FROM ? DELIVERY_FEE : 0;
-  const total = money(subtotal + delivery_fee);
+  discount = ok.length ? money(Math.min(Number(discount) || 0, subtotal)) : 0;
+  const total = money(subtotal - discount + delivery_fee);
   const days = ok.length ? Math.max.apply(null, ok.map(l => l.delivery_days)) : 0;
   const eta = new Date(Date.now() + days * 86400000);
   return {
-    items: ok.reduce((s, l) => s + l.quantity, 0), subtotal, savings: money(mrpTotal - subtotal), delivery_fee, total,
+    items: ok.reduce((s, l) => s + l.quantity, 0), subtotal, savings: money(mrpTotal - subtotal), discount, delivery_fee, total,
     free_delivery_from: FREE_DELIVERY_FROM, add_for_free: ok.length && subtotal < FREE_DELIVERY_FROM ? money(FREE_DELIVERY_FROM - subtotal) : 0,
     estimated_delivery: days ? eta.toISOString().slice(0, 10) : null,
     issues: lines.filter(l => l.issue).length, cod_available: total > 0 && total <= COD_MAX, cod_max: COD_MAX,
@@ -213,8 +215,18 @@ exports.deleteAddress = async (req, res) => {
 // ── checkout ────────────────────────────────────────────────────────────────
 // POST /shop/checkout/quote → what the order would cost right now
 exports.quote = async (req, res) => {
-  try { const lines = await cartLines(query, uid(req.user)); return R.ok(res, { items: lines, summary: summarise(lines) }); }
-  catch (e) { return fail(res, 'quote', e); }
+  try {
+    const lines = await cartLines(query, uid(req.user));
+    const code = str((req.body || {}).coupon, 20);
+    let coupon = null;
+    if (code) {
+      const base = summarise(lines);
+      const c = await exp().checkCoupon(query, uid(req.user), code, base.subtotal, false);
+      coupon = c.error ? { code: code.toUpperCase(), error: c.error } : { code: c.code, discount: c.discount, description: c.coupon.description };
+      if (!c.error) return R.ok(res, { items: lines, summary: summarise(lines, c.discount), coupon });
+    }
+    return R.ok(res, { items: lines, summary: summarise(lines), coupon });
+  } catch (e) { return fail(res, 'quote', e); }
 };
 
 // stock change for one product row (handles sizes). delta < 0 takes stock, > 0 returns it.
@@ -261,7 +273,13 @@ exports.placeOrder = async (req, res) => {
     await q(`SELECT product_id FROM marketplace_products WHERE product_id::text = ANY($1::text[]) ORDER BY product_id FOR UPDATE`, [pids]);
     const lines = (await q(CART_SQL(false), [me])).rows.map(priceLine);
     const bad = lines.filter(l => l.issue);
-    const sum = summarise(lines);
+    let sum = summarise(lines), cp = null;
+    const couponCode = str(b.coupon, 20);
+    if (couponCode && !bad.length) {
+      cp = await exp().checkCoupon(q, me, couponCode, sum.subtotal, true);
+      if (cp.error) { await q('ROLLBACK'); return res.status(409).json({ success: false, code: 'coupon_invalid', message: cp.error, data: { items: lines, summary: sum } }); }
+      sum = summarise(lines, cp.discount);
+    }
     if (bad.length) { await q('ROLLBACK'); return res.status(409).json({ success: false, code: 'cart_changed', message: 'Some items in your cart changed. Please review.', data: { items: lines, summary: sum } }); }
     if (b.expected_total != null && Math.abs(Number(b.expected_total) - sum.total) > 0.009) {
       await q('ROLLBACK'); return res.status(409).json({ success: false, code: 'price_changed', message: 'Prices changed since you opened checkout. Please review the new total.', data: { items: lines, summary: sum } });
@@ -273,9 +291,10 @@ exports.placeOrder = async (req, res) => {
     const orderNumber = 'PB' + String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, '0') + '-' + sr[0].n;
     const addr = Object.assign({}, ar[0]);
     await q(`INSERT INTO marketplace_orders (order_id, order_number, buyer_id, subtotal, delivery_fee, total, delivery_address, estimated_delivery,
-        status, payment_method, payment_status, client_ref, updated_at)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pending','cod','cod_pending',$9,NOW())`,
-      [orderId, orderNumber, me, sum.subtotal, sum.delivery_fee, sum.total, JSON.stringify(addr), sum.estimated_delivery, clientRef]);
+        status, payment_method, payment_status, client_ref, updated_at, coupon_code, discount)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pending','cod','cod_pending',$9,NOW(),$10,$11)`,
+      [orderId, orderNumber, me, sum.subtotal, sum.delivery_fee, sum.total, JSON.stringify(addr), sum.estimated_delivery, clientRef, cp ? cp.code : null, sum.discount || 0]);
+    if (cp) await q(`INSERT INTO marketplace_coupon_redemptions (code, user_id, order_id, discount) VALUES ($1,$2,$3,$4)`, [cp.code, me, orderId, sum.discount]);
     for (const l of lines) {
       await q(`INSERT INTO marketplace_order_items (item_id, order_id, product_id, name, image_url, price, quantity, seller_id, fulfil_status, variant, mrp)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'pending',$9,$10)`,
@@ -284,7 +303,11 @@ exports.placeOrder = async (req, res) => {
     }
     await q(`DELETE FROM shop_cart_items WHERE user_id = $1`, [me]);
     await q('COMMIT');
-    return R.created(res, { order_id: orderId, order_number: orderNumber, total: sum.total, estimated_delivery: sum.estimated_delivery, payment_method: 'cod' });
+    // tell each seller (after commit; never blocks the order)
+    const sellers = {};
+    lines.forEach(l => { if (l.seller_id) sellers[l.seller_id] = (sellers[l.seller_id] || 0) + l.quantity; });
+    Object.keys(sellers).forEach(sid => exp().notify(sid, { type: 'shop_order', icon: '📦', title: 'New order ' + orderNumber, body: sellers[sid] + ' item(s) to ship. Please confirm the order.', link: '50_seller_hub.html?tab=orders' }));
+    return R.created(res, { order_id: orderId, order_number: orderNumber, total: sum.total, discount: sum.discount, estimated_delivery: sum.estimated_delivery, payment_method: 'cod' });
   } catch (e) {
     if (client) { try { await client.query('ROLLBACK'); } catch (x) {} }
     if (e.code === '23505' && clientRef) {   // two requests with the same ref at once
@@ -324,12 +347,12 @@ exports.myOrders = async (req, res) => {
 exports.myOrder = async (req, res) => {
   try {
     const { rows } = await query(`SELECT o.order_id, o.order_number, o.created_at, o.subtotal, o.delivery_fee, o.total, o.status, o.payment_method, o.payment_status,
-        o.estimated_delivery, o.delivery_address, o.cancel_reason, o.cancelled_at, ${ITEMS_SQL} AS items
+        o.estimated_delivery, o.delivery_address, o.cancel_reason, o.cancelled_at, o.coupon_code, o.discount, ${ITEMS_SQL} AS items
       FROM marketplace_orders o WHERE o.order_id = $1 AND o.buyer_id::text = $2`, [str(req.params.id, 64), uid(req.user)]);
     if (!rows.length) return R.notFound(res, 'Order not found');
     const o = rows[0];
     o.items = parseJ(o.items, []); o.delivery_address = parseJ(o.delivery_address, {});
-    ['subtotal','delivery_fee','total'].forEach(k => { o[k] = o[k] == null ? null : Number(o[k]); });
+    ['subtotal','delivery_fee','total','discount'].forEach(k => { o[k] = o[k] == null ? null : Number(o[k]); });
     o.state = buyerStatus(o.items);
     o.can_cancel = o.items.some(i => i.status !== 'cancelled') && o.items.every(i => i.status === 'cancelled' || CANCELLABLE.includes(i.status));
     return R.ok(res, { order: o });
@@ -353,7 +376,10 @@ exports.cancelOrder = async (req, res) => {
     for (const i of open) if (i.product_id) await moveStock(q, i.product_id, i.variant || '', i.quantity);
     await q(`UPDATE marketplace_order_items SET fulfil_status = 'cancelled', status_updated_at = NOW() WHERE order_id = $1 AND COALESCE(fulfil_status, 'pending') <> 'cancelled'`, [oid]);
     await q(`UPDATE marketplace_orders SET status = 'cancelled', payment_status = 'cancelled', cancel_reason = $2, cancelled_at = NOW(), updated_at = NOW() WHERE order_id = $1`, [oid, reason]);
+    await q(`DELETE FROM marketplace_coupon_redemptions WHERE order_id = $1`, [oid]);   // the coupon can be used again
     await q('COMMIT');
+    const { rows: info } = await query(`SELECT o.order_number, array_agg(DISTINCT oi.seller_id::text) AS sellers FROM marketplace_orders o JOIN marketplace_order_items oi ON oi.order_id = o.order_id WHERE o.order_id = $1 GROUP BY o.order_number`, [oid]).catch(() => ({ rows: [] }));
+    if (info[0]) (info[0].sellers || []).filter(Boolean).forEach(sid => exp().notify(sid, { type: 'shop_order', icon: '❌', title: 'Order ' + info[0].order_number + ' cancelled by the buyer', body: reason || null, link: '50_seller_hub.html?tab=orders' }));
     return R.ok(res, { cancelled: true });
   } catch (e) { if (client) { try { await client.query('ROLLBACK'); } catch (x) {} } return fail(res, 'cancelOrder', e); }
   finally { if (client) client.release(); }

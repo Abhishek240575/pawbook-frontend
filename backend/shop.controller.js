@@ -54,7 +54,7 @@ const BASE_SELECT = `
   LEFT JOIN users u ON u.user_id = p.seller_id
   LEFT JOIN marketplace_sellers ss ON ss.user_id::text = p.seller_id::text
   LEFT JOIN (SELECT product_id::text AS pid, AVG(rating) AS rating, COUNT(*) AS review_count
-             FROM marketplace_reviews GROUP BY product_id) rv ON rv.pid = p.product_id::text
+             FROM marketplace_reviews WHERE COALESCE(status, 'published') = 'published' GROUP BY product_id) rv ON rv.pid = p.product_id::text
   LEFT JOIN (SELECT product_id::text AS pid, SUM(quantity) AS sold
              FROM marketplace_order_items WHERE product_id IS NOT NULL AND COALESCE(fulfil_status, 'pending') <> 'cancelled' GROUP BY product_id) so ON so.pid = p.product_id::text`;
 
@@ -285,9 +285,9 @@ exports.getProduct = async (req, res) => {
     const extra = await query(`SELECT specs, ingredients, usage_instructions, variants FROM marketplace_products WHERE product_id::text = $1`, [id]);
     Object.assign(p, extra.rows[0] || {});
     const [reviews, related, sellerStats, brand] = await Promise.all([
-      query(`SELECT r.rating, r.comment, r.created_at, u.full_name AS user_name, u.avatar_url
+      query(`SELECT r.rating, r.title, r.comment, COALESCE(r.verified, FALSE) AS verified, r.created_at, u.full_name AS user_name, u.avatar_url
              FROM marketplace_reviews r LEFT JOIN users u ON u.user_id = r.user_id
-             WHERE r.product_id::text = $1 ORDER BY r.created_at DESC LIMIT 20`, [id]),
+             WHERE r.product_id::text = $1 AND COALESCE(r.status, 'published') = 'published' ORDER BY COALESCE(r.verified, FALSE) DESC, r.created_at DESC LIMIT 30`, [id]),
       query(`SELECT * FROM (${BASE_SELECT} WHERE p.is_active = TRUE AND p.product_id::text <> $1
                AND (p.category = $2 OR p.pet_types && $3::text[])) p
              ORDER BY (p.category = $2) DESC, sold DESC, p.created_at DESC LIMIT 12`, [id, rows[0].category, p.pet_types || []]),
@@ -355,7 +355,7 @@ async function brandRows(limit) {
              WHERE p2.brand = p.brand AND p2.is_active = TRUE) AS pet_types
     FROM marketplace_products p
     LEFT JOIN marketplace_brands b ON b.name = p.brand AND b.is_active = TRUE
-    LEFT JOIN (SELECT product_id::text AS pid, AVG(rating) AS rating FROM marketplace_reviews GROUP BY product_id) rv ON rv.pid = p.product_id::text
+    LEFT JOIN (SELECT product_id::text AS pid, AVG(rating) AS rating FROM marketplace_reviews WHERE COALESCE(status, 'published') = 'published' GROUP BY product_id) rv ON rv.pid = p.product_id::text
     WHERE p.is_active = TRUE AND p.brand IS NOT NULL AND p.brand <> ''
     GROUP BY p.brand, b.slug, b.logo_url, b.cover_url, b.tagline, b.is_verified
     ORDER BY COALESCE(b.is_verified, FALSE) DESC, n DESC, p.brand
@@ -374,12 +374,11 @@ exports.getBrand = async (req, res) => {
     if (!b) return R.notFound(res, 'Brand not found');
     const meta = await query(`SELECT description, website, country, cover_url, logo_url, tagline FROM marketplace_brands WHERE name = $1`, [b.name]);
     const stats = await query(`
-      SELECT COUNT(DISTINCT r.review_id)::int AS reviews, COALESCE(SUM(oi.quantity),0)::int AS sold,
-             COUNT(DISTINCT p.seller_id)::int AS sellers
-      FROM marketplace_products p
-      LEFT JOIN marketplace_reviews r ON r.product_id::text = p.product_id::text
-      LEFT JOIN marketplace_order_items oi ON oi.product_id::text = p.product_id::text
-      WHERE p.is_active = TRUE AND p.brand = $1`, [b.name]);
+      SELECT (SELECT COUNT(*)::int FROM marketplace_reviews r JOIN marketplace_products p ON p.product_id::text = r.product_id::text
+                WHERE p.is_active = TRUE AND p.brand = $1 AND COALESCE(r.status, 'published') = 'published') AS reviews,
+             (SELECT COALESCE(SUM(oi.quantity), 0)::int FROM marketplace_order_items oi JOIN marketplace_products p ON p.product_id::text = oi.product_id::text
+                WHERE p.is_active = TRUE AND p.brand = $1 AND COALESCE(oi.fulfil_status, 'pending') <> 'cancelled') AS sold,
+             (SELECT COUNT(DISTINCT seller_id)::int FROM marketplace_products WHERE is_active = TRUE AND brand = $1) AS sellers`, [b.name]);
     const pets = await query(`SELECT DISTINCT unnest(pet_types) AS pet FROM marketplace_products WHERE is_active = TRUE AND brand = $1`, [b.name]);
     return R.ok(res, { brand: { ...b, ...(meta.rows[0] || {}), ...stats.rows[0], pets: pets.rows.map(r => r.pet) } });
   } catch (e) { console.error('[Shop] getBrand:', e.message); return R.serverError(res); }
@@ -419,10 +418,11 @@ exports.askQuestion = async (req, res) => {
   try {
     const text = String(req.body.question || '').trim();
     if (text.length < 5 || text.length > 500) return R.badRequest(res, 'Question must be 5–500 characters');
-    const p = await query(`SELECT 1 FROM marketplace_products WHERE product_id::text = $1 AND is_active = TRUE`, [String(req.params.id)]);
+    const p = await query(`SELECT seller_id, name FROM marketplace_products WHERE product_id::text = $1 AND is_active = TRUE`, [String(req.params.id)]);
     if (!p.rows.length) return R.notFound(res, 'Product not found');
     const { rows } = await query(`INSERT INTO marketplace_questions (product_id, user_id, question) VALUES ($1,$2,$3) RETURNING question_id, created_at`,
       [String(req.params.id), req.user.user_id, text]);
+    if (String(p.rows[0].seller_id) !== String(req.user.user_id)) require('./experience.controller').notify(p.rows[0].seller_id, { type: 'shop_question', icon: '❓', title: 'New question on ' + p.rows[0].name, body: text.slice(0, 140), link: '50_seller_hub.html?tab=questions' });
     return R.created(res, rows[0]);
   } catch (e) { console.error('[Shop] askQuestion:', e.message); return R.serverError(res); }
 };
@@ -431,13 +431,14 @@ exports.answerQuestion = async (req, res) => {
     const text = String(req.body.answer || '').trim();
     if (text.length < 2 || text.length > 1000) return R.badRequest(res, 'Answer must be 2–1000 characters');
     const { rows: q } = await query(`
-      SELECT q.question_id, p.seller_id FROM marketplace_questions q
+      SELECT q.question_id, q.user_id AS asker, q.product_id, p.seller_id, p.name FROM marketplace_questions q
       JOIN marketplace_products p ON p.product_id::text = q.product_id
       WHERE q.question_id = $1 AND q.status = 'published'`, [Number(req.params.qid)]);
     if (!q.length) return R.notFound(res, 'Question not found');
     const isSeller = String(q[0].seller_id) === String(req.user.user_id);
     const { rows } = await query(`INSERT INTO marketplace_answers (question_id, user_id, answer, is_seller) VALUES ($1,$2,$3,$4) RETURNING answer_id, is_seller, created_at`,
       [q[0].question_id, req.user.user_id, text, isSeller]);
+    if (String(q[0].asker) !== String(req.user.user_id)) require('./experience.controller').notify(q[0].asker, { type: 'shop_question', icon: '💬', title: (isSeller ? 'The seller answered' : 'New answer to') + ' your question on ' + q[0].name, body: text.slice(0, 140), link: '44_shop_product.html?id=' + encodeURIComponent(q[0].product_id) });
     return R.created(res, rows[0]);
   } catch (e) { console.error('[Shop] answerQuestion:', e.message); return R.serverError(res); }
 };

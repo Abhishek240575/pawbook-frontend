@@ -64,7 +64,7 @@
     if (opts.body) h['Content-Type'] = 'application/json';
     if (token()) h['Authorization'] = 'Bearer ' + token();
     return fetch(API + path, { method: opts.method || 'GET', headers: h, credentials: 'include', body: opts.body ? JSON.stringify(opts.body) : undefined })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.success === false) { var e = new Error(j.message || ('HTTP ' + r.status)); e.status = r.status; throw e; } return j.data !== undefined ? j.data : j; }); });
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.success === false) { var e = new Error(j.message || ('HTTP ' + r.status)); e.status = r.status; e.code = j.code; e.data = j.data; throw e; } return j.data !== undefined ? j.data : j; }); });
   }
 
   // ── Formatting ──────────────────────────────────────────────────────────────
@@ -445,12 +445,46 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeCart(); var m = document.getElementById('pin-modal'); if (m) m.classList.remove('show'); } });
   }
 
+  // ── Review dialog (verified buyers) ─────────────────────────────────────────
+  // p: {product_id, name, image}; mine: existing review or null; done: called after saving
+  function openReview(p, mine, done) {
+    var old = document.getElementById('rv-modal'); if (old) old.remove();
+    var m = document.createElement('div'); m.id = 'rv-modal'; m.className = 'rv-modal';
+    var stars = mine ? Number(mine.rating) : 0;
+    m.innerHTML = '<div class="rv-box" role="dialog" aria-modal="true" aria-labelledby="rv-t"><button class="rv-x" aria-label="close"><i class="ti ti-x"></i></button>'
+      + '<div class="rv-p">' + (p.image ? '<img src="' + esc(p.image) + '" alt="">' : '') + '<div><div class="rv-k" id="rv-t">' + esc(T(mine ? 'rv.edit' : 'rv.write')) + '</div><b>' + esc(p.name || '') + '</b></div></div>'
+      + '<div class="rv-stars" role="radiogroup" aria-label="' + esc(T('rv.rate')) + '">' + [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" data-s="' + n + '" aria-label="' + n + '">★</button>'; }).join('') + '<span class="rv-sl"></span></div>'
+      + '<label class="rv-l">' + esc(T('rv.title')) + '<input id="rv-title" maxlength="120" placeholder="' + esc(T('rv.titleph')) + '" value="' + esc(mine && mine.title || '') + '"></label>'
+      + '<label class="rv-l">' + esc(T('rv.text')) + '<textarea id="rv-text" maxlength="2000" placeholder="' + esc(T('rv.textph')) + '">' + esc(mine && mine.comment || '') + '</textarea></label>'
+      + '<div class="rv-err" id="rv-err"></div><div class="rv-note"><i class="ti ti-circle-check"></i>' + esc(T('rv.note')) + '</div>'
+      + '<button class="btn btn-o" id="rv-save" style="width:100%"><i class="ti ti-send"></i>' + esc(T('rv.submit')) + '</button></div>';
+    document.body.appendChild(m);
+    var paint = function () { m.querySelectorAll('.rv-stars button').forEach(function (b) { b.classList.toggle('on', Number(b.getAttribute('data-s')) <= stars); }); m.querySelector('.rv-sl').textContent = stars ? T('rv.s' + stars) : ''; };
+    paint();
+    var close = function () { m.remove(); document.removeEventListener('keydown', esck); };
+    var esck = function (e) { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', esck);
+    m.addEventListener('click', function (e) { if (e.target === m || e.target.closest('.rv-x')) close(); var b = e.target.closest('.rv-stars button'); if (b) { stars = Number(b.getAttribute('data-s')); paint(); m.querySelector('#rv-err').textContent = ''; } });
+    m.addEventListener('input', function () { m.querySelector('#rv-err').textContent = ''; });
+    setTimeout(function () { m.classList.add('show'); }, 10);
+    m.querySelector('#rv-save').onclick = function () {
+      var t = m.querySelector('#rv-text').value.trim(), er = m.querySelector('#rv-err');
+      if (!stars) { er.textContent = T('rv.e_stars'); return; }
+      if (t.length < 10) { er.textContent = T('rv.e_text'); return; }
+      this.disabled = true;
+      var btn = this;
+      api('/shop/products/' + encodeURIComponent(p.product_id) + '/reviews', { method: 'POST', body: { rating: stars, title: m.querySelector('#rv-title').value.trim(), comment: t } })
+        .then(function () { close(); toast(T('rv.thanks'), 'ti-heart'); if (done) done(); })
+        .catch(function (e) { btn.disabled = false; er.textContent = e.message || T('l.err'); });
+    };
+  }
+
   window.Shop = {
     API: API, api: api, px: px, esc: esc, money: money, starsHTML: starsHTML, deliveryBy: deliveryBy, firstImg: firstImg,
     PETS: PETS, CATS: CATS, catInfo: catInfo, catLabel: catLabel, catImg: catImg, loadCats: loadCats, activeCatIds: activeCatIds, homeCats: homeCats,
     loggedIn: loggedIn, compare: compare, saveSearch: saveSearch, T: T,
     productCard: productCard, renderCards: renderCards, skeletons: skeletons, cardData: cardData,
     cart: cart, wish: wish, recent: recent, pin: pin, toast: toast,
-    init: init, openCart: openCart, closeCart: closeCart, checkout: checkout, search: search, savePin: savePin
+    openReview: openReview, init: init, openCart: openCart, closeCart: closeCart, checkout: checkout, search: search, savePin: savePin
   };
 })();

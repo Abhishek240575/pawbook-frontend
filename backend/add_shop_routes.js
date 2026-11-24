@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v4: checkout) ─────────────────────────────
+const BLOCK = `${START} (v5: reviews, coupons) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -79,6 +79,17 @@ shopRouter.post('/orders',                   authenticate, orderLimit, coCtrl.pl
 shopRouter.get('/orders',                    authenticate, coCtrl.myOrders);
 shopRouter.get('/orders/:id',                authenticate, coCtrl.myOrder);
 shopRouter.post('/orders/:id/cancel',        authenticate, orderLimit, coCtrl.cancelOrder);
+// verified reviews, coupons (Phase 6)
+const expCtrl = require('../controllers/experience.controller');
+shopRouter.get('/products/:id/review-eligibility', authenticate, expCtrl.reviewEligibility);
+shopRouter.post('/products/:id/reviews',     authenticate, shopWriteLimit, expCtrl.postReview);
+shopRouter.get('/reviews/pending',           authenticate, expCtrl.pendingReviews);
+shopRouter.get('/coupons',                   authenticate, expCtrl.listCoupons);
+shopRouter.get('/admin/reviews',             authenticate, requireRole('admin'), expCtrl.adminReviews);
+shopRouter.patch('/admin/reviews/:id',       authenticate, requireRole('admin'), expCtrl.adminModerateReview);
+shopRouter.get('/admin/coupons',             authenticate, requireRole('admin'), expCtrl.adminCoupons);
+shopRouter.post('/admin/coupons',            authenticate, requireRole('admin'), expCtrl.adminSaveCoupon);
+shopRouter.put('/admin/coupons/:code',       authenticate, requireRole('admin'), expCtrl.adminSaveCoupon);
 router.use('/shop', shopRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
@@ -90,6 +101,7 @@ const G_END = '// ── END SHOP GUARD';
 const GUARD = `${G_START} ──
 marketRouter.patch('/orders/:order_id/status', authenticate, requireRole('admin'));
 marketRouter.post('/orders', authenticate, require('../controllers/checkout.controller').legacyOrderPrices);
+marketRouter.post('/listings/:listing_id/reviews', authenticate, require('../controllers/experience.controller').legacyReview);
 ${G_END} ──
 `;
 const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[^\n]*\n/;
@@ -97,9 +109,12 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop4');
+  fs.copyFileSync(f, f + '.bak-shop5');
   let out;
-  const a = src.indexOf(START), b = src.indexOf(END);
+  // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
+  const a = src.indexOf(START);
+  let b = a >= 0 ? src.indexOf(END, a) : -1;
+  while (b >= 0 && src.startsWith(G_END, b)) b = src.indexOf(END, b + 1);
   if (a >= 0 && b > a) {
     const lineEnd = src.indexOf('\n', b);
     out = src.slice(0, a) + BLOCK + src.slice(lineEnd >= 0 ? lineEnd + 1 : src.length);
@@ -115,4 +130,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop4 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop5 — restart the app from the MilesWeb panel.');

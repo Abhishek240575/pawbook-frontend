@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://images.pexels.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=5">
+<link rel="stylesheet" href="shop.css?v=6">
 <style>
 .crumb{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:20px 0 14px}
 .crumb a{text-decoration:none;color:var(--muted)}
@@ -88,6 +88,9 @@
 .bar i span{display:block;height:100%;background:var(--star)}
 .rev{padding:16px 0;border-bottom:1px solid var(--line2)}
 .rev-h{display:flex;align-items:center;gap:10px}
+.rv-cta{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--o-ll);border:1px solid #fde0c8;border-radius:16px;padding:14px 16px;margin-bottom:16px}
+.rv-cta b{display:block;color:var(--navy);font-size:14px}.rv-cta small{color:var(--muted);font-size:12.5px}
+.rv-inf{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-bottom:14px}.rv-inf i{color:var(--green);font-size:17px}
 .rev-av{width:36px;height:36px;border-radius:50%;background:var(--o-l);color:var(--o-d);font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .rev-av img{width:100%;height:100%;object-fit:cover}
 .rev b{font-size:13.5px;color:var(--navy)}
@@ -154,9 +157,9 @@
 <div class="sticky-buy" id="sticky-buy" style="display:none"></div>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=5"></script>
-<script src="shop-i18n.js?v=5"></script>
-<script src="shop.js?v=5"></script>
+<script src="pawbook-i18n.js?v=6"></script>
+<script src="shop-i18n.js?v=6"></script>
+<script src="shop.js?v=6"></script>
 <script>
 var S = Shop, T = PBi18n.t, esc = S.esc;
 S.init('pdp');
@@ -260,18 +263,46 @@ function renderDetails(){
   tabs.push(['qa', T('qa.t') + (QA && QA.length ? ' (' + QA.length + ')' : ''), qaHTML()]);
   document.getElementById('details').innerHTML = '<div class="tabs" id="tab-reviews" role="tablist">' + tabs.map(function(t, i){ return '<button class="' + (i ? '' : 'on') + '" data-tab="' + t[0] + '" onclick="tab(\'' + t[0] + '\')">' + esc(t[1]) + '</button>'; }).join('') + '</div>'
     + tabs.map(function(t, i){ return '<div class="tpanel' + (i ? '' : ' on') + '" data-panel="' + t[0] + '">' + t[2] + '</div>'; }).join('');
+  myReview();
 }
 function tab(k){ document.querySelectorAll('[data-tab]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab') === k); });
   document.querySelectorAll('[data-panel]').forEach(function(p){ p.classList.toggle('on', p.getAttribute('data-panel') === k); }); }
 function reviewsHTML(){
-  if (!D.reviews.length) return '<div class="empty" style="padding:30px 0"><div class="empty-ic"><i class="ti ti-message-star"></i></div><div class="empty-t">' + esc(T('pd.norev')) + '</div><div class="empty-s">' + esc(T('pd.norevs')) + '</div></div>';
+  var me = '<div id="rv-me" class="rv-me"></div>';
+  if (!D.reviews.length) return me + '<div class="empty" style="padding:30px 0"><div class="empty-ic"><i class="ti ti-message-star"></i></div><div class="empty-t">' + esc(T('pd.norev')) + '</div><div class="empty-s">' + esc(T('pd.norevs')) + '</div></div>';
   var total = D.reviews.length;
-  return '<div class="rev-g"><div class="rev-sum"><div class="big">' + P.rating.toFixed(1) + '</div>' + S.starsHTML(P.rating) + '<div style="font-size:12.5px;color:var(--muted);margin:4px 0 10px">' + esc((P.review_count === 1 ? T('pd.nrev1') : T('pd.nrev', {n: P.review_count}))) + '</div>'
+  return me + '<div class="rev-g"><div class="rev-sum"><div class="big">' + P.rating.toFixed(1) + '</div>' + S.starsHTML(P.rating) + '<div style="font-size:12.5px;color:var(--muted);margin:4px 0 10px">' + esc((P.review_count === 1 ? T('pd.nrev1') : T('pd.nrev', {n: P.review_count}))) + '</div>'
     + D.rating_breakdown.map(function(r){ return '<div class="bar">' + r.stars + '★<i><span style="width:' + (total ? r.n / total * 100 : 0) + '%"></span></i>' + r.n + '</div>'; }).join('') + '</div>'
     + '<div>' + D.reviews.map(function(r){
       var n = r.user_name || 'PawBook user';
-      return '<div class="rev"><div class="rev-h"><span class="rev-av">' + (r.avatar_url ? '<img src="' + esc(r.avatar_url) + '" alt="">' : esc(n.charAt(0).toUpperCase())) + '</span><div><b>' + esc(n) + '</b><br><small>' + S.starsHTML(r.rating) + ' · ' + esc(PBi18n.fmtDate(r.created_at)) + '</small></div></div>' + (r.comment ? '<p>' + esc(r.comment) + '</p>' : '') + '</div>';
+      return '<div class="rev"><div class="rev-h"><span class="rev-av">' + (r.avatar_url ? '<img src="' + esc(r.avatar_url) + '" alt="">' : esc(n.charAt(0).toUpperCase())) + '</span><div><b>' + esc(n) + '</b>'
+        + (r.verified ? ' <span class="vchip"><i class="ti ti-circle-check"></i>' + esc(T('rv.verified')) + '</span>' : '')
+        + '<br><small>' + S.starsHTML(r.rating) + ' · ' + esc(PBi18n.fmtDate(r.created_at)) + '</small></div></div>'
+        + (r.title ? '<p style="font-weight:800;color:var(--navy);margin-bottom:-6px">' + esc(r.title) + '</p>' : '') + (r.comment ? '<p>' + esc(r.comment) + '</p>' : '') + '</div>';
     }).join('') + '</div></div>';
+}
+var RV_EL = null;
+function myReview(){
+  var box = document.getElementById('rv-me'); if (!box) return;
+  if (!S.loggedIn()) { box.innerHTML = '<div class="rv-inf"><i class="ti ti-circle-check"></i>' + esc(T('rv.only')) + '</div>'; return; }
+  var draw = function(e){
+    RV_EL = e;
+    if (e.can) box.innerHTML = '<div class="rv-cta"><div><b>' + esc(T(e.mine ? 'rv.youreviewed' : 'rv.ask')) + '</b><small>' + esc(T('rv.asks')) + '</small></div><button class="btn btn-o btn-sm" onclick="writeReview()"><i class="ti ti-pencil"></i>' + esc(T(e.mine ? 'rv.edit' : 'rv.write')) + '</button></div>';
+    else if (e.reason === 'not_delivered') box.innerHTML = '<div class="rv-inf"><i class="ti ti-truck-delivery"></i>' + esc(T('rv.afterdel')) + '</div>';
+    else if (e.reason === 'own_product') box.innerHTML = '';
+    else box.innerHTML = '<div class="rv-inf"><i class="ti ti-circle-check"></i>' + esc(T('rv.only')) + '</div>';
+  };
+  if (RV_EL) return draw(RV_EL);
+  S.api('/shop/products/' + encodeURIComponent(ID) + '/review-eligibility').then(function(e){
+    draw(e);
+    if (location.hash === '#review' && e.can) { history.replaceState(null, '', location.pathname + location.search); tab('reviews'); document.getElementById('details').scrollIntoView({behavior: 'smooth'}); writeReview(); }
+  }).catch(function(){});
+}
+function writeReview(){
+  S.openReview({product_id: P.product_id, name: P.name, image: imgs()[0]}, RV_EL && RV_EL.mine, function(){
+    RV_EL = null;
+    S.api('/shop/products/' + encodeURIComponent(ID)).then(function(d){ D.reviews = d.reviews; D.rating_breakdown = d.rating_breakdown; P.rating = d.product.rating; P.review_count = d.product.review_count; render(); renderDetails(); tab('reviews'); });
+  });
 }
 
 /* ── questions & answers ── */

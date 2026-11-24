@@ -73,7 +73,7 @@ async function storeStats(uid) {
            WHERE p.seller_id::text = $1 AND q.status = 'published'
              AND NOT EXISTS (SELECT 1 FROM marketplace_answers a WHERE a.question_id = q.question_id AND a.is_seller AND a.status = 'published')`, [uid]),
     query(`SELECT COALESCE(AVG(r.rating), 0)::float AS rating, COUNT(*)::int AS reviews FROM marketplace_reviews r
-           JOIN marketplace_products p ON p.product_id::text = r.product_id::text WHERE p.seller_id::text = $1`, [uid]),
+           JOIN marketplace_products p ON p.product_id::text = r.product_id::text WHERE p.seller_id::text = $1 AND COALESCE(r.status, 'published') = 'published'`, [uid]),
   ]);
   return Object.assign({}, p.rows[0], o.rows[0], q.rows[0], r.rows[0]);
 }
@@ -200,8 +200,8 @@ exports.listProducts = async (req, res) => {
     if (req.query.q) { params.push('%' + str(req.query.q, 80) + '%'); where.push(`(p.name ILIKE $${params.length} OR p.sku ILIKE $${params.length} OR p.brand ILIKE $${params.length})`); }
     const { rows } = await query(`SELECT ${PRODUCT_COLS},
         COALESCE((SELECT SUM(oi.quantity) FROM marketplace_order_items oi WHERE oi.product_id::text = p.product_id::text AND oi.fulfil_status <> 'cancelled'), 0)::int AS sold,
-        COALESCE((SELECT AVG(r.rating) FROM marketplace_reviews r WHERE r.product_id::text = p.product_id::text), 0)::float AS rating,
-        (SELECT COUNT(*) FROM marketplace_reviews r WHERE r.product_id::text = p.product_id::text)::int AS review_count
+        COALESCE((SELECT AVG(r.rating) FROM marketplace_reviews r WHERE r.product_id::text = p.product_id::text AND COALESCE(r.status, 'published') = 'published'), 0)::float AS rating,
+        (SELECT COUNT(*) FROM marketplace_reviews r WHERE r.product_id::text = p.product_id::text AND COALESCE(r.status, 'published') = 'published')::int AS review_count
       FROM marketplace_products p WHERE ${where.join(' AND ')} ORDER BY p.is_active DESC, p.updated_at DESC LIMIT 500`, params);
     return R.ok(res, { products: rows });
   } catch (e) { console.error('[Seller] listProducts:', e.message); return R.serverError(res); }
@@ -351,6 +351,14 @@ exports.updateOrder = async (req, res) => {
     // keep the buyer-facing order status in step when every item in the order agrees
     const all = await query(`SELECT DISTINCT fulfil_status FROM marketplace_order_items WHERE order_id = $1`, [oid]);
     if (all.rows.length === 1) await query(`UPDATE marketplace_orders SET status = $2 WHERE order_id = $1`, [oid, ORDER_STATUS[all.rows[0].fulfil_status]]).catch(() => {});
+    if (all.rows.length === 1 && all.rows[0].fulfil_status === 'cancelled') await query(`DELETE FROM marketplace_coupon_redemptions WHERE order_id = $1`, [oid]).catch(() => {});
+    // tell the buyer
+    const { rows: ord } = await query(`SELECT buyer_id::text AS buyer, order_number FROM marketplace_orders WHERE order_id = $1`, [oid]).catch(() => ({ rows: [] }));
+    if (ord[0]) {
+      const M = { confirmed: ['✅', 'confirmed by the seller'], packed: ['📦', 'packed and ready to ship'], shipped: ['🚚', 'on its way'], delivered: ['🏠', 'delivered. How did your pet like it? Leave a review.'], cancelled: ['❌', 'cancelled by the seller'] };
+      if (M[to]) require('./experience.controller').notify(ord[0].buyer, { type: 'shop_order', icon: M[to][0], title: 'Order ' + ord[0].order_number + ' ' + (to === 'delivered' ? 'delivered' : M[to][1].split('.')[0]),
+        body: to === 'shipped' && tracking ? 'Tracking: ' + tracking : (to === 'delivered' ? M[to][1].split('. ')[1] : null), link: '53_shop_orders.html?id=' + encodeURIComponent(oid) });
+    }
     return R.ok(res, { updated: ids.length, status: to });
   } catch (e) { console.error('[Seller] updateOrder:', e.message); return R.serverError(res); }
 };

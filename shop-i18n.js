@@ -403,3 +403,42 @@ mr:{'p.choose':'साइज निवडा','c.pick':'आधी साइज �
 'mo.cancel':'ऑर्डर रद्द करा','mo.why':'तुम्ही का रद्द करत आहात?','mo.r1':'चुकून ऑर्डर झाली','mo.r2':'चांगली किंमत मिळाली','mo.r3':'डिलिव्हरी खूप उशिरा','mo.r4':'इतर कारण',
 'mo.confirmc':'होय, ऑर्डर रद्द करा','mo.keepo':'ऑर्डर ठेवा','mo.cancelled':'ऑर्डर रद्द झाली','mo.nf':'ऑर्डर सापडली नाही'}
 });
+
+/* Phase 6: verified reviews, coupons */
+PBi18n.register({
+en:{'rv.write':'Write a review','rv.edit':'Edit your review','rv.rate':'Rate this product','rv.title':'Headline','rv.titleph':'Sum it up in a few words','rv.text':'Your review','rv.textph':'How did your pet like it? Size, quality, taste, durability…',
+'rv.note':'Your review will show a Verified purchase badge','rv.submit':'Submit review','rv.s1':'Poor','rv.s2':'Fair','rv.s3':'Good','rv.s4':'Very good','rv.s5':'Excellent',
+'rv.e_stars':'Please choose 1 to 5 stars','rv.e_text':'Please write at least 10 characters','rv.thanks':'Thanks for your review!','rv.verified':'Verified purchase',
+'rv.only':'Only customers who bought and received this product can review it.','rv.ask':'You bought this — how was it?','rv.youreviewed':'You reviewed this product','rv.asks':'Your review helps other pet parents choose.',
+'rv.afterdel':'You can review this product once your order is delivered.','rv.pending':'Rate your purchases','rv.pendings':'Help other pet parents with a quick review',
+'cp.ph':'Coupon code','cp.apply':'Apply','cp.remove':'Remove','cp.applied':'Coupon {c}','cp.saved':'You save {amt}','cp.pct':'{n}% off','cp.upto':'up to {amt}','cp.flat':'{amt} off',
+'cp.yousave':'You save {amt}','cp.enter':'Enter a coupon code','cp.ok':'Coupon applied — you save {amt}'},
+hi:{'rv.write':'रिव्यू लिखें','rv.edit':'अपना रिव्यू बदलें','rv.rate':'इस प्रोडक्ट को रेट करें','rv.title':'शीर्षक','rv.titleph':'कुछ शब्दों में बताएँ','rv.text':'आपका रिव्यू','rv.textph':'आपके पालतू को कैसा लगा? साइज़, क्वालिटी, स्वाद, मज़बूती…',
+'rv.note':'आपके रिव्यू पर "वेरिफ़ाइड खरीद" बैज दिखेगा','rv.submit':'रिव्यू भेजें','rv.s1':'खराब','rv.s2':'ठीक','rv.s3':'अच्छा','rv.s4':'बहुत अच्छा','rv.s5':'शानदार',
+'rv.e_stars':'1 से 5 स्टार चुनें','rv.e_text':'कम से कम 10 अक्षर लिखें','rv.thanks':'रिव्यू के लिए धन्यवाद!','rv.verified':'वेरिफ़ाइड खरीद',
+'rv.only':'सिर्फ़ वही ग्राहक रिव्यू कर सकते हैं जिन्होंने यह प्रोडक्ट खरीदा और पाया।','rv.ask':'आपने यह खरीदा — कैसा लगा?','rv.youreviewed':'आपने इस प्रोडक्ट का रिव्यू किया है','rv.asks':'आपका रिव्यू दूसरे पेट पैरेंट्स की मदद करता है।',
+'rv.afterdel':'ऑर्डर डिलीवर होने के बाद आप रिव्यू कर सकते हैं।','rv.pending':'अपनी खरीदारी को रेट करें','rv.pendings':'एक छोटे रिव्यू से दूसरे पेट पैरेंट्स की मदद करें',
+'cp.ph':'कूपन कोड','cp.apply':'लगाएँ','cp.remove':'हटाएँ','cp.applied':'कूपन {c}','cp.saved':'आपकी बचत {amt}','cp.pct':'{n}% छूट','cp.upto':'{amt} तक','cp.flat':'{amt} छूट',
+'cp.yousave':'आपकी बचत {amt}','cp.enter':'कूपन कोड डालें','cp.ok':'कूपन लगा — आपकी बचत {amt}'},
+bn:{'rv.write':'রিভিউ লিখুন','rv.edit':'আপনার রিভিউ সম্পাদনা','rv.rate':'এই পণ্যকে রেট দিন','rv.title':'শিরোনাম','rv.titleph':'কয়েকটি শব্দে লিখুন','rv.text':'আপনার রিভিউ','rv.textph':'আপনার পোষ্যের কেমন লেগেছে? সাইজ, মান, স্বাদ, টেকসই…',
+'rv.note':'আপনার রিভিউতে "যাচাইকৃত ক্রয়" ব্যাজ থাকবে','rv.submit':'রিভিউ পাঠান','rv.s1':'খারাপ','rv.s2':'মোটামুটি','rv.s3':'ভালো','rv.s4':'খুব ভালো','rv.s5':'চমৎকার',
+'rv.e_stars':'১ থেকে ৫ তারা বাছুন','rv.e_text':'অন্তত ১০টি অক্ষর লিখুন','rv.thanks':'রিভিউয়ের জন্য ধন্যবাদ!','rv.verified':'যাচাইকৃত ক্রয়',
+'rv.only':'শুধু যারা এই পণ্য কিনে হাতে পেয়েছেন তারাই রিভিউ দিতে পারেন।','rv.ask':'আপনি এটি কিনেছেন — কেমন লাগল?','rv.youreviewed':'আপনি এই পণ্যের রিভিউ দিয়েছেন','rv.asks':'আপনার রিভিউ অন্য পোষ্য-অভিভাবকদের সাহায্য করে।',
+'rv.afterdel':'অর্ডার ডেলিভারি হলে রিভিউ দিতে পারবেন।','rv.pending':'আপনার কেনাকাটা রেট দিন','rv.pendings':'একটি ছোট রিভিউ দিয়ে অন্যদের সাহায্য করুন',
+'cp.ph':'কুপন কোড','cp.apply':'প্রয়োগ','cp.remove':'সরান','cp.applied':'কুপন {c}','cp.saved':'আপনার সাশ্রয় {amt}','cp.pct':'{n}% ছাড়','cp.upto':'{amt} পর্যন্ত','cp.flat':'{amt} ছাড়',
+'cp.yousave':'আপনার সাশ্রয় {amt}','cp.enter':'কুপন কোড লিখুন','cp.ok':'কুপন প্রয়োগ হয়েছে — সাশ্রয় {amt}'},
+ta:{'rv.write':'மதிப்புரை எழுது','rv.edit':'உங்கள் மதிப்புரையைத் திருத்து','rv.rate':'இந்தப் பொருளை மதிப்பிடு','rv.title':'தலைப்பு','rv.titleph':'சில சொற்களில் சுருக்கமாக','rv.text':'உங்கள் மதிப்புரை','rv.textph':'உங்கள் செல்லப்பிராணிக்கு எப்படி இருந்தது? அளவு, தரம், சுவை, உறுதி…',
+'rv.note':'உங்கள் மதிப்புரையில் "சரிபார்க்கப்பட்ட வாங்குதல்" பேட்ஜ் இருக்கும்','rv.submit':'மதிப்புரையை அனுப்பு','rv.s1':'மோசம்','rv.s2':'சுமார்','rv.s3':'நல்லது','rv.s4':'மிக நல்லது','rv.s5':'அருமை',
+'rv.e_stars':'1 முதல் 5 நட்சத்திரங்களைத் தேர்ந்தெடுங்கள்','rv.e_text':'குறைந்தது 10 எழுத்துகள் எழுதுங்கள்','rv.thanks':'மதிப்புரைக்கு நன்றி!','rv.verified':'சரிபார்க்கப்பட்ட வாங்குதல்',
+'rv.only':'இந்தப் பொருளை வாங்கிப் பெற்றவர்கள் மட்டுமே மதிப்புரை எழுத முடியும்.','rv.ask':'நீங்கள் இதை வாங்கினீர்கள் — எப்படி இருந்தது?','rv.youreviewed':'இந்தப் பொருளுக்கு மதிப்புரை எழுதியுள்ளீர்கள்','rv.asks':'உங்கள் மதிப்புரை மற்ற செல்லப் பெற்றோருக்கு உதவும்.',
+'rv.afterdel':'ஆர்டர் டெலிவரி ஆனதும் மதிப்புரை எழுதலாம்.','rv.pending':'உங்கள் வாங்குதல்களை மதிப்பிடுங்கள்','rv.pendings':'ஒரு சிறு மதிப்புரையால் மற்றவர்களுக்கு உதவுங்கள்',
+'cp.ph':'கூப்பன் குறியீடு','cp.apply':'பயன்படுத்து','cp.remove':'நீக்கு','cp.applied':'கூப்பன் {c}','cp.saved':'உங்கள் சேமிப்பு {amt}','cp.pct':'{n}% தள்ளுபடி','cp.upto':'{amt} வரை','cp.flat':'{amt} தள்ளுபடி',
+'cp.yousave':'உங்கள் சேமிப்பு {amt}','cp.enter':'கூப்பன் குறியீட்டை உள்ளிடுங்கள்','cp.ok':'கூப்பன் பயன்படுத்தப்பட்டது — சேமிப்பு {amt}'},
+mr:{'rv.write':'रिव्ह्यू लिहा','rv.edit':'तुमचा रिव्ह्यू बदला','rv.rate':'या प्रॉडक्टला रेटिंग द्या','rv.title':'शीर्षक','rv.titleph':'काही शब्दांत सांगा','rv.text':'तुमचा रिव्ह्यू','rv.textph':'तुमच्या पाळीव प्राण्याला कसे वाटले? साइज, दर्जा, चव, टिकाऊपणा…',
+'rv.note':'तुमच्या रिव्ह्यूवर "व्हेरिफाइड खरेदी" बॅज दिसेल','rv.submit':'रिव्ह्यू पाठवा','rv.s1':'वाईट','rv.s2':'ठीक','rv.s3':'चांगले','rv.s4':'खूप चांगले','rv.s5':'उत्कृष्ट',
+'rv.e_stars':'1 ते 5 स्टार निवडा','rv.e_text':'किमान 10 अक्षरे लिहा','rv.thanks':'रिव्ह्यूसाठी धन्यवाद!','rv.verified':'व्हेरिफाइड खरेदी',
+'rv.only':'हे प्रॉडक्ट विकत घेऊन मिळालेले ग्राहकच रिव्ह्यू देऊ शकतात.','rv.ask':'तुम्ही हे घेतले — कसे वाटले?','rv.youreviewed':'तुम्ही या प्रॉडक्टचा रिव्ह्यू दिला आहे','rv.asks':'तुमचा रिव्ह्यू इतर पेट पालकांना मदत करतो.',
+'rv.afterdel':'ऑर्डर डिलिव्हर झाल्यावर तुम्ही रिव्ह्यू देऊ शकता.','rv.pending':'तुमच्या खरेदीला रेटिंग द्या','rv.pendings':'छोट्या रिव्ह्यूने इतर पेट पालकांना मदत करा',
+'cp.ph':'कूपन कोड','cp.apply':'लावा','cp.remove':'काढा','cp.applied':'कूपन {c}','cp.saved':'तुमची बचत {amt}','cp.pct':'{n}% सूट','cp.upto':'{amt} पर्यंत','cp.flat':'{amt} सूट',
+'cp.yousave':'तुमची बचत {amt}','cp.enter':'कूपन कोड टाका','cp.ok':'कूपन लागले — बचत {amt}'}
+});

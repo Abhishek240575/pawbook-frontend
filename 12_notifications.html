@@ -248,7 +248,8 @@ function renderNotifs() {
         actionsHtml = '<div class="notif-action-btns"><button class="notif-btn-accept" onclick="event.stopPropagation();'+n.btn.action+'">'+n.btn.label+'</button></div>';
       }
 
-      html += '<div class="notif-item'+(n.unread?' unread':'')+'" id="notif-'+n.id+'" onclick="markOneRead('+n.id+')">' +
+      var idArg = typeof n.id === 'number' ? n.id : "'" + String(n.id).replace(/[^A-Za-z0-9_]/g, '') + "'";
+      html += '<div class="notif-item'+(n.unread?' unread':'')+'" id="notif-'+n.id+'" onclick="markOneRead('+idArg+')"'+(n.link?' style="cursor:pointer"':'')+'>' +
         '<div class="notif-av" style="position:relative">'+avHtml+
           '<div class="notif-icon-badge" style="background:'+n.badgeBg+'">'+n.badge+'</div>'+
         '</div>'+
@@ -280,8 +281,10 @@ function searchNotifs(q) {
   renderNotifs();
 }
 
+function escN(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function markOneRead(id) {
   var n = NOTIFS.find(function(x){ return x.id === id; });
+  if (n && n.link) { setTimeout(function(){ location.href = n.link; }, 150); }
   if(n && n.unread) {
     n.unread = false;
     // Sync to API if this is a real API notification (numeric id from API)
@@ -349,7 +352,7 @@ function ageBucket(iso) {
 
 // ── Badge emoji by notification type ────────────────────────────
 function typeBadge(type) {
-  var map = {like:'❤️',comment:'💬',follow:'👤',match:'🐾',appointment:'📅',health:'💊',system:'📢',group:'👥',lost:'🐾',achievement:'🏆'};
+  var map = {like:'❤️',comment:'💬',follow:'👤',match:'🐾',appointment:'📅',health:'💊',system:'📢',group:'👥',lost:'🐾',achievement:'🏆',shop_order:'🛍️',shop_question:'💬'};
   return map[type] || '🔔';
 }
 function typeBadgeBg(type) {
@@ -437,7 +440,8 @@ function typeCategory(type) {
     if(!rows.length) return; // API returned empty — keep demo data
 
     var apiNotifs = rows.map(function(n, i){
-      var avatar = n.sender_avatar || n.icon || '🔔';
+      var avatar = n.sender_avatar || n.icon || n.icon_emoji || '🔔';
+      var safeLink = typeof n.link_url === 'string' && /^[A-Za-z0-9_\-]+\.html(\?[A-Za-z0-9_\-=&%.]*)?$/.test(n.link_url) ? n.link_url : null;
       var isUrl  = typeof avatar === 'string' && avatar.startsWith('http');
       return {
         id:       'api_' + (n.id || i+1),
@@ -449,8 +453,9 @@ function typeCategory(type) {
         iconBg:   isUrl ? undefined : '#dbeafe',
         badge:    typeBadge(n.type),
         badgeBg:  typeBadgeBg(n.type),
-        text:     '<strong>' + (n.title || 'Notification') + '</strong>' +
-                  (n.body ? ' — ' + n.body : ''),
+        text:     '<strong>' + escN(n.title || 'Notification') + '</strong>' +
+                  (n.body ? ' — ' + escN(n.body) : ''),
+        link:     safeLink,
         time:     relTime(n.created_at)
       };
     });

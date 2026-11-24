@@ -9,8 +9,8 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=5">
-<link rel="stylesheet" href="seller.css?v=5">
+<link rel="stylesheet" href="shop.css?v=6">
+<link rel="stylesheet" href="seller.css?v=6">
 <style>
 .panel{display:none}.panel.on{display:block}
 .oc{display:block;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:12px;text-decoration:none;color:inherit;transition:box-shadow .2s}
@@ -51,6 +51,12 @@
 .codbox i{font-size:24px;color:var(--o)}
 .cform{margin-top:12px;padding:14px;border-radius:14px;background:#fff5f5;border:1px solid #f8caca}
 .cancelled-box{background:#f6f6f6;border-radius:14px;padding:12px 14px;font-size:13px;color:#555;margin-top:10px}
+.pend{background:linear-gradient(135deg,#fff7ea,#fff1df);border:1px solid #fde3bf;border-radius:18px;padding:14px 16px;margin-bottom:14px}
+.pend-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.pend-h i{color:var(--star);font-size:20px}.pend-h b{color:var(--navy)}.pend-h span{font-size:12.5px;color:var(--muted)}
+.pend-l{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.pend-i{flex-shrink:0;width:190px;background:#fff;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--line)}
+.pend-i img{width:100%;height:90px;border-radius:10px;object-fit:cover;background:var(--o-ll)}
+.pend-i .t{font-size:12.5px;font-weight:700;color:var(--navy);line-height:1.35;height:34px;overflow:hidden}
 .ad{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:#fff;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start}
 .ad i{font-size:22px;color:var(--o)}
 .ad .t{flex:1;font-size:13px;line-height:1.55}.ad .t b{color:var(--navy)}
@@ -70,16 +76,16 @@
       <button data-t="addrs"><i class="ti ti-map-pin"></i><span data-i18n="mo.addrs">Saved addresses</span></button>
       <button data-t="wish" onclick="location.href='43_shop_list.html?wishlist=1'"><i class="ti ti-heart"></i><span data-i18n="h.wish">Wishlist</span></button>
     </div>
-    <section class="panel on" id="p-orders"><div id="olist"><div class="pc-skel" style="aspect-ratio:auto;height:200px"></div></div></section>
+    <section class="panel on" id="p-orders"><div id="pending"></div><div id="olist"><div class="pc-skel" style="aspect-ratio:auto;height:200px"></div></div></section>
     <section class="panel" id="p-addrs"><div id="alist"></div><a class="btn btn-o" href="52_shop_checkout.html" id="addaddr" style="display:none"><i class="ti ti-map-pin-plus"></i><span data-i18n="co.addnew">Add a new address</span></a></section>
   </div>
 </main>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=5"></script>
-<script src="shop-i18n.js?v=5"></script>
-<script src="seller-i18n.js?v=5"></script>
-<script src="shop.js?v=5"></script>
+<script src="pawbook-i18n.js?v=6"></script>
+<script src="shop-i18n.js?v=6"></script>
+<script src="seller-i18n.js?v=6"></script>
+<script src="shop.js?v=6"></script>
 <script>
 var S = Shop, T = PBi18n.t, esc = S.esc;
 S.init('account');
@@ -94,6 +100,18 @@ document.querySelectorAll('#tabs button[data-t]').forEach(function(b){ if (b.get
   document.querySelectorAll('#tabs button').forEach(function(x){ x.classList.toggle('on', x === b); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + b.getAttribute('data-t')); });
   if (b.getAttribute('data-t') === 'addrs') loadAddrs(); }; });
+function loadPending(){
+  S.api('/shop/reviews/pending').then(function(d){
+    var l = d.items || [], el = document.getElementById('pending');
+    el.innerHTML = l.length ? '<div class="pend"><div class="pend-h"><i class="ti ti-star"></i><b>' + esc(T('rv.pending')) + '</b><span>' + esc(T('rv.pendings')) + '</span></div><div class="pend-l">'
+      + l.map(function(p){ return '<div class="pend-i"><img src="' + esc(p.image_url || S.catImg(p.category || 'other', 200)) + '" alt=""><div class="t">' + esc(p.name) + '</div><button class="btn btn-o btn-sm" onclick="rate(\'' + esc(p.product_id) + '\')">' + esc(T('rv.rate')) + '</button></div>'; }).join('') + '</div></div>' : '';
+    window.PEND = l;
+  }).catch(function(){});
+}
+function rate(pid){
+  var p = (window.PEND || []).filter(function(x){ return x.product_id === pid; })[0] || (O && O.items.filter(function(i){ return String(i.product_id) === pid; })[0]) || {product_id: pid};
+  S.openReview({product_id: pid, name: p.name, image: p.image_url}, null, function(){ if (O) loadDetail(); else loadPending(); });
+}
 function loadOrders(){
   S.api('/shop/orders').then(function(d){
     var l = d.orders || [];
@@ -139,7 +157,8 @@ function renderDetail(){
     + o.items.map(function(i){
       return '<div class="it"><a href="44_shop_product.html?id=' + encodeURIComponent(i.product_id || '') + '"><img src="' + img(i) + '" alt=""></a><div class="t"><b>' + esc(i.name) + '</b>'
         + esc(T('sh.qty', {n: i.quantity})) + (i.seller_name ? ' · ' + esc(T('co.soldby', {s: i.seller_name})) : '') + ' ' + pill(i.status)
-        + (i.tracking ? '<div class="tr"><i class="ti ti-truck"></i> ' + esc(i.tracking) + '</div>' : '') + '</div>'
+        + (i.tracking ? '<div class="tr"><i class="ti ti-truck"></i> ' + esc(i.tracking) + '</div>' : '')
+        + (i.status === 'delivered' && i.product_id ? '<div style="margin-top:6px"><button class="btn btn-ghost btn-sm" onclick="rate(\'' + esc(i.product_id) + '\')"><i class="ti ti-star"></i>' + esc(T('rv.rate')) + '</button></div>' : '') + '</div>'
         + '<div class="pr">' + S.money(i.price * i.quantity) + (i.mrp > i.price ? '<br><s style="color:#a3a7b5;font-weight:500;font-size:12px">' + S.money(i.mrp * i.quantity) + '</s>' : '') + '</div></div>';
     }).join('')
     + '<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="buyAgain(this)"><i class="ti ti-refresh"></i>' + esc(T('mo.again')) + '</button>'
@@ -147,7 +166,7 @@ function renderDetail(){
   h += '</div><aside>';
   h += '<div class="sx-card"><h2><i class="ti ti-map-pin"></i>' + esc(T('sh.shipto')) + '</h2><div class="addr"><b>' + esc(a.name || '') + '</b><br>' + esc([a.line1, a.line2, a.landmark].filter(Boolean).join(', ')) + '<br>' + esc([a.city, a.state].filter(Boolean).join(', ')) + ' – ' + esc(a.pincode || '') + (a.phone ? '<br>+91 ' + esc(a.phone) : '') + '</div></div>';
   h += '<div class="sx-card"><h2><i class="ti ti-receipt"></i>' + esc(T('co.sum')) + '</h2>'
-    + (o.subtotal != null ? '<div class="sumrow"><span>' + esc(T('c.sub')) + '</span><span>' + S.money(o.subtotal) + '</span></div><div class="sumrow"><span>' + esc(T('c.del')) + '</span><span>' + (o.delivery_fee ? S.money(o.delivery_fee) : esc(T('c.freeword'))) + '</span></div>' : '')
+    + (o.subtotal != null ? '<div class="sumrow"><span>' + esc(T('c.sub')) + '</span><span>' + S.money(o.subtotal) + '</span></div>' + (o.discount > 0 ? '<div class="sumrow" style="color:var(--green);font-weight:700"><span>' + esc(T('cp.applied', {c: o.coupon_code || ''})) + '</span><span>−' + S.money(o.discount) + '</span></div>' : '') + '<div class="sumrow"><span>' + esc(T('c.del')) + '</span><span>' + (o.delivery_fee ? S.money(o.delivery_fee) : esc(T('c.freeword'))) + '</span></div>' : '')
     + '<div class="sumrow tot"><span>' + esc(T('c.total')) + '</span><span>' + S.money(o.total) + '</span></div>'
     + (o.payment_method === 'cod' && st !== 'cancelled' ? '<div class="codbox"><i class="ti ti-cash"></i><span>' + esc(T(st === 'delivered' ? 'mo.codpaid' : 'mo.codpay', {amt: S.money(o.total)})) + '</span></div>' : '')
     + (o.can_cancel ? '<button class="btn btn-ghost" style="width:100%;margin-top:12px;color:var(--red)" onclick="showCancel()" id="cbtn"><i class="ti ti-x"></i>' + esc(T('mo.cancel')) + '</button><div id="cform"></div>' : '')
@@ -177,7 +196,7 @@ function loadDetail(){
 }
 if (!S.loggedIn()) location.href = '01_login.html';
 else if (OID) { document.getElementById('list').style.display = 'none'; document.getElementById('detail').style.display = ''; document.getElementById('detail').innerHTML = '<div class="pc-skel" style="aspect-ratio:auto;height:360px;margin-top:24px"></div>'; loadDetail(); }
-else { loadOrders(); if (qs.get('tab') === 'addrs') document.querySelector('#tabs button[data-t=addrs]').click(); }
+else { loadOrders(); loadPending(); if (qs.get('tab') === 'addrs') document.querySelector('#tabs button[data-t=addrs]').click(); }
 window.addEventListener('pb:langchange', function(){ if (O) renderDetail(); else if (!OID) loadOrders(); });
 </script>
 </body>

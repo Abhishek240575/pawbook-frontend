@@ -9,8 +9,8 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=5">
-<link rel="stylesheet" href="seller.css?v=5">
+<link rel="stylesheet" href="shop.css?v=6">
+<link rel="stylesheet" href="seller.css?v=6">
 <style>
 .co{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:start;margin-top:8px}
 .co-side{position:sticky;top:90px}
@@ -60,6 +60,18 @@
 .trust{display:flex;flex-direction:column;gap:7px;margin-top:14px;font-size:12px;color:var(--muted)}
 .trust span{display:flex;gap:8px;align-items:center}.trust i{color:var(--green);font-size:16px}
 .place{width:100%;height:52px;font-size:15.5px;margin-top:6px}
+.cp{margin-top:12px;border:1.5px dashed #f2c9a6;border-radius:14px;padding:12px;background:var(--o-ll)}
+.cp-row{display:flex;gap:8px}.cp-row input{flex:1;min-width:0;height:40px;border-radius:10px;border:1.5px solid var(--line);padding:0 12px;text-transform:uppercase;font-weight:700;letter-spacing:.5px;background:#fff;outline:none}
+.cp-row input:focus{border-color:var(--o)}
+.cp-err{color:var(--red);font-size:12px;font-weight:700;margin-top:6px}
+.cp-on{display:flex;gap:10px;align-items:center}.cp-on i{font-size:22px;color:var(--green)}.cp-on b{color:var(--navy);display:block}.cp-on small{color:var(--green);font-weight:700}
+.cp-on button{margin-left:auto;border:none;background:none;color:var(--red);font-weight:800;cursor:pointer;font-size:12.5px}
+.cp-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.cp-it{display:flex;gap:10px;align-items:center;background:#fff;border-radius:10px;padding:8px 10px;font-size:12px}
+.cp-it .c{font-weight:900;color:var(--o-d);letter-spacing:.4px;border:1px dashed var(--o);border-radius:6px;padding:2px 6px}
+.cp-it .d{flex:1;color:var(--ink)}.cp-it .d small{display:block;color:var(--muted)}
+.cp-it button{border:none;background:none;color:var(--o-d);font-weight:800;cursor:pointer}
+.cp-it.off{opacity:.6}
 .mbar{display:none}
 @media(max-width:960px){
   .co{grid-template-columns:1fr}.co-side{position:static}
@@ -118,6 +130,7 @@
 
     <aside class="co-side"><div class="sx-card">
       <h2><i class="ti ti-receipt"></i><span data-i18n="co.sum">Order summary</span></h2>
+      <div class="cp" id="cp"></div>
       <div id="sum" style="margin-top:10px"></div>
       <button class="btn btn-o place" id="place" onclick="place()"><i class="ti ti-check"></i><span data-i18n="co.place">Place order</span></button>
       <div class="trust"><span><i class="ti ti-shield-check"></i><span data-i18n="co.t1">Prices are confirmed by PawBook when you place the order</span></span>
@@ -128,14 +141,14 @@
 <div class="mbar" id="mbar" style="display:none"><div class="v"><b id="m-total"></b><small id="m-items"></small></div><button class="btn btn-o" onclick="place()"><span data-i18n="co.place">Place order</span></button></div>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=5"></script>
-<script src="shop-i18n.js?v=5"></script>
-<script src="seller-i18n.js?v=5"></script>
-<script src="shop.js?v=5"></script>
+<script src="pawbook-i18n.js?v=6"></script>
+<script src="shop-i18n.js?v=6"></script>
+<script src="seller-i18n.js?v=6"></script>
+<script src="shop.js?v=6"></script>
 <script>
 var S = Shop, T = PBi18n.t, esc = S.esc, AF = document.getElementById('af');
 S.init('checkout');
-var ADDR = [], sel = null, Q = null, editing = null, busy = false;
+var ADDR = [], sel = null, Q = null, editing = null, busy = false, COUPON = null, CPERR = '', CPS = [];
 var REF = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2);
 
 function fail(e){ S.toast(e.status === 429 ? T('qa.slow') : (e.message || T('l.err')), 'ti-alert-circle'); }
@@ -211,6 +224,7 @@ function renderSummary(){
   var m = Q.summary, h = '';
   h += '<div class="sumrow"><span>' + esc(T('co.items', {n: m.items})) + '</span><span>' + S.money(m.subtotal + m.savings) + '</span></div>';
   if (m.savings > 0) h += '<div class="sumrow sv"><span>' + esc(T('co.save')) + '</span><span>−' + S.money(m.savings) + '</span></div>';
+  if (m.discount > 0) h += '<div class="sumrow sv"><span>' + esc(T('cp.applied', {c: (Q.coupon && Q.coupon.code) || ''})) + '</span><span>−' + S.money(m.discount) + '</span></div>';
   h += '<div class="sumrow"><span>' + esc(T('c.del')) + '</span><span>' + (m.delivery_fee ? S.money(m.delivery_fee) : '<b style="color:var(--green)">' + esc(T('c.freeword')) + '</b>') + '</span></div>';
   if (m.add_for_free > 0) h += '<div style="font-size:12px;color:var(--o-d);font-weight:700">' + esc(T('c.freeleft', {amt: S.money(m.add_for_free)})) + '</div>';
   h += '<div class="sumrow tot"><span>' + esc(T('c.total')) + '</span><span>' + S.money(m.total) + '</span></div>';
@@ -224,19 +238,50 @@ function renderSummary(){
   document.getElementById('m-items').textContent = why || T('co.items', {n: m.items});
   document.getElementById('mbar').style.display = '';
 }
-function quote(){ return S.api('/shop/checkout/quote', {method: 'POST', body: {}}).then(function(d){ Q = d; renderItems(); renderSummary(); }); }
+function quote(){
+  return S.api('/shop/checkout/quote', {method: 'POST', body: COUPON ? {coupon: COUPON} : {}}).then(function(d){
+    Q = d;
+    if (d.coupon && d.coupon.error) { CPERR = d.coupon.error; COUPON = null; } else if (d.coupon) CPERR = '';
+    renderItems(); renderSummary(); loadCoupons();
+  });
+}
+function loadCoupons(){
+  if (!Q) return;
+  S.api('/shop/coupons?subtotal=' + Q.summary.subtotal).then(function(d){ CPS = d.coupons || []; renderCoupon(); }).catch(function(){ CPS = []; renderCoupon(); });
+}
+function renderCoupon(){
+  var el = document.getElementById('cp'), h = '';
+  if (Q && Q.coupon && !Q.coupon.error && COUPON) h = '<div class="cp-on"><i class="ti ti-discount-check-filled"></i><div><b>' + esc(Q.coupon.code) + '</b><small>' + esc(T('cp.saved', {amt: S.money(Q.summary.discount)})) + '</small></div><button onclick="setCoupon(null)">' + esc(T('cp.remove')) + '</button></div>';
+  else {
+    h = '<form class="cp-row" onsubmit="event.preventDefault();setCoupon(this.c.value)"><input name="c" maxlength="20" placeholder="' + esc(T('cp.ph')) + '" autocomplete="off"><button class="btn btn-n btn-sm">' + esc(T('cp.apply')) + '</button></form>'
+      + (CPERR ? '<div class="cp-err">' + esc(CPERR) + '</div>' : '');
+    var l = CPS.filter(function(c){ return c.code !== (Q && Q.coupon && Q.coupon.code); }).slice(0, 4);
+    if (l.length) h += '<div class="cp-list">' + l.map(function(c){
+      var what = c.kind === 'percent' ? T('cp.pct', {n: c.value}) + (c.max_discount ? ' ' + T('cp.upto', {amt: S.money(c.max_discount)}) : '') : T('cp.flat', {amt: S.money(c.value)});
+      return '<div class="cp-it' + (c.usable ? '' : ' off') + '"><span class="c">' + esc(c.code) + '</span><span class="d">' + esc(c.description || what) + '<small>' + esc(c.usable ? T('cp.yousave', {amt: S.money(c.discount)}) : (c.note || '')) + '</small></span>'
+        + (c.usable ? '<button onclick="setCoupon(\'' + esc(c.code) + '\')">' + esc(T('cp.apply')) + '</button>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+  el.innerHTML = h;
+}
+function setCoupon(code){
+  code = code ? String(code).trim().toUpperCase() : null; CPERR = '';
+  if (code === '') { CPERR = T('cp.enter'); renderCoupon(); return; }
+  COUPON = code;
+  quote().then(function(){ if (COUPON && Q.coupon && !Q.coupon.error) S.toast(T('cp.ok', {amt: S.money(Q.summary.discount)}), 'ti-discount-check'); });
+}
 
 function place(){
   if (busy || !Q) return;
   if (!sel) { note('warn', T('co.needaddr')); document.getElementById('addrs').scrollIntoView({behavior: 'smooth', block: 'center'}); return; }
   busy = true; renderSummary();
   var b = document.getElementById('place'); b.innerHTML = '<i class="ti ti-loader-2"></i><span>' + esc(T('co.placing')) + '</span>';
-  S.api('/shop/orders', {method: 'POST', body: {address_id: sel, payment_method: 'cod', expected_total: Q.summary.total, client_ref: REF}}).then(function(d){
+  S.api('/shop/orders', {method: 'POST', body: {address_id: sel, payment_method: 'cod', expected_total: Q.summary.total, client_ref: REF, coupon: COUPON || undefined}}).then(function(d){
     S.cart.load();
     location.href = '53_shop_orders.html?id=' + encodeURIComponent(d.order_id) + '&placed=1';
   }).catch(function(e){
     busy = false; b.innerHTML = '<i class="ti ti-check"></i><span>' + esc(T('co.place')) + '</span>';
-    if (e.status === 409) { note('warn', e.message); window.scrollTo({top: 0, behavior: 'smooth'}); quote(); S.cart.refresh(); return; }
+    if (e.status === 409) { note('warn', e.message); if (/coupon/i.test(e.message) || e.code === 'coupon_invalid') { CPERR = e.message; COUPON = null; } window.scrollTo({top: 0, behavior: 'smooth'}); quote(); S.cart.refresh(); return; }
     renderSummary(); fail(e);
   });
 }
@@ -249,7 +294,7 @@ function boot(){
   }).catch(function(e){ document.getElementById('loading').outerHTML = '<div class="sx-card empty2"><i class="ti ti-plug-connected-x"></i><b>' + esc(T('l.err')) + '</b>' + esc(e.message || '') + '</div>'; });
 }
 boot();
-window.addEventListener('pb:langchange', function(){ if (Q) { renderAddrs(); renderItems(); renderSummary(); } });
+window.addEventListener('pb:langchange', function(){ if (Q) { renderAddrs(); renderItems(); renderSummary(); renderCoupon(); } });
 // cart edited in the drawer → reprice
 var _paint = null; document.addEventListener('click', function(e){ if (e.target.closest('#cart-drawer')) { clearTimeout(_paint); _paint = setTimeout(quote, 900); } });
 </script>

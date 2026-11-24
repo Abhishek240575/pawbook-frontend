@@ -7,7 +7,7 @@
 <title>Shop Admin — PawBook</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=5">
+<link rel="stylesheet" href="shop.css?v=6">
 <style>
 .ah{display:flex;align-items:center;gap:14px;margin:24px 0 18px;flex-wrap:wrap}
 .ah h1{font-size:28px;font-weight:900;color:var(--navy)}
@@ -65,6 +65,8 @@
       <button class="on" data-t="cats" onclick="tab('cats')"><i class="ti ti-category"></i>Categories</button>
       <button data-t="brands" onclick="tab('brands')"><i class="ti ti-building-store"></i>Brands</button>
       <button data-t="qa" onclick="tab('qa')"><i class="ti ti-message-question"></i>Q&amp;A moderation</button>
+      <button data-t="reviews" onclick="tab('reviews')"><i class="ti ti-star"></i>Reviews</button>
+      <button data-t="coupons" onclick="tab('coupons')"><i class="ti ti-discount"></i>Coupons</button>
       <button data-t="sellers" onclick="tab('sellers')"><i class="ti ti-users"></i>Sellers</button>
       <button data-t="search" onclick="tab('search')"><i class="ti ti-search"></i>Search</button>
     </div>
@@ -103,6 +105,37 @@
         <div id="qa-list"></div></div>
     </section>
 
+    <section class="panel" id="p-reviews">
+      <div class="card"><div class="bar"><b>Customer reviews</b>
+        <select id="rv-f" onchange="loadReviews()" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px"><option value="">All</option><option value="published">Published</option><option value="hidden">Hidden</option></select></div>
+        <div style="overflow-x:auto"><table class="tbl" id="rv-tbl"></table></div>
+        <div class="hint">New reviews can only come from customers whose order was delivered (marked <b>Verified</b>). Older reviews from before this rule are shown without the badge. Hide reviews that are abusive, off-topic or contain personal details; hidden reviews no longer count towards ratings.</div></div>
+    </section>
+
+    <section class="panel" id="p-coupons">
+      <div class="split">
+        <div class="card"><div class="bar"><b>Coupons</b></div><div style="overflow-x:auto"><table class="tbl" id="cp-tbl"></table></div>
+          <div class="hint">Coupon discounts are paid by PawBook — sellers still receive the full item price. A cancelled order gives the coupon back to the customer.</div></div>
+        <div class="card"><div class="bar"><b id="cp-title">New coupon</b><button class="btn btn-ghost btn-sm" onclick="cpNew()">Clear</button></div>
+          <form class="f" id="cp-form" onsubmit="saveCp(event)">
+            <label>Code (A–Z, 0–9)<input name="code" required maxlength="20" style="text-transform:uppercase" placeholder="WELCOME10"></label>
+            <label>Type<select name="kind" onchange="cpKind()"><option value="percent">% off</option><option value="flat">₹ off</option></select></label>
+            <label class="full">Description shown to customers<input name="description" maxlength="160" placeholder="10% off your first order"></label>
+            <label>Value<input name="value" type="number" min="1" step="1" required></label>
+            <label id="cp-max">Max discount ₹ (for %)<input name="max_discount" type="number" min="1" step="1"></label>
+            <label>Minimum order ₹<input name="min_order" type="number" min="0" step="1" value="0"></label>
+            <label>Total uses (empty = no limit)<input name="usage_limit" type="number" min="1" step="1"></label>
+            <label>Uses per customer<input name="per_user_limit" type="number" min="1" step="1" value="1"></label>
+            <label>Starts<input name="starts_at" type="datetime-local"></label>
+            <label>Ends<input name="ends_at" type="datetime-local"></label>
+            <label style="flex-direction:row;align-items:center;gap:10px"><span class="sw"><input type="checkbox" name="first_order_only"><span></span></span>First order only</label>
+            <label style="flex-direction:row;align-items:center;gap:10px"><span class="sw"><input type="checkbox" name="is_public" checked><span></span></span>Show at checkout</label>
+            <label style="flex-direction:row;align-items:center;gap:10px"><span class="sw"><input type="checkbox" name="is_active" checked><span></span></span>Active</label>
+            <div class="full"><button class="btn btn-o"><i class="ti ti-device-floppy"></i>Save coupon</button></div>
+          </form></div>
+      </div>
+    </section>
+
     <section class="panel" id="p-sellers">
       <div class="card"><div class="bar"><b>Seller stores</b><input id="sl-q" placeholder="Filter…" oninput="renderSellers()" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px;width:180px"></div>
         <div style="overflow-x:auto"><table class="tbl" id="sl-tbl"></table></div>
@@ -128,16 +161,16 @@
 </main>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=5"></script>
-<script src="shop-i18n.js?v=5"></script>
-<script src="shop.js?v=5"></script>
+<script src="pawbook-i18n.js?v=6"></script>
+<script src="shop-i18n.js?v=6"></script>
+<script src="shop.js?v=6"></script>
 <script>
 var S = Shop, esc = S.esc;
 S.init('admin');
 var LANGS = ['hi','bn','ta','mr'];
 function tab(t){ document.querySelectorAll('.atabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t') === t); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + t); });
-  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); if (t === 'sellers') loadSellers(); }
+  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); if (t === 'sellers') loadSellers(); if (t === 'reviews') loadReviews(); if (t === 'coupons') loadCps(); }
 function fail(e){ S.toast(e.message || 'Something went wrong', 'ti-alert-circle'); }
 
 /* ── gate ── */
@@ -221,6 +254,60 @@ function loadQA(){
 function mod(kind, id, status){ S.api('/shop/admin/' + kind + '/' + id, {method:'PATCH', body:{status:status}}).then(function(){ S.toast(status === 'hidden' ? 'Hidden from shoppers' : 'Published', 'ti-check'); loadQA(); }).catch(fail); }
 
 /* ── search ── */
+/* ── reviews ── */
+function loadReviews(){
+  var f = document.getElementById('rv-f').value;
+  S.api('/shop/admin/reviews' + (f ? '?status=' + f : '')).then(function(d){
+    var l = d.reviews || [];
+    document.getElementById('rv-tbl').innerHTML = '<tr><th>Rating</th><th>Review</th><th>Product</th><th>By</th><th>Status</th><th></th></tr>' + (l.length ? l.map(function(r){
+      return '<tr class="' + (r.status === 'hidden' ? 'off' : '') + '"><td>' + '★★★★★'.slice(0, r.rating) + '<span style="color:#ddd">' + '★★★★★'.slice(r.rating) + '</span></td>'
+        + '<td style="max-width:380px">' + (r.title ? '<b>' + esc(r.title) + '</b><br>' : '') + esc(r.comment || '') + '</td>'
+        + '<td><a href="44_shop_product.html?id=' + encodeURIComponent(r.product_id) + '" target="_blank">' + esc(r.product_name || r.product_id) + '</a></td>'
+        + '<td>' + esc(r.user_name || '—') + (r.verified ? '<br><span class="st published">Verified</span>' : '') + '<br><small style="color:var(--muted)">' + esc(new Date(r.created_at).toLocaleDateString('en-IN')) + '</small></td>'
+        + '<td><span class="st ' + r.status + '">' + r.status + '</span></td>'
+        + '<td><button class="btn btn-ghost btn-sm" onclick="modRv(\'' + esc(r.review_id) + '\',\'' + (r.status === 'hidden' ? 'published' : 'hidden') + '\')">' + (r.status === 'hidden' ? 'Publish' : 'Hide') + '</button></td></tr>';
+    }).join('') : '<tr><td colspan="6" style="color:var(--muted)">No reviews yet.</td></tr>');
+  }).catch(fail);
+}
+function modRv(id, st){ S.api('/shop/admin/reviews/' + encodeURIComponent(id), {method: 'PATCH', body: {status: st}}).then(function(){ S.toast(st === 'hidden' ? 'Review hidden' : 'Review published', 'ti-check'); loadReviews(); }).catch(fail); }
+
+/* ── coupons ── */
+var CPL = [], CP_EDIT = null;
+function loadCps(){
+  S.api('/shop/admin/coupons').then(function(d){
+    CPL = d.coupons || [];
+    document.getElementById('cp-tbl').innerHTML = '<tr><th>Code</th><th>Offer</th><th>Rules</th><th>Used</th><th>Status</th><th></th></tr>' + (CPL.length ? CPL.map(function(c){
+      var off = c.kind === 'percent' ? Number(c.value) + '%' + (c.max_discount ? ' (max ₹' + Number(c.max_discount) + ')' : '') : '₹' + Number(c.value);
+      var exp = c.ends_at && new Date(c.ends_at) < new Date();
+      return '<tr class="' + (c.is_active && !exp ? '' : 'off') + '"><td><b>' + esc(c.code) + '</b><br><small style="color:var(--muted)">' + esc(c.description || '') + '</small></td><td>' + esc(off) + '</td>'
+        + '<td><small>' + esc([Number(c.min_order) ? 'min ₹' + Number(c.min_order) : '', c.first_order_only ? 'first order' : '', c.per_user_limit > 1 ? c.per_user_limit + '× per customer' : '1× per customer', c.usage_limit ? c.usage_limit + ' total' : '', c.ends_at ? 'ends ' + new Date(c.ends_at).toLocaleDateString('en-IN') : '', c.is_public ? '' : 'hidden code'].filter(Boolean).join(' · ')) + '</small></td>'
+        + '<td>' + c.used + (c.usage_limit ? '/' + c.usage_limit : '') + '<br><small style="color:var(--muted)">₹' + Math.round(c.given) + ' given</small></td>'
+        + '<td><span class="st ' + (c.is_active && !exp ? 'published' : 'hidden') + '">' + (exp ? 'expired' : c.is_active ? 'active' : 'off') + '</span></td>'
+        + '<td><button class="btn btn-ghost btn-sm" onclick="cpEdit(\'' + esc(c.code) + '\')">Edit</button></td></tr>';
+    }).join('') : '<tr><td colspan="6" style="color:var(--muted)">No coupons yet. Create one on the right.</td></tr>');
+  }).catch(fail);
+}
+function cpKind(){ var f = document.getElementById('cp-form'); document.getElementById('cp-max').style.display = f.elements.kind.value === 'percent' ? '' : 'none'; }
+function dtl(v){ if (!v) return ''; var d = new Date(v); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); }
+function cpNew(){ CP_EDIT = null; var f = document.getElementById('cp-form'); f.reset(); f.elements.code.disabled = false; document.getElementById('cp-title').textContent = 'New coupon'; cpKind(); }
+function cpEdit(code){
+  var c = CPL.filter(function(x){ return x.code === code; })[0], f = document.getElementById('cp-form'); if (!c) return;
+  CP_EDIT = code; f.elements.code.value = c.code; f.elements.code.disabled = true;
+  ['description','kind','value','max_discount','min_order','usage_limit','per_user_limit'].forEach(function(k){ f.elements[k].value = c[k] == null ? '' : (isNaN(c[k]) || k === 'kind' || k === 'description' ? c[k] : Number(c[k])); });
+  f.elements.starts_at.value = dtl(c.starts_at); f.elements.ends_at.value = dtl(c.ends_at);
+  ['first_order_only','is_public','is_active'].forEach(function(k){ f.elements[k].checked = !!c[k]; });
+  document.getElementById('cp-title').textContent = 'Edit: ' + code; cpKind(); f.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+function saveCp(e){
+  e.preventDefault(); var f = e.target, b = {};
+  ['code','description','kind','value','max_discount','min_order','usage_limit','per_user_limit'].forEach(function(k){ b[k] = f.elements[k].value.trim(); });
+  b.code = (CP_EDIT || b.code).toUpperCase();
+  ['starts_at','ends_at'].forEach(function(k){ b[k] = f.elements[k].value ? new Date(f.elements[k].value).toISOString() : null; });
+  ['first_order_only','is_public','is_active'].forEach(function(k){ b[k] = f.elements[k].checked; });
+  S.api('/shop/admin/coupons' + (CP_EDIT ? '/' + encodeURIComponent(CP_EDIT) : ''), {method: CP_EDIT ? 'PUT' : 'POST', body: b})
+    .then(function(){ S.toast('Coupon saved', 'ti-check'); cpNew(); loadCps(); }).catch(fail);
+}
+
 /* ── sellers ── */
 var SELLERS = [];
 function loadSellers(){ S.api('/shop/admin/sellers').then(function(d){ SELLERS = d.sellers || []; renderSellers(); }).catch(fail); }
