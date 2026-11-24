@@ -14,9 +14,10 @@ git pull -q || { echo "git pull failed"; exit 1; }
 git cat-file -e "$PREV" 2>/dev/null || { echo "Commit $PREV not found in $REPO"; exit 1; }
 
 # Locate the live web folder: the one that holds the live 42_shop.html
-mapfile -t HITS < <(find /var/www/1015d59e-67f5-4aea-838c-7f7392731800 ~ -maxdepth 3 -name 42_shop.html -not -path "*pb-sync*" -not -path "*backup*" 2>/dev/null | xargs -r -n1 dirname | sort -u)
-if [ "${#HITS[@]}" -ne 1 ]; then echo "Could not find exactly one live web folder (found: ${HITS[*]:-none}). Nothing changed."; exit 1; fi
-WEB=${HITS[0]}
+HITS=$(find /var/www/1015d59e-67f5-4aea-838c-7f7392731800 ~ -maxdepth 3 -name 42_shop.html -not -path "*pb-sync*" -not -path "*backup*" 2>/dev/null | xargs -r -n1 dirname | sort -u)
+NHITS=$(printf '%s\n' "$HITS" | grep -c .)
+if [ "$NHITS" -ne 1 ]; then echo "Could not find exactly one live web folder (found: ${HITS:-none}). Nothing changed."; exit 1; fi
+WEB=$HITS
 echo "Web folder: $WEB"
 echo "API folder: $API"
 
