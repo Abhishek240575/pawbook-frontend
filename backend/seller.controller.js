@@ -58,7 +58,9 @@ async function storeStats(uid) {
     query(`SELECT COUNT(*)::int AS total,
                   COUNT(*) FILTER (WHERE is_active)::int AS live,
                   COUNT(*) FILTER (WHERE stock <= 0)::int AS out_of_stock,
-                  COUNT(*) FILTER (WHERE stock > 0 AND stock <= low_stock_at)::int AS low_stock
+                  COUNT(*) FILTER (WHERE stock > 0 AND stock <= low_stock_at)::int AS low_stock,
+                  COUNT(*) FILTER (WHERE COALESCE(moderation, 'approved') = 'pending')::int AS in_review,
+                  COUNT(*) FILTER (WHERE COALESCE(moderation, 'approved') = 'rejected')::int AS needs_changes
            FROM marketplace_products WHERE seller_id::text = $1 AND NOT archived`, [uid]),
     query(`SELECT COUNT(DISTINCT oi.order_id) FILTER (WHERE oi.fulfil_status IN ('pending','confirmed','packed'))::int AS to_ship,
                   COUNT(DISTINCT oi.order_id) FILTER (WHERE o.created_at > NOW() - INTERVAL '30 days')::int AS orders_30d,
@@ -88,7 +90,9 @@ exports.me = async (req, res) => {
       const j = (rows[0] && rows[0].j) || {};
       return R.ok(res, { seller: null, prefill: { full_name: j.full_name || '', email: j.email || '', phone: j.phone || j.mobile || '' } });
     }
-    return R.ok(res, { seller: s, stats: await storeStats(uid) });
+    const T = require('./trust.controller');
+    const { rows: k } = await query(`SELECT status, reject_reason FROM marketplace_seller_kyc WHERE user_id = $1`, [uid]).catch(() => ({ rows: [] }));
+    return R.ok(res, { seller: s, stats: await storeStats(uid), kyc: k[0] || { status: 'none' }, approval_mode: await T.approvalMode() });
   } catch (e) { console.error('[Seller] me:', e.message); return R.serverError(res); }
 };
 
@@ -185,7 +189,8 @@ async function validateProduct(b) {
 
 const PRODUCT_COLS = `p.product_id, p.name, p.description, p.brand, p.category, p.subcategory, p.pet_types, p.life_stages, p.tags,
   p.specs, p.ingredients, p.usage_instructions, p.variants, p.images, p.price, p.compare_price, p.stock, p.unit, p.sku,
-  p.delivery_days, p.low_stock_at, p.is_active, p.store_paused, p.created_at, p.updated_at`;
+  p.delivery_days, p.low_stock_at, p.is_active, p.store_paused, p.created_at, p.updated_at,
+  COALESCE(p.moderation, 'approved') AS moderation, p.moderation_note, COALESCE(p.seller_live, p.is_active OR p.store_paused) AS seller_live`;
 
 // GET /shop/seller/products?status=live|hidden|out|low&q=
 exports.listProducts = async (req, res) => {
@@ -194,7 +199,8 @@ exports.listProducts = async (req, res) => {
     const where = ['p.seller_id::text = $1', 'NOT p.archived'], params = [uid];
     const st = req.query.status;
     if (st === 'live') where.push('p.is_active');
-    else if (st === 'hidden') where.push('NOT p.is_active');
+    else if (st === 'hidden') where.push("NOT p.is_active AND COALESCE(p.moderation, 'approved') = 'approved'");
+    else if (st === 'review') where.push("COALESCE(p.moderation, 'approved') <> 'approved'");
     else if (st === 'out') where.push('p.stock <= 0');
     else if (st === 'low') where.push('p.stock > 0 AND p.stock <= p.low_stock_at');
     if (req.query.q) { params.push('%' + str(req.query.q, 80) + '%'); where.push(`(p.name ILIKE $${params.length} OR p.sku ILIKE $${params.length} OR p.brand ILIKE $${params.length})`); }
@@ -229,14 +235,19 @@ exports.createProduct = async (req, res) => {
     const s = await requireActiveStore(req, res); if (!s) return;
     const { e, out } = await validateProduct(req.body || {});
     if (e.length) return res.status(422).json({ success: false, message: 'Please check: ' + e.join(', '), fields: e });
-    const live = req.body.is_active !== false && s.status === 'active';
+    const wantLive = req.body.is_active !== false;
+    const mod = (await require('./trust.controller').needsApproval(String(req.user.user_id))) ? 'pending' : 'approved';
+    const v = require('./trust.controller').visibility(wantLive, s.status, mod);
+    const live = v.is_active;
     const { rows } = await query(`INSERT INTO marketplace_products (seller_id, name, description, brand, category, subcategory, pet_types, life_stages, tags,
-        specs, ingredients, usage_instructions, variants, images, price, compare_price, stock, unit, sku, delivery_days, low_stock_at, is_active, store_paused)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23) RETURNING product_id`,
+        specs, ingredients, usage_instructions, variants, images, price, compare_price, stock, unit, sku, delivery_days, low_stock_at, is_active, store_paused,
+        moderation, seller_live, submitted_at)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26) RETURNING product_id`,
       [String(req.user.user_id), out.name, out.description, out.brand, out.category, out.subcategory, out.pet_types, out.life_stages, out.tags,
        JSON.stringify(out.specs), out.ingredients, out.usage_instructions, JSON.stringify(out.variants), JSON.stringify(out.images),
-       out.price, out.compare_price, out.stock, out.unit, out.sku, out.delivery_days, out.low_stock_at, live, req.body.is_active !== false && s.status === 'paused']);
-    return R.created(res, { product_id: rows[0].product_id, is_active: live });
+       out.price, out.compare_price, out.stock, out.unit, out.sku, out.delivery_days, out.low_stock_at, v.is_active, v.store_paused,
+       mod, wantLive, mod === 'pending' ? new Date() : null]);
+    return R.created(res, { product_id: rows[0].product_id, is_active: live, moderation: mod });
   } catch (e) { console.error('[Seller] createProduct:', e.message); return R.serverError(res); }
 };
 
@@ -245,19 +256,26 @@ exports.updateProduct = async (req, res) => {
   try {
     const s = await requireActiveStore(req, res); if (!s) return;
     const id = String(req.params.id), uid = String(req.user.user_id);
-    const own = await query(`SELECT is_active, store_paused FROM marketplace_products WHERE product_id::text = $1 AND seller_id::text = $2 AND NOT archived`, [id, uid]);
+    const own = await query(`SELECT is_active, store_paused, moderation, seller_live FROM marketplace_products WHERE product_id::text = $1 AND seller_id::text = $2 AND NOT archived`, [id, uid]);
     if (!own.rows.length) return R.notFound(res, 'Product not found');
     const { e, out } = await validateProduct(req.body || {});
     if (e.length) return res.status(422).json({ success: false, message: 'Please check: ' + e.join(', '), fields: e });
-    const want = req.body.is_active === undefined ? (own.rows[0].is_active || own.rows[0].store_paused) : req.body.is_active === true;
+    const o = own.rows[0];
+    const want = req.body.is_active === undefined ? (o.seller_live != null ? o.seller_live : (o.is_active || o.store_paused)) : req.body.is_active === true;
+    // approved listings stay approved; a pending or rejected one is (re)submitted for review when approval applies
+    let mod = o.moderation || 'approved';
+    if (mod !== 'approved') mod = (await require('./trust.controller').needsApproval(uid)) ? 'pending' : 'approved';
+    const v = require('./trust.controller').visibility(want, s.status, mod);
     await query(`UPDATE marketplace_products SET name=$3, description=$4, brand=$5, category=$6, subcategory=$7, pet_types=$8, life_stages=$9, tags=$10,
         specs=$11, ingredients=$12, usage_instructions=$13, variants=$14, images=$15, price=$16, compare_price=$17, stock=$18, unit=$19, sku=$20,
-        delivery_days=$21, low_stock_at=$22, is_active=$23, store_paused=$24, updated_at=NOW()
+        delivery_days=$21, low_stock_at=$22, is_active=$23, store_paused=$24, moderation=$25::text, seller_live=$26,
+        submitted_at = CASE WHEN $25::text = 'pending' AND moderation <> 'pending' THEN NOW() ELSE submitted_at END,
+        moderation_note = CASE WHEN $25::text = 'approved' THEN NULL ELSE moderation_note END, updated_at=NOW()
       WHERE product_id::text = $1 AND seller_id::text = $2`,
       [id, uid, out.name, out.description, out.brand, out.category, out.subcategory, out.pet_types, out.life_stages, out.tags,
        JSON.stringify(out.specs), out.ingredients, out.usage_instructions, JSON.stringify(out.variants), JSON.stringify(out.images),
-       out.price, out.compare_price, out.stock, out.unit, out.sku, out.delivery_days, out.low_stock_at, want && s.status === 'active', want && s.status === 'paused']);
-    return R.ok(res, { updated: true });
+       out.price, out.compare_price, out.stock, out.unit, out.sku, out.delivery_days, out.low_stock_at, v.is_active, v.store_paused, mod, want]);
+    return R.ok(res, { updated: true, moderation: mod, is_active: v.is_active });
   } catch (e) { console.error('[Seller] updateProduct:', e.message); return R.serverError(res); }
 };
 
@@ -266,7 +284,7 @@ exports.quickUpdate = async (req, res) => {
   try {
     const s = await requireActiveStore(req, res); if (!s) return;
     const id = String(req.params.id), uid = String(req.user.user_id), b = req.body || {};
-    const { rows } = await query(`SELECT price, compare_price, stock, variants FROM marketplace_products WHERE product_id::text = $1 AND seller_id::text = $2 AND NOT archived`, [id, uid]);
+    const { rows } = await query(`SELECT price, compare_price, stock, variants, moderation FROM marketplace_products WHERE product_id::text = $1 AND seller_id::text = $2 AND NOT archived`, [id, uid]);
     if (!rows.length) return R.notFound(res, 'Product not found');
     const p = rows[0]; let variants = Array.isArray(p.variants) ? p.variants : [];
     const sets = [], params = [id, uid];
@@ -285,7 +303,7 @@ exports.quickUpdate = async (req, res) => {
       if (!(pr > 0) || pr > 1000000 || (cp != null && !(Number(cp) > pr))) return R.badRequest(res, 'Invalid price');
       set('price', pr); set('compare_price', cp);
     }
-    if (b.is_active !== undefined) { const on = b.is_active === true; set('is_active', on && s.status === 'active'); set('store_paused', on && s.status === 'paused'); }
+    if (b.is_active !== undefined) { const v = require('./trust.controller').visibility(b.is_active === true, s.status, p.moderation || 'approved'); set('is_active', v.is_active); set('store_paused', v.store_paused); set('seller_live', v.seller_live); }
     if (!sets.length) return R.badRequest(res, 'Nothing to update');
     await query(`UPDATE marketplace_products SET ${sets.join(', ')}, updated_at=NOW() WHERE product_id::text = $1 AND seller_id::text = $2`, params);
     return R.ok(res, { updated: true });

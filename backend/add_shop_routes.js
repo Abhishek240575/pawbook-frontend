@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v5: reviews, coupons) ─────────────────────────────
+const BLOCK = `${START} (v6: seller KYC, listing approval) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -90,6 +90,20 @@ shopRouter.patch('/admin/reviews/:id',       authenticate, requireRole('admin'),
 shopRouter.get('/admin/coupons',             authenticate, requireRole('admin'), expCtrl.adminCoupons);
 shopRouter.post('/admin/coupons',            authenticate, requireRole('admin'), expCtrl.adminSaveCoupon);
 shopRouter.put('/admin/coupons/:code',       authenticate, requireRole('admin'), expCtrl.adminSaveCoupon);
+// seller KYC + listing approval (Phase 4)
+const trustCtrl = require('../controllers/trust.controller');
+shopRouter.get('/seller/kyc',                authenticate, trustCtrl.getKyc);
+shopRouter.put('/seller/kyc',                authenticate, sellerWriteLimit, trustCtrl.saveKyc);
+shopRouter.post('/seller/kyc/docs',          authenticate, sellerWriteLimit, trustCtrl.uploadMiddleware, trustCtrl.uploadDoc);
+shopRouter.post('/seller/kyc/submit',        authenticate, sellerWriteLimit, trustCtrl.submitKyc);
+shopRouter.get('/kyc/docs/:id',              authenticate, trustCtrl.getDoc);
+shopRouter.get('/admin/kyc',                 authenticate, requireRole('admin'), trustCtrl.adminKycList);
+shopRouter.get('/admin/kyc/:user_id',        authenticate, requireRole('admin'), trustCtrl.adminKycGet);
+shopRouter.patch('/admin/kyc/:user_id',      authenticate, requireRole('admin'), trustCtrl.adminKycDecide);
+shopRouter.get('/admin/listings',            authenticate, requireRole('admin'), trustCtrl.adminListings);
+shopRouter.patch('/admin/listings/:id',      authenticate, requireRole('admin'), trustCtrl.adminDecideListing);
+shopRouter.get('/admin/settings',            authenticate, requireRole('admin'), trustCtrl.adminGetSettings);
+shopRouter.put('/admin/settings',            authenticate, requireRole('admin'), trustCtrl.adminSaveSettings);
 router.use('/shop', shopRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
@@ -109,7 +123,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop5');
+  fs.copyFileSync(f, f + '.bak-shop6');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -130,4 +144,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop5 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop6 — restart the app from the MilesWeb panel.');

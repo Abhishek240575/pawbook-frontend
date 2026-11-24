@@ -7,7 +7,7 @@
 <title>Shop Admin — PawBook</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=6">
+<link rel="stylesheet" href="shop.css?v=7">
 <style>
 .ah{display:flex;align-items:center;gap:14px;margin:24px 0 18px;flex-wrap:wrap}
 .ah h1{font-size:28px;font-weight:900;color:var(--navy)}
@@ -47,6 +47,13 @@
 .qa-i .a{margin:8px 0 0 18px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .qa-i .a.hid{opacity:.5;text-decoration:line-through}
 .st{padding:2px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.st.submitted,.st.pending{background:#fff4e0;color:#b26a00}.st.approved{background:var(--green-l);color:var(--green)}.st.rejected{background:#ffecec;color:var(--red)}.st.draft{background:#f1f1f1;color:#777}
+.acnt{margin-left:6px;background:var(--red,#e53935);color:#fff;border-radius:999px;font-size:10.5px;font-weight:800;padding:1px 7px}.acnt:empty{display:none}
+.kd{display:flex;flex-direction:column;gap:8px;margin:10px 0}.kd a{display:flex;gap:8px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;text-decoration:none;color:var(--navy)}
+.kd a:hover{border-color:var(--o)}.kv{display:grid;grid-template-columns:130px 1fr;gap:6px 12px;font-size:13.5px;margin:8px 0}.kv span{color:var(--muted)}
+.lrow{display:flex;gap:14px;border-top:1px solid var(--line);padding:14px 0;flex-wrap:wrap}.lrow:first-child{border-top:0}
+.lrow img{width:92px;height:92px;object-fit:cover;border-radius:12px;background:#f4f4f4;flex:none}.lrow .b{flex:1;min-width:220px;font-size:13px}.lrow .b b{font-size:15px;color:var(--navy)}
+.lrow .acts{display:flex;flex-direction:column;gap:8px;min-width:220px}.lrow textarea,#ky-det textarea{width:100%;min-height:60px;border:1.5px solid var(--line);border-radius:10px;padding:8px;font:inherit;font-size:13px;box-sizing:border-box}
 .st.published{background:var(--green-l);color:var(--green)}.st.hidden{background:#f1f1f1;color:#777}
 .gate{text-align:center;padding:80px 20px}
 .zero{color:var(--red);font-weight:800}
@@ -68,6 +75,8 @@
       <button data-t="reviews" onclick="tab('reviews')"><i class="ti ti-star"></i>Reviews</button>
       <button data-t="coupons" onclick="tab('coupons')"><i class="ti ti-discount"></i>Coupons</button>
       <button data-t="sellers" onclick="tab('sellers')"><i class="ti ti-users"></i>Sellers</button>
+      <button data-t="kyc" onclick="tab('kyc')"><i class="ti ti-id-badge-2"></i>Verification<span class="acnt" id="n-kyc"></span></button>
+      <button data-t="listings" onclick="tab('listings')"><i class="ti ti-eye-check"></i>Listings<span class="acnt" id="n-lst"></span></button>
       <button data-t="search" onclick="tab('search')"><i class="ti ti-search"></i>Search</button>
     </div>
 
@@ -142,6 +151,27 @@
         <div class="hint">Tick <b>Verified</b> only after checking the seller's identity (for example GSTIN, shop licence or a call). <b>Suspend</b> hides all of the store's products at once; reactivating brings back only the products that were live. The note is shown to the seller on their hub.</div></div>
     </section>
 
+    <section class="panel" id="p-kyc">
+      <div class="split">
+        <div class="card"><div class="bar"><b>Seller verification</b>
+          <select id="ky-f" onchange="loadKyc()" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px"><option value="submitted">Waiting for review</option><option value="">All</option><option value="approved">Approved</option><option value="rejected">Needs changes</option><option value="draft">Not submitted</option></select></div>
+          <div style="overflow-x:auto"><table class="tbl" id="ky-tbl"></table></div>
+          <div class="hint">PAN is masked in this list. Documents are private files on the server and open only for admins and the seller who uploaded them.</div></div>
+        <div class="card" id="ky-det"><div class="hint" style="margin:0">Choose a seller to review their details and documents.</div></div>
+      </div>
+    </section>
+
+    <section class="panel" id="p-listings">
+      <div class="card"><div class="bar"><b>Listing approval</b>
+        <label style="display:flex;gap:8px;align-items:center;font-size:13px;font-weight:700">New listings
+          <select id="mode" onchange="saveMode()" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px">
+            <option value="off">Go live straight away</option><option value="new_sellers">Need approval until the seller is verified</option><option value="all">Always need approval</option></select></label></div>
+        <div class="hint" style="margin-top:-4px">Products already approved stay live when a seller edits them. Rejected products go back to the seller with your note and return here when they resubmit.</div></div>
+      <div class="card"><div class="bar"><b>Queue</b>
+        <select id="ls-f" onchange="loadLst()" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px"><option value="pending">Waiting for review</option><option value="rejected">Sent back</option><option value="approved">Approved</option></select></div>
+        <div id="ls-list"></div></div>
+    </section>
+
     <section class="panel" id="p-search">
       <div class="split">
         <div class="card"><div class="bar"><b>Synonyms</b></div>
@@ -161,16 +191,17 @@
 </main>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=6"></script>
-<script src="shop-i18n.js?v=6"></script>
-<script src="shop.js?v=6"></script>
+<script src="pawbook-i18n.js?v=7"></script>
+<script src="shop-i18n.js?v=7"></script>
+<script src="shop.js?v=7"></script>
 <script>
 var S = Shop, esc = S.esc;
 S.init('admin');
 var LANGS = ['hi','bn','ta','mr'];
+setTimeout(function(){ if (typeof counts === 'function') counts(); }, 400);
 function tab(t){ document.querySelectorAll('.atabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t') === t); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + t); });
-  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); if (t === 'sellers') loadSellers(); if (t === 'reviews') loadReviews(); if (t === 'coupons') loadCps(); }
+  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); if (t === 'sellers') loadSellers(); if (t === 'reviews') loadReviews(); if (t === 'coupons') loadCps(); if (t === 'kyc') loadKyc(); if (t === 'listings') { loadMode(); loadLst(); } }
 function fail(e){ S.toast(e.message || 'Something went wrong', 'ti-alert-circle'); }
 
 /* ── gate ── */
@@ -306,6 +337,83 @@ function saveCp(e){
   ['first_order_only','is_public','is_active'].forEach(function(k){ b[k] = f.elements[k].checked; });
   S.api('/shop/admin/coupons' + (CP_EDIT ? '/' + encodeURIComponent(CP_EDIT) : ''), {method: CP_EDIT ? 'PUT' : 'POST', body: b})
     .then(function(){ S.toast('Coupon saved', 'ti-check'); cpNew(); loadCps(); }).catch(fail);
+}
+
+/* ── verification ── */
+function counts(){
+  S.api('/shop/admin/kyc?status=submitted').then(function(d){ document.getElementById('n-kyc').textContent = (d.kyc || []).length || ''; }).catch(function(){});
+  S.api('/shop/admin/listings?status=pending').then(function(d){ document.getElementById('n-lst').textContent = (d.counts && d.counts.pending) || ''; }).catch(function(){});
+}
+var KST = {submitted: 'waiting', approved: 'approved', rejected: 'needs changes', draft: 'not submitted'};
+function dt(v){ return v ? new Date(v).toLocaleString('en-IN', {day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'}) : '—'; }
+function loadKyc(){
+  var f = document.getElementById('ky-f').value;
+  S.api('/shop/admin/kyc' + (f ? '?status=' + f : '')).then(function(d){
+    var l = d.kyc || [];
+    document.getElementById('ky-tbl').innerHTML = '<tr><th>Store</th><th>Legal name</th><th>PAN</th><th>Docs</th><th>Status</th><th></th></tr>' + (l.length ? l.map(function(k){
+      return '<tr><td><b>' + esc(k.store_name || '—') + '</b><br><small style="color:var(--muted)">' + esc(k.business_type || '') + (k.city ? ' · ' + esc(k.city) : '') + '</small></td><td>' + esc(k.legal_name || '—') + '</td><td><code>' + esc(k.pan || '—') + '</code></td>'
+        + '<td>' + k.docs + '</td><td><span class="st ' + esc(k.status) + '">' + esc(KST[k.status] || k.status) + '</span><br><small style="color:var(--muted)">' + esc(dt(k.submitted_at)) + '</small></td>'
+        + '<td><button class="btn btn-ghost btn-sm" onclick="openKyc(\'' + esc(k.user_id) + '\')">Review</button></td></tr>';
+    }).join('') : '<tr><td colspan="6" style="color:var(--muted)">Nothing here.</td></tr>');
+  }).catch(fail);
+  counts();
+}
+var DOCN = {pan: 'PAN card', gst: 'GST certificate', business: 'Business proof', brand_auth: 'Brand authorisation'};
+function openKyc(id){
+  var box = document.getElementById('ky-det'); box.innerHTML = '<div class="hint" style="margin:0">Loading…</div>';
+  S.api('/shop/admin/kyc/' + encodeURIComponent(id)).then(function(d){
+    var k = d.kyc || {}, s = d.seller || {}, sid = esc(id);
+    var miss = (d.requirements || []).filter(function(r){ return r.required && !d.docs.some(function(x){ return x.kind === r.kind; }); });
+    box.innerHTML = '<div class="bar"><b>' + esc(s.store_name || 'Seller') + '</b><span class="st ' + esc(k.status || 'draft') + '">' + esc(KST[k.status] || k.status || 'none') + '</span></div>'
+      + '<div class="kv"><span>Legal name</span><b>' + esc(k.legal_name || '—') + '</b><span>PAN</span><b><code>' + esc(k.pan || '—') + '</code></b><span>Business type</span><b>' + esc(s.business_type || '—') + '</b><span>GSTIN</span><b>' + esc(s.gstin || '—') + '</b><span>Submitted</span><b>' + esc(dt(k.submitted_at)) + '</b>'
+      + (k.reviewed_at ? '<span>Last reviewed</span><b>' + esc(dt(k.reviewed_at)) + '</b>' : '') + (k.reject_reason ? '<span>Last reason</span><b>' + esc(k.reject_reason) + '</b>' : '') + '</div>'
+      + '<div class="kd">' + (d.docs.length ? d.docs.map(function(x){ return '<a href="#" onclick="event.preventDefault();viewDoc(' + Number(x.doc_id) + ')"><i class="ti ti-file-text"></i>' + esc(DOCN[x.kind] || x.kind) + ' <small style="color:var(--muted);font-weight:500">' + esc(x.original_name || '') + ' · ' + Math.max(1, Math.round(x.size_bytes / 1024)) + ' KB</small></a>'; }).join('') : '<div class="hint" style="margin:0">No documents uploaded.</div>') + '</div>'
+      + (miss.length ? '<div class="hint" style="color:var(--red)">Missing: ' + esc(miss.map(function(r){ return DOCN[r.kind]; }).join(', ')) + '</div>' : '')
+      + '<div class="hint">Check that the name on the PAN matches the legal name, and the GST certificate matches the GSTIN. Approving gives the store a Verified badge.</div>'
+      + '<textarea id="ky-reason" maxlength="500" placeholder="Reason to send back (shown to the seller)"></textarea>'
+      + '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="btn btn-n btn-sm" onclick="decKyc(\'' + sid + '\',\'approve\')"><i class="ti ti-check"></i>Approve</button><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="decKyc(\'' + sid + '\',\'reject\')"><i class="ti ti-arrow-back-up"></i>Send back</button></div>';
+  }).catch(function(e){ box.innerHTML = ''; fail(e); });
+}
+function decKyc(id, dec){
+  var r = (document.getElementById('ky-reason').value || '').trim();
+  if (dec === 'reject' && r.length < 5) { S.toast('Please write a reason for the seller', 'ti-alert-circle'); document.getElementById('ky-reason').focus(); return; }
+  S.api('/shop/admin/kyc/' + encodeURIComponent(id), {method: 'PATCH', body: {decision: dec, reason: r}})
+    .then(function(){ S.toast(dec === 'approve' ? 'Seller verified' : 'Sent back to seller', 'ti-check'); document.getElementById('ky-det').innerHTML = '<div class="hint" style="margin:0">Done. Choose another seller.</div>'; loadKyc(); }).catch(fail);
+}
+function viewDoc(id){
+  var w = window.open('', '_blank'); var tok = ''; try { tok = localStorage.getItem('pb_token') || ''; } catch(x) {}
+  fetch(S.API + '/shop/kyc/docs/' + id, {headers: tok ? {Authorization: 'Bearer ' + tok} : {}, credentials: 'include'})
+    .then(function(r){ if (!r.ok) throw new Error('Could not open document (HTTP ' + r.status + ')'); return r.blob(); })
+    .then(function(b){ var u = URL.createObjectURL(b); if (w) w.location = u; else location.href = u; setTimeout(function(){ URL.revokeObjectURL(u); }, 60000); })
+    .catch(function(e){ if (w) w.close(); fail(e); });
+}
+
+/* ── listing approval ── */
+function loadMode(){ S.api('/shop/admin/settings').then(function(d){ document.getElementById('mode').value = d.listing_approval; }).catch(fail); }
+function saveMode(){ S.api('/shop/admin/settings', {method: 'PUT', body: {listing_approval: document.getElementById('mode').value}}).then(function(){ S.toast('Saved', 'ti-check'); }).catch(fail); }
+function pimg(p){ var i = p.images; if (typeof i === 'string') { try { i = JSON.parse(i); } catch(e) { i = []; } } return (i && i[0]) || ''; }
+function loadLst(){
+  var f = document.getElementById('ls-f').value;
+  S.api('/shop/admin/listings?status=' + f).then(function(d){
+    var l = d.products || [];
+    document.getElementById('n-lst').textContent = (d.counts && d.counts.pending) || '';
+    document.getElementById('ls-list').innerHTML = l.length ? l.map(function(p){ var id = esc(p.product_id);
+      return '<div class="lrow"><img src="' + esc(pimg(p)) + '" alt=""><div class="b"><b>' + esc(p.name) + '</b><div style="color:var(--muted);margin:2px 0 6px">' + esc([p.brand, p.category, (p.pet_types || []).join(', ')].filter(Boolean).join(' · ')) + '</div>'
+        + '<div>₹' + Number(p.price) + (p.compare_price ? ' <s style="color:var(--muted)">₹' + Number(p.compare_price) + '</s>' : '') + ' · stock ' + Number(p.stock) + '</div>'
+        + '<div style="margin-top:6px;max-height:4.5em;overflow:hidden">' + esc((p.description || '').slice(0, 300)) + '</div>'
+        + '<div style="margin-top:6px"><small>by <b>' + esc(p.store_name || '—') + '</b> ' + (p.is_verified ? '<span class="st approved">verified</span>' : '<span class="st ' + esc(p.kyc_status === 'none' ? 'draft' : p.kyc_status) + '">KYC: ' + esc(KST[p.kyc_status] || p.kyc_status) + '</span>') + ' · sent ' + esc(dt(p.submitted_at)) + '</small></div>'
+        + (p.moderation_note ? '<div style="margin-top:6px;color:var(--red);font-weight:600">Note: ' + esc(p.moderation_note) + '</div>' : '') + '</div>'
+        + '<div class="acts">'
+        + (f !== 'approved' ? '<button class="btn btn-n btn-sm" onclick="decLst(\'' + id + '\',\'approve\')"><i class="ti ti-check"></i>Approve</button>' : '')
+        + '<textarea id="ln-' + id + '" maxlength="500" placeholder="What should the seller change?"></textarea><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="decLst(\'' + id + '\',\'reject\')"><i class="ti ti-arrow-back-up"></i>Send back</button></div></div>';
+    }).join('') : '<div class="hint" style="margin:0">Nothing waiting. 🎉</div>';
+  }).catch(fail);
+}
+function decLst(id, dec){
+  var t = document.getElementById('ln-' + id), n = t ? t.value.trim() : '';
+  if (dec === 'reject' && n.length < 5) { S.toast('Please tell the seller what to change', 'ti-alert-circle'); if (t) t.focus(); return; }
+  S.api('/shop/admin/listings/' + encodeURIComponent(id), {method: 'PATCH', body: {decision: dec, note: n}})
+    .then(function(r){ S.toast(dec === 'approve' ? (r.is_active ? 'Approved — now live' : 'Approved (seller keeps it hidden)') : 'Sent back to seller', 'ti-check'); loadLst(); }).catch(fail);
 }
 
 /* ── sellers ── */

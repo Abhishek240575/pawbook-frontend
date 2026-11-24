@@ -9,8 +9,8 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=6">
-<link rel="stylesheet" href="seller.css?v=6">
+<link rel="stylesheet" href="shop.css?v=7">
+<link rel="stylesheet" href="seller.css?v=7">
 <style>
 .shead{display:flex;gap:16px;align-items:center;margin:24px 0 18px;flex-wrap:wrap}
 .slogo{width:64px;height:64px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:var(--o-d);overflow:hidden;flex-shrink:0}
@@ -78,6 +78,17 @@
 .sq .ans .k{font-weight:800;color:var(--green)}
 .sq form{display:flex;gap:8px;margin-top:10px}
 .sq form .fi{height:42px}
+.modnote{display:flex;gap:6px;align-items:flex-start;margin-top:4px;font-size:11.5px;color:var(--red);font-weight:600;max-width:320px}
+.kdocs{display:flex;flex-direction:column;gap:10px}
+.kdoc{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;flex-wrap:wrap}
+.kdoc.has{border-color:#bfe8cd;background:#f6fdf8}
+.kdoc.busy{opacity:.55;pointer-events:none}
+.kdoc.invalid{border-color:var(--red);background:#fff5f5}
+.kdoc .kic{font-size:26px;color:var(--o);width:30px;text-align:center}
+.kdoc .t{flex:1;min-width:180px}.kdoc .t b{color:var(--navy);font-size:14px}.kdoc .t small{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+.kdoc .req::after{content:'*';color:var(--red)}
+.kdoc .kf{font-size:12px;margin-top:4px;color:var(--green);font-weight:600}.kdoc .kf a{color:var(--green)}
+.kpriv{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:12px;color:var(--muted)}
 .welcome{background:linear-gradient(135deg,#fff1e6,#ffe2c9);border:1px solid #fdd2ae;border-radius:20px;padding:20px 22px;margin-bottom:16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .welcome i.big{font-size:36px;color:var(--o)}
 .welcome .t{flex:1;min-width:200px}.welcome b{font-size:17px;color:var(--navy);display:block}.welcome span{font-size:13px;color:var(--ink)}
@@ -103,6 +114,7 @@
       <button data-t="products"><i class="ti ti-package"></i><span data-i18n="sh.products">Products</span></button>
       <button data-t="orders"><i class="ti ti-truck-delivery"></i><span data-i18n="sh.orders">Orders</span><span class="cnt" id="c-ship" style="display:none"></span></button>
       <button data-t="questions"><i class="ti ti-message-question"></i><span data-i18n="sh.questions">Questions</span><span class="cnt" id="c-q" style="display:none"></span></button>
+      <button data-t="kyc"><i class="ti ti-id-badge-2"></i><span data-i18n="ky.tab">Verification</span><span class="cnt" id="c-kyc" style="display:none">!</span></button>
       <button data-t="settings"><i class="ti ti-settings"></i><span data-i18n="sh.settings">Store settings</span></button>
     </div>
 
@@ -120,6 +132,8 @@
 
     <section class="panel" id="p-orders"><div class="fbar" id="of"></div><div id="olist"></div></section>
     <section class="panel" id="p-questions"><div class="fbar" id="qf"></div><div id="qlist"></div></section>
+
+    <section class="panel" id="p-kyc"><div id="kyc"></div></section>
 
     <section class="panel" id="p-settings">
       <form id="sf" novalidate onsubmit="saveStore(event)">
@@ -152,15 +166,15 @@
 </main>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=6"></script>
-<script src="shop-i18n.js?v=6"></script>
-<script src="seller-i18n.js?v=6"></script>
-<script src="shop.js?v=6"></script>
-<script src="seller.js?v=6"></script>
+<script src="pawbook-i18n.js?v=7"></script>
+<script src="shop-i18n.js?v=7"></script>
+<script src="seller-i18n.js?v=7"></script>
+<script src="shop.js?v=7"></script>
+<script src="seller.js?v=7"></script>
 <script>
 var S = Shop, T = PBi18n.t, esc = S.esc;
 S.init('seller');
-var ME = null, ST = {}, PRODUCTS = null, pfilter = '', ofilter = 'to_ship', qfilter = '1', pqT = null, logoUrl = null, openVar = null, ORDERS = [];
+var ME = null, ST = {}, KYC = {status: 'none'}, MODE = 'off', PRODUCTS = null, pfilter = '', ofilter = 'to_ship', qfilter = '1', pqT = null, logoUrl = null, openVar = null, ORDERS = [];
 var qs = new URLSearchParams(location.search);
 function img(p){ var i = p.images; if (typeof i === 'string') { try { i = JSON.parse(i); } catch(e) { i = []; } } return (i && i[0]) || S.catImg(p.category || 'other', 200); }
 function initials(n){ return String(n || '?').split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0, 2).toUpperCase(); }
@@ -171,7 +185,7 @@ function tab(t){
   document.querySelectorAll('#tabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t') === t); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + t); });
   history.replaceState(null, '', '50_seller_hub.html' + (t === 'overview' ? '' : '?tab=' + t));
-  if (t === 'products') loadProducts(); if (t === 'orders') loadOrders(); if (t === 'questions') loadQuestions(); if (t === 'settings') fillSettings();
+  if (t === 'products') loadProducts(); if (t === 'orders') loadOrders(); if (t === 'questions') loadQuestions(); if (t === 'settings') fillSettings(); if (t === 'kyc') loadKyc();
 }
 document.querySelectorAll('#tabs button').forEach(function(b){ b.onclick = function(){ tab(b.getAttribute('data-t')); }; });
 
@@ -186,6 +200,15 @@ function renderHead(){
   var b = '';
   if (s.status === 'suspended') b += '<div class="banner bad"><i class="ti ti-ban"></i><span class="sp">' + esc(T('sh.suspended')) + (s.admin_note ? ' <b>' + esc(s.admin_note) + '</b>' : '') + '</span></div>';
   else if (s.status === 'paused') b += '<div class="banner warn"><i class="ti ti-player-pause"></i><span class="sp">' + esc(T('sh.paused')) + '</span><button class="btn btn-o btn-sm" onclick="setStatus(\'active\')">' + esc(T('sh.resume')) + '</button></div>';
+  if (s.status !== 'suspended') {
+    var ks = KYC.status || 'none';
+    if (ks === 'rejected') b += '<div class="banner bad"><i class="ti ti-id-badge-2"></i><span class="sp"><b>' + esc(T('ky.b_rej')) + '</b> ' + esc(KYC.reject_reason || '') + '</span><button class="btn btn-o btn-sm" onclick="tab(\'kyc\')">' + esc(T('ky.fix')) + '</button></div>';
+    else if (ks === 'submitted') b += '<div class="banner warn"><i class="ti ti-hourglass"></i><span class="sp">' + esc(T('ky.b_sub')) + '</span></div>';
+    else if (ks !== 'approved') b += '<div class="banner warn"><i class="ti ti-id-badge-2"></i><span class="sp"><b>' + esc(T('ky.b_none')) + '</b> ' + esc(T(MODE === 'new_sellers' ? 'ky.b_nones_rev' : 'ky.b_nones')) + '</span><button class="btn btn-o btn-sm" onclick="tab(\'kyc\')">' + esc(T('ky.start')) + '</button></div>';
+    if (ST.needs_changes) b += '<div class="banner bad"><i class="ti ti-pencil-exclamation"></i><span class="sp">' + esc(T(ST.needs_changes === 1 ? 'ky.need1' : 'ky.need', {n: ST.needs_changes})) + '</span><button class="btn btn-ghost btn-sm" onclick="pfilter=\'review\';tab(\'products\')">' + esc(T('ky.view')) + '</button></div>';
+    else if (ST.in_review) b += '<div class="banner warn"><i class="ti ti-eye-check"></i><span class="sp">' + esc(T(ST.in_review === 1 ? 'ky.rev1' : 'ky.rev', {n: ST.in_review})) + '</span></div>';
+  }
+  var ck = document.getElementById('c-kyc'); ck.style.display = (KYC.status === 'rejected' || KYC.status === 'none' || KYC.status === 'draft') && s.status !== 'suspended' ? '' : 'none';
   document.getElementById('banners').innerHTML = b;
   var cs = document.getElementById('c-ship'); cs.textContent = ST.to_ship || ''; cs.style.display = ST.to_ship ? '' : 'none';
   var cq = document.getElementById('c-q'); cq.textContent = ST.unanswered || ''; cq.style.display = ST.unanswered ? '' : 'none';
@@ -223,7 +246,7 @@ function renderOverview(){
 
 /* ── products ── */
 function loadProducts(){
-  var f = [['', 'sh.f_all'], ['live', 'sh.f_live'], ['hidden', 'sh.f_hidden'], ['low', 'sh.f_low'], ['out', 'sh.f_out']];
+  var f = [['', 'sh.f_all'], ['live', 'sh.f_live'], ['review', 'ky.f_review'], ['hidden', 'sh.f_hidden'], ['low', 'sh.f_low'], ['out', 'sh.f_out']];
   document.getElementById('pf').innerHTML = f.map(function(x){ return '<button class="fchip' + (pfilter === x[0] ? ' on' : '') + '" onclick="pfilter=\'' + x[0] + '\';loadProducts()">' + esc(T(x[1])) + '</button>'; }).join('');
   var q = new URLSearchParams(); if (pfilter) q.set('status', pfilter); var t = document.getElementById('pq').value.trim(); if (t) q.set('q', t);
   S.api('/shop/seller/products?' + q.toString()).then(function(d){ PRODUCTS = d.products; renderProducts(); }).catch(fail);
@@ -235,7 +258,12 @@ function stockCell(p){
     + (openVar === p.product_id ? '<div class="varpop">' + v.map(function(x){ return '<span>' + esc(x.label) + '</span><input type="number" min="0" value="' + x.stock + '" data-vs="' + esc(x.label) + '">'; }).join('') + '<span></span><button class="btn btn-o btn-sm" onclick="saveVarStock(\'' + p.product_id + '\', this)">' + esc(T('sh.save')) + '</button></div>' : '') + '</div>';
   return '<div class="stk"><input type="number" min="0" value="' + p.stock + '" onchange="saveStock(\'' + p.product_id + '\', this.value)" aria-label="stock">' + warn + '</div>';
 }
-function activeOf(p){ return p.is_active || p.store_paused; }
+function activeOf(p){ return p.seller_live != null ? !!p.seller_live : (p.is_active || p.store_paused); }
+function modPill(p){
+  if (p.moderation === 'pending') return ' <span class="spill s-pending">' + esc(T('ky.inrev')) + '</span>';
+  if (p.moderation === 'rejected') return ' <span class="spill s-cancelled">' + esc(T('ky.needs')) + '</span>' + (p.moderation_note ? '<div class="modnote"><i class="ti ti-message-exclamation"></i>' + esc(p.moderation_note) + '</div>' : '');
+  return '';
+}
 function renderProducts(){
   var l = PRODUCTS || [];
   if (!l.length) {
@@ -249,12 +277,12 @@ function renderProducts(){
   var price = function(p){ return '<b>' + S.money(p.price) + '</b>' + (Number(p.compare_price) > Number(p.price) ? ' <s style="color:#a3a7b5;font-size:11.5px">' + S.money(p.compare_price) + '</s>' : '') + (vars(p).length ? '<br><small style="color:var(--muted)">' + esc(T('sh.from')) + '</small>' : ''); };
   document.getElementById('ptbl').innerHTML = '<tr><th>' + esc(T('sh.product')) + '</th><th>' + esc(T('f.price')) + '</th><th>' + esc(T('sh.stock')) + '</th><th>' + esc(T('sh.sold')) + '</th><th>' + esc(T('sh.inshop')) + '</th><th></th></tr>'
     + l.map(function(p){
-      return '<tr class="' + (activeOf(p) ? '' : 'off') + '"><td><div class="pcell"><img src="' + esc(img(p)) + '" alt=""><div><b>' + esc(p.name) + '</b><small>' + esc([S.catLabel(p.category), p.brand, p.sku ? 'SKU ' + p.sku : ''].filter(Boolean).join(' · ')) + '</small>'
+      return '<tr class="' + (activeOf(p) && p.moderation === 'approved' ? '' : 'off') + '"><td><div class="pcell"><img src="' + esc(img(p)) + '" alt=""><div><b>' + esc(p.name) + '</b>' + modPill(p) + '<small>' + esc([S.catLabel(p.category), p.brand, p.sku ? 'SKU ' + p.sku : ''].filter(Boolean).join(' · ')) + '</small>'
         + (p.review_count ? '<br><small>' + S.starsHTML(p.rating) + ' ' + p.rating.toFixed(1) + ' (' + p.review_count + ')</small>' : '') + '</div></div></td>'
         + '<td>' + price(p) + '</td><td>' + stockCell(p) + '</td><td>' + p.sold + '</td><td>' + toggle(p) + '</td><td>' + acts(p) + '</td></tr>';
     }).join('');
   document.getElementById('pcards').innerHTML = l.map(function(p){
-    return '<div class="pc2' + (activeOf(p) ? '' : ' off') + '"><div class="pcell" style="min-width:0"><img src="' + esc(img(p)) + '" alt=""><div style="min-width:0"><b>' + esc(p.name) + '</b><small>' + price(p) + ' · ' + esc(T('sh.soldn', {n: p.sold})) + '</small></div></div>'
+    return '<div class="pc2' + (activeOf(p) && p.moderation === 'approved' ? '' : ' off') + '"><div class="pcell" style="min-width:0"><img src="' + esc(img(p)) + '" alt=""><div style="min-width:0"><b>' + esc(p.name) + '</b>' + modPill(p) + '<small>' + price(p) + ' · ' + esc(T('sh.soldn', {n: p.sold})) + '</small></div></div>'
       + '<div class="row">' + stockCell(p) + '<div style="display:flex;gap:10px;align-items:center">' + toggle(p) + acts(p) + '</div></div></div>';
   }).join('');
 }
@@ -319,6 +347,71 @@ function answer(e, qid){
   S.api('/shop/questions/' + qid + '/answers', {method: 'POST', body: {answer: v}}).then(function(){ S.toast(T('qa.posted'), 'ti-check'); loadQuestions(); refreshStats(); }).catch(fail);
 }
 
+/* ── verification (KYC) ── */
+var KV = null;
+var DOCS = {pan: 'ti-id', gst: 'ti-receipt-tax', business: 'ti-building-store', brand_auth: 'ti-certificate'};
+function loadKyc(){
+  document.getElementById('kyc').innerHTML = '<div class="pc-skel" style="aspect-ratio:auto;height:240px"></div>';
+  S.api('/shop/seller/kyc').then(function(d){ KV = d; renderKyc(); }).catch(fail);
+}
+function renderKyc(){
+  var k = KV.kyc || {}, st = k.status || 'none', locked = st === 'submitted' || st === 'approved', h = '';
+  var head = {none: ['warn', 'ti-id-badge-2', 'ky.s_none'], draft: ['warn', 'ti-id-badge-2', 'ky.s_none'], submitted: ['warn', 'ti-hourglass', 'ky.s_sub'], approved: ['ok', 'ti-rosette', 'ky.s_ok'], rejected: ['bad', 'ti-alert-triangle', 'ky.s_rej']}[st];
+  h += '<div class="banner ' + head[0] + '"><i class="ti ' + head[1] + '"></i><span class="sp"><b>' + esc(T(head[2])) + '</b>' + (st === 'rejected' && k.reject_reason ? '<br>' + esc(k.reject_reason) : '') + (st === 'submitted' ? '<br>' + esc(T('ky.s_subs')) : '') + '</span></div>';
+  h += '<div class="sx-card"><h2><i class="ti ti-user-check"></i>' + esc(T('ky.who')) + '</h2><div class="sub">' + esc(T('ky.whos')) + '</div><form id="kf" class="fg" onsubmit="saveKyc(event).catch(function(){})" novalidate>'
+    + '<label class="fl" data-f="legal_name"><span class="req">' + esc(T('ky.legal')) + '</span><input class="fi" name="legal_name" maxlength="120" value="' + esc(k.legal_name || '') + '"' + (locked ? ' disabled' : '') + '><small>' + esc(T('ky.legals')) + '</small><span class="err">' + esc(T('ky.e_legal')) + '</span></label>'
+    + '<label class="fl" data-f="pan"><span class="req">PAN</span><input class="fi" name="pan" maxlength="10" style="text-transform:uppercase;letter-spacing:1px" placeholder="ABCDE1234F" value="' + esc(k.pan || '') + '"' + (locked ? ' disabled' : '') + '><small>' + esc(T('ky.pans')) + '</small><span class="err">' + esc(T('ky.e_pan')) + '</span></label>'
+    + (locked ? '' : '<div class="full"><button class="btn btn-ghost btn-sm"><i class="ti ti-device-floppy"></i>' + esc(T('sh.save')) + '</button></div>') + '</form></div>';
+  h += '<div class="sx-card"><h2><i class="ti ti-files"></i>' + esc(T('ky.docs')) + '</h2><div class="sub">' + esc(T('ky.docss')) + '</div><div class="kdocs">'
+    + KV.requirements.map(function(r){
+      var d = KV.docs.filter(function(x){ return x.kind === r.kind; })[0];
+      return '<div class="kdoc' + (d ? ' has' : '') + '" data-f="doc_' + r.kind + '"><i class="ti ' + DOCS[r.kind] + ' kic"></i><div class="t"><b>' + esc(T('ky.d_' + r.kind)) + (r.required ? ' <span class="req"></span>' : '') + '</b>'
+        + '<small>' + esc(T('ky.d_' + r.kind + 's')) + (r.recommended ? ' ' + esc(T('ky.recommended')) : (r.required ? '' : ' ' + esc(T('ky.optional')))) + '</small>'
+        + (d ? '<div class="kf"><i class="ti ti-paperclip"></i><a href="#" onclick="event.preventDefault();viewDoc(' + d.doc_id + ')">' + esc(d.original_name || T('ky.file')) + '</a> · ' + Math.max(1, Math.round(d.size_bytes / 1024)) + ' KB</div>' : '') + '</div>'
+        + (locked ? (d ? '<i class="ti ti-circle-check-filled" style="color:var(--green);font-size:22px"></i>' : '') : '<label class="btn ' + (d ? 'btn-ghost' : 'btn-o') + ' btn-sm" style="cursor:pointer"><i class="ti ti-upload"></i>' + esc(T(d ? 'ky.replace' : 'sj.upload')) + '<input type="file" accept="image/jpeg,image/png,application/pdf" hidden onchange="upDoc(\'' + r.kind + '\', this)"></label>')
+        + '</div>';
+    }).join('') + '</div><div class="kpriv"><i class="ti ti-lock"></i>' + esc(T('ky.private')) + '</div></div>';
+  if (!locked) h += '<div class="sx-card" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:220px"><b style="color:var(--navy)">' + esc(T('ky.ready')) + '</b><div class="sub" style="margin:2px 0 0">' + esc(T('ky.readys')) + '</div></div><button class="btn btn-o" onclick="submitKyc(this)"><i class="ti ti-send"></i>' + esc(T('ky.submit')) + '</button></div>';
+  document.getElementById('kyc').innerHTML = h;
+}
+function saveKyc(e, quiet){
+  if (e) e.preventDefault();
+  var f = document.getElementById('kf'); if (!f || f.elements.legal_name.disabled) return Promise.resolve();
+  var body = {legal_name: f.elements.legal_name.value.trim(), pan: f.elements.pan.value.trim().toUpperCase()};
+  return S.api('/shop/seller/kyc', {method: 'PUT', body: body}).then(function(d){ KV = d; if (!quiet) { S.toast(T('sh.saved'), 'ti-check'); renderKyc(); } })
+    .catch(function(err){ var m = /check: (.*)$/.exec(err.message || ''); if (m) Seller.markErrors(f, m[1].split(', ')); fail(err); throw err; });
+}
+function upDoc(kind, inp){
+  var file = inp.files[0]; inp.value = ''; if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { S.toast(T('ky.e_size'), 'ti-alert-circle'); return; }
+  var fd = new FormData(); fd.append('kind', kind); fd.append('file', file);
+  var row = inp.closest('.kdoc'); row.classList.add('busy');
+  var tok = ''; try { tok = localStorage.getItem('pb_token') || ''; } catch(x) {}
+  saveKyc(null, true).catch(function(){}).then(function(){
+    return fetch(S.API + '/shop/seller/kyc/docs', {method: 'POST', headers: tok ? {Authorization: 'Bearer ' + tok} : {}, credentials: 'include', body: fd});
+  }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok || j.success === false) throw new Error(j.message || ('HTTP ' + r.status)); }); })
+    .then(function(){ S.toast(T('ky.uploaded'), 'ti-check'); loadKyc(); })
+    .catch(function(e){ row.classList.remove('busy'); S.toast(e.message || T('sl.upfail'), 'ti-alert-circle'); });
+}
+function viewDoc(id){
+  var w = window.open('', '_blank'); var tok = ''; try { tok = localStorage.getItem('pb_token') || ''; } catch(x) {}
+  fetch(S.API + '/shop/kyc/docs/' + id, {headers: tok ? {Authorization: 'Bearer ' + tok} : {}, credentials: 'include'})
+    .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
+    .then(function(b){ var u = URL.createObjectURL(b); if (w) w.location = u; else location.href = u; setTimeout(function(){ URL.revokeObjectURL(u); }, 60000); })
+    .catch(function(e){ if (w) w.close(); fail(e); });
+}
+function submitKyc(btn){
+  btn.disabled = true;
+  saveKyc(null, true).then(function(){ return S.api('/shop/seller/kyc/submit', {method: 'POST', body: {}}); })
+    .then(function(d){ KV = d; S.toast(T('ky.sent'), 'ti-send'); renderKyc(); refreshStats(); })
+    .catch(function(err){
+      btn.disabled = false;
+      var m = /complete: (.*)$/.exec(err.message || '');
+      if (m) { var f = m[1].split(', '); Seller.markErrors(document.getElementById('kyc'), f); S.toast(T('ky.incomplete'), 'ti-alert-circle'); return; }
+      if (!/check:/.test(err.message || '')) fail(err);
+    });
+}
+
 /* ── settings ── */
 function fillSettings(){
   var f = document.getElementById('sf'), s = ME;
@@ -344,10 +437,10 @@ function saveStore(e){
 }
 function setStatus(st){ S.api('/shop/seller/me', {method: 'PATCH', body: {status: st}}).then(function(){ S.toast(T(st === 'paused' ? 'sh.nowpaused' : 'sh.nowresumed'), 'ti-check'); return boot(true); }).catch(fail); }
 
-function refreshStats(){ return S.api('/shop/seller/me').then(function(d){ ME = d.seller; ST = d.stats || {}; renderHead(); if (document.getElementById('p-overview').classList.contains('on')) renderOverview(); }); }
+function refreshStats(){ return S.api('/shop/seller/me').then(function(d){ ME = d.seller; ST = d.stats || {}; KYC = d.kyc || {status: 'none'}; MODE = d.approval_mode || 'off'; renderHead(); if (document.getElementById('p-overview').classList.contains('on')) renderOverview(); }); }
 function boot(keepTab){
   return Seller.requireSeller().then(function(d){
-    ME = d.seller; ST = d.stats || {};
+    ME = d.seller; ST = d.stats || {}; KYC = d.kyc || {status: 'none'}; MODE = d.approval_mode || 'off';
     document.getElementById('loading').style.display = 'none'; document.getElementById('app').style.display = '';
     renderHead(); renderOverview();
     var t = keepTab ? (document.querySelector('#tabs button.on') || {}).getAttribute && document.querySelector('#tabs button.on').getAttribute('data-t') : qs.get('tab');
