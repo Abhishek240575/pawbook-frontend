@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<title>Compare — PawBook Shop</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<style>
+.ch{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:24px 0 18px}
+.ch h1{font-size:30px;font-weight:900;color:var(--navy);letter-spacing:-.5px}
+.ch p{font-size:13.5px;color:var(--muted);margin-top:4px}
+.ch-acts{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tgl{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer}
+.tgl input{width:18px;height:18px;accent-color:var(--o)}
+.cwrap{overflow-x:auto;border-radius:20px;border:1px solid var(--line);background:#fff;-webkit-overflow-scrolling:touch}
+table.cmp{border-collapse:separate;border-spacing:0;width:100%;min-width:640px}
+.cmp th,.cmp td{padding:14px 16px;border-bottom:1px solid var(--line2);vertical-align:top;font-size:13.5px;text-align:left}
+.cmp th{position:sticky;left:0;z-index:2;background:var(--cream);width:170px;min-width:130px;font-size:12.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.cmp td{min-width:190px;color:var(--ink)}
+.cmp tr.diff td{background:#fffaf2}
+.cmp tr.sect th,.cmp tr.sect td{background:var(--o-ll);font-size:12px;font-weight:900;color:var(--o-d);text-transform:uppercase;letter-spacing:.6px;padding:10px 16px}
+.cp{display:flex;flex-direction:column;gap:8px;position:relative}
+.cp img{width:100%;max-width:200px;aspect-ratio:1/1;object-fit:cover;border-radius:16px;background:var(--o-ll)}
+.cp a.n{font-size:14px;font-weight:800;color:var(--navy);text-decoration:none;line-height:1.35}
+.cp a.n:hover{color:var(--o-d)}
+.cp .rm{position:absolute;top:6px;left:6px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.95);box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer;font-size:15px;color:var(--navy)}
+.cp .btn{height:40px;font-size:13px}
+.best{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--green-l);color:var(--green);font-size:10.5px;font-weight:800;vertical-align:middle}
+.yes{color:var(--green);font-weight:700}.no{color:#a3a7b5}
+.add-col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:200px;border:2px dashed var(--line);border-radius:16px;color:var(--muted);text-decoration:none;font-weight:700;font-size:13px}
+.add-col i{font-size:28px;color:var(--o)}
+@media(max-width:760px){ .ch h1{font-size:23px} .cmp th{width:110px;min-width:100px;font-size:11px;padding:12px 10px} .cmp td{min-width:160px;padding:12px 10px} }
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap">
+  <div class="ch">
+    <div><div class="crumb" style="font-size:12.5px;color:var(--muted)"><a href="42_shop.html" style="color:var(--muted);text-decoration:none" data-i18n="h.shop">Shop</a> › <span data-i18n="cmp.t">Compare products</span></div>
+      <h1 data-i18n="cmp.t">Compare products</h1><p data-i18n="cmp.s">See prices, ratings and details side by side.</p></div>
+    <div class="ch-acts"><label class="tgl"><input type="checkbox" id="onlydiff" onchange="render()"><span data-i18n="cmp.diff">Highlight differences only</span></label>
+      <button class="btn btn-ghost btn-sm" onclick="Shop.compare.clear();location.href='43_shop_list.html'"><i class="ti ti-trash"></i><span data-i18n="f.clear">Clear all</span></button></div>
+  </div>
+  <div class="cwrap" id="cwrap"></div>
+</main>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="shop.js"></script>
+<script>
+var S = Shop, T = PBi18n.t, esc = S.esc;
+S.init('compare');
+var qsIds = (new URLSearchParams(location.search).get('ids') || '').split(',').filter(Boolean);
+var IDS = qsIds.length ? qsIds : S.compare.list().map(function(x){ return String(x.product_id); });
+var PS = null;
+function val(p, k){
+  switch (k) {
+    case 'price': return S.money(p.price) + (p.compare_price > p.price ? ' <s style="color:#a3a7b5;font-size:12px">' + S.money(p.compare_price) + '</s>' : '');
+    case 'discount': return p.discount_pct ? p.discount_pct + '%' : '—';
+    case 'rating': return p.review_count ? S.starsHTML(p.rating) + ' ' + p.rating.toFixed(1) + ' <span style="color:var(--muted)">(' + p.review_count + ')</span>' : '<span class="no">' + esc(T('pd.norev')) + '</span>';
+    case 'brand': return esc(p.brand || '—');
+    case 'category': return esc(S.catLabel(p.category));
+    case 'pets': return esc((p.pet_types || []).map(function(t){ return T('pet.' + t); }).join(', ') || '—');
+    case 'stages': return esc((p.life_stages || []).map(function(s){ return s === 'all' ? T('cmp.allages') : T('ls.' + s); }).join(', ') || '—');
+    case 'stock': return Number(p.stock) > 0 ? '<span class="yes"><i class="ti ti-circle-check"></i> ' + esc(T('pd.instock')) + '</span>' : '<span class="no">' + esc(T('p.oos')) + '</span>';
+    case 'delivery': return esc(T('pd.getby', {d: S.deliveryBy(p.delivery_days)}));
+    case 'sizes': var v = p.variants; if (typeof v === 'string') { try { v = JSON.parse(v); } catch(e) { v = []; } } return esc((v || []).map(function(x){ return x.label; }).join(', ') || '—');
+    case 'seller': return esc(p.seller_name || '—');
+    case 'ingredients': return esc(p.ingredients || '—');
+  }
+  if (k.indexOf('spec:') === 0) { var s = p.specs; if (typeof s === 'string') { try { s = JSON.parse(s); } catch(e) { s = {}; } } var x = (s || {})[k.slice(5)]; return x == null || x === '' ? '—' : esc(x); }
+  return '—';
+}
+function render(){
+  var w = document.getElementById('cwrap');
+  if (!PS) { w.innerHTML = '<div class="pc-skel" style="aspect-ratio:auto;height:420px"></div>'; return; }
+  if (PS.length < 2) {
+    w.innerHTML = '<div class="empty"><div class="empty-ic"><i class="ti ti-arrows-left-right"></i></div><div class="empty-t">' + esc(T('cmp.emptyt')) + '</div><div class="empty-s">' + esc(T('cmp.empty')) + '</div><a class="btn btn-o" href="43_shop_list.html">' + esc(T('c.browse')) + '</a></div>';
+    return;
+  }
+  var minPrice = Math.min.apply(null, PS.map(function(p){ return p.price; }));
+  var rated = PS.filter(function(p){ return p.review_count > 0; });
+  var maxRate = rated.length ? Math.max.apply(null, rated.map(function(p){ return p.rating; })) : null;
+  var specKeys = []; PS.forEach(function(p){ var s = p.specs; if (typeof s === 'string') { try { s = JSON.parse(s); } catch(e) { s = {}; } } Object.keys(s || {}).forEach(function(k){ if (specKeys.indexOf(k) < 0) specKeys.push(k); }); });
+  var rows = [
+    ['sect', T('cmp.overview')], ['price', T('f.price')], ['discount', T('cmp.discount')], ['rating', T('f.rating')], ['stock', T('cmp.avail')], ['delivery', T('c.del')],
+    ['sect', T('cmp.details')], ['brand', T('f.brand')], ['category', T('f.cat')], ['pets', T('f.pet')], ['stages', T('f.stage')], ['sizes', T('cmp.sizes')], ['seller', T('pd.seller')]
+  ];
+  if (specKeys.length) { rows.push(['sect', T('pd.specs')]); specKeys.forEach(function(k){ rows.push(['spec:' + k, k]); }); }
+  if (PS.some(function(p){ return p.ingredients; })) rows.push(['ingredients', T('pd.ingr')]);
+  var only = document.getElementById('onlydiff').checked;
+  var h = '<table class="cmp"><tr><th></th>' + PS.map(function(p){
+    var oos = Number(p.stock) <= 0;
+    S.cardData[String(p.product_id)] = p;
+    return '<td><div class="cp"><button class="rm" onclick="removeP(\'' + esc(p.product_id) + '\')" aria-label="remove"><i class="ti ti-x"></i></button>'
+      + '<a href="44_shop_product.html?id=' + encodeURIComponent(p.product_id) + '"><img src="' + esc(S.firstImg(p, 400)) + '" alt=""></a>'
+      + '<a class="n" href="44_shop_product.html?id=' + encodeURIComponent(p.product_id) + '">' + esc(p.name) + '</a>'
+      + '<button class="btn btn-o" data-add="' + esc(p.product_id) + '"' + (oos ? ' disabled' : '') + '><i class="ti ti-shopping-bag-plus"></i>' + esc(T(oos ? 'p.oos' : 'p.add')) + '</button></div></td>';
+  }).join('') + (PS.length < 4 ? '<td><a class="add-col" href="43_shop_list.html"><i class="ti ti-plus"></i>' + esc(T('cmp.more')) + '</a></td>' : '') + '</tr>';
+  rows.forEach(function(r){
+    if (r[0] === 'sect') { h += '<tr class="sect"><th>' + esc(r[1]) + '</th>' + PS.map(function(){ return '<td></td>'; }).join('') + (PS.length < 4 ? '<td></td>' : '') + '</tr>'; return; }
+    var vals = PS.map(function(p){ return val(p, r[0]); });
+    var diff = vals.some(function(v){ return v !== vals[0]; });
+    if (only && !diff) return;
+    h += '<tr class="' + (diff ? 'diff' : '') + '"><th>' + esc(r[1]) + '</th>' + PS.map(function(p, i){
+      var badge = '';
+      if (r[0] === 'price' && p.price === minPrice && diff) badge = '<span class="best"><i class="ti ti-tag"></i>' + esc(T('cmp.lowest')) + '</span>';
+      if (r[0] === 'rating' && maxRate !== null && p.review_count && p.rating === maxRate && rated.length > 1) badge = '<span class="best"><i class="ti ti-star"></i>' + esc(T('cmp.toprated')) + '</span>';
+      return '<td>' + vals[i] + badge + '</td>';
+    }).join('') + (PS.length < 4 ? '<td></td>' : '') + '</tr>';
+  });
+  w.innerHTML = h + '</table>';
+}
+function removeP(id){
+  if (S.compare.has(id)) S.compare.toggle({product_id: id});
+  PS = PS.filter(function(p){ return String(p.product_id) !== String(id); });
+  history.replaceState(null, '', '47_shop_compare.html?ids=' + PS.map(function(p){ return encodeURIComponent(p.product_id); }).join(','));
+  render();
+}
+render();
+if (IDS.length) S.api('/shop/compare?ids=' + IDS.slice(0, 4).map(encodeURIComponent).join(',')).then(function(d){ PS = d.products || []; render(); }).catch(function(){ PS = []; render(); });
+else { PS = []; render(); }
+S.loadCats().then(function(){ if (PS) render(); });
+window.addEventListener('pb:langchange', render);
+</script>
+</body>
+</html>

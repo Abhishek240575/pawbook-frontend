@@ -30,6 +30,30 @@
     { id: 'accessories', icon: 'ti-tag', img: 1750543 }, { id: 'other', icon: 'ti-dots', img: 16395147 }
   ];
   function catInfo(id) { for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i]; return CATS[CATS.length - 1]; }
+  // Categories are managed by admins in the database; the list above is the offline fallback.
+  var dynCats = {}, activeCats = null, catsReady = null;
+  function loadCats() {
+    if (catsReady) return catsReady;
+    catsReady = api('/shop/categories').then(function (d) {
+      var list = d.categories || [];
+      list.forEach(function (c) {
+        dynCats[c.slug] = c;
+        var ex = CATS.filter(function (x) { return x.id === c.slug; })[0];
+        if (ex) { if (c.icon) ex.icon = c.icon; if (c.image_url) ex.image_url = c.image_url; }
+        else CATS.splice(CATS.length - 1, 0, { id: c.slug, icon: c.icon || 'ti-tag', img: null, image_url: c.image_url });
+      });
+      activeCats = list.map(function (c) { return c.slug; });
+      return list;
+    }).catch(function () { return null; });
+    return catsReady;
+  }
+  function catImg(id, w) { var c = catInfo(id); return c.image_url || px(c.img || 16395147, w || 500); }
+  function activeCatIds() { return activeCats || CATS.map(function (c) { return c.id; }); }
+  function homeCats() {
+    if (!activeCats) return ['food', 'treats', 'toys', 'grooming', 'walk', 'beds', 'clothing', 'health'];
+    var h = activeCats.filter(function (s) { return dynCats[s] && dynCats[s].show_on_home; });
+    return (h.length ? h : activeCats).slice(0, 8);
+  }
 
   // ── API ─────────────────────────────────────────────────────────────────────
   function token() { try { return localStorage.getItem('pb_token') || ''; } catch (e) { return ''; } }
@@ -60,9 +84,14 @@
   function firstImg(p, w) {
     var im = (p.images && p.images[0]) || p.image || p.image_url;
     if (typeof im === 'string' && im) return im;
-    return px(catInfo(p.category).img, w || 500);
+    return catImg(p.category, w || 500);
   }
-  function catLabel(id) { return T('cat.' + id); }
+  function catLabel(id) {
+    var d = dynCats[id];
+    if (d && d.name_i18n && d.name_i18n[PBi18n.lang]) return d.name_i18n[PBi18n.lang];
+    if (PBi18n.has('cat.' + id)) return T('cat.' + id);
+    return d ? d.name : id;
+  }
 
   // ── Recently viewed (device only) ───────────────────────────────────────────
   var recent = {
@@ -105,6 +134,32 @@
       var i = b.querySelector('i'); if (i) i.className = 'ti ' + (on ? 'ti-heart-filled' : 'ti-heart');
     });
     setBadge('wish', wishIds.size);
+  }
+
+  // ── Compare (device, up to 4) ───────────────────────────────────────────────
+  var CMP_KEY = 'pb_shop_compare', CMP_MAX = 4;
+  var compare = {
+    list: function () { return ls(CMP_KEY) || []; },
+    has: function (id) { return compare.list().some(function (x) { return String(x.product_id) === String(id); }); },
+    toggle: function (p) {
+      var l = compare.list(), id = String(p.product_id);
+      if (compare.has(id)) l = l.filter(function (x) { return String(x.product_id) !== id; });
+      else { if (l.length >= CMP_MAX) { toast(T('cmp.max', { n: CMP_MAX }), 'ti-alert-circle'); return; } l.push({ product_id: p.product_id, name: p.name || '', image: p.name ? firstImg(p, 120) : '', category: p.category }); toast(T('cmp.added'), 'ti-arrows-left-right'); }
+      ls(CMP_KEY, l); paintCompare();
+    },
+    clear: function () { ls(CMP_KEY, []); paintCompare(); },
+    url: function () { return '47_shop_compare.html?ids=' + compare.list().map(function (x) { return encodeURIComponent(x.product_id); }).join(','); }
+  };
+  function paintCompare() {
+    var l = compare.list();
+    document.querySelectorAll('[data-cmp]').forEach(function (b) { b.classList.toggle('on', compare.has(b.getAttribute('data-cmp'))); });
+    var t = document.getElementById('cmp-tray');
+    if (!t) { t = document.createElement('div'); t.id = 'cmp-tray'; t.className = 'cmp-tray'; document.body.appendChild(t); }
+    if (!l.length || /47_shop_compare/.test(location.pathname)) { t.classList.remove('show'); return; }
+    var slots = ''; for (var i = 0; i < CMP_MAX; i++) { var x = l[i]; slots += x ? '<span class="cmp-slot" title="' + esc(x.name) + '">' + (x.image ? '<img src="' + esc(x.image) + '" alt="">' : '<i class="ti ti-package"></i>') + '<button onclick="Shop.compare.toggle({product_id:\'' + esc(x.product_id) + '\'})" aria-label="remove">×</button></span>' : '<span class="cmp-slot empty"><i class="ti ti-plus"></i></span>'; }
+    t.innerHTML = '<div class="cmp-slots">' + slots + '</div><div class="cmp-txt"><b>' + esc(T('cmp.n', { n: l.length, max: CMP_MAX })) + '</b><button class="cmp-clear" onclick="Shop.compare.clear()">' + esc(T('f.clear')) + '</button></div>'
+      + '<a class="btn btn-o btn-sm" href="' + compare.url() + '"' + (l.length < 2 ? ' aria-disabled="true" onclick="event.preventDefault();Shop.toast(Shop.T(\'cmp.need2\'),\'ti-info-circle\')"' : '') + '><i class="ti ti-arrows-left-right"></i>' + esc(T('cmp.go')) + '</a>';
+    t.classList.add('show');
   }
 
   // ── Cart ────────────────────────────────────────────────────────────────────
@@ -203,11 +258,12 @@
       ? '<div class="pc-rate">' + starsHTML(p.rating) + '<span>' + Number(p.rating).toFixed(1) + ' (' + p.review_count + ')</span></div>'
       : '<div class="pc-rate"><span class="pc-new">' + esc(T('p.newin')) + '</span></div>';
     return '<article class="pc">'
-      + '<a class="pc-img" href="' + url + '"><img loading="lazy" src="' + esc(firstImg(p, 500)) + '" alt="' + esc(p.name) + '" onerror="this.onerror=null;this.src=\'' + px(catInfo(p.category).img, 500) + '\'">'
+      + '<a class="pc-img" href="' + url + '"><img loading="lazy" src="' + esc(firstImg(p, 500)) + '" alt="' + esc(p.name) + '" onerror="this.onerror=null;this.src=\'' + catImg(p.category, 500) + '\'">'
       + (off >= 5 ? '<span class="pc-off">' + esc(T('p.off', { n: off })) + '</span>' : '')
       + (opts.tag ? '<span class="pc-tag">' + esc(opts.tag) + '</span>' : '')
       + (oos ? '<span class="pc-oos"><span>' + esc(T('p.oos')) + '</span></span>' : '') + '</a>'
       + '<button class="pc-wish' + (wish.has(p.product_id) ? ' on' : '') + '" data-wish="' + esc(p.product_id) + '" aria-label="' + esc(T('w.save')) + '"><i class="ti ' + (wish.has(p.product_id) ? 'ti-heart-filled' : 'ti-heart') + '"></i></button>'
+      + '<button class="pc-cmp' + (compare.has(p.product_id) ? ' on' : '') + '" data-cmp="' + esc(p.product_id) + '" title="' + esc(T('cmp.add')) + '" aria-label="' + esc(T('cmp.add')) + '"><i class="ti ti-arrows-left-right"></i></button>'
       + '<div class="pc-b">'
       + (p.brand ? '<div class="pc-brand">' + esc(p.brand) + '</div>' : '<div class="pc-brand">' + esc(catLabel(p.category)) + '</div>')
       + '<a class="pc-name" href="' + url + '">' + esc(p.name) + '</a>' + rate
@@ -223,6 +279,7 @@
   }
   document.addEventListener('click', function (e) {
     var w = e.target.closest('[data-wish]'); if (w) { e.preventDefault(); wish.toggle(w.getAttribute('data-wish')); return; }
+    var cm = e.target.closest('[data-cmp]'); if (cm) { e.preventDefault(); var cid = cm.getAttribute('data-cmp'); compare.toggle(cardData[cid] || { product_id: cid }); return; }
     var a = e.target.closest('[data-add]'); if (a) { e.preventDefault(); var p = cardData[a.getAttribute('data-add')]; if (p) cart.add(p, 1); return; }
   });
   function skeletons(el, n) { var s = ''; for (var i = 0; i < (n || 4); i++) s += '<div class="pc-skel"></div>'; el.innerHTML = s; }
@@ -245,6 +302,7 @@
       + '<nav class="nav"><div class="wrap">'
       + nav.map(function (n) { return '<a href="43_shop_list.html?pet=' + n[0] + '"' + (active === n[0] ? ' class="on"' : '') + '><i class="ti ' + n[1] + '"></i><span data-i18n="pet.' + n[0] + '">' + esc(T('pet.' + n[0])) + '</span></a>'; }).join('')
       + '<a href="43_shop_list.html?sort=discount&on_sale=1" class="hot' + (active === 'offers' ? ' on' : '') + '"><i class="ti ti-discount-2"></i><span data-i18n="h.offers">' + esc(T('h.offers')) + '</span></a>'
+      + '<a href="45_shop_brands.html"' + (active === 'brands' ? ' class="on"' : '') + '><i class="ti ti-building-store"></i><span data-i18n="h.brands">' + esc(T('h.brands')) + '</span></a>'
       + '<a href="42_shop.html#services"><i class="ti ti-scissors"></i><span data-i18n="h.services">' + esc(T('h.services')) + '</span></a>'
       + '<a href="04_adoption.html"><i class="ti ti-heart-handshake"></i><span data-i18n="h.adopt">' + esc(T('h.adopt')) + '</span></a>'
       + '<span class="sp"></span><a class="back" href="07_home.html"><i class="ti ti-arrow-back-up"></i><span data-i18n="h.back">' + esc(T('h.back')) + '</span></a>'
@@ -274,7 +332,7 @@
     f.innerHTML = '<footer class="foot"><div class="wrap"><div class="foot-g">'
       + '<div><a class="logo" href="42_shop.html" style="margin-bottom:12px"><div class="logo-ic">🐾</div><div><div class="logo-t" style="color:#fff">PawBook</div><div class="logo-s" data-i18n="h.shop">' + esc(T('h.shop')) + '</div></div></a>'
       + '<p data-i18n="f.about">' + esc(T('f.about')) + '</p></div>'
-      + '<div><h4 data-i18n="f.shop">' + esc(T('f.shop')) + '</h4>' + ['dog', 'cat', 'bird', 'fish', 'small_pet'].map(function (p) { return '<a href="43_shop_list.html?pet=' + p + '" data-i18n="pet.' + p + '">' + esc(T('pet.' + p)) + '</a>'; }).join('') + '</div>'
+      + '<div><h4 data-i18n="f.shop">' + esc(T('f.shop')) + '</h4>' + ['dog', 'cat', 'bird', 'fish', 'small_pet'].map(function (p) { return '<a href="43_shop_list.html?pet=' + p + '" data-i18n="pet.' + p + '">' + esc(T('pet.' + p)) + '</a>'; }).join('') + '<a href="45_shop_brands.html" data-i18n="h.brands">' + esc(T('h.brands')) + '</a></div>'
       + '<div><h4 data-i18n="f.help">' + esc(T('f.help')) + '</h4><a href="legal.html#terms" data-i18n="f.terms">' + esc(T('f.terms')) + '</a><a href="legal.html#privacy" data-i18n="f.privacy">' + esc(T('f.privacy')) + '</a><a href="legal.html#grievance" data-i18n="f.grievance">' + esc(T('f.grievance')) + '</a><a href="36_abuse_reporting.html" data-i18n="f.abuse">' + esc(T('f.abuse')) + '</a></div>'
       + '<div><h4 data-i18n="f.pawbook">' + esc(T('f.pawbook')) + '</h4><a href="07_home.html" data-i18n="f.social">' + esc(T('f.social')) + '</a><a href="11_vet_booking.html" data-i18n="f.vet">' + esc(T('f.vet')) + '</a><a href="04_adoption.html" data-i18n="h.adopt">' + esc(T('h.adopt')) + '</a><a href="09_marketplace.html" data-i18n="f.sell">' + esc(T('f.sell')) + '</a></div>'
       + '</div><div class="foot-b"><span>© ' + new Date().getFullYear() + ' Deemona Global Solutions · PawBook</span><span data-i18n="f.note">' + esc(T('f.note')) + '</span></div></div></footer>';
@@ -310,13 +368,30 @@
   }
 
   // ── Search with suggestions ─────────────────────────────────────────────────
-  function search(e) { e.preventDefault(); var q = document.getElementById('shop-q').value.trim(); location.href = '43_shop_list.html' + (q ? '?q=' + encodeURIComponent(q) : ''); }
+  var RS_KEY = 'pb_shop_searches';
+  function saveSearch(q) { q = String(q || '').trim().slice(0, 60); if (q.length < 2) return; var l = (ls(RS_KEY) || []).filter(function (x) { return x.toLowerCase() !== q.toLowerCase(); }); l.unshift(q); ls(RS_KEY, l.slice(0, 6)); }
+  function search(e) { e.preventDefault(); var q = document.getElementById('shop-q').value.trim(); saveSearch(q); location.href = '43_shop_list.html' + (q ? '?q=' + encodeURIComponent(q) : ''); }
+  var popular = null;
+  function showStarters(box) {
+    var rec = ls(RS_KEY) || [];
+    var draw = function () {
+      var h = '';
+      if (rec.length) h += '<div class="sugg-h">' + esc(T('s.recent')) + ' <button type="button" class="sugg-clr" onclick="event.stopPropagation();try{localStorage.removeItem(\'' + RS_KEY + '\')}catch(e){};document.getElementById(\'shop-sugg\').classList.remove(\'show\')">' + esc(T('f.clear')) + '</button></div>' + rec.map(function (q) { return '<a href="43_shop_list.html?q=' + encodeURIComponent(q) + '"><i class="ti ti-history" style="font-size:18px;color:var(--muted);width:38px;text-align:center"></i>' + esc(q) + '</a>'; }).join('');
+      if (popular && popular.length) h += '<div class="sugg-h">' + esc(T('s.popular')) + '</div><div class="sugg-pop">' + popular.map(function (q) { return '<a href="43_shop_list.html?q=' + encodeURIComponent(q) + '"><i class="ti ti-trending-up"></i>' + esc(q) + '</a>'; }).join('') + '</div>';
+      box.innerHTML = h; box.classList.toggle('show', !!h);
+    };
+    draw();
+    if (popular === null) api('/shop/suggest?q=').then(function (d) { popular = d.popular || []; if (!document.getElementById('shop-q').value.trim() && document.activeElement === document.getElementById('shop-q')) draw(); }).catch(function () { popular = []; });
+  }
   var sTimer = null;
   function bindSuggest() {
     var inp = document.getElementById('shop-q'), box = document.getElementById('shop-sugg');
-    var qs = new URLSearchParams(location.search).get('q'); if (qs) inp.value = qs;
+    var qs = new URLSearchParams(location.search).get('q'); if (qs) { inp.value = qs; saveSearch(qs); }
+    inp.addEventListener('focus', function () { if (!inp.value.trim()) showStarters(box); });
+    box.addEventListener('click', function (e) { var a = e.target.closest('a[href*="q="]'); if (a) saveSearch(decodeURIComponent((a.getAttribute('href').split('q=')[1] || '').split('&')[0])); });
     inp.addEventListener('input', function () {
       clearTimeout(sTimer); var q = inp.value.trim();
+      if (!q) { showStarters(box); return; }
       if (q.length < 2) { box.classList.remove('show'); return; }
       sTimer = setTimeout(function () {
         var cats = CATS.filter(function (c) { return catLabel(c.id).toLowerCase().indexOf(q.toLowerCase()) >= 0; }).slice(0, 3);
@@ -346,14 +421,15 @@
   // ── Boot ────────────────────────────────────────────────────────────────────
   function init(active) {
     header(active); footer(); PBi18n.apply();
-    wish.load(); cart.load();
-    window.addEventListener('pb:langchange', function () { paintPin(); paintWish(); });
+    wish.load(); cart.load(); loadCats(); paintCompare();
+    window.addEventListener('pb:langchange', function () { paintPin(); paintWish(); paintCompare(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeCart(); var m = document.getElementById('pin-modal'); if (m) m.classList.remove('show'); } });
   }
 
   window.Shop = {
     API: API, api: api, px: px, esc: esc, money: money, starsHTML: starsHTML, deliveryBy: deliveryBy, firstImg: firstImg,
-    PETS: PETS, CATS: CATS, catInfo: catInfo, catLabel: catLabel, loggedIn: loggedIn,
+    PETS: PETS, CATS: CATS, catInfo: catInfo, catLabel: catLabel, catImg: catImg, loadCats: loadCats, activeCatIds: activeCatIds, homeCats: homeCats,
+    loggedIn: loggedIn, compare: compare, saveSearch: saveSearch, T: T,
     productCard: productCard, renderCards: renderCards, skeletons: skeletons, cardData: cardData,
     cart: cart, wish: wish, recent: recent, pin: pin, toast: toast,
     init: init, openCart: openCart, closeCart: closeCart, checkout: checkout, search: search, savePin: savePin

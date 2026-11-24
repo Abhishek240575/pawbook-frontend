@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<title>Brands — PawBook Shop</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://images.pexels.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<style>
+.bhero{position:relative;margin-top:20px;border-radius:26px;overflow:hidden;background:var(--navy);color:#fff;min-height:200px;display:flex;align-items:center}
+.bhero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}
+.bhero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(29,35,64,.95),rgba(29,35,64,.4))}
+.bhero-t{position:relative;z-index:2;padding:34px 40px;max-width:640px}
+.bhero h1{font-size:36px;font-weight:900;letter-spacing:-.6px}
+.bhero p{font-size:14.5px;opacity:.88;margin-top:6px;line-height:1.6}
+.btools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:22px 0 10px}
+.btools .search-b{flex:1;min-width:220px;position:relative}
+.btools .search-b input{width:100%;height:46px;border-radius:999px;border:1.5px solid var(--line);background:#fff;padding:0 16px 0 42px;outline:none}
+.btools .search-b input:focus{border-color:var(--o)}
+.btools .search-b i{position:absolute;left:15px;top:13px;font-size:18px;color:#a99d90}
+.bpets{display:flex;gap:8px;flex-wrap:wrap}
+.bpet{padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:13px;color:var(--navy);cursor:pointer}
+.bpet.on{border-color:var(--o);background:var(--o-ll);color:var(--o-d)}
+.az{display:flex;gap:4px;flex-wrap:wrap;margin:8px 0 22px}
+.az button{min-width:32px;height:32px;border-radius:9px;border:none;background:#fff;font-weight:800;font-size:12.5px;color:var(--navy);cursor:pointer;border:1px solid var(--line)}
+.az button.on{background:var(--o);color:#fff;border-color:var(--o)}
+.az button:disabled{opacity:.3;cursor:default}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.bc{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s}
+.bc:hover{box-shadow:var(--sh-h);transform:translateY(-3px)}
+.bc-cover{height:96px;background:linear-gradient(135deg,var(--o-l),#ffe2cc);position:relative}
+.bc-cover img{width:100%;height:100%;object-fit:cover}
+.bc-logo{position:absolute;left:16px;bottom:-26px;width:58px;height:58px;border-radius:16px;background:#fff;border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:19px;color:var(--o-d);overflow:hidden}
+.bc-logo img{width:100%;height:100%;object-fit:contain}
+.bc-b{padding:34px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.bc-n{font-size:16px;font-weight:900;color:var(--navy);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.bc-t{font-size:12.5px;color:var(--muted);line-height:1.45;min-height:18px}
+.bc-meta{display:flex;gap:12px;font-size:12px;color:var(--muted);font-weight:600;margin-top:auto;padding-top:8px;flex-wrap:wrap}
+.bc-meta b{color:var(--navy)}
+.bc-cats{display:flex;gap:6px;flex-wrap:wrap}
+.bc-cats span{padding:3px 9px;border-radius:999px;background:var(--o-ll);color:var(--o-d);font-size:11px;font-weight:700}
+@media(max-width:760px){ .bhero-t{padding:24px 22px} .bhero h1{font-size:26px} .bgrid{grid-template-columns:1fr 1fr;gap:10px} .bc-cover{height:70px} .bc-logo{width:46px;height:46px;font-size:15px;bottom:-20px;left:12px} .bc-b{padding:28px 12px 12px} .bc-n{font-size:14px} .bc-cats{display:none} }
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap">
+  <section class="bhero">
+    <img src="https://images.pexels.com/photos/7474346/pexels-photo-7474346.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="">
+    <div class="bhero-t"><div class="crumb" style="color:#cfd3e3;font-size:12.5px"><a href="42_shop.html" style="color:#cfd3e3;text-decoration:none" data-i18n="h.shop">Shop</a> › <span data-i18n="h.brands">Brands</span></div>
+      <h1 data-i18n="bd.t">Shop by brand</h1><p data-i18n="bd.s">Every brand on PawBook in one place. Verified brands have confirmed their identity with PawBook.</p></div>
+  </section>
+  <div class="btools">
+    <div class="search-b"><i class="ti ti-search"></i><input id="bq" data-i18n-ph="bd.search" placeholder="Search brands…" oninput="render()"></div>
+    <div class="bpets" id="bpets"></div>
+  </div>
+  <div class="az" id="az"></div>
+  <div class="bgrid" id="bgrid"></div>
+</main>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="shop.js"></script>
+<script>
+var S = Shop, T = PBi18n.t, esc = S.esc;
+S.init('brands');
+var BR = null, letter = '', pet = '';
+function initials(n){ return n.split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0, 2).toUpperCase(); }
+function render(){
+  document.getElementById('bpets').innerHTML = ['', 'dog', 'cat', 'bird', 'fish', 'small_pet'].map(function(p){
+    return '<button class="bpet' + (pet === p ? ' on' : '') + '" onclick="pet=\'' + p + '\';render()">' + esc(p ? T('pet.' + p) : T('bd.all')) + '</button>'; }).join('');
+  var g = document.getElementById('bgrid');
+  if (!BR) { S.skeletons(g, 8); return; }
+  var q = document.getElementById('bq').value.trim().toLowerCase();
+  var base = BR.filter(function(b){ return (!q || b.name.toLowerCase().indexOf(q) >= 0) && (!pet || (b.pet_types || []).indexOf(pet) >= 0 || !b.pet_types); });
+  var letters = {}; base.forEach(function(b){ var c = b.name.charAt(0).toUpperCase(); letters[/[A-Z]/.test(c) ? c : '#'] = 1; });
+  document.getElementById('az').innerHTML = '<button class="' + (letter ? '' : 'on') + '" onclick="letter=\'\';render()">' + esc(T('bd.all')) + '</button>'
+    + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('').map(function(c){ return '<button class="' + (letter === c ? 'on' : '') + '"' + (letters[c] ? '' : ' disabled') + ' onclick="letter=\'' + c + '\';render()">' + c + '</button>'; }).join('');
+  var list = base.filter(function(b){ if (!letter) return true; var c = b.name.charAt(0).toUpperCase(); return letter === '#' ? !/[A-Z]/.test(c) : c === letter; });
+  if (!list.length) { g.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-ic"><i class="ti ti-building-store"></i></div><div class="empty-t">' + esc(T(BR.length ? 'bd.none' : 'bd.empty')) + '</div><div class="empty-s">' + esc(T(BR.length ? 'l.nones' : 'bd.emptys')) + '</div></div>'; return; }
+  g.innerHTML = list.map(function(b){
+    return '<a class="bc" href="46_shop_brand.html?b=' + encodeURIComponent(b.slug) + '"><div class="bc-cover">' + (b.cover_url ? '<img src="' + esc(b.cover_url) + '" alt="" loading="lazy">' : '')
+      + '<span class="bc-logo">' + (b.logo_url ? '<img src="' + esc(b.logo_url) + '" alt="">' : esc(initials(b.name))) + '</span></div>'
+      + '<div class="bc-b"><div class="bc-n">' + esc(b.name) + (b.is_verified ? '<span class="vbadge"><i class="ti ti-rosette"></i>' + esc(T('br.verified')) + '</span>' : '') + '</div>'
+      + '<div class="bc-t">' + esc(b.tagline || '') + '</div>'
+      + '<div class="bc-cats">' + (b.categories || []).slice(0, 3).map(function(c){ return '<span>' + esc(S.catLabel(c)) + '</span>'; }).join('') + '</div>'
+      + '<div class="bc-meta"><span><b>' + b.n + '</b> ' + esc(T(b.n === 1 ? 'bd.product' : 'bd.products')) + '</span>' + (b.rating > 0 ? '<span>' + S.starsHTML(b.rating) + ' <b>' + b.rating.toFixed(1) + '</b></span>' : '') + '</div></div></a>';
+  }).join('');
+}
+render();
+S.api('/shop/brands').then(function(d){ BR = d.brands || []; render(); }).catch(function(){ BR = []; render(); });
+S.loadCats().then(render);
+window.addEventListener('pb:langchange', render);
+</script>
+</body>
+</html>

@@ -342,10 +342,10 @@ function renderStatic(){
   }).join('')
   + '<a class="circ" href="43_shop_list.html?sort=discount&on_sale=1"><div class="circ-ic" style="background:#ffe4e4;color:var(--red)"><i class="ti ti-discount-2"></i></div><span>' + S.esc(T('h.offers')) + '</span></a>'
   + '<a class="circ" href="43_shop_list.html?sort=new"><div class="circ-ic" style="background:#e9f3ff;color:var(--blue)"><i class="ti ti-sparkles"></i></div><span>' + S.esc(T('home.newin')) + '</span></a>';
-  var tiles = ['food','treats','toys','grooming','walk','beds','clothing','health'];
+  var tiles = S.homeCats();
   document.getElementById('ctiles').innerHTML = tiles.map(function(id){
-    var c = S.catInfo(id), n = catCounts[id];
-    return '<a class="ctile" href="43_shop_list.html?category=' + id + '"><div class="ctile-img"><img loading="lazy" src="' + S.px(c.img, 400) + '" alt=""></div><b>' + S.esc(S.catLabel(id)) + '</b>' + (n ? '<small>' + S.esc(n === 1 ? T('home.item') : T('home.items', {n:n})) + '</small>' : '') + '</a>';
+    var n = catCounts[id];
+    return '<a class="ctile" href="43_shop_list.html?category=' + id + '"><div class="ctile-img"><img loading="lazy" src="' + S.esc(S.catImg(id, 400)) + '" alt=""></div><b>' + S.esc(S.catLabel(id)) + '</b>' + (n ? '<small>' + S.esc(n === 1 ? T('home.item') : T('home.items', {n:n})) + '</small>' : '') + '</a>';
   }).join('');
   renderServices();
 }
@@ -368,10 +368,11 @@ function renderServices(){
 window.addEventListener('shop:pin', renderServices);
 
 /* ── product rails from the live catalogue ── */
-var home = null;
-function rail(key, sub, list, href, tag){
+var home = null, recs = null, loved = null;
+function rail(key, sub, list, href, title, subText){
   if (!list || !list.length) return '';
-  return '<section class="sec"><div class="sec-h"><div><h2 class="sec-t">' + S.esc(T(key)) + '</h2>' + (sub ? '<p class="sec-s">' + S.esc(T(sub)) + '</p>' : '') + '</div>'
+  var t = title || T(key), st = subText || (sub ? T(sub) : '');
+  return '<section class="sec"><div class="sec-h"><div><h2 class="sec-t">' + S.esc(t) + '</h2>' + (st ? '<p class="sec-s">' + S.esc(st) + '</p>' : '') + '</div>'
     + '<a class="sec-more" href="' + href + '"><span>' + S.esc(T('home.viewall')) + '</span><i class="ti ti-arrow-right"></i></a></div><div class="rail" data-rail="' + key + '"></div></section>';
 }
 function renderRails(){
@@ -381,13 +382,21 @@ function renderRails(){
     el.innerHTML = '<section class="sec"><div class="opening"><b>' + S.esc(T('open.t')) + '</b><p>' + S.esc(T('open.s')) + '</p><a class="btn btn-o" href="09_marketplace.html"><i class="ti ti-building-store"></i>' + S.esc(T('sell.c')) + '</a></div></section>';
     return;
   }
+  var forYou = null;
+  if (recs && recs.products && recs.products.length) {
+    if (recs.pets && recs.pets.length) forYou = T('home.foryou', {names: recs.pets.slice(0, 2).join(' & ')});
+    else if (recs.personal) forYou = T('home.foryou2');
+  }
   var groups = [
+    forYou ? ['_foryou', null, recs.products, '43_shop_list.html?sort=recommended' + (recs.pet_types && recs.pet_types.length ? '&pet=' + recs.pet_types.join(',') : ''), null, forYou, T('home.foryous')] : null,
     ['home.best', 'home.bests', home.best_sellers, '43_shop_list.html?sort=popular', T('tag.best')],
+    loved && loved.length ? ['home.loved', 'home.loveds', loved, '43_shop_list.html?sort=rating'] : null,
     ['home.deals', 'home.dealss', home.deals, '43_shop_list.html?sort=discount&on_sale=1'],
     ['home.feat', null, home.featured, '43_shop_list.html?sort=recommended'],
     ['home.new', 'home.news', home.new_arrivals, '43_shop_list.html?sort=new']
   ];
-  el.innerHTML = groups.map(function(g){ return rail(g[0], g[1], g[2], g[3]); }).join('');
+  groups = groups.filter(Boolean);
+  el.innerHTML = groups.map(function(g){ return rail(g[0], g[1], g[2], g[3], g[5], g[6]); }).join('');
   groups.forEach(function(g){ var r = el.querySelector('[data-rail="' + g[0] + '"]'); if (r) S.renderCards(r, g[2], g[4] ? {tag:g[4]} : {}); });
 }
 function renderBrands(){
@@ -407,6 +416,10 @@ renderStatic(); renderRails(); renderRecent();
 S.api('/shop/home').then(function(d){
   home = d; catCounts = d.categories || {}; renderStatic(); renderRails(); renderBrands();
 }).catch(function(){ home = {total_products:0, brands:[]}; renderRails(); });
+var recentIds = S.recent.list().map(function(p){ return p.product_id; }).slice(0, 8).join(',');
+S.api('/shop/recommendations' + (recentIds ? '?recent=' + encodeURIComponent(recentIds) : '')).then(function(d){ recs = d; if (home) renderRails(); }).catch(function(){});
+S.api('/shop/loved').then(function(d){ loved = d.products || []; if (home) renderRails(); }).catch(function(){});
+S.loadCats().then(function(){ renderStatic(); });
 
 window.addEventListener('pb:langchange', function(){ renderStatic(); renderRails(); renderBrands(); renderRecent(); });
 

@@ -94,6 +94,35 @@
 .rev small{font-size:12px;color:var(--muted)}
 .rev p{font-size:14px;margin-top:8px;color:#3d4258;line-height:1.6}
 .sticky-buy{display:none}
+.cmp-link{margin-top:10px;display:inline-flex;align-items:center;gap:6px;border:none;background:none;color:var(--navy);font-weight:700;font-size:13px;cursor:pointer;padding:4px 0}
+.cmp-link:hover,.cmp-link.on{color:var(--o-d)}
+.fbt{margin-top:44px;border-radius:22px;background:#fff;border:1px solid var(--line);padding:22px}
+.fbt-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.fbt-item{display:flex;flex-direction:column;gap:8px;width:150px;position:relative}
+.fbt-item img{width:150px;height:150px;border-radius:16px;object-fit:cover;background:var(--o-ll);border:1px solid var(--line)}
+.fbt-item label{display:flex;gap:6px;align-items:flex-start;font-size:12.5px;font-weight:600;color:var(--navy);line-height:1.35;cursor:pointer}
+.fbt-item input{accent-color:var(--o);margin-top:2px}
+.fbt-item b{font-size:14px;color:var(--navy)}
+.fbt-plus{font-size:26px;color:#c8bfb4;font-weight:300}
+.fbt-sum{margin-left:auto;text-align:right}
+.fbt-sum .t{font-size:13px;color:var(--muted)}
+.fbt-sum .v{font-size:24px;font-weight:900;color:var(--navy);margin:2px 0 10px}
+.fbt-note{font-size:12px;color:var(--muted);margin-top:4px}
+.qa-ask{display:flex;gap:10px;margin-bottom:18px;white-space:normal}
+.qa-ask input{flex:1;height:48px;border-radius:12px;border:1.5px solid var(--line);padding:0 14px;outline:none;background:var(--cream)}
+.qa-ask input:focus{border-color:var(--o);background:#fff}
+.qa{padding:16px 0;border-bottom:1px solid var(--line2);white-space:normal}
+.qa-q{display:flex;gap:10px;font-size:14.5px;font-weight:700;color:var(--navy)}
+.qa-q span.k,.qa-a span.k{flex-shrink:0;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+.qa-q span.k{background:var(--navy);color:#fff}
+.qa-a{display:flex;gap:10px;margin-top:10px;font-size:14px;color:#3d4258;line-height:1.55}
+.qa-a span.k{background:var(--o-l);color:var(--o-d)}
+.qa-meta{font-size:11.5px;color:var(--muted);margin-top:3px}
+.qa-seller{display:inline-flex;align-items:center;gap:3px;padding:1px 8px;border-radius:999px;background:var(--green-l);color:var(--green);font-size:11px;font-weight:800;margin-right:6px}
+.qa-reply{margin:8px 0 0 34px;border:none;background:none;color:var(--o-d);font-weight:700;font-size:12.5px;cursor:pointer;padding:0}
+.qa-rform{display:flex;gap:8px;margin:8px 0 0 34px}
+.qa-rform input{flex:1;height:40px;border-radius:10px;border:1.5px solid var(--line);padding:0 12px;outline:none}
+@media(max-width:760px){ .fbt-item{width:calc(50% - 30px)} .fbt-item img{width:100%;height:auto;aspect-ratio:1/1} .fbt-sum{margin-left:0;width:100%;text-align:left} .qa-ask{flex-direction:column} }
 .nf{text-align:center;padding:80px 20px}
 @media(max-width:960px){
   .pdp{grid-template-columns:1fr;gap:24px}
@@ -119,6 +148,7 @@
   <div class="crumb" id="crumb"></div>
   <div class="pdp" id="pdp"><div class="pc-skel" style="aspect-ratio:1/1"></div><div><div class="pc-skel" style="aspect-ratio:2/1"></div></div></div>
   <div id="details"></div>
+  <section class="fbt" id="fbt" style="display:none"></section>
   <section class="sec" id="rel-sec" style="display:none"><div class="sec-h"><div><h2 class="sec-t" data-i18n="pd.related">You may also like</h2></div></div><div class="rail" id="related"></div></section>
 </main>
 <div class="sticky-buy" id="sticky-buy" style="display:none"></div>
@@ -143,7 +173,7 @@ function render(){
   var vs = variants(), price = curPrice(), cmp = curCompare(), stock = curStock();
   var off = cmp > price ? Math.round((1 - price / cmp) * 100) : 0;
   var im = imgs(); if (imgIdx >= im.length) imgIdx = 0;
-  var fb = S.px(S.catInfo(P.category).img, 900);
+  var fb = S.catImg(P.category, 900);
   document.getElementById('crumb').innerHTML = '<a href="42_shop.html">' + esc(T('h.shop')) + '</a><i class="ti ti-chevron-right"></i><a href="43_shop_list.html?category=' + esc(P.category) + '">' + esc(S.catLabel(P.category)) + '</a><i class="ti ti-chevron-right"></i><span>' + esc(P.name) + '</span>';
   var rating = P.review_count > 0
     ? '<a class="rt" href="#tab-reviews" onclick="tab(\'reviews\')">' + S.starsHTML(P.rating) + P.rating.toFixed(1) + ' <span style="color:var(--muted);font-weight:600">(' + esc((P.review_count === 1 ? T('pd.nrev1') : T('pd.nrev', {n: P.review_count}))) + ')</span></a>'
@@ -159,7 +189,7 @@ function render(){
     + (off >= 5 ? '<span class="pc-off">' + esc(T('p.off', {n: off})) + '</span>' : '')
     + '<button class="pc-wish' + (S.wish.has(P.product_id) ? ' on' : '') + '" data-wish="' + esc(P.product_id) + '" aria-label="' + esc(T('w.save')) + '"><i class="ti ' + (S.wish.has(P.product_id) ? 'ti-heart-filled' : 'ti-heart') + '"></i></button></div></div>'
     + '<div class="info">'
-    + (P.brand ? '<a class="brand" href="43_shop_list.html?brand=' + encodeURIComponent(P.brand) + '">' + esc(P.brand) + '</a>' : '')
+    + (P.brand ? '<a class="brand" href="46_shop_brand.html?b=' + encodeURIComponent((P.brand_info && P.brand_info.slug) || P.brand) + '">' + esc(P.brand) + '</a>' + (P.brand_info && P.brand_info.is_verified ? ' <span class="vbadge"><i class="ti ti-rosette"></i>' + esc(T('br.verified')) + '</span>' : '') : '')
     + '<h1>' + esc(P.name) + '</h1>'
     + '<div class="meta">' + rating + (D.seller && D.seller.name ? '<span><i class="ti ti-building-store"></i> ' + esc(T('pd.soldby', {s: D.seller.name})) + '</span>' : '') + (P.sold > 0 ? '<span><i class="ti ti-flame"></i> ' + esc(T('pd.sold', {n: P.sold})) + '</span>' : '') + '</div>'
     + '<div class="price"><div class="price-l"><b>' + S.money(price) + '</b>' + (off >= 1 ? '<s>' + S.money(cmp) + '</s><span class="save">' + esc(T('pd.save', {amt: S.money(cmp - price), n: off})) + '</span>' : '') + '</div><small>' + esc(T('pd.tax')) + (P.unit ? ' · ' + esc(P.unit) : '') + '</small></div>'
@@ -169,6 +199,7 @@ function render(){
     + '<button class="btn btn-ghost" onclick="addCart(false)"' + (stock <= 0 ? ' disabled' : '') + '><i class="ti ti-shopping-bag-plus"></i>' + esc(T('p.add')) + '</button>'
     + '<button class="btn btn-o" onclick="addCart(true)"' + (stock <= 0 ? ' disabled' : '') + '><i class="ti ti-bolt"></i>' + esc(T('pd.buy')) + '</button></div>'
     + stockHTML
+    + '<button class="cmp-link' + (S.compare.has(P.product_id) ? ' on' : '') + '" data-cmp="' + esc(P.product_id) + '"><i class="ti ti-arrows-left-right"></i><span>' + esc(T(S.compare.has(P.product_id) ? 'cmp.in' : 'cmp.add')) + '</span></button>'
     + '<div class="box">'
     + '<div class="box-r"><i class="ti ti-truck-delivery"></i><div style="flex:1"><b>' + (pin ? esc(T('pd.delto', {pin: pin.pin, place: pin.place || ''})) : esc(T('pd.delcheck'))) + '</b>'
     + (pin ? '<small>' + esc(T('pd.getby', {d: S.deliveryBy(P.delivery_days)})) + ' · ' + esc(T('pd.delfee')) + '</small>' : '')
@@ -226,6 +257,7 @@ function renderDetails(){
   if (P.ingredients) tabs.push(['ingr', T('pd.ingr'), esc(P.ingredients)]);
   if (P.usage_instructions) tabs.push(['usage', T('pd.usage'), esc(P.usage_instructions)]);
   tabs.push(['reviews', T('pd.reviews') + (P.review_count ? ' (' + P.review_count + ')' : ''), reviewsHTML()]);
+  tabs.push(['qa', T('qa.t') + (QA && QA.length ? ' (' + QA.length + ')' : ''), qaHTML()]);
   document.getElementById('details').innerHTML = '<div class="tabs" id="tab-reviews" role="tablist">' + tabs.map(function(t, i){ return '<button class="' + (i ? '' : 'on') + '" data-tab="' + t[0] + '" onclick="tab(\'' + t[0] + '\')">' + esc(t[1]) + '</button>'; }).join('') + '</div>'
     + tabs.map(function(t, i){ return '<div class="tpanel' + (i ? '' : ' on') + '" data-panel="' + t[0] + '">' + t[2] + '</div>'; }).join('');
 }
@@ -240,6 +272,67 @@ function reviewsHTML(){
       var n = r.user_name || 'PawBook user';
       return '<div class="rev"><div class="rev-h"><span class="rev-av">' + (r.avatar_url ? '<img src="' + esc(r.avatar_url) + '" alt="">' : esc(n.charAt(0).toUpperCase())) + '</span><div><b>' + esc(n) + '</b><br><small>' + S.starsHTML(r.rating) + ' · ' + esc(PBi18n.fmtDate(r.created_at)) + '</small></div></div>' + (r.comment ? '<p>' + esc(r.comment) + '</p>' : '') + '</div>';
     }).join('') + '</div></div>';
+}
+
+/* ── questions & answers ── */
+var QA = null, replyOpen = null;
+function loadQA(){ S.api('/shop/products/' + encodeURIComponent(ID) + '/questions').then(function(d){ QA = d.questions || []; refreshQA(); }).catch(function(){ QA = []; refreshQA(); }); }
+function refreshQA(){
+  var p = document.querySelector('[data-panel="qa"]'); if (p) p.innerHTML = qaHTML();
+  var b = document.querySelector('[data-tab="qa"]'); if (b) b.textContent = T('qa.t') + (QA && QA.length ? ' (' + QA.length + ')' : '');
+}
+function qaHTML(){
+  var ask = S.loggedIn()
+    ? '<form class="qa-ask" onsubmit="askQ(event)"><input id="qa-in" maxlength="500" placeholder="' + esc(T('qa.ph')) + '"><button class="btn btn-o">' + esc(T('qa.ask')) + '</button></form>'
+    : '<div class="note-bar" style="white-space:normal"><i class="ti ti-message-question"></i><span>' + esc(T('qa.login')) + '</span><a href="01_login.html">' + esc(T('h.login')) + '</a></div>';
+  if (QA === null) return ask + '<div class="pc-skel" style="aspect-ratio:auto;height:80px"></div>';
+  if (!QA.length) return ask + '<div class="empty" style="padding:24px 0;white-space:normal"><div class="empty-ic"><i class="ti ti-message-question"></i></div><div class="empty-t">' + esc(T('qa.none')) + '</div><div class="empty-s">' + esc(T('qa.nones')) + '</div></div>';
+  return ask + QA.map(function(q){
+    return '<div class="qa"><div class="qa-q"><span class="k">Q</span><div>' + esc(q.question) + '<div class="qa-meta">' + esc(q.user_name || 'PawBook user') + ' · ' + esc(PBi18n.fmtDate(q.created_at)) + '</div></div></div>'
+      + q.answers.map(function(a){ return '<div class="qa-a"><span class="k">A</span><div>' + esc(a.answer) + '<div class="qa-meta">' + (a.is_seller ? '<span class="qa-seller"><i class="ti ti-building-store"></i>' + esc(T('qa.seller')) + '</span>' : '') + esc(a.user_name || 'PawBook user') + ' · ' + esc(PBi18n.fmtDate(a.created_at)) + '</div></div></div>'; }).join('')
+      + (S.loggedIn() ? (String(replyOpen) === String(q.question_id)
+          ? '<form class="qa-rform" onsubmit="answerQ(event,' + q.question_id + ')"><input id="qa-r-' + q.question_id + '" maxlength="1000" placeholder="' + esc(T('qa.answerph')) + '"><button class="btn btn-n btn-sm">' + esc(T('qa.post')) + '</button></form>'
+          : '<button class="qa-reply" onclick="replyOpen=' + q.question_id + ';refreshQA();setTimeout(function(){var i=document.getElementById(\'qa-r-' + q.question_id + '\');if(i)i.focus()},50)">' + esc(T(q.answers.length ? 'qa.addans' : 'qa.answer')) + '</button>') : '')
+      + '</div>';
+  }).join('');
+}
+function askQ(e){
+  e.preventDefault(); var v = document.getElementById('qa-in').value.trim();
+  if (v.length < 5) { S.toast(T('qa.short'), 'ti-alert-circle'); return; }
+  S.api('/shop/products/' + encodeURIComponent(ID) + '/questions', {method:'POST', body:{question:v}}).then(function(){ S.toast(T('qa.posted'), 'ti-check'); loadQA(); })
+    .catch(function(err){ S.toast(err.status === 429 ? T('qa.slow') : (err.status === 401 ? T('qa.login') : T('l.err')), 'ti-alert-circle'); });
+}
+function answerQ(e, qid){
+  e.preventDefault(); var v = document.getElementById('qa-r-' + qid).value.trim();
+  if (v.length < 2) return;
+  S.api('/shop/questions/' + qid + '/answers', {method:'POST', body:{answer:v}}).then(function(){ replyOpen = null; S.toast(T('qa.posted'), 'ti-check'); loadQA(); })
+    .catch(function(err){ S.toast(err.status === 429 ? T('qa.slow') : T('l.err'), 'ti-alert-circle'); });
+}
+
+/* ── frequently bought together (from real orders) ── */
+var FBT = [], fbtOn = {};
+function renderFBT(){
+  var box = document.getElementById('fbt');
+  if (!FBT.length) { box.style.display = 'none'; return; }
+  var items = [P].concat(FBT.slice(0, 2));
+  items.forEach(function(it){ if (fbtOn[it.product_id] === undefined) fbtOn[it.product_id] = true; });
+  var sel = items.filter(function(it){ return fbtOn[it.product_id] && Number(it.stock) > 0; });
+  var total = sel.reduce(function(a, it){ return a + Number(it === P ? curPrice() : it.price); }, 0);
+  box.style.display = '';
+  box.innerHTML = '<h2 class="sec-t" style="font-size:21px">' + esc(T('fbt.t')) + '</h2><div class="fbt-note">' + esc(T('fbt.s')) + '</div><div class="fbt-row">'
+    + items.map(function(it, i){
+      return (i ? '<span class="fbt-plus">+</span>' : '') + '<div class="fbt-item"><a href="44_shop_product.html?id=' + encodeURIComponent(it.product_id) + '"><img src="' + esc(S.firstImg(it, 300)) + '" alt=""></a>'
+        + '<label><input type="checkbox"' + (fbtOn[it.product_id] ? ' checked' : '') + ' onchange="fbtOn[\'' + esc(it.product_id) + '\']=this.checked;renderFBT()"><span>' + (i ? '' : esc(T('fbt.this')) + ' ') + esc(it.name) + '</span></label><b>' + S.money(it === P ? curPrice() : it.price) + '</b></div>';
+    }).join('')
+    + '<div class="fbt-sum"><div class="t">' + esc(T('fbt.total', {n: sel.length})) + '</div><div class="v">' + S.money(total) + '</div><button class="btn btn-o" onclick="addFBT()"' + (sel.length ? '' : ' disabled') + '><i class="ti ti-shopping-bag-plus"></i>' + esc(T('fbt.add', {n: sel.length})) + '</button></div></div>';
+}
+function addFBT(){
+  [P].concat(FBT.slice(0, 2)).forEach(function(it){
+    if (!fbtOn[it.product_id] || Number(it.stock) <= 0) return;
+    if (it === P) S.cart.add({product_id: P.product_id, name: P.name + (variant ? ' — ' + variant.label : ''), price: curPrice(), images: imgs(), category: P.category, stock: curStock()}, 1);
+    else S.cart.add(it, 1);
+  });
+  setTimeout(S.openCart, 300);
 }
 
 /* ── actions ── */
@@ -262,13 +355,15 @@ function notFound(){
 }
 if (!ID) notFound();
 else S.api('/shop/products/' + encodeURIComponent(ID)).then(function(d){
-  D = d; P = d.product;
+  D = d; P = d.product; S.cardData[String(P.product_id)] = P;
   document.title = P.name + ' — PawBook Shop';
-  render(); renderDetails(); S.recent.add(P);
+  render(); renderDetails(); S.recent.add(P); loadQA();
+  S.api('/shop/products/' + encodeURIComponent(ID) + '/together').then(function(t){ FBT = t.products || []; renderFBT(); }).catch(function(){});
   if (d.related && d.related.length) { document.getElementById('rel-sec').style.display = ''; S.renderCards(document.getElementById('related'), d.related); }
   if (S.loggedIn()) S.api('/pets/my').then(function(r){ myPets = Array.isArray(r) ? r : (r.pets || r.data || []); render(); }).catch(function(){ myPets = []; render(); });
 }).catch(function(e){ notFound(); });
-window.addEventListener('pb:langchange', function(){ if (P) { render(); renderDetails(); } });
+window.addEventListener('pb:langchange', function(){ if (P) { render(); renderDetails(); renderFBT(); } });
+document.addEventListener('click', function(e){ if (e.target.closest('.cmp-link') && P) setTimeout(render, 0); });
 window.addEventListener('shop:pin', function(){ if (P) render(); });
 </script>
 </body>

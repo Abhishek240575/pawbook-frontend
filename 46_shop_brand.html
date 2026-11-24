@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<title>Brand — PawBook Shop</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://images.pexels.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<style>
+.bcrumb{font-size:12.5px;color:var(--muted);margin-top:18px;min-height:18px}
+.bcrumb a{color:var(--muted);text-decoration:none}.bcrumb a:hover{color:var(--o-d)}
+.cover{position:relative;margin-top:10px;border-radius:26px;overflow:hidden;height:240px;background:linear-gradient(135deg,#ffe8d4,#ffd2b0)}
+.cover img{width:100%;height:100%;object-fit:cover}
+.cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(29,35,64,.35))}
+.bhead{display:flex;gap:20px;align-items:flex-end;margin:-56px 0 0 32px;position:relative;z-index:2;flex-wrap:wrap}
+.blogo{width:112px;height:112px;border-radius:26px;background:#fff;border:5px solid #fff;box-shadow:0 10px 26px rgba(29,35,64,.16);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:var(--o-d);overflow:hidden;flex-shrink:0}
+.blogo img{width:100%;height:100%;object-fit:contain}
+.binfo{padding-bottom:6px;flex:1;min-width:240px}
+.binfo h1{font-size:32px;font-weight:900;color:var(--navy);letter-spacing:-.5px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.binfo h1 .vbadge{font-size:12.5px;padding:4px 10px}
+.binfo p{font-size:14px;color:var(--muted);margin-top:2px}
+.bstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.bst{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.bst b{display:block;font-size:22px;font-weight:900;color:var(--navy)}
+.bst span{font-size:12px;color:var(--muted);font-weight:600}
+.babout{margin-top:22px;display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.bbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.bbox h3{font-size:15px;font-weight:900;color:var(--navy);margin-bottom:8px}
+.bbox p{font-size:13.5px;color:#4b5068;line-height:1.7;white-space:pre-line}
+.bbox .row{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink);padding:6px 0}
+.bbox .row i{color:var(--o);font-size:18px}
+.bbox a{color:var(--o-d);font-weight:700}
+.unv{font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:8px;display:flex;gap:8px}
+.ctabs{display:flex;gap:8px;overflow-x:auto;margin:30px 0 16px;scrollbar-width:none;align-items:center}
+.ctabs::-webkit-scrollbar{display:none}
+.ctab{flex-shrink:0;padding:9px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:800;font-size:13px;color:var(--navy);cursor:pointer}
+.ctab.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.ctabs .sp{flex:1}
+.ctabs select{height:40px;border-radius:999px;border:1.5px solid var(--line);padding:0 14px;font-weight:700;background:#fff;color:var(--navy)}
+.nf{text-align:center;padding:80px 20px}
+@media(max-width:760px){
+  .cover{height:150px;border-radius:20px}
+  .bhead{margin:-40px 0 0 16px;gap:12px}
+  .blogo{width:80px;height:80px;border-radius:20px;font-size:26px}
+  .binfo h1{font-size:23px}
+  .bstats{grid-template-columns:1fr 1fr}
+  .babout{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap" id="main">
+  <div class="bcrumb" id="crumb"></div>
+  <div class="cover" id="cover"></div>
+  <div id="brand"></div>
+  <div class="ctabs" id="ctabs"></div>
+  <div class="pgrid" id="grid"></div>
+  <div class="pager" id="pager" style="display:flex;justify-content:center;gap:6px;margin-top:26px"></div>
+</main>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="shop.js"></script>
+<script>
+var S = Shop, T = PBi18n.t, esc = S.esc;
+S.init('brands');
+var SLUG = new URLSearchParams(location.search).get('b') || '';
+var B = null, cat = '', sort = 'popular', page = 1;
+function initials(n){ return n.split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0, 2).toUpperCase(); }
+function renderBrand(){
+  var c = document.getElementById('cover');
+  c.innerHTML = B.cover_url ? '<img src="' + esc(B.cover_url) + '" alt="">' : '<img src="' + esc(S.catImg((B.categories || [])[0] || 'food', 1400)) + '" alt="" style="opacity:.55">';
+  document.title = B.name + ' — PawBook Shop';
+  document.getElementById('crumb').innerHTML = '<a href="42_shop.html">' + esc(T('h.shop')) + '</a> › <a href="45_shop_brands.html">' + esc(T('h.brands')) + '</a> › ' + esc(B.name);
+  document.getElementById('brand').innerHTML =
+    '<div class="bhead"><div class="blogo">' + (B.logo_url ? '<img src="' + esc(B.logo_url) + '" alt="">' : esc(initials(B.name))) + '</div>'
+    + '<div class="binfo">'
+    + '<h1>' + esc(B.name) + (B.is_verified ? '<span class="vbadge"><i class="ti ti-rosette"></i>' + esc(T('br.verified')) + '</span>' : '') + '</h1>'
+    + (B.tagline ? '<p>' + esc(B.tagline) + '</p>' : '') + '</div>'
+    + '<button class="btn btn-ghost btn-sm" onclick="share()"><i class="ti ti-share"></i>' + esc(T('bs.share')) + '</button></div>'
+    + '<div class="bstats">'
+    + '<div class="bst"><b>' + B.n + '</b><span>' + esc(T(B.n === 1 ? 'bd.product' : 'bd.products')) + '</span></div>'
+    + '<div class="bst"><b>' + (B.rating > 0 ? B.rating.toFixed(1) + ' ★' : '—') + '</b><span>' + esc(T('bs.rating')) + (B.reviews ? ' · ' + esc(T(B.reviews === 1 ? 'pd.nrev1' : 'pd.nrev', {n: B.reviews})) : '') + '</span></div>'
+    + '<div class="bst"><b>' + (B.sold || 0) + '</b><span>' + esc(T('bs.sold')) + '</span></div>'
+    + '<div class="bst"><b>' + (B.sellers || 1) + '</b><span>' + esc(T(B.sellers === 1 ? 'bs.seller' : 'bs.sellers')) + '</span></div></div>'
+    + '<div class="babout"><div class="bbox"><h3>' + esc(T('bs.about', {name: B.name})) + '</h3><p>' + esc(B.description || T('bs.nodesc')) + '</p>'
+    + (B.is_verified ? '' : '<div class="unv"><i class="ti ti-info-circle"></i><span>' + esc(T('bs.unverified')) + '</span></div>') + '</div>'
+    + '<div class="bbox"><h3>' + esc(T('bs.info')) + '</h3>'
+    + ((B.pets || []).length ? '<div class="row"><i class="ti ti-paw"></i>' + esc(B.pets.map(function(p){ return T('pet.' + p); }).join(', ')) + '</div>' : '')
+    + (B.country ? '<div class="row"><i class="ti ti-world"></i>' + esc(B.country) + '</div>' : '')
+    + (B.website ? '<div class="row"><i class="ti ti-external-link"></i><a href="' + esc(B.website) + '" target="_blank" rel="noopener nofollow">' + esc(B.website.replace(/^https?:\/\//, '').replace(/\/$/, '')) + '</a></div>' : '')
+    + '<div class="row"><i class="ti ti-category"></i>' + esc((B.categories || []).map(S.catLabel).join(', ')) + '</div></div></div>';
+  document.getElementById('ctabs').innerHTML = ['' ].concat(B.categories || []).map(function(c){
+    return '<button class="ctab' + (cat === c ? ' on' : '') + '" onclick="cat=\'' + c + '\';page=1;renderBrandTabs();loadProducts()">' + esc(c ? S.catLabel(c) : T('bs.all')) + '</button>'; }).join('')
+    + '<span class="sp"></span><select onchange="sort=this.value;page=1;loadProducts()" aria-label="' + esc(T('so.label')) + '">'
+    + ['popular','rating','price_asc','price_desc','new','discount'].map(function(s){ return '<option value="' + s + '"' + (sort === s ? ' selected' : '') + '>' + esc(T({popular:'so.pop',rating:'so.rate',price_asc:'so.pa',price_desc:'so.pd',new:'so.new',discount:'so.disc'}[s])) + '</option>'; }).join('') + '</select>';
+}
+function renderBrandTabs(){ document.querySelectorAll('.ctab').forEach(function(b, i){ b.classList.toggle('on', (i === 0 ? '' : B.categories[i - 1]) === cat); }); }
+function loadProducts(){
+  var g = document.getElementById('grid'); S.skeletons(g, 8);
+  var q = new URLSearchParams({brand: B.name, sort: sort, page: page, limit: 24}); if (cat) q.set('category', cat);
+  S.api('/shop/products?' + q.toString()).then(function(d){
+    S.renderCards(g, d.products);
+    var pages = Math.ceil(d.total / d.limit), h = '';
+    if (pages > 1) for (var i = 1; i <= pages; i++) h += '<button class="btn btn-sm ' + (i === d.page ? 'btn-o' : 'btn-ghost') + '" onclick="page=' + i + ';loadProducts();scrollTo(0,400)">' + i + '</button>';
+    document.getElementById('pager').innerHTML = h;
+  }).catch(function(){ g.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-t">' + esc(T('l.err')) + '</div></div>'; });
+}
+function share(){
+  var url = location.href;
+  if (navigator.share) navigator.share({title: B.name + ' — PawBook Shop', url: url}).catch(function(){});
+  else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function(){ S.toast(T('bs.copied'), 'ti-link'); });
+}
+if (!SLUG) location.href = '45_shop_brands.html';
+S.api('/shop/brands/' + encodeURIComponent(SLUG)).then(function(d){ B = d.brand; renderBrand(); loadProducts(); })
+  .catch(function(){ document.getElementById('main').innerHTML = '<div class="nf"><div class="empty-ic" style="margin:0 auto 14px"><i class="ti ti-building-store"></i></div><div class="empty-t">' + esc(T('bs.nf')) + '</div><a class="btn btn-o" style="margin-top:18px" href="45_shop_brands.html">' + esc(T('bs.allbrands')) + '</a></div>'; });
+S.loadCats().then(function(){ if (B) renderBrand(); });
+window.addEventListener('pb:langchange', function(){ if (B) { renderBrand(); loadProducts(); } });
+</script>
+</body>
+</html>

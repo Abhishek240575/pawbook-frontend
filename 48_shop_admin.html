@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Shop Admin — PawBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<style>
+.ah{display:flex;align-items:center;gap:14px;margin:24px 0 18px;flex-wrap:wrap}
+.ah h1{font-size:28px;font-weight:900;color:var(--navy)}
+.ah .pill{padding:4px 12px;border-radius:999px;background:var(--navy);color:#fff;font-size:12px;font-weight:800}
+.atabs{display:flex;gap:6px;border-bottom:2px solid var(--line);margin-bottom:20px;overflow-x:auto}
+.atabs button{flex-shrink:0;padding:12px 18px;border:none;background:none;font-weight:800;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;display:flex;gap:6px;align-items:center}
+.atabs button.on{color:var(--o-d);border-color:var(--o)}
+.panel{display:none}.panel.on{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th,.tbl td{padding:11px 12px;border-bottom:1px solid var(--line2);font-size:13px;text-align:left;vertical-align:middle}
+.tbl th{background:var(--cream);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:800}
+.tbl tr.off td{opacity:.5}
+.tbl input[type=text],.tbl input[type=number],.f input,.f textarea,.f select{width:100%;height:38px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px;outline:none;background:var(--cream);font-size:13px}
+.tbl input:focus,.f input:focus,.f textarea:focus{border-color:var(--o);background:#fff}
+.tbl input[type=number]{width:72px}
+#cat-tbl input[data-k=name]{min-width:140px}
+#cat-tbl input[data-k^=i18n]{min-width:110px}
+.cmp-tray{display:none!important}
+.tbl .ic{font-size:20px;color:var(--o)}
+.sw{position:relative;width:40px;height:22px;display:inline-block}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;border-radius:999px;background:#dcd6ce;cursor:pointer;transition:.2s}
+.sw span::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+span{background:var(--green)}
+.sw input:checked+span::after{left:21px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px}
+.f label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--navy)}
+.f textarea{height:90px;padding:10px;resize:vertical}
+.f .full{grid-column:1/-1}
+.bar{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
+.bar b{font-size:15px;color:var(--navy)}
+.qa-i{padding:14px 18px;border-bottom:1px solid var(--line2)}
+.qa-i.hid{background:#fafafa}
+.qa-i .q{font-weight:700;color:var(--navy);font-size:14px}
+.qa-i .m{font-size:12px;color:var(--muted);margin-top:2px}
+.qa-i .a{margin:8px 0 0 18px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.qa-i .a.hid{opacity:.5;text-decoration:line-through}
+.st{padding:2px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.st.published{background:var(--green-l);color:var(--green)}.st.hidden{background:#f1f1f1;color:#777}
+.gate{text-align:center;padding:80px 20px}
+.zero{color:var(--red);font-weight:800}
+.split{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+.hint{font-size:12px;color:var(--muted);padding:0 18px 16px;line-height:1.55}
+@media(max-width:900px){ .split{grid-template-columns:1fr} .f{grid-template-columns:1fr} .cwrap{overflow-x:auto} }
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap" id="main">
+  <div class="ah"><h1><i class="ti ti-settings" style="color:var(--o)"></i> Shop admin</h1><span class="pill">Admins only</span></div>
+  <div id="gate" class="gate" style="display:none"></div>
+  <div id="app" style="display:none">
+    <div class="atabs">
+      <button class="on" data-t="cats" onclick="tab('cats')"><i class="ti ti-category"></i>Categories</button>
+      <button data-t="brands" onclick="tab('brands')"><i class="ti ti-building-store"></i>Brands</button>
+      <button data-t="qa" onclick="tab('qa')"><i class="ti ti-message-question"></i>Q&amp;A moderation</button>
+      <button data-t="search" onclick="tab('search')"><i class="ti ti-search"></i>Search</button>
+    </div>
+
+    <section class="panel on" id="p-cats">
+      <div class="card"><div class="bar"><b>Categories</b><button class="btn btn-o btn-sm" onclick="newCat()"><i class="ti ti-plus"></i>New category</button></div>
+        <div style="overflow-x:auto"><table class="tbl" id="cat-tbl"></table></div>
+        <div class="hint">Icons use <a href="https://tabler.io/icons" target="_blank" rel="noopener">Tabler icon</a> names, e.g. <code>ti-bone</code>. Translations fall back to the built-in ones, then English. Hiding a category keeps its products but removes it from menus and filters. "Home" puts it in the home-page tiles (first 8).</div></div>
+    </section>
+
+    <section class="panel" id="p-brands">
+      <div class="split">
+        <div class="card"><div class="bar"><b>Brands on PawBook</b><input id="br-q" placeholder="Filter…" oninput="renderBrands()" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px;width:180px"></div>
+          <div style="overflow-x:auto"><table class="tbl" id="br-tbl"></table></div></div>
+        <div class="card"><div class="bar"><b id="br-title">Edit brand profile</b></div>
+          <form class="f" id="br-form" onsubmit="saveBrand(event)">
+            <label class="full">Brand name (must match product listings)<input name="name" required></label>
+            <label>Slug (URL)<input name="slug" placeholder="auto"></label>
+            <label>Country<input name="country"></label>
+            <label class="full">Tagline<input name="tagline" maxlength="160"></label>
+            <label class="full">Logo URL (https)<input name="logo_url" type="url"></label>
+            <label class="full">Cover image URL (https)<input name="cover_url" type="url"></label>
+            <label class="full">Website (https)<input name="website" type="url"></label>
+            <label class="full">Brand story<textarea name="description" maxlength="4000"></textarea></label>
+            <label style="flex-direction:row;align-items:center;gap:10px"><span class="sw"><input type="checkbox" name="is_verified"><span></span></span>Verified brand</label>
+            <label style="flex-direction:row;align-items:center;gap:10px"><span class="sw"><input type="checkbox" name="is_active" checked><span></span></span>Profile active</label>
+            <div class="full"><button class="btn btn-o"><i class="ti ti-device-floppy"></i>Save brand</button></div>
+          </form>
+          <div class="hint">Only mark a brand <b>Verified</b> after confirming it with the brand owner (for example trademark or authorisation letter). Shoppers see the badge on brand pages and products.</div></div>
+      </div>
+    </section>
+
+    <section class="panel" id="p-qa">
+      <div class="card"><div class="bar"><b>Customer questions</b>
+        <select id="qa-f" onchange="loadQA()" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px"><option value="">All</option><option value="published">Published</option><option value="hidden">Hidden</option></select></div>
+        <div id="qa-list"></div></div>
+    </section>
+
+    <section class="panel" id="p-search">
+      <div class="split">
+        <div class="card"><div class="bar"><b>Synonyms</b></div>
+          <form class="f" onsubmit="saveSyn(event)" style="grid-template-columns:1fr 2fr auto;align-items:end">
+            <label>When people type<input id="syn-t" placeholder="e.g. kutta" required></label>
+            <label>Also search for (comma separated)<input id="syn-e" placeholder="dog"></label>
+            <button class="btn btn-o btn-sm" style="height:38px">Save</button>
+          </form>
+          <div class="hint" style="margin-top:-6px">Leave "Also search for" empty to delete a synonym.</div>
+          <div style="max-height:520px;overflow:auto"><table class="tbl" id="syn-tbl"></table></div></div>
+        <div class="card"><div class="bar"><b>Top searches (30 days)</b></div>
+          <div style="max-height:620px;overflow:auto"><table class="tbl" id="srch-tbl"></table></div>
+          <div class="hint">Searches with <span class="zero">0 results</span> are worth a synonym or a new product listing.</div></div>
+      </div>
+    </section>
+  </div>
+</main>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="shop.js"></script>
+<script>
+var S = Shop, esc = S.esc;
+S.init('admin');
+var LANGS = ['hi','bn','ta','mr'];
+function tab(t){ document.querySelectorAll('.atabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t') === t); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + t); });
+  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); }
+function fail(e){ S.toast(e.message || 'Something went wrong', 'ti-alert-circle'); }
+
+/* ── gate ── */
+function gate(msg, btn){ var g = document.getElementById('gate'); g.style.display = ''; g.innerHTML = '<div class="empty-ic" style="margin:0 auto 14px"><i class="ti ti-lock"></i></div><div class="empty-t">' + esc(msg) + '</div>' + (btn || ''); }
+if (!S.loggedIn()) gate('Please log in with an admin account.', '<a class="btn btn-o" style="margin-top:16px" href="01_login.html">Log in</a>');
+else S.api('/shop/admin/categories').then(function(d){ document.getElementById('app').style.display = ''; CATS = d.categories; renderCats(); })
+  .catch(function(e){ gate(e.status === 403 ? 'This page is only for PawBook admins.' : 'Could not load admin data (' + (e.message || 'error') + ').'); });
+
+/* ── categories ── */
+var CATS = [];
+function renderCats(){
+  document.getElementById('cat-tbl').innerHTML = '<tr><th></th><th>Slug</th><th>English name</th>' + LANGS.map(function(l){ return '<th>' + l.toUpperCase() + '</th>'; }).join('') + '<th>Icon</th><th>Image URL</th><th>Order</th><th>Home</th><th>Active</th><th>Products</th><th></th></tr>'
+    + CATS.map(function(c, i){
+      var n = c.name_i18n || {};
+      return '<tr class="' + (c.is_active ? '' : 'off') + '"><td><i class="ti ' + esc(c.icon) + ' ic"></i></td><td><code>' + esc(c.slug) + '</code></td>'
+        + '<td><input type="text" data-i="' + i + '" data-k="name" value="' + esc(c.name) + '"></td>'
+        + LANGS.map(function(l){ return '<td><input type="text" data-i="' + i + '" data-k="i18n.' + l + '" value="' + esc(n[l] || '') + '" placeholder="—"></td>'; }).join('')
+        + '<td><input type="text" data-i="' + i + '" data-k="icon" value="' + esc(c.icon) + '" style="width:130px"></td>'
+        + '<td><input type="text" data-i="' + i + '" data-k="image_url" value="' + esc(c.image_url || '') + '" placeholder="https://…" style="width:170px"></td>'
+        + '<td><input type="number" data-i="' + i + '" data-k="sort_order" value="' + c.sort_order + '"></td>'
+        + '<td><label class="sw"><input type="checkbox" data-i="' + i + '" data-k="show_on_home"' + (c.show_on_home ? ' checked' : '') + '><span></span></label></td>'
+        + '<td><label class="sw"><input type="checkbox" data-i="' + i + '" data-k="is_active"' + (c.is_active ? ' checked' : '') + '><span></span></label></td>'
+        + '<td>' + (c.n || 0) + '</td><td><button class="btn btn-n btn-sm" onclick="saveCat(' + i + ')">Save</button></td></tr>';
+    }).join('');
+}
+function collect(i){
+  var c = CATS[i], body = {name_i18n: Object.assign({}, c.name_i18n || {})};
+  document.querySelectorAll('[data-i="' + i + '"]').forEach(function(el){
+    var k = el.getAttribute('data-k'), v = el.type === 'checkbox' ? el.checked : el.value.trim();
+    if (k.indexOf('i18n.') === 0) { var l = k.slice(5); if (v) body.name_i18n[l] = v; else delete body.name_i18n[l]; }
+    else if (k === 'sort_order') body[k] = Number(v) || 0; else body[k] = v;
+  });
+  if (!body.image_url) body.image_url = null;
+  return body;
+}
+function saveCat(i){
+  var c = CATS[i], body = collect(i);
+  (c._new ? S.api('/shop/admin/categories', {method:'POST', body: Object.assign({slug: body.name}, body)})
+          : S.api('/shop/admin/categories/' + encodeURIComponent(c.slug), {method:'PATCH', body: body}))
+    .then(function(){ S.toast('Saved', 'ti-check'); return S.api('/shop/admin/categories'); }).then(function(d){ CATS = d.categories; renderCats(); }).catch(fail);
+}
+function newCat(){ CATS.unshift({_new:true, slug:'(new)', name:'', name_i18n:{}, icon:'ti-tag', image_url:'', sort_order:100, show_on_home:false, is_active:true, n:0}); renderCats(); document.querySelector('[data-i="0"][data-k="name"]').focus(); }
+
+/* ── brands ── */
+var BRANDS = null;
+function loadBrands(){ S.api('/shop/admin/brands').then(function(d){ BRANDS = d.brands; renderBrands(); }).catch(fail); }
+function renderBrands(){
+  var q = (document.getElementById('br-q').value || '').toLowerCase();
+  document.getElementById('br-tbl').innerHTML = '<tr><th>Brand</th><th>Products</th><th>Profile</th><th></th></tr>' + BRANDS.filter(function(b){ return !q || b.name.toLowerCase().indexOf(q) >= 0; }).map(function(b, i){
+    return '<tr><td><b>' + esc(b.name) + '</b>' + (b.is_verified ? ' <span class="vbadge"><i class="ti ti-rosette"></i>Verified</span>' : '') + '<br><small style="color:var(--muted)">/' + esc(b.slug || '') + '</small></td><td>' + (b.n || 0) + '</td><td>' + (b.tagline || b.logo_url ? '✓' : '<span style="color:var(--muted)">—</span>') + '</td>'
+      + '<td><button class="btn btn-ghost btn-sm" onclick="editBrand(\'' + esc(b.name).replace(/'/g, "\\'") + '\')">Edit</button> <a class="btn btn-ghost btn-sm" href="46_shop_brand.html?b=' + encodeURIComponent(b.slug || '') + '" target="_blank"><i class="ti ti-external-link"></i></a></td></tr>';
+  }).join('');
+}
+function editBrand(name){
+  var b = BRANDS.filter(function(x){ return x.name === name; })[0] || {name:name}, f = document.getElementById('br-form');
+  ['name','slug','country','tagline','logo_url','cover_url','website','description'].forEach(function(k){ f.elements[k].value = b[k] || ''; });
+  f.elements.is_verified.checked = !!b.is_verified; f.elements.is_active.checked = b.is_active !== false;
+  document.getElementById('br-title').textContent = 'Edit: ' + name; f.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function saveBrand(e){
+  e.preventDefault(); var f = e.target, body = {};
+  ['name','slug','country','tagline','logo_url','cover_url','website','description'].forEach(function(k){ var v = f.elements[k].value.trim(); if (v) body[k] = v; });
+  body.is_verified = f.elements.is_verified.checked; body.is_active = f.elements.is_active.checked;
+  S.api('/shop/admin/brands', {method:'PUT', body: body}).then(function(){ S.toast('Brand saved', 'ti-check'); loadBrands(); }).catch(fail);
+}
+
+/* ── Q&A moderation ── */
+function loadQA(){
+  var f = document.getElementById('qa-f').value;
+  S.api('/shop/admin/questions' + (f ? '?status=' + f : '')).then(function(d){
+    var l = d.questions || [];
+    document.getElementById('qa-list').innerHTML = l.length ? l.map(function(q){
+      return '<div class="qa-i' + (q.status === 'hidden' ? ' hid' : '') + '"><div style="display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap"><div><div class="q">Q: ' + esc(q.question) + '</div>'
+        + '<div class="m">' + esc(q.user_name || 'User') + ' · <a href="44_shop_product.html?id=' + encodeURIComponent(q.product_id) + '" target="_blank">' + esc(q.product_name || q.product_id) + '</a> · ' + esc(new Date(q.created_at).toLocaleString('en-IN')) + '</div></div>'
+        + '<div><span class="st ' + q.status + '">' + q.status + '</span> <button class="btn btn-ghost btn-sm" onclick="mod(\'questions\',' + q.question_id + ',\'' + (q.status === 'hidden' ? 'published' : 'hidden') + '\')">' + (q.status === 'hidden' ? 'Publish' : 'Hide') + '</button></div></div>'
+        + (q.answers || []).map(function(a){ return '<div class="a' + (a.status === 'hidden' ? ' hid' : '') + '">A' + (a.is_seller ? ' (seller)' : '') + ': ' + esc(a.answer) + ' <button class="btn btn-ghost btn-sm" onclick="mod(\'answers\',' + a.answer_id + ',\'' + (a.status === 'hidden' ? 'published' : 'hidden') + '\')">' + (a.status === 'hidden' ? 'Publish' : 'Hide') + '</button></div>'; }).join('')
+        + '</div>';
+    }).join('') : '<div class="empty"><div class="empty-ic"><i class="ti ti-message-question"></i></div><div class="empty-t">No questions yet</div></div>';
+  }).catch(fail);
+}
+function mod(kind, id, status){ S.api('/shop/admin/' + kind + '/' + id, {method:'PATCH', body:{status:status}}).then(function(){ S.toast(status === 'hidden' ? 'Hidden from shoppers' : 'Published', 'ti-check'); loadQA(); }).catch(fail); }
+
+/* ── search ── */
+function loadSyn(){
+  S.api('/shop/admin/synonyms').then(function(d){
+    document.getElementById('syn-tbl').innerHTML = '<tr><th>Typed</th><th>Also searches</th><th></th></tr>' + d.synonyms.map(function(s){
+      return '<tr><td><b>' + esc(s.term) + '</b></td><td>' + esc((s.expands || []).join(', ')) + '</td><td><button class="btn btn-ghost btn-sm" onclick="document.getElementById(\'syn-t\').value=\'' + esc(s.term).replace(/'/g, "\\'") + '\';document.getElementById(\'syn-e\').value=\'' + esc((s.expands || []).join(', ')).replace(/'/g, "\\'") + '\'">Edit</button></td></tr>'; }).join('');
+    document.getElementById('srch-tbl').innerHTML = '<tr><th>Search</th><th>Times</th><th>Avg results</th></tr>' + (d.searches.length ? d.searches.map(function(s){
+      return '<tr><td><a href="43_shop_list.html?q=' + encodeURIComponent(s.q) + '" target="_blank">' + esc(s.q) + '</a></td><td>' + s.n + '</td><td class="' + (s.avg_results ? '' : 'zero') + '">' + (s.avg_results || '0 results') + '</td></tr>'; }).join('') : '<tr><td colspan="3" style="color:var(--muted)">No searches logged yet.</td></tr>');
+  }).catch(fail);
+}
+function saveSyn(e){
+  e.preventDefault();
+  S.api('/shop/admin/synonyms', {method:'PUT', body:{term: document.getElementById('syn-t').value, expands: document.getElementById('syn-e').value}})
+    .then(function(r){ S.toast(r.deleted ? 'Synonym removed' : 'Synonym saved', 'ti-check'); document.getElementById('syn-t').value = ''; document.getElementById('syn-e').value = ''; loadSyn(); }).catch(fail);
+}
+</script>
+</body>
+</html>

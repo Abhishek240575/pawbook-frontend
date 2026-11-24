@@ -123,6 +123,7 @@
           <option value="discount" data-i18n="so.disc">Best discounts</option>
         </select>
       </div>
+      <div id="note"></div>
       <div class="chips" id="chips"></div>
       <div class="pgrid" id="grid"></div>
       <div class="pager" id="pager"></div>
@@ -156,25 +157,25 @@ function toggleFilters(on){ document.getElementById('filters').classList.toggle(
 
 /* ── header banner ── */
 function renderHead(){
-  var title, sub = '', img = 37891869, cur;
+  var title, sub = '', img = 37891869, imgUrl = null;
   var cats = list('category'), pets = list('pet');
   if (WISH) { title = T('h.wish'); sub = T('l.wishs'); img = 35237328; }
   else if (F.q) { title = T('l.results', {q: F.q}); }
-  else if (cats.length === 1) { title = S.catLabel(cats[0]); img = S.catInfo(cats[0]).img; sub = pets.length === 1 ? T('l.for', {pet: T('pet.' + pets[0])}) : ''; }
+  else if (cats.length === 1) { title = S.catLabel(cats[0]); imgUrl = S.catImg(cats[0], 800); sub = pets.length === 1 ? T('l.for', {pet: T('pet.' + pets[0])}) : ''; }
   else if (pets.length === 1) { title = T('l.forpet', {pet: T('pet.' + pets[0])}); img = (S.PETS.filter(function(p){ return p.id === pets[0]; })[0] || {}).img || img; sub = T('l.petsub'); }
   else if (F.on_sale) { title = T('h.offers'); img = 28802858; sub = T('home.dealss'); }
-  else if (F.brand && F.brand.indexOf(',') < 0) { title = F.brand; }
+  else if (F.brand && F.brand.indexOf(',') < 0) { title = F.brand; sub = T('l.brandsub'); }
   else { title = T('l.all'); sub = T('l.alls'); }
   document.getElementById('ltitle').textContent = title;
   document.getElementById('lsub').textContent = sub;
   document.getElementById('crumb-cur').textContent = title;
-  document.getElementById('lhead-img').src = S.px(img, 800);
+  document.getElementById('lhead-img').src = imgUrl || S.px(img, 800);
   document.title = title + ' — PawBook Shop';
   // category shortcuts (keeps pet filter)
-  var show = ['food','treats','toys','grooming','walk','beds','clothing','bowls','health','litter','aquarium','cages','travel','training','accessories'];
+  var show = S.activeCatIds().filter(function(id){ return id !== 'other'; });
   document.getElementById('subcats').innerHTML = WISH ? '' : show.map(function(id){
     var on = cats.length === 1 && cats[0] === id;
-    return '<a class="sc' + (on ? ' on' : '') + '" onclick="setF(\'category\',\'' + (on ? '' : id) + '\')"><img src="' + S.px(S.catInfo(id).img, 100) + '" alt="">' + S.esc(S.catLabel(id)) + '</a>';
+    return '<a class="sc' + (on ? ' on' : '') + '" onclick="setF(\'category\',\'' + (on ? '' : id) + '\')"><img src="' + S.esc(S.catImg(id, 100)) + '" alt="">' + S.esc(S.catLabel(id)) + '</a>';
   }).join('');
 }
 
@@ -186,7 +187,7 @@ function renderFilters(){
   }).join('');
   var counts = {}; ((facets && facets.categories) || []).forEach(function(c){ counts[c.category] = c.n; });
   var cats = list('category');
-  var catIds = S.CATS.map(function(c){ return c.id; }).filter(function(id){ return counts[id] || cats.indexOf(id) >= 0; });
+  var catIds = S.activeCatIds().filter(function(id){ return counts[id] || cats.indexOf(id) >= 0; });
   if (!catIds.length) catIds = ['food','treats','toys','grooming','walk','beds','clothing','health'];
   document.getElementById('f-cats').innerHTML = catIds.map(function(id){
     return '<label class="chk"><input type="checkbox"' + (cats.indexOf(id) >= 0 ? ' checked' : '') + ' onchange="toggleIn(\'category\',\'' + id + '\')"><span>' + S.esc(S.catLabel(id)) + '</span>' + (counts[id] ? '<span class="n">' + counts[id] + '</span>' : '') + '</label>';
@@ -254,6 +255,10 @@ function load(){
   p.then(function(d){
     if (my !== seq) return;
     facets = d.facets || facets; lastTotal = d.total; renderFilters();
+    var note = document.getElementById('note'), nh = '';
+    if (d.showing_for) nh = '<div class="note-bar"><i class="ti ti-wand"></i><span>' + S.esc(T('l.showing', {q: d.showing_for})) + '</span><a href="43_shop_list.html?q=' + encodeURIComponent(d.showing_for) + '">' + S.esc(T('l.searchfor', {q: d.showing_for})) + '</a></div>';
+    else if (d.did_you_mean) nh = '<div class="note-bar"><i class="ti ti-bulb"></i><span>' + S.esc(T('l.dym')) + '</span><a href="43_shop_list.html?q=' + encodeURIComponent(d.did_you_mean) + '">' + S.esc(d.did_you_mean) + '</a>?</div>';
+    note.innerHTML = nh;
     document.getElementById('count').innerHTML = (d.total === 1 ? T('l.count1') : T('l.count', {n: '<b>' + d.total + '</b>'}));
     if (!d.products.length) {
       grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="empty-ic"><i class="ti ' + (WISH ? 'ti-heart' : 'ti-search') + '"></i></div><div class="empty-t">' + S.esc(T(WISH ? 'l.wishempty' : 'l.none')) + '</div><div class="empty-s">' + S.esc(T(WISH ? 'l.wishemptys' : 'l.nones')) + '</div>'
@@ -274,6 +279,7 @@ function load(){
   });
 }
 load();
+S.loadCats().then(function(){ renderHead(); renderFilters(); });
 window.addEventListener('pb:langchange', function(){ load(); });
 </script>
 </body>
