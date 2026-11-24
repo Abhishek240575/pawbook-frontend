@@ -1,0 +1,361 @@
+/* ============================================================================
+   PawBook Marketplace 2.0 — shared storefront engine (shop.js)
+   Used by 42_shop.html, 43_shop_list.html, 44_shop_product.html.
+   Requires pawbook-i18n.js loaded first.
+   - Cart: server cart (/marketplace/cart) when logged in, device cart for guests
+   - Wishlist: server (/shop/wishlist) when logged in, device list for guests
+   - Never shows invented ratings: stars render only when review_count > 0
+   ========================================================================== */
+(function () {
+  'use strict';
+  var API = 'https://pawbook.deemona.com/api/v1';
+  var T = function (k, v) { return PBi18n.t(k, v); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function ls(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+  function px(id, w) { return 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + (w || 600); }
+
+  // ── Taxonomy (images: free Pexels photos) ───────────────────────────────────
+  var PETS = [
+    { id: 'dog', img: 29932030 }, { id: 'cat', img: 35912498 }, { id: 'bird', img: 34951082 },
+    { id: 'fish', img: 33867664 }, { id: 'small_pet', img: 8434767 }
+  ];
+  var CATS = [
+    { id: 'food', icon: 'ti-bowl', img: 8473516 }, { id: 'treats', icon: 'ti-bone', img: 8434633 },
+    { id: 'toys', icon: 'ti-ball-tennis', img: 28802853 }, { id: 'grooming', icon: 'ti-sparkles', img: 19145894 },
+    { id: 'walk', icon: 'ti-route', img: 8499440 }, { id: 'beds', icon: 'ti-bed', img: 35237328 },
+    { id: 'clothing', icon: 'ti-shirt', img: 9428235 }, { id: 'bowls', icon: 'ti-tools-kitchen-2', img: 6568942 },
+    { id: 'health', icon: 'ti-heartbeat', img: 7469217 }, { id: 'litter', icon: 'ti-box', img: 6853522 },
+    { id: 'aquarium', icon: 'ti-fish', img: 29848116 }, { id: 'cages', icon: 'ti-building-cottage', img: 36842655 },
+    { id: 'travel', icon: 'ti-car', img: 30617496 }, { id: 'training', icon: 'ti-target', img: 36951300 },
+    { id: 'accessories', icon: 'ti-tag', img: 1750543 }, { id: 'other', icon: 'ti-dots', img: 16395147 }
+  ];
+  function catInfo(id) { for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i]; return CATS[CATS.length - 1]; }
+
+  // ── API ─────────────────────────────────────────────────────────────────────
+  function token() { try { return localStorage.getItem('pb_token') || ''; } catch (e) { return ''; } }
+  function loggedIn() { return !!token(); }
+  function api(path, opts) {
+    opts = opts || {};
+    var h = { 'Accept': 'application/json' };
+    if (opts.body) h['Content-Type'] = 'application/json';
+    if (token()) h['Authorization'] = 'Bearer ' + token();
+    return fetch(API + path, { method: opts.method || 'GET', headers: h, credentials: 'include', body: opts.body ? JSON.stringify(opts.body) : undefined })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.success === false) { var e = new Error(j.message || ('HTTP ' + r.status)); e.status = r.status; throw e; } return j.data !== undefined ? j.data : j; }); });
+  }
+
+  // ── Formatting ──────────────────────────────────────────────────────────────
+  function money(n) {
+    try { return new Intl.NumberFormat(PBi18n.locale, { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Number(n) || 0); }
+    catch (e) { return '₹' + Math.round(Number(n) || 0); }
+  }
+  function starsHTML(r) {
+    var full = Math.round(Number(r) || 0), s = '';
+    for (var i = 1; i <= 5; i++) s += i <= full ? '★' : '☆';
+    return '<span class="stars" aria-label="' + r + '/5">' + s + '</span>';
+  }
+  function deliveryBy(days) {
+    var d = new Date(Date.now() + (Number(days) || 4) * 86400000);
+    return PBi18n.fmtDate(d, { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+  function firstImg(p, w) {
+    var im = (p.images && p.images[0]) || p.image || p.image_url;
+    if (typeof im === 'string' && im) return im;
+    return px(catInfo(p.category).img, w || 500);
+  }
+  function catLabel(id) { return T('cat.' + id); }
+
+  // ── Recently viewed (device only) ───────────────────────────────────────────
+  var recent = {
+    add: function (p) {
+      var list = (ls('pb_shop_recent') || []).filter(function (x) { return String(x.product_id) !== String(p.product_id); });
+      list.unshift({ product_id: p.product_id, name: p.name, price: p.price, compare_price: p.compare_price, images: [firstImg(p, 400)],
+        category: p.category, brand: p.brand, rating: p.rating, review_count: p.review_count, stock: p.stock, delivery_days: p.delivery_days });
+      ls('pb_shop_recent', list.slice(0, 12));
+    },
+    list: function () { return ls('pb_shop_recent') || []; }
+  };
+
+  // ── Wishlist ────────────────────────────────────────────────────────────────
+  var wishIds = new Set((ls('pb_shop_wish') || []).map(String));
+  var wish = {
+    load: function () {
+      if (!loggedIn()) { paintWish(); return Promise.resolve(); }
+      return api('/shop/wishlist').then(function (d) {
+        var guest = Array.from(wishIds); wishIds = new Set((d.ids || []).map(String));
+        // merge device wishlist into account once
+        guest.forEach(function (id) { if (!wishIds.has(id)) { wishIds.add(id); api('/shop/wishlist/' + encodeURIComponent(id), { method: 'POST' }).catch(function () {}); } });
+        ls('pb_shop_wish', []); paintWish();
+      }).catch(function () { paintWish(); });
+    },
+    has: function (id) { return wishIds.has(String(id)); },
+    toggle: function (id) {
+      id = String(id); var on = !wishIds.has(id);
+      if (on) wishIds.add(id); else wishIds.delete(id);
+      if (loggedIn()) api('/shop/wishlist/' + encodeURIComponent(id), { method: on ? 'POST' : 'DELETE' }).catch(function () {});
+      else ls('pb_shop_wish', Array.from(wishIds));
+      paintWish(); toast(T(on ? 'w.added' : 'w.removed'), on ? 'ti-heart-filled' : 'ti-heart');
+      return on;
+    },
+    ids: function () { return Array.from(wishIds); }
+  };
+  function paintWish() {
+    document.querySelectorAll('[data-wish]').forEach(function (b) {
+      var on = wishIds.has(String(b.getAttribute('data-wish')));
+      b.classList.toggle('on', on);
+      var i = b.querySelector('i'); if (i) i.className = 'ti ' + (on ? 'ti-heart-filled' : 'ti-heart');
+    });
+    setBadge('wish', wishIds.size);
+  }
+
+  // ── Cart ────────────────────────────────────────────────────────────────────
+  var cartItems = [];
+  var FREE_DELIVERY = 499;   // matches existing order logic (free above ₹499, else ₹49)
+  var cart = {
+    load: function () {
+      if (!loggedIn()) { cartItems = ls('pb_shop_cart') || []; paintCart(); return Promise.resolve(); }
+      var guest = ls('pb_shop_cart') || [];
+      var merge = guest.length ? Promise.all(guest.map(function (g) {
+        return api('/marketplace/cart', { method: 'POST', body: { product_id: g.product_id, quantity: g.quantity } }).catch(function () {});
+      })).then(function () { ls('pb_shop_cart', []); }) : Promise.resolve();
+      return merge.then(function () { return api('/marketplace/cart'); }).then(function (d) {
+        cartItems = (d.items || []).map(function (it) {
+          var imgs = it.images; if (typeof imgs === 'string') { try { imgs = JSON.parse(imgs); } catch (e) { imgs = []; } }
+          return { product_id: it.product_id, name: it.name, price: Number(it.price), quantity: Number(it.quantity), image: (imgs && imgs[0]) || '', stock: it.stock };
+        });
+        paintCart();
+      }).catch(function () { cartItems = ls('pb_shop_cart') || []; paintCart(); });
+    },
+    add: function (p, qty) {
+      qty = qty || 1;
+      var ex = cartItems.filter(function (x) { return String(x.product_id) === String(p.product_id); })[0];
+      if (ex) ex.quantity += qty;
+      else cartItems.push({ product_id: p.product_id, name: p.name, price: Number(p.price), quantity: qty, image: firstImg(p, 200), stock: p.stock });
+      if (loggedIn()) api('/marketplace/cart', { method: 'POST', body: { product_id: p.product_id, quantity: qty } }).catch(function (e) { if (e.status === 401) save(); });
+      else save();
+      paintCart(); toast(T('c.added'), 'ti-shopping-bag-check');
+    },
+    setQty: function (id, q) {
+      var it = cartItems.filter(function (x) { return String(x.product_id) === String(id); })[0]; if (!it) return;
+      if (q < 1) return cart.remove(id);
+      it.quantity = q;
+      if (loggedIn()) api('/marketplace/cart/' + encodeURIComponent(id), { method: 'PATCH', body: { quantity: q } }).catch(function () {});
+      else save();
+      paintCart();
+    },
+    remove: function (id) {
+      cartItems = cartItems.filter(function (x) { return String(x.product_id) !== String(id); });
+      if (loggedIn()) api('/marketplace/cart/' + encodeURIComponent(id), { method: 'DELETE' }).catch(function () {});
+      else save();
+      paintCart();
+    },
+    count: function () { return cartItems.reduce(function (a, x) { return a + x.quantity; }, 0); },
+    subtotal: function () { return cartItems.reduce(function (a, x) { return a + x.price * x.quantity; }, 0); }
+  };
+  function save() { ls('pb_shop_cart', cartItems); }
+  function paintCart() { setBadge('cart', cart.count()); if (document.getElementById('cart-drawer') && document.getElementById('cart-drawer').classList.contains('show')) renderCart(); }
+
+  function setBadge(name, n) {
+    document.querySelectorAll('[data-badge="' + name + '"]').forEach(function (b) { b.textContent = n > 99 ? '99+' : n; b.classList.toggle('show', n > 0); });
+  }
+
+  // ── Toast ───────────────────────────────────────────────────────────────────
+  var tt = null;
+  function toast(msg, icon) {
+    var t = document.getElementById('shop-toast');
+    if (!t) { t = document.createElement('div'); t.id = 'shop-toast'; t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+    t.innerHTML = '<i class="ti ' + (icon || 'ti-check') + '"></i><span>' + esc(msg) + '</span>';
+    t.classList.add('show'); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove('show'); }, 2600);
+  }
+
+  // ── Delivery PIN ────────────────────────────────────────────────────────────
+  var PIN_KEY = 'pb_shop_pin';
+  var pinIdx = null;
+  function loadPins() {
+    if (pinIdx) return Promise.resolve(pinIdx);
+    return fetch('pawbook-in-locations.json').then(function (r) { return r.json(); }).then(function (d) {
+      pinIdx = {}; Object.keys(d.states).forEach(function (s) { Object.keys(d.states[s]).forEach(function (dt) { d.states[s][dt].forEach(function (p) { pinIdx[p[0]] = dt + ', ' + s; }); }); });
+      return pinIdx;
+    }).catch(function () { pinIdx = {}; return pinIdx; });
+  }
+  var pin = {
+    get: function () { return ls(PIN_KEY); },          // {pin:'110075', place:'South West, Delhi'}
+    set: function (p, place) { ls(PIN_KEY, { pin: p, place: place }); paintPin(); window.dispatchEvent(new CustomEvent('shop:pin', { detail: { pin: p, place: place } })); },
+    check: function (p) { return loadPins().then(function (idx) { return idx[p] || null; }); },
+    open: function () {
+      var m = document.getElementById('pin-modal'); if (!m) return;
+      var cur = pin.get(); document.getElementById('pin-inp').value = cur ? cur.pin : '';
+      document.getElementById('pin-msg').textContent = '';
+      m.classList.add('show'); setTimeout(function () { document.getElementById('pin-inp').focus(); }, 50);
+    }
+  };
+  function paintPin() {
+    var c = pin.get();
+    document.querySelectorAll('[data-pin-label]').forEach(function (el) { el.textContent = c ? (c.pin + (c.place ? ' · ' + c.place.split(',')[0] : '')) : T('h.setpin'); });
+  }
+
+  // ── Product card ────────────────────────────────────────────────────────────
+  function productCard(p, opts) {
+    opts = opts || {};
+    var off = p.discount_pct || (p.compare_price > p.price ? Math.round((1 - p.price / p.compare_price) * 100) : 0);
+    var url = '44_shop_product.html?id=' + encodeURIComponent(p.product_id);
+    var oos = Number(p.stock) <= 0;
+    var rate = Number(p.review_count) > 0
+      ? '<div class="pc-rate">' + starsHTML(p.rating) + '<span>' + Number(p.rating).toFixed(1) + ' (' + p.review_count + ')</span></div>'
+      : '<div class="pc-rate"><span class="pc-new">' + esc(T('p.newin')) + '</span></div>';
+    return '<article class="pc">'
+      + '<a class="pc-img" href="' + url + '"><img loading="lazy" src="' + esc(firstImg(p, 500)) + '" alt="' + esc(p.name) + '" onerror="this.onerror=null;this.src=\'' + px(catInfo(p.category).img, 500) + '\'">'
+      + (off >= 5 ? '<span class="pc-off">' + esc(T('p.off', { n: off })) + '</span>' : '')
+      + (opts.tag ? '<span class="pc-tag">' + esc(opts.tag) + '</span>' : '')
+      + (oos ? '<span class="pc-oos"><span>' + esc(T('p.oos')) + '</span></span>' : '') + '</a>'
+      + '<button class="pc-wish' + (wish.has(p.product_id) ? ' on' : '') + '" data-wish="' + esc(p.product_id) + '" aria-label="' + esc(T('w.save')) + '"><i class="ti ' + (wish.has(p.product_id) ? 'ti-heart-filled' : 'ti-heart') + '"></i></button>'
+      + '<div class="pc-b">'
+      + (p.brand ? '<div class="pc-brand">' + esc(p.brand) + '</div>' : '<div class="pc-brand">' + esc(catLabel(p.category)) + '</div>')
+      + '<a class="pc-name" href="' + url + '">' + esc(p.name) + '</a>' + rate
+      + '<div class="pc-price"><b>' + money(p.price) + '</b>' + (off >= 1 ? '<s>' + money(p.compare_price) + '</s>' : '') + '</div>'
+      + (oos ? '' : '<div class="pc-del"><i class="ti ti-truck-delivery"></i>' + esc(T('p.getby', { d: deliveryBy(p.delivery_days) })) + '</div>')
+      + '<div class="pc-add"><button class="btn btn-o" data-add="' + esc(p.product_id) + '"' + (oos ? ' disabled' : '') + '><i class="ti ti-shopping-bag-plus"></i>' + esc(T(oos ? 'p.oos' : 'p.add')) + '</button></div>'
+      + '</div></article>';
+  }
+  var cardData = {};
+  function renderCards(el, list, opts) {
+    list.forEach(function (p) { cardData[String(p.product_id)] = p; });
+    el.innerHTML = list.map(function (p) { return productCard(p, opts); }).join('');
+  }
+  document.addEventListener('click', function (e) {
+    var w = e.target.closest('[data-wish]'); if (w) { e.preventDefault(); wish.toggle(w.getAttribute('data-wish')); return; }
+    var a = e.target.closest('[data-add]'); if (a) { e.preventDefault(); var p = cardData[a.getAttribute('data-add')]; if (p) cart.add(p, 1); return; }
+  });
+  function skeletons(el, n) { var s = ''; for (var i = 0; i < (n || 4); i++) s += '<div class="pc-skel"></div>'; el.innerHTML = s; }
+
+  // ── Header / footer / drawers ───────────────────────────────────────────────
+  function header(active) {
+    var nav = [['dog', 'ti-dog'], ['cat', 'ti-cat'], ['bird', 'ti-feather'], ['fish', 'ti-fish'], ['small_pet', 'ti-paw']];
+    var h = '<div class="promo"><i class="ti ti-truck-delivery"></i> <span data-i18n="h.promo">' + esc(T('h.promo')) + '</span></div>'
+      + '<header class="hdr"><div class="wrap hdr-row">'
+      + '<a class="logo" href="42_shop.html"><div class="logo-ic">🐾</div><div><div class="logo-t">PawBook</div><div class="logo-s" data-i18n="h.shop">' + esc(T('h.shop')) + '</div></div></a>'
+      + '<button class="deliver" onclick="Shop.pin.open()"><i class="ti ti-map-pin"></i><span><small data-i18n="h.deliver">' + esc(T('h.deliver')) + '</small><b data-pin-label></b></span></button>'
+      + '<form class="search" role="search" onsubmit="Shop.search(event)"><i class="ti ti-search"></i>'
+      + '<input id="shop-q" autocomplete="off" data-i18n-ph="h.search" placeholder="' + esc(T('h.search')) + '" aria-label="' + esc(T('h.search')) + '">'
+      + '<button class="search-go" aria-label="Search"><i class="ti ti-arrow-right"></i></button><div class="sugg" id="shop-sugg"></div></form>'
+      + '<div class="hdr-acts"><div data-pb-lang-btn class="hdr-lang"></div>'
+      + '<a class="hdr-btn" href="43_shop_list.html?wishlist=1"><i class="ti ti-heart"></i><span data-i18n="h.wish">' + esc(T('h.wish')) + '</span><em class="badge" data-badge="wish"></em></a>'
+      + '<button class="hdr-btn" onclick="Shop.openCart()"><i class="ti ti-shopping-bag"></i><span data-i18n="h.cart">' + esc(T('h.cart')) + '</span><em class="badge" data-badge="cart"></em></button>'
+      + '<a class="hdr-btn hide-m" href="' + (loggedIn() ? '29_user_profile.html' : '01_login.html') + '"><i class="ti ti-user-circle"></i><span>' + esc(T(loggedIn() ? 'h.account' : 'h.login')) + '</span></a>'
+      + '</div></div>'
+      + '<nav class="nav"><div class="wrap">'
+      + nav.map(function (n) { return '<a href="43_shop_list.html?pet=' + n[0] + '"' + (active === n[0] ? ' class="on"' : '') + '><i class="ti ' + n[1] + '"></i><span data-i18n="pet.' + n[0] + '">' + esc(T('pet.' + n[0])) + '</span></a>'; }).join('')
+      + '<a href="43_shop_list.html?sort=discount&on_sale=1" class="hot' + (active === 'offers' ? ' on' : '') + '"><i class="ti ti-discount-2"></i><span data-i18n="h.offers">' + esc(T('h.offers')) + '</span></a>'
+      + '<a href="42_shop.html#services"><i class="ti ti-scissors"></i><span data-i18n="h.services">' + esc(T('h.services')) + '</span></a>'
+      + '<a href="04_adoption.html"><i class="ti ti-heart-handshake"></i><span data-i18n="h.adopt">' + esc(T('h.adopt')) + '</span></a>'
+      + '<span class="sp"></span><a class="back" href="07_home.html"><i class="ti ti-arrow-back-up"></i><span data-i18n="h.back">' + esc(T('h.back')) + '</span></a>'
+      + '</div></nav></header>';
+    var host = document.getElementById('shop-header'); host.innerHTML = h;
+    // drawers + modals
+    var extra = document.createElement('div');
+    extra.innerHTML = '<div class="ov" id="shop-ov" onclick="Shop.closeCart()"></div>'
+      + '<aside class="drawer" id="cart-drawer" aria-label="Cart"><div class="dr-h"><i class="ti ti-shopping-bag" style="font-size:22px;color:var(--o)"></i><b data-i18n="c.title">' + esc(T('c.title')) + '</b><button class="dr-x" onclick="Shop.closeCart()" aria-label="Close"><i class="ti ti-x"></i></button></div><div class="dr-b" id="cart-body"></div><div class="dr-f" id="cart-foot"></div></aside>'
+      + '<div class="modal" id="pin-modal" onclick="if(event.target===this)this.classList.remove(\'show\')"><div class="modal-box">'
+      + '<div class="modal-t" data-i18n="pin.t">' + esc(T('pin.t')) + '</div><div class="modal-s" data-i18n="pin.s">' + esc(T('pin.s')) + '</div>'
+      + '<form onsubmit="Shop.savePin(event)" style="display:flex;gap:10px"><input id="pin-inp" class="inp" inputmode="numeric" maxlength="6" placeholder="110075" style="letter-spacing:2px;font-weight:700"><button class="btn btn-o" data-i18n="pin.apply">' + esc(T('pin.apply')) + '</button></form>'
+      + '<div id="pin-msg" style="font-size:12.5px;margin-top:10px;font-weight:600"></div></div></div>'
+      + '<nav class="bnav">'
+      + '<a href="42_shop.html"' + (active === 'home' ? ' class="on"' : '') + '><i class="ti ti-building-store"></i><span data-i18n="b.home">' + esc(T('b.home')) + '</span></a>'
+      + '<a href="43_shop_list.html"' + (active === 'all' ? ' class="on"' : '') + '><i class="ti ti-layout-grid"></i><span data-i18n="b.cats">' + esc(T('b.cats')) + '</span></a>'
+      + '<a href="#" onclick="event.preventDefault();var q=document.getElementById(\'shop-q\');window.scrollTo({top:0,behavior:\'smooth\'});q.focus()"><i class="ti ti-search"></i><span data-i18n="b.search">' + esc(T('b.search')) + '</span></a>'
+      + '<a href="43_shop_list.html?wishlist=1"' + (active === 'wish' ? ' class="on"' : '') + '><i class="ti ti-heart"></i><span data-i18n="h.wish">' + esc(T('h.wish')) + '</span><em class="badge" data-badge="wish"></em></a>'
+      + '<a href="#" onclick="event.preventDefault();Shop.openCart()"><i class="ti ti-shopping-bag"></i><span data-i18n="h.cart">' + esc(T('h.cart')) + '</span><em class="badge" data-badge="cart"></em></a>'
+      + '</nav>';
+    while (extra.firstChild) document.body.appendChild(extra.firstChild);
+    PBi18n.apply();
+    paintPin(); bindSuggest();
+  }
+  function footer() {
+    var f = document.getElementById('shop-footer'); if (!f) return;
+    f.innerHTML = '<footer class="foot"><div class="wrap"><div class="foot-g">'
+      + '<div><a class="logo" href="42_shop.html" style="margin-bottom:12px"><div class="logo-ic">🐾</div><div><div class="logo-t" style="color:#fff">PawBook</div><div class="logo-s" data-i18n="h.shop">' + esc(T('h.shop')) + '</div></div></a>'
+      + '<p data-i18n="f.about">' + esc(T('f.about')) + '</p></div>'
+      + '<div><h4 data-i18n="f.shop">' + esc(T('f.shop')) + '</h4>' + ['dog', 'cat', 'bird', 'fish', 'small_pet'].map(function (p) { return '<a href="43_shop_list.html?pet=' + p + '" data-i18n="pet.' + p + '">' + esc(T('pet.' + p)) + '</a>'; }).join('') + '</div>'
+      + '<div><h4 data-i18n="f.help">' + esc(T('f.help')) + '</h4><a href="legal.html#terms" data-i18n="f.terms">' + esc(T('f.terms')) + '</a><a href="legal.html#privacy" data-i18n="f.privacy">' + esc(T('f.privacy')) + '</a><a href="legal.html#grievance" data-i18n="f.grievance">' + esc(T('f.grievance')) + '</a><a href="36_abuse_reporting.html" data-i18n="f.abuse">' + esc(T('f.abuse')) + '</a></div>'
+      + '<div><h4 data-i18n="f.pawbook">' + esc(T('f.pawbook')) + '</h4><a href="07_home.html" data-i18n="f.social">' + esc(T('f.social')) + '</a><a href="11_vet_booking.html" data-i18n="f.vet">' + esc(T('f.vet')) + '</a><a href="04_adoption.html" data-i18n="h.adopt">' + esc(T('h.adopt')) + '</a><a href="09_marketplace.html" data-i18n="f.sell">' + esc(T('f.sell')) + '</a></div>'
+      + '</div><div class="foot-b"><span>© ' + new Date().getFullYear() + ' Deemona Global Solutions · PawBook</span><span data-i18n="f.note">' + esc(T('f.note')) + '</span></div></div></footer>';
+  }
+
+  // ── Cart drawer ─────────────────────────────────────────────────────────────
+  function openCart() { renderCart(); document.getElementById('shop-ov').classList.add('show'); document.getElementById('cart-drawer').classList.add('show'); document.body.style.overflow = 'hidden'; }
+  function closeCart() { document.getElementById('shop-ov').classList.remove('show'); document.getElementById('cart-drawer').classList.remove('show'); document.body.style.overflow = ''; }
+  function renderCart() {
+    var b = document.getElementById('cart-body'), f = document.getElementById('cart-foot');
+    if (!cartItems.length) {
+      b.innerHTML = '<div class="empty"><div class="empty-ic"><i class="ti ti-shopping-bag"></i></div><div class="empty-t">' + esc(T('c.empty')) + '</div><div class="empty-s">' + esc(T('c.emptys')) + '</div><a class="btn btn-o" href="43_shop_list.html">' + esc(T('c.browse')) + '</a></div>';
+      f.innerHTML = ''; return;
+    }
+    b.innerHTML = cartItems.map(function (it) {
+      return '<div class="ci"><a href="44_shop_product.html?id=' + encodeURIComponent(it.product_id) + '"><img src="' + esc(it.image || px(8473516, 200)) + '" alt="" onerror="this.onerror=null;this.src=\'' + px(8473516, 200) + '\'"></a>'
+        + '<div style="flex:1;min-width:0"><div class="ci-n">' + esc(it.name) + '</div><div class="ci-p">' + money(it.price * it.quantity) + '</div>'
+        + '<div class="qty"><button onclick="Shop.cart.setQty(\'' + esc(it.product_id) + '\',' + (it.quantity - 1) + ')" aria-label="-">−</button><span>' + it.quantity + '</span><button onclick="Shop.cart.setQty(\'' + esc(it.product_id) + '\',' + (it.quantity + 1) + ')" aria-label="+">+</button></div></div>'
+        + '<button class="ci-rm" onclick="Shop.cart.remove(\'' + esc(it.product_id) + '\')" aria-label="remove"><i class="ti ti-trash"></i></button></div>';
+    }).join('');
+    var sub = cart.subtotal(), left = Math.max(FREE_DELIVERY - sub, 0), fee = sub >= FREE_DELIVERY ? 0 : 49;
+    f.innerHTML = '<div style="font-size:12.5px;font-weight:700;color:' + (left ? 'var(--o-d)' : 'var(--green)') + '">' + esc(left ? T('c.freeleft', { amt: money(left) }) : T('c.free')) + '</div>'
+      + '<div class="free-bar"><i style="width:' + Math.min(100, sub / FREE_DELIVERY * 100) + '%"></i></div>'
+      + '<div class="dr-row"><span>' + esc(T('c.sub')) + '</span><b>' + money(sub) + '</b></div>'
+      + '<div class="dr-row"><span>' + esc(T('c.del')) + '</span><b>' + (fee ? money(fee) : esc(T('c.freeword'))) + '</b></div>'
+      + '<div class="dr-row tot"><span>' + esc(T('c.total')) + '</span><span>' + money(sub + fee) + '</span></div>'
+      + '<button class="btn btn-o" style="margin-top:10px" onclick="Shop.checkout()"><i class="ti ti-lock"></i>' + esc(T('c.checkout')) + '</button>'
+      + '<div class="dr-note">' + esc(T('c.note')) + '</div>';
+  }
+  function checkout() {
+    if (!loggedIn()) { toast(T('c.login'), 'ti-login'); setTimeout(function () { location.href = '01_login.html'; }, 1200); return; }
+    toast(T('c.soon'), 'ti-clock');
+  }
+
+  // ── Search with suggestions ─────────────────────────────────────────────────
+  function search(e) { e.preventDefault(); var q = document.getElementById('shop-q').value.trim(); location.href = '43_shop_list.html' + (q ? '?q=' + encodeURIComponent(q) : ''); }
+  var sTimer = null;
+  function bindSuggest() {
+    var inp = document.getElementById('shop-q'), box = document.getElementById('shop-sugg');
+    var qs = new URLSearchParams(location.search).get('q'); if (qs) inp.value = qs;
+    inp.addEventListener('input', function () {
+      clearTimeout(sTimer); var q = inp.value.trim();
+      if (q.length < 2) { box.classList.remove('show'); return; }
+      sTimer = setTimeout(function () {
+        var cats = CATS.filter(function (c) { return catLabel(c.id).toLowerCase().indexOf(q.toLowerCase()) >= 0; }).slice(0, 3);
+        api('/shop/suggest?q=' + encodeURIComponent(q)).catch(function () { return { products: [], brands: [] }; }).then(function (d) {
+          var h = '';
+          if (cats.length) h += '<div class="sugg-h">' + esc(T('s.cats')) + '</div>' + cats.map(function (c) { return '<a href="43_shop_list.html?category=' + c.id + '"><i class="ti ' + c.icon + '" style="font-size:20px;color:var(--o);width:38px;text-align:center"></i>' + esc(catLabel(c.id)) + '</a>'; }).join('');
+          if (d.brands && d.brands.length) h += '<div class="sugg-h">' + esc(T('s.brands')) + '</div>' + d.brands.map(function (b) { return '<a href="43_shop_list.html?brand=' + encodeURIComponent(b) + '"><i class="ti ti-building-store" style="font-size:20px;color:var(--o);width:38px;text-align:center"></i>' + esc(b) + '</a>'; }).join('');
+          if (d.products && d.products.length) h += '<div class="sugg-h">' + esc(T('s.products')) + '</div>' + d.products.map(function (p) { return '<a href="44_shop_product.html?id=' + encodeURIComponent(p.product_id) + '"><img src="' + esc(firstImg(p, 100)) + '" alt="">' + esc(p.name) + '<span class="pr">' + money(p.price) + '</span></a>'; }).join('');
+          h += '<a href="43_shop_list.html?q=' + encodeURIComponent(q) + '" style="border-top:1px solid var(--line2);font-weight:700;color:var(--o-d)"><i class="ti ti-search" style="width:38px;text-align:center"></i>' + esc(T('s.all', { q: q })) + '</a>';
+          box.innerHTML = h; box.classList.add('show');
+        });
+      }, 250);
+    });
+    document.addEventListener('click', function (e) { if (!e.target.closest('.search')) box.classList.remove('show'); });
+  }
+  function savePin(e) {
+    e.preventDefault();
+    var v = document.getElementById('pin-inp').value.replace(/\D/g, ''), msg = document.getElementById('pin-msg');
+    if (v.length !== 6) { msg.style.color = 'var(--red)'; msg.textContent = T('pin.bad'); return; }
+    pin.check(v).then(function (place) {
+      if (!place) { msg.style.color = 'var(--red)'; msg.textContent = T('pin.bad'); return; }
+      pin.set(v, place); msg.style.color = 'var(--green)'; msg.textContent = T('pin.ok', { place: place });
+      setTimeout(function () { document.getElementById('pin-modal').classList.remove('show'); }, 700);
+    });
+  }
+
+  // ── Boot ────────────────────────────────────────────────────────────────────
+  function init(active) {
+    header(active); footer(); PBi18n.apply();
+    wish.load(); cart.load();
+    window.addEventListener('pb:langchange', function () { paintPin(); paintWish(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeCart(); var m = document.getElementById('pin-modal'); if (m) m.classList.remove('show'); } });
+  }
+
+  window.Shop = {
+    API: API, api: api, px: px, esc: esc, money: money, starsHTML: starsHTML, deliveryBy: deliveryBy, firstImg: firstImg,
+    PETS: PETS, CATS: CATS, catInfo: catInfo, catLabel: catLabel, loggedIn: loggedIn,
+    productCard: productCard, renderCards: renderCards, skeletons: skeletons, cardData: cardData,
+    cart: cart, wish: wish, recent: recent, pin: pin, toast: toast,
+    init: init, openCart: openCart, closeCart: closeCart, checkout: checkout, search: search, savePin: savePin
+  };
+})();

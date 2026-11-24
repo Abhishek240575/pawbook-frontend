@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<meta name="description" content="PawBook Shop — food, toys, grooming and everything your pet loves, plus services near you.">
+<title>PawBook Shop — Everything Your Pet Loves</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://images.pexels.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<style>
+/* ── hero carousel ── */
+.hero{position:relative;margin-top:20px;border-radius:28px;overflow:hidden;background:var(--o-l)}
+.slides{display:flex;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.slide{min-width:100%;display:grid;grid-template-columns:1fr 1.1fr;align-items:stretch;height:440px}
+.slide-txt{padding:52px 48px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+.s-eyebrow{display:inline-flex;align-self:flex-start;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#fff;font-size:12px;font-weight:800;color:var(--o-d);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.slide h1,.slide h2{font-size:46px;line-height:1.08;font-weight:900;color:var(--navy);letter-spacing:-1px;margin:16px 0 12px}
+.slide h1 em,.slide h2 em{font-style:normal;color:var(--o)}
+.slide p{font-size:15.5px;color:#4b5068;line-height:1.6;max-width:440px}
+.slide .btn{margin-top:24px;align-self:flex-start}
+.slide-img{position:relative;overflow:hidden}
+.slide-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slide-img::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,var(--sbg) 0%,transparent 28%)}
+.s1{--sbg:#ffeedd;background:#ffeedd}.s2{--sbg:#fff3c8;background:#fff3c8}.s3{--sbg:#e9f3ff;background:#e9f3ff}
+.hero-nav{position:absolute;bottom:18px;left:48px;display:flex;gap:8px;z-index:3}
+.hero-dot{width:10px;height:10px;border-radius:999px;border:none;background:rgba(29,35,64,.2);cursor:pointer;transition:all .3s;padding:0}
+.hero-dot.on{width:28px;background:var(--o)}
+.hero-arr{position:absolute;bottom:16px;width:44px;height:44px;border-radius:50%;border:none;background:#fff;box-shadow:var(--sh);font-size:20px;cursor:pointer;z-index:3;color:var(--navy)}
+.hero-arr.l{right:70px}.hero-arr.r{right:18px}
+
+/* ── circles ── */
+.circles{display:flex;gap:22px;overflow-x:auto;padding:28px 4px 6px;scrollbar-width:none;justify-content:space-between}
+.circles::-webkit-scrollbar{display:none}
+.circ{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;width:118px}
+.circ-img{width:112px;height:112px;border-radius:50%;overflow:hidden;background:var(--o-l);border:4px solid #fff;box-shadow:0 8px 20px rgba(60,35,10,.1);transition:transform .2s}
+.circ:hover .circ-img{transform:translateY(-4px) scale(1.03)}
+.circ-img img{width:100%;height:100%;object-fit:cover}
+.circ-ic{width:112px;height:112px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;border:4px solid #fff;box-shadow:0 8px 20px rgba(60,35,10,.1)}
+.circ span{font-size:13.5px;font-weight:800;color:var(--navy);text-align:center}
+
+/* ── category tiles ── */
+.ctiles{display:grid;grid-template-columns:repeat(8,1fr);gap:14px}
+.ctile{text-decoration:none;display:flex;flex-direction:column;gap:8px}
+.ctile-img{aspect-ratio:1/1;border-radius:22px;overflow:hidden;background:var(--o-l);position:relative}
+.ctile-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.ctile:hover .ctile-img img{transform:scale(1.07)}
+.ctile b{font-size:13.5px;font-weight:800;color:var(--navy);text-align:center}
+.ctile small{font-size:11.5px;color:var(--muted);text-align:center;margin-top:-6px}
+
+/* ── shop by pet ── */
+.bypet{display:grid;grid-template-columns:1.2fr 1.2fr 1fr;gap:16px}
+.bp{position:relative;border-radius:24px;overflow:hidden;min-height:320px;text-decoration:none;display:flex;align-items:flex-end}
+.bp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.bp:hover img{transform:scale(1.05)}
+.bp::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(29,35,64,.78))}
+.bp-t{position:relative;z-index:2;padding:22px;color:#fff;width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.bp-t b{font-size:26px;font-weight:900;display:block}
+.bp-t small{font-size:13px;opacity:.9}
+.bp-go{width:46px;height:46px;border-radius:50%;background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.bp-stack{display:grid;grid-template-rows:repeat(3,1fr);gap:16px}
+.bp-stack .bp{min-height:0}
+.bp-stack .bp-t b{font-size:19px}
+
+/* ── collections (combos / occasions) ── */
+.coll{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.col{position:relative;border-radius:22px;overflow:hidden;text-decoration:none;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s}
+.col:hover{box-shadow:var(--sh-h);transform:translateY(-3px)}
+.col-img{aspect-ratio:4/3;overflow:hidden;position:relative}
+.col-img img{width:100%;height:100%;object-fit:cover}
+.col-chip{position:absolute;top:12px;left:12px;background:#fff;color:var(--o-d);font-size:11.5px;font-weight:800;padding:5px 11px;border-radius:999px}
+.col-b{padding:14px 16px 16px}
+.col-b b{font-size:15.5px;font-weight:900;color:var(--navy);display:block}
+.col-b small{font-size:12.5px;color:var(--muted);line-height:1.5;display:block;margin-top:4px}
+.col-b .go{margin-top:10px;font-size:13px;font-weight:800;color:var(--o-d);display:flex;align-items:center;gap:4px}
+
+/* ── services ── */
+.svc{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.sv{border-radius:22px;background:#fff;border:1px solid var(--line);overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:box-shadow .2s}
+.sv:hover{box-shadow:var(--sh-h)}
+.sv-img{height:150px;overflow:hidden}
+.sv-img img{width:100%;height:100%;object-fit:cover}
+.sv-b{padding:14px 16px 16px;display:flex;gap:12px;align-items:flex-start}
+.sv-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.sv-b b{font-size:15px;font-weight:900;color:var(--navy);display:block}
+.sv-b small{font-size:12px;color:var(--muted);line-height:1.45;display:block;margin-top:2px}
+.svc-pin{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font-size:13px;font-weight:700;color:var(--navy);cursor:pointer}
+.svc-pin:hover{border-color:var(--o);color:var(--o)}
+
+/* ── brands ── */
+.brands{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:thin}
+.br{flex-shrink:0;width:160px;height:96px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-decoration:none;transition:box-shadow .2s}
+.br:hover{box-shadow:var(--sh)}
+.br-in{width:42px;height:42px;border-radius:12px;background:var(--o-l);color:var(--o-d);font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center}
+.br b{font-size:13px;font-weight:800;color:var(--navy);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── trust / sell / newsletter ── */
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:48px}
+.tr{display:flex;gap:12px;align-items:center;padding:18px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+.tr i{width:46px;height:46px;border-radius:14px;background:var(--o-l);color:var(--o-d);font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tr b{font-size:13.5px;font-weight:800;color:var(--navy);display:block}
+.tr small{font-size:12px;color:var(--muted)}
+.sell{margin-top:48px;border-radius:28px;overflow:hidden;display:grid;grid-template-columns:1.1fr 1fr;background:var(--navy);color:#fff}
+.sell-t{padding:44px 48px}
+.sell-t h3{font-size:30px;font-weight:900;line-height:1.15}
+.sell-t h3 em{font-style:normal;color:#ffb067}
+.sell-t p{font-size:14.5px;opacity:.85;margin-top:10px;line-height:1.6;max-width:440px}
+.sell-t .btn{margin-top:22px}
+.sell-img{min-height:260px}
+.sell-img img{width:100%;height:100%;object-fit:cover}
+.nl{margin-top:48px;border-radius:28px;background:linear-gradient(135deg,#fff1e4,#ffe2cc);padding:40px 44px;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.nl h3{font-size:26px;font-weight:900;color:var(--navy);line-height:1.2}
+.nl p{font-size:14px;color:#5b5f75;margin-top:6px}
+.nl form{display:flex;gap:10px}
+.nl input{flex:1;height:52px;border-radius:999px;border:1.5px solid #f3d3b8;padding:0 20px;outline:none;background:#fff}
+.nl input:focus{border-color:var(--o)}
+.nl .btn{height:52px}
+.opening{border-radius:24px;background:#fff;border:1.5px dashed #f3c9a5;padding:36px;text-align:center}
+.opening b{font-size:20px;font-weight:900;color:var(--navy);display:block}
+.opening p{font-size:14px;color:var(--muted);margin:8px auto 18px;max-width:520px;line-height:1.6}
+
+@media(max-width:1024px){
+  .slide{grid-template-columns:1fr 1fr}
+  .slide h1,.slide h2{font-size:36px}
+  .ctiles{grid-template-columns:repeat(4,1fr)}
+  .coll,.svc{grid-template-columns:repeat(2,1fr)}
+  .trust{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .hero{border-radius:22px;margin-top:12px}
+  .slide{grid-template-columns:1fr;height:auto}
+  .slide-img{height:220px;order:-1}
+  .slide-img::before{background:linear-gradient(0deg,var(--sbg) 0%,transparent 40%)}
+  .slide-txt{padding:4px 22px 52px}
+  .slide h1,.slide h2{font-size:28px;margin:10px 0 8px}
+  .slide p{font-size:13.5px}
+  .slide .btn{margin-top:16px;height:44px}
+  .hero-nav{left:22px;bottom:16px}
+  .hero-arr{display:none}
+  .circles{gap:14px;justify-content:flex-start;padding-top:20px}
+  .circ{width:82px}
+  .circ-img,.circ-ic{width:78px;height:78px}
+  .circ-ic{font-size:30px}
+  .circ span{font-size:12px}
+  .ctiles{grid-template-columns:repeat(4,1fr);gap:10px}
+  .ctile-img{border-radius:16px}
+  .ctile b{font-size:11.5px}
+  .ctile small{display:none}
+  .bypet{grid-template-columns:1fr 1fr}
+  .bp{min-height:200px}
+  .bp-t b{font-size:20px}
+  .bp-go{width:38px;height:38px}
+  .bp-stack{grid-column:1/-1;grid-template-rows:none;grid-template-columns:repeat(3,1fr)}
+  .bp-stack .bp{min-height:130px}
+  .bp-stack .bp-t{padding:12px}
+  .bp-stack .bp-t b{font-size:14px}
+  .bp-stack .bp-go,.bp-stack small{display:none}
+  .coll{grid-template-columns:repeat(2,1fr);gap:12px}
+  .col-b{padding:10px 12px 12px}
+  .col-b b{font-size:13.5px}
+  .col-b small{display:none}
+  .svc{grid-template-columns:1fr 1fr;gap:12px}
+  .sv-img{height:100px}
+  .sv-b{padding:10px 12px 12px;gap:8px}
+  .sv-ic{display:none}
+  .sv-b small{display:none}
+  .trust{grid-template-columns:1fr 1fr;gap:10px}
+  .tr{padding:12px;gap:10px}
+  .tr i{width:38px;height:38px;font-size:18px}
+  .tr small{display:none}
+  .sell{grid-template-columns:1fr}
+  .sell-t{padding:28px 24px}
+  .sell-t h3{font-size:23px}
+  .sell-img{min-height:180px;order:-1}
+  .nl{grid-template-columns:1fr;padding:26px 22px}
+  .nl h3{font-size:21px}
+  .nl form{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+
+<main class="wrap">
+  <!-- HERO -->
+  <section class="hero" aria-roledescription="carousel">
+    <div class="slides" id="slides">
+      <div class="slide s1">
+        <div class="slide-txt">
+          <span class="s-eyebrow"><i class="ti ti-paw"></i><span data-i18n="hero.1e">PawBook Shop</span></span>
+          <h1 data-i18n="hero.1t">Everything your pet loves, in one place</h1>
+          <p data-i18n="hero.1s">Food, treats, toys, grooming and care for dogs, cats and every companion, from sellers on PawBook.</p>
+          <a class="btn btn-o" href="43_shop_list.html"><span data-i18n="hero.1c">Start shopping</span><i class="ti ti-arrow-right"></i></a>
+        </div>
+        <div class="slide-img"><img src="https://images.pexels.com/photos/37891869/pexels-photo-37891869.jpeg?auto=compress&cs=tinysrgb&w=1100" alt=""></div>
+      </div>
+      <div class="slide s2">
+        <div class="slide-txt">
+          <span class="s-eyebrow"><i class="ti ti-ball-tennis"></i><span data-i18n="hero.2e">Playtime</span></span>
+          <h2 data-i18n="hero.2t">Toys that keep tails wagging</h2>
+          <p data-i18n="hero.2s">Chew toys, tug ropes, plushies and puzzle feeders for every energy level.</p>
+          <a class="btn btn-o" href="43_shop_list.html?category=toys"><span data-i18n="hero.2c">Shop toys</span><i class="ti ti-arrow-right"></i></a>
+        </div>
+        <div class="slide-img"><img src="https://images.pexels.com/photos/28802858/pexels-photo-28802858.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="" loading="lazy"></div>
+      </div>
+      <div class="slide s3">
+        <div class="slide-txt">
+          <span class="s-eyebrow"><i class="ti ti-bowl"></i><span data-i18n="hero.3e">Nutrition</span></span>
+          <h2 data-i18n="hero.3t">Healthy bowls, happy pets</h2>
+          <p data-i18n="hero.3s">Dry food, wet food and treats for every life stage, with delivery dates for your PIN code.</p>
+          <a class="btn btn-o" href="43_shop_list.html?category=food,treats"><span data-i18n="hero.3c">Shop food</span><i class="ti ti-arrow-right"></i></a>
+        </div>
+        <div class="slide-img"><img src="https://images.pexels.com/photos/6568942/pexels-photo-6568942.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="" loading="lazy"></div>
+      </div>
+    </div>
+    <button class="hero-arr l" onclick="go(cur-1)" aria-label="Previous"><i class="ti ti-chevron-left"></i></button>
+    <button class="hero-arr r" onclick="go(cur+1)" aria-label="Next"><i class="ti ti-chevron-right"></i></button>
+    <div class="hero-nav" id="dots"></div>
+  </section>
+
+  <!-- PET CIRCLES -->
+  <nav class="circles" id="circles" aria-label="Shop by pet"></nav>
+
+  <!-- CATEGORIES -->
+  <section class="sec">
+    <div class="sec-h"><div><h2 class="sec-t" data-i18n="home.cats">Shop by category</h2><p class="sec-s" data-i18n="home.catss">Everything for everyday care</p></div><a class="sec-more" href="43_shop_list.html"><span data-i18n="home.viewall">View all</span><i class="ti ti-arrow-right"></i></a></div>
+    <div class="ctiles" id="ctiles"></div>
+  </section>
+
+  <!-- PRODUCT RAILS (filled from the API) -->
+  <div id="rails"></div>
+
+  <!-- SHOP BY PET -->
+  <section class="sec">
+    <div class="sec-h"><div><h2 class="sec-t" data-i18n="home.bypet">Shop by pet</h2><p class="sec-s" data-i18n="home.bypets">Curated picks for every kind of companion</p></div></div>
+    <div class="bypet">
+      <a class="bp" href="43_shop_list.html?pet=dog"><img loading="lazy" src="https://images.pexels.com/photos/16366333/pexels-photo-16366333.jpeg?auto=compress&cs=tinysrgb&w=900" alt=""><div class="bp-t"><div><b data-i18n="pet.dog">Dogs</b><small data-i18n="home.dogs">Food, toys, walks & more</small></div><span class="bp-go"><i class="ti ti-arrow-right"></i></span></div></a>
+      <a class="bp" href="43_shop_list.html?pet=cat"><img loading="lazy" src="https://images.pexels.com/photos/35576973/pexels-photo-35576973.jpeg?auto=compress&cs=tinysrgb&w=900" alt=""><div class="bp-t"><div><b data-i18n="pet.cat">Cats</b><small data-i18n="home.catsp">Litter, scratchers, food & play</small></div><span class="bp-go"><i class="ti ti-arrow-right"></i></span></div></a>
+      <div class="bp-stack">
+        <a class="bp" href="43_shop_list.html?pet=bird"><img loading="lazy" src="https://images.pexels.com/photos/34951082/pexels-photo-34951082.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><div class="bp-t"><div><b data-i18n="pet.bird">Birds</b></div><span class="bp-go"><i class="ti ti-arrow-right"></i></span></div></a>
+        <a class="bp" href="43_shop_list.html?pet=fish"><img loading="lazy" src="https://images.pexels.com/photos/33867664/pexels-photo-33867664.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><div class="bp-t"><div><b data-i18n="pet.fish">Fish</b></div><span class="bp-go"><i class="ti ti-arrow-right"></i></span></div></a>
+        <a class="bp" href="43_shop_list.html?pet=small_pet"><img loading="lazy" src="https://images.pexels.com/photos/8434767/pexels-photo-8434767.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><div class="bp-t"><div><b data-i18n="pet.small_pet">Small pets</b></div><span class="bp-go"><i class="ti ti-arrow-right"></i></span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMBOS & KITS -->
+  <section class="sec">
+    <div class="sec-h"><div><h2 class="sec-t"><span data-i18n="home.combos">PawBook kits</span></h2><p class="sec-s" data-i18n="home.comboss">Everything you need for the big moments, in one place</p></div></div>
+    <div class="coll">
+      <a class="col" href="43_shop_list.html?pet=dog&life_stage=puppy"><div class="col-img"><img loading="lazy" src="https://images.pexels.com/photos/36951300/pexels-photo-36951300.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><span class="col-chip" data-i18n="kit.new">New pet</span></div><div class="col-b"><b data-i18n="kit.puppy">Puppy starter kit</b><small data-i18n="kit.puppys">Food, bowls, bed, collar and first toys</small><span class="go"><span data-i18n="kit.shop">Shop the kit</span><i class="ti ti-arrow-right"></i></span></div></a>
+      <a class="col" href="43_shop_list.html?pet=cat&life_stage=kitten"><div class="col-img"><img loading="lazy" src="https://images.pexels.com/photos/26706493/pexels-photo-26706493.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><span class="col-chip" data-i18n="kit.new">New pet</span></div><div class="col-b"><b data-i18n="kit.kitten">Kitten starter kit</b><small data-i18n="kit.kittens">Litter, scratcher, food and play</small><span class="go"><span data-i18n="kit.shop">Shop the kit</span><i class="ti ti-arrow-right"></i></span></div></a>
+      <a class="col" href="43_shop_list.html?category=grooming"><div class="col-img"><img loading="lazy" src="https://images.pexels.com/photos/6131580/pexels-photo-6131580.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""></div><div class="col-b"><b data-i18n="kit.groom">Grooming at home</b><small data-i18n="kit.grooms">Brushes, shampoos and nail care</small><span class="go"><span data-i18n="kit.shop">Shop the kit</span><i class="ti ti-arrow-right"></i></span></div></a>
+      <a class="col" href="43_shop_list.html?category=food,treats"><div class="col-img"><img loading="lazy" src="https://images.pexels.com/photos/8434633/pexels-photo-8434633.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""></div><div class="col-b"><b data-i18n="kit.food">Food + treats</b><small data-i18n="kit.foods">Daily meals and rewards, stocked up</small><span class="go"><span data-i18n="kit.shop">Shop the kit</span><i class="ti ti-arrow-right"></i></span></div></a>
+    </div>
+  </section>
+
+  <!-- SPECIAL OCCASIONS -->
+  <section class="sec">
+    <div class="sec-h"><div><h2 class="sec-t" data-i18n="occ.t">Celebrate every moment</h2><p class="sec-s" data-i18n="occ.s">Birthdays, adoption anniversaries, festivals and gifts</p></div></div>
+    <div class="coll">
+      <a class="col" href="43_shop_list.html?category=toys,treats"><div class="col-img"><img loading="lazy" src="https://images.pexels.com/photos/9428235/pexels-photo-9428235.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><span class="col-chip">🎂</span></div><div class="col-b"><b data-i18n="occ.bday">Pet birthday</b><small data-i18n="occ.bdays">Party treats and a new favourite toy</small></div></a>
+      <a class="col" href="43_shop_list.html?category=toys,accessories"><div class="col-img"><img loading="lazy" src="https://images.pexels.com/photos/7474468/pexels-photo-7474468.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><span class="col-chip">🏡</span></div><div class="col-b"><b data-i18n="occ.gotcha">Gotcha day</b><small data-i18n="occ.gotchas">Celebrate the day they came home</small></div></a>
+      <a class="col" href="43_shop_list.html?category=beds,health"><div class="col-img"><img loading="lazy" src="https://images.pexels.com/photos/32106865/pexels-photo-32106865.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><span class="col-chip">🪔</span></div><div class="col-b"><b data-i18n="occ.fest">Calm festive season</b><small data-i18n="occ.fests">Cosy beds and comfort for noisy nights</small></div></a>
+      <a class="col" href="43_shop_list.html?category=accessories,clothing"><div class="col-img"><img loading="lazy" src="https://images.pexels.com/photos/1750543/pexels-photo-1750543.jpeg?auto=compress&cs=tinysrgb&w=600" alt=""><span class="col-chip">🎁</span></div><div class="col-b"><b data-i18n="occ.gift">Gifts for pet parents</b><small data-i18n="occ.gifts">Collars, tags and stylish accessories</small></div></a>
+    </div>
+  </section>
+
+  <!-- SERVICES NEAR YOU -->
+  <section class="sec" id="services">
+    <div class="sec-h"><div><h2 class="sec-t" data-i18n="svc.t">Services near you</h2><p class="sec-s" data-i18n="svc.s">Groomers, vets, trainers and boarding around your area</p></div>
+      <button class="svc-pin" onclick="Shop.pin.open()"><i class="ti ti-map-pin"></i><span data-pin-label></span></button></div>
+    <div class="svc" id="svc"></div>
+  </section>
+
+  <!-- BRANDS (only shown when sellers have set brands) -->
+  <section class="sec" id="brands-sec" style="display:none">
+    <div class="sec-h"><div><h2 class="sec-t" data-i18n="br.t">Featured brands</h2><p class="sec-s" data-i18n="br.s">Shop by the brands pet parents trust</p></div></div>
+    <div class="brands" id="brands"></div>
+  </section>
+
+  <!-- RECENTLY VIEWED (this device) -->
+  <section class="sec" id="recent-sec" style="display:none">
+    <div class="sec-h"><div><h2 class="sec-t" data-i18n="rv.t">Recently viewed</h2></div></div>
+    <div class="rail" id="recent"></div>
+  </section>
+
+  <!-- TRUST -->
+  <div class="trust">
+    <div class="tr"><i class="ti ti-star"></i><div><b data-i18n="tr.1">Real reviews only</b><small data-i18n="tr.1s">Ratings come from PawBook buyers</small></div></div>
+    <div class="tr"><i class="ti ti-truck-delivery"></i><div><b data-i18n="tr.2">Delivery by PIN</b><small data-i18n="tr.2s">See delivery dates for your area</small></div></div>
+    <div class="tr"><i class="ti ti-paw"></i><div><b data-i18n="tr.3">Made for your pet</b><small data-i18n="tr.3s">Check suitability with your pet profile</small></div></div>
+    <div class="tr"><i class="ti ti-language"></i><div><b data-i18n="tr.4">Your language</b><small data-i18n="tr.4s">Shop in English and Indian languages</small></div></div>
+  </div>
+
+  <!-- SELL ON PAWBOOK -->
+  <section class="sell">
+    <div class="sell-t">
+      <h3><span data-i18n="sell.t1">Run a pet business?</span><br><em data-i18n="sell.t2">Sell on PawBook.</em></h3>
+      <p data-i18n="sell.s">Reach pet parents across India who already use PawBook every day for their pets' health and community.</p>
+      <a class="btn btn-o" href="09_marketplace.html"><i class="ti ti-building-store"></i><span data-i18n="sell.c">Start selling</span></a>
+    </div>
+    <div class="sell-img"><img loading="lazy" src="https://images.pexels.com/photos/6568954/pexels-photo-6568954.jpeg?auto=compress&cs=tinysrgb&w=900" alt=""></div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="nl">
+    <div><h3 data-i18n="nl.t">Get pet care tips & offers</h3><p data-i18n="nl.s">New arrivals, seasonal care guides and member offers. No spam.</p></div>
+    <form onsubmit="subscribe(event)"><input id="nl-email" type="email" required data-i18n-ph="nl.ph" placeholder="Your email address" aria-label="Email"><button class="btn btn-o" data-i18n="nl.c">Subscribe</button></form>
+  </section>
+</main>
+
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="shop.js"></script>
+<script>
+var S = Shop, T = PBi18n.t;
+S.init('home');
+
+/* ── hero carousel ── */
+var cur = 0, N = 3, timer = null;
+function go(i){ cur = (i + N) % N; document.getElementById('slides').style.transform = 'translateX(' + (-cur * 100) + '%)';
+  document.querySelectorAll('.hero-dot').forEach(function(d, k){ d.classList.toggle('on', k === cur); }); restart(); }
+function restart(){ clearTimeout(timer); timer = setTimeout(function(){ go(cur + 1); }, 6000); }
+document.getElementById('dots').innerHTML = [0,1,2].map(function(i){ return '<button class="hero-dot' + (i ? '' : ' on') + '" onclick="go(' + i + ')" aria-label="Slide ' + (i + 1) + '"></button>'; }).join('');
+(function(){ var x0 = null, el = document.getElementById('slides');
+  el.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive:true});
+  el.addEventListener('touchend', function(e){ if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+})();
+restart();
+
+/* ── pet circles + category tiles ── */
+var catCounts = {};
+function renderStatic(){
+  document.getElementById('circles').innerHTML = S.PETS.map(function(p){
+    return '<a class="circ" href="43_shop_list.html?pet=' + p.id + '"><div class="circ-img"><img src="' + S.px(p.img, 300) + '" alt=""></div><span>' + S.esc(T('pet.' + p.id)) + '</span></a>';
+  }).join('')
+  + '<a class="circ" href="43_shop_list.html?sort=discount&on_sale=1"><div class="circ-ic" style="background:#ffe4e4;color:var(--red)"><i class="ti ti-discount-2"></i></div><span>' + S.esc(T('h.offers')) + '</span></a>'
+  + '<a class="circ" href="43_shop_list.html?sort=new"><div class="circ-ic" style="background:#e9f3ff;color:var(--blue)"><i class="ti ti-sparkles"></i></div><span>' + S.esc(T('home.newin')) + '</span></a>';
+  var tiles = ['food','treats','toys','grooming','walk','beds','clothing','health'];
+  document.getElementById('ctiles').innerHTML = tiles.map(function(id){
+    var c = S.catInfo(id), n = catCounts[id];
+    return '<a class="ctile" href="43_shop_list.html?category=' + id + '"><div class="ctile-img"><img loading="lazy" src="' + S.px(c.img, 400) + '" alt=""></div><b>' + S.esc(S.catLabel(id)) + '</b>' + (n ? '<small>' + S.esc(n === 1 ? T('home.item') : T('home.items', {n:n})) + '</small>' : '') + '</a>';
+  }).join('');
+  renderServices();
+}
+
+/* ── services near you (Google Maps search around the delivery PIN; vets & training link to PawBook) ── */
+function renderServices(){
+  var p = S.pin.get(), near = p ? (p.place || p.pin) : '';
+  var g = function(q){ return 'https://www.google.com/maps/search/' + encodeURIComponent(q + (near ? ' near ' + near : ' near me')); };
+  var list = [
+    {k:'vet', icon:'ti-stethoscope', c:'#7c3aed', bg:'#f5f3ff', img:7470755, href:'11_vet_booking.html'},
+    {k:'groom', icon:'ti-scissors', c:'#db2777', bg:'#fdf2f8', img:6131580, href:g('pet grooming'), ext:true},
+    {k:'train', icon:'ti-target', c:'#0284c7', bg:'#f0f9ff', img:8499440, href:'22_training.html'},
+    {k:'board', icon:'ti-home-heart', c:'#16a34a', bg:'#ecfdf3', img:32106865, href:g('pet boarding'), ext:true}
+  ];
+  document.getElementById('svc').innerHTML = list.map(function(s){
+    return '<a class="sv" href="' + s.href + '"' + (s.ext ? ' target="_blank" rel="noopener"' : '') + '><div class="sv-img"><img loading="lazy" src="' + S.px(s.img, 500) + '" alt=""></div>'
+      + '<div class="sv-b"><span class="sv-ic" style="background:' + s.bg + ';color:' + s.c + '"><i class="ti ' + s.icon + '"></i></span><div><b>' + S.esc(T('svc.' + s.k)) + '</b><small>' + S.esc(T('svc.' + s.k + 's')) + '</small></div></div></a>';
+  }).join('');
+}
+window.addEventListener('shop:pin', renderServices);
+
+/* ── product rails from the live catalogue ── */
+var home = null;
+function rail(key, sub, list, href, tag){
+  if (!list || !list.length) return '';
+  return '<section class="sec"><div class="sec-h"><div><h2 class="sec-t">' + S.esc(T(key)) + '</h2>' + (sub ? '<p class="sec-s">' + S.esc(T(sub)) + '</p>' : '') + '</div>'
+    + '<a class="sec-more" href="' + href + '"><span>' + S.esc(T('home.viewall')) + '</span><i class="ti ti-arrow-right"></i></a></div><div class="rail" data-rail="' + key + '"></div></section>';
+}
+function renderRails(){
+  var el = document.getElementById('rails');
+  if (!home) { el.innerHTML = '<section class="sec"><div class="rail" id="rail-skel"></div></section>'; S.skeletons(document.getElementById('rail-skel'), 5); return; }
+  if (!home.total_products) {
+    el.innerHTML = '<section class="sec"><div class="opening"><b>' + S.esc(T('open.t')) + '</b><p>' + S.esc(T('open.s')) + '</p><a class="btn btn-o" href="09_marketplace.html"><i class="ti ti-building-store"></i>' + S.esc(T('sell.c')) + '</a></div></section>';
+    return;
+  }
+  var groups = [
+    ['home.best', 'home.bests', home.best_sellers, '43_shop_list.html?sort=popular', T('tag.best')],
+    ['home.deals', 'home.dealss', home.deals, '43_shop_list.html?sort=discount&on_sale=1'],
+    ['home.feat', null, home.featured, '43_shop_list.html?sort=recommended'],
+    ['home.new', 'home.news', home.new_arrivals, '43_shop_list.html?sort=new']
+  ];
+  el.innerHTML = groups.map(function(g){ return rail(g[0], g[1], g[2], g[3]); }).join('');
+  groups.forEach(function(g){ var r = el.querySelector('[data-rail="' + g[0] + '"]'); if (r) S.renderCards(r, g[2], g[4] ? {tag:g[4]} : {}); });
+}
+function renderBrands(){
+  var b = (home && home.brands) || [];
+  document.getElementById('brands-sec').style.display = b.length ? '' : 'none';
+  document.getElementById('brands').innerHTML = b.map(function(x){
+    var ini = x.name.split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase();
+    return '<a class="br" href="43_shop_list.html?brand=' + encodeURIComponent(x.name) + '">' + (x.logo_url ? '<img src="' + S.esc(x.logo_url) + '" alt="" style="height:40px;object-fit:contain">' : '<span class="br-in">' + S.esc(ini) + '</span>') + '<b>' + S.esc(x.name) + '</b></a>';
+  }).join('');
+}
+function renderRecent(){
+  var r = S.recent.list();
+  document.getElementById('recent-sec').style.display = r.length ? '' : 'none';
+  if (r.length) S.renderCards(document.getElementById('recent'), r);
+}
+renderStatic(); renderRails(); renderRecent();
+S.api('/shop/home').then(function(d){
+  home = d; catCounts = d.categories || {}; renderStatic(); renderRails(); renderBrands();
+}).catch(function(){ home = {total_products:0, brands:[]}; renderRails(); });
+
+window.addEventListener('pb:langchange', function(){ renderStatic(); renderRails(); renderBrands(); renderRecent(); });
+
+/* ── newsletter ── */
+function subscribe(e){
+  e.preventDefault();
+  var em = document.getElementById('nl-email').value.trim();
+  S.api('/shop/newsletter', {method:'POST', body:{email:em}}).then(function(){ S.toast(T('nl.ok'), 'ti-mail-check'); document.getElementById('nl-email').value = ''; })
+    .catch(function(){ S.toast(T('nl.bad'), 'ti-alert-circle'); });
+}
+</script>
+</body>
+</html>

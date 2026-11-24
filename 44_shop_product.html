@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<title>PawBook Shop</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://images.pexels.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<style>
+.crumb{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:20px 0 14px}
+.crumb a{text-decoration:none;color:var(--muted)}
+.crumb a:hover{color:var(--o-d)}
+.pdp{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:start}
+.gal{position:sticky;top:140px;display:grid;grid-template-columns:76px 1fr;gap:12px}
+.thumbs{display:flex;flex-direction:column;gap:10px}
+.thumbs button{width:76px;height:76px;border-radius:14px;overflow:hidden;border:2px solid transparent;padding:0;cursor:pointer;background:var(--o-ll)}
+.thumbs button.on{border-color:var(--o)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.main-img{position:relative;aspect-ratio:1/1;border-radius:24px;overflow:hidden;background:var(--o-ll);border:1px solid var(--line)}
+.main-img img{width:100%;height:100%;object-fit:cover}
+.main-img .pc-wish{top:16px;right:16px;width:46px;height:46px;font-size:22px}
+.main-img .pc-off{top:16px;left:16px;font-size:13px;padding:6px 12px}
+.info .brand{font-size:13px;font-weight:800;color:var(--o-d);text-transform:uppercase;letter-spacing:.8px;text-decoration:none}
+.info h1{font-size:28px;font-weight:900;color:var(--navy);line-height:1.25;margin:6px 0 10px;letter-spacing:-.3px}
+.meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.meta a{color:var(--muted)}
+.meta .rt{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--navy);text-decoration:none}
+.meta .stars{font-size:15px}
+.price{margin-top:18px;padding:18px 20px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+.price-l{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.price-l b{font-size:32px;font-weight:900;color:var(--navy)}
+.price-l s{font-size:16px;color:#a3a7b5}
+.price-l .save{font-size:14px;font-weight:800;color:var(--green);background:var(--green-l);padding:3px 10px;border-radius:999px}
+.price small{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+.blk{margin-top:20px}
+.blk-t{font-size:13.5px;font-weight:800;color:var(--navy);margin-bottom:10px}
+.vars{display:flex;flex-wrap:wrap;gap:10px}
+.var{min-width:84px;padding:10px 14px;border-radius:14px;border:2px solid var(--line);background:#fff;cursor:pointer;text-align:center}
+.var b{display:block;font-size:13.5px;color:var(--navy)}
+.var small{font-size:12px;color:var(--muted)}
+.var.on{border-color:var(--o);background:var(--o-ll)}
+.var[disabled]{opacity:.45;cursor:not-allowed}
+.buy{display:flex;gap:12px;align-items:center;margin-top:22px;flex-wrap:wrap}
+.qty-l{display:inline-flex;align-items:center;border:2px solid var(--line);border-radius:999px;height:52px;overflow:hidden;background:#fff}
+.qty-l button{width:46px;height:100%;border:none;background:none;font-size:20px;cursor:pointer;color:var(--navy)}
+.qty-l span{min-width:34px;text-align:center;font-weight:900;font-size:16px}
+.buy .btn{height:52px;flex:1;min-width:150px}
+.stock{font-size:13px;font-weight:700;margin-top:12px;display:flex;align-items:center;gap:6px}
+.stock.ok{color:var(--green)}.stock.low{color:#c2410c}.stock.no{color:var(--red)}
+.box{margin-top:18px;border-radius:18px;border:1px solid var(--line);background:#fff;overflow:hidden}
+.box-r{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-bottom:1px solid var(--line2)}
+.box-r:last-child{border-bottom:none}
+.box-r>i{font-size:22px;color:var(--o);margin-top:2px}
+.box-r b{font-size:13.5px;color:var(--navy);display:block}
+.box-r small{font-size:12.5px;color:var(--muted);line-height:1.5;display:block}
+.pin-f{display:flex;gap:8px;margin-top:8px}
+.pin-f input{flex:1;height:40px;border-radius:10px;border:1.5px solid var(--line);padding:0 12px;outline:none;font-weight:700;letter-spacing:1px;background:var(--cream);max-width:160px}
+.pin-f input:focus{border-color:var(--o)}
+.pin-f button{height:40px;padding:0 16px;border-radius:10px;border:none;background:var(--navy);color:#fff;font-weight:800;cursor:pointer}
+.suit{margin-top:18px;border-radius:18px;padding:16px 18px;background:linear-gradient(135deg,#f3f8ff,#f8f4ff);border:1px solid #dde7fb}
+.suit-h{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;color:var(--navy)}
+.suit-h i{font-size:22px;color:var(--blue)}
+.suit select{margin-top:10px;width:100%;height:44px;border-radius:12px;border:1.5px solid #d4def3;padding:0 12px;background:#fff;font-weight:600;outline:none}
+.suit-res{margin-top:10px;font-size:13px;line-height:1.55;display:flex;gap:8px;align-items:flex-start}
+.suit-res i{font-size:18px;margin-top:1px}
+.suit-res.good{color:#166534}.suit-res.warn{color:#9a3412}.suit-res.info{color:#334155}
+.suit-note{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tags span{padding:5px 12px;border-radius:999px;background:var(--o-l);color:var(--o-d);font-size:12px;font-weight:700}
+/* details */
+.tabs{display:flex;gap:6px;border-bottom:2px solid var(--line);margin-top:50px;overflow-x:auto;scrollbar-width:none}
+.tabs button{flex-shrink:0;padding:14px 18px;border:none;background:none;font-size:14.5px;font-weight:800;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button.on{color:var(--o-d);border-color:var(--o)}
+.tpanel{display:none;padding:24px 0;font-size:14.5px;line-height:1.75;color:#3d4258;white-space:pre-line}
+.tpanel.on{display:block}
+.spec{width:100%;border-collapse:collapse;max-width:720px;white-space:normal}
+.spec td{padding:12px 16px;border-bottom:1px solid var(--line2);font-size:14px}
+.spec td:first-child{width:38%;color:var(--muted);font-weight:600;background:var(--cream)}
+.rev-g{display:grid;grid-template-columns:280px 1fr;gap:34px;white-space:normal}
+.rev-sum{padding:22px;border-radius:20px;background:#fff;border:1px solid var(--line);align-self:start}
+.rev-sum .big{font-size:46px;font-weight:900;color:var(--navy);line-height:1}
+.bar{display:flex;align-items:center;gap:8px;font-size:12.5px;margin-top:8px}
+.bar i{flex:1;height:8px;border-radius:999px;background:var(--line2);overflow:hidden;font-style:normal}
+.bar i span{display:block;height:100%;background:var(--star)}
+.rev{padding:16px 0;border-bottom:1px solid var(--line2)}
+.rev-h{display:flex;align-items:center;gap:10px}
+.rev-av{width:36px;height:36px;border-radius:50%;background:var(--o-l);color:var(--o-d);font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.rev-av img{width:100%;height:100%;object-fit:cover}
+.rev b{font-size:13.5px;color:var(--navy)}
+.rev small{font-size:12px;color:var(--muted)}
+.rev p{font-size:14px;margin-top:8px;color:#3d4258;line-height:1.6}
+.sticky-buy{display:none}
+.nf{text-align:center;padding:80px 20px}
+@media(max-width:960px){
+  .pdp{grid-template-columns:1fr;gap:24px}
+  .gal{position:static;grid-template-columns:1fr}
+  .thumbs{flex-direction:row;order:2;overflow-x:auto}
+  .thumbs button{width:64px;height:64px;flex-shrink:0}
+  .rev-g{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .info h1{font-size:22px}
+  .price-l b{font-size:27px}
+  .buy .btn{display:none}
+  .sticky-buy{display:flex;position:fixed;left:0;right:0;bottom:62px;z-index:440;gap:10px;padding:10px 16px;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+  .sticky-buy .btn{flex:1;height:46px}
+  .foot{padding-bottom:170px}
+  .tabs{margin-top:34px}
+}
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap" id="main">
+  <div class="crumb" id="crumb"></div>
+  <div class="pdp" id="pdp"><div class="pc-skel" style="aspect-ratio:1/1"></div><div><div class="pc-skel" style="aspect-ratio:2/1"></div></div></div>
+  <div id="details"></div>
+  <section class="sec" id="rel-sec" style="display:none"><div class="sec-h"><div><h2 class="sec-t" data-i18n="pd.related">You may also like</h2></div></div><div class="rail" id="related"></div></section>
+</main>
+<div class="sticky-buy" id="sticky-buy" style="display:none"></div>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="shop.js"></script>
+<script>
+var S = Shop, T = PBi18n.t, esc = S.esc;
+S.init('pdp');
+var ID = new URLSearchParams(location.search).get('id');
+var D = null, P = null, qty = 1, imgIdx = 0, variant = null, myPets = null, selPet = '';
+
+function variants(){ var v = P.variants; if (typeof v === 'string') { try { v = JSON.parse(v); } catch(e) { v = []; } } return Array.isArray(v) ? v : []; }
+function curPrice(){ return variant && variant.price != null ? Number(variant.price) : P.price; }
+function curCompare(){ return variant && variant.compare_price != null ? Number(variant.compare_price) : P.compare_price; }
+function curStock(){ return variant && variant.stock != null ? Number(variant.stock) : Number(P.stock); }
+function imgs(){ var a = (P.images || []).filter(Boolean); return a.length ? a : [S.firstImg(P, 900)]; }
+
+function render(){
+  var vs = variants(), price = curPrice(), cmp = curCompare(), stock = curStock();
+  var off = cmp > price ? Math.round((1 - price / cmp) * 100) : 0;
+  var im = imgs(); if (imgIdx >= im.length) imgIdx = 0;
+  var fb = S.px(S.catInfo(P.category).img, 900);
+  document.getElementById('crumb').innerHTML = '<a href="42_shop.html">' + esc(T('h.shop')) + '</a><i class="ti ti-chevron-right"></i><a href="43_shop_list.html?category=' + esc(P.category) + '">' + esc(S.catLabel(P.category)) + '</a><i class="ti ti-chevron-right"></i><span>' + esc(P.name) + '</span>';
+  var rating = P.review_count > 0
+    ? '<a class="rt" href="#tab-reviews" onclick="tab(\'reviews\')">' + S.starsHTML(P.rating) + P.rating.toFixed(1) + ' <span style="color:var(--muted);font-weight:600">(' + esc((P.review_count === 1 ? T('pd.nrev1') : T('pd.nrev', {n: P.review_count}))) + ')</span></a>'
+    : '<span class="pc-new">' + esc(T('pd.norev')) + '</span>';
+  var stockHTML = stock <= 0 ? '<div class="stock no"><i class="ti ti-circle-x"></i>' + esc(T('p.oos')) + '</div>'
+    : stock <= 5 ? '<div class="stock low"><i class="ti ti-alert-triangle"></i>' + esc(T('pd.low', {n: stock})) + '</div>'
+    : '<div class="stock ok"><i class="ti ti-circle-check"></i>' + esc(T('pd.instock')) + '</div>';
+  var pin = S.pin.get();
+  var tags = (P.tags || []).concat((P.pet_types || []).map(function(p){ return T('pet.' + p); })).concat((P.life_stages || []).filter(function(s){ return s !== 'all'; }).map(function(s){ return T('ls.' + s); }));
+  document.getElementById('pdp').innerHTML =
+    '<div class="gal"><div class="thumbs">' + (im.length > 1 ? im.map(function(u, i){ return '<button class="' + (i === imgIdx ? 'on' : '') + '" onclick="imgIdx=' + i + ';render()"><img src="' + esc(u) + '" alt="" onerror="this.onerror=null;this.src=\'' + fb + '\'"></button>'; }).join('') : '') + '</div>'
+    + '<div class="main-img"><img src="' + esc(im[imgIdx]) + '" alt="' + esc(P.name) + '" onerror="this.onerror=null;this.src=\'' + fb + '\'">'
+    + (off >= 5 ? '<span class="pc-off">' + esc(T('p.off', {n: off})) + '</span>' : '')
+    + '<button class="pc-wish' + (S.wish.has(P.product_id) ? ' on' : '') + '" data-wish="' + esc(P.product_id) + '" aria-label="' + esc(T('w.save')) + '"><i class="ti ' + (S.wish.has(P.product_id) ? 'ti-heart-filled' : 'ti-heart') + '"></i></button></div></div>'
+    + '<div class="info">'
+    + (P.brand ? '<a class="brand" href="43_shop_list.html?brand=' + encodeURIComponent(P.brand) + '">' + esc(P.brand) + '</a>' : '')
+    + '<h1>' + esc(P.name) + '</h1>'
+    + '<div class="meta">' + rating + (D.seller && D.seller.name ? '<span><i class="ti ti-building-store"></i> ' + esc(T('pd.soldby', {s: D.seller.name})) + '</span>' : '') + (P.sold > 0 ? '<span><i class="ti ti-flame"></i> ' + esc(T('pd.sold', {n: P.sold})) + '</span>' : '') + '</div>'
+    + '<div class="price"><div class="price-l"><b>' + S.money(price) + '</b>' + (off >= 1 ? '<s>' + S.money(cmp) + '</s><span class="save">' + esc(T('pd.save', {amt: S.money(cmp - price), n: off})) + '</span>' : '') + '</div><small>' + esc(T('pd.tax')) + (P.unit ? ' · ' + esc(P.unit) : '') + '</small></div>'
+    + (vs.length ? '<div class="blk"><div class="blk-t">' + esc(T('pd.size')) + '</div><div class="vars">' + vs.map(function(v, i){
+        var o = variant === v; return '<button class="var' + (o ? ' on' : '') + '"' + (v.stock === 0 ? ' disabled' : '') + ' onclick="pickVar(' + i + ')"><b>' + esc(v.label) + '</b>' + (v.price != null ? '<small>' + S.money(v.price) + '</small>' : '') + '</button>'; }).join('') + '</div></div>' : '')
+    + '<div class="buy"><div class="qty-l"><button onclick="setQty(qty-1)" aria-label="-">−</button><span id="qty">' + qty + '</span><button onclick="setQty(qty+1)" aria-label="+">+</button></div>'
+    + '<button class="btn btn-ghost" onclick="addCart(false)"' + (stock <= 0 ? ' disabled' : '') + '><i class="ti ti-shopping-bag-plus"></i>' + esc(T('p.add')) + '</button>'
+    + '<button class="btn btn-o" onclick="addCart(true)"' + (stock <= 0 ? ' disabled' : '') + '><i class="ti ti-bolt"></i>' + esc(T('pd.buy')) + '</button></div>'
+    + stockHTML
+    + '<div class="box">'
+    + '<div class="box-r"><i class="ti ti-truck-delivery"></i><div style="flex:1"><b>' + (pin ? esc(T('pd.delto', {pin: pin.pin, place: pin.place || ''})) : esc(T('pd.delcheck'))) + '</b>'
+    + (pin ? '<small>' + esc(T('pd.getby', {d: S.deliveryBy(P.delivery_days)})) + ' · ' + esc(T('pd.delfee')) + '</small>' : '')
+    + '<form class="pin-f" onsubmit="checkPin(event)"><input id="pd-pin" inputmode="numeric" maxlength="6" placeholder="PIN" value="' + (pin ? esc(pin.pin) : '') + '"><button>' + esc(T(pin ? 'pd.change' : 'pd.check')) + '</button></form><small id="pd-pin-msg"></small></div></div>'
+    + '<div class="box-r"><i class="ti ti-arrow-back-up"></i><div><b>' + esc(T('pd.ret')) + '</b><small>' + esc(T('pd.rets')) + '</small></div></div>'
+    + '<div class="box-r"><i class="ti ti-shield-check"></i><div><b>' + esc(T('pd.pay')) + '</b><small>' + esc(T('pd.pays')) + '</small></div></div>'
+    + '</div>'
+    + suitHTML()
+    + (tags.length ? '<div class="tags">' + tags.map(function(t){ return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' : '')
+    + '</div>';
+  // sticky (mobile)
+  var sb = document.getElementById('sticky-buy'); sb.style.display = '';
+  sb.innerHTML = '<button class="btn btn-ghost" onclick="addCart(false)"' + (stock <= 0 ? ' disabled' : '') + '><i class="ti ti-shopping-bag-plus"></i>' + esc(T('p.add')) + '</button><button class="btn btn-o" onclick="addCart(true)"' + (stock <= 0 ? ' disabled' : '') + '>' + esc(T('pd.buy')) + ' · ' + S.money(price * qty) + '</button>';
+}
+
+/* ── pet suitability (advisory) ── */
+function suitHTML(){
+  var h = '<div class="suit"><div class="suit-h"><i class="ti ti-paw"></i>' + esc(T('pd.suit')) + '</div>';
+  if (!S.loggedIn()) return h + '<div class="suit-res info"><i class="ti ti-info-circle"></i><span>' + esc(T('pd.suitlogin')) + ' <a href="01_login.html">' + esc(T('h.login')) + '</a></span></div></div>';
+  if (myPets === null) return h + '<div class="suit-res info"><i class="ti ti-loader-2"></i><span>…</span></div></div>';
+  if (!myPets.length) return h + '<div class="suit-res info"><i class="ti ti-info-circle"></i><span>' + esc(T('pd.suitnone')) + ' <a href="08_pet_profile.html">' + esc(T('pd.addpet')) + '</a></span></div></div>';
+  h += '<select onchange="selPet=this.value;render()"><option value="">' + esc(T('pd.choosepet')) + '</option>' + myPets.map(function(p){ return '<option value="' + esc(p.pet_id || p.id) + '"' + (String(p.pet_id || p.id) === selPet ? ' selected' : '') + '>' + esc(p.name) + ' (' + esc(p.species || '') + ')</option>'; }).join('') + '</select>';
+  var pet = myPets.filter(function(p){ return String(p.pet_id || p.id) === selPet; })[0];
+  if (pet) { var r = suitability(pet); h += '<div class="suit-res ' + r.cls + '"><i class="ti ' + r.icon + '"></i><span>' + esc(r.msg) + '</span></div>'; }
+  return h + '<div class="suit-note">' + esc(T('pd.suitnote')) + '</div></div>';
+}
+function speciesKey(s){ s = String(s || '').toLowerCase();
+  if (/dog|puppy|canine/.test(s)) return 'dog'; if (/cat|kitten|feline/.test(s)) return 'cat';
+  if (/bird|parrot|budgie|parakeet|cockatiel/.test(s)) return 'bird'; if (/fish/.test(s)) return 'fish';
+  if (/rabbit|hamster|guinea|small/.test(s)) return 'small_pet'; return 'other'; }
+function stageOf(pet, sp){ var a = parseFloat(pet.age); if (isNaN(a)) return null;
+  if (sp === 'dog') return a < 1 ? 'puppy' : (a >= 8 ? 'senior' : 'adult');
+  if (sp === 'cat') return a < 1 ? 'kitten' : (a >= 10 ? 'senior' : 'adult'); return null; }
+function suitability(pet){
+  var sp = speciesKey(pet.species), types = P.pet_types || [], stages = (P.life_stages || []).filter(function(s){ return s !== 'all'; });
+  var name = pet.name;
+  if (types.length && types.indexOf(sp) < 0 && types.indexOf('other') < 0)
+    return {cls:'warn', icon:'ti-alert-triangle', msg: T('pd.s_species', {name: name, types: types.map(function(t){ return T('pet.' + t); }).join(', ')})};
+  var st = stageOf(pet, sp);
+  if (st && stages.length && stages.indexOf(st) < 0)
+    return {cls:'warn', icon:'ti-alert-triangle', msg: T('pd.s_stage', {name: name, stage: T('ls.' + st), stages: stages.map(function(s){ return T('ls.' + s); }).join(', ')})};
+  if (!types.length) return {cls:'info', icon:'ti-info-circle', msg: T('pd.s_unknown', {name: name})};
+  return {cls:'good', icon:'ti-circle-check', msg: T('pd.s_good', {name: name})};
+}
+
+/* ── details tabs ── */
+function renderDetails(){
+  var specs = P.specs; if (typeof specs === 'string') { try { specs = JSON.parse(specs); } catch(e) { specs = {}; } } specs = specs || {};
+  var specRows = Object.keys(specs).map(function(k){ return '<tr><td>' + esc(k) + '</td><td>' + esc(specs[k]) + '</td></tr>'; });
+  if (P.brand) specRows.unshift('<tr><td>' + esc(T('f.brand')) + '</td><td>' + esc(P.brand) + '</td></tr>');
+  specRows.push('<tr><td>' + esc(T('f.cat')) + '</td><td>' + esc(S.catLabel(P.category)) + '</td></tr>');
+  if ((P.pet_types || []).length) specRows.push('<tr><td>' + esc(T('f.pet')) + '</td><td>' + esc(P.pet_types.map(function(t){ return T('pet.' + t); }).join(', ')) + '</td></tr>');
+  if (D.seller && D.seller.name) specRows.push('<tr><td>' + esc(T('pd.seller')) + '</td><td>' + esc(D.seller.name) + '</td></tr>');
+  var tabs = [['desc', T('pd.desc'), esc(P.description || T('pd.nodesc'))], ['specs', T('pd.specs'), '<table class="spec">' + specRows.join('') + '</table>']];
+  if (P.ingredients) tabs.push(['ingr', T('pd.ingr'), esc(P.ingredients)]);
+  if (P.usage_instructions) tabs.push(['usage', T('pd.usage'), esc(P.usage_instructions)]);
+  tabs.push(['reviews', T('pd.reviews') + (P.review_count ? ' (' + P.review_count + ')' : ''), reviewsHTML()]);
+  document.getElementById('details').innerHTML = '<div class="tabs" id="tab-reviews" role="tablist">' + tabs.map(function(t, i){ return '<button class="' + (i ? '' : 'on') + '" data-tab="' + t[0] + '" onclick="tab(\'' + t[0] + '\')">' + esc(t[1]) + '</button>'; }).join('') + '</div>'
+    + tabs.map(function(t, i){ return '<div class="tpanel' + (i ? '' : ' on') + '" data-panel="' + t[0] + '">' + t[2] + '</div>'; }).join('');
+}
+function tab(k){ document.querySelectorAll('[data-tab]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab') === k); });
+  document.querySelectorAll('[data-panel]').forEach(function(p){ p.classList.toggle('on', p.getAttribute('data-panel') === k); }); }
+function reviewsHTML(){
+  if (!D.reviews.length) return '<div class="empty" style="padding:30px 0"><div class="empty-ic"><i class="ti ti-message-star"></i></div><div class="empty-t">' + esc(T('pd.norev')) + '</div><div class="empty-s">' + esc(T('pd.norevs')) + '</div></div>';
+  var total = D.reviews.length;
+  return '<div class="rev-g"><div class="rev-sum"><div class="big">' + P.rating.toFixed(1) + '</div>' + S.starsHTML(P.rating) + '<div style="font-size:12.5px;color:var(--muted);margin:4px 0 10px">' + esc((P.review_count === 1 ? T('pd.nrev1') : T('pd.nrev', {n: P.review_count}))) + '</div>'
+    + D.rating_breakdown.map(function(r){ return '<div class="bar">' + r.stars + '★<i><span style="width:' + (total ? r.n / total * 100 : 0) + '%"></span></i>' + r.n + '</div>'; }).join('') + '</div>'
+    + '<div>' + D.reviews.map(function(r){
+      var n = r.user_name || 'PawBook user';
+      return '<div class="rev"><div class="rev-h"><span class="rev-av">' + (r.avatar_url ? '<img src="' + esc(r.avatar_url) + '" alt="">' : esc(n.charAt(0).toUpperCase())) + '</span><div><b>' + esc(n) + '</b><br><small>' + S.starsHTML(r.rating) + ' · ' + esc(PBi18n.fmtDate(r.created_at)) + '</small></div></div>' + (r.comment ? '<p>' + esc(r.comment) + '</p>' : '') + '</div>';
+    }).join('') + '</div></div>';
+}
+
+/* ── actions ── */
+function setQty(n){ var st = curStock(); qty = Math.max(1, Math.min(n, st > 0 ? Math.min(st, 20) : 1)); render(); }
+function pickVar(i){ var v = variants()[i]; variant = variant === v ? null : v; qty = 1; render(); }
+function addCart(now){
+  var item = {product_id: P.product_id, name: P.name + (variant ? ' — ' + variant.label : ''), price: curPrice(), images: imgs(), category: P.category, stock: curStock()};
+  S.cart.add(item, qty);
+  if (now) setTimeout(S.openCart, 300);
+}
+function checkPin(e){
+  e.preventDefault(); var v = document.getElementById('pd-pin').value.replace(/\D/g, ''), m = document.getElementById('pd-pin-msg');
+  if (v.length !== 6) { m.style.color = 'var(--red)'; m.textContent = T('pin.bad'); return; }
+  S.pin.check(v).then(function(place){ if (!place) { m.style.color = 'var(--red)'; m.textContent = T('pin.bad'); return; } S.pin.set(v, place); render(); });
+}
+
+/* ── load ── */
+function notFound(){
+  document.getElementById('pdp').innerHTML = '<div class="nf" style="grid-column:1/-1"><div class="empty-ic" style="margin:0 auto 14px"><i class="ti ti-mood-sad"></i></div><div class="empty-t">' + esc(T('pd.nf')) + '</div><div class="empty-s">' + esc(T('pd.nfs')) + '</div><a class="btn btn-o" style="margin-top:18px" href="43_shop_list.html">' + esc(T('c.browse')) + '</a></div>';
+}
+if (!ID) notFound();
+else S.api('/shop/products/' + encodeURIComponent(ID)).then(function(d){
+  D = d; P = d.product;
+  document.title = P.name + ' — PawBook Shop';
+  render(); renderDetails(); S.recent.add(P);
+  if (d.related && d.related.length) { document.getElementById('rel-sec').style.display = ''; S.renderCards(document.getElementById('related'), d.related); }
+  if (S.loggedIn()) S.api('/pets/my').then(function(r){ myPets = Array.isArray(r) ? r : (r.pets || r.data || []); render(); }).catch(function(){ myPets = []; render(); });
+}).catch(function(e){ notFound(); });
+window.addEventListener('pb:langchange', function(){ if (P) { render(); renderDetails(); } });
+window.addEventListener('shop:pin', function(){ if (P) render(); });
+</script>
+</body>
+</html>
