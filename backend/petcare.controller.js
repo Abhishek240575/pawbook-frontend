@@ -82,7 +82,8 @@ function normPet(P, r) {
   return {
     id: String(r[P.id]), name: r[P.name] || 'My pet', species: P.species ? (r[P.species] || '') : '', breed: P.breed ? r[P.breed] || null : null,
     gender: P.gender ? String(r[P.gender] || '').toLowerCase() || null : null, weight_kg: isFinite(wkg) && wkg > 0 && !/\b(lb|lbs|pound)/i.test(String(r[P.weight])) ? wkg : null,
-    photo: P.photo ? r[P.photo] || null : null, birthday: dob ? new Date(dob).toISOString().slice(0, 10) : null, age_years: years, age_label: ageLabel(dob, age)
+    photo: P.photo ? r[P.photo] || null : null, birthday: dob ? new Date(dob).toISOString().slice(0, 10) : null, age_years: years, age_label: ageLabel(dob, age),
+    photos: Array.isArray(r.photos) ? r.photos.filter(u => typeof u === 'string' && /^https:\/\//.test(u)).slice(0, 6) : []
   };
 }
 async function myPet(petId, userId) {
