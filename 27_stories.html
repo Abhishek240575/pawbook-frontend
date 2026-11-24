@@ -1655,7 +1655,7 @@ var g=function(p){return fetch(A+p,o).then(function(r){return r.ok?r.json():null
 var show=function(){document.querySelectorAll('.pb-admin-only').forEach(function(e){e.style.display='';});
 Promise.all([g('kyc?status=submitted'),g('listings?status=pending')]).then(function(r){var n=(((r[0]||{}).data||{}).kyc||[]).length+((((r[1]||{}).data||{}).counts||{}).pending||0);
 if(n)document.querySelectorAll('.pb-admin-n').forEach(function(e){e.textContent=n;e.style.display='';});});};
-if(u.role==='admin')return show();if(u.role)return;
+if(u.role==='admin')return show();
 var k='pb_is_admin:'+t.slice(-12),c=null;try{c=sessionStorage.getItem(k);}catch(e){}
 if(c==='1')return show();if(c==='0')return;
 g('settings').then(function(d){var a=!!(d&&d.success!==false);try{sessionStorage.setItem(k,a?'1':'0');}catch(e){}if(a)show();});}catch(e){}})();</script>
