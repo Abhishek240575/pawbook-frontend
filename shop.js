@@ -304,7 +304,7 @@
     var nav = [['dog', 'ti-dog'], ['cat', 'ti-cat'], ['bird', 'ti-feather'], ['fish', 'ti-fish'], ['small_pet', 'ti-paw']];
     var h = '<div class="promo"><i class="ti ti-truck-delivery"></i> <span data-i18n="h.promo">' + esc(T('h.promo')) + '</span></div>'
       + '<header class="hdr"><div class="wrap hdr-row">'
-      + '<a class="logo" href="42_shop.html"><div class="logo-ic">🐾</div><div><div class="logo-t">PawBook</div><div class="logo-s" data-i18n="h.shop">' + esc(T('h.shop')) + '</div></div></a>'
+      + '<a class="logo" href="07_home.html" title="PawBook home"><div class="logo-ic">🐾</div><div><div class="logo-t">PawBook</div><div class="logo-s" data-i18n="h.shop">' + esc(T('h.shop')) + '</div></div></a>'
       + '<button class="deliver" onclick="Shop.pin.open()"><i class="ti ti-map-pin"></i><span><small data-i18n="h.deliver">' + esc(T('h.deliver')) + '</small><b data-pin-label></b></span></button>'
       + '<form class="search" role="search" onsubmit="Shop.search(event)"><i class="ti ti-search"></i>'
       + '<input id="shop-q" autocomplete="off" data-i18n-ph="h.search" placeholder="' + esc(T('h.search')) + '" aria-label="' + esc(T('h.search')) + '">'
@@ -315,6 +315,7 @@
       + '<a class="hdr-btn hide-m" href="' + (loggedIn() ? '53_shop_orders.html' : '01_login.html') + '"><i class="ti ti-user-circle"></i><span>' + esc(T(loggedIn() ? 'h.account' : 'h.login')) + '</span></a>'
       + '</div></div>'
       + '<nav class="nav"><div class="wrap">'
+      + '<a href="42_shop.html"' + (active === 'home' ? ' class="on"' : '') + '><i class="ti ti-building-store"></i><span data-i18n="h.shop">' + esc(T('h.shop')) + '</span></a>'
       + nav.map(function (n) { return '<a href="43_shop_list.html?pet=' + n[0] + '"' + (active === n[0] ? ' class="on"' : '') + '><i class="ti ' + n[1] + '"></i><span data-i18n="pet.' + n[0] + '">' + esc(T('pet.' + n[0])) + '</span></a>'; }).join('')
       + '<a href="43_shop_list.html?sort=discount&on_sale=1" class="hot' + (active === 'offers' ? ' on' : '') + '"><i class="ti ti-discount-2"></i><span data-i18n="h.offers">' + esc(T('h.offers')) + '</span></a>'
       + '<a href="45_shop_brands.html"' + (active === 'brands' ? ' class="on"' : '') + '><i class="ti ti-building-store"></i><span data-i18n="h.brands">' + esc(T('h.brands')) + '</span></a>'
@@ -345,7 +346,7 @@
   function footer() {
     var f = document.getElementById('shop-footer'); if (!f) return;
     f.innerHTML = '<footer class="foot"><div class="wrap"><div class="foot-g">'
-      + '<div><a class="logo" href="42_shop.html" style="margin-bottom:12px"><div class="logo-ic">🐾</div><div><div class="logo-t" style="color:#fff">PawBook</div><div class="logo-s" data-i18n="h.shop">' + esc(T('h.shop')) + '</div></div></a>'
+      + '<div><a class="logo" href="07_home.html" style="margin-bottom:12px"><div class="logo-ic">🐾</div><div><div class="logo-t" style="color:#fff">PawBook</div><div class="logo-s" data-i18n="h.shop">' + esc(T('h.shop')) + '</div></div></a>'
       + '<p data-i18n="f.about">' + esc(T('f.about')) + '</p></div>'
       + '<div><h4 data-i18n="f.shop">' + esc(T('f.shop')) + '</h4>' + ['dog', 'cat', 'bird', 'fish', 'small_pet'].map(function (p) { return '<a href="43_shop_list.html?pet=' + p + '" data-i18n="pet.' + p + '">' + esc(T('pet.' + p)) + '</a>'; }).join('') + '<a href="45_shop_brands.html" data-i18n="h.brands">' + esc(T('h.brands')) + '</a></div>'
       + '<div><h4 data-i18n="f.help">' + esc(T('f.help')) + '</h4><a href="legal.html#terms" data-i18n="f.terms">' + esc(T('f.terms')) + '</a><a href="legal.html#privacy" data-i18n="f.privacy">' + esc(T('f.privacy')) + '</a><a href="legal.html#grievance" data-i18n="f.grievance">' + esc(T('f.grievance')) + '</a><a href="36_abuse_reporting.html" data-i18n="f.abuse">' + esc(T('f.abuse')) + '</a></div>'
