@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v3: seller side) ─────────────────────────────
+const BLOCK = `${START} (v4: checkout) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -61,14 +61,43 @@ shopRouter.patch('/seller/orders/:order_id', authenticate, sellerWriteLimit, sel
 shopRouter.get('/seller/questions',          authenticate, sellerCtrl.listQuestions);
 shopRouter.get('/admin/sellers',             authenticate, requireRole('admin'), sellerCtrl.adminList);
 shopRouter.patch('/admin/sellers/:user_id',  authenticate, requireRole('admin'), sellerCtrl.adminUpdate);
+// cart, addresses, checkout, buyer orders (Phase 3, cash on delivery)
+const coCtrl = require('../controllers/checkout.controller');
+const orderLimit = (shopRL.rateLimit || shopRL)({ windowMs: 15 * 60 * 1000, max: 15, standardHeaders: true, legacyHeaders: false });
+const cartLimit = (shopRL.rateLimit || shopRL)({ windowMs: 5 * 60 * 1000, max: 200, standardHeaders: true, legacyHeaders: false });
+shopRouter.get('/cart',                      authenticate, coCtrl.getCart);
+shopRouter.post('/cart',                     authenticate, cartLimit, coCtrl.addToCart);
+shopRouter.put('/cart',                      authenticate, cartLimit, coCtrl.setCartQty);
+shopRouter.delete('/cart',                   authenticate, cartLimit, coCtrl.removeFromCart);
+shopRouter.post('/cart/merge',               authenticate, cartLimit, coCtrl.mergeCart);
+shopRouter.get('/addresses',                 authenticate, coCtrl.listAddresses);
+shopRouter.post('/addresses',                authenticate, shopWriteLimit, coCtrl.saveAddress);
+shopRouter.put('/addresses/:id',             authenticate, shopWriteLimit, coCtrl.saveAddress);
+shopRouter.delete('/addresses/:id',          authenticate, shopWriteLimit, coCtrl.deleteAddress);
+shopRouter.post('/checkout/quote',           authenticate, coCtrl.quote);
+shopRouter.post('/orders',                   authenticate, orderLimit, coCtrl.placeOrder);
+shopRouter.get('/orders',                    authenticate, coCtrl.myOrders);
+shopRouter.get('/orders/:id',                authenticate, coCtrl.myOrder);
+shopRouter.post('/orders/:id/cancel',        authenticate, orderLimit, coCtrl.cancelOrder);
 router.use('/shop', shopRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
+// Guard for the old /marketplace order endpoints, placed right after marketRouter is created so it runs first:
+// only admins may change an order's status there, and old order placement gets real prices from the database.
+const G_START = '// ── SHOP GUARD: legacy marketplace orders';
+const G_END = '// ── END SHOP GUARD';
+const GUARD = `${G_START} ──
+marketRouter.patch('/orders/:order_id/status', authenticate, requireRole('admin'));
+marketRouter.post('/orders', authenticate, require('../controllers/checkout.controller').legacyOrderPrices);
+${G_END} ──
+`;
+const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[^\n]*\n/;
+
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop3');
+  fs.copyFileSync(f, f + '.bak-shop4');
   let out;
   const a = src.indexOf(START), b = src.indexOf(END);
   if (a >= 0 && b > a) {
@@ -79,6 +108,11 @@ for (const f of FILES) {
     out = src.replace(/\s*$/, '\n\n') + BLOCK;
     console.log('added shop block:', f);
   }
+  // legacy guard (idempotent)
+  const ga = out.indexOf(G_START), gb = out.indexOf(G_END);
+  if (ga >= 0 && gb > ga) { const le = out.indexOf('\n', gb); out = out.slice(0, ga) + GUARD + out.slice(le + 1); console.log('  legacy guard refreshed'); }
+  else if (MR.test(out)) { out = out.replace(MR, m => m + GUARD); console.log('  legacy guard added'); }
+  else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop3 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop4 — restart the app from the MilesWeb panel.');

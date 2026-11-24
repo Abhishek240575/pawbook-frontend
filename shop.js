@@ -163,50 +163,64 @@
   }
 
   // ── Cart ────────────────────────────────────────────────────────────────────
-  var cartItems = [];
-  var FREE_DELIVERY = 499;   // matches existing order logic (free above ₹499, else ₹49)
+  // One line per product + size. Signed-in carts live on the server (/shop/cart), which
+  // always returns the real price, stock and totals; guests keep theirs on this device.
+  var cartItems = [], cartSummary = null;
+  var FREE_DELIVERY = 499;   // same rule as the server (free from ₹499, else ₹49)
+  function lineKey(id, v) { return String(id) + '|' + (v || ''); }
+  function findLine(id, v) { return cartItems.filter(function (x) { return lineKey(x.product_id, x.variant) === lineKey(id, v); })[0]; }
+  function fromServer(d) {
+    cartItems = (d.items || []).map(function (it) {
+      return { product_id: it.product_id, variant: it.variant || '', name: it.name + (it.variant ? ' — ' + it.variant : ''), price: Number(it.price), mrp: it.mrp,
+        quantity: Number(it.quantity), image: it.image || '', stock: it.stock, issue: it.issue };
+    });
+    cartSummary = d.summary || null;
+    paintCart();
+    return d;
+  }
   var cart = {
     load: function () {
-      if (!loggedIn()) { cartItems = ls('pb_shop_cart') || []; paintCart(); return Promise.resolve(); }
+      if (!loggedIn()) { cartItems = ls('pb_shop_cart') || []; cartSummary = null; paintCart(); return Promise.resolve(); }
       var guest = ls('pb_shop_cart') || [];
-      var merge = guest.length ? Promise.all(guest.map(function (g) {
-        return api('/marketplace/cart', { method: 'POST', body: { product_id: g.product_id, quantity: g.quantity } }).catch(function () {});
-      })).then(function () { ls('pb_shop_cart', []); }) : Promise.resolve();
-      return merge.then(function () { return api('/marketplace/cart'); }).then(function (d) {
-        cartItems = (d.items || []).map(function (it) {
-          var imgs = it.images; if (typeof imgs === 'string') { try { imgs = JSON.parse(imgs); } catch (e) { imgs = []; } }
-          return { product_id: it.product_id, name: it.name, price: Number(it.price), quantity: Number(it.quantity), image: (imgs && imgs[0]) || '', stock: it.stock };
-        });
-        paintCart();
-      }).catch(function () { cartItems = ls('pb_shop_cart') || []; paintCart(); });
+      var merge = guest.length ? api('/shop/cart/merge', { method: 'POST', body: { items: guest.map(function (g) { return { product_id: g.product_id, variant: g.variant || '', quantity: g.quantity }; }) } })
+        .then(function () { ls('pb_shop_cart', []); }).catch(function () {}) : Promise.resolve();
+      return merge.then(function () { return api('/shop/cart'); }).then(fromServer).catch(function () { cartItems = ls('pb_shop_cart') || []; paintCart(); });
     },
+    refresh: function () { return loggedIn() ? api('/shop/cart').then(fromServer) : Promise.resolve({ items: cartItems }); },
+    // p: {product_id, name, price, images|image, stock, variant?, size_count?}
     add: function (p, qty) {
       qty = qty || 1;
-      var ex = cartItems.filter(function (x) { return String(x.product_id) === String(p.product_id); })[0];
-      if (ex) ex.quantity += qty;
-      else cartItems.push({ product_id: p.product_id, name: p.name, price: Number(p.price), quantity: qty, image: firstImg(p, 200), stock: p.stock });
-      if (loggedIn()) api('/marketplace/cart', { method: 'POST', body: { product_id: p.product_id, quantity: qty } }).catch(function (e) { if (e.status === 401) save(); });
-      else save();
+      var v = p.variant || '';
+      if (!v && Number(p.size_count) > 0) { toast(T('c.pick'), 'ti-ruler'); setTimeout(function () { location.href = '44_shop_product.html?id=' + encodeURIComponent(p.product_id); }, 700); return Promise.resolve(); }
+      var ex = findLine(p.product_id, v);
+      if (ex) ex.quantity = Math.min(ex.quantity + qty, 20);
+      else cartItems.push({ product_id: p.product_id, variant: v, name: p.name, price: Number(p.price), quantity: qty, image: firstImg(p, 200), stock: p.stock });
       paintCart(); toast(T('c.added'), 'ti-shopping-bag-check');
+      if (!loggedIn()) { save(); return Promise.resolve(); }
+      return api('/shop/cart', { method: 'POST', body: { product_id: p.product_id, variant: v, quantity: qty } })
+        .then(function (r) { if (r.limited) toast(T('c.limited'), 'ti-info-circle'); return cart.refresh(); })
+        .catch(function (e) { if (e.status === 401) { save(); return; } toast(e.message || T('l.err'), 'ti-alert-circle'); cart.refresh(); });
     },
-    setQty: function (id, q) {
-      var it = cartItems.filter(function (x) { return String(x.product_id) === String(id); })[0]; if (!it) return;
-      if (q < 1) return cart.remove(id);
-      it.quantity = q;
-      if (loggedIn()) api('/marketplace/cart/' + encodeURIComponent(id), { method: 'PATCH', body: { quantity: q } }).catch(function () {});
-      else save();
+    setQty: function (id, q, v) {
+      var it = findLine(id, v); if (!it) return;
+      if (q < 1) return cart.remove(id, v);
+      it.quantity = Math.min(q, 20); paintCart();
+      if (!loggedIn()) { save(); return; }
+      api('/shop/cart', { method: 'PUT', body: { product_id: id, variant: v || '', quantity: it.quantity } })
+        .then(function (r) { if (r.limited) toast(T('c.limited'), 'ti-info-circle'); return cart.refresh(); }).catch(function () { cart.refresh(); });
+    },
+    remove: function (id, v) {
+      cartItems = cartItems.filter(function (x) { return lineKey(x.product_id, x.variant) !== lineKey(id, v); });
       paintCart();
+      if (!loggedIn()) { save(); return; }
+      api('/shop/cart?product_id=' + encodeURIComponent(id) + '&variant=' + encodeURIComponent(v || ''), { method: 'DELETE' }).then(cart.refresh).catch(function () { cart.refresh(); });
     },
-    remove: function (id) {
-      cartItems = cartItems.filter(function (x) { return String(x.product_id) !== String(id); });
-      if (loggedIn()) api('/marketplace/cart/' + encodeURIComponent(id), { method: 'DELETE' }).catch(function () {});
-      else save();
-      paintCart();
-    },
-    count: function () { return cartItems.reduce(function (a, x) { return a + x.quantity; }, 0); },
-    subtotal: function () { return cartItems.reduce(function (a, x) { return a + x.price * x.quantity; }, 0); }
+    items: function () { return cartItems.slice(); },
+    summary: function () { return cartSummary; },
+    count: function () { return cartItems.reduce(function (a, x) { return a + (x.issue ? 0 : x.quantity); }, 0); },
+    subtotal: function () { return cartItems.reduce(function (a, x) { return a + (x.issue ? 0 : x.price * x.quantity); }, 0); }
   };
-  function save() { ls('pb_shop_cart', cartItems); }
+  function save() { ls('pb_shop_cart', cartItems.map(function (x) { return { product_id: x.product_id, variant: x.variant || '', name: x.name, price: x.price, quantity: x.quantity, image: x.image, stock: x.stock }; })); }
   function paintCart() { setBadge('cart', cart.count()); if (document.getElementById('cart-drawer') && document.getElementById('cart-drawer').classList.contains('show')) renderCart(); }
 
   function setBadge(name, n) {
@@ -269,7 +283,8 @@
       + '<a class="pc-name" href="' + url + '">' + esc(p.name) + '</a>' + rate
       + '<div class="pc-price"><b>' + money(p.price) + '</b>' + (off >= 1 ? '<s>' + money(p.compare_price) + '</s>' : '') + '</div>'
       + (oos ? '' : '<div class="pc-del"><i class="ti ti-truck-delivery"></i>' + esc(T('p.getby', { d: deliveryBy(p.delivery_days) })) + '</div>')
-      + '<div class="pc-add"><button class="btn btn-o" data-add="' + esc(p.product_id) + '"' + (oos ? ' disabled' : '') + '><i class="ti ti-shopping-bag-plus"></i>' + esc(T(oos ? 'p.oos' : 'p.add')) + '</button></div>'
+      + '<div class="pc-add">' + (Number(p.size_count) > 0 && !oos ? '<a class="btn btn-o" href="' + url + '"><i class="ti ti-ruler"></i>' + esc(T('p.choose')) + '</a>'
+        : '<button class="btn btn-o" data-add="' + esc(p.product_id) + '"' + (oos ? ' disabled' : '') + '><i class="ti ti-shopping-bag-plus"></i>' + esc(T(oos ? 'p.oos' : 'p.add')) + '</button>') + '</div>'
       + '</div></article>';
   }
   var cardData = {};
@@ -297,7 +312,7 @@
       + '<div class="hdr-acts"><div data-pb-lang-btn class="hdr-lang"></div>'
       + '<a class="hdr-btn" href="43_shop_list.html?wishlist=1"><i class="ti ti-heart"></i><span data-i18n="h.wish">' + esc(T('h.wish')) + '</span><em class="badge" data-badge="wish"></em></a>'
       + '<button class="hdr-btn" onclick="Shop.openCart()"><i class="ti ti-shopping-bag"></i><span data-i18n="h.cart">' + esc(T('h.cart')) + '</span><em class="badge" data-badge="cart"></em></button>'
-      + '<a class="hdr-btn hide-m" href="' + (loggedIn() ? '29_user_profile.html' : '01_login.html') + '"><i class="ti ti-user-circle"></i><span>' + esc(T(loggedIn() ? 'h.account' : 'h.login')) + '</span></a>'
+      + '<a class="hdr-btn hide-m" href="' + (loggedIn() ? '53_shop_orders.html' : '01_login.html') + '"><i class="ti ti-user-circle"></i><span>' + esc(T(loggedIn() ? 'h.account' : 'h.login')) + '</span></a>'
       + '</div></div>'
       + '<nav class="nav"><div class="wrap">'
       + nav.map(function (n) { return '<a href="43_shop_list.html?pet=' + n[0] + '"' + (active === n[0] ? ' class="on"' : '') + '><i class="ti ' + n[1] + '"></i><span data-i18n="pet.' + n[0] + '">' + esc(T('pet.' + n[0])) + '</span></a>'; }).join('')
@@ -319,9 +334,9 @@
       + '<nav class="bnav">'
       + '<a href="42_shop.html"' + (active === 'home' ? ' class="on"' : '') + '><i class="ti ti-building-store"></i><span data-i18n="b.home">' + esc(T('b.home')) + '</span></a>'
       + '<a href="43_shop_list.html"' + (active === 'all' ? ' class="on"' : '') + '><i class="ti ti-layout-grid"></i><span data-i18n="b.cats">' + esc(T('b.cats')) + '</span></a>'
-      + '<a href="#" onclick="event.preventDefault();var q=document.getElementById(\'shop-q\');window.scrollTo({top:0,behavior:\'smooth\'});q.focus()"><i class="ti ti-search"></i><span data-i18n="b.search">' + esc(T('b.search')) + '</span></a>'
       + '<a href="43_shop_list.html?wishlist=1"' + (active === 'wish' ? ' class="on"' : '') + '><i class="ti ti-heart"></i><span data-i18n="h.wish">' + esc(T('h.wish')) + '</span><em class="badge" data-badge="wish"></em></a>'
       + '<a href="#" onclick="event.preventDefault();Shop.openCart()"><i class="ti ti-shopping-bag"></i><span data-i18n="h.cart">' + esc(T('h.cart')) + '</span><em class="badge" data-badge="cart"></em></a>'
+      + '<a href="' + (loggedIn() ? '53_shop_orders.html' : '01_login.html') + '"' + (active === 'account' ? ' class="on"' : '') + '><i class="ti ti-user-circle"></i><span data-i18n="h.account">' + esc(T('h.account')) + '</span></a>'
       + '</nav>';
     while (extra.firstChild) document.body.appendChild(extra.firstChild);
     PBi18n.apply();
@@ -347,24 +362,28 @@
       b.innerHTML = '<div class="empty"><div class="empty-ic"><i class="ti ti-shopping-bag"></i></div><div class="empty-t">' + esc(T('c.empty')) + '</div><div class="empty-s">' + esc(T('c.emptys')) + '</div><a class="btn btn-o" href="43_shop_list.html">' + esc(T('c.browse')) + '</a></div>';
       f.innerHTML = ''; return;
     }
+    var key = function (it) { return "'" + esc(it.product_id) + "'," + "'" + esc(String(it.variant || '').replace(/'/g, "\\'")) + "'"; };
     b.innerHTML = cartItems.map(function (it) {
-      return '<div class="ci"><a href="44_shop_product.html?id=' + encodeURIComponent(it.product_id) + '"><img src="' + esc(it.image || px(8473516, 200)) + '" alt="" onerror="this.onerror=null;this.src=\'' + px(8473516, 200) + '\'"></a>'
-        + '<div style="flex:1;min-width:0"><div class="ci-n">' + esc(it.name) + '</div><div class="ci-p">' + money(it.price * it.quantity) + '</div>'
-        + '<div class="qty"><button onclick="Shop.cart.setQty(\'' + esc(it.product_id) + '\',' + (it.quantity - 1) + ')" aria-label="-">−</button><span>' + it.quantity + '</span><button onclick="Shop.cart.setQty(\'' + esc(it.product_id) + '\',' + (it.quantity + 1) + ')" aria-label="+">+</button></div></div>'
-        + '<button class="ci-rm" onclick="Shop.cart.remove(\'' + esc(it.product_id) + '\')" aria-label="remove"><i class="ti ti-trash"></i></button></div>';
+      return '<div class="ci' + (it.issue ? ' ci-bad' : '') + '"><a href="44_shop_product.html?id=' + encodeURIComponent(it.product_id) + '"><img src="' + esc(it.image || px(8473516, 200)) + '" alt="" onerror="this.onerror=null;this.src=\'' + px(8473516, 200) + '\'"></a>'
+        + '<div style="flex:1;min-width:0"><div class="ci-n">' + esc(it.name) + '</div>'
+        + (it.issue ? '<div class="ci-issue">' + esc(T('ci.' + it.issue)) + '</div>' : '<div class="ci-p">' + money(it.price * it.quantity) + '</div>'
+        + '<div class="qty"><button onclick="Shop.cart.setQty(' + key(it) .replace(/,'/, ',' + (it.quantity - 1) + ",'") + ')" aria-label="-">−</button><span>' + it.quantity + '</span><button onclick="Shop.cart.setQty(' + key(it).replace(/,'/, ',' + (it.quantity + 1) + ",'") + ')" aria-label="+"' + (it.stock != null && it.quantity >= Math.min(Number(it.stock), 20) ? ' disabled' : '') + '>+</button></div>') + '</div>'
+        + '<button class="ci-rm" onclick="Shop.cart.remove(' + key(it) + ')" aria-label="remove"><i class="ti ti-trash"></i></button></div>';
     }).join('');
-    var sub = cart.subtotal(), left = Math.max(FREE_DELIVERY - sub, 0), fee = sub >= FREE_DELIVERY ? 0 : 49;
+    var sm = cartSummary, sub = sm ? sm.subtotal : cart.subtotal(), fee = sm ? sm.delivery_fee : (sub >= FREE_DELIVERY || !sub ? 0 : 49), left = Math.max(FREE_DELIVERY - sub, 0);
     f.innerHTML = '<div style="font-size:12.5px;font-weight:700;color:' + (left ? 'var(--o-d)' : 'var(--green)') + '">' + esc(left ? T('c.freeleft', { amt: money(left) }) : T('c.free')) + '</div>'
       + '<div class="free-bar"><i style="width:' + Math.min(100, sub / FREE_DELIVERY * 100) + '%"></i></div>'
       + '<div class="dr-row"><span>' + esc(T('c.sub')) + '</span><b>' + money(sub) + '</b></div>'
+      + (sm && sm.savings > 0 ? '<div class="dr-row" style="color:var(--green)"><span>' + esc(T('co.save')) + '</span><b>−' + money(sm.savings) + '</b></div>' : '')
       + '<div class="dr-row"><span>' + esc(T('c.del')) + '</span><b>' + (fee ? money(fee) : esc(T('c.freeword'))) + '</b></div>'
-      + '<div class="dr-row tot"><span>' + esc(T('c.total')) + '</span><span>' + money(sub + fee) + '</span></div>'
-      + '<button class="btn btn-o" style="margin-top:10px" onclick="Shop.checkout()"><i class="ti ti-lock"></i>' + esc(T('c.checkout')) + '</button>'
+      + '<div class="dr-row tot"><span>' + esc(T('c.total')) + '</span><span>' + money(sm ? sm.total : sub + fee) + '</span></div>'
+      + (cartItems.some(function (x) { return x.issue; }) ? '<div class="dr-note" style="color:var(--red)">' + esc(T('c.fixissues')) + '</div>' : '')
+      + '<button class="btn btn-o" style="margin-top:10px" onclick="Shop.checkout()"' + (sub > 0 ? '' : ' disabled') + '><i class="ti ti-lock"></i>' + esc(T('c.checkout')) + '</button>'
       + '<div class="dr-note">' + esc(T('c.note')) + '</div>';
   }
   function checkout() {
     if (!loggedIn()) { toast(T('c.login'), 'ti-login'); setTimeout(function () { location.href = '01_login.html'; }, 1200); return; }
-    toast(T('c.soon'), 'ti-clock');
+    location.href = '52_shop_checkout.html';
   }
 
   // ── Search with suggestions ─────────────────────────────────────────────────

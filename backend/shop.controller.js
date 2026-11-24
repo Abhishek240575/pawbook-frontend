@@ -43,6 +43,7 @@ const BASE_SELECT = `
   SELECT p.product_id, p.seller_id, p.name, p.description, p.price, p.compare_price,
          p.category, p.subcategory, p.brand, p.images, p.stock, p.unit,
          p.pet_types, p.life_stages, p.tags, p.is_featured, p.delivery_days, p.created_at,
+         CASE WHEN jsonb_typeof(p.variants::jsonb) = 'array' THEN jsonb_array_length(p.variants::jsonb) ELSE 0 END AS size_count,
          COALESCE(ss.store_name, u.full_name) AS seller_name, COALESCE(ss.is_verified, FALSE) AS seller_verified,
          COALESCE(rv.rating, 0)::float       AS rating,
          COALESCE(rv.review_count, 0)::int   AS review_count,
@@ -55,7 +56,7 @@ const BASE_SELECT = `
   LEFT JOIN (SELECT product_id::text AS pid, AVG(rating) AS rating, COUNT(*) AS review_count
              FROM marketplace_reviews GROUP BY product_id) rv ON rv.pid = p.product_id::text
   LEFT JOIN (SELECT product_id::text AS pid, SUM(quantity) AS sold
-             FROM marketplace_order_items WHERE product_id IS NOT NULL GROUP BY product_id) so ON so.pid = p.product_id::text`;
+             FROM marketplace_order_items WHERE product_id IS NOT NULL AND COALESCE(fulfil_status, 'pending') <> 'cancelled' GROUP BY product_id) so ON so.pid = p.product_id::text`;
 
 function alnumLen(s) { return String(s || '').replace(/[^\p{L}\p{N}]/gu, '').length; }
 function csv(v) { return String(v || '').split(',').map(s => s.trim()).filter(Boolean); }

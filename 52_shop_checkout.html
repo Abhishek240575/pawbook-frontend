@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<meta name="robots" content="noindex">
+<title>Checkout — PawBook Shop</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<link rel="stylesheet" href="seller.css">
+<style>
+.co{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:start;margin-top:8px}
+.co-side{position:sticky;top:90px}
+.step-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.step-h .n{width:30px;height:30px;border-radius:50%;background:var(--o);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-h h2{margin:0}
+.step-h .sp{flex:1}
+.addrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ad{position:relative;border:2px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;background:#fff;transition:border-color .15s}
+.ad:hover{border-color:#f5c9a8}
+.ad.on{border-color:var(--o);background:var(--o-ll)}
+.ad input{position:absolute;opacity:0}
+.ad .top{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.ad .lbl{padding:2px 9px;border-radius:999px;background:var(--navy);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.ad .def{font-size:11px;font-weight:800;color:var(--green)}
+.ad b{display:block;color:var(--navy);font-size:14px}
+.ad p{font-size:12.5px;color:var(--ink);line-height:1.55;margin-top:3px}
+.ad .acts{display:flex;gap:12px;margin-top:8px}
+.ad .acts button{border:none;background:none;color:var(--o-d);font-weight:800;font-size:12px;cursor:pointer;padding:0}
+.ad .tick{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+.ad.on .tick{background:var(--o);border-color:var(--o)}
+.addnew{border:2px dashed #e6d9ca;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:140px;color:var(--o-d);font-weight:800;cursor:pointer;background:var(--cream)}
+.addnew i{font-size:26px}
+.aform{margin-top:14px;padding:16px;border-radius:16px;background:var(--cream);border:1px solid var(--line)}
+.lblpick{display:flex;gap:8px}
+.it{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line2)}
+.it:last-child{border-bottom:none}
+.it img{width:60px;height:60px;border-radius:12px;object-fit:cover;background:var(--o-ll);flex-shrink:0}
+.it .t{flex:1;min-width:0}
+.it .t b{display:block;color:var(--navy);font-size:13.5px;line-height:1.35}
+.it .t small{color:var(--muted);font-size:12px}
+.it .pr{font-weight:900;color:var(--navy);white-space:nowrap}
+.it.bad{background:#fff5f5;border-radius:12px;padding:10px}
+.it.bad img{filter:grayscale(1);opacity:.5}
+.it .iss{color:var(--red);font-weight:700;font-size:12px}
+.pay{display:flex;gap:12px;align-items:center;border:2px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.pay.on{border-color:var(--o);background:var(--o-ll)}
+.pay.off{opacity:.55}
+.pay i.big{font-size:26px;color:var(--o)}
+.pay b{display:block;color:var(--navy);font-size:14px}
+.pay small{color:var(--muted);font-size:12px}
+.pay .soon{margin-left:auto;padding:3px 10px;border-radius:999px;background:#f1f1f1;color:#6b7280;font-size:11px;font-weight:800}
+.sumrow{display:flex;justify-content:space-between;font-size:13.5px;padding:6px 0;color:var(--ink)}
+.sumrow.sv{color:var(--green);font-weight:700}
+.sumrow.tot{font-size:18px;font-weight:900;color:var(--navy);border-top:1px dashed var(--line);margin-top:8px;padding-top:12px}
+.eta{display:flex;gap:8px;align-items:center;font-size:12.5px;font-weight:700;color:var(--green);background:var(--green-l);border-radius:12px;padding:10px 12px;margin:12px 0}
+.trust{display:flex;flex-direction:column;gap:7px;margin-top:14px;font-size:12px;color:var(--muted)}
+.trust span{display:flex;gap:8px;align-items:center}.trust i{color:var(--green);font-size:16px}
+.place{width:100%;height:52px;font-size:15.5px;margin-top:6px}
+.mbar{display:none}
+@media(max-width:960px){
+  .co{grid-template-columns:1fr}.co-side{position:static}
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:62px;z-index:60;background:#fff;border-top:1px solid var(--line);padding:10px 16px;gap:12px;align-items:center;box-shadow:0 -6px 20px rgba(0,0,0,.06)}
+  .mbar .v{flex:1}.mbar .v b{display:block;font-size:17px;color:var(--navy)}.mbar .v small{color:var(--muted);font-size:11.5px}
+  .mbar .btn{height:46px}
+  .co-side .place{display:none}
+  main.wrap{padding-bottom:90px}
+}
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap">
+  <div class="sx-h"><div><div class="crumb" style="font-size:12.5px;color:var(--muted)"><a href="42_shop.html" style="color:var(--muted);text-decoration:none" data-i18n="h.shop">Shop</a> › <span data-i18n="co.t">Checkout</span></div>
+    <h1><i class="ti ti-lock" style="color:var(--green)"></i><span data-i18n="co.t">Checkout</span></h1></div></div>
+  <div id="note"></div>
+  <div id="loading" class="pc-skel" style="aspect-ratio:auto;height:360px"></div>
+  <div class="co" id="co" style="display:none">
+    <div>
+      <section class="sx-card">
+        <div class="step-h"><span class="n">1</span><h2 data-i18n="co.addr">Delivery address</h2><span class="sp"></span></div>
+        <div class="addrs" id="addrs"></div>
+        <form class="aform" id="af" novalidate onsubmit="saveAddr(event)" style="display:none">
+          <div class="fg">
+            <div class="fl full"><span data-i18n="co.savas">Save as</span><div class="lblpick">
+              <label class="chip-o"><input type="radio" name="label" value="home" checked><i class="ti ti-home"></i><span data-i18n="co.home">Home</span></label>
+              <label class="chip-o"><input type="radio" name="label" value="work"><i class="ti ti-briefcase"></i><span data-i18n="co.work">Work</span></label>
+              <label class="chip-o"><input type="radio" name="label" value="other"><i class="ti ti-map-pin"></i><span data-i18n="co.other">Other</span></label></div></div>
+            <label class="fl" data-f="name"><span class="req" data-i18n="co.name">Full name</span><input class="fi" name="name" maxlength="80" autocomplete="name"><span class="err" data-i18n="co.e_name">Please enter the name.</span></label>
+            <label class="fl" data-f="phone"><span class="req" data-i18n="sj.phone">Mobile number</span><div class="pre p91"><span>+91</span><input class="fi" name="phone" inputmode="numeric" maxlength="14" autocomplete="tel-national"></div><span class="err" data-i18n="sj.e_phone">Enter a valid 10-digit Indian mobile number.</span></label>
+            <label class="fl" data-f="pincode"><span class="req" data-i18n="sj.pin">PIN code</span><input class="fi" name="pincode" inputmode="numeric" maxlength="6" autocomplete="postal-code" oninput="pinIn(this)"><span class="pinok" id="pinok" style="color:var(--green);font-size:12px;font-weight:700"></span><span class="err" data-i18n="sj.e_pin">Enter a valid 6-digit PIN code.</span></label>
+            <label class="fl" data-f="line1"><span class="req" data-i18n="co.line1">House / flat, building</span><input class="fi" name="line1" maxlength="200" autocomplete="address-line1"><span class="err" data-i18n="co.e_line1">Please enter the house and building.</span></label>
+            <label class="fl full"><span data-i18n="co.line2">Area, street, sector</span><input class="fi" name="line2" maxlength="200" autocomplete="address-line2"></label>
+            <label class="fl"><span data-i18n="co.landmark">Landmark</span><input class="fi" name="landmark" maxlength="120"></label>
+            <label class="fl" data-f="city"><span class="req" data-i18n="sj.city">City / district</span><input class="fi" name="city" maxlength="80" autocomplete="address-level2"><span class="err" data-i18n="co.e_city">Please enter the city.</span></label>
+            <label class="fl" data-f="state"><span class="req" data-i18n="sj.state">State</span><input class="fi" name="state" maxlength="80" autocomplete="address-level1"><span class="err" data-i18n="co.e_state">Please enter the state.</span></label>
+            <label class="fl" style="flex-direction:row;align-items:center;gap:8px;align-self:end"><input type="checkbox" name="is_default" style="width:18px;height:18px;accent-color:var(--o)"><span data-i18n="co.makedef">Make this my default address</span></label>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:14px"><button class="btn btn-o"><i class="ti ti-device-floppy"></i><span data-i18n="co.saveaddr">Save address</span></button><button type="button" class="btn btn-ghost" onclick="closeForm()" data-i18n="sp.cancel">Cancel</button></div>
+        </form>
+      </section>
+
+      <section class="sx-card">
+        <div class="step-h"><span class="n">2</span><h2 data-i18n="co.review">Review items</h2><span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="Shop.openCart()"><i class="ti ti-pencil"></i><span data-i18n="co.editcart">Edit cart</span></button></div>
+        <div id="items"></div>
+      </section>
+
+      <section class="sx-card">
+        <div class="step-h"><span class="n">3</span><h2 data-i18n="co.pay">Payment</h2></div>
+        <div class="pay on" id="pay-cod"><i class="ti ti-cash big"></i><div><b data-i18n="co.cod">Cash on delivery</b><small data-i18n="co.cods">Pay by cash or UPI to the delivery partner when your order arrives.</small></div></div>
+        <div class="pay off"><i class="ti ti-credit-card big"></i><div><b data-i18n="co.online">UPI, cards &amp; net banking</b><small data-i18n="co.onlines">Online payment is coming soon.</small></div><span class="soon" data-i18n="co.soon">Soon</span></div>
+        <div id="codnote"></div>
+      </section>
+    </div>
+
+    <aside class="co-side"><div class="sx-card">
+      <h2><i class="ti ti-receipt"></i><span data-i18n="co.sum">Order summary</span></h2>
+      <div id="sum" style="margin-top:10px"></div>
+      <button class="btn btn-o place" id="place" onclick="place()"><i class="ti ti-check"></i><span data-i18n="co.place">Place order</span></button>
+      <div class="trust"><span><i class="ti ti-shield-check"></i><span data-i18n="co.t1">Prices are confirmed by PawBook when you place the order</span></span>
+        <span><i class="ti ti-x"></i><span data-i18n="co.t2">Free cancellation until the seller packs your order</span></span></div>
+    </div></aside>
+  </div>
+</main>
+<div class="mbar" id="mbar" style="display:none"><div class="v"><b id="m-total"></b><small id="m-items"></small></div><button class="btn btn-o" onclick="place()"><span data-i18n="co.place">Place order</span></button></div>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="seller-i18n.js"></script>
+<script src="shop.js"></script>
+<script>
+var S = Shop, T = PBi18n.t, esc = S.esc, AF = document.getElementById('af');
+S.init('checkout');
+var ADDR = [], sel = null, Q = null, editing = null, busy = false;
+var REF = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2);
+
+function fail(e){ S.toast(e.status === 429 ? T('qa.slow') : (e.message || T('l.err')), 'ti-alert-circle'); }
+function note(kind, msg){ document.getElementById('note').innerHTML = msg ? '<div class="banner ' + kind + '"><i class="ti ti-' + (kind === 'bad' ? 'alert-triangle' : 'info-circle') + '"></i><span class="sp">' + esc(msg) + '</span></div>' : ''; }
+
+/* addresses */
+function addrText(a){ return [a.line1, a.line2, a.landmark, a.city, a.state].filter(Boolean).join(', ') + ' – ' + a.pincode; }
+function renderAddrs(){
+  var h = ADDR.map(function(a){
+    return '<label class="ad' + (sel === a.address_id ? ' on' : '') + '"><input type="radio" name="ad" value="' + a.address_id + '"' + (sel === a.address_id ? ' checked' : '') + ' onchange="pick(' + a.address_id + ')">'
+      + '<span class="tick"><i class="ti ti-check"></i></span><div class="top"><span class="lbl">' + esc(T('co.' + a.label)) + '</span>' + (a.is_default ? '<span class="def">' + esc(T('co.default')) + '</span>' : '') + '</div>'
+      + '<b>' + esc(a.name) + '</b><p>' + esc(addrText(a)) + '<br>+91 ' + esc(a.phone) + '</p>'
+      + '<div class="acts"><button type="button" onclick="event.preventDefault();edit(' + a.address_id + ')">' + esc(T('sh.edit')) + '</button><button type="button" onclick="event.preventDefault();delAddr(' + a.address_id + ', this)">' + esc(T('sh.delete')) + '</button></div></label>';
+  }).join('');
+  if (ADDR.length < 10) h += '<div class="addnew" onclick="openForm()"><i class="ti ti-map-pin-plus"></i><span>' + esc(T('co.addnew')) + '</span></div>';
+  document.getElementById('addrs').innerHTML = h;
+}
+function pick(id){ sel = Number(id); renderAddrs(); renderSummary(); }
+function loadAddrs(){ return S.api('/shop/addresses').then(function(d){ ADDR = (d.addresses || []).map(function(a){ a.address_id = Number(a.address_id); return a; }); if (sel != null) sel = Number(sel); if (!ADDR.some(function(a){ return a.address_id === sel; })) sel = (ADDR.filter(function(a){ return a.is_default; })[0] || ADDR[0] || {}).address_id || null; renderAddrs(); renderSummary(); if (!ADDR.length) openForm(); }); }
+function openForm(a){
+  editing = a ? a.address_id : null; AF.reset(); document.getElementById('pinok').textContent = '';
+  if (a) { ['name','phone','pincode','line1','line2','landmark','city','state'].forEach(function(k){ AF.elements[k].value = a[k] || ''; }); AF.querySelector('[name=label][value="' + a.label + '"]').checked = true; AF.elements.is_default.checked = !!a.is_default; }
+  else if (window.ME_NAME) AF.elements.name.value = window.ME_NAME;
+  AF.style.display = ''; AF.scrollIntoView({behavior: 'smooth', block: 'center'}); setTimeout(function(){ AF.elements.name.focus({preventScroll: true}); }, 300);
+}
+function closeForm(){ AF.style.display = 'none'; editing = null; }
+function edit(id){ openForm(ADDR.filter(function(a){ return a.address_id === Number(id); })[0]); }
+function delAddr(id, btn){
+  if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.textContent = T('sh.sure'); btn.style.color = 'var(--red)'; return; }
+  S.api('/shop/addresses/' + id, {method: 'DELETE'}).then(loadAddrs).catch(fail);
+}
+var pinT = null;
+function pinIn(el){
+  el.value = el.value.replace(/\D/g, ''); clearTimeout(pinT); document.getElementById('pinok').textContent = '';
+  if (el.value.length !== 6) return;
+  pinT = setTimeout(function(){ S.pin.check(el.value).then(function(place){
+    if (!place) return; var parts = place.split(', '); var st = parts.pop(), dt = parts.join(', ');
+    if (!AF.elements.city.value) AF.elements.city.value = dt; if (!AF.elements.state.value) AF.elements.state.value = st;
+    document.getElementById('pinok').textContent = '✓ ' + place;
+  }); }, 200);
+}
+function markErr(fields){
+  AF.querySelectorAll('.invalid').forEach(function(x){ x.classList.remove('invalid'); });
+  fields.forEach(function(f){ var el = AF.querySelector('[data-f="' + f + '"]'); if (el) el.classList.add('invalid'); });
+  var first = AF.querySelector('.invalid'); if (first) first.scrollIntoView({behavior: 'smooth', block: 'center'});
+}
+AF.addEventListener('input', function(e){ var b = e.target.closest('.invalid'); if (b) b.classList.remove('invalid'); });
+function saveAddr(e){
+  e.preventDefault();
+  var b = {}; ['name','phone','pincode','line1','line2','landmark','city','state'].forEach(function(k){ b[k] = AF.elements[k].value.trim(); });
+  b.label = (AF.querySelector('[name=label]:checked') || {}).value || 'home'; b.is_default = AF.elements.is_default.checked;
+  var bad = [], ph = b.phone.replace(/[\s-]/g, '').replace(/^(\+91|91|0)(?=\d{10}$)/, '');
+  if (b.name.length < 2) bad.push('name'); if (!/^[6-9]\d{9}$/.test(ph)) bad.push('phone'); if (!/^[1-9]\d{5}$/.test(b.pincode)) bad.push('pincode');
+  if (b.line1.length < 5) bad.push('line1'); if (b.city.length < 2) bad.push('city'); if (b.state.length < 2) bad.push('state');
+  if (bad.length) { markErr(bad); return; }
+  S.api('/shop/addresses' + (editing ? '/' + editing : ''), {method: editing ? 'PUT' : 'POST', body: b}).then(function(d){
+    sel = Number(d.address.address_id); closeForm(); S.toast(T('co.addrsaved'), 'ti-check'); return loadAddrs().then(renderSummary);
+  }).catch(function(err){ if (err.message && /check: (.*)$/.test(err.message)) markErr(/check: (.*)$/.exec(err.message)[1].split(', ')); fail(err); });
+}
+
+/* items + summary */
+function renderItems(){
+  var l = Q.items;
+  document.getElementById('items').innerHTML = l.length ? l.map(function(it){
+    return '<div class="it' + (it.issue ? ' bad' : '') + '"><img src="' + esc(it.image || S.catImg(it.category || 'other', 200)) + '" alt=""><div class="t"><b>' + esc(it.name) + (it.variant ? ' — ' + esc(it.variant) : '') + '</b>'
+      + '<small>' + esc(T('sh.qty', {n: it.quantity})) + (it.seller_name ? ' · ' + esc(T('co.soldby', {s: it.seller_name})) : '') + '</small>'
+      + (it.issue ? '<div class="iss"><i class="ti ti-alert-circle"></i> ' + esc(T('ci.' + it.issue)) + '</div>' : '') + '</div>'
+      + '<div class="pr">' + (it.issue ? '—' : S.money(it.line_total)) + '</div></div>';
+  }).join('') : '<div class="empty2"><i class="ti ti-shopping-bag"></i><b>' + esc(T('c.empty')) + '</b><a class="btn btn-o" style="margin-top:12px" href="43_shop_list.html">' + esc(T('c.browse')) + '</a></div>';
+}
+function renderSummary(){
+  if (!Q) return;
+  var m = Q.summary, h = '';
+  h += '<div class="sumrow"><span>' + esc(T('co.items', {n: m.items})) + '</span><span>' + S.money(m.subtotal + m.savings) + '</span></div>';
+  if (m.savings > 0) h += '<div class="sumrow sv"><span>' + esc(T('co.save')) + '</span><span>−' + S.money(m.savings) + '</span></div>';
+  h += '<div class="sumrow"><span>' + esc(T('c.del')) + '</span><span>' + (m.delivery_fee ? S.money(m.delivery_fee) : '<b style="color:var(--green)">' + esc(T('c.freeword')) + '</b>') + '</span></div>';
+  if (m.add_for_free > 0) h += '<div style="font-size:12px;color:var(--o-d);font-weight:700">' + esc(T('c.freeleft', {amt: S.money(m.add_for_free)})) + '</div>';
+  h += '<div class="sumrow tot"><span>' + esc(T('c.total')) + '</span><span>' + S.money(m.total) + '</span></div>';
+  if (m.estimated_delivery) h += '<div class="eta"><i class="ti ti-truck-delivery"></i>' + esc(T('co.eta', {d: PBi18n.fmtDate(m.estimated_delivery, {weekday: 'short', day: 'numeric', month: 'short'})})) + '</div>';
+  document.getElementById('sum').innerHTML = h;
+  var why = !m.items ? T('c.empty') : (m.issues ? T('c.fixissues') : (!sel ? T('co.needaddr') : (!m.cod_available ? T('co.codmax', {amt: S.money(m.cod_max)}) : '')));
+  document.getElementById('codnote').innerHTML = !m.cod_available && m.items ? '<div class="banner warn" style="margin:10px 0 0"><i class="ti ti-info-circle"></i><span class="sp">' + esc(T('co.codmax', {amt: S.money(m.cod_max)})) + '</span></div>' : '';
+  ['place'].forEach(function(id){ var b = document.getElementById(id); b.disabled = !!why || busy; b.title = why; });
+  document.querySelector('#mbar .btn').disabled = !!why || busy;
+  document.getElementById('m-total').textContent = S.money(m.total);
+  document.getElementById('m-items').textContent = why || T('co.items', {n: m.items});
+  document.getElementById('mbar').style.display = '';
+}
+function quote(){ return S.api('/shop/checkout/quote', {method: 'POST', body: {}}).then(function(d){ Q = d; renderItems(); renderSummary(); }); }
+
+function place(){
+  if (busy || !Q) return;
+  if (!sel) { note('warn', T('co.needaddr')); document.getElementById('addrs').scrollIntoView({behavior: 'smooth', block: 'center'}); return; }
+  busy = true; renderSummary();
+  var b = document.getElementById('place'); b.innerHTML = '<i class="ti ti-loader-2"></i><span>' + esc(T('co.placing')) + '</span>';
+  S.api('/shop/orders', {method: 'POST', body: {address_id: sel, payment_method: 'cod', expected_total: Q.summary.total, client_ref: REF}}).then(function(d){
+    S.cart.load();
+    location.href = '53_shop_orders.html?id=' + encodeURIComponent(d.order_id) + '&placed=1';
+  }).catch(function(e){
+    busy = false; b.innerHTML = '<i class="ti ti-check"></i><span>' + esc(T('co.place')) + '</span>';
+    if (e.status === 409) { note('warn', e.message); window.scrollTo({top: 0, behavior: 'smooth'}); quote(); S.cart.refresh(); return; }
+    renderSummary(); fail(e);
+  });
+}
+
+function boot(){
+  if (!S.loggedIn()) { location.href = '01_login.html'; return; }
+  try { var u = JSON.parse(localStorage.getItem('pb_user') || 'null'); window.ME_NAME = u && (u.full_name || u.name); } catch(e) {}
+  Promise.all([loadAddrs(), quote()]).then(function(){
+    document.getElementById('loading').style.display = 'none'; document.getElementById('co').style.display = ''; renderSummary();
+  }).catch(function(e){ document.getElementById('loading').outerHTML = '<div class="sx-card empty2"><i class="ti ti-plug-connected-x"></i><b>' + esc(T('l.err')) + '</b>' + esc(e.message || '') + '</div>'; });
+}
+boot();
+window.addEventListener('pb:langchange', function(){ if (Q) { renderAddrs(); renderItems(); renderSummary(); } });
+// cart edited in the drawer → reprice
+var _paint = null; document.addEventListener('click', function(e){ if (e.target.closest('#cart-drawer')) { clearTimeout(_paint); _paint = setTimeout(quote, 900); } });
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<meta name="robots" content="noindex">
+<title>My orders — PawBook Shop</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<link rel="stylesheet" href="seller.css">
+<style>
+.panel{display:none}.panel.on{display:block}
+.oc{display:block;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:12px;text-decoration:none;color:inherit;transition:box-shadow .2s}
+.oc:hover{box-shadow:var(--sh)}
+.oc-h{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.oc-h b{color:var(--navy);font-size:14.5px}
+.oc-h .sp{flex:1}
+.oc-b{display:flex;gap:10px;align-items:center;margin-top:12px}
+.oc-b img{width:54px;height:54px;border-radius:12px;object-fit:cover;background:var(--o-ll)}
+.oc-b .more{width:54px;height:54px;border-radius:12px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--muted);font-size:13px}
+.oc-b .t{flex:1;min-width:0;font-size:13px;color:var(--ink)}
+.oc-b .t b{display:block;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oc-b .tot{font-weight:900;color:var(--navy);font-size:15px}
+.placed{background:linear-gradient(135deg,#ecfdf3,#d9f8e5);border:1px solid #b7ebc8;border-radius:22px;padding:24px;margin:20px 0 16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.placed .ic{width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.3)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+.placed h1{font-size:23px;font-weight:900;color:var(--navy)}
+.placed p{font-size:13.5px;color:var(--ink);margin-top:4px}
+.od{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.tl{display:flex;justify-content:space-between;position:relative;margin:10px 0 6px}
+.tl::before{content:'';position:absolute;left:16px;right:16px;top:15px;height:4px;background:var(--line);border-radius:4px}
+.tl .bar{position:absolute;left:16px;top:15px;height:4px;background:var(--green);border-radius:4px;transition:width .5s}
+.tl .s{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;width:20%;text-align:center;font-size:11.5px;font-weight:700;color:var(--muted)}
+.tl .s i{width:34px;height:34px;border-radius:50%;background:#fff;border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;color:#b9b1a7}
+.tl .s.done{color:var(--navy)}.tl .s.done i{background:var(--green);border-color:var(--green);color:#fff}
+.tl .s.cur i{box-shadow:0 0 0 5px rgba(21,128,61,.15)}
+.it{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line2)}
+.it:last-child{border-bottom:none}
+.it img{width:62px;height:62px;border-radius:12px;object-fit:cover;background:var(--o-ll)}
+.it .t{flex:1;min-width:0;font-size:12.5px;color:var(--muted)}
+.it .t b{display:block;color:var(--navy);font-size:13.5px;line-height:1.35}
+.it .t .tr{color:var(--ink);font-weight:600;margin-top:3px}
+.it .pr{text-align:right;font-weight:900;color:var(--navy);white-space:nowrap}
+.addr{font-size:13px;line-height:1.6;color:var(--ink)}.addr b{color:var(--navy)}
+.sumrow{display:flex;justify-content:space-between;font-size:13.5px;padding:5px 0}
+.sumrow.tot{font-size:17px;font-weight:900;color:var(--navy);border-top:1px dashed var(--line);margin-top:6px;padding-top:10px}
+.codbox{display:flex;gap:10px;align-items:center;background:var(--o-ll);border-radius:12px;padding:12px;font-size:13px;color:var(--navy);margin-top:12px}
+.codbox i{font-size:24px;color:var(--o)}
+.cform{margin-top:12px;padding:14px;border-radius:14px;background:#fff5f5;border:1px solid #f8caca}
+.cancelled-box{background:#f6f6f6;border-radius:14px;padding:12px 14px;font-size:13px;color:#555;margin-top:10px}
+.ad{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:#fff;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start}
+.ad i{font-size:22px;color:var(--o)}
+.ad .t{flex:1;font-size:13px;line-height:1.55}.ad .t b{color:var(--navy)}
+.ad .def{font-size:11px;font-weight:800;color:var(--green);margin-left:6px}
+@media(max-width:900px){ .od{grid-template-columns:1fr} .tl .s{font-size:10px} .tl .s i{width:30px;height:30px;font-size:14px} .placed{padding:18px} .placed h1{font-size:19px} }
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap" id="main">
+  <div id="detail" style="display:none"></div>
+  <div id="list">
+    <div class="sx-h"><div><h1><i class="ti ti-user-circle" style="color:var(--o)"></i><span data-i18n="mo.t">My shop account</span></h1></div>
+      <a class="btn btn-ghost btn-sm" href="29_user_profile.html"><i class="ti ti-user"></i><span data-i18n="mo.profile">PawBook profile</span></a></div>
+    <div class="tabs2" id="tabs">
+      <button data-t="orders" class="on"><i class="ti ti-package"></i><span data-i18n="mo.orders">My orders</span></button>
+      <button data-t="addrs"><i class="ti ti-map-pin"></i><span data-i18n="mo.addrs">Saved addresses</span></button>
+      <button data-t="wish" onclick="location.href='43_shop_list.html?wishlist=1'"><i class="ti ti-heart"></i><span data-i18n="h.wish">Wishlist</span></button>
+    </div>
+    <section class="panel on" id="p-orders"><div id="olist"><div class="pc-skel" style="aspect-ratio:auto;height:200px"></div></div></section>
+    <section class="panel" id="p-addrs"><div id="alist"></div><a class="btn btn-o" href="52_shop_checkout.html" id="addaddr" style="display:none"><i class="ti ti-map-pin-plus"></i><span data-i18n="co.addnew">Add a new address</span></a></section>
+  </div>
+</main>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="seller-i18n.js"></script>
+<script src="shop.js"></script>
+<script>
+var S = Shop, T = PBi18n.t, esc = S.esc;
+S.init('account');
+var qs = new URLSearchParams(location.search), OID = qs.get('id'), O = null;
+var FLOW = ['pending','confirmed','packed','shipped','delivered'], IC = {pending:'ti-receipt', confirmed:'ti-circle-check', packed:'ti-package', shipped:'ti-truck', delivered:'ti-home-check'};
+function fail(e){ S.toast(e.status === 429 ? T('qa.slow') : (e.message || T('l.err')), 'ti-alert-circle'); }
+function pill(s){ return '<span class="spill s-' + s + '">' + esc(T('mo.st_' + s)) + '</span>'; }
+function img(i){ return esc(i.image_url || S.catImg(i.category || 'other', 200)); }
+
+/* list */
+document.querySelectorAll('#tabs button[data-t]').forEach(function(b){ if (b.getAttribute('data-t') === 'wish') return; b.onclick = function(){
+  document.querySelectorAll('#tabs button').forEach(function(x){ x.classList.toggle('on', x === b); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + b.getAttribute('data-t')); });
+  if (b.getAttribute('data-t') === 'addrs') loadAddrs(); }; });
+function loadOrders(){
+  S.api('/shop/orders').then(function(d){
+    var l = d.orders || [];
+    document.getElementById('olist').innerHTML = l.length ? l.map(function(o){
+      var items = o.items || [], first = items[0] || {};
+      return '<a class="oc" href="53_shop_orders.html?id=' + encodeURIComponent(o.order_id) + '"><div class="oc-h"><b>' + esc(o.order_number || o.order_id) + '</b><span>' + esc(PBi18n.fmtDate(o.created_at)) + '</span><span class="sp"></span>' + pill(o.state) + '</div>'
+        + '<div class="oc-b">' + items.slice(0, 3).map(function(i){ return '<img src="' + img(i) + '" alt="">'; }).join('') + (items.length > 3 ? '<span class="more">+' + (items.length - 3) + '</span>' : '')
+        + '<div class="t"><b>' + esc(first.name || '') + '</b>' + esc(T(items.length === 1 ? 'mo.n1' : 'mo.n', {n: items.length})) + '</div><span class="tot">' + S.money(o.total) + '</span></div></a>';
+    }).join('') : '<div class="sx-card empty2"><i class="ti ti-package"></i><b>' + esc(T('mo.none')) + '</b>' + esc(T('mo.nones')) + '<br><a class="btn btn-o" style="margin-top:14px" href="42_shop.html">' + esc(T('c.browse')) + '</a></div>';
+  }).catch(function(e){ document.getElementById('olist').innerHTML = '<div class="sx-card empty2"><b>' + esc(T('l.err')) + '</b></div>'; fail(e); });
+}
+function loadAddrs(){
+  S.api('/shop/addresses').then(function(d){
+    var l = d.addresses || [];
+    document.getElementById('alist').innerHTML = l.length ? l.map(function(a){
+      return '<div class="ad"><i class="ti ti-' + (a.label === 'work' ? 'briefcase' : a.label === 'other' ? 'map-pin' : 'home') + '"></i><div class="t"><b>' + esc(a.name) + '</b>' + (a.is_default ? '<span class="def">' + esc(T('co.default')) + '</span>' : '')
+        + '<br>' + esc([a.line1, a.line2, a.landmark, a.city, a.state].filter(Boolean).join(', ')) + ' – ' + esc(a.pincode) + '<br>+91 ' + esc(a.phone) + '</div>'
+        + '<button class="btn btn-ghost btn-sm" onclick="delAddr(' + a.address_id + ', this)"><i class="ti ti-trash"></i></button></div>';
+    }).join('') : '<div class="sx-card empty2"><i class="ti ti-map-pin"></i><b>' + esc(T('mo.noaddr')) + '</b>' + esc(T('mo.noaddrs')) + '</div>';
+    document.getElementById('addaddr').style.display = l.length < 10 ? '' : 'none';
+  }).catch(fail);
+}
+function delAddr(id, btn){
+  if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.innerHTML = '<i class="ti ti-check"></i>' + esc(T('sh.sure')); btn.style.color = 'var(--red)'; return; }
+  S.api('/shop/addresses/' + id, {method: 'DELETE'}).then(loadAddrs).catch(fail);
+}
+
+/* detail */
+function renderDetail(){
+  var o = O, a = o.delivery_address || {}, st = o.state, idx = FLOW.indexOf(st), h = '';
+  h += '<div class="crumb" style="font-size:12.5px;color:var(--muted);margin-top:20px"><a href="53_shop_orders.html" style="color:var(--muted);text-decoration:none">' + esc(T('mo.orders')) + '</a> › ' + esc(o.order_number || o.order_id) + '</div>';
+  if (qs.get('placed')) h += '<div class="placed"><div class="ic"><i class="ti ti-check"></i></div><div style="flex:1;min-width:220px"><h1>' + esc(T('mo.placed')) + '</h1><p>' + esc(T('mo.placeds', {n: o.order_number})) + '</p></div><a class="btn btn-o" href="42_shop.html"><i class="ti ti-building-store"></i>' + esc(T('mo.keep')) + '</a></div>';
+  else h += '<div class="sx-h"><div><h1>' + esc(T('mo.order', {n: o.order_number || ''})) + ' ' + pill(st) + '</h1><p>' + esc(T('mo.placedon', {d: PBi18n.fmtDate(o.created_at)})) + '</p></div></div>';
+  h += '<div class="od"><div>';
+  h += '<div class="sx-card">';
+  if (st === 'cancelled') h += '<h2><i class="ti ti-circle-x" style="color:#6b7280"></i>' + esc(T('mo.st_cancelled')) + '</h2><div class="cancelled-box">' + esc(T('mo.cancelledon', {d: o.cancelled_at ? PBi18n.fmtDate(o.cancelled_at) : ''})) + (o.cancel_reason ? ' · ' + esc(o.cancel_reason) : '') + '</div>';
+  else {
+    h += '<h2><i class="ti ti-route"></i>' + esc(T('mo.track')) + '</h2><div class="tl"><span class="bar" style="width:calc(' + (idx / 4 * 100) + '% - ' + (idx / 4 * 32) + 'px)"></span>'
+      + FLOW.map(function(s, i){ return '<div class="s' + (i <= idx ? ' done' : '') + (i === idx ? ' cur' : '') + '"><i class="ti ' + IC[s] + '"></i>' + esc(T('mo.st_' + s)) + '</div>'; }).join('') + '</div>';
+    if (o.estimated_delivery && st !== 'delivered') h += '<div style="font-size:13px;color:var(--green);font-weight:700;margin-top:10px"><i class="ti ti-truck-delivery"></i> ' + esc(T('co.eta', {d: PBi18n.fmtDate(o.estimated_delivery, {weekday: 'short', day: 'numeric', month: 'short'})})) + '</div>';
+  }
+  h += '</div><div class="sx-card"><h2><i class="ti ti-package"></i>' + esc(T(o.items.length === 1 ? 'mo.n1' : 'mo.n', {n: o.items.length})) + '</h2>'
+    + o.items.map(function(i){
+      return '<div class="it"><a href="44_shop_product.html?id=' + encodeURIComponent(i.product_id || '') + '"><img src="' + img(i) + '" alt=""></a><div class="t"><b>' + esc(i.name) + '</b>'
+        + esc(T('sh.qty', {n: i.quantity})) + (i.seller_name ? ' · ' + esc(T('co.soldby', {s: i.seller_name})) : '') + ' ' + pill(i.status)
+        + (i.tracking ? '<div class="tr"><i class="ti ti-truck"></i> ' + esc(i.tracking) + '</div>' : '') + '</div>'
+        + '<div class="pr">' + S.money(i.price * i.quantity) + (i.mrp > i.price ? '<br><s style="color:#a3a7b5;font-weight:500;font-size:12px">' + S.money(i.mrp * i.quantity) + '</s>' : '') + '</div></div>';
+    }).join('')
+    + '<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="buyAgain(this)"><i class="ti ti-refresh"></i>' + esc(T('mo.again')) + '</button>'
+    + '<a class="btn btn-ghost btn-sm" href="mailto:support@deemona.com?subject=' + encodeURIComponent('Order ' + (o.order_number || o.order_id)) + '"><i class="ti ti-help"></i>' + esc(T('mo.help')) + '</a></div></div>';
+  h += '</div><aside>';
+  h += '<div class="sx-card"><h2><i class="ti ti-map-pin"></i>' + esc(T('sh.shipto')) + '</h2><div class="addr"><b>' + esc(a.name || '') + '</b><br>' + esc([a.line1, a.line2, a.landmark].filter(Boolean).join(', ')) + '<br>' + esc([a.city, a.state].filter(Boolean).join(', ')) + ' – ' + esc(a.pincode || '') + (a.phone ? '<br>+91 ' + esc(a.phone) : '') + '</div></div>';
+  h += '<div class="sx-card"><h2><i class="ti ti-receipt"></i>' + esc(T('co.sum')) + '</h2>'
+    + (o.subtotal != null ? '<div class="sumrow"><span>' + esc(T('c.sub')) + '</span><span>' + S.money(o.subtotal) + '</span></div><div class="sumrow"><span>' + esc(T('c.del')) + '</span><span>' + (o.delivery_fee ? S.money(o.delivery_fee) : esc(T('c.freeword'))) + '</span></div>' : '')
+    + '<div class="sumrow tot"><span>' + esc(T('c.total')) + '</span><span>' + S.money(o.total) + '</span></div>'
+    + (o.payment_method === 'cod' && st !== 'cancelled' ? '<div class="codbox"><i class="ti ti-cash"></i><span>' + esc(T(st === 'delivered' ? 'mo.codpaid' : 'mo.codpay', {amt: S.money(o.total)})) + '</span></div>' : '')
+    + (o.can_cancel ? '<button class="btn btn-ghost" style="width:100%;margin-top:12px;color:var(--red)" onclick="showCancel()" id="cbtn"><i class="ti ti-x"></i>' + esc(T('mo.cancel')) + '</button><div id="cform"></div>' : '')
+    + '</div></aside></div>';
+  document.getElementById('detail').innerHTML = h;
+}
+function showCancel(){
+  document.getElementById('cbtn').style.display = 'none';
+  var rs = ['mo.r1','mo.r2','mo.r3','mo.r4'];
+  document.getElementById('cform').innerHTML = '<div class="cform"><b style="color:var(--navy);font-size:13.5px">' + esc(T('mo.why')) + '</b><div style="display:flex;flex-direction:column;gap:6px;margin:10px 0">'
+    + rs.map(function(r, i){ return '<label style="display:flex;gap:8px;font-size:13px;align-items:center"><input type="radio" name="cr" value="' + esc(T(r)) + '"' + (i === 0 ? ' checked' : '') + ' style="accent-color:var(--o)">' + esc(T(r)) + '</label>'; }).join('')
+    + '</div><div style="display:flex;gap:8px"><button class="btn btn-o btn-sm" style="background:var(--red);border-color:var(--red)" onclick="doCancel(this)">' + esc(T('mo.confirmc')) + '</button><button class="btn btn-ghost btn-sm" onclick="renderDetail()">' + esc(T('mo.keepo')) + '</button></div></div>';
+}
+function doCancel(btn){
+  btn.disabled = true; var r = (document.querySelector('[name=cr]:checked') || {}).value || '';
+  S.api('/shop/orders/' + encodeURIComponent(OID) + '/cancel', {method: 'POST', body: {reason: r}}).then(function(){ S.toast(T('mo.cancelled'), 'ti-check'); qs.delete('placed'); history.replaceState(null, '', '53_shop_orders.html?id=' + encodeURIComponent(OID)); loadDetail(); })
+    .catch(function(e){ btn.disabled = false; fail(e); loadDetail(); });
+}
+function buyAgain(btn){
+  btn.disabled = true;
+  var ps = O.items.filter(function(i){ return i.product_id; }).map(function(i){ return S.cart.add({product_id: i.product_id, variant: i.variant || '', name: i.name, price: i.price, image: i.image_url, stock: 20}, i.quantity); });
+  Promise.all(ps).then(function(){ btn.disabled = false; S.openCart(); });
+}
+function loadDetail(){
+  return S.api('/shop/orders/' + encodeURIComponent(OID)).then(function(d){ O = d.order; document.title = (O.order_number || 'Order') + ' — PawBook Shop'; renderDetail(); })
+    .catch(function(e){ document.getElementById('detail').innerHTML = '<div class="sx-card empty2" style="margin-top:24px"><i class="ti ti-package-off"></i><b>' + esc(T(e.status === 404 ? 'mo.nf' : 'l.err')) + '</b><a class="btn btn-o" style="margin-top:14px" href="53_shop_orders.html">' + esc(T('mo.orders')) + '</a></div>'; });
+}
+if (!S.loggedIn()) location.href = '01_login.html';
+else if (OID) { document.getElementById('list').style.display = 'none'; document.getElementById('detail').style.display = ''; document.getElementById('detail').innerHTML = '<div class="pc-skel" style="aspect-ratio:auto;height:360px;margin-top:24px"></div>'; loadDetail(); }
+else { loadOrders(); if (qs.get('tab') === 'addrs') document.querySelector('#tabs button[data-t=addrs]').click(); }
+window.addEventListener('pb:langchange', function(){ if (O) renderDetail(); else if (!OID) loadOrders(); });
+</script>
+</body>
+</html>

@@ -334,7 +334,7 @@ exports.updateOrder = async (req, res) => {
     const uid = String(req.user.user_id), oid = String(req.params.order_id), b = req.body || {};
     const to = String(b.status || '');
     if (!FULFIL.includes(to)) return R.badRequest(res, 'Invalid status');
-    const { rows } = await query(`SELECT oi.item_id, oi.fulfil_status, oi.product_id, oi.quantity FROM marketplace_order_items oi
+    const { rows } = await query(`SELECT oi.item_id, oi.fulfil_status, oi.product_id, oi.quantity, oi.variant FROM marketplace_order_items oi
       LEFT JOIN marketplace_products p ON p.product_id::text = oi.product_id::text
       WHERE oi.order_id = $1 AND COALESCE(oi.seller_id, p.seller_id)::text = $2`, [oid, uid]);
     if (!rows.length) return R.notFound(res, 'Order not found');
@@ -345,7 +345,8 @@ exports.updateOrder = async (req, res) => {
     await query(`UPDATE marketplace_order_items SET fulfil_status = $2, seller_id = $3, status_updated_at = NOW(), tracking = COALESCE($4, tracking)
       WHERE item_id = ANY($1::text[])`, [ids.map(r => String(r.item_id)), to, uid, tracking]);
     if (to === 'cancelled') {   // put stock back
-      for (const r of ids) if (r.product_id) await query(`UPDATE marketplace_products SET stock = stock + $1 WHERE product_id::text = $2 AND seller_id::text = $3 AND jsonb_array_length(COALESCE(variants,'[]'::jsonb)) = 0`, [r.quantity, String(r.product_id), uid]);
+      const { moveStock } = require('./checkout.controller');
+      for (const r of ids) if (r.product_id) await moveStock(query, r.product_id, r.variant || '', r.quantity);
     }
     // keep the buyer-facing order status in step when every item in the order agrees
     const all = await query(`SELECT DISTINCT fulfil_status FROM marketplace_order_items WHERE order_id = $1`, [oid]);

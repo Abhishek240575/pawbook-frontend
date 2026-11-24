@@ -329,7 +329,7 @@ function renderFBT(){
 function addFBT(){
   [P].concat(FBT.slice(0, 2)).forEach(function(it){
     if (!fbtOn[it.product_id] || Number(it.stock) <= 0) return;
-    if (it === P) S.cart.add({product_id: P.product_id, name: P.name + (variant ? ' — ' + variant.label : ''), price: curPrice(), images: imgs(), category: P.category, stock: curStock()}, 1);
+    if (it === P) { if (variants().length && !variant) return; S.cart.add({product_id: P.product_id, variant: variant ? variant.label : '', name: P.name + (variant ? ' — ' + variant.label : ''), price: curPrice(), images: imgs(), category: P.category, stock: curStock()}, 1); }
     else S.cart.add(it, 1);
   });
   setTimeout(S.openCart, 300);
@@ -339,9 +339,10 @@ function addFBT(){
 function setQty(n){ var st = curStock(); qty = Math.max(1, Math.min(n, st > 0 ? Math.min(st, 20) : 1)); render(); }
 function pickVar(i){ var v = variants()[i]; variant = variant === v ? null : v; qty = 1; render(); }
 function addCart(now){
-  var item = {product_id: P.product_id, name: P.name + (variant ? ' — ' + variant.label : ''), price: curPrice(), images: imgs(), category: P.category, stock: curStock()};
-  S.cart.add(item, qty);
-  if (now) setTimeout(S.openCart, 300);
+  if (variants().length && !variant) { S.toast(T('c.pick'), 'ti-ruler'); var vb = document.querySelector('.var'); if (vb) vb.parentNode.scrollIntoView({behavior: 'smooth', block: 'center'}); return; }
+  var item = {product_id: P.product_id, variant: variant ? variant.label : '', name: P.name + (variant ? ' — ' + variant.label : ''), price: curPrice(), images: imgs(), category: P.category, stock: curStock()};
+  var done = S.cart.add(item, qty);
+  if (now) Promise.resolve(done).then(function(){ location.href = '52_shop_checkout.html'; });
 }
 function checkPin(e){
   e.preventDefault(); var v = document.getElementById('pd-pin').value.replace(/\D/g, ''), m = document.getElementById('pd-pin-msg');
