@@ -2,279 +2,249 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pet Digital Twin – PawBook</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F47A38">
+<meta name="robots" content="noindex">
+<title>Pet Health – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
-  --pb-green:#22c55e;--pb-green-soft:#dcfce7;--pb-red:#ef4444;--pb-red-soft:#fee2e2;
-  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;--pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
-  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;--pb-orange:#f97316;--pb-orange-soft:#ffedd5;
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
-  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
-  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
-  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --pb-shadow-md:0 4px 20px rgba(0,0,0,.1);--pb-nav-h:56px;
+:root{
+  --bg:#FFF9F3;--card:#FFFFFF;--o:#F47A38;--o-d:#D9601F;--peach:#FFE9D9;--sage:#E5F2E5;--sage-d:#3F7D4E;--lav:#EEE8FF;--lav-d:#6B55C8;--sky:#E6F1FF;--sky-d:#2F6BB3;
+  --coral:#F26B5B;--coral-l:#FFE5E1;--amber-l:#FFF2D6;--amber-d:#9A6400;
+  --ink:#45382F;--ink2:#82766D;--line:#F0E4D8;--line2:#F6EDE3;
+  --r:22px;--r-sm:14px;--pill:999px;--shadow:0 2px 0 rgba(69,56,47,.03),0 10px 30px rgba(166,110,60,.08);--nav-h:60px;
+  --paw:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23F47A38' fill-opacity='.05'%3E%3Cellipse cx='30' cy='38' rx='9' ry='7'/%3E%3Ccircle cx='19' cy='26' r='4'/%3E%3Ccircle cx='27' cy='21' r='4'/%3E%3Ccircle cx='35' cy='21' r='4'/%3E%3Ccircle cx='42' cy='27' r='4'/%3E%3Cellipse cx='88' cy='94' rx='9' ry='7'/%3E%3Ccircle cx='77' cy='82' r='4'/%3E%3Ccircle cx='85' cy='77' r='4'/%3E%3Ccircle cx='93' cy='77' r='4'/%3E%3Ccircle cx='100' cy='83' r='4'/%3E%3C/g%3E%3C/svg%3E");
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
-a{text-decoration:none;color:inherit}
-button{font-family:'Inter',sans-serif;cursor:pointer}
-input,textarea,select{font-family:'Inter',sans-serif}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+body{font-family:'Nunito',-apple-system,'Segoe UI',sans-serif;background:var(--bg) var(--paw);color:var(--ink);-webkit-font-smoothing:antialiased;padding-top:var(--nav-h);font-size:15px}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid rgba(244,122,56,.45);outline-offset:2px}
 
-/* NAV */
-.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
-.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
-.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.pb-nav-search{flex:1;max-width:240px;height:40px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
-.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;width:100%;color:var(--pb-text)}
-.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
-.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
-.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
-.pb-nav-tab.active{color:var(--pb-blue)}
-.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-blue);border-radius:3px 3px 0 0}
-.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
-.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s}
-.pb-icon-btn:hover{background:var(--pb-border)}
-.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+/* top bar */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(255,249,243,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 16px;z-index:400}
+.nav .menu{width:40px;height:40px;border-radius:12px;border:none;background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center}
+.nav .menu:hover{background:var(--peach)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:20px;color:var(--ink);cursor:pointer}
+.logo i{width:36px;height:36px;border-radius:12px;background:var(--o);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:18px}
+.nav .sp{flex:1}
+.nbtn{height:40px;padding:0 14px;border-radius:var(--pill);border:1.5px solid var(--line);background:#fff;font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:6px}
+.nbtn:hover{border-color:var(--o);color:var(--o-d)}
 
-/* BUTTONS */
-.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
-.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
-.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
-.pb-btn-green{background:var(--pb-green);color:#fff}
-.pb-btn-red{background:var(--pb-red);color:#fff}
-.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
+/* layout */
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 110px}
+.pets{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}.pets::-webkit-scrollbar{display:none}
+.pchip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:var(--pill);border:2px solid transparent;background:#fff;box-shadow:var(--shadow);font-weight:800;font-size:14px;flex-shrink:0;border-width:2px}
+.pchip.on{border-color:var(--o);background:var(--peach)}
+.pchip .av{width:34px;height:34px}
+.pchip.add{padding:5px 16px;color:var(--o-d);border:2px dashed #F5C7A6;background:transparent;box-shadow:none}
+.av{border-radius:50%;object-fit:cover;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
 
-/* LAYOUT */
-.plr-layout{max-width:1100px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:300px 1fr;gap:20px}
-@media(max-width:768px){.plr-layout{grid-template-columns:1fr}.plr-sidebar{display:none}}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line2)}
+.ch{display:flex;align-items:center;gap:10px;padding:18px 20px 6px;flex-wrap:wrap}
+.ch h2{font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.ch h2 i{color:var(--o)}
+.ch .badge{font-size:12px;font-weight:800;padding:4px 10px;border-radius:var(--pill);background:var(--peach);color:var(--o-d)}
+.cb{padding:8px 20px 20px}
 
-/* CARDS */
-.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
-.pb-card-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
-.pb-card-header h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:18px;margin-top:6px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}}
 
-/* SIDEBAR — PET SELECTOR */
-.pet-selector{padding:16px}
-.pet-card{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--pb-radius-sm);cursor:pointer;transition:background .15s;border:2px solid transparent}
-.pet-card:hover{background:var(--pb-bg)}
-.pet-card.selected{background:var(--pb-blue-soft);border-color:var(--pb-blue)}
-.pet-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.pet-info{flex:1;min-width:0}
-.pet-name{font-size:14px;font-weight:700;color:var(--pb-text)}
-.pet-breed{font-size:12px;color:var(--pb-text2)}
-.pet-score-badge{width:36px;height:36px;border-radius:50%;background:var(--pb-green-soft);color:var(--pb-green);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* identity hero */
+.hero{background:linear-gradient(135deg,#FFEEDF 0%,#FFF6EE 60%,#FDF1F6 100%);border-radius:28px;padding:22px;position:relative;overflow:hidden;border:1px solid #FBE3D0}
+.hero::after{content:'';position:absolute;right:-30px;top:-30px;width:220px;height:220px;background:var(--paw);opacity:.9;transform:rotate(15deg);pointer-events:none}
+.hero-top{display:flex;gap:22px;align-items:center;position:relative;z-index:1}
+.hero-photo{width:168px;height:168px;border-radius:30px;flex-shrink:0;background:#fff;overflow:hidden;box-shadow:0 10px 30px rgba(166,110,60,.18);border:5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:72px;position:relative}
+.hero-photo img{width:100%;height:100%;object-fit:cover}
+.hero-photo .cam{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,.95);font-size:17px;color:var(--o-d);box-shadow:0 2px 8px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center}
+.hero h1{font-size:30px;font-weight:900;line-height:1.1;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hero .tag{font-size:16px;font-weight:700;color:#8A5A3C;margin-top:6px}
+.hero .facts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.fact{font-size:13px;font-weight:800;padding:5px 11px;border-radius:var(--pill);background:rgba(255,255,255,.8);color:var(--ink);display:inline-flex;gap:5px;align-items:center}
+.status{font-size:13px;font-weight:900;padding:5px 12px;border-radius:var(--pill);display:inline-flex;gap:5px;align-items:center}
+.st-great{background:var(--sage);color:var(--sage-d)}.st-ok{background:var(--sky);color:var(--sky-d)}.st-care{background:var(--amber-l);color:var(--amber-d)}.st-new{background:var(--lav);color:var(--lav-d)}
+.hero-edit{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px;position:relative;z-index:1}
+.hs{background:rgba(255,255,255,.75);border-radius:18px;padding:12px 14px}
+.hs b{display:block;font-size:22px;font-weight:900;line-height:1.1}
+.hs span{font-size:12.5px;color:var(--ink2);font-weight:700}
+.hero-foot{position:relative;z-index:1;font-size:13px;color:#8A5A3C;margin-top:12px;font-weight:600}
+@media(max-width:640px){.hero{padding:16px;border-radius:24px}.hero-top{flex-direction:column;align-items:flex-start;gap:14px}.hero-photo{width:100%;height:210px}.hero h1{font-size:26px}.hero-stats{grid-template-columns:repeat(2,1fr)}}
 
-/* HEALTH SCORE RING */
-.health-score-wrap{padding:24px 20px 16px;display:flex;flex-direction:column;align-items:center;gap:0}
-.score-ring-container{position:relative;width:120px;height:120px}
-.score-ring-container svg{transform:rotate(-90deg)}
-.score-ring-bg{fill:none;stroke:#f0f2f5;stroke-width:10}
-.score-ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);stroke:url(#scoreGrad)}
-.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.score-num{font-size:28px;font-weight:900;color:var(--pb-text)}
-.score-label{font-size:10px;font-weight:600;color:var(--pb-text2);text-transform:uppercase;letter-spacing:.5px}
-.score-status{font-size:14px;font-weight:700;color:var(--pb-green);margin-top:8px}
-.score-updated{font-size:11px;color:var(--pb-text3);margin-top:2px}
+/* buttons */
+.btn{height:42px;padding:0 18px;border-radius:var(--pill);border:none;font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;transition:transform .1s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn-o{background:var(--o);color:#fff;box-shadow:0 6px 16px rgba(244,122,56,.28)}.btn-o:hover{background:var(--o-d)}
+.btn-w{background:#fff;color:var(--ink);border:1.5px solid var(--line)}.btn-w:hover{border-color:var(--o)}
+.btn-s{height:34px;padding:0 13px;font-size:13px}
+.btn-link{background:none;border:none;color:var(--o-d);font-weight:800;font-size:13px;padding:0}
+.btn[disabled]{opacity:.55;pointer-events:none}
 
-/* STAT PILLARS */
-.stat-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 20px 16px}
-.stat-pillar{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:10px;text-align:center}
-.stat-pillar-val{font-size:16px;font-weight:800;color:var(--pb-text)}
-.stat-pillar-label{font-size:10px;color:var(--pb-text2);font-weight:500;margin-top:2px}
+/* wellness */
+.well{display:flex;gap:18px;align-items:center}
+.ring{position:relative;width:118px;height:118px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:32px;font-weight:900;line-height:1}
+.ring .num span{font-size:11.5px;color:var(--ink2);font-weight:700}
+.well h3{font-size:18px;font-weight:900}
+.well p{font-size:13px;color:var(--ink2);margin-top:4px;line-height:1.45}
+.inds{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.ind{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center}
+.ind .ic{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.ind .t{font-size:13.5px;font-weight:800}.ind .t small{display:block;font-size:12px;font-weight:600;color:var(--ink2)}
+.ind .bar{grid-column:2/4;height:7px;border-radius:9px;background:var(--line2);overflow:hidden;margin-top:-4px}
+.ind .bar i{display:block;height:100%;border-radius:9px}
+.ind .pts{font-size:12px;font-weight:800;color:var(--ink2)}
+.disc{font-size:11.5px;color:var(--ink2);margin-top:14px;line-height:1.5;background:var(--line2);border-radius:12px;padding:8px 10px}
 
-/* ALERT CHIPS */
-.alerts-section{padding:0 20px 16px;display:flex;flex-direction:column;gap:6px}
-.alert-chip{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--pb-radius-sm);font-size:12px;font-weight:600}
-.alert-chip.red{background:var(--pb-red-soft);color:var(--pb-red)}
-.alert-chip.amber{background:var(--pb-amber-soft);color:#92400e}
-.alert-chip.green{background:var(--pb-green-soft);color:#166534}
-.alert-chip.blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
+/* reminders */
+.rems{display:flex;flex-direction:column;gap:10px}
+.rem{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:18px;background:var(--bg)}
+.rem .ic{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rem .t{flex:1;min-width:0}.rem .t b{display:block;font-size:14.5px;font-weight:900}.rem .t span{font-size:12.5px;color:var(--ink2);font-weight:700}
+.pill{font-size:11.5px;font-weight:900;padding:4px 10px;border-radius:var(--pill);white-space:nowrap}
+.p-over{background:var(--coral-l);color:#B23A2B}.p-soon{background:var(--amber-l);color:var(--amber-d)}.p-ok{background:var(--sage);color:var(--sage-d)}.p-info{background:var(--sky);color:var(--sky-d)}
+.c-peach{background:var(--peach);color:var(--o-d)}.c-sage{background:var(--sage);color:var(--sage-d)}.c-lav{background:var(--lav);color:var(--lav-d)}.c-sky{background:var(--sky);color:var(--sky-d)}.c-coral{background:var(--coral-l);color:#B23A2B}.c-amber{background:var(--amber-l);color:var(--amber-d)}
 
-/* MAIN TABS */
-.plr-tabs{display:flex;gap:4px;padding:0 20px;border-bottom:1px solid var(--pb-border);overflow-x:auto;scrollbar-width:none}
-.plr-tabs::-webkit-scrollbar{display:none}
-.plr-tab{padding:14px 14px;font-size:13px;font-weight:600;color:var(--pb-text2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
-.plr-tab:hover{color:var(--pb-text)}
-.plr-tab.active{color:var(--pb-blue);border-bottom-color:var(--pb-blue)}
-.tab-content{display:none}
-.tab-content.active{display:block}
+/* quick actions */
+.qa{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:960px){.qa{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.qa{grid-template-columns:repeat(2,1fr)}}
+.qa button{border:none;border-radius:20px;padding:14px 12px;text-align:left;display:flex;flex-direction:column;gap:8px;min-height:92px;font-weight:800;font-size:13.5px;line-height:1.25;transition:transform .12s,box-shadow .12s}
+.qa button:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(166,110,60,.12)}
+.qa button i{font-size:24px}
 
-/* TIMELINE */
-.timeline{padding:20px}
-.tl-item{display:flex;gap:14px;padding-bottom:20px;position:relative}
-.tl-item:not(:last-child)::before{content:'';position:absolute;left:17px;top:36px;bottom:0;width:2px;background:var(--pb-border)}
-.tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;z-index:1}
-.tl-dot.blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.tl-dot.green{background:var(--pb-green-soft);color:var(--pb-green)}
-.tl-dot.amber{background:var(--pb-amber-soft);color:var(--pb-amber)}
-.tl-dot.red{background:var(--pb-red-soft);color:var(--pb-red)}
-.tl-dot.purple{background:var(--pb-purple-soft);color:var(--pb-purple)}
-.tl-dot.teal{background:var(--pb-teal-soft);color:var(--pb-teal)}
-.tl-body{flex:1;min-width:0}
-.tl-title{font-size:14px;font-weight:700;color:var(--pb-text)}
-.tl-meta{font-size:12px;color:var(--pb-text2);margin-top:2px}
-.tl-note{font-size:12px;color:var(--pb-text3);margin-top:4px;line-height:1.5}
-.tl-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--pb-pill);font-size:11px;font-weight:600;margin-top:6px}
-.tl-tag.vax{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.tl-tag.vet{background:var(--pb-teal-soft);color:var(--pb-teal)}
-.tl-tag.med{background:var(--pb-purple-soft);color:var(--pb-purple)}
-.tl-tag.weight{background:var(--pb-amber-soft);color:var(--pb-amber)}
-.tl-tag.note{background:var(--pb-bg);color:var(--pb-text2)}
+/* tabs */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px;background:#fff;border-radius:var(--pill);box-shadow:var(--shadow);border:1px solid var(--line2);scrollbar-width:none;margin:22px 0 14px;position:sticky;top:calc(var(--nav-h) + 8px);z-index:50}
+.tabs::-webkit-scrollbar{display:none}
+.tab{height:40px;padding:0 15px;border-radius:var(--pill);border:none;background:none;font-weight:800;font-size:14px;color:var(--ink2);white-space:nowrap;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tab:hover{color:var(--ink)}.tab.on{background:var(--o);color:#fff}
+.tab.rec{margin-left:auto;color:var(--lav-d)}.tab.rec.on{background:var(--lav-d);color:#fff}
+.panel{display:none}.panel.on{display:block}
 
-/* VAX TABLE */
-.vax-grid{padding:20px;display:flex;flex-direction:column;gap:12px}
-.vax-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
-.vax-status{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.vax-status.done{background:var(--pb-green)}
-.vax-status.due{background:var(--pb-amber)}
-.vax-status.overdue{background:var(--pb-red)}
-.vax-name{font-size:14px;font-weight:600;flex:1}
-.vax-date{font-size:12px;color:var(--pb-text2)}
-.vax-next{font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--pb-pill)}
-.vax-next.soon{background:var(--pb-amber-soft);color:#92400e}
-.vax-next.ok{background:var(--pb-green-soft);color:#166534}
-.vax-next.overdue{background:var(--pb-red-soft);color:var(--pb-red)}
+/* timeline scrapbook */
+.month{font-size:13px;font-weight:900;color:var(--ink2);text-transform:uppercase;letter-spacing:.6px;margin:18px 4px 10px}
+.month:first-child{margin-top:4px}
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.ev{border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;border:1px solid rgba(0,0,0,.03)}
+.ev .top{display:flex;gap:10px;align-items:center}
+.ev .ic{width:38px;height:38px;border-radius:13px;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ev b{font-size:14.5px;font-weight:900;line-height:1.25}
+.ev .d{font-size:12px;font-weight:700;opacity:.75}
+.ev .who{font-size:12.5px;font-weight:700;display:flex;gap:5px;align-items:center}
+.ev p{font-size:13px;line-height:1.5;color:var(--ink)}
+.ev img{width:100%;height:150px;object-fit:cover;border-radius:14px;margin-top:4px}
+.ev .del{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.7);font-size:14px;opacity:0;transition:opacity .15s}
+.ev:hover .del,.ev:focus-within .del{opacity:1}
+@media(hover:none){.ev .del{opacity:.7}}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.fchip{height:32px;padding:0 12px;border-radius:var(--pill);border:1.5px solid var(--line);background:#fff;font-weight:800;font-size:12.5px;color:var(--ink2)}
+.fchip.on{border-color:var(--o);color:var(--o-d);background:var(--peach)}
 
-/* WEIGHT CHART */
-.weight-chart-wrap{padding:20px}
-.weight-bars{display:flex;align-items:flex-end;gap:8px;height:120px;margin-bottom:8px}
-.weight-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
-.weight-bar{width:100%;border-radius:4px 4px 0 0;background:var(--pb-blue-soft);transition:height .6s;position:relative;min-height:4px}
-.weight-bar.latest{background:var(--pb-blue)}
-.weight-bar-label{font-size:10px;color:var(--pb-text3);white-space:nowrap}
-.weight-val{font-size:11px;font-weight:700;color:var(--pb-text2)}
+/* lists */
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:18px;background:var(--bg);flex-wrap:wrap}
+.row .ic{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.row .t{flex:1;min-width:160px}.row .t b{display:block;font-size:14.5px;font-weight:900}.row .t span{font-size:12.5px;color:var(--ink2);font-weight:700}
+.empty{text-align:center;padding:30px 16px;color:var(--ink2)}
+.empty .e{font-size:42px;margin-bottom:8px}
+.empty b{display:block;color:var(--ink);font-size:16px;font-weight:900;margin-bottom:4px}
+.empty p{font-size:13.5px;max-width:420px;margin:0 auto 14px;line-height:1.5}
 
-/* MEDICATIONS */
-.med-list{padding:20px;display:flex;flex-direction:column;gap:12px}
-.med-card{padding:14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;gap:12px;align-items:flex-start}
-.med-icon{width:40px;height:40px;border-radius:var(--pb-radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.med-info{flex:1}
-.med-name{font-size:14px;font-weight:700}
-.med-dose{font-size:12px;color:var(--pb-text2);margin-top:2px}
-.med-next{font-size:11px;font-weight:600;color:var(--pb-blue);margin-top:4px}
-.med-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--pb-pill)}
-.med-status.active{background:var(--pb-green-soft);color:#166534}
-.med-status.paused{background:var(--pb-amber-soft);color:#92400e}
+/* daily wellness */
+.dw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.dw{grid-template-columns:repeat(2,1fr)}}
+.dws{border-radius:18px;padding:14px}
+.dws i{font-size:22px}.dws b{display:block;font-size:22px;font-weight:900;margin-top:6px;line-height:1.1}.dws span{font-size:12.5px;font-weight:800;opacity:.8}
+.dws small{display:block;font-size:11.5px;font-weight:700;opacity:.7;margin-top:2px}
+.week{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:14px;padding:0 2px}
+.wk{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.wk .b{width:100%;max-width:38px;border-radius:10px 10px 4px 4px;background:#FCD9C2;min-height:4px}
+.wk.today .b{background:var(--o)}
+.wk span{font-size:11.5px;font-weight:800;color:var(--ink2)}.wk em{font-style:normal;font-size:11px;font-weight:800;color:var(--ink)}
+.moods{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.mood{height:40px;padding:0 14px;border-radius:var(--pill);border:1.5px solid var(--line);background:#fff;font-weight:800;font-size:13.5px}
+.mood.on{background:var(--lav);border-color:#C9BDF7;color:var(--lav-d)}
+.streak{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:18px;background:linear-gradient(90deg,#FFF0E3,#FFF8F1);margin-top:14px;font-weight:800;font-size:14px}
+.streak i{font-size:24px;color:var(--o)}
 
-/* ACTIVITY TAB */
-.activity-wrap{padding:20px;display:flex;flex-direction:column;gap:16px}
-.activity-today{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.act-stat{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:14px;text-align:center}
-.act-stat-icon{font-size:24px;margin-bottom:6px}
-.act-stat-val{font-size:20px;font-weight:800;color:var(--pb-text)}
-.act-stat-label{font-size:11px;color:var(--pb-text2);font-weight:500}
-.act-weekly{display:flex;align-items:flex-end;gap:6px;height:80px}
-.act-day-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
-.act-day-bar{width:100%;border-radius:4px 4px 0 0;background:var(--pb-blue-soft);min-height:4px}
-.act-day-bar.today{background:var(--pb-blue)}
-.act-day-label{font-size:10px;color:var(--pb-text3)}
-.act-log{display:flex;flex-direction:column;gap:8px}
-.act-log-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)}
-.act-log-icon{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.act-log-info{flex:1}
-.act-log-title{font-size:13px;font-weight:600}
-.act-log-meta{font-size:11px;color:var(--pb-text2)}
-.act-log-cal{font-size:12px;font-weight:700;color:var(--pb-orange)}
+/* weight chart */
+.wchart{position:relative;height:200px;margin:10px 0 6px}
+.wchart svg{width:100%;height:100%;overflow:visible}
+.wtip{position:absolute;background:var(--ink);color:#fff;font-size:12px;font-weight:800;border-radius:10px;padding:6px 9px;pointer-events:none;transform:translate(-50%,-115%);white-space:nowrap;display:none}
 
-/* NUTRITION TAB */
-.nutrition-wrap{padding:20px;display:flex;flex-direction:column;gap:16px}
-.nut-plan{padding:14px;border-radius:var(--pb-radius-sm);border:2px solid var(--pb-blue);background:var(--pb-blue-soft)}
-.nut-plan-title{font-size:14px;font-weight:700;color:var(--pb-blue);display:flex;align-items:center;gap:6px}
-.nut-plan-desc{font-size:12px;color:var(--pb-text2);margin-top:4px}
-.nut-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.nut-macro{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:10px;text-align:center}
-.nut-macro-val{font-size:15px;font-weight:800;color:var(--pb-text)}
-.nut-macro-label{font-size:10px;color:var(--pb-text2);margin-top:2px}
-.nut-schedule{display:flex;flex-direction:column;gap:8px}
-.nut-meal{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)}
-.nut-meal-time{font-size:12px;font-weight:700;color:var(--pb-blue);width:60px;flex-shrink:0}
-.nut-meal-info{flex:1}
-.nut-meal-name{font-size:13px;font-weight:600}
-.nut-meal-qty{font-size:11px;color:var(--pb-text2)}
-.nut-meal-done{width:24px;height:24px;border-radius:50%;border:2px solid var(--pb-border);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .15s}
-.nut-meal-done.checked{background:var(--pb-green);border-color:var(--pb-green);color:#fff}
-.nut-foods{display:flex;flex-wrap:wrap;gap:8px}
-.nut-food-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--pb-pill);background:var(--pb-bg);font-size:12px;font-weight:600}
-.nut-food-chip.ok{background:var(--pb-green-soft);color:#166534}
-.nut-food-chip.avoid{background:var(--pb-red-soft);color:var(--pb-red)}
+/* memories */
+.mems{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.mem{border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--line2);position:relative}
+.mem img{width:100%;height:170px;object-fit:cover;display:block}
+.mem .noimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;background:var(--lav)}
+.mem .c{padding:10px 12px}.mem b{font-size:14px;font-weight:900;display:block}.mem span{font-size:12px;color:var(--ink2);font-weight:700}
+.mem p{font-size:12.5px;margin-top:4px;line-height:1.45}
 
-/* VET VISITS TAB */
-.vet-visits-wrap{padding:20px;display:flex;flex-direction:column;gap:16px}
-.vet-visit-card{padding:14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
-.vet-visit-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.vet-visit-icon{width:36px;height:36px;border-radius:var(--pb-radius-sm);background:var(--pb-teal-soft);color:var(--pb-teal);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.vet-visit-title{font-size:14px;font-weight:700;flex:1}
-.vet-visit-date{font-size:12px;color:var(--pb-text2)}
-.vet-visit-vet{font-size:12px;color:var(--pb-text2);display:flex;align-items:center;gap:4px;margin-bottom:6px}
-.vet-visit-notes{font-size:12px;color:var(--pb-text3);line-height:1.6;padding:8px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)}
-.vet-visit-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.vet-visit-tag{padding:3px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:600;background:var(--pb-teal-soft);color:var(--pb-teal)}
-.upcoming-visit{padding:14px;border-radius:var(--pb-radius-sm);border:2px solid var(--pb-amber);background:var(--pb-amber-soft);display:flex;align-items:center;gap:12px}
-.upcoming-visit-info{flex:1}
-.upcoming-visit-title{font-size:14px;font-weight:700;color:#92400e}
-.upcoming-visit-meta{font-size:12px;color:#92400e;margin-top:2px}
+/* AI card */
+.ai{display:flex;gap:16px;align-items:center;padding:18px 20px;border-radius:var(--r);background:linear-gradient(120deg,#EEE8FF,#E6F1FF);margin-top:18px;flex-wrap:wrap}
+.ai .ic{width:54px;height:54px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--lav-d)}
+.ai .t{flex:1;min-width:200px}.ai b{font-size:17px;font-weight:900;display:block}.ai span{font-size:13px;color:#5C5470;font-weight:600}
 
-/* DOCUMENTS */
-.doc-grid{padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
-.doc-item{border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:14px;text-align:center;cursor:pointer;transition:all .15s}
-.doc-item:hover{border-color:var(--pb-blue);background:var(--pb-blue-soft)}
-.doc-icon{font-size:28px;margin-bottom:8px}
-.doc-name{font-size:12px;font-weight:600;color:var(--pb-text)}
-.doc-date{font-size:11px;color:var(--pb-text3);margin-top:2px}
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(69,56,47,.45);z-index:600;display:none;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+@media(min-width:620px){.mo{align-items:center}}
+.md{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;border-radius:26px 26px 0 0;animation:up .22s ease}
+@media(min-width:620px){.md{border-radius:26px}}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.mh{display:flex;align-items:center;gap:10px;padding:18px 20px 8px}
+.mh h3{flex:1;font-size:19px;font-weight:900}
+.mx{width:36px;height:36px;border-radius:50%;border:none;background:var(--bg);font-size:16px}
+.mb{padding:6px 20px 8px;display:flex;flex-direction:column;gap:12px}
+.mf{padding:12px 20px 20px;display:flex;gap:8px;justify-content:flex-end}
+.fl{display:flex;flex-direction:column;gap:5px}
+.fl>span{font-size:13px;font-weight:800}
+.fl small{font-size:12px;color:var(--ink2);font-weight:600}
+.fi{height:44px;border:1.5px solid var(--line);border-radius:14px;padding:0 12px;font-size:15px;background:#fff;outline:none;width:100%}
+textarea.fi{height:auto;min-height:84px;padding:10px 12px;resize:vertical}
+.fi:focus{border-color:var(--o)}
+.fl.bad .fi{border-color:var(--coral)}.fl .err{display:none;color:#B23A2B;font-size:12px;font-weight:700}.fl.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg label{cursor:pointer}.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border-radius:var(--pill);border:1.5px solid var(--line);font-weight:800;font-size:13px}
+.seg input:checked+span{background:var(--peach);border-color:var(--o);color:var(--o-d)}
+.seg input:focus-visible+span{outline:3px solid rgba(244,122,56,.45)}
 
-/* PASSPORT BANNER */
-.passport-banner{margin:20px;padding:16px;border-radius:var(--pb-radius);background:var(--pb-grad);color:#fff;display:flex;align-items:center;gap:14px}
-.passport-banner-icon{font-size:32px;flex-shrink:0}
-.passport-banner-info{flex:1}
-.passport-banner-title{font-size:15px;font-weight:800}
-.passport-banner-sub{font-size:12px;opacity:.85;margin-top:2px}
-.passport-btn{padding:8px 16px;border-radius:var(--pb-pill);background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s}
-.passport-btn:hover{background:rgba(255,255,255,.3)}
+/* health card (share) */
+.hcard{border-radius:22px;padding:18px;background:linear-gradient(135deg,#FFEEDF,#FFF8F1);border:1px solid #FBE3D0}
+.hcard .top{display:flex;gap:14px;align-items:center}
+.hcard .av{width:76px;height:76px;border-radius:22px;font-size:36px;border:3px solid #fff}
+.hcard h4{font-size:20px;font-weight:900}
+.hcard .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:12px}
+.hcard .kv span{color:var(--ink2);font-weight:700}.hcard .kv b{font-weight:800}
+.hcard ul{margin:8px 0 0 18px;font-size:13px;line-height:1.6}
 
-/* BREED ALERT CARD */
-.breed-alerts{padding:16px 20px;display:flex;flex-direction:column;gap:8px}
-.breed-alert{display:flex;gap:10px;padding:10px 12px;border-radius:var(--pb-radius-sm);border-left:3px solid}
-.breed-alert.warning{background:var(--pb-amber-soft);border-color:var(--pb-amber)}
-.breed-alert.info{background:var(--pb-blue-soft);border-color:var(--pb-blue)}
-.breed-alert.tip{background:var(--pb-teal-soft);border-color:var(--pb-teal)}
-.breed-alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
-.breed-alert-title{font-size:13px;font-weight:700}
-.breed-alert-desc{font-size:11px;color:var(--pb-text2);margin-top:2px}
-
-/* BOTTOM NAV */
-.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);z-index:300}
+/* toast + misc */
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:var(--pill);font-weight:800;font-size:14px;opacity:0;transition:all .25s;z-index:700;pointer-events:none;max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{background:linear-gradient(90deg,#F6EDE3 25%,#FBF4EC 50%,#F6EDE3 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:var(--r)}
+@keyframes sk{to{background-position:-200% 0}}
+.muted{color:var(--ink2)}
+.sec{margin-top:18px}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;background:#fff;border-top:1px solid var(--line);z-index:300;padding-bottom:env(safe-area-inset-bottom)}
 @media(max-width:768px){.bnav{display:flex}}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;color:var(--pb-text3);cursor:pointer;border:none;background:transparent;transition:color .15s}
-.bnav-item.active,.bnav-item:hover{color:var(--pb-blue)}
-.bnav-item i{font-size:22px}
+.bnav button{flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:800;color:var(--ink2)}
+.bnav button i{font-size:22px}.bnav button.on{color:var(--o)}
+@media print{
+  body{background:#fff;padding:0}.nav,.bnav,.tabs,.qa,.no-print,#drawer-panel,#drawer-overlay{display:none!important}
+  body.print-card .wrap{display:none}body.print-card #cardModal{display:block!important;position:static;background:none}body.print-card #cardModal .md{box-shadow:none;max-height:none;animation:none}
+  body.print-card #cardModal .mf,body.print-card #cardModal .mx{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:flex-end;justify-content:center}
-@media(min-width:600px){.modal-overlay{align-items:center}}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:slideUp .25s ease}
-@media(min-width:600px){.modal{border-radius:16px}}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-.modal-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
-.modal-header h3{font-size:16px;font-weight:800}
-.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
-.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-label{font-size:13px;font-weight:600;color:var(--pb-text)}
-.form-input{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;transition:border .15s}
-.form-input:focus{border-color:var(--pb-blue)}
-.form-select{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;background:#fff}
-.form-textarea{border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:10px 12px;font-size:14px;outline:none;resize:vertical;min-height:80px}
-.form-textarea:focus{border-color:var(--pb-blue)}
-.modal-footer{padding:14px 20px;border-top:1px solid var(--pb-border);display:flex;gap:8px;justify-content:flex-end}
-
+@media(max-width:560px){.hide-s{display:none}.nbtn{padding:0 11px}}
   /* ===== DRAWER STYLES ===== */
   .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
   .drawer-overlay.open{display:block;}
@@ -303,868 +273,459 @@ input,textarea,select{font-family:'Inter',sans-serif}
 </head>
 <body>
 
-<!-- TOP NAV -->
-<nav class="pb-nav">
-  <div class="pb-nav-logo" onclick="location.href='07_home.html'">
-    <div class="pb-nav-logo-icon">🐾</div>
-    <span>PawBook</span>
-  </div>
-  <div class="pb-nav-search">
-    <i class="ti ti-search" style="color:var(--pb-text3);font-size:16px"></i>
-    <input type="text" placeholder="Search records…">
-  </div>
-  <div class="pb-nav-tabs">
-    <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
-    <button class="pb-nav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
-    <button class="pb-nav-tab active"><i class="ti ti-heart-rate-monitor"></i></button>
-    <button class="pb-nav-tab" onclick="location.href='09_marketplace.html'"><i class="ti ti-shopping-bag"></i></button>
-  </div>
-  <div class="pb-nav-right">
-    <button class="pb-icon-btn" onclick="openModal('addEventModal')" title="Add Record"><i class="ti ti-plus"></i></button>
-    <button class="pb-icon-btn" onclick="openModal('shareModal')" title="Share Passport"><i class="ti ti-share"></i></button>
-    <div class="pb-avatar">A</div>
-  </div>
+<nav class="nav">
+  <button class="menu" onclick="openDrawer()" aria-label="Open menu"><i class="ti ti-menu-2"></i></button>
+  <div class="logo" onclick="location.href='07_home.html'"><i>🐾</i><span>PawBook</span></div>
+  <div class="sp"></div>
+  <button class="nbtn no-print" id="nav-share" onclick="openCard()" style="display:none"><i class="ti ti-id-badge-2"></i><span class="hide-s">Health card</span></button>
+  <button class="nbtn no-print" onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i><span class="hide-s">Find a vet</span></button>
 </nav>
 
-<!-- MAIN LAYOUT -->
-<div class="plr-layout">
+<main class="wrap" id="app">
+  <div class="skel" style="height:56px;margin-bottom:12px"></div>
+  <div class="skel" style="height:260px"></div>
+</main>
 
-  <!-- SIDEBAR -->
-  <aside class="plr-sidebar">
-    <!-- Pet Selector -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div class="pb-card-header">
-        <h3><i class="ti ti-paw" style="color:var(--pb-blue)"></i> My Pets</h3>
-        <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="openModal('addPetModal')"><i class="ti ti-plus"></i> Add</button>
-      </div>
-      <div class="pet-selector">
-        <div class="pet-card selected" onclick="selectPet(this,'Bruno')">
-          <div class="pet-avatar">🐕</div>
-          <div class="pet-info">
-            <div class="pet-name">Bruno</div>
-            <div class="pet-breed">Labrador · 3 yrs</div>
-          </div>
-          <div class="pet-score-badge">87</div>
-        </div>
-        <div class="pet-card" onclick="selectPet(this,'Whiskers')">
-          <div class="pet-avatar">🐈</div>
-          <div class="pet-info">
-            <div class="pet-name">Whiskers</div>
-            <div class="pet-breed">Persian · 5 yrs</div>
-          </div>
-          <div class="pet-score-badge" style="background:var(--pb-amber-soft);color:var(--pb-amber)">72</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Health Score -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div class="pb-card-header">
-        <h3><i class="ti ti-activity" style="color:var(--pb-green)"></i> Health Score</h3>
-        <span style="font-size:11px;color:var(--pb-text3)">Updated today</span>
-      </div>
-      <div class="health-score-wrap">
-        <div class="score-ring-container">
-          <svg width="120" height="120" viewBox="0 0 120 120">
-            <defs>
-              <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#1877F2"/>
-                <stop offset="100%" style="stop-color:#22c55e"/>
-              </linearGradient>
-            </defs>
-            <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
-            <circle class="score-ring-fill" id="scoreRing" cx="60" cy="60" r="50"
-              stroke-dasharray="314" stroke-dashoffset="314"/>
-          </svg>
-          <div class="score-center">
-            <div class="score-num" id="scoreNum">0</div>
-            <div class="score-label">/ 100</div>
-          </div>
-        </div>
-        <div class="score-status" id="scoreStatus">Excellent</div>
-        <div class="score-updated">Last updated: Today, 9:00 AM</div>
-      </div>
-      <div class="stat-pillars">
-        <div class="stat-pillar">
-          <div class="stat-pillar-val">28.4<span style="font-size:10px;font-weight:500">kg</span></div>
-          <div class="stat-pillar-label">Weight</div>
-        </div>
-        <div class="stat-pillar">
-          <div class="stat-pillar-val">3<span style="font-size:10px;font-weight:500">yr</span></div>
-          <div class="stat-pillar-label">Age</div>
-        </div>
-        <div class="stat-pillar">
-          <div class="stat-pillar-val" style="color:var(--pb-green)">✓ 8</div>
-          <div class="stat-pillar-label">Vaccines</div>
-        </div>
-      </div>
-      <!-- Breed Alerts -->
-      <div style="padding:0 20px 16px">
-        <div style="font-size:12px;font-weight:700;color:var(--pb-text2);margin-bottom:8px;display:flex;align-items:center;gap:4px"><i class="ti ti-dna"></i> Breed Alerts · Labrador</div>
-        <div class="breed-alerts" style="padding:0;gap:6px">
-          <div class="breed-alert warning">
-            <div class="breed-alert-icon">⚠️</div>
-            <div>
-              <div class="breed-alert-title">Hip Dysplasia Screen</div>
-              <div class="breed-alert-desc">Recommended at age 3–4. Book a vet check.</div>
-            </div>
-          </div>
-          <div class="breed-alert info">
-            <div class="breed-alert-icon">ℹ️</div>
-            <div>
-              <div class="breed-alert-title">Weight Watch</div>
-              <div class="breed-alert-desc">Labradors prone to obesity. Ideal: 25–32 kg.</div>
-            </div>
-          </div>
-          <div class="breed-alert tip">
-            <div class="breed-alert-icon">💡</div>
-            <div>
-              <div class="breed-alert-title">Joint Supplement</div>
-              <div class="breed-alert-desc">Omega-3 & glucosamine recommended after age 3.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="pb-card">
-      <div class="pb-card-header"><h3><i class="ti ti-bolt" style="color:var(--pb-amber)"></i> Quick Actions</h3></div>
-      <div style="padding:12px;display:flex;flex-direction:column;gap:6px">
-        <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add Health Event</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i> Book Vet Visit</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="openModal('shareModal')"><i class="ti ti-id-badge"></i> Share Health Passport</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="location.href='37_pet_ai_health_agent.html'"><i class="ti ti-robot"></i> Ask AI Health Agent</button>
-      </div>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main>
-    <!-- Health Passport Banner -->
-    <div class="passport-banner pb-card" style="margin:0 0 16px;border-radius:var(--pb-radius)">
-      <div class="passport-banner-icon">📋</div>
-      <div class="passport-banner-info">
-        <div class="passport-banner-title">Bruno's Digital Health Passport</div>
-        <div class="passport-banner-sub">Complete lifecycle record · 8 vaccines · 12 vet visits · Last updated today</div>
-      </div>
-      <button class="passport-btn" onclick="openModal('shareModal')"><i class="ti ti-share" style="font-size:13px"></i> Share</button>
-    </div>
-
-    <!-- Active Alerts -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div class="pb-card-header">
-        <h3><i class="ti ti-alert-triangle" style="color:var(--pb-amber)"></i> Active Alerts</h3>
-        <span style="font-size:12px;font-weight:700;padding:3px 10px;background:var(--pb-amber-soft);color:#92400e;border-radius:var(--pb-pill)">2 pending</span>
-      </div>
-      <div class="alerts-section">
-        <div class="alert-chip amber"><i class="ti ti-vaccine"></i> Rabies booster due in 12 days (Nov 23)</div>
-        <div class="alert-chip amber"><i class="ti ti-stethoscope"></i> Annual wellness check overdue by 3 weeks</div>
-        <div class="alert-chip green"><i class="ti ti-pill"></i> Heartgard taken · Next dose: Dec 1</div>
-        <div class="alert-chip blue"><i class="ti ti-trophy"></i> Bruno achieved 7-day activity streak! 🎉</div>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="pb-card">
-      <div class="plr-tabs">
-        <button class="plr-tab active" onclick="switchTab('timeline')">📋 Timeline</button>
-        <button class="plr-tab" onclick="switchTab('vaccinations')">💉 Vaccines</button>
-        <button class="plr-tab" onclick="switchTab('activity')">🏃 Activity</button>
-        <button class="plr-tab" onclick="switchTab('nutrition')">🥩 Nutrition</button>
-        <button class="plr-tab" onclick="switchTab('vetvisits')">🏥 Vet Visits</button>
-        <button class="plr-tab" onclick="switchTab('medications')">💊 Medications</button>
-        <button class="plr-tab" onclick="switchTab('weight')">⚖️ Weight</button>
-        <button class="plr-tab" onclick="switchTab('documents')">📄 Documents</button>
-      </div>
-
-      <!-- TIMELINE TAB -->
-      <div id="tab-timeline" class="tab-content active">
-        <div style="padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">Complete health history</span>
-          <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add</button>
-        </div>
-        <div class="timeline">
-          <div class="tl-item">
-            <div class="tl-dot green"><i class="ti ti-vaccine"></i></div>
-            <div class="tl-body">
-              <div class="tl-title">Leptospirosis Vaccine</div>
-              <div class="tl-meta">Nov 1, 2026 · Dr. Priya Sharma, Paws Clinic</div>
-              <div class="tl-note">Annual booster administered. No adverse reactions. Next due Nov 2027.</div>
-              <span class="tl-tag vax"><i class="ti ti-vaccine"></i> Vaccination</span>
-            </div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot teal"><i class="ti ti-stethoscope"></i></div>
-            <div class="tl-body">
-              <div class="tl-title">Annual Wellness Check</div>
-              <div class="tl-meta">Oct 15, 2026 · Dr. Priya Sharma, Paws Clinic</div>
-              <div class="tl-note">Weight: 28.4 kg (ideal range). Heart, lungs clear. Blood work normal. Hip joints: mild early-stage concern noted — monitoring recommended.</div>
-              <span class="tl-tag vet"><i class="ti ti-stethoscope"></i> Vet Visit</span>
-            </div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot purple"><i class="ti ti-pill"></i></div>
-            <div class="tl-body">
-              <div class="tl-title">Heartgard Plus – Monthly Dose</div>
-              <div class="tl-meta">Nov 1, 2026</div>
-              <div class="tl-note">Heartworm prevention. 1 chewable tablet. Next dose: Dec 1.</div>
-              <span class="tl-tag med"><i class="ti ti-pill"></i> Medication</span>
-            </div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot amber"><i class="ti ti-scale"></i></div>
-            <div class="tl-body">
-              <div class="tl-title">Weight Check</div>
-              <div class="tl-meta">Oct 10, 2026</div>
-              <div class="tl-note">28.4 kg — stable. Down 0.3 kg from last month. Good progress.</div>
-              <span class="tl-tag weight"><i class="ti ti-scale"></i> Weight</span>
-            </div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot blue"><i class="ti ti-vaccine"></i></div>
-            <div class="tl-body">
-              <div class="tl-title">Bordetella (Kennel Cough) Vaccine</div>
-              <div class="tl-meta">Sep 20, 2026 · Dr. Priya Sharma</div>
-              <div class="tl-note">Intranasal vaccine. Prior to dog show registration. No side effects.</div>
-              <span class="tl-tag vax"><i class="ti ti-vaccine"></i> Vaccination</span>
-            </div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot red"><i class="ti ti-urgent"></i></div>
-            <div class="tl-body">
-              <div class="tl-title">Emergency – Swallowed Object</div>
-              <div class="tl-meta">Aug 3, 2026 · Animal Emergency, Delhi</div>
-              <div class="tl-note">Swallowed small plastic toy piece. X-ray confirmed passage. Monitored for 24 hrs. Full recovery. No surgery needed.</div>
-              <span class="tl-tag" style="background:var(--pb-red-soft);color:var(--pb-red)"><i class="ti ti-urgent"></i> Emergency</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VACCINATIONS TAB -->
-      <div id="tab-vaccinations" class="tab-content">
-        <div style="padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">Vaccination schedule · Labrador · 3 yrs</span>
-          <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add</button>
-        </div>
-        <div class="vax-grid">
-          <div class="vax-row">
-            <div class="vax-status done"></div>
-            <div style="flex:1">
-              <div class="vax-name">Rabies</div>
-              <div class="vax-date">Last: Nov 11, 2025</div>
-            </div>
-            <span class="vax-next soon">Due Nov 23</span>
-          </div>
-          <div class="vax-row">
-            <div class="vax-status done"></div>
-            <div style="flex:1">
-              <div class="vax-name">DHPPiL (5-in-1)</div>
-              <div class="vax-date">Last: Mar 5, 2026</div>
-            </div>
-            <span class="vax-next ok">Due Mar 2027</span>
-          </div>
-          <div class="vax-row">
-            <div class="vax-status done"></div>
-            <div style="flex:1">
-              <div class="vax-name">Leptospirosis</div>
-              <div class="vax-date">Last: Nov 1, 2026</div>
-            </div>
-            <span class="vax-next ok">Due Nov 2027</span>
-          </div>
-          <div class="vax-row">
-            <div class="vax-status done"></div>
-            <div style="flex:1">
-              <div class="vax-name">Bordetella</div>
-              <div class="vax-date">Last: Sep 20, 2026</div>
-            </div>
-            <span class="vax-next ok">Due Sep 2027</span>
-          </div>
-          <div class="vax-row">
-            <div class="vax-status overdue"></div>
-            <div style="flex:1">
-              <div class="vax-name">Canine Influenza</div>
-              <div class="vax-date">Last: Oct 2025</div>
-            </div>
-            <span class="vax-next overdue">3 wks overdue</span>
-          </div>
-          <div class="vax-row" style="border:1px dashed var(--pb-border);background:var(--pb-bg)">
-            <div class="vax-status" style="background:var(--pb-text3)"></div>
-            <div style="flex:1">
-              <div class="vax-name" style="color:var(--pb-text2)">Tick-borne Encephalitis</div>
-              <div class="vax-date">Recommended for Labradors in Delhi</div>
-            </div>
-            <span class="vax-next" style="background:var(--pb-bg);color:var(--pb-text2)">Not given</span>
-          </div>
-        </div>
-        <!-- Intelligence section -->
-        <div style="margin:0 20px 20px;padding:14px;border-radius:var(--pb-radius-sm);background:var(--pb-blue-soft);border:1px solid var(--pb-blue)">
-          <div style="font-size:13px;font-weight:700;color:var(--pb-blue);display:flex;align-items:center;gap:6px;margin-bottom:6px"><i class="ti ti-sparkles"></i> Vaccination Intelligence · Age 3</div>
-          <div style="font-size:12px;color:var(--pb-text2);line-height:1.6">At age 3, Labradors should consider: hip screening, annual dental check, and tick prevention especially in Delhi's monsoon season (Jul–Sep). Canine influenza is currently overdue — book a vet visit soon.</div>
-        </div>
-      </div>
-
-      <!-- ACTIVITY TAB -->
-      <div id="tab-activity" class="tab-content">
-        <div class="activity-wrap">
-          <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:12px">Today's Activity</div>
-            <div class="activity-today">
-              <div class="act-stat">
-                <div class="act-stat-icon">🚶</div>
-                <div class="act-stat-val">4.2<span style="font-size:12px;font-weight:500">km</span></div>
-                <div class="act-stat-label">Distance</div>
-              </div>
-              <div class="act-stat">
-                <div class="act-stat-icon">⏱️</div>
-                <div class="act-stat-val">48<span style="font-size:12px;font-weight:500">min</span></div>
-                <div class="act-stat-label">Active Time</div>
-              </div>
-              <div class="act-stat">
-                <div class="act-stat-icon">🔥</div>
-                <div class="act-stat-val">320<span style="font-size:12px;font-weight:500">cal</span></div>
-                <div class="act-stat-label">Calories</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px">This Week</div>
-            <div class="act-weekly">
-              <div class="act-day-col">
-                <div class="act-day-bar" style="height:55%"></div>
-                <div class="act-day-label">Mon</div>
-              </div>
-              <div class="act-day-col">
-                <div class="act-day-bar" style="height:70%"></div>
-                <div class="act-day-label">Tue</div>
-              </div>
-              <div class="act-day-col">
-                <div class="act-day-bar" style="height:40%"></div>
-                <div class="act-day-label">Wed</div>
-              </div>
-              <div class="act-day-col">
-                <div class="act-day-bar" style="height:90%"></div>
-                <div class="act-day-label">Thu</div>
-              </div>
-              <div class="act-day-col">
-                <div class="act-day-bar" style="height:65%"></div>
-                <div class="act-day-label">Fri</div>
-              </div>
-              <div class="act-day-col">
-                <div class="act-day-bar" style="height:80%"></div>
-                <div class="act-day-label">Sat</div>
-              </div>
-              <div class="act-day-col">
-                <div class="act-day-bar today" style="height:60%"></div>
-                <div class="act-day-label">Sun</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Activity Log</div>
-            <div class="act-log">
-              <div class="act-log-item">
-                <div class="act-log-icon">🏃</div>
-                <div class="act-log-info">
-                  <div class="act-log-title">Morning Run</div>
-                  <div class="act-log-meta">Today · 6:30 AM · 2.8 km · 28 min</div>
-                </div>
-                <div class="act-log-cal">210 cal</div>
-              </div>
-              <div class="act-log-item">
-                <div class="act-log-icon">🎾</div>
-                <div class="act-log-info">
-                  <div class="act-log-title">Fetch Play Session</div>
-                  <div class="act-log-meta">Today · 5:30 PM · 20 min</div>
-                </div>
-                <div class="act-log-cal">110 cal</div>
-              </div>
-              <div class="act-log-item">
-                <div class="act-log-icon">🚶</div>
-                <div class="act-log-info">
-                  <div class="act-log-title">Evening Walk</div>
-                  <div class="act-log-meta">Yesterday · 7:00 PM · 1.4 km · 20 min</div>
-                </div>
-                <div class="act-log-cal">95 cal</div>
-              </div>
-              <div class="act-log-item">
-                <div class="act-log-icon">🏊</div>
-                <div class="act-log-info">
-                  <div class="act-log-title">Swimming Session</div>
-                  <div class="act-log-meta">Nov 9 · 10:00 AM · 30 min</div>
-                </div>
-                <div class="act-log-cal">280 cal</div>
-              </div>
-            </div>
-          </div>
-          <div style="padding:12px;background:var(--pb-teal-soft);border-radius:var(--pb-radius-sm);border-left:3px solid var(--pb-teal)">
-            <div style="font-size:13px;font-weight:700;color:var(--pb-teal)">🎯 Activity Goal</div>
-            <div style="font-size:12px;color:var(--pb-text2);margin-top:4px">Labradors need 60–90 min of exercise daily. Bruno is at 48 min today. Try a short evening walk to hit the goal.</div>
-          </div>
-          <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center" onclick="openModal('addActivityModal')"><i class="ti ti-plus"></i> Log Activity</button>
-        </div>
-      </div>
-
-      <!-- NUTRITION TAB -->
-      <div id="tab-nutrition" class="tab-content">
-        <div class="nutrition-wrap">
-          <div class="nut-plan">
-            <div class="nut-plan-title"><i class="ti ti-sparkles"></i> AI Nutrition Plan · Bruno</div>
-            <div class="nut-plan-desc">Labrador · 3 yrs · 28.4 kg · Moderately active · Hip concern noted</div>
-          </div>
-          <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Daily Macros</div>
-            <div class="nut-macros">
-              <div class="nut-macro">
-                <div class="nut-macro-val">1,480</div>
-                <div class="nut-macro-label">Calories</div>
-              </div>
-              <div class="nut-macro">
-                <div class="nut-macro-val">115g</div>
-                <div class="nut-macro-label">Protein</div>
-              </div>
-              <div class="nut-macro">
-                <div class="nut-macro-val">54g</div>
-                <div class="nut-macro-label">Fat</div>
-              </div>
-              <div class="nut-macro">
-                <div class="nut-macro-val">160g</div>
-                <div class="nut-macro-label">Carbs</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Meal Schedule</div>
-            <div class="nut-schedule">
-              <div class="nut-meal">
-                <div class="nut-meal-time">7:00 AM</div>
-                <div class="nut-meal-info">
-                  <div class="nut-meal-name">Morning Meal</div>
-                  <div class="nut-meal-qty">Royal Canin Labrador Adult · 180g + Omega-3 supplement</div>
-                </div>
-                <div class="nut-meal-done checked" onclick="toggleMeal(this)">✓</div>
-              </div>
-              <div class="nut-meal">
-                <div class="nut-meal-time">1:00 PM</div>
-                <div class="nut-meal-info">
-                  <div class="nut-meal-name">Afternoon Snack</div>
-                  <div class="nut-meal-qty">Dental chew · 1 piece</div>
-                </div>
-                <div class="nut-meal-done checked" onclick="toggleMeal(this)">✓</div>
-              </div>
-              <div class="nut-meal">
-                <div class="nut-meal-time">6:00 PM</div>
-                <div class="nut-meal-info">
-                  <div class="nut-meal-name">Evening Meal</div>
-                  <div class="nut-meal-qty">Royal Canin Labrador Adult · 180g</div>
-                </div>
-                <div class="nut-meal-done" onclick="toggleMeal(this)"></div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div style="font-size:13px;font-weight:700;margin-bottom:8px">Safe & Avoid</div>
-            <div class="nut-foods">
-              <span class="nut-food-chip ok">✓ Chicken</span>
-              <span class="nut-food-chip ok">✓ Rice</span>
-              <span class="nut-food-chip ok">✓ Carrots</span>
-              <span class="nut-food-chip ok">✓ Blueberries</span>
-              <span class="nut-food-chip ok">✓ Pumpkin</span>
-              <span class="nut-food-chip avoid">✗ Chocolate</span>
-              <span class="nut-food-chip avoid">✗ Grapes</span>
-              <span class="nut-food-chip avoid">✗ Onions</span>
-              <span class="nut-food-chip avoid">✗ Avocado</span>
-              <span class="nut-food-chip avoid">✗ Xylitol</span>
-            </div>
-          </div>
-          <div style="padding:12px;background:var(--pb-blue-soft);border-radius:var(--pb-radius-sm);border-left:3px solid var(--pb-blue)">
-            <div style="font-size:13px;font-weight:700;color:var(--pb-blue)">🦴 Hip Health Nutrition Note</div>
-            <div style="font-size:12px;color:var(--pb-text2);margin-top:4px">Given Bruno's mild hip concern, the plan includes Omega-3 (fish oil) and glucosamine-rich foods. Avoid high-calorie treats to maintain ideal weight and reduce joint stress.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VET VISITS TAB -->
-      <div id="tab-vetvisits" class="tab-content">
-        <div class="vet-visits-wrap">
-          <div class="upcoming-visit">
-            <div style="font-size:28px">📅</div>
-            <div class="upcoming-visit-info">
-              <div class="upcoming-visit-title">Annual Wellness Check – Overdue</div>
-              <div class="upcoming-visit-meta">Was due Oct 20 · Dr. Priya Sharma · Paws Clinic, Delhi</div>
-            </div>
-            <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="location.href='11_vet_booking.html'">Book Now</button>
-          </div>
-          <div class="vet-visit-card">
-            <div class="vet-visit-header">
-              <div class="vet-visit-icon"><i class="ti ti-stethoscope"></i></div>
-              <div>
-                <div class="vet-visit-title">Annual Wellness Check</div>
-                <div class="vet-visit-date">Oct 15, 2026</div>
-              </div>
-            </div>
-            <div class="vet-visit-vet"><i class="ti ti-user" style="font-size:12px"></i> Dr. Priya Sharma · Paws Animal Clinic, South Delhi</div>
-            <div class="vet-visit-notes">Weight stable at 28.4 kg. Heart and lungs clear. CBC normal. Mild early hip joint concern — recommend monitoring. Hip X-ray suggested at next visit. Dental health good. Ears clean. No skin issues noted.</div>
-            <div class="vet-visit-tags">
-              <span class="vet-visit-tag">Wellness</span>
-              <span class="vet-visit-tag">Blood Work</span>
-              <span class="vet-visit-tag">Hip Check</span>
-            </div>
-          </div>
-          <div class="vet-visit-card">
-            <div class="vet-visit-header">
-              <div class="vet-visit-icon" style="background:var(--pb-red-soft);color:var(--pb-red)"><i class="ti ti-urgent"></i></div>
-              <div>
-                <div class="vet-visit-title">Emergency – Swallowed Object</div>
-                <div class="vet-visit-date">Aug 3, 2026</div>
-              </div>
-            </div>
-            <div class="vet-visit-vet"><i class="ti ti-user" style="font-size:12px"></i> Dr. Arvind Kumar · Animal Emergency Hospital, Delhi</div>
-            <div class="vet-visit-notes">Bruno swallowed a small plastic piece. X-ray confirmed small intestine location. Conservative management chosen — monitored 24 hrs. Passed naturally. No complications. Advised pet-proofing home environment.</div>
-            <div class="vet-visit-tags">
-              <span class="vet-visit-tag" style="background:var(--pb-red-soft);color:var(--pb-red)">Emergency</span>
-              <span class="vet-visit-tag" style="background:var(--pb-red-soft);color:var(--pb-red)">X-Ray</span>
-            </div>
-          </div>
-          <div class="vet-visit-card">
-            <div class="vet-visit-header">
-              <div class="vet-visit-icon"><i class="ti ti-stethoscope"></i></div>
-              <div>
-                <div class="vet-visit-title">Vaccination + Check-up</div>
-                <div class="vet-visit-date">Mar 5, 2026</div>
-              </div>
-            </div>
-            <div class="vet-visit-vet"><i class="ti ti-user" style="font-size:12px"></i> Dr. Priya Sharma · Paws Animal Clinic</div>
-            <div class="vet-visit-notes">Annual DHPPiL booster. Full physical exam normal. Weight 28.7 kg — slightly high, recommended portion control. All vitals normal.</div>
-            <div class="vet-visit-tags">
-              <span class="vet-visit-tag">Vaccination</span>
-              <span class="vet-visit-tag">Wellness</span>
-            </div>
-          </div>
-          <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add Vet Visit</button>
-        </div>
-      </div>
-
-      <!-- MEDICATIONS TAB -->
-      <div id="tab-medications" class="tab-content">
-        <div class="med-list">
-          <div style="font-size:13px;font-weight:600;color:var(--pb-text2)">Active Medications</div>
-          <div class="med-card">
-            <div class="med-icon" style="background:var(--pb-blue-soft);color:var(--pb-blue)">💊</div>
-            <div class="med-info">
-              <div class="med-name">Heartgard Plus</div>
-              <div class="med-dose">1 chewable tablet · Monthly · Heartworm prevention</div>
-              <div class="med-next">Next dose: Dec 1, 2026</div>
-            </div>
-            <span class="med-status active">Active</span>
-          </div>
-          <div class="med-card">
-            <div class="med-icon" style="background:var(--pb-teal-soft);color:var(--pb-teal)">🐛</div>
-            <div class="med-info">
-              <div class="med-name">NexGard</div>
-              <div class="med-dose">1 chewable tablet · Monthly · Flea & tick prevention</div>
-              <div class="med-next">Next dose: Nov 25, 2026</div>
-            </div>
-            <span class="med-status active">Active</span>
-          </div>
-          <div class="med-card">
-            <div class="med-icon" style="background:var(--pb-orange-soft);color:var(--pb-orange)">🐟</div>
-            <div class="med-info">
-              <div class="med-name">Omega-3 Fish Oil</div>
-              <div class="med-dose">1 capsule daily with morning meal · Joint & coat health</div>
-              <div class="med-next">Ongoing supplement</div>
-            </div>
-            <span class="med-status active">Active</span>
-          </div>
-          <div style="font-size:13px;font-weight:600;color:var(--pb-text2);margin-top:4px">Past Medications</div>
-          <div class="med-card" style="opacity:.7">
-            <div class="med-icon" style="background:var(--pb-bg);color:var(--pb-text3)">💉</div>
-            <div class="med-info">
-              <div class="med-name">Amoxicillin</div>
-              <div class="med-dose">1 tablet twice daily · 10-day course · Post-emergency Aug 2026</div>
-              <div class="med-next">Completed Aug 13, 2026</div>
-            </div>
-            <span class="med-status paused">Completed</span>
-          </div>
-          <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center" onclick="openModal('addEventModal')"><i class="ti ti-plus"></i> Add Medication</button>
-        </div>
-      </div>
-
-      <!-- WEIGHT TAB -->
-      <div id="tab-weight" class="tab-content">
-        <div class="weight-chart-wrap">
-          <div style="font-size:13px;font-weight:600;color:var(--pb-text2);margin-bottom:12px">Weight History (last 6 months)</div>
-          <div class="weight-bars" id="weightBars"></div>
-          <div style="font-size:11px;color:var(--pb-text3);text-align:center;margin-bottom:16px">Ideal range: 25–32 kg for adult Labrador</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
-              <span style="font-size:13px;font-weight:600">Jun 2026</span><span style="font-size:13px;font-weight:700">29.1 kg</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
-              <span style="font-size:13px;font-weight:600">Jul 2026</span><span style="font-size:13px;font-weight:700">29.0 kg</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
-              <span style="font-size:13px;font-weight:600">Aug 2026</span><span style="font-size:13px;font-weight:700">28.9 kg</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
-              <span style="font-size:13px;font-weight:600">Sep 2026</span><span style="font-size:13px;font-weight:700">28.7 kg</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
-              <span style="font-size:13px;font-weight:600">Oct 2026</span><span style="font-size:13px;font-weight:700">28.4 kg</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--pb-blue-soft);border-radius:var(--pb-radius-sm);border:1px solid var(--pb-blue)">
-              <span style="font-size:13px;font-weight:700;color:var(--pb-blue)">Nov 2026 (Latest)</span><span style="font-size:13px;font-weight:800;color:var(--pb-blue)">28.4 kg</span>
-            </div>
-          </div>
-          <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center;margin-top:16px" onclick="openModal('addWeightModal')"><i class="ti ti-plus"></i> Log Weight</button>
-        </div>
-      </div>
-
-      <!-- DOCUMENTS TAB -->
-      <div id="tab-documents" class="tab-content">
-        <div style="padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">Health documents & records</span>
-          <button class="pb-btn pb-btn-blue pb-btn-sm"><i class="ti ti-upload"></i> Upload</button>
-        </div>
-        <div class="doc-grid">
-          <div class="doc-item"><div class="doc-icon">📋</div><div class="doc-name">Vaccination Certificate</div><div class="doc-date">Nov 2026</div></div>
-          <div class="doc-item"><div class="doc-icon">🧪</div><div class="doc-name">Blood Work Report</div><div class="doc-date">Oct 2026</div></div>
-          <div class="doc-item"><div class="doc-icon">📷</div><div class="doc-name">Hip X-Ray</div><div class="doc-date">Aug 2026</div></div>
-          <div class="doc-item"><div class="doc-icon">💊</div><div class="doc-name">Prescription</div><div class="doc-date">Aug 2026</div></div>
-          <div class="doc-item"><div class="doc-icon">📄</div><div class="doc-name">Insurance Policy</div><div class="doc-date">Jan 2026</div></div>
-          <div class="doc-item" style="border:2px dashed var(--pb-border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;min-height:90px">
-            <div style="font-size:24px;color:var(--pb-text3)">+</div>
-            <div class="doc-name" style="color:var(--pb-text3)">Add Document</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- BOTTOM NAV -->
 <nav class="bnav">
-  <button class="bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
-  <button class="bnav-item" onclick="location.href='13_messages.html'"><i class="ti ti-message-circle"></i><span>Messages</span></button>
-  <button class="bnav-item active"><i class="ti ti-heart-rate-monitor"></i><span>Health</span></button>
-  <button class="bnav-item" onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i><span>Vet</span></button>
-  <button class="bnav-item" onclick="location.href='02_profile.html'"><i class="ti ti-user"></i><span>Profile</span></button>
+  <button onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
+  <button onclick="location.href='13_messages.html'"><i class="ti ti-message-circle"></i>Messages</button>
+  <button class="on"><i class="ti ti-heart-handshake"></i>Pet health</button>
+  <button onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i>Vets</button>
+  <button onclick="location.href='29_user_profile.html'"><i class="ti ti-user"></i>Profile</button>
 </nav>
 
-<!-- ADD EVENT MODAL -->
-<div class="modal-overlay" id="addEventModal" onclick="closeModalOutside(event,'addEventModal')">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Add Health Event</h3>
-      <button class="modal-close" onclick="closeModal('addEventModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Event Type</label>
-        <select class="form-select">
-          <option>Vaccination</option>
-          <option>Vet Visit</option>
-          <option>Medication</option>
-          <option>Weight Check</option>
-          <option>Emergency</option>
-          <option>Surgery</option>
-          <option>Lab Test</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Title / Name</label>
-        <input type="text" class="form-input" placeholder="e.g. Rabies Booster, Annual Check-up">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Date</label>
-        <input type="date" class="form-input" id="eventDate">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Vet / Clinic (optional)</label>
-        <input type="text" class="form-input" placeholder="Dr. Name, Clinic Name">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <textarea class="form-textarea" placeholder="Findings, instructions, next steps…"></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('addEventModal')">Cancel</button>
-      <button class="pb-btn pb-btn-blue" onclick="closeModal('addEventModal')"><i class="ti ti-check"></i> Save Event</button>
+<!-- generic form modal -->
+<div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
+  <div class="md" role="dialog" aria-modal="true" aria-labelledby="mo-title">
+    <div class="mh"><h3 id="mo-title"></h3><button class="mx" onclick="closeMo()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <form id="mo-form" novalidate onsubmit="submitMo(event)"><div class="mb" id="mo-body"></div>
+      <div class="mf"><button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-check"></i><span>Save</span></button></div></form>
+  </div>
+</div>
+
+<!-- health card modal -->
+<div class="mo" id="cardModal" onclick="if(event.target===this)closeCard()">
+  <div class="md" role="dialog" aria-modal="true" aria-labelledby="card-title">
+    <div class="mh"><h3 id="card-title">Health card</h3><button class="mx" onclick="closeCard()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <div class="mb" id="card-body"></div>
+    <div class="mf" style="flex-wrap:wrap">
+      <button class="btn btn-w" onclick="shareCardWA()"><i class="ti ti-brand-whatsapp"></i>Send on WhatsApp</button>
+      <button class="btn btn-o" onclick="printCard()"><i class="ti ti-printer"></i>Print / save PDF</button>
     </div>
   </div>
 </div>
 
-<!-- ADD PET MODAL -->
-<div class="modal-overlay" id="addPetModal" onclick="closeModalOutside(event,'addPetModal')">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Add a Pet</h3>
-      <button class="modal-close" onclick="closeModal('addPetModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Pet Name</label><input type="text" class="form-input" placeholder="Buddy, Luna, Max…"></div>
-      <div class="form-group"><label class="form-label">Species</label>
-        <select class="form-select"><option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option></select>
-      </div>
-      <div class="form-group"><label class="form-label">Breed</label><input type="text" class="form-input" placeholder="Labrador, Persian, Indie…"></div>
-      <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input"></div>
-      <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" class="form-input" placeholder="e.g. 12.5"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('addPetModal')">Cancel</button>
-      <button class="pb-btn pb-btn-blue" onclick="closeModal('addPetModal')"><i class="ti ti-check"></i> Add Pet</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD WEIGHT MODAL -->
-<div class="modal-overlay" id="addWeightModal" onclick="closeModalOutside(event,'addWeightModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>Log Weight</h3><button class="modal-close" onclick="closeModal('addWeightModal')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" class="form-input" placeholder="e.g. 28.4" step="0.1"></div>
-      <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input"></div>
-      <div class="form-group"><label class="form-label">Notes (optional)</label><textarea class="form-textarea" placeholder="After grooming, before meal…"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('addWeightModal')">Cancel</button>
-      <button class="pb-btn pb-btn-blue" onclick="closeModal('addWeightModal')"><i class="ti ti-check"></i> Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD ACTIVITY MODAL -->
-<div class="modal-overlay" id="addActivityModal" onclick="closeModalOutside(event,'addActivityModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>Log Activity</h3><button class="modal-close" onclick="closeModal('addActivityModal')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Activity Type</label>
-        <select class="form-select"><option>Walk</option><option>Run</option><option>Fetch / Play</option><option>Swimming</option><option>Training</option><option>Other</option></select>
-      </div>
-      <div class="form-group"><label class="form-label">Duration (minutes)</label><input type="number" class="form-input" placeholder="e.g. 30"></div>
-      <div class="form-group"><label class="form-label">Distance (km, optional)</label><input type="number" class="form-input" placeholder="e.g. 2.5" step="0.1"></div>
-      <div class="form-group"><label class="form-label">Date & Time</label><input type="datetime-local" class="form-input"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('addActivityModal')">Cancel</button>
-      <button class="pb-btn pb-btn-blue" onclick="closeModal('addActivityModal')"><i class="ti ti-check"></i> Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- SHARE / PASSPORT MODAL -->
-<div class="modal-overlay" id="shareModal" onclick="closeModalOutside(event,'shareModal')">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>🛂 Share Health Passport</h3>
-      <button class="modal-close" onclick="closeModal('shareModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="text-align:center;padding:16px 0">
-        <div style="font-size:48px;margin-bottom:8px">📋</div>
-        <div style="font-size:16px;font-weight:800">Bruno's Health Passport</div>
-        <div style="font-size:13px;color:var(--pb-text2);margin-top:4px">Labrador · Male · 3 years · 28.4 kg</div>
-        <div style="font-size:12px;color:var(--pb-text3);margin-top:4px">8 vaccines · 12 vet visits · Last updated today</div>
-      </div>
-      <div style="padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px;text-align:center;color:var(--pb-text2)">
-        Share this link with your vet for instant access to Bruno's complete health history.
-      </div>
-      <div style="display:flex;gap:6px">
-        <input type="text" class="form-input" value="https://pawbook.deemona.com/passport/bruno-3x7k" readonly style="flex:1;background:var(--pb-bg);font-size:12px">
-        <button class="pb-btn pb-btn-blue" onclick="this.textContent='Copied!'">Copy</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center"><i class="ti ti-mail"></i> Email to Vet</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center"><i class="ti ti-download"></i> Download PDF</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center"><i class="ti ti-qrcode"></i> Show QR Code</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="photo-in" accept="image/jpeg,image/png,image/webp" hidden>
 
 <script>
-// Tab switching
-function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.plr-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  event.target.classList.add('active');
-}
+/* ===================== PawBook Pet Health (36) ===================== */
+var API = 'https://pawbook.deemona.com/api/v1';
+var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
+var PETS = [], PID = null, D = null, TAB = 'overview', TLF = 'all', MO = null, TLN = 10;
 
-// Modal helpers
-function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
-function closeModalOutside(e,id) { if(e.target.id===id) closeModal(id); }
-
-// Pet selector
-function selectPet(el, pet) {
-  document.querySelectorAll('.pet-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  // In production: reload data for selected pet
-}
-
-// Animate health score ring on load
-function animateScore(target) {
-  const ring = document.getElementById('scoreRing');
-  const numEl = document.getElementById('scoreNum');
-  const circumference = 314;
-  let current = 0;
-  const increment = target / 60;
-  const timer = setInterval(() => {
-    current = Math.min(current + increment, target);
-    const offset = circumference - (current / 100) * circumference;
-    ring.style.strokeDashoffset = offset;
-    numEl.textContent = Math.round(current);
-    if (current >= target) clearInterval(timer);
-  }, 16);
-}
-
-// Weight chart bars
-function renderWeightBars() {
-  const data = [
-    {month:'Jun',val:29.1},{month:'Jul',val:29.0},{month:'Aug',val:28.9},
-    {month:'Sep',val:28.7},{month:'Oct',val:28.4},{month:'Nov',val:28.4}
-  ];
-  const max = 32, min = 24;
-  const container = document.getElementById('weightBars');
-  if (!container) return;
-  container.innerHTML = data.map((d,i) => {
-    const pct = ((d.val - min) / (max - min)) * 100;
-    const isLatest = i === data.length - 1;
-    return `<div class="weight-bar-col">
-      <div class="weight-val">${d.val}</div>
-      <div class="weight-bar${isLatest?' latest':''}" style="height:${pct}%"></div>
-      <div class="weight-bar-label">${d.month}</div>
-    </div>`;
-  }).join('');
-}
-
-// Meal toggle
-function toggleMeal(el) {
-  el.classList.toggle('checked');
-  el.textContent = el.classList.contains('checked') ? '✓' : '';
-}
-
-// Set today's date in forms
-document.addEventListener('DOMContentLoaded', () => {
-  const today = new Date().toISOString().split('T')[0];
-  document.querySelectorAll('input[type="date"]').forEach(el => { if(!el.value) el.value = today; });
-  setTimeout(() => animateScore(87), 300);
-  renderWeightBars();
-});
-
-// Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(r => console.log('[SW] Registered:', r.scope))
-      .catch(e => console.warn('[SW] Failed:', e));
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function toast(m){ var t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
+function api(path, o){
+  o = o || {}; var h = {}; if (TOKEN) h.Authorization = 'Bearer ' + TOKEN;
+  var body = o.body; if (body && !(body instanceof FormData)) { h['Content-Type'] = 'application/json'; body = JSON.stringify(body); }
+  return fetch(API + path, {method: o.method || 'GET', headers: h, body: body}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if (!r.ok || j.success === false) { var e = new Error(j.message || j.error || ('Something went wrong (' + r.status + ')')); e.status = r.status; e.fields = j.fields; throw e; }
+      return j.data !== undefined ? j.data : j;
+    });
   });
 }
+function fail(e){ if (e && e.status === 401) { location.href = '01_login.html'; return; } toast(e && e.status === 429 ? 'Too many attempts — please wait a moment' : ((e && e.message) || 'Something went wrong')); }
+function today(){ var d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
+function fd(v, o){ if (!v) return ''; var d = new Date(String(v).length === 10 ? v + 'T00:00:00' : v); return isNaN(d) ? '' : d.toLocaleDateString('en-IN', o || {day: 'numeric', month: 'short', year: 'numeric'}); }
+function daysTo(v){ if (!v) return null; var a = new Date(today() + 'T00:00:00'), b = new Date(String(v).slice(0, 10) + 'T00:00:00'); return Math.round((b - a) / 86400000); }
+function rel(n){ return n === 0 ? 'today' : n === 1 ? 'tomorrow' : n === -1 ? 'yesterday' : n > 0 ? 'in ' + n + ' days' : Math.abs(n) + ' days ago'; }
+function num(v, d){ var n = Number(v); return isFinite(n) ? (d != null ? n.toFixed(d) : n) : ''; }
+var SPECIES = {dog: '🐕', cat: '🐈', bird: '🦜', rabbit: '🐇', fish: '🐠', hamster: '🐹', turtle: '🐢', horse: '🐴'};
+function emo(p){ return SPECIES[String((p && p.species) || '').toLowerCase()] || '🐾'; }
+function avatar(p, cls, size){ return '<div class="av ' + (cls || '') + '"' + (size ? ' style="width:' + size + 'px;height:' + size + 'px"' : '') + '>' + (p && p.photo ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" onerror="this.parentNode.textContent=\'' + emo(p) + '\'">' : emo(p)) + '</div>'; }
+function him(p){ var g = String((p && p.gender) || '').toLowerCase(); return g === 'male' ? ['he', 'his', 'him'] : g === 'female' ? ['she', 'her', 'her'] : ['they', 'their', 'them']; }
+
+/* ---------- load ---------- */
+function boot(){
+  if (!TOKEN) { location.href = '01_login.html'; return; }
+  api('/petcare/pets').then(function(d){
+    PETS = d.pets || [];
+    if (!PETS.length) return renderWelcome();
+    var saved = null; try { saved = localStorage.getItem('pb_health_pet'); } catch (e) {}
+    var q = new URLSearchParams(location.search).get('pet');
+    PID = [q, saved].filter(function(x){ return x && PETS.some(function(p){ return String(p.id) === String(x); }); })[0] || String(PETS[0].id);
+    loadPet();
+  }).catch(function(e){ if (e.status === 401) return fail(e); document.getElementById('app').innerHTML = emptyBox('🐾', 'Could not load your pets', (e.message || '') + ' Please refresh in a moment.'); });
+}
+function loadPet(keepTab){
+  if (!keepTab) TLN = 10;
+  try { localStorage.setItem('pb_health_pet', PID); } catch (e) {}
+  return api('/petcare/pets/' + encodeURIComponent(PID) + '/overview').then(function(d){ D = d; if (!keepTab) TLF = 'all'; render(); }).catch(fail);
+}
+function pickPet(id){ if (String(id) === String(PID)) return; PID = String(id); document.getElementById('app').style.opacity = '.55'; loadPet().then(function(){ document.getElementById('app').style.opacity = ''; }); }
+
+/* ---------- render ---------- */
+function emptyBox(e, t, p, btn){ return '<div class="empty"><div class="e">' + e + '</div><b>' + esc(t) + '</b>' + (p ? '<p>' + esc(p) + '</p>' : '') + (btn || '') + '</div>'; }
+function renderWelcome(){
+  document.getElementById('nav-share').style.display = 'none';
+  document.getElementById('app').innerHTML = '<div class="hero" style="text-align:center;padding:40px 20px"><div style="font-size:64px">🐶🐱</div><h1 style="justify-content:center;margin-top:10px">Let\'s start your pet\'s health story</h1>'
+    + '<p class="tag" style="max-width:520px;margin:10px auto 0">Add your pet to keep vaccines, vet visits, medicines, weight, daily care and happy memories in one warm place.</p>'
+    + '<div style="margin-top:18px"><button class="btn btn-o" onclick="openForm(\'pet\')"><i class="ti ti-plus"></i>Add my pet</button></div></div>';
+}
+function render(){
+  var p = D.pet, pr = him(p), w = D.wellness || {}, h = '';
+  document.title = p.name + "'s health – PawBook";
+  document.getElementById('nav-share').style.display = '';
+  // pet switcher
+  h += '<div class="pets" role="tablist" aria-label="Your pets">' + PETS.map(function(x){ var on = String(x.id) === String(PID);
+    return '<button class="pchip' + (on ? ' on' : '') + '" role="tab" aria-selected="' + on + '" onclick="pickPet(\'' + esc(x.id) + '\')">' + avatar(x) + esc(x.name) + '</button>'; }).join('')
+    + '<button class="pchip add" onclick="openForm(\'pet\')"><i class="ti ti-plus"></i> Add pet</button></div>';
+  // identity
+  var st = w.score == null ? ['st-new', 'ti-sparkles', 'Just getting started'] : w.score >= 80 ? ['st-great', 'ti-heart', 'Doing great'] : w.score >= 55 ? ['st-ok', 'ti-thumb-up', 'Doing well'] : ['st-care', 'ti-alert-circle', 'Needs a little care'];
+  var facts = [p.breed || cap(p.species), p.age_label, p.gender && p.gender !== 'unknown' ? cap(p.gender) : ''].filter(Boolean);
+  var c = D.counts || {};
+  h += '<section class="hero" aria-label="' + esc(p.name) + ' profile"><div class="hero-top"><div class="hero-photo">' + (p.photo ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '">' : emo(p))
+    + '<button class="cam no-print" onclick="pickPhoto(\'pet\')" aria-label="Change photo" title="Change photo"><i class="ti ti-camera"></i></button></div>'
+    + '<div style="min-width:0"><h1>Hello, ' + esc(p.name) + '! <span aria-hidden="true">🐾</span></h1><div class="tag">' + esc(heroLine(p, w, pr)) + '</div>'
+    + '<div class="facts">' + facts.map(function(f){ return '<span class="fact">' + esc(f) + '</span>'; }).join('') + '<span class="status ' + st[0] + '"><i class="ti ' + st[1] + '"></i>' + st[2] + '</span></div>'
+    + '<div class="hero-edit no-print"><button class="btn btn-w btn-s" onclick="openForm(\'pet\', D.pet)"><i class="ti ti-pencil"></i>Edit profile</button><button class="btn btn-w btn-s" onclick="openCard()"><i class="ti ti-id-badge-2"></i>Share ' + esc(p.name) + '\'s health card</button></div></div></div>'
+    + '<div class="hero-stats">' + [[p.weight_kg != null ? num(p.weight_kg) + '<small style="font-size:13px"> kg</small>' : '—', 'Weight'], [c.vaccines || 0, 'Vaccines'], [c.vet_visits || 0, 'Vet visits'], [(D.daily && D.daily.streak) || 0, 'Days of care in a row']]
+      .map(function(s){ return '<div class="hs"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('') + '</div>'
+    + '<div class="hero-foot">' + esc(footLine(p)) + '</div></section>';
+  // wellness + reminders
+  h += '<div class="grid sec"><section class="card"><div class="ch"><h2><i class="ti ti-heart-rate-monitor"></i>' + esc(p.name) + '\'s wellness</h2></div><div class="cb">' + wellHTML(p, w) + '</div></section>'
+    + '<section class="card"><div class="ch"><h2><i class="ti ti-paw"></i>' + esc(p.name) + '\'s care reminders</h2>' + (D.reminders.filter(function(r){ return r.status === 'overdue' || r.status === 'soon'; }).length ? '<span class="badge">' + D.reminders.filter(function(r){ return r.status === 'overdue' || r.status === 'soon'; }).length + ' due soon</span>' : '') + '</div><div class="cb">' + remHTML(p) + '</div></section></div>';
+  // quick actions
+  h += '<section class="sec no-print" aria-label="Quick actions"><div class="qa">' + [
+    ['c-peach', 'ti-clipboard-heart', 'Add a health update', "openForm('update')"], ['c-amber', 'ti-scale', 'Record weight', "openForm('weight')"], ['c-sky', 'ti-vaccine', 'Add a vaccination', "openForm('vaccine')"],
+    ['c-lav', 'ti-pill', 'Add a medicine', "openForm('medicine')"], ['c-sage', 'ti-walk', 'Log a walk or play', "openForm('walk')"], ['c-peach', 'ti-bowl', 'Log a meal', "openForm('meal')"],
+    ['c-sky', 'ti-file-upload', 'Upload a vet prescription', "openForm('doc')"], ['c-coral', 'ti-camera-heart', 'Add a pet memory', "openForm('memory')"],
+    ['c-sage', 'ti-stethoscope', 'Find a vet for ' + p.name, "location.href='11_vet_booking.html'"], ['c-lav', 'ti-message-chatbot', 'Ask PawBook Pet Care AI', "location.href='37_pet_ai_health_agent.html'"]
+  ].map(function(a){ return '<button class="' + a[0] + '" onclick="' + a[3] + '"><i class="ti ' + a[1] + '"></i>' + esc(a[2]) + '</button>'; }).join('') + '</div></section>';
+  // tabs
+  var TABS = [['overview', 'ti-home-heart', 'Overview'], ['vaccines', 'ti-vaccine', 'Vaccines'], ['activity', 'ti-walk', 'Activity'], ['nutrition', 'ti-bowl', 'Nutrition'], ['vet', 'ti-stethoscope', 'Vet care'], ['medicines', 'ti-pill', 'Medicines'], ['weight', 'ti-scale', 'Weight'], ['memories', 'ti-camera-heart', 'Memories'], ['records', 'ti-folder-heart', 'Pet records']];
+  h += '<nav class="tabs" role="tablist" aria-label="Health and care">' + TABS.map(function(t){ return '<button class="tab' + (t[0] === 'records' ? ' rec' : '') + (TAB === t[0] ? ' on' : '') + '" role="tab" aria-selected="' + (TAB === t[0]) + '" onclick="setTab(\'' + t[0] + '\')"><i class="ti ' + t[1] + '"></i>' + t[2] + '</button>'; }).join('') + '</nav>';
+  h += '<div id="panels">' + panels() + '</div>';
+  document.getElementById('app').innerHTML = h;
+  animateRing();
+  if (TAB === 'weight') wireChart();
+}
+function cap(s){ s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+function heroLine(p, w, pr){
+  if (w.score == null) return 'Start recording ' + pr[1] + ' care to build ' + pr[1] + ' health story.';
+  if (w.score >= 80) return cap(pr[1]) + ' health journey is looking good!';
+  if (w.score >= 55) return 'Nice care so far — a few things to catch up on.';
+  return 'A few care tasks are waiting — you\'ve got this!';
+}
+function footLine(p){ var d = D.daily || {}; return d.streak >= 3 ? d.streak + ' days of daily care in a row — a happier, healthier ' + p.name + '!' : 'A little care every day makes a healthier, happier ' + p.name + '!'; }
+function setTab(t){ TAB = t; document.querySelectorAll('.tab').forEach(function(b){ var on = b.getAttribute('onclick').indexOf("'" + t + "'") > 0; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }); document.getElementById('panels').innerHTML = panels(); if (t === 'weight') wireChart(); }
+
+/* wellness */
+var IND_UI = {vaccines: ['ti-vaccine', 'c-sky', '#5B9BE0'], weight: ['ti-scale', 'c-amber', '#E0A33A'], vet: ['ti-stethoscope', 'c-sage', '#6FAF7E'], medicines: ['ti-pill', 'c-lav', '#8C7AE0'], daily: ['ti-walk', 'c-peach', '#F47A38']};
+function wellHTML(p, w){
+  if (w.score == null) return emptyBox('🌱', 'Wellness indicator starts with your first records', 'Add ' + p.name + '\'s vaccinations, a weight check or a vet visit and PawBook will show how ' + him(p)[1] + ' care is going.', '<button class="btn btn-o btn-s" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Add a vaccination</button>')
+    + '<div class="disc">Based only on care you record in PawBook. It is not a veterinary diagnosis.</div>';
+  var col = w.score >= 80 ? '#6FAF7E' : w.score >= 55 ? '#5B9BE0' : '#E0A33A';
+  return '<div class="well"><div class="ring" aria-label="Wellness indicator ' + w.score + ' out of 100"><svg width="118" height="118" viewBox="0 0 118 118"><circle cx="59" cy="59" r="50" fill="none" stroke="#F6EDE3" stroke-width="11"/><circle id="ring" cx="59" cy="59" r="50" fill="none" stroke="' + col + '" stroke-width="11" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16" data-v="' + w.score + '" style="transition:stroke-dashoffset 1s ease"/></svg><div class="num"><b>' + w.score + '</b><span>of 100</span></div></div>'
+    + '<div><h3>' + esc(w.score >= 80 ? p.name + ' is doing great!' : w.score >= 55 ? p.name + ' is doing well' : p.name + ' needs a little care') + '</h3><p>' + esc(p.name) + '\'s wellness progress, from the care you\'ve recorded.</p></div></div>'
+    + '<div class="inds">' + w.indicators.map(function(i){ var u = IND_UI[i.key] || ['ti-point', 'c-peach', '#F47A38']; var pct = i.max ? Math.round(i.points / i.max * 100) : 0;
+      return '<div class="ind"><span class="ic ' + u[1] + '"><i class="ti ' + u[0] + '"></i></span><div class="t">' + esc(i.label) + '<small>' + esc(i.detail) + '</small></div><span class="pts">' + (i.applies ? i.points + '/' + i.max : 'n/a') + '</span>'
+        + (i.applies ? '<div class="bar"><i style="width:' + pct + '%;background:' + u[2] + '"></i></div>' : '') + '</div>'; }).join('') + '</div>'
+    + '<div class="disc"><b>Wellness indicator ' + w.score + ' / 100.</b> Based on recorded care activities and health information. This is not a veterinary diagnosis.</div>';
+}
+function animateRing(){ var r = document.getElementById('ring'); if (!r) return; requestAnimationFrame(function(){ requestAnimationFrame(function(){ r.style.strokeDashoffset = 314.16 * (1 - Number(r.getAttribute('data-v')) / 100); }); }); }
+
+/* reminders */
+var REM_UI = {vaccine: ['ti-vaccine', 'c-sky'], medicine: ['ti-pill', 'c-lav'], appointment: ['ti-calendar-heart', 'c-sage'], weight: ['ti-scale', 'c-amber'], vet: ['ti-stethoscope', 'c-coral']};
+function remHTML(p){
+  var l = D.reminders || [];
+  if (!l.length) return emptyBox('🎉', 'Nothing due right now', 'Upcoming vaccines, medicine doses and vet appointments for ' + p.name + ' will appear here.');
+  return '<div class="rems">' + l.slice(0, 6).map(function(r){ var u = REM_UI[r.kind] || ['ti-bell', 'c-peach'];
+    var pill = r.status === 'overdue' ? '<span class="pill p-over">Overdue</span>' : r.status === 'soon' ? '<span class="pill p-soon">Due soon</span>' : r.status === 'info' ? '<span class="pill p-info">Booked</span>' : '<span class="pill p-ok">On track</span>';
+    var act = r.kind === 'medicine' && r.ref && r.status !== 'ok' ? '<button class="btn btn-w btn-s" onclick="medGiven(\'' + esc(r.ref) + '\', this)"><i class="ti ti-check"></i>Given</button>' : r.kind === 'weight' ? '<button class="btn btn-w btn-s" onclick="openForm(\'weight\')">Record</button>' : (r.kind === 'vet' ? '<button class="btn btn-w btn-s" onclick="location.href=\'11_vet_booking.html\'">Find a vet</button>' : '');
+    return '<div class="rem"><span class="ic ' + u[1] + '"><i class="ti ' + u[0] + '"></i></span><div class="t"><b>' + esc(r.title) + '</b><span>' + esc(r.detail) + '</span></div>' + pill + act + '</div>'; }).join('') + '</div>';
+}
+
+/* panels */
+function panels(){
+  var p = D.pet;
+  switch (TAB) {
+    case 'vaccines': return vaxPanel(p); case 'activity': return activityPanel(p); case 'nutrition': return nutritionPanel(p); case 'vet': return vetPanel(p);
+    case 'medicines': return medPanel(p); case 'weight': return weightPanel(p); case 'memories': return memPanel(p); case 'records': return recordsPanel(p);
+    default: return overviewPanel(p);
+  }
+}
+var TL_UI = {vaccination: ['ti-vaccine', '#E6F1FF', 'Vaccination day'], vet_visit: ['ti-stethoscope', '#E5F2E5', 'Vet visit'], appointment: ['ti-calendar-heart', '#E5F2E5', 'Vet appointment'], prescription: ['ti-prescription', '#EEE8FF', 'Prescription'],
+  medicine: ['ti-pill', '#EEE8FF', 'Medicine'], weight: ['ti-scale', '#FFF2D6', 'Weight check'], emergency: ['ti-urgent', '#FFE5E1', 'Emergency'], surgery: ['ti-heart-plus', '#FFE5E1', 'Surgery'], lab_test: ['ti-microscope', '#E6F1FF', 'Lab test'],
+  grooming: ['ti-scissors', '#FFE9D9', 'Grooming'], milestone: ['ti-trophy', '#FFE9D9', 'Health milestone'], memory: ['ti-camera-heart', '#FFE9D9', 'Memory'], other: ['ti-notes', '#F6EDE3', 'Health update'], walk: ['ti-walk', '#E5F2E5', 'Activity']};
+var TLF_OPTS = [['all', 'Everything'], ['vaccination', 'Vaccines'], ['vet', 'Vet care'], ['medicine', 'Medicines'], ['weight', 'Weight'], ['update', 'Health updates'], ['memory', 'Memories']];
+function tlMatch(e){ if (TLF === 'all') return true; if (TLF === 'vet') return ['vet_visit', 'appointment', 'prescription'].indexOf(e.kind) >= 0; if (TLF === 'update') return ['emergency', 'surgery', 'lab_test', 'grooming', 'milestone', 'other'].indexOf(e.kind) >= 0; return e.kind === TLF; }
+function evCard(e){
+  var u = TL_UI[e.kind] || TL_UI.other;
+  return '<article class="ev" style="background:' + u[1] + '"><div class="top"><span class="ic"><i class="ti ' + u[0] + '"></i></span><div><b>' + esc(e.title || u[2]) + '</b><div class="d">' + esc(u[2]) + ' · ' + esc(fd(e.date)) + '</div></div></div>'
+    + (e.who ? '<div class="who"><i class="ti ti-building-hospital"></i>' + esc(e.who) + '</div>' : '') + (e.detail ? '<p>' + esc(e.detail) + '</p>' : '') + (e.photo ? '<img src="' + esc(e.photo) + '" alt="" loading="lazy">' : '')
+    + (e.log_id ? '<button class="del no-print" onclick="delLog(\'' + esc(e.log_id) + '\', this)" aria-label="Delete entry" title="Delete"><i class="ti ti-trash"></i></button>' : '') + '</article>';
+}
+function overviewPanel(p){
+  var l = (D.timeline || []).filter(tlMatch), h = '<div class="grid"><section class="card"><div class="ch"><h2><i class="ti ti-book-2"></i>' + esc(p.name) + '\'s health journey</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'update\')"><i class="ti ti-plus"></i>Add</button></div><div class="cb">'
+    + '<div class="filters no-print">' + TLF_OPTS.map(function(f){ return '<button class="fchip' + (TLF === f[0] ? ' on' : '') + '" onclick="TLF=\'' + f[0] + '\';TLN=10;document.getElementById(\'panels\').innerHTML=panels()">' + f[1] + '</button>'; }).join('') + '</div>';
+  if (!l.length) h += emptyBox('📖', TLF === 'all' ? p.name + '\'s story starts here' : 'Nothing here yet', TLF === 'all' ? 'Vaccinations, vet visits, medicines, weight checks and special moments you add will build ' + him(p)[1] + ' health journey.' : '', '<button class="btn btn-o btn-s" onclick="openForm(\'update\')"><i class="ti ti-plus"></i>Add a health update</button>');
+  else { var m = ''; l.slice(0, TLN).forEach(function(e){ var mm = fd(e.date, {month: 'long', year: 'numeric'}); if (mm !== m) { if (m) h += '</div>'; h += '<div class="month">' + esc(mm) + '</div><div class="tl">'; m = mm; } h += evCard(e); }); h += '</div>'; if (l.length > TLN) h += '<div style="text-align:center;margin-top:14px"><button class="btn btn-w btn-s no-print" onclick="TLN+=20;document.getElementById(\'panels\').innerHTML=panels()">Show more (' + (l.length - TLN) + ')</button></div>'; }
+  h += '</div></section><div>' + dailyCard(p) + aiCard(p) + '</div></div>';
+  var mem = (D.memories || []).slice(0, 4);
+  h += '<section class="card sec"><div class="ch"><h2><i class="ti ti-camera-heart"></i>' + esc(p.name) + '\'s memories</h2><button class="btn-link" onclick="setTab(\'memories\')">See all</button></div><div class="cb">' + (mem.length ? memGrid(mem) : emptyBox('📸', 'Photos, birthdays and happy moments', 'Keep ' + p.name + '\'s special moments together with ' + him(p)[1] + ' health story.', '<button class="btn btn-o btn-s" onclick="openForm(\'memory\')"><i class="ti ti-plus"></i>Add a memory</button>')) + '</div></section>';
+  return h;
+}
+function aiCard(p){ return '<section class="ai no-print"><span class="ic"><i class="ti ti-message-chatbot"></i></span><div class="t"><b>PawBook Pet Care AI</b><span>Questions about ' + esc(p.name) + '\'s food, behaviour or symptoms? Get friendly guidance any time. For emergencies, contact a vet right away.</span></div><button class="btn btn-w" onclick="location.href=\'37_pet_ai_health_agent.html\'">Ask now</button></section>'; }
+
+/* daily wellness */
+function dailyCard(p){
+  var d = D.daily || {}, t = d.today || {};
+  var h = '<section class="card"><div class="ch"><h2><i class="ti ti-sun"></i>' + esc(p.name) + '\'s daily wellness</h2><span class="badge" style="background:var(--sage);color:var(--sage-d)">Today</span></div><div class="cb"><div class="dw">'
+    + dws('c-sage', 'ti-walk', t.walk_min ? t.walk_min + '<small style="font-size:13px"> min</small>' : '—', 'Walk & play', (d.goal_min ? 'Goal ' + d.goal_min + ' min' : ''), "openForm('walk')")
+    + dws('c-peach', 'ti-bowl', t.meals || '—', 'Meals', '', "openForm('meal')")
+    + dws('c-sky', 'ti-droplet', t.water_ml ? (t.water_ml >= 1000 ? num(t.water_ml / 1000, 1) + '<small style="font-size:13px"> L</small>' : t.water_ml + '<small style="font-size:13px"> ml</small>') : '—', 'Water', '', "openForm('water')")
+    + dws('c-lav', 'ti-moon', t.sleep_h ? num(t.sleep_h) + '<small style="font-size:13px"> h</small>' : '—', 'Sleep', '', "openForm('sleep')") + '</div>'
+    + '<div style="margin-top:14px;font-size:13.5px;font-weight:900">How is ' + esc(p.name) + ' feeling today?</div><div class="moods" role="group" aria-label="Mood today">' + MOODS.map(function(m){ return '<button class="mood' + (t.mood === m[0] ? ' on' : '') + '" aria-pressed="' + (t.mood === m[0]) + '" onclick="setMood(\'' + m[0] + '\', this)">' + m[1] + ' ' + m[2] + '</button>'; }).join('') + '</div>'
+    + (d.streak ? '<div class="streak"><i class="ti ti-flame"></i>' + d.streak + '-day care streak! Keep it going 🐾</div>' : '<div class="streak"><i class="ti ti-paw"></i>Log a walk, meal or water today to start a care streak.</div>') + '</div></section>';
+  return h;
+}
+var MOODS = [['happy', '😄', 'Happy'], ['playful', '🎾', 'Playful'], ['calm', '😌', 'Calm'], ['tired', '😴', 'Tired'], ['anxious', '😟', 'Anxious'], ['unwell', '🤒', 'Unwell']];
+function dws(c, i, v, l, s, on){ return '<button class="dws ' + c + '" onclick="' + on + '" style="border:none;text-align:left" aria-label="Add ' + esc(l) + '"><i class="ti ' + i + '"></i><b>' + v + '</b><span>' + esc(l) + '</span>' + (s ? '<small>' + esc(s) + '</small>' : '<small>Tap to add</small>') + '</button>'; }
+function setMood(m, btn){ btn.disabled = true; api('/petcare/pets/' + encodeURIComponent(PID) + '/logs', {method: 'POST', body: {kind: 'mood', title: m, logged_at: new Date().toISOString()}}).then(function(){ toast('Mood saved'); loadPet(true); }).catch(function(e){ btn.disabled = false; fail(e); }); }
+
+function activityPanel(p){
+  var d = D.daily || {}, wk = d.week || [], max = Math.max.apply(null, wk.map(function(x){ return x.walk_min; }).concat([d.goal_min || 30, 1]));
+  var h = '<div class="grid">' + dailyCard(p) + '<section class="card"><div class="ch"><h2><i class="ti ti-chart-bar"></i>This week</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'walk\')"><i class="ti ti-plus"></i>Log activity</button></div><div class="cb">'
+    + '<div class="muted" style="font-size:13px;font-weight:700">Minutes of walks and play per day' + (d.goal_min ? ' · daily goal ' + d.goal_min + ' min' : '') + '</div>'
+    + '<div class="week" role="img" aria-label="Activity minutes for the last 7 days">' + wk.map(function(x, i){ return '<div class="wk' + (i === wk.length - 1 ? ' today' : '') + '"><em>' + (x.walk_min || '') + '</em><div class="b" style="height:' + Math.round(x.walk_min / max * 100) + '%"></div><span>' + esc(new Date(x.day + 'T00:00:00').toLocaleDateString('en-IN', {weekday: 'short'})) + '</span></div>'; }).join('') + '</div>'
+    + '<div class="no-print" style="margin-top:12px"><button class="btn btn-w btn-s" onclick="openForm(\'goal\')"><i class="ti ti-target"></i>' + (d.goal_min ? 'Change daily goal' : 'Set a daily exercise goal') + '</button></div></div></section></div>';
+  var l = (D.logs || []).filter(function(x){ return x.kind === 'walk'; });
+  h += '<section class="card sec"><div class="ch"><h2><i class="ti ti-list"></i>Recent activity</h2></div><div class="cb">' + (l.length ? '<div class="rows">' + l.slice(0, 20).map(function(x){ var dd = x.data || {};
+    return '<div class="row"><span class="ic c-sage"><i class="ti ti-' + (dd.type === 'swim' ? 'swimming' : dd.type === 'run' ? 'run' : dd.type === 'play' ? 'ball-tennis' : dd.type === 'training' ? 'school' : 'walk') + '"></i></span><div class="t"><b>' + esc(ACT[dd.type] || 'Walk') + ' · ' + num(x.value) + ' min' + (dd.distance_km ? ' · ' + num(dd.distance_km) + ' km' : '') + '</b><span>' + esc(fd(x.logged_at, {weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'})) + (x.details ? ' · ' + esc(x.details) : '') + '</span></div>' + delBtn(x) + '</div>'; }).join('') + '</div>'
+    : emptyBox('🦮', 'No walks or play logged yet', 'Log walks, runs and play time to see ' + p.name + '\'s weekly activity.', '<button class="btn btn-o btn-s" onclick="openForm(\'walk\')"><i class="ti ti-plus"></i>Log activity</button>')) + '</div></section>';
+  return h;
+}
+var ACT = {walk: 'Walk', run: 'Run', play: 'Fetch & play', swim: 'Swimming', training: 'Training', other: 'Activity'};
+function delBtn(x){ return '<button class="btn btn-w btn-s no-print" onclick="delLog(\'' + esc(x.log_id) + '\', this)" aria-label="Delete"><i class="ti ti-trash"></i></button>'; }
+
+function nutritionPanel(p){
+  var t = (D.daily || {}).today || {}, meals = (D.logs || []).filter(function(x){ return x.kind === 'meal'; }), water = (D.logs || []).filter(function(x){ return x.kind === 'water'; });
+  var h = '<div class="grid"><section class="card"><div class="ch"><h2><i class="ti ti-bowl"></i>Meals</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'meal\')"><i class="ti ti-plus"></i>Log a meal</button></div><div class="cb">'
+    + (meals.length ? '<div class="rows">' + meals.slice(0, 25).map(function(x){ return '<div class="row"><span class="ic c-peach"><i class="ti ti-bowl"></i></span><div class="t"><b>' + esc(x.title || 'Meal') + (x.value ? ' · ' + num(x.value) + ' g' : '') + '</b><span>' + esc(fd(x.logged_at, {weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'})) + (x.details ? ' · ' + esc(x.details) : '') + '</span></div>' + delBtn(x) + '</div>'; }).join('') + '</div>'
+      : emptyBox('🥣', 'No meals logged yet', 'Track what ' + p.name + ' eats and how much — handy for vet visits and diet changes.'))
+    + '</div></section><section class="card"><div class="ch"><h2><i class="ti ti-droplet"></i>Water today</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'water\')"><i class="ti ti-plus"></i>Add water</button></div><div class="cb">'
+    + '<div class="dws c-sky"><i class="ti ti-droplet"></i><b>' + (t.water_ml ? t.water_ml + ' ml' : '—') + '</b><span>Recorded today</span></div>'
+    + (water.length ? '<div class="rows" style="margin-top:12px">' + water.slice(0, 8).map(function(x){ return '<div class="row"><span class="ic c-sky"><i class="ti ti-droplet"></i></span><div class="t"><b>' + num(x.value) + ' ml</b><span>' + esc(fd(x.logged_at, {day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'})) + '</span></div>' + delBtn(x) + '</div>'; }).join('') + '</div>' : '')
+    + '<div class="disc">Only record what you measure. PawBook doesn\'t set food or water targets; ask your vet what\'s right for ' + esc(p.name) + '.</div>'
+    + '<div style="margin-top:10px"><button class="btn btn-w btn-s" onclick="location.href=\'23_nutrition.html\'"><i class="ti ti-apple"></i>Nutrition guide</button></div></div></section></div>';
+  return h;
+}
+
+function vaxStatus(v){ var n = daysTo(v.next_due); if (n == null) return ['p-ok', 'Done']; if (n < 0) return ['p-over', 'Overdue ' + Math.abs(n) + ' days']; if (n <= 30) return ['p-soon', 'Due ' + rel(n)]; return ['p-ok', 'Next ' + fd(v.next_due, {day: 'numeric', month: 'short', year: 'numeric'})]; }
+function vaxPanel(p){
+  var l = D.vaccinations || [];
+  return '<section class="card"><div class="ch"><h2><i class="ti ti-vaccine"></i>' + esc(p.name) + '\'s vaccinations</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Add a vaccination</button></div><div class="cb">'
+    + (l.length ? '<div class="rows">' + l.map(function(v){ var s = vaxStatus(v);
+      return '<div class="row"><span class="ic c-sky"><i class="ti ti-vaccine"></i></span><div class="t"><b>' + esc(v.name) + '</b><span>Given ' + esc(fd(v.given)) + (v.clinic ? ' · ' + esc(v.clinic) : '') + (v.notes ? ' · ' + esc(v.notes) : '') + '</span></div><span class="pill ' + s[0] + '">' + esc(s[1]) + '</span></div>'; }).join('') + '</div>'
+      : emptyBox('💉', 'No vaccinations recorded yet', 'Add ' + p.name + '\'s past vaccinations with their next due dates and PawBook will remind you before each booster.', '<button class="btn btn-o btn-s" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Add a vaccination</button>'))
+    + '<div style="margin-top:12px"><button class="btn btn-w btn-s" onclick="location.href=\'10_vaccination.html\'"><i class="ti ti-sparkles"></i>Vaccination guide</button></div></div></section>';
+}
+function vetPanel(p){
+  var v = D.vet || {}, up = (v.appointments || []).filter(function(a){ return a.upcoming; }), past = (v.appointments || []).filter(function(a){ return !a.upcoming; }), visits = (D.timeline || []).filter(function(e){ return e.kind === 'vet_visit' || e.kind === 'emergency' || e.kind === 'surgery' || e.kind === 'lab_test'; });
+  var h = '<div class="grid"><section class="card"><div class="ch"><h2><i class="ti ti-calendar-heart"></i>Appointments</h2><button class="btn btn-o btn-s no-print" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-stethoscope"></i>Find a vet for ' + esc(p.name) + '</button></div><div class="cb">';
+  h += up.length ? '<div class="rows">' + up.map(apptRow).join('') + '</div>' : emptyBox('🩺', 'No upcoming appointments', 'Book a vet through PawBook and it will show up here.');
+  if (past.length) h += '<div class="month">Past appointments</div><div class="rows">' + past.slice(0, 10).map(apptRow).join('') + '</div>';
+  h += '</div></section><section class="card"><div class="ch"><h2><i class="ti ti-notes-medical"></i>Visits & health updates</h2><button class="btn btn-w btn-s no-print" onclick="openForm(\'update\',{event_type:\'vet_visit\'})"><i class="ti ti-plus"></i>Add a visit</button></div><div class="cb">'
+    + (visits.length ? '<div class="tl" style="grid-template-columns:1fr">' + visits.slice(0, 12).map(evCard).join('') + '</div>' : emptyBox('📋', 'No visits recorded', 'Add vet visits you made outside PawBook so ' + p.name + '\'s history is complete.'))
+    + '</div></section></div>';
+  var rx = v.prescriptions || [];
+  if (rx.length) h += '<section class="card sec"><div class="ch"><h2><i class="ti ti-prescription"></i>Prescriptions from PawBook vets</h2></div><div class="cb"><div class="rows">' + rx.map(rxRow).join('') + '</div></div></section>';
+  return h;
+}
+function apptRow(a){ return '<div class="row"><span class="ic c-sage"><i class="ti ti-calendar-heart"></i></span><div class="t"><b>' + esc(a.title || 'Vet appointment') + '</b><span>' + esc(fd(a.date, {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'})) + (a.time ? ' · ' + esc(a.time) : '') + (a.vet ? ' · ' + esc(a.vet) : '') + '</span>' + (a.notes ? '<span style="display:block">' + esc(a.notes) + '</span>' : '') + '</div><span class="pill ' + (a.upcoming ? 'p-info' : 'p-ok') + '">' + esc(cap(a.status || (a.upcoming ? 'booked' : 'done'))) + '</span></div>'; }
+function rxRow(r){ return '<div class="row"><span class="ic c-lav"><i class="ti ti-prescription"></i></span><div class="t"><b>' + esc(r.title || 'Prescription') + '</b><span>' + esc(fd(r.date)) + (r.vet ? ' · ' + esc(r.vet) : '') + '</span>' + (r.detail ? '<span style="display:block">' + esc(r.detail) + '</span>' : '') + '</div></div>'; }
+
+var FREQ = {daily: 'Every day', twice_daily: 'Twice a day', weekly: 'Every week', monthly: 'Every month', once: 'One time', as_needed: 'When needed'};
+function medPanel(p){
+  var l = D.medicines || [], act = l.filter(function(m){ return m.active; }), old = l.filter(function(m){ return !m.active; });
+  var row = function(m){ var n = daysTo(m.next_due), pill = !m.active ? '<span class="pill p-ok">Finished</span>' : m.frequency === 'as_needed' || n == null ? '<span class="pill p-info">' + esc(FREQ[m.frequency] || '') + '</span>' : n < 0 ? '<span class="pill p-over">Overdue</span>' : n === 0 ? '<span class="pill p-soon">Due today</span>' : '<span class="pill p-ok">On track</span>';
+    return '<div class="row"><span class="ic c-lav"><i class="ti ti-pill"></i></span><div class="t"><b>' + esc(m.name) + (m.dose ? ' · ' + esc(m.dose) : '') + '</b><span>' + esc(FREQ[m.frequency] || '') + (m.active && m.next_due && m.frequency !== 'as_needed' ? ' · next dose ' + esc(fd(m.next_due, {day: 'numeric', month: 'short'})) : '') + (m.last_given ? ' · last given ' + esc(fd(m.last_given, {day: 'numeric', month: 'short'})) : '') + '</span>' + (m.notes ? '<span style="display:block">' + esc(m.notes) + '</span>' : '') + '</div>' + pill
+      + (m.active ? '<button class="btn btn-w btn-s no-print" onclick="medGiven(\'' + esc(m.med_id) + '\', this)"><i class="ti ti-check"></i>Given</button><button class="btn btn-w btn-s no-print" onclick="medStop(\'' + esc(m.med_id) + '\', this)" title="Mark as finished">Finish</button>' : '') + '</div>'; };
+  return '<section class="card"><div class="ch"><h2><i class="ti ti-pill"></i>' + esc(p.name) + '\'s medicines</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'medicine\')"><i class="ti ti-plus"></i>Add a medicine</button></div><div class="cb">'
+    + (act.length ? '<div class="rows">' + act.map(row).join('') + '</div>' : emptyBox('💊', 'No current medicines', 'Add tablets, drops or monthly preventives to get dose reminders.', '<button class="btn btn-o btn-s" onclick="openForm(\'medicine\')"><i class="ti ti-plus"></i>Add a medicine</button>'))
+    + (old.length ? '<div class="month">Finished</div><div class="rows">' + old.slice(0, 10).map(row).join('') + '</div>' : '')
+    + '<div class="disc">Always follow your vet\'s instructions for doses. PawBook only keeps the schedule you enter.</div></div></section>';
+}
+function weightPanel(p){
+  var l = (D.weights || []).slice().reverse();
+  var h = '<section class="card"><div class="ch"><h2><i class="ti ti-scale"></i>' + esc(p.name) + '\'s weight</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'weight\')"><i class="ti ti-plus"></i>Record weight</button></div><div class="cb">';
+  if (!l.length) return h + emptyBox('⚖️', 'No weight records yet', 'Weigh ' + p.name + ' every few weeks to see the trend over time.', '<button class="btn btn-o btn-s" onclick="openForm(\'weight\')"><i class="ti ti-plus"></i>Record weight</button>') + '</div></section>';
+  var last = l[l.length - 1], prev = l.length > 1 ? l[l.length - 2] : null, diff = prev ? Math.round((last.kg - prev.kg) * 100) / 100 : null;
+  h += '<div style="display:flex;gap:10px;flex-wrap:wrap"><div class="dws c-amber" style="min-width:150px"><i class="ti ti-scale"></i><b>' + num(last.kg) + ' kg</b><span>' + esc(fd(last.date)) + '</span></div>'
+    + (diff != null ? '<div class="dws c-sky" style="min-width:150px"><i class="ti ti-trending-' + (diff > 0 ? 'up' : diff < 0 ? 'down' : 'up') + '"></i><b>' + (diff === 0 ? 'No change' : (diff > 0 ? '+' : '') + diff + ' kg') + '</b><span>since ' + esc(fd(prev.date, {day: 'numeric', month: 'short'})) + '</span></div>' : '') + '</div>';
+  if (l.length > 1) h += '<div class="wchart" id="wchart" role="img" aria-label="Weight over time"></div>';
+  h += '<div class="month">All records</div><div class="rows">' + l.slice().reverse().map(function(w){ return '<div class="row"><span class="ic c-amber"><i class="ti ti-scale"></i></span><div class="t"><b>' + num(w.kg) + ' kg</b><span>' + esc(fd(w.date)) + (w.notes ? ' · ' + esc(w.notes) : '') + '</span></div>' + (w.log_id ? delBtn(w) : '') + '</div>'; }).join('') + '</div>'
+    + '<div class="disc">Ask your vet what a healthy weight range is for ' + esc(p.name) + '.</div></div></section>';
+  return h;
+}
+function wireChart(){
+  var el = document.getElementById('wchart'); if (!el) return;
+  var l = (D.weights || []).slice().reverse(), W = el.clientWidth || 600, H = 200, pl = 40, pr = 14, pt = 14, pb = 26;
+  var ks = l.map(function(x){ return Number(x.kg); }), mn = Math.min.apply(null, ks), mx = Math.max.apply(null, ks); if (mx - mn < 1) { mn -= .5; mx += .5; } var pad = (mx - mn) * .15; mn -= pad; mx += pad;
+  var t0 = new Date(l[0].date).getTime(), t1 = new Date(l[l.length - 1].date).getTime(); if (t1 === t0) t1 = t0 + 1;
+  var X = function(d){ return pl + (new Date(d).getTime() - t0) / (t1 - t0) * (W - pl - pr); }, Y = function(k){ return pt + (1 - (k - mn) / (mx - mn)) * (H - pt - pb); };
+  var pts = l.map(function(x){ return [X(x.date), Y(x.kg)]; }), path = pts.map(function(q, i){ return (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join(' ');
+  var g = ''; [0, .5, 1].forEach(function(f){ var k = mn + (mx - mn) * f, y = Y(k); g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y + '" y2="' + y + '" stroke="#F0E4D8" stroke-dasharray="3 4"/><text x="' + (pl - 6) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="#82766D" font-weight="700">' + k.toFixed(1) + '</text>'; });
+  var lab = '<text x="' + pl + '" y="' + (H - 6) + '" font-size="11" fill="#82766D" font-weight="700">' + esc(fd(l[0].date, {day: 'numeric', month: 'short', year: '2-digit'})) + '</text><text x="' + (W - pr) + '" y="' + (H - 6) + '" text-anchor="end" font-size="11" fill="#82766D" font-weight="700">' + esc(fd(l[l.length - 1].date, {day: 'numeric', month: 'short', year: '2-digit'})) + '</text>';
+  el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' + g + '<path d="' + path + ' L' + pts[pts.length - 1][0] + ' ' + (H - pb) + ' L' + pts[0][0] + ' ' + (H - pb) + 'Z" fill="#FFE9D9" opacity=".6"/><path d="' + path + '" fill="none" stroke="#F47A38" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'
+    + pts.map(function(q, i){ return '<circle cx="' + q[0] + '" cy="' + q[1] + '" r="' + (i === pts.length - 1 ? 6 : 4.5) + '" fill="#F47A38" stroke="#fff" stroke-width="2"/><circle cx="' + q[0] + '" cy="' + q[1] + '" r="14" fill="transparent" data-i="' + i + '" style="cursor:pointer"/>'; }).join('') + lab + '</svg><div class="wtip" id="wtip"></div>';
+  var tip = document.getElementById('wtip');
+  el.querySelectorAll('[data-i]').forEach(function(c){ var i = Number(c.getAttribute('data-i')), s = function(){ tip.textContent = num(l[i].kg) + ' kg · ' + fd(l[i].date, {day: 'numeric', month: 'short', year: 'numeric'}); tip.style.left = (pts[i][0] / W * el.clientWidth) + 'px'; tip.style.top = pts[i][1] + 'px'; tip.style.display = 'block'; };
+    c.addEventListener('mouseenter', s); c.addEventListener('click', s); c.addEventListener('mouseleave', function(){ tip.style.display = 'none'; }); });
+}
+function memGrid(l){ return '<div class="mems">' + l.map(function(m){ return '<article class="mem">' + (m.photo ? '<img src="' + esc(m.photo) + '" alt="' + esc(m.title || '') + '" loading="lazy">' : '<div class="noimg">' + (m.icon || '💛') + '</div>') + '<div class="c"><b>' + esc(m.title || 'Memory') + '</b><span>' + esc(fd(m.date)) + '</span>' + (m.detail ? '<p>' + esc(m.detail) + '</p>' : '') + '</div>'
+  + (m.log_id ? '<button class="ev-del btn btn-w btn-s no-print" style="position:absolute;top:8px;right:8px;height:30px;padding:0 9px" onclick="delLog(\'' + esc(m.log_id) + '\', this)" aria-label="Delete memory"><i class="ti ti-trash"></i></button>' : '') + '</article>'; }).join('') + '</div>'; }
+function memPanel(p){
+  var l = D.memories || [];
+  return '<section class="card"><div class="ch"><h2><i class="ti ti-camera-heart"></i>' + esc(p.name) + '\'s memories</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'memory\')"><i class="ti ti-plus"></i>Add a memory</button></div><div class="cb">'
+    + (l.length ? memGrid(l) : emptyBox('📸', 'No memories yet', 'First walk, birthdays, gotcha day, a big recovery — keep ' + p.name + '\'s special moments here.', '<button class="btn btn-o btn-s" onclick="openForm(\'memory\')"><i class="ti ti-plus"></i>Add a memory</button>')) + '</div></section>';
+}
+function recordsPanel(p){
+  var docs = D.documents || [], rx = (D.vet || {}).prescriptions || [];
+  return '<div class="grid"><section class="card"><div class="ch"><h2><i class="ti ti-folder-heart"></i>Documents</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'doc\')"><i class="ti ti-upload"></i>Upload</button></div><div class="cb">'
+    + (docs.length ? '<div class="rows">' + docs.map(function(d){ return '<div class="row"><span class="ic c-sky"><i class="ti ti-file-' + (d.mime === 'application/pdf' ? 'type-pdf' : 'description') + '"></i></span><div class="t"><b>' + esc(d.title || d.original_name || 'Document') + '</b><span>' + esc(DOCK[d.doc_kind] || 'Document') + ' · ' + esc(fd(d.uploaded_at)) + ' · ' + Math.max(1, Math.round(d.size_bytes / 1024)) + ' KB</span></div><button class="btn btn-w btn-s" onclick="viewDoc(\'' + esc(d.doc_id) + '\')"><i class="ti ti-eye"></i>Open</button><button class="btn btn-w btn-s no-print" onclick="delDoc(\'' + esc(d.doc_id) + '\', this)" aria-label="Delete"><i class="ti ti-trash"></i></button></div>'; }).join('') + '</div>'
+      : emptyBox('📁', 'Keep prescriptions and reports safe', 'Upload vet prescriptions, lab reports and certificates (JPG, PNG or PDF, up to 5 MB). Only you can open them.', '<button class="btn btn-o btn-s" onclick="openForm(\'doc\')"><i class="ti ti-upload"></i>Upload a document</button>'))
+    + (rx.length ? '<div class="month">From PawBook vets</div><div class="rows">' + rx.map(rxRow).join('') + '</div>' : '') + '</div></section>'
+    + '<section class="card"><div class="ch"><h2><i class="ti ti-id-badge-2"></i>' + esc(p.name) + '\'s health card</h2></div><div class="cb"><p class="muted" style="font-size:13.5px;line-height:1.5">A one-page summary of ' + esc(p.name) + '\'s vaccines, medicines and recent vet care to show a vet, groomer, boarding or pet sitter.</p><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-o" onclick="openCard()"><i class="ti ti-id-badge-2"></i>Open health card</button></div></div></section></div>';
+}
+var DOCK = {prescription: 'Prescription', lab_report: 'Lab report', certificate: 'Certificate', insurance: 'Insurance', other: 'Other'};
+
+/* ---------- forms ---------- */
+function seg(name, opts, val){ return '<div class="seg" role="radiogroup">' + opts.map(function(o, i){ return '<label><input type="radio" name="' + name + '" value="' + esc(o[0]) + '"' + ((val != null ? String(val) === String(o[0]) : i === 0) ? ' checked' : '') + '><span>' + o[1] + '</span></label>'; }).join('') + '</div>'; }
+function fl(label, inner, key, err, hint){ return '<label class="fl" data-f="' + (key || '') + '"><span>' + label + '</span>' + inner + (hint ? '<small>' + hint + '</small>' : '') + '<span class="err">' + (err || 'Please check this') + '</span></label>'; }
+function inp(name, type, val, extra){ return '<input class="fi" name="' + name + '" type="' + (type || 'text') + '" value="' + esc(val == null ? '' : val) + '" ' + (extra || '') + '>'; }
+function nowLocal(){ var d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
+var FORMS = {
+  pet: function(v){ v = v || {}; return {title: v.id ? 'Edit ' + v.name + '\'s profile' : 'Add a pet', save: v.id ? 'Save' : 'Add pet', body:
+    fl('Name', inp('name', 'text', v.name, 'maxlength="60" required'), 'name', 'Please enter a name')
+    + '<div class="fl"><span>Species</span>' + seg('species', [['dog', '🐕 Dog'], ['cat', '🐈 Cat'], ['bird', '🦜 Bird'], ['rabbit', '🐇 Rabbit'], ['fish', '🐠 Fish'], ['other', '🐾 Other']], v.species ? (SPECIES[String(v.species).toLowerCase()] ? String(v.species).toLowerCase() : 'other') : null) + '</div>'
+    + fl('Breed', inp('breed', 'text', v.breed, 'maxlength="80" placeholder="Labrador, Persian, Indie…"'), 'breed')
+    + '<div class="fl"><span>Gender</span>' + seg('gender', [['male', 'Male'], ['female', 'Female'], ['unknown', 'Not sure']], v.gender || 'unknown') + '</div>'
+    + '<div class="two">' + fl('Birthday', inp('birthday', 'date', v.birthday ? String(v.birthday).slice(0, 10) : '', 'max="' + today() + '"'), 'birthday', 'Please pick a past date', 'Or enter age →') + fl('Age (years)', inp('age', 'number', v.birthday ? '' : v.age_years, 'min="0" max="40" step="0.5"'), 'age', '0–40') + '</div>'
+    + fl('Weight (kg)', inp('weight', 'number', v.weight_kg, 'min="0" max="200" step="0.1"'), 'weight', 'Please enter a weight between 0 and 200 kg', 'Saving a new weight also adds it to the weight history.') }; },
+  update: function(v){ v = v || {}; return {title: 'Add a health update', save: 'Save update', body:
+    '<div class="fl"><span>What happened?</span>' + seg('event_type', [['vet_visit', '🩺 Vet visit'], ['lab_test', '🔬 Lab test'], ['grooming', '✂️ Grooming'], ['milestone', '🏆 Milestone'], ['emergency', '🚑 Emergency'], ['surgery', '❤️‍🩹 Surgery'], ['other', '📝 Other']], v.event_type) + '</div>'
+    + fl('Title', inp('title', 'text', '', 'maxlength="120" placeholder="e.g. Annual check-up, Ear infection follow-up"'), 'title', 'Please add a short title')
+    + '<div class="two">' + fl('Date', inp('date', 'date', today(), 'max="' + today() + '"'), 'date') + fl('Vet / clinic (optional)', inp('clinic', 'text', '', 'maxlength="120" placeholder="Dr. Name, Clinic"'), 'clinic') + '</div>'
+    + fl('Notes', '<textarea class="fi" name="details" maxlength="2000" placeholder="Findings, instructions, next steps…"></textarea>', 'details')
+    + photoField() }; },
+  weight: function(){ return {title: 'Record weight', save: 'Save weight', body: '<div class="two">' + fl('Weight (kg)', inp('value', 'number', '', 'min="0.05" max="200" step="0.05" required inputmode="decimal"'), 'value', 'Please enter a weight between 0 and 200 kg') + fl('Date', inp('date', 'date', today(), 'max="' + today() + '"'), 'date') + '</div>' + fl('Note (optional)', inp('details', 'text', '', 'maxlength="200" placeholder="Before breakfast, after grooming…"'), 'details') }; },
+  vaccine: function(){ return {title: 'Add a vaccination', save: 'Save vaccination', body: fl('Vaccine', inp('name', 'text', '', 'maxlength="100" list="vaxlist" required placeholder="e.g. Rabies, DHPPi, Leptospirosis"') + '<datalist id="vaxlist"><option>Rabies</option><option>DHPPi</option><option>DHPPi + L</option><option>Leptospirosis</option><option>Parvovirus</option><option>Bordetella (Kennel cough)</option><option>Coronavirus</option><option>FVRCP</option><option>FeLV</option><option>Deworming</option></datalist>', 'name', 'Please enter the vaccine name')
+    + '<div class="two">' + fl('Date given', inp('given_date', 'date', today(), 'max="' + today() + '"'), 'given_date', 'Please pick the date it was given') + fl('Next due (optional)', inp('next_due_date', 'date', ''), 'next_due_date', 'Next due must be after the date given', 'From the vaccination card') + '</div>'
+    + fl('Vet / clinic (optional)', inp('clinic', 'text', '', 'maxlength="120"'), 'clinic') + fl('Notes (optional)', inp('notes', 'text', '', 'maxlength="300" placeholder="Batch number, reactions…"'), 'notes') }; },
+  medicine: function(){ return {title: 'Add a medicine', save: 'Save medicine', body: fl('Medicine', inp('name', 'text', '', 'maxlength="100" required placeholder="e.g. Heartgard Plus, ear drops"'), 'name', 'Please enter the medicine name') + fl('Dose (optional)', inp('dose', 'text', '', 'maxlength="80" placeholder="1 tablet, 2 drops each ear…"'), 'dose')
+    + '<div class="fl"><span>How often?</span>' + seg('frequency', [['daily', 'Every day'], ['twice_daily', 'Twice a day'], ['weekly', 'Weekly'], ['monthly', 'Monthly'], ['once', 'One time'], ['as_needed', 'When needed']]) + '</div>'
+    + '<div class="two">' + fl('Start date', inp('start_date', 'date', today()), 'start_date') + fl('End date (optional)', inp('end_date', 'date', ''), 'end_date', 'End date must be after the start date') + '</div>'
+    + fl('Notes (optional)', inp('notes', 'text', '', 'maxlength="300" placeholder="Give with food…"'), 'notes') }; },
+  walk: function(){ return {title: 'Log a walk or play', save: 'Save', body: '<div class="fl"><span>Activity</span>' + seg('type', [['walk', '🦮 Walk'], ['run', '🏃 Run'], ['play', '🎾 Play'], ['swim', '🏊 Swim'], ['training', '🎓 Training'], ['other', '✨ Other']]) + '</div>'
+    + '<div class="two">' + fl('Minutes', inp('value', 'number', '', 'min="1" max="600" step="1" required inputmode="numeric"'), 'value', 'Please enter 1–600 minutes') + fl('Distance (km, optional)', inp('distance_km', 'number', '', 'min="0" max="100" step="0.1"'), 'distance_km') + '</div>'
+    + fl('When', inp('logged_at', 'datetime-local', nowLocal(), 'max="' + nowLocal() + '"'), 'logged_at') + fl('Note (optional)', inp('details', 'text', '', 'maxlength="200"'), 'details') }; },
+  meal: function(){ return {title: 'Log a meal', save: 'Save meal', body: fl('Food', inp('title', 'text', '', 'maxlength="120" required placeholder="e.g. Chicken & rice kibble"'), 'title', 'Please enter what was eaten') + '<div class="two">' + fl('Amount (g, optional)', inp('value', 'number', '', 'min="1" max="5000" step="1"'), 'value') + fl('When', inp('logged_at', 'datetime-local', nowLocal(), 'max="' + nowLocal() + '"'), 'logged_at') + '</div>' + fl('Note (optional)', inp('details', 'text', '', 'maxlength="200" placeholder="Ate half, loved it…"'), 'details') }; },
+  water: function(){ return {title: 'Add water', save: 'Save', body: '<div class="two">' + fl('Water (ml)', inp('value', 'number', '', 'min="10" max="10000" step="10" required inputmode="numeric"'), 'value', 'Please enter 10–10000 ml') + fl('When', inp('logged_at', 'datetime-local', nowLocal(), 'max="' + nowLocal() + '"'), 'logged_at') + '</div>' }; },
+  sleep: function(){ return {title: 'Log sleep', save: 'Save', body: '<div class="two">' + fl('Hours', inp('value', 'number', '', 'min="0.5" max="24" step="0.5" required'), 'value', 'Please enter 0.5–24 hours') + fl('Night of', inp('logged_at', 'date', today(), 'max="' + today() + '"'), 'logged_at') + '</div>' }; },
+  goal: function(){ return {title: 'Daily exercise goal', save: 'Save goal', body: fl('Minutes per day', inp('goal_min', 'number', (D.daily || {}).goal_min || '', 'min="5" max="600" step="5" required'), 'goal_min', 'Please enter 5–600 minutes', 'Ask your vet what\'s right for ' + esc(D.pet.name) + '\'s age and breed. Leave empty to remove the goal.') }; },
+  memory: function(){ return {title: 'Add a memory', save: 'Save memory', body: fl('Title', inp('title', 'text', '', 'maxlength="120" required placeholder="First swim, 3rd birthday, gotcha day…"'), 'title', 'Please add a title') + fl('Date', inp('date', 'date', today(), 'max="' + today() + '"'), 'date') + fl('Story (optional)', '<textarea class="fi" name="details" maxlength="2000"></textarea>', 'details') + photoField() }; },
+  doc: function(){ return {title: 'Upload a document', save: 'Upload', body: '<div class="fl"><span>Type</span>' + seg('doc_kind', [['prescription', 'Prescription'], ['lab_report', 'Lab report'], ['certificate', 'Certificate'], ['insurance', 'Insurance'], ['other', 'Other']]) + '</div>'
+    + fl('Title (optional)', inp('title', 'text', '', 'maxlength="120" placeholder="e.g. Skin allergy prescription, Oct 2026"'), 'title') + fl('File', '<input class="fi" name="file" type="file" accept="image/jpeg,image/png,application/pdf" required style="padding:9px">', 'file', 'Please choose a JPG, PNG or PDF up to 5 MB', 'Stored privately — only you can open it.') }; }
+};
+function photoField(){ return fl('Photo (optional)', '<input class="fi" name="photo" type="file" accept="image/jpeg,image/png,image/webp" style="padding:9px">', 'photo', 'Please choose an image up to 10 MB'); }
+function openForm(kind, v){
+  if (kind !== 'pet' && !D) return;
+  var f = FORMS[kind](v); MO = {kind: kind, v: v || {}};
+  document.getElementById('mo-title').textContent = f.title; document.getElementById('mo-body').innerHTML = f.body; document.querySelector('#mo-save span').textContent = f.save;
+  document.getElementById('mo').classList.add('open'); document.body.style.overflow = 'hidden';
+  setTimeout(function(){ var i = document.querySelector('#mo-body input:not([type=radio]):not([type=hidden])'); if (i && window.innerWidth > 640) i.focus(); }, 60);
+}
+function closeMo(){ document.getElementById('mo').classList.remove('open'); document.body.style.overflow = ''; MO = null; }
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeMo(); closeCard(); } });
+function val(f, n){ var e = f.elements[n]; if (!e) return ''; if (e.length && e[0] && e[0].type === 'radio') { for (var i = 0; i < e.length; i++) if (e[i].checked) return e[i].value; return ''; } return (e.value || '').trim(); }
+function mark(f, keys){ f.querySelectorAll('.fl').forEach(function(l){ l.classList.toggle('bad', keys.indexOf(l.getAttribute('data-f')) >= 0); }); var b = f.querySelector('.fl.bad .fi'); if (b) b.focus(); }
+function upPhoto(file){ if (!file) return Promise.resolve(null); if (file.size > 10 * 1024 * 1024) { var e = new Error('Photo is larger than 10 MB'); e.fields = ['photo']; return Promise.reject(e); }
+  var fd2 = new FormData(); fd2.append('file', file); return api('/media/upload', {method: 'POST', body: fd2}).then(function(d){ return d.url || d.secure_url || (d.file && d.file.url) || (d.media && d.media.url) || null; }); }
+function isoAt(v){ if (!v) return new Date().toISOString(); return new Date(v.length === 10 ? v + 'T12:00:00' : v).toISOString(); }
+function submitMo(e){
+  e.preventDefault(); if (!MO) return; var f = e.target, k = MO.kind, btn = document.getElementById('mo-save'), P = '/petcare/pets/' + encodeURIComponent(PID), bad = [], req;
+  var n = function(x){ return x === '' ? null : Number(x); };
+  if (k === 'pet') {
+    var body = {name: val(f, 'name'), species: val(f, 'species'), breed: val(f, 'breed') || null, gender: val(f, 'gender'), birthday: val(f, 'birthday') || null, age_years: n(val(f, 'age')), weight_kg: n(val(f, 'weight'))};
+    if (!body.name) bad.push('name'); if (body.weight_kg != null && !(body.weight_kg > 0 && body.weight_kg <= 200)) bad.push('weight'); if (body.birthday && body.birthday > today()) bad.push('birthday'); if (body.age_years != null && !(body.age_years >= 0 && body.age_years <= 40)) bad.push('age');
+    if (bad.length) return mark(f, bad);
+    req = MO.v.id ? api('/petcare/pets/' + encodeURIComponent(MO.v.id), {method: 'PATCH', body: body}) : api('/petcare/pets', {method: 'POST', body: body});
+    btn.disabled = true;
+    return req.then(function(d){ var id = (d.pet || d).id; closeMo(); toast(MO && MO.v.id ? 'Profile saved' : 'Saved'); return api('/petcare/pets').then(function(x){ PETS = x.pets || []; PID = String(id || PID); return loadPet(true); }); })
+      .catch(function(err){ if (err.fields) mark(f, err.fields); fail(err); }).then(function(){ btn.disabled = false; });
+  }
+  var b = null;
+  if (k === 'weight') { b = {kind: 'weight', value: n(val(f, 'value')), logged_at: isoAt(val(f, 'date')), details: val(f, 'details')}; if (!(b.value > 0 && b.value <= 200)) bad.push('value'); }
+  if (k === 'walk') { b = {kind: 'walk', value: n(val(f, 'value')), logged_at: isoAt(val(f, 'logged_at')), details: val(f, 'details'), data: {type: val(f, 'type'), distance_km: n(val(f, 'distance_km'))}}; if (!(b.value >= 1 && b.value <= 600)) bad.push('value'); }
+  if (k === 'meal') { b = {kind: 'meal', title: val(f, 'title'), value: n(val(f, 'value')), logged_at: isoAt(val(f, 'logged_at')), details: val(f, 'details')}; if (!b.title) bad.push('title'); }
+  if (k === 'water') { b = {kind: 'water', value: n(val(f, 'value')), logged_at: isoAt(val(f, 'logged_at'))}; if (!(b.value >= 10 && b.value <= 10000)) bad.push('value'); }
+  if (k === 'sleep') { b = {kind: 'sleep', value: n(val(f, 'value')), logged_at: isoAt(val(f, 'logged_at'))}; if (!(b.value >= .5 && b.value <= 24)) bad.push('value'); }
+  if (k === 'update') { b = {kind: 'event', title: val(f, 'title'), logged_at: isoAt(val(f, 'date')), details: val(f, 'details'), data: {event_type: val(f, 'event_type'), clinic: val(f, 'clinic')}}; if (!b.title) bad.push('title'); }
+  if (k === 'memory') { b = {kind: 'memory', title: val(f, 'title'), logged_at: isoAt(val(f, 'date')), details: val(f, 'details'), data: {}}; if (!b.title) bad.push('title'); }
+  if (k === 'goal') { var g = n(val(f, 'goal_min')); if (g != null && !(g >= 5 && g <= 600)) bad.push('goal_min'); if (bad.length) return mark(f, bad); btn.disabled = true;
+    return api(P + '/goal', {method: 'PUT', body: {goal_min: g}}).then(function(){ closeMo(); toast('Goal saved'); loadPet(true); }).catch(fail).then(function(){ btn.disabled = false; }); }
+  if (k === 'vaccine') { b = {name: val(f, 'name'), given_date: val(f, 'given_date'), next_due_date: val(f, 'next_due_date') || null, clinic: val(f, 'clinic'), notes: val(f, 'notes')}; if (!b.name) bad.push('name'); if (!b.given_date || b.given_date > today()) bad.push('given_date'); if (b.next_due_date && b.next_due_date <= b.given_date) bad.push('next_due_date');
+    if (bad.length) return mark(f, bad); btn.disabled = true; return api(P + '/vaccinations', {method: 'POST', body: b}).then(function(){ closeMo(); toast('Vaccination saved'); loadPet(true); }).catch(function(err){ if (err.fields) mark(f, err.fields); fail(err); }).then(function(){ btn.disabled = false; }); }
+  if (k === 'medicine') { b = {name: val(f, 'name'), dose: val(f, 'dose'), frequency: val(f, 'frequency'), start_date: val(f, 'start_date') || today(), end_date: val(f, 'end_date') || null, notes: val(f, 'notes')}; if (!b.name) bad.push('name'); if (b.end_date && b.end_date < b.start_date) bad.push('end_date');
+    if (bad.length) return mark(f, bad); btn.disabled = true; return api(P + '/medicines', {method: 'POST', body: b}).then(function(){ closeMo(); toast('Medicine added'); loadPet(true); }).catch(function(err){ if (err.fields) mark(f, err.fields); fail(err); }).then(function(){ btn.disabled = false; }); }
+  if (k === 'doc') { var file = f.elements.file.files[0]; if (!file || file.size > 5 * 1024 * 1024 || !/^(image\/(jpeg|png)|application\/pdf)$/.test(file.type)) bad.push('file'); if (bad.length) return mark(f, bad);
+    var fdd = new FormData(); fdd.append('doc_kind', val(f, 'doc_kind')); fdd.append('title', val(f, 'title')); fdd.append('file', file); btn.disabled = true;
+    return api(P + '/documents', {method: 'POST', body: fdd}).then(function(){ closeMo(); toast('Document saved privately'); TAB = 'records'; loadPet(true); }).catch(function(err){ if (err.fields) mark(f, err.fields); fail(err); }).then(function(){ btn.disabled = false; }); }
+  if (bad.length) return mark(f, bad);
+  btn.disabled = true;
+  var ph = f.elements.photo && f.elements.photo.files[0];
+  upPhoto(ph).then(function(url){ if (url) b.data = Object.assign(b.data || {}, {photo_url: url}); return api(P + '/logs', {method: 'POST', body: b}); })
+    .then(function(){ closeMo(); toast('Saved'); loadPet(true); }).catch(function(err){ if (err.fields) mark(f, err.fields); fail(err); }).then(function(){ btn.disabled = false; });
+}
+function delLog(id, btn){
+  if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.innerHTML = '<i class="ti ti-check"></i>'; btn.title = 'Tap again to delete'; btn.style.opacity = 1; btn.style.color = '#B23A2B'; toast('Tap again to delete'); return; }
+  btn.disabled = true; api('/petcare/logs/' + encodeURIComponent(id), {method: 'DELETE'}).then(function(){ toast('Deleted'); loadPet(true); }).catch(function(e){ btn.disabled = false; fail(e); });
+}
+function medGiven(id, btn){ btn.disabled = true; api('/petcare/medicines/' + encodeURIComponent(id) + '/given', {method: 'POST', body: {}}).then(function(d){ toast(d.next_due ? 'Dose recorded · next ' + fd(d.next_due, {day: 'numeric', month: 'short'}) : 'Dose recorded'); loadPet(true); }).catch(function(e){ btn.disabled = false; fail(e); }); }
+function medStop(id, btn){ if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.textContent = 'Sure?'; return; } btn.disabled = true; api('/petcare/medicines/' + encodeURIComponent(id), {method: 'PATCH', body: {active: false}}).then(function(){ toast('Marked as finished'); loadPet(true); }).catch(function(e){ btn.disabled = false; fail(e); }); }
+function viewDoc(id){ var w = window.open('', '_blank'); fetch(API + '/petcare/documents/' + encodeURIComponent(id), {headers: {Authorization: 'Bearer ' + TOKEN}}).then(function(r){ if (!r.ok) throw new Error('Could not open the document'); return r.blob(); }).then(function(b){ var u = URL.createObjectURL(b); if (w) w.location = u; else location.href = u; setTimeout(function(){ URL.revokeObjectURL(u); }, 60000); }).catch(function(e){ if (w) w.close(); fail(e); }); }
+function delDoc(id, btn){ if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.innerHTML = '<i class="ti ti-check"></i>'; toast('Tap again to delete'); return; } btn.disabled = true; api('/petcare/documents/' + encodeURIComponent(id), {method: 'DELETE'}).then(function(){ toast('Deleted'); loadPet(true); }).catch(function(e){ btn.disabled = false; fail(e); }); }
+function pickPhoto(){ var i = document.getElementById('photo-in'); i.value = ''; i.onchange = function(){ var f = i.files[0]; if (!f) return; toast('Uploading photo…'); upPhoto(f).then(function(url){ if (!url) throw new Error('Upload failed'); return api('/petcare/pets/' + encodeURIComponent(PID), {method: 'PATCH', body: {photo_url: url}}); }).then(function(){ toast('Photo updated'); return api('/petcare/pets').then(function(x){ PETS = x.pets || []; return loadPet(true); }); }).catch(fail); }; i.click(); }
+
+/* ---------- health card ---------- */
+function cardText(){
+  var p = D.pet, v = (D.vaccinations || []), m = (D.medicines || []).filter(function(x){ return x.active; }), last = (D.timeline || []).filter(function(e){ return e.kind === 'vet_visit' || e.kind === 'appointment'; })[0];
+  var t = p.name + "'s health card (PawBook)\n" + [p.breed || cap(p.species), p.age_label, p.gender && p.gender !== 'unknown' ? cap(p.gender) : '', p.weight_kg ? p.weight_kg + ' kg' : ''].filter(Boolean).join(' · ') + '\n';
+  t += '\nVaccinations:\n' + (v.length ? v.slice(0, 12).map(function(x){ return '• ' + x.name + ' — given ' + fd(x.given) + (x.next_due ? ', next due ' + fd(x.next_due) : ''); }).join('\n') : '• None recorded') + '\n';
+  t += '\nCurrent medicines:\n' + (m.length ? m.map(function(x){ return '• ' + x.name + (x.dose ? ' (' + x.dose + ')' : '') + ' — ' + (FREQ[x.frequency] || ''); }).join('\n') : '• None') + '\n';
+  if (last) t += '\nLast vet visit: ' + (last.title || 'Visit') + ', ' + fd(last.date) + (last.who ? ' (' + last.who + ')' : '') + '\n';
+  return t + '\nRecorded by the owner in PawBook. Not a veterinary certificate.';
+}
+function openCard(){
+  if (!D) return; var p = D.pet, v = D.vaccinations || [], m = (D.medicines || []).filter(function(x){ return x.active; }), last = (D.timeline || []).filter(function(e){ return e.kind === 'vet_visit' || e.kind === 'appointment'; })[0];
+  document.getElementById('card-title').textContent = p.name + "'s health card";
+  document.getElementById('card-body').innerHTML = '<div class="hcard"><div class="top">' + avatar(p) + '<div><h4>' + esc(p.name) + '</h4><div class="muted" style="font-weight:700;font-size:13px">' + esc([p.breed || cap(p.species), p.age_label, p.gender && p.gender !== 'unknown' ? cap(p.gender) : ''].filter(Boolean).join(' · ')) + '</div></div></div>'
+    + '<div class="kv"><span>Weight</span><b>' + (p.weight_kg ? esc(num(p.weight_kg)) + ' kg' : '—') + '</b><span>Owner</span><b>' + esc(D.owner_name || '—') + '</b>' + (last ? '<span>Last vet visit</span><b>' + esc((last.title || 'Visit') + ', ' + fd(last.date)) + '</b>' : '') + '</div>'
+    + '<div style="margin-top:12px;font-weight:900;font-size:14px">Vaccinations</div>' + (v.length ? '<ul>' + v.slice(0, 12).map(function(x){ var s = vaxStatus(x); return '<li><b>' + esc(x.name) + '</b> — given ' + esc(fd(x.given)) + (x.next_due ? ', next ' + esc(fd(x.next_due)) : '') + (s[0] === 'p-over' ? ' <b style="color:#B23A2B">(overdue)</b>' : '') + '</li>'; }).join('') + '</ul>' : '<div class="muted" style="font-size:13px">None recorded</div>')
+    + '<div style="margin-top:10px;font-weight:900;font-size:14px">Current medicines</div>' + (m.length ? '<ul>' + m.map(function(x){ return '<li><b>' + esc(x.name) + '</b>' + (x.dose ? ' (' + esc(x.dose) + ')' : '') + ' — ' + esc(FREQ[x.frequency] || '') + '</li>'; }).join('') + '</ul>' : '<div class="muted" style="font-size:13px">None</div>')
+    + '<div class="disc" style="background:rgba(255,255,255,.7)">Recorded by the owner in PawBook on ' + esc(fd(new Date().toISOString())) + '. Not a veterinary certificate.</div></div>';
+  document.getElementById('cardModal').classList.add('open'); document.body.style.overflow = 'hidden';
+}
+function closeCard(){ document.getElementById('cardModal').classList.remove('open'); document.body.style.overflow = ''; }
+function printCard(){ document.body.classList.add('print-card'); window.print(); setTimeout(function(){ document.body.classList.remove('print-card'); }, 500); }
+function shareCardWA(){ window.open('https://wa.me/?text=' + encodeURIComponent(cardText()), '_blank', 'noopener'); }
+
+boot();
+if ('serviceWorker' in navigator) { window.addEventListener('load', function(){ navigator.serviceWorker.register('service-worker.js').catch(function(){}); }); }
 </script>
 
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>

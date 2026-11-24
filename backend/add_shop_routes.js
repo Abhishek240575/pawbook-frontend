@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v8: returns, refunds, ship-by, health, sitemap) ─────────────────────────────
+const BLOCK = `${START} (v9: pet health records) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -133,6 +133,25 @@ shopRouter.patch('/admin/returns/:id',       authenticate, requireRole('admin'),
 shopRouter.get('/admin/fulfilment',          authenticate, requireRole('admin'), fulCtrl.adminGetFulfil);
 shopRouter.put('/admin/fulfilment',          authenticate, requireRole('admin'), fulCtrl.adminSaveFulfil);
 router.use('/shop', shopRouter);
+// Pet Health page (36): real per-pet records
+const pcCtrl = require('../controllers/petcare.controller');
+const petcareRouter = require('express').Router();
+const pcWrite = fulCtrl.limit('petcare', 120, 600);
+petcareRouter.get('/pets',                       authenticate, pcCtrl.listPets);
+petcareRouter.post('/pets',                      authenticate, fulCtrl.limit('petcare-new', 20, 3600), pcCtrl.createPet);
+petcareRouter.patch('/pets/:id',                 authenticate, pcWrite, pcCtrl.updatePet);
+petcareRouter.get('/pets/:id/overview',          authenticate, pcCtrl.overview);
+petcareRouter.post('/pets/:id/logs',             authenticate, pcWrite, pcCtrl.createLog);
+petcareRouter.put('/pets/:id/goal',              authenticate, pcWrite, pcCtrl.setGoal);
+petcareRouter.post('/pets/:id/vaccinations',     authenticate, pcWrite, pcCtrl.addVaccination);
+petcareRouter.post('/pets/:id/medicines',        authenticate, pcWrite, pcCtrl.addMedicine);
+petcareRouter.post('/pets/:id/documents',        authenticate, fulCtrl.limit('petcare-doc', 30, 3600), pcCtrl.uploadMiddleware, pcCtrl.uploadDoc);
+petcareRouter.delete('/logs/:id',                authenticate, pcWrite, pcCtrl.deleteLog);
+petcareRouter.post('/medicines/:id/given',       authenticate, pcWrite, pcCtrl.medGiven);
+petcareRouter.patch('/medicines/:id',            authenticate, pcWrite, pcCtrl.updateMedicine);
+petcareRouter.get('/documents/:id',              authenticate, pcCtrl.getDoc);
+petcareRouter.delete('/documents/:id',           authenticate, pcWrite, pcCtrl.deleteDoc);
+router.use('/petcare', petcareRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -151,7 +170,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop8');
+  fs.copyFileSync(f, f + '.bak-shop9');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -172,4 +191,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop8 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop9 — restart the app from the MilesWeb panel.');
