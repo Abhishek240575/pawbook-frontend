@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v6: seller KYC, listing approval) ─────────────────────────────
+const BLOCK = `${START} (v7: admin orders, reports, payouts) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -104,6 +104,19 @@ shopRouter.get('/admin/listings',            authenticate, requireRole('admin'),
 shopRouter.patch('/admin/listings/:id',      authenticate, requireRole('admin'), trustCtrl.adminDecideListing);
 shopRouter.get('/admin/settings',            authenticate, requireRole('admin'), trustCtrl.adminGetSettings);
 shopRouter.put('/admin/settings',            authenticate, requireRole('admin'), trustCtrl.adminSaveSettings);
+// Phase 7: admin orders, reports, exports, payouts; seller earnings
+const repCtrl = require('../controllers/reports.controller');
+shopRouter.get('/admin/orders',              authenticate, requireRole('admin'), repCtrl.adminOrders);
+shopRouter.get('/admin/orders/:id',          authenticate, requireRole('admin'), repCtrl.adminOrder);
+shopRouter.patch('/admin/orders/:id',        authenticate, requireRole('admin'), repCtrl.adminUpdateOrder);
+shopRouter.get('/admin/reports',             authenticate, requireRole('admin'), repCtrl.adminReports);
+shopRouter.get('/admin/export',              authenticate, requireRole('admin'), repCtrl.adminExport);
+shopRouter.get('/admin/payouts',             authenticate, requireRole('admin'), repCtrl.adminPayouts);
+shopRouter.put('/admin/payouts/settings',    authenticate, requireRole('admin'), repCtrl.adminPayoutSettings);
+shopRouter.post('/admin/payouts',            authenticate, requireRole('admin'), repCtrl.adminCreatePayout);
+shopRouter.get('/admin/payouts/:id',         authenticate, requireRole('admin'), repCtrl.adminPayout);
+shopRouter.get('/seller/earnings',           authenticate, repCtrl.sellerEarnings);
+shopRouter.get('/seller/payouts/:id',        authenticate, repCtrl.sellerPayout);
 router.use('/shop', shopRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
@@ -123,7 +136,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop6');
+  fs.copyFileSync(f, f + '.bak-shop7');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -144,4 +157,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop6 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop7 — restart the app from the MilesWeb panel.');

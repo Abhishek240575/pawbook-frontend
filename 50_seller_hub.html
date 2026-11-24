@@ -9,8 +9,8 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=7">
-<link rel="stylesheet" href="seller.css?v=7">
+<link rel="stylesheet" href="shop.css?v=9">
+<link rel="stylesheet" href="seller.css?v=9">
 <style>
 .shead{display:flex;gap:16px;align-items:center;margin:24px 0 18px;flex-wrap:wrap}
 .slogo{width:64px;height:64px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:var(--o-d);overflow:hidden;flex-shrink:0}
@@ -79,6 +79,11 @@
 .sq form{display:flex;gap:8px;margin-top:10px}
 .sq form .fi{height:42px}
 .modnote{display:flex;gap:6px;align-items:flex-start;margin-top:4px;font-size:11.5px;color:var(--red);font-weight:600;max-width:320px}
+.stat small.es{display:block;font-size:11.5px;color:var(--muted);margin-top:3px}
+#p-earnings .stats{margin-bottom:16px}
+.erhow{margin:6px 0 0 18px;padding:0;font-size:13.5px;line-height:1.7;color:var(--ink,#333)}
+.tw{overflow-x:auto}.stbl{width:100%;border-collapse:collapse;font-size:13px}.stbl th,.stbl td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.stbl th{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}.stbl .r{text-align:right;font-variant-numeric:tabular-nums}.stbl tr.det td{background:#fffaf4;padding:4px 8px 10px}.stbl.in td{border-bottom:1px dashed var(--line);white-space:normal}
 .kdocs{display:flex;flex-direction:column;gap:10px}
 .kdoc{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;flex-wrap:wrap}
 .kdoc.has{border-color:#bfe8cd;background:#f6fdf8}
@@ -115,6 +120,7 @@
       <button data-t="orders"><i class="ti ti-truck-delivery"></i><span data-i18n="sh.orders">Orders</span><span class="cnt" id="c-ship" style="display:none"></span></button>
       <button data-t="questions"><i class="ti ti-message-question"></i><span data-i18n="sh.questions">Questions</span><span class="cnt" id="c-q" style="display:none"></span></button>
       <button data-t="kyc"><i class="ti ti-id-badge-2"></i><span data-i18n="ky.tab">Verification</span><span class="cnt" id="c-kyc" style="display:none">!</span></button>
+      <button data-t="earnings"><i class="ti ti-wallet"></i><span data-i18n="er.tab">Earnings</span></button>
       <button data-t="settings"><i class="ti ti-settings"></i><span data-i18n="sh.settings">Store settings</span></button>
     </div>
 
@@ -132,6 +138,8 @@
 
     <section class="panel" id="p-orders"><div class="fbar" id="of"></div><div id="olist"></div></section>
     <section class="panel" id="p-questions"><div class="fbar" id="qf"></div><div id="qlist"></div></section>
+
+    <section class="panel" id="p-earnings"><div id="earn"></div></section>
 
     <section class="panel" id="p-kyc"><div id="kyc"></div></section>
 
@@ -166,11 +174,11 @@
 </main>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=7"></script>
-<script src="shop-i18n.js?v=7"></script>
-<script src="seller-i18n.js?v=7"></script>
-<script src="shop.js?v=8"></script>
-<script src="seller.js?v=7"></script>
+<script src="pawbook-i18n.js?v=9"></script>
+<script src="shop-i18n.js?v=9"></script>
+<script src="seller-i18n.js?v=9"></script>
+<script src="shop.js?v=9"></script>
+<script src="seller.js?v=9"></script>
 <script>
 var S = Shop, T = PBi18n.t, esc = S.esc;
 S.init('seller');
@@ -185,7 +193,7 @@ function tab(t){
   document.querySelectorAll('#tabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t') === t); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + t); });
   history.replaceState(null, '', '50_seller_hub.html' + (t === 'overview' ? '' : '?tab=' + t));
-  if (t === 'products') loadProducts(); if (t === 'orders') loadOrders(); if (t === 'questions') loadQuestions(); if (t === 'settings') fillSettings(); if (t === 'kyc') loadKyc();
+  if (t === 'products') loadProducts(); if (t === 'orders') loadOrders(); if (t === 'questions') loadQuestions(); if (t === 'settings') fillSettings(); if (t === 'kyc') loadKyc(); if (t === 'earnings') loadEarn();
 }
 document.querySelectorAll('#tabs button').forEach(function(b){ b.onclick = function(){ tab(b.getAttribute('data-t')); }; });
 
@@ -345,6 +353,35 @@ function loadQuestions(){
 function answer(e, qid){
   e.preventDefault(); var v = e.target.querySelector('input').value.trim(); if (v.length < 2) return;
   S.api('/shop/questions/' + qid + '/answers', {method: 'POST', body: {answer: v}}).then(function(){ S.toast(T('qa.posted'), 'ti-check'); loadQuestions(); refreshStats(); }).catch(fail);
+}
+
+/* ── earnings ── */
+var ER = null;
+function rs2(n){ return S.money ? S.money(n) : '₹' + n; }
+function rsx(n){ try { return new Intl.NumberFormat(PBi18n.locale, {style: 'currency', currency: 'INR', maximumFractionDigits: 2}).format(Number(n) || 0); } catch(e) { return '₹' + n; } }
+function dtl(v){ try { return new Date(v).toLocaleDateString(PBi18n.locale, {day: 'numeric', month: 'short', year: 'numeric'}); } catch(e) { return String(v).slice(0, 10); } }
+function loadEarn(){
+  document.getElementById('earn').innerHTML = '<div class="pc-skel" style="aspect-ratio:auto;height:200px"></div>';
+  S.api('/shop/seller/earnings').then(function(d){ ER = d; renderEarn(); }).catch(fail);
+}
+function renderEarn(){
+  var d = ER, st = d.settings, h = '';
+  var tiles = [['ti-cash', 'er.ready', d.ready, 'er.readys'], ['ti-hourglass', 'er.wait', d.waiting, st.payout_hold_days ? 'er.waits' : null], ['ti-truck-delivery', 'er.prog', d.in_progress, 'er.progs']];
+  h += '<div class="stats">' + tiles.map(function(t){ return '<div class="stat"><div class="ic"><i class="ti ' + t[0] + '"></i></div><b>' + esc(rsx(t[2].net)) + '</b><span>' + esc(T(t[1])) + '</span><small class="es">' + esc(T(t[2].items === 1 ? 'er.item1' : 'er.items', {n: t[2].items})) + (t[3] ? ' · ' + esc(T(t[3], {n: st.payout_hold_days})) : '') + '</small></div>'; }).join('')
+    + '<div class="stat"><div class="ic"><i class="ti ti-circle-check"></i></div><b>' + esc(rsx(d.paid_total)) + '</b><span>' + esc(T('er.paid')) + '</span><small class="es">' + esc(T(d.payouts.length === 1 ? 'er.pay1' : 'er.pays', {n: d.payouts.length})) + '</small></div></div>';
+  h += '<div class="sx-card"><h2><i class="ti ti-info-circle"></i>' + esc(T('er.how')) + '</h2><ul class="erhow"><li>' + esc(T('er.h1')) + '</li><li>' + esc(T(st.commission_pct ? 'er.h2' : 'er.h2z', {n: st.commission_pct})) + '</li>'
+    + (st.payout_hold_days ? '<li>' + esc(T('er.h3', {n: st.payout_hold_days})) + '</li>' : '') + '<li>' + esc(T('er.h4')) + '</li></ul></div>';
+  h += '<div class="sx-card"><h2><i class="ti ti-receipt-2"></i>' + esc(T('er.hist')) + '</h2>' + (d.payouts.length ? '<div class="tw"><table class="stbl"><tr><th>' + esc(T('er.date')) + '</th><th>' + esc(T('er.ref')) + '</th><th class="r">' + esc(T('er.sales')) + '</th><th class="r">' + esc(T('er.comm')) + '</th><th class="r">' + esc(T('er.paidc')) + '</th><th></th></tr>'
+    + d.payouts.map(function(p){ return '<tr><td>' + esc(dtl(p.paid_at)) + '</td><td>' + esc(p.reference || '—') + '</td><td class="r">' + esc(rsx(p.gross)) + '</td><td class="r">' + (p.commission ? '− ' + esc(rsx(p.commission)) : '—') + '</td><td class="r"><b>' + esc(rsx(p.net)) + '</b></td><td><button class="btn btn-ghost btn-sm" onclick="earnDet(' + Number(p.payout_id) + ', this)">' + esc(T('er.stmt')) + '</button></td></tr><tr class="det" id="ed-' + Number(p.payout_id) + '" style="display:none"><td colspan="6"></td></tr>'; }).join('')
+    + '</table></div>' : '<div class="sub" style="margin:0">' + esc(T('er.none')) + '</div>') + '</div>';
+  document.getElementById('earn').innerHTML = h;
+}
+function earnDet(id, btn){
+  var row = document.getElementById('ed-' + id); if (row.style.display === '') { row.style.display = 'none'; return; }
+  S.api('/shop/seller/payouts/' + id).then(function(d){
+    row.firstChild.innerHTML = '<table class="stbl in">' + d.payout.items.map(function(i){ return '<tr><td>' + esc(i.order_number) + '</td><td>' + esc(i.name) + '</td><td class="r">' + i.quantity + ' × ' + esc(rsx(i.price)) + '</td><td class="r">' + esc(rsx(i.line_total)) + '</td></tr>'; }).join('') + '</table>';
+    row.style.display = '';
+  }).catch(fail);
 }
 
 /* ── verification (KYC) ── */
