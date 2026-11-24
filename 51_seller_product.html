@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<meta name="robots" content="noindex">
+<title>Product — PawBook seller</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<link rel="stylesheet" href="seller.css">
+<style>
+.lay{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+.side{position:sticky;top:90px;display:flex;flex-direction:column;gap:14px}
+.side .sx-card{padding:16px}
+.side h3{font-size:13px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.side .pgrid{grid-template-columns:1fr!important}
+.check{list-style:none;display:flex;flex-direction:column;gap:7px;font-size:12.5px}
+.check li{display:flex;gap:8px;align-items:center;color:var(--muted)}
+.check li i{font-size:17px;color:#cbc3b9}
+.check li.ok{color:var(--navy);font-weight:600}.check li.ok i{color:var(--green)}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.ph{position:relative;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--o-ll);border:1px solid var(--line)}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph .cov{position:absolute;left:6px;top:6px;padding:2px 8px;border-radius:999px;background:var(--navy);color:#fff;font-size:10.5px;font-weight:800}
+.ph .pa{position:absolute;right:5px;top:5px;display:flex;gap:4px}
+.ph .pa button{width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.95);cursor:pointer;font-size:14px;color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.ph.busy{display:flex;align-items:center;justify-content:center;color:var(--o);font-size:26px}
+.addph{aspect-ratio:1/1;border-radius:14px;border:2px dashed #e6d9ca;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:700;text-align:center;padding:6px}
+.addph i{font-size:26px;color:var(--o)}
+.addph:hover{border-color:var(--o)}
+.photos.invalid{outline:2px solid var(--red);outline-offset:4px;border-radius:14px}
+.urlrow{display:flex;gap:8px;margin-top:10px}
+.urlrow .fi{height:40px}
+.vt{width:100%;border-collapse:separate;border-spacing:0 8px}
+.vt th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);text-align:left;padding:0 6px;font-weight:800}
+.vt td{padding:0 4px}
+.vt .fi{height:42px}
+.vt tr.invalid .fi{border-color:var(--red);background:#fff5f5}
+.kv{display:grid;grid-template-columns:1fr 1.4fr auto;gap:8px;margin-bottom:8px}
+.kv .fi{height:42px}
+.tog{display:flex;gap:12px;align-items:center;padding:14px;border-radius:14px;background:var(--cream);cursor:pointer;margin-bottom:14px}
+.tog b{display:block;color:var(--navy);font-size:13.5px}.tog small{color:var(--muted);font-size:12px}
+.sw{position:relative;width:44px;height:25px;display:inline-block;flex-shrink:0}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;border-radius:999px;background:#d8d2ca;cursor:pointer;transition:.2s}
+.sw span::after{content:'';position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+span{background:var(--green)}
+.sw input:checked+span::after{left:22px}
+.disc{font-size:12px;font-weight:800;color:var(--green)}
+.crumb2{font-size:12.5px;color:var(--muted);margin-top:20px}.crumb2 a{color:var(--muted);text-decoration:none}
+@media(max-width:980px){ .lay{grid-template-columns:1fr} .side{position:static;order:-1} .side .prev{display:none} .kv{grid-template-columns:1fr 1fr auto} }
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap">
+  <div class="crumb2"><a href="50_seller_hub.html" data-i18n="sh.hub">Seller hub</a> › <a href="50_seller_hub.html?tab=products" data-i18n="sh.products">Products</a></div>
+  <div class="sx-h"><div><h1 id="ttl" data-i18n="sp.new">Add a product</h1><p data-i18n="sp.sub">Clear photos and honest details help pet parents choose with confidence.</p></div></div>
+  <div id="loading" class="pc-skel" style="aspect-ratio:auto;height:400px"></div>
+  <form id="pf" novalidate onsubmit="save(event)" style="display:none">
+  <div class="lay"><div>
+    <div class="sx-card"><h2><i class="ti ti-photo"></i><span data-i18n="sp.photos">Photos</span></h2><div class="sub" data-i18n="sp.photoss">Up to 8 photos. The first one is the cover. Use real photos of the product on a plain background.</div>
+      <div class="photos" id="photos" data-f="images"></div>
+      <div class="urlrow"><input class="fi" id="imgurl" type="url" placeholder="https://…" data-i18n-ph="sp.urlph"><button type="button" class="btn btn-ghost btn-sm" onclick="addUrl()"><i class="ti ti-link"></i><span data-i18n="sp.addurl">Add link</span></button></div>
+      <span class="err" style="margin-top:6px" id="err-images" data-i18n="sp.e_img">Add at least one photo.</span>
+    </div>
+
+    <div class="sx-card"><h2><i class="ti ti-file-description"></i><span data-i18n="sp.basics">Basics</span></h2>
+      <div class="fg" style="margin-top:12px">
+        <label class="fl full" data-f="name"><span class="req" data-i18n="sp.name">Product name</span><input class="fi" name="name" maxlength="150" data-i18n-ph="sp.nameph" placeholder="e.g. Chicken & Rice Adult Dog Food 3 kg"><span class="err" data-i18n="sp.e_name">Please enter at least 3 characters.</span></label>
+        <label class="fl"><span data-i18n="f.brand">Brand</span><input class="fi" name="brand" maxlength="120" list="brands" autocomplete="off"><datalist id="brands"></datalist><small data-i18n="sp.brands">Leave empty for unbranded or handmade items.</small></label>
+        <label class="fl" data-f="category"><span class="req" data-i18n="f.cat">Category</span><select class="fs" name="category" id="cat"></select><span class="err" data-i18n="sp.e_cat">Choose a category.</span></label>
+        <label class="fl full" data-f="description"><span class="req" data-i18n="pd.desc">Description</span><textarea class="ft" name="description" maxlength="5000" style="min-height:150px" data-i18n-ph="sp.descph" placeholder="What it is, who it is for, size and material, why pets love it…"></textarea><small id="desc-n"></small><span class="err" data-i18n="sp.e_desc">Please write at least 20 characters.</span></label>
+      </div></div>
+
+    <div class="sx-card"><h2><i class="ti ti-paw"></i><span data-i18n="sp.forwho">Which pets is it for?</span></h2><div class="sub" data-i18n="sp.forwhos">Used for filters and personal recommendations.</div>
+      <div class="fl" data-f="pet_types"><span class="req" data-i18n="f.pet">Pet</span><div class="chips" id="pets"></div><span class="err" data-i18n="sp.e_pet">Choose at least one pet.</span></div>
+      <div class="fl" style="margin-top:14px"><span data-i18n="f.stage">Life stage</span><div class="chips" id="stages"></div></div>
+    </div>
+
+    <div class="sx-card" id="stock"><h2><i class="ti ti-currency-rupee"></i><span data-i18n="sp.price">Price &amp; stock</span></h2>
+      <label class="tog"><span class="sw"><input type="checkbox" id="hasvar" onchange="renderPrice()"><span></span></span><div><b data-i18n="sp.sizes">This product comes in sizes or packs</b><small data-i18n="sp.sizess">e.g. 1 kg / 3 kg / 10 kg, or S / M / L. Each size has its own price and stock.</small></div></label>
+      <div id="price-simple" class="fg">
+        <label class="fl" data-f="price"><span class="req" data-i18n="sp.sp">Selling price</span><div class="pre"><span>₹</span><input class="fi" name="price" type="number" min="1" step="1" oninput="disc()"></div><span class="err" data-i18n="sp.e_price">Enter a price above ₹0.</span></label>
+        <label class="fl" data-f="compare_price"><span data-i18n="sp.mrp">MRP</span><div class="pre"><span>₹</span><input class="fi" name="compare_price" type="number" min="1" step="1" oninput="disc()"></div><small id="disc"></small><span class="err" data-i18n="sp.e_mrp">MRP must be higher than the selling price.</span></label>
+        <label class="fl" data-f="stock"><span class="req" data-i18n="sh.stock">Stock</span><input class="fi" name="stock" type="number" min="0" step="1" value="0"><span class="err" data-i18n="sh.badstock">Enter a stock number of 0 or more.</span></label>
+        <label class="fl"><span data-i18n="sp.unit">Pack size / unit</span><input class="fi" name="unit" maxlength="20" data-i18n-ph="sp.unitph" placeholder="e.g. 3 kg, 1 piece"></label>
+      </div>
+      <div id="price-var" style="display:none" data-f="variants">
+        <table class="vt"><thead><tr><th data-i18n="sp.vlabel">Size / pack</th><th data-i18n="sp.sp">Selling price</th><th data-i18n="sp.mrp">MRP</th><th data-i18n="sh.stock">Stock</th><th></th></tr></thead><tbody id="vrows"></tbody></table>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="addVar()"><i class="ti ti-plus"></i><span data-i18n="sp.addsize">Add size</span></button>
+        <span class="err" style="margin-top:6px" data-i18n="sp.e_var">Each size needs a unique name, a price above ₹0, an MRP above the price (or empty) and stock of 0 or more.</span>
+      </div>
+      <div class="fg" style="margin-top:14px">
+        <label class="fl"><span data-i18n="sp.sku">SKU</span><input class="fi" name="sku" maxlength="60"><small data-i18n="sp.skus">Your own code for this product. Optional.</small></label>
+        <label class="fl"><span data-i18n="sp.lowat">Low-stock alert at</span><input class="fi" name="low_stock_at" type="number" min="0" value="5"></label>
+        <label class="fl"><span data-i18n="sp.deliv">Delivery time (days)</span><select class="fs" name="delivery_days">
+          <option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>10</option><option>15</option></select><small data-i18n="sp.delivs">Typical days from order to delivery, including your shipping time.</small></label>
+      </div></div>
+
+    <div class="sx-card"><h2><i class="ti ti-list-details"></i><span data-i18n="sp.details">Details</span></h2><div class="sub" data-i18n="sp.detailss">Specifications are shown on the product page and in product comparison.</div>
+      <div class="fl"><span data-i18n="pd.specs">Specifications</span><div id="specs"></div>
+        <button type="button" class="btn btn-ghost btn-sm" style="align-self:flex-start" onclick="addSpec('','')"><i class="ti ti-plus"></i><span data-i18n="sp.addspec">Add specification</span></button>
+        <small data-i18n="sp.specss">e.g. Net weight = 3 kg · Material = Natural rubber · Protein = 24%</small></div>
+      <div class="fg" style="margin-top:14px">
+        <label class="fl full"><span data-i18n="pd.ingr">Ingredients &amp; nutrition</span><textarea class="ft" name="ingredients" maxlength="3000" data-i18n-ph="sp.ingrph" placeholder="For food, treats and supplements: full ingredient list and guaranteed analysis."></textarea></label>
+        <label class="fl full"><span data-i18n="pd.usage">How to use</span><textarea class="ft" name="usage_instructions" maxlength="3000" style="min-height:80px"></textarea></label>
+        <label class="fl full"><span data-i18n="sp.tags">Search keywords</span><input class="fi" name="tags" maxlength="300" data-i18n-ph="sp.tagsph" placeholder="e.g. grain free, chew toy, kutta khana"><small data-i18n="sp.tagss">Comma separated, up to 10. Helps people find this product.</small></label>
+      </div></div>
+  </div>
+
+  <aside class="side">
+    <div class="sx-card prev"><h3 data-i18n="sp.preview">Preview</h3><div class="pgrid" id="prev"></div></div>
+    <div class="sx-card"><h3 data-i18n="sp.ready">Listing checklist</h3><ul class="check" id="check"></ul></div>
+  </aside></div>
+  </form>
+</main>
+<div class="sx-foot" id="foot" style="display:none"><div class="wrap">
+  <label style="display:flex;gap:10px;align-items:center;font-weight:700;color:var(--navy);font-size:13px;margin-right:auto;cursor:pointer"><span class="sw"><input type="checkbox" id="live" checked><span></span></span><span data-i18n="sh.showshop">Show in shop</span></label>
+  <a class="btn btn-ghost" href="50_seller_hub.html?tab=products" data-i18n="sp.cancel">Cancel</a>
+  <button class="btn btn-o" id="savebtn" onclick="document.getElementById('pf').requestSubmit()"><i class="ti ti-device-floppy"></i><span data-i18n="sp.save">Save product</span></button>
+</div></div>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="seller-i18n.js"></script>
+<script src="shop.js"></script>
+<script src="seller.js"></script>
+<script>
+var S = Shop, T = PBi18n.t, esc = S.esc, F = document.getElementById('pf');
+S.init('seller');
+var ID = new URLSearchParams(location.search).get('id'), IMGS = [], busy = 0, ME = null;
+var PETS = ['dog','cat','bird','fish','small_pet','other'], STAGES = ['puppy','kitten','adult','senior','all'];
+var PET_IC = {dog:'ti-dog', cat:'ti-cat', bird:'ti-feather', fish:'ti-fish', small_pet:'ti-paw', other:'ti-paw-filled'};
+
+function chips(id, list, label, name){
+  document.getElementById(id).innerHTML = list.map(function(v){ return '<label class="chip-o"><input type="checkbox" name="' + name + '" value="' + v + '">' + (PET_IC[v] && name === 'pet_types' ? '<i class="ti ' + PET_IC[v] + '"></i>' : '') + '<span>' + esc(label(v)) + '</span></label>'; }).join('');
+}
+function petLabel(v){ return v === 'other' ? T('sp.otherpet') : T('pet.' + v); }
+function stageLabel(v){ return v === 'all' ? T('cmp.allages') : T('ls.' + v); }
+function checked(name){ return Array.prototype.map.call(F.querySelectorAll('[name="' + name + '"]:checked'), function(i){ return i.value; }); }
+function fillCats(sel){
+  var ids = S.activeCatIds();
+  document.getElementById('cat').innerHTML = '<option value="">' + esc(T('sp.choose')) + '</option>' + ids.map(function(c){ return '<option value="' + esc(c) + '"' + (c === sel ? ' selected' : '') + '>' + esc(S.catLabel(c)) + '</option>'; }).join('');
+}
+
+/* photos */
+function renderPhotos(){
+  var h = IMGS.map(function(u, i){ return '<div class="ph"><img src="' + esc(u) + '" alt="">' + (i === 0 ? '<span class="cov">' + esc(T('sp.cover')) + '</span>' : '')
+    + '<div class="pa">' + (i > 0 ? '<button type="button" title="' + esc(T('sp.makecover')) + '" onclick="cover(' + i + ')"><i class="ti ti-star"></i></button>' : '') + '<button type="button" title="' + esc(T('sh.delete')) + '" onclick="rmImg(' + i + ')"><i class="ti ti-x"></i></button></div></div>'; }).join('');
+  for (var b = 0; b < busy; b++) h += '<div class="ph busy"><i class="ti ti-loader-2"></i></div>';
+  if (IMGS.length + busy < 8) h += '<label class="addph"><i class="ti ti-camera-plus"></i><span>' + esc(T('sp.addphoto')) + '</span><input type="file" accept="image/*" multiple hidden onchange="addFiles(this)"></label>';
+  document.getElementById('photos').innerHTML = h; preview();
+}
+function addFiles(inp){
+  var files = Array.prototype.slice.call(inp.files, 0, 8 - IMGS.length - busy); inp.value = '';
+  files.forEach(function(f){ busy++; renderPhotos(); Seller.upload(f).then(function(u){ IMGS.push(u); }).catch(function(e){ S.toast(e.message, 'ti-alert-circle'); }).then(function(){ busy--; renderPhotos(); }); });
+}
+function addUrl(){ var i = document.getElementById('imgurl'), u = i.value.trim(); if (!/^https:\/\/\S+$/i.test(u)) { S.toast(T('sp.e_url'), 'ti-alert-circle'); return; } if (IMGS.length >= 8) return; IMGS.push(u); i.value = ''; renderPhotos(); }
+function rmImg(i){ IMGS.splice(i, 1); renderPhotos(); }
+function cover(i){ var u = IMGS.splice(i, 1)[0]; IMGS.unshift(u); renderPhotos(); }
+
+/* price + sizes */
+function renderPrice(){ var v = document.getElementById('hasvar').checked; document.getElementById('price-simple').style.display = v ? 'none' : ''; document.getElementById('price-var').style.display = v ? '' : 'none'; if (v && !document.querySelectorAll('#vrows tr').length) { addVar(); addVar(); } preview(); }
+function addVar(x){ x = x || {}; var tr = document.createElement('tr');
+  tr.innerHTML = '<td><input class="fi" data-v="label" maxlength="40" placeholder="' + esc(T('sp.vph')) + '" value="' + esc(x.label || '') + '"></td><td><input class="fi" data-v="price" type="number" min="1" value="' + (x.price != null ? x.price : '') + '"></td>'
+    + '<td><input class="fi" data-v="compare_price" type="number" min="1" value="' + (x.compare_price != null ? x.compare_price : '') + '"></td><td><input class="fi" data-v="stock" type="number" min="0" value="' + (x.stock != null ? x.stock : 0) + '"></td>'
+    + '<td><button type="button" class="btn btn-ghost btn-sm" style="width:40px;padding:0" onclick="this.closest(\'tr\').remove();preview()" aria-label="remove"><i class="ti ti-trash"></i></button></td>';
+  document.getElementById('vrows').appendChild(tr); preview(); }
+function variants(){ return Array.prototype.map.call(document.querySelectorAll('#vrows tr'), function(tr){ var g = function(k){ return tr.querySelector('[data-v="' + k + '"]').value.trim(); };
+  return {label: g('label'), price: g('price') === '' ? null : Number(g('price')), compare_price: g('compare_price') === '' ? null : Number(g('compare_price')), stock: g('stock') === '' ? 0 : parseInt(g('stock'), 10)}; }).filter(function(v){ return v.label || v.price != null; }); }
+function disc(){ var p = Number(F.elements.price.value), m = Number(F.elements.compare_price.value); document.getElementById('disc').innerHTML = p > 0 && m > p ? '<span class="disc">' + esc(T('sp.off', {n: Math.round((1 - p / m) * 100)})) + '</span>' : ''; preview(); }
+
+/* specs */
+function addSpec(k, v){ var d = document.createElement('div'); d.className = 'kv';
+  d.innerHTML = '<input class="fi" data-k maxlength="40" placeholder="' + esc(T('sp.speck')) + '" value="' + esc(k) + '"><input class="fi" data-val maxlength="120" placeholder="' + esc(T('sp.specv')) + '" value="' + esc(v) + '"><button type="button" class="btn btn-ghost btn-sm" style="width:40px;padding:0" onclick="this.parentNode.remove()" aria-label="remove"><i class="ti ti-trash"></i></button>';
+  document.getElementById('specs').appendChild(d); }
+function specs(){ var o = {}; document.querySelectorAll('#specs .kv').forEach(function(r){ var k = r.querySelector('[data-k]').value.trim(), v = r.querySelector('[data-val]').value.trim(); if (k && v) o[k] = v; }); return o; }
+
+function collect(){
+  var hv = document.getElementById('hasvar').checked, b = {
+    name: F.elements.name.value.trim(), brand: F.elements.brand.value.trim(), category: F.elements.category.value, description: F.elements.description.value.trim(),
+    pet_types: checked('pet_types'), life_stages: checked('life_stages'), images: IMGS.slice(),
+    sku: F.elements.sku.value.trim(), low_stock_at: parseInt(F.elements.low_stock_at.value, 10) || 0, delivery_days: parseInt(F.elements.delivery_days.value, 10) || 4,
+    specs: specs(), ingredients: F.elements.ingredients.value.trim(), usage_instructions: F.elements.usage_instructions.value.trim(),
+    tags: F.elements.tags.value.split(',').map(function(t){ return t.trim(); }).filter(Boolean).slice(0, 10), is_active: document.getElementById('live').checked };
+  if (hv) b.variants = variants();
+  else { b.variants = []; b.price = F.elements.price.value === '' ? null : Number(F.elements.price.value); b.compare_price = F.elements.compare_price.value === '' ? null : Number(F.elements.compare_price.value); b.stock = parseInt(F.elements.stock.value, 10); b.unit = F.elements.unit.value.trim(); }
+  return b;
+}
+function validate(b){
+  var e = [];
+  if (b.name.length < 3) e.push('name'); if (b.description.length < 20) e.push('description'); if (!b.category) e.push('category');
+  if (!b.pet_types.length) e.push('pet_types'); if (!b.images.length) e.push('images');
+  if (b.variants.length || document.getElementById('hasvar').checked) {
+    var seen = {}, bad = false;
+    document.querySelectorAll('#vrows tr').forEach(function(tr){ tr.classList.remove('invalid'); });
+    if (!b.variants.length) bad = true;
+    b.variants.forEach(function(v, i){ var k = v.label.toLowerCase(); if (!v.label || seen[k] || !(v.price > 0) || (v.compare_price != null && !(v.compare_price > v.price)) || !(v.stock >= 0)) { bad = true; var tr = document.querySelectorAll('#vrows tr')[i]; if (tr) tr.classList.add('invalid'); } seen[k] = 1; });
+    if (bad) e.push('variants');
+  } else {
+    if (!(b.price > 0)) e.push('price'); if (b.compare_price != null && !(b.compare_price > b.price)) e.push('compare_price'); if (!(b.stock >= 0)) e.push('stock');
+  }
+  document.getElementById('err-images').style.display = e.indexOf('images') >= 0 ? 'block' : 'none';
+  var badRows = Array.prototype.filter.call(document.querySelectorAll('#vrows tr'), function(tr){ return tr.classList.contains('invalid'); });
+  Seller.markErrors(F, e); badRows.forEach(function(tr){ tr.classList.add('invalid'); }); return e;
+}
+
+/* preview + checklist */
+function preview(){
+  if (!ME) return;
+  var b = collect(), v = b.variants || [], cheapest = v.filter(function(x){ return x.price > 0; }).sort(function(a, c){ return a.price - c.price; })[0];
+  var price = cheapest ? cheapest.price : (b.price || 0), cp = cheapest ? cheapest.compare_price : b.compare_price;
+  var stock = v.length ? v.reduce(function(a, x){ return a + (x.stock || 0); }, 0) : b.stock;
+  var p = {product_id: 'preview', name: b.name || T('sp.name'), brand: b.brand, price: price, compare_price: cp, images: b.images, category: b.category || 'other', stock: stock, rating: 0, review_count: 0, sold: 0, delivery_days: b.delivery_days,
+    discount_pct: cp > price && price > 0 ? Math.round((1 - price / cp) * 100) : null, created_at: new Date().toISOString(), pet_types: b.pet_types};
+  var el = document.getElementById('prev'); S.renderCards(el, [p]);
+  el.querySelectorAll('a').forEach(function(a){ a.removeAttribute('href'); }); el.querySelectorAll('button').forEach(function(x){ x.disabled = true; });
+  var items = [[b.images.length >= 3, 'sp.c_photos'], [b.name.length >= 10, 'sp.c_name'], [b.description.length >= 80, 'sp.c_desc'], [!!b.category && b.pet_types.length > 0, 'sp.c_pets'],
+    [price > 0 && stock > 0, 'sp.c_price'], [Object.keys(b.specs).length >= 2, 'sp.c_specs'], [!!b.brand, 'sp.c_brand']];
+  document.getElementById('check').innerHTML = items.map(function(x){ return '<li class="' + (x[0] ? 'ok' : '') + '"><i class="ti ti-' + (x[0] ? 'circle-check-filled' : 'circle') + '"></i>' + esc(T(x[1])) + '</li>'; }).join('');
+  var n = b.description.length; document.getElementById('desc-n').textContent = T('sp.chars', {n: n});
+}
+
+function fill(p){
+  F.elements.name.value = p.name || ''; F.elements.brand.value = p.brand || ''; F.elements.description.value = p.description || '';
+  fillCats(p.category);
+  (p.pet_types || []).forEach(function(v){ var i = F.querySelector('[name="pet_types"][value="' + v + '"]'); if (i) i.checked = true; });
+  (p.life_stages || []).forEach(function(v){ var i = F.querySelector('[name="life_stages"][value="' + v + '"]'); if (i) i.checked = true; });
+  var im = p.images; if (typeof im === 'string') { try { im = JSON.parse(im); } catch(e) { im = []; } } IMGS = (im || []).filter(Boolean);
+  var v = p.variants; if (typeof v === 'string') { try { v = JSON.parse(v); } catch(e) { v = []; } }
+  if (v && v.length) { document.getElementById('hasvar').checked = true; v.forEach(addVar); }
+  F.elements.price.value = p.price != null ? Number(p.price) : ''; F.elements.compare_price.value = p.compare_price != null ? Number(p.compare_price) : '';
+  F.elements.stock.value = p.stock || 0; F.elements.unit.value = p.unit || ''; F.elements.sku.value = p.sku || ''; F.elements.low_stock_at.value = p.low_stock_at != null ? p.low_stock_at : 5;
+  F.elements.delivery_days.value = String(p.delivery_days || 4); if (!F.elements.delivery_days.value) F.elements.delivery_days.value = '4';
+  var sp = p.specs; if (typeof sp === 'string') { try { sp = JSON.parse(sp); } catch(e) { sp = {}; } } Object.keys(sp || {}).forEach(function(k){ addSpec(k, sp[k]); });
+  F.elements.ingredients.value = p.ingredients || ''; F.elements.usage_instructions.value = p.usage_instructions || ''; F.elements.tags.value = (p.tags || []).join(', ');
+  document.getElementById('live').checked = !!(p.is_active || p.store_paused);
+}
+
+function save(e){
+  e.preventDefault();
+  if (busy) { S.toast(T('sp.waitup'), 'ti-loader-2'); return; }
+  var b = collect(); if (validate(b).length) { S.toast(T('sp.fix'), 'ti-alert-circle'); return; }
+  var btn = document.getElementById('savebtn'); btn.disabled = true;
+  S.api('/shop/seller/products' + (ID ? '/' + encodeURIComponent(ID) : ''), {method: ID ? 'PUT' : 'POST', body: b}).then(function(d){
+    S.toast(T(ID ? 'sh.saved' : 'sp.created'), 'ti-check');
+    setTimeout(function(){ location.href = '50_seller_hub.html?tab=products'; }, 600);
+  }).catch(function(err){
+    btn.disabled = false;
+    var m = /check: (.*)$/.exec(err.message || ''); if (m) { var f = m[1].split(', '); Seller.markErrors(F, f.map(function(x){ return x.split('.')[0]; })); S.toast(T('sp.fix'), 'ti-alert-circle'); return; }
+    S.toast(err.status === 429 ? T('qa.slow') : (err.message || T('l.err')), 'ti-alert-circle');
+  });
+}
+
+function boot(){
+  chips('pets', PETS, petLabel, 'pet_types'); chips('stages', STAGES, stageLabel, 'life_stages');
+  Seller.requireSeller().then(function(d){
+    ME = d.seller;
+    if (ME.status === 'suspended') { document.getElementById('loading').outerHTML = '<div class="banner bad"><i class="ti ti-ban"></i><span class="sp">' + esc(T('sh.suspended')) + '</span></div>'; return; }
+    S.api('/shop/brands').then(function(r){ document.getElementById('brands').innerHTML = (r.brands || []).map(function(x){ return '<option value="' + esc(x.name) + '">'; }).join(''); }).catch(function(){});
+    var p = ID ? S.api('/shop/seller/products/' + encodeURIComponent(ID)).then(function(r){ return r.product; }) : Promise.resolve(null);
+    return Promise.all([p, S.loadCats()]).then(function(r){
+      var prod = r[0];
+      if (prod) { fill(prod); document.getElementById('ttl').textContent = T('sp.edit'); document.title = prod.name + ' — PawBook seller'; }
+      else { fillCats(''); if (ME.status === 'paused') document.getElementById('live').checked = true; }
+      document.getElementById('loading').style.display = 'none'; F.style.display = ''; document.getElementById('foot').style.display = '';
+      renderPhotos(); renderPrice(); disc(); preview();
+      if (location.hash === '#stock') setTimeout(function(){ document.getElementById('stock').scrollIntoView({behavior: 'smooth'}); }, 200);
+    });
+  }).catch(function(err){ document.getElementById('loading').outerHTML = '<div class="sx-card empty2"><i class="ti ti-package-off"></i><b>' + esc(err.status === 404 ? T('pd.nf') : T('l.err')) + '</b><a class="btn btn-o" style="margin-top:14px" href="50_seller_hub.html?tab=products">' + esc(T('sh.hub')) + '</a></div>'; });
+}
+F.addEventListener('input', function(){ clearTimeout(window._pv); window._pv = setTimeout(preview, 150); });
+F.addEventListener('change', preview);
+boot();
+window.addEventListener('pb:langchange', function(){ if (!ME) return; var sel = F.elements.category.value, pt = checked('pet_types'), ls = checked('life_stages');
+  chips('pets', PETS, petLabel, 'pet_types'); chips('stages', STAGES, stageLabel, 'life_stages'); fillCats(sel);
+  pt.forEach(function(v){ F.querySelector('[name="pet_types"][value="' + v + '"]').checked = true; }); ls.forEach(function(v){ F.querySelector('[name="life_stages"][value="' + v + '"]').checked = true; });
+  renderPhotos(); disc(); });
+</script>
+</body>
+</html>

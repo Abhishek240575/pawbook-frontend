@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v2: discovery complete) ─────────────────────────────
+const BLOCK = `${START} (v3: seller side) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -44,6 +44,23 @@ shopRouter.patch('/admin/questions/:id',    authenticate, requireRole('admin'), 
 shopRouter.patch('/admin/answers/:id',      authenticate, requireRole('admin'), shopCtrl.adminModerate);
 shopRouter.get('/admin/synonyms',           authenticate, requireRole('admin'), shopCtrl.adminSynonyms);
 shopRouter.put('/admin/synonyms',           authenticate, requireRole('admin'), shopCtrl.adminSaveSynonym);
+// seller (Phase 2)
+const sellerCtrl = require('../controllers/seller.controller');
+const sellerWriteLimit = (shopRL.rateLimit || shopRL)({ windowMs: 15 * 60 * 1000, max: 150, standardHeaders: true, legacyHeaders: false });
+shopRouter.get('/seller/me',                 authenticate, sellerCtrl.me);
+shopRouter.post('/seller/register',          authenticate, shopWriteLimit, sellerCtrl.register);
+shopRouter.patch('/seller/me',               authenticate, sellerWriteLimit, sellerCtrl.update);
+shopRouter.get('/seller/products',           authenticate, sellerCtrl.listProducts);
+shopRouter.post('/seller/products',          authenticate, sellerWriteLimit, sellerCtrl.createProduct);
+shopRouter.get('/seller/products/:id',       authenticate, sellerCtrl.getProduct);
+shopRouter.put('/seller/products/:id',       authenticate, sellerWriteLimit, sellerCtrl.updateProduct);
+shopRouter.patch('/seller/products/:id',     authenticate, sellerWriteLimit, sellerCtrl.quickUpdate);
+shopRouter.delete('/seller/products/:id',    authenticate, sellerWriteLimit, sellerCtrl.archiveProduct);
+shopRouter.get('/seller/orders',             authenticate, sellerCtrl.listOrders);
+shopRouter.patch('/seller/orders/:order_id', authenticate, sellerWriteLimit, sellerCtrl.updateOrder);
+shopRouter.get('/seller/questions',          authenticate, sellerCtrl.listQuestions);
+shopRouter.get('/admin/sellers',             authenticate, requireRole('admin'), sellerCtrl.adminList);
+shopRouter.patch('/admin/sellers/:user_id',  authenticate, requireRole('admin'), sellerCtrl.adminUpdate);
 router.use('/shop', shopRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
@@ -51,7 +68,7 @@ ${END} ────────────────────────�
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop2');
+  fs.copyFileSync(f, f + '.bak-shop3');
   let out;
   const a = src.indexOf(START), b = src.indexOf(END);
   if (a >= 0 && b > a) {
@@ -64,4 +81,4 @@ for (const f of FILES) {
   }
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop2 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop3 — restart the app from the MilesWeb panel.');

@@ -65,6 +65,7 @@
       <button class="on" data-t="cats" onclick="tab('cats')"><i class="ti ti-category"></i>Categories</button>
       <button data-t="brands" onclick="tab('brands')"><i class="ti ti-building-store"></i>Brands</button>
       <button data-t="qa" onclick="tab('qa')"><i class="ti ti-message-question"></i>Q&amp;A moderation</button>
+      <button data-t="sellers" onclick="tab('sellers')"><i class="ti ti-users"></i>Sellers</button>
       <button data-t="search" onclick="tab('search')"><i class="ti ti-search"></i>Search</button>
     </div>
 
@@ -102,6 +103,12 @@
         <div id="qa-list"></div></div>
     </section>
 
+    <section class="panel" id="p-sellers">
+      <div class="card"><div class="bar"><b>Seller stores</b><input id="sl-q" placeholder="Filter…" oninput="renderSellers()" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px;width:180px"></div>
+        <div style="overflow-x:auto"><table class="tbl" id="sl-tbl"></table></div>
+        <div class="hint">Tick <b>Verified</b> only after checking the seller's identity (for example GSTIN, shop licence or a call). <b>Suspend</b> hides all of the store's products at once; reactivating brings back only the products that were live. The note is shown to the seller on their hub.</div></div>
+    </section>
+
     <section class="panel" id="p-search">
       <div class="split">
         <div class="card"><div class="bar"><b>Synonyms</b></div>
@@ -130,7 +137,7 @@ S.init('admin');
 var LANGS = ['hi','bn','ta','mr'];
 function tab(t){ document.querySelectorAll('.atabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t') === t); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + t); });
-  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); }
+  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); if (t === 'sellers') loadSellers(); }
 function fail(e){ S.toast(e.message || 'Something went wrong', 'ti-alert-circle'); }
 
 /* ── gate ── */
@@ -214,6 +221,25 @@ function loadQA(){
 function mod(kind, id, status){ S.api('/shop/admin/' + kind + '/' + id, {method:'PATCH', body:{status:status}}).then(function(){ S.toast(status === 'hidden' ? 'Hidden from shoppers' : 'Published', 'ti-check'); loadQA(); }).catch(fail); }
 
 /* ── search ── */
+/* ── sellers ── */
+var SELLERS = [];
+function loadSellers(){ S.api('/shop/admin/sellers').then(function(d){ SELLERS = d.sellers || []; renderSellers(); }).catch(fail); }
+function renderSellers(){
+  var q = (document.getElementById('sl-q').value || '').toLowerCase();
+  var l = SELLERS.filter(function(x){ return !q || (x.store_name + ' ' + (x.owner_name || '') + ' ' + (x.city || '') + ' ' + x.phone).toLowerCase().indexOf(q) >= 0; });
+  document.getElementById('sl-tbl').innerHTML = '<tr><th>Store</th><th>Owner / contact</th><th>Location</th><th>GSTIN</th><th>Products</th><th>Status</th><th>Verified</th><th>Note to seller</th><th></th></tr>'
+    + (l.length ? l.map(function(x){ var id = esc(x.user_id);
+      return '<tr class="' + (x.status === 'suspended' ? 'off' : '') + '"><td><b>' + esc(x.store_name) + '</b><br><small style="color:var(--muted)">' + esc(x.business_type) + ' · since ' + esc(new Date(x.created_at).toLocaleDateString('en-IN')) + '</small></td>'
+        + '<td>' + esc(x.owner_name || '—') + '<br><small>' + esc(x.phone) + (x.email ? ' · ' + esc(x.email) : '') + '</small></td><td>' + esc([x.city, x.state, x.pincode].filter(Boolean).join(', ')) + '</td>'
+        + '<td>' + esc(x.gstin || '—') + '</td><td><a href="43_shop_list.html?seller=' + encodeURIComponent(x.user_id) + '" target="_blank">' + x.products + '</a></td>'
+        + '<td><span class="st ' + (x.status === 'active' ? 'published' : 'hidden') + '">' + esc(x.status) + '</span></td>'
+        + '<td><label class="sw"><input type="checkbox"' + (x.is_verified ? ' checked' : '') + ' onchange="updSeller(\'' + id + '\',{is_verified:this.checked})"><span></span></label></td>'
+        + '<td><input type="text" id="note-' + id + '" value="' + esc(x.admin_note || '') + '" maxlength="500" style="width:180px" onchange="updSeller(\'' + id + '\',{admin_note:this.value})"></td>'
+        + '<td>' + (x.status === 'suspended' ? '<button class="btn btn-n btn-sm" onclick="updSeller(\'' + id + '\',{status:\'active\'})">Reactivate</button>' : '<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="updSeller(\'' + id + '\',{status:\'suspended\'})">Suspend</button>') + '</td></tr>';
+    }).join('') : '<tr><td colspan="9" style="color:var(--muted)">No seller stores yet.</td></tr>');
+}
+function updSeller(id, body){ S.api('/shop/admin/sellers/' + encodeURIComponent(id), {method:'PATCH', body: body}).then(function(){ S.toast('Saved', 'ti-check'); loadSellers(); }).catch(fail); }
+
 function loadSyn(){
   S.api('/shop/admin/synonyms').then(function(d){
     document.getElementById('syn-tbl').innerHTML = '<tr><th>Typed</th><th>Also searches</th><th></th></tr>' + d.synonyms.map(function(s){

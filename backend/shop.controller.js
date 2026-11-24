@@ -43,7 +43,7 @@ const BASE_SELECT = `
   SELECT p.product_id, p.seller_id, p.name, p.description, p.price, p.compare_price,
          p.category, p.subcategory, p.brand, p.images, p.stock, p.unit,
          p.pet_types, p.life_stages, p.tags, p.is_featured, p.delivery_days, p.created_at,
-         u.full_name AS seller_name,
+         COALESCE(ss.store_name, u.full_name) AS seller_name, COALESCE(ss.is_verified, FALSE) AS seller_verified,
          COALESCE(rv.rating, 0)::float       AS rating,
          COALESCE(rv.review_count, 0)::int   AS review_count,
          COALESCE(so.sold, 0)::int           AS sold,
@@ -51,6 +51,7 @@ const BASE_SELECT = `
               THEN ROUND((1 - p.price / p.compare_price) * 100)::int END AS discount_pct
   FROM marketplace_products p
   LEFT JOIN users u ON u.user_id = p.seller_id
+  LEFT JOIN marketplace_sellers ss ON ss.user_id::text = p.seller_id::text
   LEFT JOIN (SELECT product_id::text AS pid, AVG(rating) AS rating, COUNT(*) AS review_count
              FROM marketplace_reviews GROUP BY product_id) rv ON rv.pid = p.product_id::text
   LEFT JOIN (SELECT product_id::text AS pid, SUM(quantity) AS sold
@@ -289,7 +290,9 @@ exports.getProduct = async (req, res) => {
       query(`SELECT * FROM (${BASE_SELECT} WHERE p.is_active = TRUE AND p.product_id::text <> $1
                AND (p.category = $2 OR p.pet_types && $3::text[])) p
              ORDER BY (p.category = $2) DESC, sold DESC, p.created_at DESC LIMIT 12`, [id, rows[0].category, p.pet_types || []]),
-      query(`SELECT COUNT(*)::int AS products FROM marketplace_products WHERE seller_id = $1 AND is_active = TRUE`, [rows[0].seller_id]),
+      query(`SELECT (SELECT COUNT(*)::int FROM marketplace_products WHERE seller_id::text = $1 AND is_active = TRUE) AS products,
+                    s.is_verified, s.city, s.ships_in_days, s.created_at AS since
+             FROM (SELECT 1) x LEFT JOIN marketplace_sellers s ON s.user_id::text = $1`, [String(rows[0].seller_id)]),
       p.brand ? query(`SELECT slug, logo_url, is_verified FROM marketplace_brands WHERE name = $1`, [p.brand]).catch(() => ({ rows: [] })) : { rows: [] },
     ]);
     const dist = [5, 4, 3, 2, 1].map(s => ({ stars: s, n: reviews.rows.filter(r => Number(r.rating) === s).length }));
@@ -297,7 +300,7 @@ exports.getProduct = async (req, res) => {
     return R.ok(res, {
       product: p, reviews: reviews.rows, rating_breakdown: dist,
       related: related.rows.map(shape),
-      seller: { seller_id: rows[0].seller_id, name: rows[0].seller_name, products: sellerStats.rows[0].products },
+      seller: Object.assign({ seller_id: rows[0].seller_id, name: rows[0].seller_name }, sellerStats.rows[0], { is_verified: !!sellerStats.rows[0].is_verified }),
     });
   } catch (e) { console.error('[Shop] getProduct:', e.message); return R.serverError(res); }
 };

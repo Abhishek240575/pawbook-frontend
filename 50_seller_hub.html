@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f26a1b">
+<meta name="robots" content="noindex">
+<title>Seller hub — PawBook</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link rel="stylesheet" href="shop.css">
+<link rel="stylesheet" href="seller.css">
+<style>
+.shead{display:flex;gap:16px;align-items:center;margin:24px 0 18px;flex-wrap:wrap}
+.slogo{width:64px;height:64px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:var(--o-d);overflow:hidden;flex-shrink:0}
+.slogo img{width:100%;height:100%;object-fit:cover}
+.shead h1{font-size:25px;font-weight:900;color:var(--navy);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.shead .meta{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;gap:12px;flex-wrap:wrap}
+.shead .sp{flex:1}
+.panel{display:none}.panel.on{display:block}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-top:16px}
+.mini{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13px}
+.mini:last-child{border-bottom:none}
+.mini img{width:44px;height:44px;border-radius:10px;object-fit:cover;background:var(--o-ll);flex-shrink:0}
+.mini .t{flex:1;min-width:0}.mini .t b{display:block;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .t small{color:var(--muted)}
+/* products */
+.ptbl{width:100%;border-collapse:collapse;background:#fff}
+.ptbl th,.ptbl td{padding:12px;border-bottom:1px solid var(--line2);text-align:left;vertical-align:middle;font-size:13px}
+.ptbl th{background:var(--cream);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:800}
+.ptbl tr.off td{opacity:.62}
+.pcell{display:flex;gap:12px;align-items:center;min-width:240px}
+.pcell img{width:52px;height:52px;border-radius:12px;object-fit:cover;background:var(--o-ll);flex-shrink:0}
+.pcell b{display:block;color:var(--navy);font-size:13.5px;line-height:1.35;max-width:300px}
+.pcell small{color:var(--muted);font-size:11.5px}
+.stk{display:flex;gap:6px;align-items:center}
+.stk input{width:72px;height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 8px;background:var(--cream);font-weight:700}
+.stk input:focus{border-color:var(--o);background:#fff;outline:none}
+.stk .lo{color:#b45309;font-weight:800;font-size:11px}.stk .zero{color:var(--red);font-weight:800;font-size:11px}
+.sw{position:relative;width:42px;height:24px;display:inline-block;flex-shrink:0}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;border-radius:999px;background:#d8d2ca;cursor:pointer;transition:.2s}
+.sw span::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.sw input:checked+span{background:var(--green)}
+.sw input:checked+span::after{left:21px}
+.acts{display:flex;gap:4px}
+.ib{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none}
+.ib:hover{border-color:var(--o);color:var(--o-d)}
+.ib.del:hover{border-color:var(--red);color:var(--red)}
+.varpop{margin-top:8px;padding:10px;border-radius:12px;background:var(--cream);display:grid;grid-template-columns:auto 80px;gap:6px 10px;align-items:center;font-size:12px}
+.varpop input{height:32px;border-radius:8px;border:1.5px solid var(--line);padding:0 8px;width:80px;background:#fff}
+.pcards{display:none}
+/* orders */
+.ord{background:#fff;border:1px solid var(--line);border-radius:18px;margin-bottom:12px;overflow:hidden}
+.ord-h{display:flex;gap:12px;align-items:center;padding:14px 18px;background:var(--cream);border-bottom:1px solid var(--line2);flex-wrap:wrap;font-size:13px}
+.ord-h b{color:var(--navy);font-size:14px}
+.ord-h .sp{flex:1}
+.ord-b{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;padding:16px 18px}
+.oi{display:flex;gap:12px;align-items:center;padding:6px 0}
+.oi img{width:50px;height:50px;border-radius:12px;object-fit:cover;background:var(--o-ll)}
+.oi .t{flex:1;font-size:13px}.oi .t b{color:var(--navy);display:block}
+.oi .t small{color:var(--muted)}
+.addr{font-size:12.5px;color:var(--ink);line-height:1.6;background:var(--cream);border-radius:12px;padding:12px}
+.addr b{display:block;color:var(--navy);margin-bottom:2px}
+.ord-f{display:flex;gap:8px;align-items:center;padding:12px 18px;border-top:1px solid var(--line2);flex-wrap:wrap}
+.ord-f .fi{height:40px;max-width:280px;flex:1;min-width:180px}
+.track{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.prog{display:flex;gap:4px;align-items:center}
+.prog i{width:22px;height:5px;border-radius:5px;background:var(--line);display:block}
+.prog i.on{background:var(--o)}
+/* questions */
+.sq{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:10px}
+.sq .q{font-weight:800;color:var(--navy);font-size:14px}
+.sq .m{font-size:12px;color:var(--muted);margin-top:3px}
+.sq .m a{color:var(--o-d);font-weight:700;text-decoration:none}
+.sq .ans{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--cream);font-size:13px}
+.sq .ans .k{font-weight:800;color:var(--green)}
+.sq form{display:flex;gap:8px;margin-top:10px}
+.sq form .fi{height:42px}
+.welcome{background:linear-gradient(135deg,#fff1e6,#ffe2c9);border:1px solid #fdd2ae;border-radius:20px;padding:20px 22px;margin-bottom:16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.welcome i.big{font-size:36px;color:var(--o)}
+.welcome .t{flex:1;min-width:200px}.welcome b{font-size:17px;color:var(--navy);display:block}.welcome span{font-size:13px;color:var(--ink)}
+@media(max-width:900px){
+  .two{grid-template-columns:1fr}
+  .ord-b{grid-template-columns:1fr}
+  .ptbl{display:none}.pcards{display:block}
+  .pc2{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}
+  .pc2 .row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap}
+  .shead h1{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div id="shop-header"></div>
+<main class="wrap" id="main">
+  <div id="loading" class="pc-skel" style="aspect-ratio:auto;height:300px;margin-top:24px"></div>
+  <div id="app" style="display:none">
+    <div class="shead" id="shead"></div>
+    <div id="banners"></div>
+    <div class="tabs2" id="tabs">
+      <button data-t="overview" class="on"><i class="ti ti-layout-dashboard"></i><span data-i18n="sh.overview">Overview</span></button>
+      <button data-t="products"><i class="ti ti-package"></i><span data-i18n="sh.products">Products</span></button>
+      <button data-t="orders"><i class="ti ti-truck-delivery"></i><span data-i18n="sh.orders">Orders</span><span class="cnt" id="c-ship" style="display:none"></span></button>
+      <button data-t="questions"><i class="ti ti-message-question"></i><span data-i18n="sh.questions">Questions</span><span class="cnt" id="c-q" style="display:none"></span></button>
+      <button data-t="settings"><i class="ti ti-settings"></i><span data-i18n="sh.settings">Store settings</span></button>
+    </div>
+
+    <section class="panel on" id="p-overview"></section>
+
+    <section class="panel" id="p-products">
+      <div class="fbar">
+        <div class="grow"><i class="ti ti-search"></i><input class="fi" id="pq" data-i18n-ph="sh.psearch" placeholder="Search by name, SKU or brand" oninput="clearTimeout(pqT);pqT=setTimeout(loadProducts,250)"></div>
+        <a class="btn btn-o" href="51_seller_product.html"><i class="ti ti-plus"></i><span data-i18n="sh.add">Add product</span></a>
+      </div>
+      <div class="fbar" id="pf"></div>
+      <div class="sx-card" style="padding:0;overflow:auto"><table class="ptbl" id="ptbl"></table></div>
+      <div class="pcards" id="pcards"></div>
+    </section>
+
+    <section class="panel" id="p-orders"><div class="fbar" id="of"></div><div id="olist"></div></section>
+    <section class="panel" id="p-questions"><div class="fbar" id="qf"></div><div id="qlist"></div></section>
+
+    <section class="panel" id="p-settings">
+      <form id="sf" novalidate onsubmit="saveStore(event)">
+        <div class="sx-card"><h2><i class="ti ti-building-store"></i><span data-i18n="sj.st1">Your store</span></h2><div class="sub" data-i18n="sj.st1s">This is what shoppers see next to your products.</div>
+          <div class="fg">
+            <label class="fl" data-f="store_name"><span class="req" data-i18n="sj.name">Store name</span><input class="fi" name="store_name" maxlength="80"><span class="err" data-i18n="sj.e_name">Please enter at least 3 characters.</span></label>
+            <label class="fl"><span data-i18n="sj.type">You are</span><select class="fs" name="business_type">
+              <option value="individual" data-i18n="sj.t_individual">An individual seller</option><option value="retailer" data-i18n="sj.t_retailer">A pet shop / retailer</option>
+              <option value="brand" data-i18n="sj.t_brand">A brand owner</option><option value="manufacturer" data-i18n="sj.t_manufacturer">A manufacturer</option></select></label>
+            <div class="fl" data-f="logo_url"><span data-i18n="sj.logo">Store logo</span><div style="display:flex;gap:12px;align-items:center"><div class="slogo" id="s-logo"></div>
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer"><i class="ti ti-upload"></i><span data-i18n="sj.upload">Upload</span><input type="file" accept="image/*" hidden onchange="upLogo(this)"></label></div></div>
+            <label class="fl"><span data-i18n="sj.ship">Ships within</span><select class="fs" name="ships_in_days"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="7">7</option></select></label>
+            <label class="fl full"><span data-i18n="sj.about">About your store</span><textarea class="ft" name="about" maxlength="2000"></textarea></label>
+          </div></div>
+        <div class="sx-card"><h2><i class="ti ti-truck"></i><span data-i18n="sj.st2">Contact &amp; pickup</span></h2><div class="sub" data-i18n="sj.st2s">Used by PawBook and couriers to reach you and collect orders. Not shown to shoppers.</div>
+          <div class="fg">
+            <label class="fl" data-f="phone"><span class="req" data-i18n="sj.phone">Mobile number</span><div class="pre p91"><span>+91</span><input class="fi" name="phone" inputmode="numeric" maxlength="14"></div><span class="err" data-i18n="sj.e_phone">Enter a valid 10-digit Indian mobile number.</span></label>
+            <label class="fl" data-f="email"><span data-i18n="sj.email">Email</span><input class="fi" name="email" type="email"><span class="err" data-i18n="sj.e_email">Enter a valid email.</span></label>
+            <label class="fl full" data-f="pickup_address"><span class="req" data-i18n="sj.addr">Pickup address</span><textarea class="ft" name="pickup_address" style="min-height:80px"></textarea><span class="err" data-i18n="sj.e_addr">Please enter the full pickup address.</span></label>
+            <label class="fl" data-f="pincode"><span class="req" data-i18n="sj.pin">PIN code</span><input class="fi" name="pincode" inputmode="numeric" maxlength="6"><span class="err" data-i18n="sj.e_pin">Enter a valid 6-digit PIN code.</span></label>
+            <label class="fl" data-f="gstin"><span data-i18n="sj.gst">GSTIN</span><input class="fi" name="gstin" maxlength="15" style="text-transform:uppercase"><span class="err" data-i18n="sj.e_gst">This doesn't look like a valid GSTIN.</span></label>
+            <label class="fl"><span data-i18n="sj.city">City / district</span><input class="fi" name="city"></label>
+            <label class="fl"><span data-i18n="sj.state">State</span><input class="fi" name="state"></label>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-o"><i class="ti ti-device-floppy"></i><span data-i18n="sh.save">Save changes</span></button></div></div>
+      </form>
+      <div class="sx-card" id="pausebox"></div>
+    </section>
+  </div>
+</main>
+<div id="shop-footer"></div>
+
+<script src="pawbook-i18n.js"></script>
+<script src="shop-i18n.js"></script>
+<script src="seller-i18n.js"></script>
+<script src="shop.js"></script>
+<script src="seller.js"></script>
+<script>
+var S = Shop, T = PBi18n.t, esc = S.esc;
+S.init('seller');
+var ME = null, ST = {}, PRODUCTS = null, pfilter = '', ofilter = 'to_ship', qfilter = '1', pqT = null, logoUrl = null, openVar = null, ORDERS = [];
+var qs = new URLSearchParams(location.search);
+function img(p){ var i = p.images; if (typeof i === 'string') { try { i = JSON.parse(i); } catch(e) { i = []; } } return (i && i[0]) || S.catImg(p.category || 'other', 200); }
+function initials(n){ return String(n || '?').split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0, 2).toUpperCase(); }
+function fail(e){ S.toast(e.status === 429 ? T('qa.slow') : (e.message || T('l.err')), 'ti-alert-circle'); }
+
+/* ── tabs ── */
+function tab(t){
+  document.querySelectorAll('#tabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t') === t); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + t); });
+  history.replaceState(null, '', '50_seller_hub.html' + (t === 'overview' ? '' : '?tab=' + t));
+  if (t === 'products') loadProducts(); if (t === 'orders') loadOrders(); if (t === 'questions') loadQuestions(); if (t === 'settings') fillSettings();
+}
+document.querySelectorAll('#tabs button').forEach(function(b){ b.onclick = function(){ tab(b.getAttribute('data-t')); }; });
+
+/* ── header + overview ── */
+function renderHead(){
+  var s = ME;
+  document.getElementById('shead').innerHTML = '<div class="slogo">' + (s.logo_url ? '<img src="' + esc(s.logo_url) + '" alt="">' : esc(initials(s.store_name))) + '</div>'
+    + '<div><h1>' + esc(s.store_name) + (s.is_verified ? '<span class="vbadge"><i class="ti ti-rosette"></i>' + esc(T('sh.verified')) + '</span>' : '') + '</h1>'
+    + '<div class="meta"><span><i class="ti ti-map-pin"></i> ' + esc([s.city, s.pincode].filter(Boolean).join(' · ')) + '</span><span class="spill s-' + (s.status === 'active' ? 'live' : (s.status === 'paused' ? 'pending' : 'cancelled')) + '">' + esc(T('st.' + s.status)) + '</span></div></div>'
+    + '<span class="sp"></span><a class="btn btn-ghost btn-sm" href="43_shop_list.html?seller=' + encodeURIComponent(s.user_id) + '" target="_blank"><i class="ti ti-external-link"></i>' + esc(T('sh.view')) + '</a>'
+    + '<a class="btn btn-o btn-sm" href="51_seller_product.html"><i class="ti ti-plus"></i>' + esc(T('sh.add')) + '</a>';
+  var b = '';
+  if (s.status === 'suspended') b += '<div class="banner bad"><i class="ti ti-ban"></i><span class="sp">' + esc(T('sh.suspended')) + (s.admin_note ? ' <b>' + esc(s.admin_note) + '</b>' : '') + '</span></div>';
+  else if (s.status === 'paused') b += '<div class="banner warn"><i class="ti ti-player-pause"></i><span class="sp">' + esc(T('sh.paused')) + '</span><button class="btn btn-o btn-sm" onclick="setStatus(\'active\')">' + esc(T('sh.resume')) + '</button></div>';
+  document.getElementById('banners').innerHTML = b;
+  var cs = document.getElementById('c-ship'); cs.textContent = ST.to_ship || ''; cs.style.display = ST.to_ship ? '' : 'none';
+  var cq = document.getElementById('c-q'); cq.textContent = ST.unanswered || ''; cq.style.display = ST.unanswered ? '' : 'none';
+}
+function stat(icon, val, label, cls, t){ return '<a class="stat ' + (cls || '') + '" href="#" onclick="event.preventDefault();' + t + '"><div class="ic"><i class="ti ' + icon + '"></i></div><b>' + val + '</b><span>' + esc(label) + '</span></a>'; }
+function renderOverview(){
+  var h = '';
+  if (qs.get('welcome')) h += '<div class="welcome"><i class="ti ti-confetti big"></i><div class="t"><b>' + esc(T('sh.welcome')) + '</b><span>' + esc(T('sh.welcomes')) + '</span></div><a class="btn btn-o" href="51_seller_product.html"><i class="ti ti-plus"></i>' + esc(T('sh.addfirst')) + '</a></div>';
+  h += '<div class="stats">'
+    + stat('ti-package', ST.live + ' / ' + ST.total, T('sh.s_live'), '', "tab('products')")
+    + stat('ti-truck-delivery', ST.to_ship, T('sh.s_ship'), ST.to_ship ? 'warn' : '', "tab('orders')")
+    + stat('ti-currency-rupee', S.money(ST.sales_30d), T('sh.s_sales'), '', "tab('orders')")
+    + stat('ti-shopping-bag', ST.units_sold, T('sh.s_units'), '', "tab('orders')")
+    + stat('ti-star', ST.reviews ? ST.rating.toFixed(1) + ' ★' : '—', ST.reviews ? T(ST.reviews === 1 ? 'pd.nrev1' : 'pd.nrev', {n: ST.reviews}) : T('pd.norev'), '', "tab('products')")
+    + stat('ti-message-question', ST.unanswered, T('sh.s_q'), ST.unanswered ? 'warn' : '', "tab('questions')")
+    + stat('ti-alert-triangle', ST.low_stock, T('sh.s_low'), ST.low_stock ? 'warn' : '', "pfilter='low';tab('products')")
+    + stat('ti-circle-off', ST.out_of_stock, T('sh.s_out'), ST.out_of_stock ? 'alert' : '', "pfilter='out';tab('products')")
+    + '</div><div class="two"><div class="sx-card"><h2><i class="ti ti-truck-delivery"></i>' + esc(T('sh.toship')) + '</h2><div id="ov-orders"><div class="pc-skel" style="aspect-ratio:auto;height:120px"></div></div></div>'
+    + '<div class="sx-card"><h2><i class="ti ti-alert-triangle"></i>' + esc(T('sh.restock')) + '</h2><div id="ov-stock"><div class="pc-skel" style="aspect-ratio:auto;height:120px"></div></div></div></div>';
+  document.getElementById('p-overview').innerHTML = h;
+  S.api('/shop/seller/orders?status=to_ship').then(function(d){
+    var l = d.orders.slice(0, 5);
+    document.getElementById('ov-orders').innerHTML = l.length ? l.map(function(o){ var it = o.items[0];
+      return '<div class="mini"><img src="' + esc(it.image_url || S.catImg('other', 200)) + '" alt=""><div class="t"><b>' + esc(o.order_number || o.order_id) + ' · ' + esc(it.name) + (o.items.length > 1 ? ' +' + (o.items.length - 1) : '') + '</b><small>' + esc(PBi18n.fmtDate(o.created_at)) + ' · ' + S.money(o.amount) + '</small></div>' + Seller.statusPill(it.status) + '</div>'; }).join('')
+      + '<a class="btn btn-ghost btn-sm" style="margin-top:10px" href="#" onclick="event.preventDefault();tab(\'orders\')">' + esc(T('sh.allorders')) + '</a>'
+      : '<div class="empty2" style="padding:24px"><i class="ti ti-mood-smile"></i>' + esc(T('sh.noship')) + '</div>';
+  }).catch(function(){});
+  S.api('/shop/seller/products').then(function(d){
+    var l = d.products.filter(function(p){ return p.stock <= p.low_stock_at; }).sort(function(a, b){ return a.stock - b.stock; }).slice(0, 6);
+    document.getElementById('ov-stock').innerHTML = l.length ? l.map(function(p){
+      return '<div class="mini"><img src="' + esc(img(p)) + '" alt=""><div class="t"><b>' + esc(p.name) + '</b><small>' + (p.stock <= 0 ? '<span style="color:var(--red);font-weight:800">' + esc(T('sh.out')) + '</span>' : esc(T('sh.left', {n: p.stock}))) + '</small></div><a class="ib" href="51_seller_product.html?id=' + encodeURIComponent(p.product_id) + '#stock" aria-label="edit"><i class="ti ti-pencil"></i></a></div>'; }).join('')
+      : '<div class="empty2" style="padding:24px"><i class="ti ti-circle-check" style="color:var(--green)"></i>' + esc(T('sh.stockok')) + '</div>';
+  }).catch(function(){});
+}
+
+/* ── products ── */
+function loadProducts(){
+  var f = [['', 'sh.f_all'], ['live', 'sh.f_live'], ['hidden', 'sh.f_hidden'], ['low', 'sh.f_low'], ['out', 'sh.f_out']];
+  document.getElementById('pf').innerHTML = f.map(function(x){ return '<button class="fchip' + (pfilter === x[0] ? ' on' : '') + '" onclick="pfilter=\'' + x[0] + '\';loadProducts()">' + esc(T(x[1])) + '</button>'; }).join('');
+  var q = new URLSearchParams(); if (pfilter) q.set('status', pfilter); var t = document.getElementById('pq').value.trim(); if (t) q.set('q', t);
+  S.api('/shop/seller/products?' + q.toString()).then(function(d){ PRODUCTS = d.products; renderProducts(); }).catch(fail);
+}
+function vars(p){ var v = p.variants; if (typeof v === 'string') { try { v = JSON.parse(v); } catch(e) { v = []; } } return Array.isArray(v) ? v : []; }
+function stockCell(p){
+  var v = vars(p), warn = p.stock <= 0 ? '<span class="zero">' + esc(T('sh.out')) + '</span>' : (p.stock <= p.low_stock_at ? '<span class="lo">' + esc(T('sh.low')) + '</span>' : '');
+  if (v.length) return '<div><div class="stk"><b>' + p.stock + '</b><button class="btn btn-ghost btn-sm" style="height:32px" onclick="openVar=openVar===\'' + p.product_id + '\'?null:\'' + p.product_id + '\';renderProducts()"><i class="ti ti-ruler"></i>' + esc(T('sh.sizes', {n: v.length})) + '</button>' + warn + '</div>'
+    + (openVar === p.product_id ? '<div class="varpop">' + v.map(function(x){ return '<span>' + esc(x.label) + '</span><input type="number" min="0" value="' + x.stock + '" data-vs="' + esc(x.label) + '">'; }).join('') + '<span></span><button class="btn btn-o btn-sm" onclick="saveVarStock(\'' + p.product_id + '\', this)">' + esc(T('sh.save')) + '</button></div>' : '') + '</div>';
+  return '<div class="stk"><input type="number" min="0" value="' + p.stock + '" onchange="saveStock(\'' + p.product_id + '\', this.value)" aria-label="stock">' + warn + '</div>';
+}
+function activeOf(p){ return p.is_active || p.store_paused; }
+function renderProducts(){
+  var l = PRODUCTS || [];
+  if (!l.length) {
+    var e = '<div class="empty2"><i class="ti ti-package"></i><b>' + esc(T(pfilter || document.getElementById('pq').value ? 'sh.nomatch' : 'sh.noprod')) + '</b>' + (pfilter ? '' : esc(T('sh.noprods'))) + '<br><a class="btn btn-o" style="margin-top:14px" href="51_seller_product.html"><i class="ti ti-plus"></i>' + esc(T('sh.add')) + '</a></div>';
+    document.getElementById('ptbl').innerHTML = '<tr><td>' + e + '</td></tr>'; document.getElementById('pcards').innerHTML = e; return;
+  }
+  var toggle = function(p){ return '<label class="sw" title="' + esc(T('sh.showshop')) + '"><input type="checkbox"' + (activeOf(p) ? ' checked' : '') + ' onchange="setLive(\'' + p.product_id + '\', this.checked)"><span></span></label>'; };
+  var acts = function(p){ return '<div class="acts"><a class="ib" href="51_seller_product.html?id=' + encodeURIComponent(p.product_id) + '" title="' + esc(T('sh.edit')) + '"><i class="ti ti-pencil"></i></a>'
+    + (p.is_active ? '<a class="ib" href="44_shop_product.html?id=' + encodeURIComponent(p.product_id) + '" target="_blank" title="' + esc(T('sh.view')) + '"><i class="ti ti-eye"></i></a>' : '')
+    + '<button class="ib del" onclick="archive(\'' + p.product_id + '\', this)" title="' + esc(T('sh.delete')) + '"><i class="ti ti-trash"></i></button></div>'; };
+  var price = function(p){ return '<b>' + S.money(p.price) + '</b>' + (Number(p.compare_price) > Number(p.price) ? ' <s style="color:#a3a7b5;font-size:11.5px">' + S.money(p.compare_price) + '</s>' : '') + (vars(p).length ? '<br><small style="color:var(--muted)">' + esc(T('sh.from')) + '</small>' : ''); };
+  document.getElementById('ptbl').innerHTML = '<tr><th>' + esc(T('sh.product')) + '</th><th>' + esc(T('f.price')) + '</th><th>' + esc(T('sh.stock')) + '</th><th>' + esc(T('sh.sold')) + '</th><th>' + esc(T('sh.inshop')) + '</th><th></th></tr>'
+    + l.map(function(p){
+      return '<tr class="' + (activeOf(p) ? '' : 'off') + '"><td><div class="pcell"><img src="' + esc(img(p)) + '" alt=""><div><b>' + esc(p.name) + '</b><small>' + esc([S.catLabel(p.category), p.brand, p.sku ? 'SKU ' + p.sku : ''].filter(Boolean).join(' · ')) + '</small>'
+        + (p.review_count ? '<br><small>' + S.starsHTML(p.rating) + ' ' + p.rating.toFixed(1) + ' (' + p.review_count + ')</small>' : '') + '</div></div></td>'
+        + '<td>' + price(p) + '</td><td>' + stockCell(p) + '</td><td>' + p.sold + '</td><td>' + toggle(p) + '</td><td>' + acts(p) + '</td></tr>';
+    }).join('');
+  document.getElementById('pcards').innerHTML = l.map(function(p){
+    return '<div class="pc2' + (activeOf(p) ? '' : ' off') + '"><div class="pcell" style="min-width:0"><img src="' + esc(img(p)) + '" alt=""><div style="min-width:0"><b>' + esc(p.name) + '</b><small>' + price(p) + ' · ' + esc(T('sh.soldn', {n: p.sold})) + '</small></div></div>'
+      + '<div class="row">' + stockCell(p) + '<div style="display:flex;gap:10px;align-items:center">' + toggle(p) + acts(p) + '</div></div></div>';
+  }).join('');
+}
+function patch(id, body, msg){ return S.api('/shop/seller/products/' + encodeURIComponent(id), {method: 'PATCH', body: body}).then(function(){ S.toast(msg || T('sh.saved'), 'ti-check'); return refreshStats(); }).catch(function(e){ fail(e); loadProducts(); }); }
+function saveStock(id, v){ var n = parseInt(v, 10); if (!(n >= 0)) { S.toast(T('sh.badstock'), 'ti-alert-circle'); loadProducts(); return; } patch(id, {stock: n}, T('sh.stocksaved')).then(loadProducts); }
+function saveVarStock(id, btn){ var m = {}; btn.parentNode.querySelectorAll('[data-vs]').forEach(function(i){ m[i.getAttribute('data-vs')] = parseInt(i.value, 10) || 0; }); openVar = null; patch(id, {variant_stock: m}, T('sh.stocksaved')).then(loadProducts); }
+function setLive(id, on){ patch(id, {is_active: on}, T(on ? 'sh.nowlive' : 'sh.nowhidden')).then(loadProducts); }
+function archive(id, btn){
+  if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.innerHTML = '<i class="ti ti-check"></i>'; btn.title = T('sh.sure'); btn.style.borderColor = 'var(--red)'; btn.style.color = 'var(--red)'; S.toast(T('sh.sure'), 'ti-alert-triangle'); setTimeout(function(){ if (btn.isConnected) { btn.removeAttribute('data-sure'); btn.innerHTML = '<i class="ti ti-trash"></i>'; btn.style.cssText = ''; } }, 4000); return; }
+  S.api('/shop/seller/products/' + encodeURIComponent(id), {method: 'DELETE'}).then(function(){ S.toast(T('sh.deleted'), 'ti-trash'); loadProducts(); refreshStats(); }).catch(fail);
+}
+
+/* ── orders ── */
+function loadOrders(){
+  var f = [['to_ship', 'sh.o_toship'], ['shipped', 'os.shipped'], ['delivered', 'os.delivered'], ['cancelled', 'os.cancelled'], ['', 'sh.f_all']];
+  document.getElementById('of').innerHTML = f.map(function(x){ return '<button class="fchip' + (ofilter === x[0] ? ' on' : '') + '" onclick="ofilter=\'' + x[0] + '\';loadOrders()">' + esc(T(x[1])) + '</button>'; }).join('');
+  document.getElementById('olist').innerHTML = '<div class="pc-skel" style="aspect-ratio:auto;height:180px"></div>';
+  S.api('/shop/seller/orders' + (ofilter ? '?status=' + ofilter : '')).then(function(d){ ORDERS = d.orders; renderOrders(); }).catch(fail);
+}
+function orderStatus(o){ var s = o.items.map(function(i){ return i.status; }); var order = ['pending','confirmed','packed','shipped','delivered']; var active = s.filter(function(x){ return x !== 'cancelled'; }); if (!active.length) return 'cancelled'; return active.reduce(function(a, b){ return order.indexOf(a) <= order.indexOf(b) ? a : b; }); }
+function renderOrders(){
+  var el = document.getElementById('olist');
+  if (!ORDERS.length) { el.innerHTML = '<div class="sx-card empty2"><i class="ti ti-truck-delivery"></i><b>' + esc(T(ofilter === 'to_ship' ? 'sh.noship' : 'sh.noorders')) + '</b>' + esc(T('sh.noorderss')) + '</div>'; return; }
+  el.innerHTML = ORDERS.map(function(o){
+    var st = orderStatus(o), nx = Seller.NEXT[st], a = o.delivery_address || {}, idx = Seller.FLOW.indexOf(st);
+    var tr = o.items.map(function(i){ return i.tracking; }).filter(Boolean)[0];
+    return '<div class="ord"><div class="ord-h"><b>' + esc(o.order_number || o.order_id) + '</b><span>' + esc(PBi18n.fmtDate(o.created_at)) + '</span><span class="sp"></span>'
+      + (st !== 'cancelled' ? '<span class="prog">' + Seller.FLOW.map(function(_, i){ return '<i class="' + (i <= idx ? 'on' : '') + '"></i>'; }).join('') + '</span>' : '') + Seller.statusPill(st) + '</div>'
+      + '<div class="ord-b"><div>' + o.items.map(function(i){ return '<div class="oi"><img src="' + esc(i.image_url || S.catImg('other', 200)) + '" alt=""><div class="t"><b>' + esc(i.name) + '</b><small>' + esc(T('sh.qty', {n: i.quantity})) + ' · ' + S.money(i.price) + '</small></div><b>' + S.money(i.price * i.quantity) + '</b></div>'; }).join('')
+      + '<div style="text-align:right;font-weight:900;color:var(--navy);margin-top:6px">' + esc(T('sh.amount')) + ': ' + S.money(o.amount) + '</div></div>'
+      + '<div class="addr"><b><i class="ti ti-map-pin"></i> ' + esc(T('sh.shipto')) + '</b>' + esc(a.name || o.buyer_name || '') + '<br>' + esc([a.line1 || a.address, a.line2, a.landmark].filter(Boolean).join(', ')) + '<br>' + esc([a.city, a.state, a.pincode].filter(Boolean).join(', ')) + (a.phone ? '<br>' + esc(a.phone) : '') + '</div></div>'
+      + ((nx || (st !== 'cancelled' && st !== 'delivered' && st !== 'shipped') || tr) ? '<div class="ord-f">'
+        + (tr ? '<span class="track"><i class="ti ti-truck"></i>' + esc(tr) + '</span>' : '')
+        + (nx === 'shipped' ? '<input class="fi" id="tr-' + esc(o.order_id) + '" maxlength="200" placeholder="' + esc(T('sh.trackph')) + '">' : '')
+        + '<span style="flex:1"></span>'
+        + (['pending','confirmed','packed'].indexOf(st) >= 0 ? '<button class="btn btn-ghost btn-sm" onclick="moveOrder(\'' + esc(o.order_id) + '\',\'cancelled\', this)">' + esc(T('sh.cancel')) + '</button>' : '')
+        + (nx ? '<button class="btn btn-o btn-sm" onclick="moveOrder(\'' + esc(o.order_id) + '\',\'' + nx + '\', this)"><i class="ti ti-arrow-right"></i>' + esc(T('sh.mark_' + nx)) + '</button>' : '') + '</div>' : '')
+      + '</div>';
+  }).join('');
+}
+function moveOrder(id, to, btn){
+  if (to === 'cancelled' && btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.textContent = T('sh.cancelsure'); btn.style.color = 'var(--red)'; return; }
+  var body = {status: to}; var tr = document.getElementById('tr-' + id); if (tr && tr.value.trim()) body.tracking = tr.value.trim();
+  btn.disabled = true;
+  S.api('/shop/seller/orders/' + encodeURIComponent(id), {method: 'PATCH', body: body}).then(function(){ S.toast(T('sh.ostatus', {s: T('os.' + to)}), 'ti-check'); loadOrders(); refreshStats(); }).catch(function(e){ btn.disabled = false; fail(e); });
+}
+
+/* ── questions ── */
+function loadQuestions(){
+  document.getElementById('qf').innerHTML = [['1', 'sh.q_un'], ['', 'sh.f_all']].map(function(x){ return '<button class="fchip' + (qfilter === x[0] ? ' on' : '') + '" onclick="qfilter=\'' + x[0] + '\';loadQuestions()">' + esc(T(x[1])) + '</button>'; }).join('');
+  S.api('/shop/seller/questions' + (qfilter ? '?unanswered=1' : '')).then(function(d){
+    var l = d.questions;
+    document.getElementById('qlist').innerHTML = l.length ? l.map(function(q){
+      return '<div class="sq"><div class="q">' + esc(q.question) + '</div><div class="m">' + esc(q.user_name || 'PawBook user') + ' · ' + esc(PBi18n.fmtDate(q.created_at)) + ' · <a href="44_shop_product.html?id=' + encodeURIComponent(q.product_id) + '" target="_blank">' + esc(q.product_name) + '</a></div>'
+        + q.answers.map(function(a){ return '<div class="ans">' + (a.is_seller ? '<span class="k"><i class="ti ti-building-store"></i> ' + esc(T('qa.seller')) + ':</span> ' : '') + esc(a.answer) + '</div>'; }).join('')
+        + (q.seller_answered ? '' : '<form onsubmit="answer(event,' + q.question_id + ')"><input class="fi" maxlength="1000" placeholder="' + esc(T('qa.answerph')) + '"><button class="btn btn-o btn-sm">' + esc(T('qa.post')) + '</button></form>') + '</div>';
+    }).join('') : '<div class="sx-card empty2"><i class="ti ti-message-check"></i><b>' + esc(T(qfilter ? 'sh.q_none' : 'qa.none')) + '</b></div>';
+  }).catch(fail);
+}
+function answer(e, qid){
+  e.preventDefault(); var v = e.target.querySelector('input').value.trim(); if (v.length < 2) return;
+  S.api('/shop/questions/' + qid + '/answers', {method: 'POST', body: {answer: v}}).then(function(){ S.toast(T('qa.posted'), 'ti-check'); loadQuestions(); refreshStats(); }).catch(fail);
+}
+
+/* ── settings ── */
+function fillSettings(){
+  var f = document.getElementById('sf'), s = ME;
+  ['store_name','business_type','about','phone','email','pickup_address','pincode','gstin','city','state'].forEach(function(k){ f.elements[k].value = s[k] || ''; });
+  f.elements.ships_in_days.value = String(s.ships_in_days || 2);
+  logoUrl = s.logo_url || null;
+  document.getElementById('s-logo').innerHTML = logoUrl ? '<img src="' + esc(logoUrl) + '" alt="">' : esc(initials(s.store_name));
+  var p = document.getElementById('pausebox');
+  p.innerHTML = s.status === 'suspended' ? '<h2><i class="ti ti-ban"></i>' + esc(T('st.suspended')) + '</h2><div class="sub">' + esc(T('sh.suspended')) + '</div>'
+    : '<h2><i class="ti ti-player-pause"></i>' + esc(T(s.status === 'paused' ? 'sh.resume' : 'sh.pause')) + '</h2><div class="sub">' + esc(T(s.status === 'paused' ? 'sh.paused' : 'sh.pauses')) + '</div>'
+      + '<button class="btn ' + (s.status === 'paused' ? 'btn-o' : 'btn-ghost') + '" onclick="setStatus(\'' + (s.status === 'paused' ? 'active' : 'paused') + '\')"><i class="ti ti-' + (s.status === 'paused' ? 'player-play' : 'player-pause') + '"></i>' + esc(T(s.status === 'paused' ? 'sh.resume' : 'sh.pause')) + '</button>';
+}
+function upLogo(inp){
+  var f = inp.files[0]; if (!f) return; var box = document.getElementById('s-logo'); box.innerHTML = '<i class="ti ti-loader-2"></i>';
+  Seller.upload(f).then(function(u){ logoUrl = u; box.innerHTML = '<img src="' + esc(u) + '" alt="">'; }).catch(function(e){ box.innerHTML = ''; fail(e); }); inp.value = '';
+}
+function saveStore(e){
+  e.preventDefault(); var f = e.target, body = {};
+  ['store_name','business_type','about','phone','email','pickup_address','pincode','gstin','city','state'].forEach(function(k){ body[k] = f.elements[k].value.trim(); });
+  body.ships_in_days = +f.elements.ships_in_days.value; body.logo_url = logoUrl || ''; body.gstin = body.gstin.toUpperCase();
+  S.api('/shop/seller/me', {method: 'PATCH', body: body}).then(function(d){ ME = d.seller; Seller.markErrors(f, []); renderHead(); S.toast(T('sh.saved'), 'ti-check'); })
+    .catch(function(err){ var m = /check: (.*)$/.exec(err.message || ''); if (m) Seller.markErrors(f, m[1].split(', ')); fail(err); });
+}
+function setStatus(st){ S.api('/shop/seller/me', {method: 'PATCH', body: {status: st}}).then(function(){ S.toast(T(st === 'paused' ? 'sh.nowpaused' : 'sh.nowresumed'), 'ti-check'); return boot(true); }).catch(fail); }
+
+function refreshStats(){ return S.api('/shop/seller/me').then(function(d){ ME = d.seller; ST = d.stats || {}; renderHead(); if (document.getElementById('p-overview').classList.contains('on')) renderOverview(); }); }
+function boot(keepTab){
+  return Seller.requireSeller().then(function(d){
+    ME = d.seller; ST = d.stats || {};
+    document.getElementById('loading').style.display = 'none'; document.getElementById('app').style.display = '';
+    renderHead(); renderOverview();
+    var t = keepTab ? (document.querySelector('#tabs button.on') || {}).getAttribute && document.querySelector('#tabs button.on').getAttribute('data-t') : qs.get('tab');
+    if (t && t !== 'overview') tab(t);
+  }).catch(function(e){ document.getElementById('loading').outerHTML = '<div class="sx-card empty2" style="margin-top:24px"><i class="ti ti-plug-connected-x"></i><b>' + esc(T('l.err')) + '</b>' + esc(e.message || '') + '</div>'; });
+}
+boot();
+window.addEventListener('pb:langchange', function(){ if (!ME) return; renderHead(); var t = document.querySelector('#tabs button.on').getAttribute('data-t'); if (t === 'overview') renderOverview(); else tab(t); });
+</script>
+</body>
+</html>
