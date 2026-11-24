@@ -342,7 +342,12 @@ exports.listOrders = async (req, res) => {
       GROUP BY o.order_id, u.full_name ORDER BY o.created_at DESC LIMIT 200`, params);
     // only what the seller needs to ship: name, city, PIN and address; no buyer email
     rows.forEach(r => { let a = r.delivery_address; if (typeof a === 'string') { try { a = JSON.parse(a); } catch (e) { a = {}; } } r.delivery_address = a || {}; });
-    return R.ok(res, { orders: rows });
+    // ship-by deadline (Phase 5); falls back quietly if the fulfilment module isn't installed
+    let dd = 2; try { dd = (await require('./fulfil.controller').fulfilSettings()).dispatch_days; } catch (e) {}
+    const now = Date.now();
+    rows.forEach(r => { r.ship_by = new Date(new Date(r.created_at).getTime() + dd * 86400000);
+      r.late = (r.items || []).some(i => ['pending', 'confirmed', 'packed'].includes(i.status || 'pending')) && r.ship_by.getTime() < now; });
+    return R.ok(res, { orders: rows, dispatch_days: dd });
   } catch (e) { console.error('[Seller] listOrders:', e.message); return R.serverError(res); }
 };
 

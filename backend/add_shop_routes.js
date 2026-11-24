@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v7: admin orders, reports, payouts) ─────────────────────────────
+const BLOCK = `${START} (v8: returns, refunds, ship-by, health, sitemap) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -74,7 +74,7 @@ shopRouter.get('/addresses',                 authenticate, coCtrl.listAddresses)
 shopRouter.post('/addresses',                authenticate, shopWriteLimit, coCtrl.saveAddress);
 shopRouter.put('/addresses/:id',             authenticate, shopWriteLimit, coCtrl.saveAddress);
 shopRouter.delete('/addresses/:id',          authenticate, shopWriteLimit, coCtrl.deleteAddress);
-shopRouter.post('/checkout/quote',           authenticate, coCtrl.quote);
+shopRouter.post('/checkout/quote',           authenticate, require('../controllers/fulfil.controller').limit('quote', 120, 600), coCtrl.quote);
 shopRouter.post('/orders',                   authenticate, orderLimit, coCtrl.placeOrder);
 shopRouter.get('/orders',                    authenticate, coCtrl.myOrders);
 shopRouter.get('/orders/:id',                authenticate, coCtrl.myOrder);
@@ -117,6 +117,21 @@ shopRouter.post('/admin/payouts',            authenticate, requireRole('admin'),
 shopRouter.get('/admin/payouts/:id',         authenticate, requireRole('admin'), repCtrl.adminPayout);
 shopRouter.get('/seller/earnings',           authenticate, repCtrl.sellerEarnings);
 shopRouter.get('/seller/payouts/:id',        authenticate, repCtrl.sellerPayout);
+// Phase 5 (rest) + 8: returns & refunds, packing slip, ship-by, health, sitemap
+const fulCtrl = require('../controllers/fulfil.controller');
+shopRouter.get('/health',                    fulCtrl.health);
+shopRouter.get('/sitemap.xml',               fulCtrl.sitemap);
+shopRouter.get('/fulfilment-settings',       fulCtrl.publicSettings);
+shopRouter.get('/returns',                   authenticate, fulCtrl.myReturns);
+shopRouter.post('/orders/:id/returns',       authenticate, fulCtrl.limit('returns', 10, 3600), fulCtrl.createReturn);
+shopRouter.post('/returns/:id/cancel',       authenticate, fulCtrl.limit('returns', 10, 3600), fulCtrl.cancelReturn);
+shopRouter.get('/seller/returns',            authenticate, fulCtrl.sellerReturns);
+shopRouter.patch('/seller/returns/:id',      authenticate, sellerWriteLimit, fulCtrl.sellerDecide);
+shopRouter.get('/seller/orders/:id',         authenticate, fulCtrl.sellerOrder);
+shopRouter.get('/admin/returns',             authenticate, requireRole('admin'), fulCtrl.adminReturns);
+shopRouter.patch('/admin/returns/:id',       authenticate, requireRole('admin'), fulCtrl.adminDecide);
+shopRouter.get('/admin/fulfilment',          authenticate, requireRole('admin'), fulCtrl.adminGetFulfil);
+shopRouter.put('/admin/fulfilment',          authenticate, requireRole('admin'), fulCtrl.adminSaveFulfil);
 router.use('/shop', shopRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
@@ -136,7 +151,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop7');
+  fs.copyFileSync(f, f + '.bak-shop8');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -157,4 +172,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop7 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop8 — restart the app from the MilesWeb panel.');

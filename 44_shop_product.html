@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f26a1b">
 <title>PawBook Shop</title>
+<meta name="description" content="Pet food, toys, grooming and care from trusted sellers on PawBook Shop.">
+<meta property="og:site_name" content="PawBook Shop">
+<meta property="og:type" content="product">
+<meta property="og:title" content="PawBook Shop">
+<meta property="og:description" content="Pet food, toys, grooming and care from trusted sellers on PawBook Shop.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://images.pexels.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=9">
+<link rel="stylesheet" href="shop.css?v=10">
 <style>
 .crumb{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:20px 0 14px}
 .crumb a{text-decoration:none;color:var(--muted)}
@@ -157,9 +163,9 @@
 <div class="sticky-buy" id="sticky-buy" style="display:none"></div>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=9"></script>
-<script src="shop-i18n.js?v=9"></script>
-<script src="shop.js?v=9"></script>
+<script src="pawbook-i18n.js?v=10"></script>
+<script src="shop-i18n.js?v=10"></script>
+<script src="shop.js?v=10"></script>
 <script>
 var S = Shop, T = PBi18n.t, esc = S.esc;
 S.init('pdp');
@@ -385,10 +391,29 @@ function checkPin(e){
 function notFound(){
   document.getElementById('pdp').innerHTML = '<div class="nf" style="grid-column:1/-1"><div class="empty-ic" style="margin:0 auto 14px"><i class="ti ti-mood-sad"></i></div><div class="empty-t">' + esc(T('pd.nf')) + '</div><div class="empty-s">' + esc(T('pd.nfs')) + '</div><a class="btn btn-o" style="margin-top:18px" href="43_shop_list.html">' + esc(T('c.browse')) + '</a></div>';
 }
+/* search + share metadata (Phase 8) */
+function setMeta(attr, key, val){ var m = document.head.querySelector('meta[' + attr + '="' + key + '"]'); if (!m) { m = document.createElement('meta'); m.setAttribute(attr, key); document.head.appendChild(m); } m.setAttribute('content', val); }
+function seo(P, d){
+  try {
+    var url = location.origin + location.pathname + '?id=' + encodeURIComponent(P.product_id), imgs = P.images; if (typeof imgs === 'string') { try { imgs = JSON.parse(imgs); } catch(e) { imgs = []; } }
+    var desc = String(P.description || '').replace(/\s+/g, ' ').trim().slice(0, 155) || ('Buy ' + P.name + ' on PawBook Shop.');
+    setMeta('name', 'description', desc); setMeta('property', 'og:title', P.name); setMeta('property', 'og:description', desc); setMeta('property', 'og:url', url);
+    if (imgs && imgs[0]) setMeta('property', 'og:image', imgs[0]);
+    var link = document.head.querySelector('link[rel=canonical]'); if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); } link.href = url;
+    var ld = {'@context': 'https://schema.org', '@type': 'Product', name: P.name, description: desc, image: (imgs || []).slice(0, 4), sku: P.sku || String(P.product_id),
+      offers: {'@type': 'Offer', url: url, priceCurrency: 'INR', price: String(Number(P.price)), availability: 'https://schema.org/' + (Number(P.stock) > 0 ? 'InStock' : 'OutOfStock'), itemCondition: 'https://schema.org/NewCondition'}};
+    if (P.brand) ld.brand = {'@type': 'Brand', name: P.brand};
+    if (d.seller && d.seller.name) ld.offers.seller = {'@type': 'Organization', name: d.seller.name};
+    if (P.review_count > 0) ld.aggregateRating = {'@type': 'AggregateRating', ratingValue: Number(P.rating).toFixed(1), reviewCount: P.review_count};
+    var sc = document.getElementById('ld-product'); if (!sc) { sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.id = 'ld-product'; document.head.appendChild(sc); }
+    sc.textContent = JSON.stringify(ld).replace(/</g, '\\u003c');
+  } catch (e) {}
+}
 if (!ID) notFound();
 else S.api('/shop/products/' + encodeURIComponent(ID)).then(function(d){
   D = d; P = d.product; S.cardData[String(P.product_id)] = P;
   document.title = P.name + ' — PawBook Shop';
+  seo(P, d);
   render(); renderDetails(); S.recent.add(P); loadQA();
   S.api('/shop/products/' + encodeURIComponent(ID) + '/together').then(function(t){ FBT = t.products || []; renderFBT(); }).catch(function(){});
   if (d.related && d.related.length) { document.getElementById('rel-sec').style.display = ''; S.renderCards(document.getElementById('related'), d.related); }

@@ -9,8 +9,8 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=9">
-<link rel="stylesheet" href="seller.css?v=9">
+<link rel="stylesheet" href="shop.css?v=10">
+<link rel="stylesheet" href="seller.css?v=10">
 <style>
 .panel{display:none}.panel.on{display:block}
 .oc{display:block;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:12px;text-decoration:none;color:inherit;transition:box-shadow .2s}
@@ -62,6 +62,12 @@
 .ad .t{flex:1;font-size:13px;line-height:1.55}.ad .t b{color:var(--navy)}
 .ad .def{font-size:11px;font-weight:800;color:var(--green);margin-left:6px}
 @media(max-width:900px){ .od{grid-template-columns:1fr} .tl .s{font-size:10px} .tl .s i{width:30px;height:30px;font-size:14px} .placed{padding:18px} .placed h1{font-size:19px} }
+.rtbox{display:flex;gap:10px;align-items:flex-start;margin-top:8px;padding:10px 12px;border-radius:12px;background:#fff7ed;border:1px solid #fde1c4;font-size:12.5px;line-height:1.5}
+.rtbox>i{font-size:20px;color:var(--o);margin-top:2px}.rtbox>div{flex:1}.rtbox .rth{color:var(--navy);font-weight:800}.rtbox span{color:var(--muted)}.rtbox em{color:var(--navy);font-style:normal;font-weight:600}
+.rtbox.rt-refunded{background:#effaf3;border-color:#bfe8cd}.rtbox.rt-refunded>i{color:var(--green)}.rtbox.rt-rejected{background:#fff4f4;border-color:#f6caca}.rtbox.rt-rejected>i{color:var(--red)}
+.rtnote{font-size:12px;color:var(--muted);margin-top:6px}
+.rtf .fl{display:flex;flex-direction:column;gap:4px;margin:8px 0}.rtf .fi{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;font:inherit;font-size:13px;background:#fff}
+.rtf .fl span:first-child{font-size:12.5px;font-weight:700;color:var(--navy)}.rtf small{font-size:11.5px;color:var(--muted)}.rtf .err{display:none;color:var(--red);font-size:12px;font-weight:600}.rtf .invalid .err{display:block}.rtf .invalid .fi{border-color:var(--red)}
 </style>
 </head>
 <body>
@@ -82,10 +88,10 @@
 </main>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=9"></script>
-<script src="shop-i18n.js?v=9"></script>
-<script src="seller-i18n.js?v=9"></script>
-<script src="shop.js?v=9"></script>
+<script src="pawbook-i18n.js?v=10"></script>
+<script src="shop-i18n.js?v=10"></script>
+<script src="seller-i18n.js?v=10"></script>
+<script src="shop.js?v=10"></script>
 <script>
 var S = Shop, T = PBi18n.t, esc = S.esc;
 S.init('account');
@@ -139,6 +145,44 @@ function delAddr(id, btn){
   S.api('/shop/addresses/' + id, {method: 'DELETE'}).then(loadAddrs).catch(fail);
 }
 
+/* returns */
+var RET0 = {returns: [], eligible: [], settings: {}, reasons: []}, RET = RET0;
+var RSTI = {requested: 'ti-hourglass', approved: 'ti-truck-return', received: 'ti-package-import', refunded: 'ti-circle-check', rejected: 'ti-circle-x', cancelled: 'ti-arrow-back-up'};
+function retOf(i){ return (RET.returns || []).filter(function(r){ return String(r.item_id) === String(i.item_id) && r.status !== 'cancelled'; })[0]; }
+function eligOf(i){ return (RET.eligible || []).filter(function(e){ return String(e.item_id) === String(i.item_id); })[0]; }
+function retBtn(i){
+  var e = eligOf(i); if (!e || retOf(i)) return '';
+  return '<button class="btn btn-ghost btn-sm" onclick="retForm(\'' + esc(i.item_id) + '\')" title="' + esc(T('rt.until', {d: PBi18n.fmtDate(e.until)})) + '"><i class="ti ti-arrow-back-up"></i>' + esc(T('rt.ret')) + '</button>';
+}
+function retBox(i){
+  var r = retOf(i); if (!r) { var e = eligOf(i); return e ? '<div class="rtnote">' + esc(T('rt.until', {d: PBi18n.fmtDate(e.until)})) + '</div>' : ''; }
+  var note = r.status === 'rejected' ? (r.seller_note || r.admin_note) : r.status === 'refunded' ? T('rt.refref', {r: r.refund_ref || ''}) : (r.seller_note || '');
+  return '<div class="rtbox rt-' + esc(r.status) + '"><i class="ti ' + RSTI[r.status] + '"></i><div><strong class="rth">' + esc(T('rt.s_' + r.status)) + '</strong> · ' + S.money(r.amount) + '<br><span>' + esc(T('rt.d_' + r.status)) + '</span>'
+    + (note ? '<br><em>' + esc(note) + '</em>' : '') + '</div>'
+    + (r.status === 'requested' ? '<button class="btn btn-ghost btn-sm" onclick="retCancel(' + Number(r.return_id) + ', this)">' + esc(T('rt.withdraw')) + '</button>' : '') + '</div>';
+}
+function retForm(itemId){
+  var box = document.getElementById('rf-' + itemId); if (box.innerHTML) { box.innerHTML = ''; return; }
+  var cod = O.payment_method === 'cod';
+  box.innerHTML = '<form class="cform rtf" onsubmit="retSend(event, \'' + esc(itemId) + '\')" novalidate><b style="color:var(--navy);font-size:13.5px">' + esc(T('rt.why')) + '</b>'
+    + '<label class="fl" data-f="reason"><select class="fi" name="reason"><option value="">' + esc(T('rt.pick')) + '</option>' + (RET.reasons || []).map(function(x){ return '<option value="' + esc(x) + '">' + esc(T('rt.r_' + x)) + '</option>'; }).join('') + '</select><span class="err">' + esc(T('rt.e_reason')) + '</span></label>'
+    + '<label class="fl" data-f="details"><textarea class="fi" name="details" maxlength="1000" rows="3" placeholder="' + esc(T('rt.detailsp')) + '"></textarea><span class="err">' + esc(T('rt.e_details')) + '</span></label>'
+    + (cod ? '<label class="fl" data-f="refund_to"><span>' + esc(T('rt.upi')) + '</span><input class="fi" name="refund_to" maxlength="80" placeholder="name@okaxis" autocomplete="off"><small>' + esc(T('rt.upis')) + '</small><span class="err">' + esc(T('rt.e_upi')) + '</span></label>' : '')
+    + '<div class="rtnote" style="margin:0 0 10px">' + esc(T('rt.how')) + '</div>'
+    + '<div style="display:flex;gap:8px"><button class="btn btn-o btn-sm"><i class="ti ti-send"></i>' + esc(T('rt.send')) + '</button><button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById(\'rf-' + esc(itemId) + '\').innerHTML=\'\'">' + esc(T('mo.keepo')) + '</button></div></form>';
+}
+function retSend(e, itemId){
+  e.preventDefault(); var f = e.target, b = f.querySelector('button'); b.disabled = true;
+  f.querySelectorAll('.fl').forEach(function(l){ l.classList.remove('invalid'); });
+  var body = {item_id: itemId, reason: f.elements.reason.value, details: f.elements.details.value.trim(), refund_to: f.elements.refund_to ? f.elements.refund_to.value.trim() : ''};
+  S.api('/shop/orders/' + encodeURIComponent(OID) + '/returns', {method: 'POST', body: body}).then(function(){ S.toast(T('rt.sent'), 'ti-check'); loadDetail(); })
+    .catch(function(err){ b.disabled = false; var m = /check: (.*)$/.exec(err.message || ''); if (m) { m[1].split(', ').forEach(function(k){ var l = f.querySelector('[data-f=' + k + ']'); if (l) l.classList.add('invalid'); }); return; } fail(err); });
+}
+function retCancel(id, btn){
+  if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.textContent = T('sh.sure'); return; }
+  S.api('/shop/returns/' + id + '/cancel', {method: 'POST', body: {}}).then(function(){ S.toast(T('rt.withdrawn'), 'ti-check'); loadDetail(); }).catch(fail);
+}
+
 /* detail */
 function renderDetail(){
   var o = O, a = o.delivery_address || {}, st = o.state, idx = FLOW.indexOf(st), h = '';
@@ -158,10 +202,11 @@ function renderDetail(){
       return '<div class="it"><a href="44_shop_product.html?id=' + encodeURIComponent(i.product_id || '') + '"><img src="' + img(i) + '" alt=""></a><div class="t"><b>' + esc(i.name) + '</b>'
         + esc(T('sh.qty', {n: i.quantity})) + (i.seller_name ? ' · ' + esc(T('co.soldby', {s: i.seller_name})) : '') + ' ' + pill(i.status)
         + (i.tracking ? '<div class="tr"><i class="ti ti-truck"></i> ' + esc(i.tracking) + '</div>' : '')
-        + (i.status === 'delivered' && i.product_id ? '<div style="margin-top:6px"><button class="btn btn-ghost btn-sm" onclick="rate(\'' + esc(i.product_id) + '\')"><i class="ti ti-star"></i>' + esc(T('rv.rate')) + '</button></div>' : '') + '</div>'
+        + (i.status === 'delivered' && i.product_id ? '<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="rate(\'' + esc(i.product_id) + '\')"><i class="ti ti-star"></i>' + esc(T('rv.rate')) + '</button>' + retBtn(i) + '</div>' : '') + retBox(i) + '<div id="rf-' + esc(i.item_id) + '"></div></div>'
         + '<div class="pr">' + S.money(i.price * i.quantity) + (i.mrp > i.price ? '<br><s style="color:#a3a7b5;font-weight:500;font-size:12px">' + S.money(i.mrp * i.quantity) + '</s>' : '') + '</div></div>';
     }).join('')
     + '<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="buyAgain(this)"><i class="ti ti-refresh"></i>' + esc(T('mo.again')) + '</button>'
+    + '<a class="btn btn-ghost btn-sm" href="54_shop_receipt.html?id=' + encodeURIComponent(o.order_id) + '" target="_blank"><i class="ti ti-printer"></i>' + esc(T('rt.receipt')) + '</a>'
     + '<a class="btn btn-ghost btn-sm" href="mailto:support@deemona.com?subject=' + encodeURIComponent('Order ' + (o.order_number || o.order_id)) + '"><i class="ti ti-help"></i>' + esc(T('mo.help')) + '</a></div></div>';
   h += '</div><aside>';
   h += '<div class="sx-card"><h2><i class="ti ti-map-pin"></i>' + esc(T('sh.shipto')) + '</h2><div class="addr"><b>' + esc(a.name || '') + '</b><br>' + esc([a.line1, a.line2, a.landmark].filter(Boolean).join(', ')) + '<br>' + esc([a.city, a.state].filter(Boolean).join(', ')) + ' – ' + esc(a.pincode || '') + (a.phone ? '<br>+91 ' + esc(a.phone) : '') + '</div></div>';
@@ -191,7 +236,7 @@ function buyAgain(btn){
   Promise.all(ps).then(function(){ btn.disabled = false; S.openCart(); });
 }
 function loadDetail(){
-  return S.api('/shop/orders/' + encodeURIComponent(OID)).then(function(d){ O = d.order; document.title = (O.order_number || 'Order') + ' — PawBook Shop'; renderDetail(); })
+  return Promise.all([S.api('/shop/orders/' + encodeURIComponent(OID)), S.api('/shop/returns?order_id=' + encodeURIComponent(OID)).catch(function(){ return null; })]).then(function(r){ var d = r[0]; RET = r[1] || RET0; O = d.order; document.title = (O.order_number || 'Order') + ' — PawBook Shop'; renderDetail(); })
     .catch(function(e){ document.getElementById('detail').innerHTML = '<div class="sx-card empty2" style="margin-top:24px"><i class="ti ti-package-off"></i><b>' + esc(T(e.status === 404 ? 'mo.nf' : 'l.err')) + '</b><a class="btn btn-o" style="margin-top:14px" href="53_shop_orders.html">' + esc(T('mo.orders')) + '</a></div>'; });
 }
 if (!S.loggedIn()) location.href = '01_login.html';

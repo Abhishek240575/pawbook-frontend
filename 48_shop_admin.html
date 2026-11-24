@@ -7,7 +7,7 @@
 <title>Shop Admin — PawBook</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=9">
+<link rel="stylesheet" href="shop.css?v=10">
 <style>
 .ah{display:flex;align-items:center;gap:14px;margin:24px 0 18px;flex-wrap:wrap}
 .ah h1{font-size:28px;font-weight:900;color:var(--navy)}
@@ -102,6 +102,7 @@
     <div class="atabs">
       <button class="on" data-t="reports" onclick="tab('reports')"><i class="ti ti-chart-bar"></i>Reports</button>
       <button data-t="orders" onclick="tab('orders')"><i class="ti ti-receipt"></i>Orders<span class="acnt" id="n-ord"></span></button>
+      <button data-t="returns" onclick="tab('returns')"><i class="ti ti-arrow-back-up"></i>Returns<span class="acnt" id="n-ret"></span></button>
       <button data-t="payouts" onclick="tab('payouts')"><i class="ti ti-cash"></i>Payouts<span class="acnt" id="n-pay"></span></button>
       <button data-t="cats" onclick="tab('cats')"><i class="ti ti-category"></i>Categories</button>
       <button data-t="brands" onclick="tab('brands')"><i class="ti ti-building-store"></i>Brands</button>
@@ -139,6 +140,18 @@
         <input id="o-q" placeholder="Order no., buyer, phone or PIN" oninput="clearTimeout(window._oq);window._oq=setTimeout(function(){OPAGE=1;loadOrders();},350)" style="height:36px;border-radius:9px;border:1.5px solid var(--line);padding:0 10px;width:260px;max-width:100%"></div>
         <div style="overflow-x:auto"><table class="tbl" id="o-tbl"></table></div><div class="pager" id="o-pg"></div></div>
       <div class="card" id="o-det" style="margin-top:16px;display:none"></div>
+    </section>
+
+    <section class="panel" id="p-returns">
+      <div class="card"><div class="bar"><b>Delivery &amp; return rules</b></div>
+        <form class="f" id="fl-set" onsubmit="saveFulSet(event)" style="grid-template-columns:1fr 1fr auto;align-items:end">
+          <label>Return window after delivery (days)<input name="return_window_days" type="number" min="0" max="60" step="1"></label>
+          <label>Sellers must ship within (days)<input name="dispatch_days" type="number" min="1" max="15" step="1"></label>
+          <button class="btn btn-o btn-sm" style="height:38px"><i class="ti ti-device-floppy"></i>Save</button>
+        </form>
+        <div class="hint">Set the return window to 0 to switch returns off. Keep the payout waiting period (Payouts tab) at least as long as the return window, so sellers are paid only after the return window closes; otherwise refunds are taken back from the seller's next payout.</div></div>
+      <div class="card" style="margin-top:16px"><div class="bar"><div class="chips" id="rt-chips"></div></div>
+        <div id="rt-list" style="padding:0 18px"></div></div>
     </section>
 
     <section class="panel" id="p-payouts">
@@ -268,9 +281,9 @@
 <div id="shop-footer"></div>
 <div class="tip" id="tip"></div>
 
-<script src="pawbook-i18n.js?v=9"></script>
-<script src="shop-i18n.js?v=9"></script>
-<script src="shop.js?v=9"></script>
+<script src="pawbook-i18n.js?v=10"></script>
+<script src="shop-i18n.js?v=10"></script>
+<script src="shop.js?v=10"></script>
 <script>
 var S = Shop, esc = S.esc;
 S.init('admin');
@@ -278,7 +291,7 @@ var LANGS = ['hi','bn','ta','mr'];
 setTimeout(function(){ if (typeof counts === 'function') counts(); }, 400);
 function tab(t){ document.querySelectorAll('.atabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t') === t); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + t); });
-  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); if (t === 'sellers') loadSellers(); if (t === 'reviews') loadReviews(); if (t === 'coupons') loadCps(); if (t === 'kyc') loadKyc(); if (t === 'reports') loadReports(); if (t === 'orders') loadOrders(); if (t === 'payouts') loadPayouts(); document.getElementById('rng').style.display = (t === 'reports' || t === 'orders') ? '' : 'none'; try { history.replaceState(null, '', '?tab=' + t); } catch(x) {} if (t === 'listings') { loadMode(); loadLst(); } }
+  if (t === 'brands' && !BRANDS) loadBrands(); if (t === 'qa') loadQA(); if (t === 'search') loadSyn(); if (t === 'sellers') loadSellers(); if (t === 'reviews') loadReviews(); if (t === 'coupons') loadCps(); if (t === 'kyc') loadKyc(); if (t === 'reports') loadReports(); if (t === 'orders') loadOrders(); if (t === 'payouts') loadPayouts(); if (t === 'returns') { loadFulSet(); loadRets(); } document.getElementById('rng').style.display = (t === 'reports' || t === 'orders') ? '' : 'none'; try { history.replaceState(null, '', '?tab=' + t); } catch(x) {} if (t === 'listings') { loadMode(); loadLst(); } }
 function fail(e){ S.toast(e.message || 'Something went wrong', 'ti-alert-circle'); }
 
 /* ── gate ── */
@@ -455,8 +468,9 @@ function renderReports(d){
   var k = d.kpi;
   var tiles = [['Sales', rs(k.gmv), k.units + ' items sold'], ['Orders', k.orders.toLocaleString('en-IN'), k.live_orders + ' active · ' + k.cancelled_orders + ' cancelled'], ['Average order', rs(k.aov), 'per active order'],
     ['Delivered', rs(k.delivered_value), 'item value delivered'], ['Buyers', k.buyers, k.new_buyers + ' ordered for the first time'], ['Cancelled', k.cancel_rate + '%', rs(k.cancelled_value) + ' of items'],
-    ['Coupon discounts', rs(k.discounts), 'paid by PawBook'], ['Delivery fees', rs(k.delivery_fees), 'charged to buyers']];
+    ['Coupon discounts', rs(k.discounts), 'paid by PawBook'], ['Delivery fees', rs(k.delivery_fees), 'charged to buyers'], ['Refunds', rs(k.refunded || 0), (k.refunds || 0) + ' refund' + (k.refunds === 1 ? '' : 's') + ' sent']];
   var h = tiles.map(function(t){ return '<div class="kpi"><span>' + esc(t[0]) + '</span><b>' + esc(String(t[1])) + '</b><small>' + esc(t[2]) + '</small></div>'; }).join('');
+  if (k.open_returns) h += '<div class="kpi warn"><span>Returns to handle</span><b>' + k.open_returns + '</b><small><a href="#" onclick="event.preventDefault();tab(\'returns\')">view</a></small></div>';
   if (d.cod_due && d.cod_due.n) h += '<div class="kpi warn"><span>Cash to collect (COD)</span><b>' + rs(d.cod_due.amount) + '</b><small>' + d.cod_due.n + ' delivered order' + (d.cod_due.n === 1 ? '' : 's') + ' · <a href="#" onclick="event.preventDefault();OSTATE=\'cod_due\';tab(\'orders\')">view</a></small></div>';
   document.getElementById('kpis').innerHTML = h;
   // chart: group by week when the range is long
@@ -491,7 +505,7 @@ function renderReports(d){
 
 /* ── orders ── */
 var OSTATE = '', OPAGE = 1, OSEL = null;
-var OCH = [['', 'All'], ['to_ship', 'To ship'], ['shipped', 'Shipped'], ['delivered', 'Delivered'], ['cancelled', 'Cancelled'], ['cod_due', 'COD to collect']];
+var OCH = [['', 'All'], ['to_ship', 'To ship'], ['late', 'Late to ship'], ['shipped', 'Shipped'], ['delivered', 'Delivered'], ['cancelled', 'Cancelled'], ['cod_due', 'COD to collect']];
 function loadOrders(){
   var q = (document.getElementById('o-q').value || '').trim();
   S.api('/shop/admin/orders?' + rq() + '&state=' + OSTATE + '&page=' + OPAGE + (q ? '&q=' + encodeURIComponent(q) : '')).then(function(d){
@@ -503,7 +517,7 @@ function loadOrders(){
       return '<tr class="click' + (OSEL === o.order_id ? ' sel' : '') + '" onclick="openOrder(\'' + esc(o.order_id) + '\')"><td><b>' + esc(o.order_number || o.order_id) + '</b><br><small style="color:var(--muted)">' + esc(dt2(o.created_at)) + '</small></td>'
         + '<td>' + esc(o.buyer_name || '—') + '<br><small style="color:var(--muted)">' + esc([o.city, o.pincode].filter(Boolean).join(' · ')) + '</small></td>'
         + '<td><div class="oth">' + o.items.slice(0, 4).map(function(i){ return '<img src="' + esc(i.image_url || '') + '" alt="" title="' + esc(i.name + ' × ' + i.quantity) + '">'; }).join('') + '</div><small style="color:var(--muted)">' + esc(stores.join(', ')) + '</small></td>'
-        + '<td class="num">' + rs2(o.total) + (o.coupon_code ? '<br><small style="color:var(--muted)">' + esc(o.coupon_code) + '</small>' : '') + '</td><td>' + pay + '</td><td><span class="st ' + esc(o.state) + '">' + esc(o.state) + '</span></td></tr>';
+        + '<td class="num">' + rs2(o.total) + (o.coupon_code ? '<br><small style="color:var(--muted)">' + esc(o.coupon_code) + '</small>' : '') + '</td><td>' + pay + '</td><td><span class="st ' + esc(o.state) + '">' + esc(o.state) + '</span>' + (o.late ? '<br><span class="st cancelled" title="Ship-by date passed">late</span>' : '') + '</td></tr>';
     }).join('') : '<tr><td colspan="6" style="color:var(--muted)">No orders match.</td></tr>');
     var pages = Math.ceil(d.total / d.per_page);
     document.getElementById('o-pg').innerHTML = pages > 1 ? '<span>' + ((d.page - 1) * d.per_page + 1) + '–' + Math.min(d.total, d.page * d.per_page) + ' of ' + d.total + '</span>'
@@ -517,7 +531,7 @@ function openOrder(id){
   S.api('/shop/admin/orders/' + encodeURIComponent(id)).then(function(d){
     var o = d.order, a = o.delivery_address || {}, open = o.items.filter(function(i){ return i.next.length; });
     var nexts = {}; open.forEach(function(i){ i.next.forEach(function(n){ nexts[n] = true; }); });
-    var h = '<div class="bar"><b>' + esc(o.order_number || o.order_id) + '</b><span class="st ' + esc(o.state) + '">' + esc(o.state) + '</span><span class="sub2">' + esc(dt2(o.created_at)) + '</span><button class="btn btn-ghost btn-sm" onclick="document.getElementById(\'o-det\').style.display=\'none\';OSEL=null"><i class="ti ti-x"></i></button></div>'
+    var h = '<div class="bar"><b>' + esc(o.order_number || o.order_id) + '</b><span class="st ' + esc(o.state) + '">' + esc(o.state) + '</span><span class="sub2">' + esc(dt2(o.created_at)) + '</span><a class="btn btn-ghost btn-sm" href="54_shop_receipt.html?id=' + encodeURIComponent(o.order_id) + '&as=admin" target="_blank"><i class="ti ti-printer"></i>Receipt</a><button class="btn btn-ghost btn-sm" onclick="document.getElementById(\'o-det\').style.display=\'none\';OSEL=null"><i class="ti ti-x"></i></button></div>'
       + '<div class="split" style="gap:0"><div>' + o.items.map(function(i){
         return '<div class="oi">' + (i.next.length ? '<input type="checkbox" class="oi-c" value="' + esc(i.item_id) + '" checked>' : '<span style="width:13px"></span>') + '<img src="' + esc(i.image_url || '') + '" alt=""><div class="t"><b>' + esc(i.name) + '</b><br>' + esc(rs2(i.price)) + ' × ' + i.quantity + ' · ' + esc(i.store_name || '—')
           + (i.tracking ? '<br><small>Tracking: ' + esc(i.tracking) + '</small>' : '') + (i.payout_id ? '<br><small style="color:var(--green)">Paid to seller · payout #' + esc(String(i.payout_id)) + '</small>' : '') + '</div><span class="st ' + esc(i.status) + '">' + esc(i.status) + '</span></div>'; }).join('')
@@ -547,6 +561,44 @@ function ordStatus(id, st){
 }
 function codGot(id){ S.api('/shop/admin/orders/' + encodeURIComponent(id), {method: 'PATCH', body: {action: 'cod_collected'}}).then(function(){ S.toast('Marked as received', 'ti-check'); openOrder(id); loadOrders(); }).catch(fail); }
 
+/* ── returns ── */
+var RTF = 'open', RREASON = {damaged: 'Damaged', wrong_item: 'Wrong item', not_as_described: 'Not as described', quality: 'Quality issue', other: 'Other'};
+var RTCH = [['open', 'To handle'], ['requested', 'New'], ['approved', 'Approved'], ['received', 'Received · refund due'], ['refunded', 'Refunded'], ['rejected', 'Rejected'], ['all', 'All']];
+function loadFulSet(){ S.api('/shop/admin/fulfilment').then(function(d){ var f = document.getElementById('fl-set'); f.elements.return_window_days.value = d.return_window_days; f.elements.dispatch_days.value = d.dispatch_days; }).catch(fail); }
+function saveFulSet(e){ e.preventDefault(); var f = e.target; S.api('/shop/admin/fulfilment', {method: 'PUT', body: {return_window_days: Number(f.elements.return_window_days.value), dispatch_days: Number(f.elements.dispatch_days.value)}}).then(function(){ S.toast('Rules saved', 'ti-check'); }).catch(fail); }
+function rtCls(s){ return s === 'requested' ? 'pending' : s === 'refunded' ? 'delivered' : (s === 'rejected' || s === 'cancelled') ? 'cancelled' : 'confirmed'; }
+function loadRets(){
+  S.api('/shop/admin/returns?status=' + RTF).then(function(d){
+    var c = d.counts || {};
+    document.getElementById('n-ret').textContent = c.open || '';
+    document.getElementById('rt-chips').innerHTML = RTCH.map(function(x){ var n = x[0] === 'all' ? null : (c[x[0]] || 0); return '<button class="' + (RTF === x[0] ? 'on' : '') + '" onclick="RTF=\'' + x[0] + '\';loadRets()">' + esc(x[1]) + (n !== null ? '<em>' + n + '</em>' : '') + '</button>'; }).join('');
+    var l = d.returns || [];
+    document.getElementById('rt-list').innerHTML = l.length ? l.map(function(r){
+      var id = Number(r.return_id), acts = '';
+      if (r.status === 'requested') acts = '<textarea id="rtn-' + id + '" maxlength="500" placeholder="Note for the buyer (needed to reject)"></textarea><div style="display:flex;gap:8px"><button class="btn btn-n btn-sm" onclick="rtAct(' + id + ',\'approve\')"><i class="ti ti-check"></i>Approve</button><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="rtAct(' + id + ',\'reject\')">Reject</button></div>';
+      if (r.status === 'approved') acts = '<button class="btn btn-ghost btn-sm" onclick="rtAct(' + id + ',\'received\')"><i class="ti ti-package-import"></i>Item received back</button>';
+      if (r.status === 'approved' || r.status === 'received') acts += '<div class="paybox" style="flex-direction:column;align-items:stretch"><b style="font-size:12.5px">Record refund of ' + rs2(r.amount) + (r.refund_to ? ' to <code>' + esc(r.refund_to) + '</code>' : '') + '</b>'
+        + '<select id="rtm-' + id + '" style="height:34px;border-radius:9px;border:1.5px solid var(--line);padding:0 8px"><option value="upi">UPI</option><option value="bank">Bank transfer</option><option value="other">Other</option></select>'
+        + '<input id="rtr-' + id + '" placeholder="Refund reference / UTR" maxlength="80"><button class="btn btn-o btn-sm" onclick="rtAct(' + id + ',\'refunded\')"><i class="ti ti-cash"></i>I have sent the refund</button></div>';
+      return '<div class="lrow"><img src="' + esc(r.image_url || '') + '" alt=""><div class="b"><b>' + esc(r.name) + '</b> × ' + r.quantity + ' · ' + rs2(r.amount)
+        + '<div style="color:var(--muted);margin:2px 0 6px">' + esc(r.order_number) + ' · ' + esc(r.buyer_name || '') + ' · ' + esc([r.city, r.pincode].filter(Boolean).join(' ')) + ' · sold by ' + esc(r.store_name || '—') + '</div>'
+        + '<div><span class="st ' + rtCls(r.status) + '">' + esc(r.status) + '</span> <b>' + esc(RREASON[r.reason] || r.reason) + '</b> · requested ' + esc(dt2(r.created_at)) + '</div>'
+        + '<div style="margin-top:6px">' + esc(r.details || '') + '</div>'
+        + (r.seller_note ? '<div style="margin-top:6px"><small>Seller: ' + esc(r.seller_note) + '</small></div>' : '') + (r.admin_note ? '<div><small>Admin: ' + esc(r.admin_note) + '</small></div>' : '')
+        + (r.refund_ref ? '<div style="margin-top:6px;color:var(--green);font-weight:700">Refunded ' + esc(dt2(r.refunded_at)) + ' · ' + esc(r.refund_method || '') + ' ' + esc(r.refund_ref) + '</div>' : '')
+        + (r.payment_method === 'cod' && r.refund_to && !r.refund_ref ? '<div style="margin-top:6px"><small>Buyer\'s UPI for the refund: <code>' + esc(r.refund_to) + '</code></small></div>' : '') + '</div>'
+        + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div>';
+    }).join('') : '<div class="hint" style="padding:18px 0">Nothing here.</div>';
+  }).catch(fail);
+}
+function rtAct(id, action){
+  var body = {action: action}, n = document.getElementById('rtn-' + id);
+  if (n) body.note = n.value.trim();
+  if (action === 'reject' && (!body.note || body.note.length < 5)) { S.toast('Please write a reason for the buyer', 'ti-alert-circle'); if (n) n.focus(); return; }
+  if (action === 'refunded') { body.refund_method = document.getElementById('rtm-' + id).value; body.refund_ref = document.getElementById('rtr-' + id).value.trim(); if (body.refund_ref.length < 4) { S.toast('Please enter the refund reference', 'ti-alert-circle'); return; } }
+  S.api('/shop/admin/returns/' + id, {method: 'PATCH', body: body}).then(function(r){ S.toast('Return ' + r.status, 'ti-check'); loadRets(); }).catch(fail);
+}
+
 /* ── CSV export ── */
 function exportCsv(type){
   var tok = ''; try { tok = localStorage.getItem('pb_token') || ''; } catch(x) {}
@@ -564,18 +616,18 @@ function loadPayouts(){
   S.api('/shop/admin/payouts').then(function(d){
     PAY = d; var f = document.getElementById('py-set');
     f.elements.commission_pct.value = d.settings.commission_pct; f.elements.payout_hold_days.value = d.settings.payout_hold_days;
-    var due = d.sellers.filter(function(x){ return x.items; });
+    var due = d.sellers.filter(function(x){ return x.items && x.net > 0; });
     document.getElementById('n-pay').textContent = due.length || '';
-    document.getElementById('py-due').innerHTML = '<tr><th>Seller</th><th class="num">Items</th><th class="num">Sales</th><th class="num">Commission</th><th class="num">Pay now</th><th class="num">Waiting</th><th></th></tr>' + (d.sellers.length ? d.sellers.map(function(x){
+    document.getElementById('py-due').innerHTML = '<tr><th>Seller</th><th class="num">Items</th><th class="num">Sales</th><th class="num">Commission</th><th class="num">Refund deductions</th><th class="num">Pay now</th><th class="num">Waiting</th><th></th></tr>' + (d.sellers.length ? d.sellers.map(function(x){
       var id = esc(x.seller_id);
       return '<tr><td><b>' + esc(x.store_name) + '</b>' + (x.is_verified ? ' <span class="st approved">verified</span>' : ' <span class="st draft">not verified</span>') + '<br><small style="color:var(--muted)">' + esc([x.legal_name, x.phone].filter(Boolean).join(' · ')) + '</small>'
         + (x.oldest ? '<br><small style="color:var(--muted)">oldest delivery ' + esc(dt2(x.oldest)) + '</small>' : '') + '<div id="pb-' + id + '"></div></td>'
-        + '<td class="num">' + x.items + '</td><td class="num">' + rs2(x.gross) + '</td><td class="num">' + (x.commission ? '− ' + rs2(x.commission) : '—') + '</td><td class="num"><b>' + rs2(x.net) + '</b></td>'
+        + '<td class="num">' + x.items + '</td><td class="num">' + rs2(x.gross) + '</td><td class="num">' + (x.commission ? '− ' + rs2(x.commission) : '—') + '</td><td class="num">' + (x.deductions ? '− ' + rs2(x.deductions) : '—') + '</td><td class="num"><b' + (x.net < 0 ? ' style="color:var(--red)"' : '') + '>' + rs2(x.net) + '</b></td>'
         + '<td class="num">' + (x.waiting_items ? rs2(x.waiting_gross) + '<br><small style="color:var(--muted)">' + x.waiting_items + ' item' + (x.waiting_items === 1 ? '' : 's') + '</small>' : '—') + '</td>'
-        + '<td>' + (x.items ? '<button class="btn btn-n btn-sm" onclick="payForm(\'' + id + '\')"><i class="ti ti-cash"></i>Record payout</button>' : '') + '</td></tr>';
-    }).join('') : '<tr><td colspan="7" style="color:var(--muted)">Nothing to pay yet. Sellers appear here once their items are delivered.</td></tr>');
+        + '<td>' + (x.items && x.net > 0 ? '<button class="btn btn-n btn-sm" onclick="payForm(\'' + id + '\')"><i class="ti ti-cash"></i>Record payout</button>' : '') + '</td></tr>';
+    }).join('') : '<tr><td colspan="8" style="color:var(--muted)">Nothing to pay yet. Sellers appear here once their items are delivered.</td></tr>');
     document.getElementById('py-rec').innerHTML = '<tr><th>#</th><th>Paid</th><th>Seller</th><th class="num">Items</th><th class="num">Sales</th><th class="num">Commission</th><th class="num">Paid</th><th>Reference</th><th></th></tr>' + (d.recent.length ? d.recent.map(function(p){
-      return '<tr><td>' + p.payout_id + '</td><td>' + esc(dt2(p.paid_at)) + '</td><td>' + esc(p.store_name || '—') + '</td><td class="num">' + p.items_count + '</td><td class="num">' + rs2(p.gross) + '</td><td class="num">' + (p.commission ? rs2(p.commission) + ' <small>(' + p.commission_pct + '%)</small>' : '—') + '</td><td class="num"><b>' + rs2(p.net) + '</b></td>'
+      return '<tr><td>' + p.payout_id + '</td><td>' + esc(dt2(p.paid_at)) + '</td><td>' + esc(p.store_name || '—') + '</td><td class="num">' + p.items_count + '</td><td class="num">' + rs2(p.gross) + '</td><td class="num">' + (p.commission ? rs2(p.commission) + ' <small>(' + p.commission_pct + '%)</small>' : '—') + (p.deductions ? '<br><small>refunds − ' + rs2(p.deductions) + '</small>' : '') + '</td><td class="num"><b>' + rs2(p.net) + '</b></td>'
         + '<td>' + esc(p.reference || '') + (p.note ? '<br><small style="color:var(--muted)">' + esc(p.note) + '</small>' : '') + '</td><td><button class="btn btn-ghost btn-sm" onclick="payDet(' + Number(p.payout_id) + ')">Statement</button></td></tr>'; }).join('') : '<tr><td colspan="9" style="color:var(--muted)">No payouts recorded yet.</td></tr>');
   }).catch(fail);
 }
@@ -606,6 +658,7 @@ function payDet(pid){
       + '<div style="overflow-x:auto"><table class="tbl"><tr><th>Order</th><th>Item</th><th class="num">Qty</th><th class="num">Price</th><th class="num">Amount</th><th>Delivered</th></tr>' + p.items.map(function(i){
         return '<tr><td>' + esc(i.order_number) + '</td><td>' + esc(i.name) + '</td><td class="num">' + i.quantity + '</td><td class="num">' + rs2(i.price) + '</td><td class="num">' + rs2(i.line_total) + '</td><td>' + esc(dt2(i.delivered_at)) + '</td></tr>'; }).join('')
       + '<tr><td colspan="4" class="num">Sales</td><td class="num">' + rs2(p.gross) + '</td><td></td></tr>' + (p.commission ? '<tr><td colspan="4" class="num">Commission (' + p.commission_pct + '%)</td><td class="num">− ' + rs2(p.commission) + '</td><td></td></tr>' : '')
+      + (p.adjustments || []).map(function(x){ return '<tr><td colspan="4" class="num">' + esc(x.reason || 'Refund deduction') + '</td><td class="num">− ' + rs2(x.amount) + '</td><td></td></tr>'; }).join('')
       + '<tr><td colspan="4" class="num"><b>Paid</b></td><td class="num"><b>' + rs2(p.net) + '</b></td><td></td></tr></table></div>';
     box.scrollIntoView({behavior: 'smooth', block: 'nearest'});
   }).catch(fail);
@@ -613,6 +666,7 @@ function payDet(pid){
 
 /* ── verification ── */
 function counts(){
+  S.api('/shop/admin/returns?status=open').then(function(d){ document.getElementById('n-ret').textContent = (d.counts && d.counts.open) || ''; }).catch(function(){});
   S.api('/shop/admin/orders?state=to_ship&from=2020-01-01').then(function(d){ document.getElementById('n-ord').textContent = (d.counts && d.counts.to_ship) || ''; }).catch(function(){});
   S.api('/shop/admin/payouts').then(function(d){ document.getElementById('n-pay').textContent = (d.sellers || []).filter(function(x){ return x.items; }).length || ''; }).catch(function(){});
   S.api('/shop/admin/kyc?status=submitted').then(function(d){ document.getElementById('n-kyc').textContent = (d.kyc || []).length || ''; }).catch(function(){});

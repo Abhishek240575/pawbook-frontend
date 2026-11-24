@@ -9,8 +9,8 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<link rel="stylesheet" href="shop.css?v=9">
-<link rel="stylesheet" href="seller.css?v=9">
+<link rel="stylesheet" href="shop.css?v=10">
+<link rel="stylesheet" href="seller.css?v=10">
 <style>
 .shead{display:flex;gap:16px;align-items:center;margin:24px 0 18px;flex-wrap:wrap}
 .slogo{width:64px;height:64px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:var(--o-d);overflow:hidden;flex-shrink:0}
@@ -81,6 +81,11 @@
 .modnote{display:flex;gap:6px;align-items:flex-start;margin-top:4px;font-size:11.5px;color:var(--red);font-weight:600;max-width:320px}
 .stat small.es{display:block;font-size:11.5px;color:var(--muted);margin-top:3px}
 #p-earnings .stats{margin-bottom:16px}
+.shipby{display:inline-flex;gap:4px;align-items:center;font-size:12px;font-weight:700;color:var(--muted);background:#f4f1ec;border-radius:999px;padding:3px 10px}
+.shipby.late{color:#b42318;background:#fdecea}.ord.is-late{border-color:#f5b5ad}
+.rtst{display:inline-flex;gap:5px;align-items:center;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#fff4e0;color:#b26a00}
+.rtst.rt-refunded,.rtst.rt-received{background:#e9f8ef;color:#1d7a46}.rtst.rt-rejected,.rtst.rt-cancelled{background:#f1f1f1;color:#6b7280}.rtst.rt-approved{background:#e8f1ff;color:#1d5bbf}
+.rtwhy{margin-top:8px;font-size:13px;background:#fffaf4;border:1px solid #f6e3cc;border-radius:10px;padding:8px 10px;line-height:1.5}
 .erhow{margin:6px 0 0 18px;padding:0;font-size:13.5px;line-height:1.7;color:var(--ink,#333)}
 .tw{overflow-x:auto}.stbl{width:100%;border-collapse:collapse;font-size:13px}.stbl th,.stbl td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 .stbl th{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}.stbl .r{text-align:right;font-variant-numeric:tabular-nums}.stbl tr.det td{background:#fffaf4;padding:4px 8px 10px}.stbl.in td{border-bottom:1px dashed var(--line);white-space:normal}
@@ -174,15 +179,16 @@
 </main>
 <div id="shop-footer"></div>
 
-<script src="pawbook-i18n.js?v=9"></script>
-<script src="shop-i18n.js?v=9"></script>
-<script src="seller-i18n.js?v=9"></script>
-<script src="shop.js?v=9"></script>
-<script src="seller.js?v=9"></script>
+<script src="pawbook-i18n.js?v=10"></script>
+<script src="shop-i18n.js?v=10"></script>
+<script src="seller-i18n.js?v=10"></script>
+<script src="shop.js?v=10"></script>
+<script src="seller.js?v=10"></script>
 <script>
 var S = Shop, T = PBi18n.t, esc = S.esc;
 S.init('seller');
-var ME = null, ST = {}, KYC = {status: 'none'}, MODE = 'off', PRODUCTS = null, pfilter = '', ofilter = 'to_ship', qfilter = '1', pqT = null, logoUrl = null, openVar = null, ORDERS = [];
+function qs0(k){ try { return new URLSearchParams(location.search).get(k); } catch(e) { return null; } }
+var ME = null, ST = {}, KYC = {status: 'none'}, MODE = 'off', PRODUCTS = null, pfilter = '', ofilter = qs0('f') === 'returns' ? 'returns' : 'to_ship', RETS = [], qfilter = '1', pqT = null, logoUrl = null, openVar = null, ORDERS = [];
 var qs = new URLSearchParams(location.search);
 function img(p){ var i = p.images; if (typeof i === 'string') { try { i = JSON.parse(i); } catch(e) { i = []; } } return (i && i[0]) || S.catImg(p.category || 'other', 200); }
 function initials(n){ return String(n || '?').split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0, 2).toUpperCase(); }
@@ -305,9 +311,11 @@ function archive(id, btn){
 
 /* ── orders ── */
 function loadOrders(){
-  var f = [['to_ship', 'sh.o_toship'], ['shipped', 'os.shipped'], ['delivered', 'os.delivered'], ['cancelled', 'os.cancelled'], ['', 'sh.f_all']];
-  document.getElementById('of').innerHTML = f.map(function(x){ return '<button class="fchip' + (ofilter === x[0] ? ' on' : '') + '" onclick="ofilter=\'' + x[0] + '\';loadOrders()">' + esc(T(x[1])) + '</button>'; }).join('');
+  var f = [['to_ship', 'sh.o_toship'], ['shipped', 'os.shipped'], ['delivered', 'os.delivered'], ['returns', 'rt.tab'], ['cancelled', 'os.cancelled'], ['', 'sh.f_all']];
+  document.getElementById('of').innerHTML = f.map(function(x){ return '<button class="fchip' + (ofilter === x[0] ? ' on' : '') + '" onclick="ofilter=\'' + x[0] + '\';loadOrders()">' + esc(T(x[1])) + (x[0] === 'returns' ? '<span class="cnt" id="c-ret" style="display:none"></span>' : '') + '</button>'; }).join('');
   document.getElementById('olist').innerHTML = '<div class="pc-skel" style="aspect-ratio:auto;height:180px"></div>';
+  retCount();
+  if (ofilter === 'returns') return loadRets();
   S.api('/shop/seller/orders' + (ofilter ? '?status=' + ofilter : '')).then(function(d){ ORDERS = d.orders; renderOrders(); }).catch(fail);
 }
 function orderStatus(o){ var s = o.items.map(function(i){ return i.status; }); var order = ['pending','confirmed','packed','shipped','delivered']; var active = s.filter(function(x){ return x !== 'cancelled'; }); if (!active.length) return 'cancelled'; return active.reduce(function(a, b){ return order.indexOf(a) <= order.indexOf(b) ? a : b; }); }
@@ -317,15 +325,17 @@ function renderOrders(){
   el.innerHTML = ORDERS.map(function(o){
     var st = orderStatus(o), nx = Seller.NEXT[st], a = o.delivery_address || {}, idx = Seller.FLOW.indexOf(st);
     var tr = o.items.map(function(i){ return i.tracking; }).filter(Boolean)[0];
-    return '<div class="ord"><div class="ord-h"><b>' + esc(o.order_number || o.order_id) + '</b><span>' + esc(PBi18n.fmtDate(o.created_at)) + '</span><span class="sp"></span>'
+    var shipBy = (['pending','confirmed','packed'].indexOf(st) >= 0 && o.ship_by) ? '<span class="shipby' + (o.late ? ' late' : '') + '"><i class="ti ti-' + (o.late ? 'alert-triangle' : 'clock') + '"></i>' + esc(T(o.late ? 'rt.late' : 'rt.shipby', {d: PBi18n.fmtDate(o.ship_by, {weekday: 'short', day: 'numeric', month: 'short'})})) + '</span>' : '';
+    return '<div class="ord' + (o.late && shipBy ? ' is-late' : '') + '"><div class="ord-h"><b>' + esc(o.order_number || o.order_id) + '</b><span>' + esc(PBi18n.fmtDate(o.created_at)) + '</span>' + shipBy + '<span class="sp"></span>'
       + (st !== 'cancelled' ? '<span class="prog">' + Seller.FLOW.map(function(_, i){ return '<i class="' + (i <= idx ? 'on' : '') + '"></i>'; }).join('') + '</span>' : '') + Seller.statusPill(st) + '</div>'
       + '<div class="ord-b"><div>' + o.items.map(function(i){ return '<div class="oi"><img src="' + esc(i.image_url || S.catImg('other', 200)) + '" alt=""><div class="t"><b>' + esc(i.name) + '</b><small>' + esc(T('sh.qty', {n: i.quantity})) + ' · ' + S.money(i.price) + '</small></div><b>' + S.money(i.price * i.quantity) + '</b></div>'; }).join('')
       + '<div style="text-align:right;font-weight:900;color:var(--navy);margin-top:6px">' + esc(T('sh.amount')) + ': ' + S.money(o.amount) + '</div></div>'
       + '<div class="addr"><b><i class="ti ti-map-pin"></i> ' + esc(T('sh.shipto')) + '</b>' + esc(a.name || o.buyer_name || '') + '<br>' + esc([a.line1 || a.address, a.line2, a.landmark].filter(Boolean).join(', ')) + '<br>' + esc([a.city, a.state, a.pincode].filter(Boolean).join(', ')) + (a.phone ? '<br>' + esc(a.phone) : '') + '</div></div>'
-      + ((nx || (st !== 'cancelled' && st !== 'delivered' && st !== 'shipped') || tr) ? '<div class="ord-f">'
+      + (st !== 'cancelled' ? '<div class="ord-f">'
         + (tr ? '<span class="track"><i class="ti ti-truck"></i>' + esc(tr) + '</span>' : '')
         + (nx === 'shipped' ? '<input class="fi" id="tr-' + esc(o.order_id) + '" maxlength="200" placeholder="' + esc(T('sh.trackph')) + '">' : '')
         + '<span style="flex:1"></span>'
+        + '<a class="btn btn-ghost btn-sm" href="54_shop_receipt.html?id=' + encodeURIComponent(o.order_id) + '&as=seller" target="_blank"><i class="ti ti-printer"></i>' + esc(T('rt.slip')) + '</a>'
         + (['pending','confirmed','packed'].indexOf(st) >= 0 ? '<button class="btn btn-ghost btn-sm" onclick="moveOrder(\'' + esc(o.order_id) + '\',\'cancelled\', this)">' + esc(T('sh.cancel')) + '</button>' : '')
         + (nx ? '<button class="btn btn-o btn-sm" onclick="moveOrder(\'' + esc(o.order_id) + '\',\'' + nx + '\', this)"><i class="ti ti-arrow-right"></i>' + esc(T('sh.mark_' + nx)) + '</button>' : '') + '</div>' : '')
       + '</div>';
@@ -336,6 +346,32 @@ function moveOrder(id, to, btn){
   var body = {status: to}; var tr = document.getElementById('tr-' + id); if (tr && tr.value.trim()) body.tracking = tr.value.trim();
   btn.disabled = true;
   S.api('/shop/seller/orders/' + encodeURIComponent(id), {method: 'PATCH', body: body}).then(function(){ S.toast(T('sh.ostatus', {s: T('os.' + to)}), 'ti-check'); loadOrders(); refreshStats(); }).catch(function(e){ btn.disabled = false; fail(e); });
+}
+
+/* ── returns ── */
+var RSTI = {requested: 'ti-hourglass', approved: 'ti-truck-return', received: 'ti-package-import', refunded: 'ti-circle-check', rejected: 'ti-circle-x', cancelled: 'ti-arrow-back-up'};
+function retCount(){ S.api('/shop/seller/returns?status=requested').then(function(d){ var c = document.getElementById('c-ret'), n = (d.counts || {}).requested || 0; if (c) { c.textContent = n; c.style.display = n ? '' : 'none'; } }).catch(function(){}); }
+function loadRets(){
+  S.api('/shop/seller/returns?status=all').then(function(d){
+    RETS = d.returns || [];
+    var el = document.getElementById('olist');
+    if (!RETS.length) { el.innerHTML = '<div class="sx-card empty2"><i class="ti ti-arrow-back-up"></i><b>' + esc(T('rt.none')) + '</b>' + esc(T('rt.nones')) + '</div>'; return; }
+    el.innerHTML = RETS.map(function(r){
+      var acts = r.status === 'requested' ? '<input class="fi" id="rn-' + r.return_id + '" maxlength="500" placeholder="' + esc(T('rt.noteph')) + '"><span style="flex:1"></span><button class="btn btn-ghost btn-sm" onclick="retAct(' + r.return_id + ',\'reject\', this)">' + esc(T('rt.reject')) + '</button><button class="btn btn-o btn-sm" onclick="retAct(' + r.return_id + ',\'approve\', this)"><i class="ti ti-check"></i>' + esc(T('rt.approve')) + '</button>'
+        : r.status === 'approved' ? '<span class="sub" style="margin:0;flex:1">' + esc(T('rt.pickup')) + '</span><button class="btn btn-o btn-sm" onclick="retAct(' + r.return_id + ',\'received\', this)"><i class="ti ti-package-import"></i>' + esc(T('rt.gotit')) + '</button>' : '';
+      return '<div class="ord"><div class="ord-h"><b>' + esc(r.order_number) + '</b><span>' + esc(PBi18n.fmtDate(r.created_at)) + '</span><span class="sp"></span><span class="rtst rt-' + esc(r.status) + '"><i class="ti ' + RSTI[r.status] + '"></i>' + esc(T('rt.s_' + r.status)) + '</span></div>'
+        + '<div class="ord-b"><div><div class="oi"><img src="' + esc(r.image_url || S.catImg('other', 200)) + '" alt=""><div class="t"><b>' + esc(r.name) + '</b><small>' + esc(T('sh.qty', {n: r.quantity})) + ' · ' + S.money(r.price) + '</small></div><b>' + S.money(r.amount) + '</b></div>'
+        + '<div class="rtwhy"><b>' + esc(T('rt.r_' + r.reason)) + '</b><br>' + esc(r.details || '') + '</div>' + (r.seller_note ? '<div class="sub" style="margin:6px 0 0">' + esc(T('rt.yournote')) + ': ' + esc(r.seller_note) + '</div>' : '') + '</div>'
+        + '<div class="addr"><b><i class="ti ti-user"></i> ' + esc(T('rt.buyer')) + '</b>' + esc(r.buyer_name || '') + '<br>' + esc([r.city, r.pincode].filter(Boolean).join(' · ')) + '<br><a href="54_shop_receipt.html?id=' + encodeURIComponent(r.order_id) + '&as=seller" target="_blank">' + esc(T('rt.slip')) + '</a></div></div>'
+        + (acts ? '<div class="ord-f">' + acts + '</div>' : '') + '</div>';
+    }).join('');
+  }).catch(fail);
+}
+function retAct(id, action, btn){
+  var n = document.getElementById('rn-' + id), note = n ? n.value.trim() : '';
+  if (action === 'reject' && note.length < 5) { S.toast(T('rt.e_note'), 'ti-alert-circle'); if (n) n.focus(); return; }
+  btn.disabled = true;
+  S.api('/shop/seller/returns/' + id, {method: 'PATCH', body: {action: action, note: note}}).then(function(){ S.toast(T('rt.done_' + action), 'ti-check'); loadRets(); retCount(); }).catch(function(e){ btn.disabled = false; fail(e); });
 }
 
 /* ── questions ── */
@@ -369,10 +405,11 @@ function renderEarn(){
   var tiles = [['ti-cash', 'er.ready', d.ready, 'er.readys'], ['ti-hourglass', 'er.wait', d.waiting, st.payout_hold_days ? 'er.waits' : null], ['ti-truck-delivery', 'er.prog', d.in_progress, 'er.progs']];
   h += '<div class="stats">' + tiles.map(function(t){ return '<div class="stat"><div class="ic"><i class="ti ' + t[0] + '"></i></div><b>' + esc(rsx(t[2].net)) + '</b><span>' + esc(T(t[1])) + '</span><small class="es">' + esc(T(t[2].items === 1 ? 'er.item1' : 'er.items', {n: t[2].items})) + (t[3] ? ' · ' + esc(T(t[3], {n: st.payout_hold_days})) : '') + '</small></div>'; }).join('')
     + '<div class="stat"><div class="ic"><i class="ti ti-circle-check"></i></div><b>' + esc(rsx(d.paid_total)) + '</b><span>' + esc(T('er.paid')) + '</span><small class="es">' + esc(T(d.payouts.length === 1 ? 'er.pay1' : 'er.pays', {n: d.payouts.length})) + '</small></div></div>';
+  if (d.deductions) h += '<div class="banner warn"><i class="ti ti-receipt-refund"></i><span class="sp">' + esc(T('er.ded', {amt: rsx(d.deductions)})) + '</span></div>';
   h += '<div class="sx-card"><h2><i class="ti ti-info-circle"></i>' + esc(T('er.how')) + '</h2><ul class="erhow"><li>' + esc(T('er.h1')) + '</li><li>' + esc(T(st.commission_pct ? 'er.h2' : 'er.h2z', {n: st.commission_pct})) + '</li>'
-    + (st.payout_hold_days ? '<li>' + esc(T('er.h3', {n: st.payout_hold_days})) + '</li>' : '') + '<li>' + esc(T('er.h4')) + '</li></ul></div>';
+    + (st.payout_hold_days ? '<li>' + esc(T('er.h3', {n: st.payout_hold_days})) + '</li>' : '') + '<li>' + esc(T('er.h4')) + '</li><li>' + esc(T('er.h5')) + '</li></ul></div>';
   h += '<div class="sx-card"><h2><i class="ti ti-receipt-2"></i>' + esc(T('er.hist')) + '</h2>' + (d.payouts.length ? '<div class="tw"><table class="stbl"><tr><th>' + esc(T('er.date')) + '</th><th>' + esc(T('er.ref')) + '</th><th class="r">' + esc(T('er.sales')) + '</th><th class="r">' + esc(T('er.comm')) + '</th><th class="r">' + esc(T('er.paidc')) + '</th><th></th></tr>'
-    + d.payouts.map(function(p){ return '<tr><td>' + esc(dtl(p.paid_at)) + '</td><td>' + esc(p.reference || '—') + '</td><td class="r">' + esc(rsx(p.gross)) + '</td><td class="r">' + (p.commission ? '− ' + esc(rsx(p.commission)) : '—') + '</td><td class="r"><b>' + esc(rsx(p.net)) + '</b></td><td><button class="btn btn-ghost btn-sm" onclick="earnDet(' + Number(p.payout_id) + ', this)">' + esc(T('er.stmt')) + '</button></td></tr><tr class="det" id="ed-' + Number(p.payout_id) + '" style="display:none"><td colspan="6"></td></tr>'; }).join('')
+    + d.payouts.map(function(p){ return '<tr><td>' + esc(dtl(p.paid_at)) + '</td><td>' + esc(p.reference || '—') + '</td><td class="r">' + esc(rsx(p.gross)) + '</td><td class="r">' + (p.commission ? '− ' + esc(rsx(p.commission)) : '—') + (p.deductions ? '<br><small>' + esc(T('er.refunds')) + ' − ' + esc(rsx(p.deductions)) + '</small>' : '') + '</td><td class="r"><b>' + esc(rsx(p.net)) + '</b></td><td><button class="btn btn-ghost btn-sm" onclick="earnDet(' + Number(p.payout_id) + ', this)">' + esc(T('er.stmt')) + '</button></td></tr><tr class="det" id="ed-' + Number(p.payout_id) + '" style="display:none"><td colspan="6"></td></tr>'; }).join('')
     + '</table></div>' : '<div class="sub" style="margin:0">' + esc(T('er.none')) + '</div>') + '</div>';
   document.getElementById('earn').innerHTML = h;
 }
