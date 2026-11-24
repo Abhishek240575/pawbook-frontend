@@ -5,1026 +5,1369 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1877F2">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
 <link rel="manifest" href="manifest.json">
-<title>PawBook — Report Animal Abuse</title>
+<title>PawBook — Be Their Voice · Report Animal Abuse</title>
+<link rel="preconnect" href="https://images.pexels.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="style.css">
+<script>function goTo(p){window.location.href=p;}</script>
 <style>
+:root{
+  --blue:#1877F2; --blue-d:#1a56db; --navy:#0f2057; --purple:#8b5cf6;
+  --coral:#e5484d; --coral-d:#c2353a; --coral-soft:#fff1f1;
+  --green:#16a34a; --amber:#f59e0b;
+  --bg:#f0f4fa; --card:#fff; --line:#e4e9f2; --text:#1a1f36; --muted:#65676b;
+  --r:18px; --shadow:0 6px 24px rgba(15,32,87,.08);
+  --pb-font:'Poppins',system-ui,sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Poppins',sans-serif;background:#e7ebf0;color:#1a1a2e;font-size:14px}
+html{scroll-behavior:smooth}
+body{font-family:var(--pb-font);background:var(--bg);color:var(--text);font-size:14px;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:var(--pb-font)}
+img{display:block;max-width:100%}
 
-/* ── TOPNAV ── */
-.topnav{position:sticky;top:0;z-index:200;height:56px;background:#1a56db;display:flex;align-items:center;padding:0 16px;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.topnav-logo{display:flex;align-items:center;gap:8px;color:#fff;font-size:20px;font-weight:800;text-decoration:none;flex-shrink:0}
-.logo-icon{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px}
-.topnav-search{flex:1;max-width:280px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);border-radius:20px;padding:6px 14px}
-.topnav-search input{background:transparent;border:none;outline:none;color:#fff;font-size:13px;font-family:'Poppins',sans-serif;width:100%}
-.topnav-search input::placeholder{color:rgba(255,255,255,0.65)}
-.topnav-search i{color:rgba(255,255,255,0.65);font-size:16px}
-.topnav-tabs{flex:1;display:flex;justify-content:center;gap:2px}
-.topnav-tab{width:100px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);cursor:pointer;font-size:22px;border:none;background:transparent}
-.topnav-tab:hover{background:rgba(255,255,255,0.1);color:#fff}
-.topnav-tab.active{color:#fff;border-bottom:3px solid #fff}
-.topnav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.nav-icon-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:18px}
-.nav-avatar{width:36px;height:36px;border-radius:50%;background:#fff;color:#1a56db;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}
+/* ── TOPNAV (matches home) ── */
+.topnav{position:sticky;top:0;z-index:300;height:60px;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px;padding:0 20px}
+.topnav-logo{display:flex;align-items:center;gap:10px;color:var(--blue);font-size:21px;font-weight:900;text-decoration:none}
+.logo-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:19px}
+.nav-crumb{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);margin-left:6px}
+.nav-crumb b{color:var(--coral)}
+.nav-spacer{flex:1}
+.nav-icon{width:38px;height:38px;border-radius:50%;border:none;background:#f0f2f5;color:#1a3a6b;font-size:19px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.nav-icon:hover{background:#e4ebf7;color:var(--blue)}
+.nav-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
 /* ── HERO ── */
-.hero{background:linear-gradient(135deg,#7f1d1d 0%,#991b1b 50%,#b91c1c 100%);padding:28px 0;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1400&q=80') center/cover;opacity:0.1}
-.hero-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:16px;padding:0 20px}
-.hero-badge{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#dc2626,#7f1d1d);border:4px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 4px 16px rgba(0,0,0,0.3);flex-shrink:0}
-.hero-text-title{font-size:28px;font-weight:900;color:#fff;text-align:left;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
-.hero-text-sub{font-size:14px;color:rgba(255,255,255,0.88);text-align:left;margin-top:4px}
+.hero{position:relative;overflow:hidden;background:radial-gradient(1200px 500px at 85% -10%,#e5edff 0%,transparent 60%),linear-gradient(180deg,#f7f9ff 0%,#eef3fb 100%)}
+.hero::before{content:'';position:absolute;inset:0;opacity:.5;background-image:radial-gradient(circle at 20px 20px,rgba(24,119,242,.07) 3px,transparent 4px);background-size:44px 44px}
+.hero-in{position:relative;max-width:1240px;margin:0 auto;padding:44px 24px 52px;display:grid;grid-template-columns:1.05fr 1fr;gap:44px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #dbe4f3;color:var(--blue-d);font-size:12.5px;font-weight:700;box-shadow:0 2px 8px rgba(24,119,242,.08)}
+.eyebrow i{color:var(--coral);font-size:16px}
+.hero h1{font-size:52px;line-height:1.08;font-weight:900;color:var(--navy);margin:16px 0 14px;letter-spacing:-1px}
+.hero h1 .accent{background:linear-gradient(90deg,var(--coral),#f97316);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:16px;line-height:1.65;color:#3d4560;max-width:520px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 22px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:active{transform:translateY(1px)}
+.btn-coral{background:linear-gradient(135deg,var(--coral),#f97316);color:#fff;box-shadow:0 8px 20px rgba(229,72,77,.32)}
+.btn-coral:hover{filter:brightness(1.05);box-shadow:0 10px 24px rgba(229,72,77,.4)}
+.btn-ghost{background:#fff;color:var(--navy);border:1.5px solid #dbe4f3}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-blue{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;box-shadow:0 8px 20px rgba(24,119,242,.28)}
+.trust{display:flex;flex-wrap:wrap;gap:18px;margin-top:26px}
+.trust span{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#3d4560}
+.trust i{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
 
-/* ── TOP ACTION STRIP ── */
-.action-strip{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-.act-card{padding:16px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:filter 0.15s;border-right:1px solid rgba(255,255,255,0.2)}
-.act-card:last-child{border-right:none}
-.act-card:hover{filter:brightness(0.92)}
-.act-icon{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.act-title{font-size:13px;font-weight:800;color:#fff;line-height:1.2}
-.act-sub{font-size:11px;color:rgba(255,255,255,0.85);margin-top:2px}
-.act-red   {background:linear-gradient(135deg,#dc2626,#991b1b)}
-.act-orange{background:linear-gradient(135deg,#b45309,#92400e)}
-.act-blue  {background:linear-gradient(135deg,#1a56db,#0f2057)}
-.act-teal  {background:linear-gradient(135deg,#0e7490,#0369a1)}
+.collage{position:relative;display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:440px}
+.ph{position:relative;border-radius:22px;overflow:hidden;background:#dfe7f5;box-shadow:0 14px 34px rgba(15,32,87,.16)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.ph:hover img{transform:scale(1.04)}
+.ph-main{grid-row:1/3}
+.ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35))}
+.ph-tag{position:absolute;left:12px;bottom:12px;z-index:2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.float-card{position:absolute;z-index:3;background:#fff;border-radius:16px;box-shadow:0 14px 34px rgba(15,32,87,.2);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.float-1{left:-22px;bottom:34px;max-width:240px}
+.float-2{right:-10px;top:-14px;padding:8px 14px;border-radius:999px}
+.fc-ic{width:40px;height:40px;border-radius:12px;background:var(--coral-soft);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.fc-t{font-size:13px;font-weight:800;color:var(--navy);line-height:1.3}
+.fc-s{font-size:11.5px;color:var(--muted)}
+.chip-row{display:flex;gap:6px;font-size:12px;font-weight:700;color:var(--navy);align-items:center}
+.chip-row i{color:var(--coral)}
+
+/* ── EMERGENCY STRIP ── */
+.em-wrap{max-width:1240px;margin:-26px auto 0;padding:0 24px;position:relative;z-index:5}
+.em{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#fff 0%,#fff6f6 100%);border:1.5px solid #ffd2d2;border-radius:var(--r);padding:16px 20px;box-shadow:var(--shadow)}
+.em-ic{width:52px;height:52px;border-radius:50%;background:var(--coral);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(229,72,77,.45)}70%{box-shadow:0 0 0 14px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
+.em-t{font-size:16px;font-weight:800;color:var(--coral-d)}
+.em-s{font-size:13px;color:#5b3b3b;margin-top:2px}
+.em .btn{height:44px;margin-left:auto;flex-shrink:0}
+
+/* ── HOW IT WORKS ── */
+.section{max-width:1240px;margin:0 auto;padding:34px 24px 0}
+.sec-title{font-size:24px;font-weight:900;color:var(--navy);text-align:center}
+.sec-sub{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px;position:relative}
+.step{background:#fff;border-radius:var(--r);padding:22px;box-shadow:var(--shadow);border:1px solid var(--line);position:relative}
+.step-n{position:absolute;top:16px;right:18px;font-size:42px;font-weight:900;color:#eef2fa;line-height:1}
+.step-ic{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:25px;margin-bottom:14px}
+.step-t{font-size:16px;font-weight:800;color:var(--navy)}
+.step-s{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.55}
 
 /* ── LAYOUT ── */
-.page-wrap{max-width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 300px;gap:16px;padding:16px;align-items:start}
-.main-col{}
-.side-col{position:sticky;top:72px}
+.page{max-width:1240px;margin:0 auto;padding:30px 24px 120px;display:grid;grid-template-columns:1fr 340px;gap:22px;align-items:start}
+.side{position:sticky;top:78px;display:flex;flex-direction:column;gap:16px}
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line);overflow:hidden}
 
-/* ── CARD BASE ── */
-.card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;overflow:hidden;margin-bottom:14px}
-.card-head{padding:14px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #e4e6eb}
-.card-head-title{font-size:16px;font-weight:800;color:#0f2057}
-.card-body{padding:16px}
+/* tabs */
+.tabs{display:flex;gap:6px;padding:8px;background:#f5f7fb;border-bottom:1px solid var(--line)}
+.tab{flex:1;height:46px;border:none;border-radius:12px;background:transparent;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.tab i{font-size:19px}
+.tab:hover{color:var(--navy);background:#eef2f9}
+.tab.active{background:#fff;color:var(--blue);box-shadow:0 2px 8px rgba(15,32,87,.08)}
+.panel{display:none}
+.panel.active{display:block}
 
-/* ── TABS ── */
-.tab-bar{display:flex;gap:0;background:#fff;border-bottom:2px solid #e4e6eb}
-.tab-btn{flex:1;padding:14px 8px;text-align:center;font-size:13px;font-weight:700;color:#65676b;cursor:pointer;border:none;background:transparent;font-family:'Poppins',sans-serif;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.15s}
-.tab-btn.active{color:#dc2626;border-bottom-color:#dc2626}
-.tab-btn i{display:block;font-size:20px;margin-bottom:4px}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
+/* progress */
+.progress{padding:20px 24px 6px}
+.prog-bar{height:6px;border-radius:999px;background:#edf1f8;overflow:hidden}
+.prog-fill{height:100%;width:25%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .35s}
+.prog-steps{display:grid;grid-template-columns:repeat(4,1fr);margin-top:12px}
+.ps{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:#9aa3b5;cursor:pointer;background:none;border:none;text-align:left}
+.ps-dot{width:26px;height:26px;border-radius:50%;background:#edf1f8;color:#9aa3b5;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ps.on{color:var(--navy)}
+.ps.on .ps-dot{background:var(--blue);color:#fff}
+.ps.done .ps-dot{background:#dcfce7;color:var(--green)}
 
-/* ── FORM ── */
-.form-section{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;margin-bottom:14px}
-.form-section-title{font-size:15px;font-weight:800;color:#0f2057;margin-bottom:16px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid #e4e6eb}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.field-label{font-size:13px;font-weight:700;color:#333;display:block;margin-bottom:6px}
-.field-input{width:100%;height:46px;border:1.5px solid #dde1e7;border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;color:#1a1a2e}
-.field-input:focus{border-color:#dc2626;background:#fff}
-.field-select{width:100%;height:46px;border:1.5px solid #dde1e7;border-radius:8px;padding:0 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;cursor:pointer;color:#1a1a2e}
-.field-select:focus{border-color:#dc2626}
-.field-textarea{width:100%;border:1.5px solid #dde1e7;border-radius:8px;padding:12px 14px;font-size:14px;font-family:'Poppins',sans-serif;outline:none;background:#f8f9fa;resize:vertical;min-height:90px;color:#1a1a2e}
-.field-textarea:focus{border-color:#dc2626;background:#fff}
-.field-hint{font-size:11px;color:#65676b;margin-top:4px}
+.wstep{display:none;padding:10px 24px 24px;animation:fade .3s}
+.wstep.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.w-title{font-size:20px;font-weight:900;color:var(--navy);margin-top:8px}
+.w-sub{font-size:13px;color:var(--muted);margin:4px 0 18px}
+.blk{margin-top:20px}
+.lbl{font-size:13px;font-weight:700;color:#2b3250;display:block;margin-bottom:7px}
+.req{color:var(--coral)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.inp,.sel,.ta{width:100%;border:1.5px solid #dfe5ef;border-radius:12px;background:#f8fafd;color:var(--text);font-size:14px;outline:none;transition:border-color .15s,background .15s}
+.inp,.sel{height:48px;padding:0 14px}
+.sel{cursor:pointer}
+.ta{padding:12px 14px;min-height:110px;resize:vertical;line-height:1.55}
+.inp:focus,.sel:focus,.ta:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px rgba(24,119,242,.1)}
+.hint{font-size:12px;color:var(--muted);margin-top:6px;display:flex;gap:6px;align-items:flex-start}
+.check{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:13.5px;font-weight:600;color:#2b3250;cursor:pointer}
+.check input{width:19px;height:19px;accent-color:var(--blue);cursor:pointer}
 
-/* Category pills */
-.category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
-.cat-pill{padding:10px 8px;border-radius:10px;border:2px solid #e4e6eb;background:#f8f9fa;text-align:center;cursor:pointer;transition:all 0.15s;font-size:12px;font-weight:700;color:#333}
-.cat-pill:hover{border-color:#dc2626;background:#fef2f2}
-.cat-pill.selected{border-color:#dc2626;background:#fef2f2;color:#dc2626}
-.cat-pill i{display:block;font-size:20px;margin-bottom:4px}
+/* emergency toggle */
+.em-toggle{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;border:2px solid #ffe0e0;background:#fffafa;cursor:pointer;transition:all .15s;width:100%;text-align:left}
+.em-toggle.on{border-color:var(--coral);background:#fff1f1}
+.em-toggle .ti-ic{width:46px;height:46px;border-radius:14px;background:#ffe4e4;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
+.em-toggle.on .ti-ic{background:var(--coral)}
+.et-t{font-size:14.5px;font-weight:800;color:var(--coral-d)}
+.et-s{font-size:12.5px;color:#8a4d4d;margin-top:2px}
+.sw{width:50px;height:28px;border-radius:14px;background:#dfe3ea;position:relative;margin-left:auto;flex-shrink:0;transition:background .2s}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s}
+.em-toggle.on .sw{background:var(--coral)}
+.em-toggle.on .sw::after{left:25px}
 
-/* Emergency toggle */
-.emergency-toggle{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fef2f2;border-radius:12px;border:2px solid #fecaca;cursor:pointer;margin-bottom:14px}
-.emergency-toggle.active{background:#fee2e2;border-color:#dc2626}
-.toggle-icon{width:48px;height:48px;border-radius:50%;background:#dc2626;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.toggle-info{flex:1}
-.toggle-title{font-size:14px;font-weight:800;color:#991b1b}
-.toggle-sub{font-size:12px;color:#b91c1c;margin-top:2px}
-.toggle-switch{width:48px;height:26px;border-radius:13px;background:#e4e6eb;position:relative;transition:background 0.2s;flex-shrink:0}
-.toggle-switch.on{background:#dc2626}
-.toggle-knob{width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
-.toggle-switch.on .toggle-knob{left:24px}
+/* categories */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cat{border:2px solid #e8edf5;background:#fff;border-radius:14px;padding:14px 8px 12px;text-align:center;cursor:pointer;transition:all .15s;font-size:12.5px;font-weight:700;color:#2b3250;line-height:1.3}
+.cat:hover{border-color:#bcd3fa;transform:translateY(-2px);box-shadow:0 6px 14px rgba(15,32,87,.07)}
+.cat.picked{border-color:var(--blue);background:#eef5ff;color:var(--blue-d)}
+.cat-ic{width:42px;height:42px;border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:21px}
+.cat-skel{height:96px;border-radius:14px;background:linear-gradient(90deg,#f0f3f8,#e7ecf4,#f0f3f8);background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{to{background-position:-200% 0}}
 
-/* Privacy options */
-.privacy-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.priv-opt{padding:12px 10px;border-radius:10px;border:2px solid #e4e6eb;background:#f8f9fa;text-align:center;cursor:pointer;transition:all 0.15s}
-.priv-opt:hover{border-color:#1a56db;background:#eff6ff}
-.priv-opt.selected{border-color:#1a56db;background:#eff6ff}
-.priv-opt i{font-size:22px;color:#65676b;display:block;margin-bottom:6px}
-.priv-opt.selected i{color:#1a56db}
-.priv-opt-title{font-size:12px;font-weight:800;color:#333}
-.priv-opt-sub{font-size:11px;color:#65676b;margin-top:2px}
+/* location */
+.sugg-wrap{position:relative}
+.sugg-wrap .ti-search{position:absolute;left:14px;top:15px;color:#9aa3b5;font-size:18px}
+.sugg-wrap .inp{padding-left:42px}
+.sugg{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(15,32,87,.14);z-index:600;max-height:220px;overflow:auto;display:none}
+.sugg div{padding:11px 14px;font-size:13px;cursor:pointer;border-bottom:1px solid #f2f4f8}
+.sugg div:hover{background:#eef5ff;color:var(--blue-d)}
+.gps-btn{width:100%;height:46px;margin-top:14px;border-radius:12px;border:1.5px dashed #a9c6f7;background:#f3f8ff;color:var(--blue-d);font-size:13.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.gps-btn:hover{background:#e8f1ff}
+#abuse-map{width:100%;height:280px;border-radius:16px;border:1.5px solid #dfe5ef;margin-top:14px;z-index:1}
+.coord{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;border-radius:999px;background:#eef5ff;color:var(--blue-d);font-size:12px;font-weight:700}
 
-/* Upload box */
-.upload-box{border:2px dashed #dde1e7;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.15s;background:#fafafa}
-.upload-box:hover{border-color:#dc2626;background:#fef2f2}
-.upload-box i{font-size:36px;color:#dc2626;display:block;margin-bottom:8px}
-.upload-box-title{font-size:14px;font-weight:700;color:#333}
-.upload-box-sub{font-size:12px;color:#65676b;margin-top:4px}
-#evidence-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.ev-thumb{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;border:1px solid #dde1e7}
-.ev-thumb img{width:100%;height:100%;object-fit:cover}
-.ev-thumb-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* evidence */
+.drop{border:2px dashed #cdd8ea;border-radius:18px;padding:30px 20px;text-align:center;cursor:pointer;background:linear-gradient(180deg,#fbfcff,#f4f7fd);transition:all .15s}
+.drop:hover,.drop.drag{border-color:var(--blue);background:#eef5ff}
+.drop-ic{width:62px;height:62px;border-radius:18px;margin:0 auto 10px;background:#e7f0ff;color:var(--blue);font-size:30px;display:flex;align-items:center;justify-content:center}
+.drop-t{font-size:15px;font-weight:800;color:var(--navy)}
+.drop-s{font-size:12.5px;color:var(--muted);margin-top:4px}
+#evidence-preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.ev{position:relative;width:92px;height:92px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0f2057}
+.ev img,.ev video{width:100%;height:100%;object-fit:cover}
+.ev-x{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.safety{display:flex;gap:10px;margin-top:14px;padding:12px 14px;border-radius:12px;background:#fffbeb;border:1px solid #fde68a;font-size:12.5px;color:#7c5a06;line-height:1.5}
+.safety i{font-size:18px;color:var(--amber);flex-shrink:0}
+.wit{position:relative;padding:16px;border-radius:14px;background:#f8fafd;border:1px solid var(--line);margin-bottom:10px}
+.wit-x{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;border:none;background:#ffe4e4;color:var(--coral);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+.wit .grid2{margin-bottom:10px}
+.add-btn{width:100%;height:46px;border-radius:12px;border:1.5px dashed #cdd8ea;background:#fff;color:var(--muted);font-size:13.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.add-btn:hover{border-color:var(--blue);color:var(--blue)}
 
-/* Map */
-#abuse-map{width:100%;height:260px;border-radius:12px;border:1.5px solid #dde1e7;margin-top:14px;z-index:1}
-.loc-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.coord-badge{display:inline-flex;align-items:center;gap:5px;background:#f0f4ff;border:1px solid #c7d7fc;border-radius:8px;padding:6px 12px;font-size:12px;color:#1a56db;font-weight:600;margin-top:8px}
-.suggest-wrap{position:relative}
-.suggest-box{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #dc2626;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:500;max-height:180px;overflow-y:auto;display:none}
-.suggest-box div{padding:10px 14px;font-size:13px;cursor:pointer;font-family:'Poppins',sans-serif}
-.suggest-box div:hover{background:#fef2f2;color:#dc2626;font-weight:700}
+/* privacy */
+.priv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pv{border:2px solid #e8edf5;border-radius:14px;padding:14px 12px;cursor:pointer;background:#fff;text-align:left;transition:all .15s}
+.pv:hover{border-color:#bcd3fa}
+.pv.picked{border-color:var(--blue);background:#eef5ff}
+.pv i{font-size:22px;color:#8a93a6}
+.pv.picked i{color:var(--blue)}
+.pv-t{font-size:13.5px;font-weight:800;color:var(--navy);margin-top:6px}
+.pv-s{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.consent{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #eef1f6;cursor:pointer}
+.consent:last-child{border-bottom:none}
+.consent input{width:20px;height:20px;accent-color:var(--blue);flex-shrink:0;margin-top:2px;cursor:pointer}
+.consent-t{font-size:13px;color:#3d4560;line-height:1.55}
+.consent-t b{color:var(--navy)}
+.review{border-radius:16px;background:linear-gradient(135deg,#f5f8ff,#f9f5ff);border:1px solid #e1e8fb;padding:16px}
+.rv-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:13px;border-bottom:1px dashed #dfe5f3}
+.rv-row:last-child{border-bottom:none}
+.rv-row span:first-child{color:var(--muted);font-weight:600}
+.rv-row span:last-child{color:var(--navy);font-weight:700;text-align:right}
 
-/* Witness row */
-.witness-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px;background:#f8f9fa;border-radius:10px;border:1px solid #e4e6eb;margin-bottom:10px;position:relative}
-.witness-del{position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:#fee2e2;color:#dc2626;border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-.add-witness-btn{width:100%;padding:10px;border-radius:8px;border:2px dashed #dde1e7;background:#f8f9fa;color:#65676b;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.15s}
-.add-witness-btn:hover{border-color:#1a56db;color:#1a56db;background:#eff6ff}
+/* wizard nav */
+.wnav{border-radius:0 0 var(--r) var(--r);display:flex;gap:10px;align-items:center;padding:14px 24px;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+.wnav .btn{height:48px}
+.btn-sm-ghost{background:#f2f5fa;color:#3d4560;border:none}
+.btn-sm-ghost:hover{background:#e7ecf5}
+.wnav .grow{flex:1}
 
-/* Consent checkboxes */
-.consent-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #e4e6eb}
-.consent-row:last-child{border-bottom:none}
-.consent-cb{width:20px;height:20px;border-radius:4px;border:2px solid #dde1e7;flex-shrink:0;cursor:pointer;margin-top:1px;accent-color:#dc2626}
-.consent-text{font-size:13px;color:#333;line-height:1.5}
-.consent-text strong{color:#1a1a2e}
+/* my reports & orgs */
+.list-pad{padding:8px 0}
+.rep{display:flex;gap:14px;padding:16px 22px;border-bottom:1px solid #f0f3f8;align-items:center}
+.rep:last-child{border-bottom:none}
+.rep-ic{width:46px;height:46px;border-radius:14px;background:#eef5ff;color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.rep-ref{font-size:12px;font-weight:800;color:var(--blue-d);font-family:ui-monospace,monospace;letter-spacing:.3px}
+.rep-cat{font-size:14.5px;font-weight:800;color:var(--navy);margin:2px 0}
+.rep-meta{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:800;white-space:nowrap}
+.st-submitted{background:#fef9c3;color:#854d0e}
+.st-under_review{background:#dbeafe;color:#1e40af}
+.st-verified_for_referral{background:#ede9fe;color:#6d28d9}
+.st-referred{background:#fce7f3;color:#9d174d}
+.st-action_in_progress{background:#d1fae5;color:#065f46}
+.st-resolved{background:#dcfce7;color:#15803d}
+.st-closed{background:#f3f4f6;color:#374151}
+.em-badge{background:#ffe4e4;color:var(--coral-d)}
+.filters{display:flex;gap:10px;padding:16px 22px;border-bottom:1px solid var(--line)}
+.org{display:flex;gap:14px;padding:16px 22px;border-bottom:1px solid #f0f3f8;align-items:center}
+.org-logo{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
+.org-n{font-size:14.5px;font-weight:800;color:var(--navy)}
+.org-type{display:inline-block;margin:3px 0;padding:2px 9px;border-radius:999px;background:#eef5ff;color:var(--blue-d);font-size:11px;font-weight:700}
+.org-m{font-size:12px;color:var(--muted)}
+.org-call{margin-left:auto;width:42px;height:42px;border-radius:50%;border:none;background:#eef5ff;color:var(--blue);font-size:19px;cursor:pointer;flex-shrink:0}
+.empty{text-align:center;padding:50px 24px}
+.empty-art{width:120px;height:120px;border-radius:50%;margin:0 auto 14px;overflow:hidden;background:#eef2fa}
+.empty-art img{width:100%;height:100%;object-fit:cover}
+.empty-ic{width:72px;height:72px;border-radius:50%;margin:0 auto 14px;background:#eef2fa;color:#9aa3b5;font-size:34px;display:flex;align-items:center;justify-content:center}
+.empty-t{font-size:16px;font-weight:800;color:var(--navy)}
+.empty-s{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.5}
+.empty .btn{margin-top:16px;height:44px}
 
-/* Submit bar */
-.submit-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid #e4e6eb;padding:14px 16px;display:flex;gap:12px;z-index:100}
-.submit-btn{flex:1;padding:16px;font-size:16px;font-weight:800;background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'Poppins',sans-serif;box-shadow:0 4px 12px rgba(220,38,38,0.35);transition:opacity 0.15s}
-.submit-btn:disabled{opacity:0.6;cursor:not-allowed}
-.draft-btn{padding:16px 20px;border-radius:12px;border:2px solid #dde1e7;background:#fff;color:#65676b;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+/* sidebar */
+.photo-card{position:relative;height:230px;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.photo-card img{width:100%;height:100%;object-fit:cover}
+.photo-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,32,87,0) 25%,rgba(15,32,87,.88))}
+.pc-txt{position:absolute;left:18px;right:18px;bottom:16px;z-index:2;color:#fff}
+.pc-t{font-size:19px;font-weight:900;line-height:1.25}
+.pc-s{font-size:12.5px;opacity:.9;margin-top:5px;line-height:1.5}
+.side-h{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line)}
+.side-h-ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.side-h-t{font-size:15px;font-weight:800;color:var(--navy)}
+.hl{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid #f0f3f8;text-decoration:none;color:inherit;transition:background .12s}
+.hl:last-child{border-bottom:none}
+.hl:hover{background:#fafbfe}
+.hl-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.hl-n{font-size:13.5px;font-weight:800;color:var(--navy)}
+.hl-d{font-size:11.5px;color:var(--muted);line-height:1.35}
+.hl-num{font-size:13px;font-weight:800;color:var(--coral-d);letter-spacing:.3px}
+.hl-go{margin-left:auto;flex-shrink:0;padding:6px 12px;border-radius:999px;background:var(--coral-soft);color:var(--coral-d);font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:4px}
+.tips{padding:6px 18px 10px}
+.tip{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f0f3f8}
+.tip:last-child{border-bottom:none}
+.tip-n{width:26px;height:26px;border-radius:50%;background:#eef5ff;color:var(--blue-d);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tip-t{font-size:12.5px;color:#3d4560;line-height:1.5}
+.tip-t b{color:var(--navy)}
+.legal{padding:14px 18px 18px;font-size:12.5px;color:#3d4560;line-height:1.65}
 
-/* ── MY REPORTS TAB ── */
-.report-item{display:flex;gap:14px;padding:16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
-.report-item:hover{background:#fef2f2}
-.report-item:last-child{border-bottom:none}
-.report-ref{font-size:12px;font-weight:800;color:#1a56db;font-family:monospace}
-.report-cat{font-size:14px;font-weight:800;color:#1a1a2e;margin:4px 0}
-.report-loc{font-size:12px;color:#65676b}
-.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800}
-.status-submitted{background:#fef9c3;color:#854d0e}
-.status-under_review{background:#dbeafe;color:#1e40af}
-.status-verified_for_referral{background:#ede9fe;color:#6d28d9}
-.status-referred{background:#fce7f3;color:#9d174d}
-.status-action_in_progress{background:#d1fae5;color:#065f46}
-.status-resolved{background:#dcfce7;color:#15803d}
-.status-closed{background:#f3f4f6;color:#374151}
-.report-date{font-size:11px;color:#65676b;margin-top:6px}
+/* rescue strip */
+.rescue{max-width:1240px;margin:0 auto;padding:0 24px 40px}
+.rescue-in{position:relative;border-radius:24px;overflow:hidden;min-height:220px;display:flex;align-items:center;background:var(--navy)}
+.rescue-in img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.rescue-in::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,32,87,.95) 0%,rgba(15,32,87,.6) 55%,rgba(15,32,87,.1) 100%)}
+.rescue-txt{position:relative;z-index:2;padding:34px 36px;max-width:560px;color:#fff}
+.rescue-t{font-size:26px;font-weight:900;line-height:1.2}
+.rescue-s{font-size:14px;opacity:.9;margin-top:8px;line-height:1.6}
+.rescue-txt .btn{margin-top:18px}
 
-/* ── ORGANIZATIONS TAB ── */
-.org-item{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid #e4e6eb;align-items:flex-start}
-.org-item:last-child{border-bottom:none}
-.org-logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#1a56db,#0f2057);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;color:#fff}
-.org-name{font-size:14px;font-weight:800;color:#0f2057}
-.org-type-badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#eff6ff;color:#1a56db;margin:4px 0}
-.org-meta{font-size:12px;color:#65676b}
-.org-call-btn{padding:7px 16px;border-radius:8px;background:#1a56db;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:'Poppins',sans-serif;margin-left:auto;flex-shrink:0;align-self:center}
-
-/* ── SIDEBAR ── */
-.tip-card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;padding:16px;margin-bottom:14px}
-.tip-title{font-size:15px;font-weight:800;color:#0f2057;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.tip-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #e4e6eb}
-.tip-item:last-child{border-bottom:none}
-.tip-num{width:24px;height:24px;border-radius:50%;background:#fef2f2;color:#dc2626;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.tip-text{font-size:12px;color:#333;line-height:1.5}
-
-.helpline-card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid #dde1e7;overflow:hidden;margin-bottom:14px}
-.helpline-head{background:linear-gradient(135deg,#dc2626,#991b1b);padding:14px 16px;display:flex;align-items:center;gap:8px}
-.helpline-head-title{font-size:15px;font-weight:800;color:#fff}
-.helpline-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #e4e6eb;cursor:pointer;transition:background 0.12s}
-.helpline-item:hover{background:#fef2f2}
-.helpline-item:last-child{border-bottom:none}
-.hl-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.hl-name{font-size:13px;font-weight:800;color:#0f2057}
-.hl-num{font-size:12px;color:#dc2626;font-weight:700;margin-top:2px}
-.hl-call{margin-left:auto;padding:5px 12px;border-radius:6px;background:#fef2f2;color:#dc2626;font-size:12px;font-weight:700;border:1.5px solid #fecaca}
-
-/* ── SUCCESS MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.show{display:flex}
-.modal-box{background:#fff;border-radius:20px;padding:32px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-.modal-icon{font-size:56px;margin-bottom:16px}
-.modal-title{font-size:22px;font-weight:900;color:#0f2057;margin-bottom:8px}
-.modal-sub{font-size:14px;color:#65676b;margin-bottom:20px;line-height:1.6}
-.modal-ref{background:#fef2f2;border:2px solid #fecaca;border-radius:10px;padding:12px 20px;font-size:16px;font-weight:900;color:#dc2626;font-family:monospace;margin-bottom:20px;letter-spacing:1px}
-.modal-actions{display:flex;gap:10px}
-.modal-btn-primary{flex:1;padding:14px;border-radius:10px;background:linear-gradient(135deg,#1a56db,#0f2057);color:#fff;font-size:14px;font-weight:800;border:none;cursor:pointer;font-family:'Poppins',sans-serif}
-.modal-btn-secondary{flex:1;padding:14px;border-radius:10px;border:2px solid #dde1e7;background:#fff;color:#65676b;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
-
-/* ── TOAST ── */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;color:#fff;z-index:10000;white-space:nowrap;font-family:'Poppins',sans-serif;max-width:90vw;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.3s}
-.toast.show{opacity:1}
-.toast.success{background:#16a34a}
-.toast.error{background:#dc2626}
-.toast.info{background:#1a56db}
-
-/* ── EMPTY STATE ── */
-.empty-state{text-align:center;padding:48px 20px}
-.empty-state i{font-size:52px;color:#e4e6eb;display:block;margin-bottom:12px}
-.empty-state-title{font-size:16px;font-weight:800;color:#333;margin-bottom:6px}
-.empty-state-sub{font-size:13px;color:#65676b}
+/* modal + toast */
+.modal{position:fixed;inset:0;background:rgba(15,32,87,.55);backdrop-filter:blur(3px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-box{background:#fff;border-radius:24px;max-width:420px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
+.modal-img{height:150px;position:relative}
+.modal-img img{width:100%;height:100%;object-fit:cover}
+.modal-check{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;font-size:32px;display:flex;align-items:center;justify-content:center;border:5px solid #fff}
+.modal-body{padding:42px 26px 24px}
+.modal-t{font-size:22px;font-weight:900;color:var(--navy)}
+.modal-s{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+.ref-lbl{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:18px;text-transform:uppercase;letter-spacing:.6px}
+.ref{margin-top:6px;padding:12px;border-radius:12px;background:#eef5ff;border:1.5px dashed #a9c6f7;font-family:ui-monospace,monospace;font-size:17px;font-weight:800;color:var(--blue-d);letter-spacing:1px}
+.modal-acts{display:flex;gap:10px;margin-top:20px}
+.modal-acts .btn{flex:1;height:48px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);z-index:10000;padding:12px 22px;border-radius:999px;color:#fff;font-size:13.5px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;max-width:90vw;text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.2)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--coral)}
+.toast.info{background:var(--blue)}
+.spin{animation:spin 1s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── RESPONSIVE ── */
-@media(max-width:900px){.page-wrap{grid-template-columns:1fr}.side-col{position:static}}
-@media(max-width:600px){
-  .hero-text-title{font-size:22px}
-  .action-strip{grid-template-columns:repeat(2,1fr)}
-  .form-grid{grid-template-columns:1fr}
-  .category-grid{grid-template-columns:repeat(2,1fr)}
-  .privacy-opts{grid-template-columns:1fr}
-  .loc-row{grid-template-columns:1fr}
-  .tab-btn{font-size:11px;padding:12px 4px}
-  .tab-btn i{font-size:18px}
+@media(max-width:1080px){
+  .hero-in{grid-template-columns:1fr;gap:34px}
+  .collage{height:380px}
+  .float-1{left:12px}
+  .page{grid-template-columns:1fr}
+  .side{position:static}
+}
+@media(max-width:720px){
+  .topnav{padding:0 12px;height:56px}
+  .nav-crumb,.nav-hide{display:none}
+  .hero-in{padding:28px 16px 46px}
+  .hero h1{font-size:36px}
+  .hero-sub{font-size:14.5px}
+  .collage{height:300px;gap:8px}
+  .float-1{bottom:12px;left:10px;max-width:210px;padding:9px 11px}
+  .float-2{display:none}
+  .em-wrap,.section,.rescue{padding-left:16px;padding-right:16px}
+  .em{flex-wrap:wrap}
+  .em .btn{margin-left:0;width:100%}
+  .steps{grid-template-columns:1fr}
+  .page{padding:22px 16px 120px}
+  .tab span{display:none}
+  .progress{padding:16px 16px 4px}
+  .ps span{display:none}
+  .wstep{padding:8px 16px 20px}
+  .grid2{grid-template-columns:1fr}
+  .cats{grid-template-columns:repeat(2,1fr)}
+  .priv{grid-template-columns:1fr}
+  .wnav{padding:12px 16px}
+  .wnav .hide-sm{display:none}
+  .rescue-txt{padding:26px 22px}
+  .rescue-t{font-size:21px}
+  .filters{flex-direction:column}
 }
 </style>
 </head>
-<body>
+<body data-i18n-prompt>
 
 <!-- ── TOPNAV ── -->
 <nav class="topnav">
   <a class="topnav-logo" href="07_home.html"><div class="logo-icon">🐾</div> PawBook</a>
-  <div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search…"></div>
-  <div class="topnav-tabs">
-    <button class="topnav-tab" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
-    <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
-    <button class="topnav-tab" onclick="goTo('05_lost_pet.html')"><i class="ti ti-map-pin"></i></button>
-    <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
-    <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
-  </div>
-  <div class="topnav-right">
-    <div class="nav-avatar" onclick="goTo('29_user_profile.html')" id="nav-avatar">A</div>
-  </div>
+  <div class="nav-crumb"><i class="ti ti-chevron-right"></i><b data-i18n="nav.crumb">Animal Welfare</b></div>
+  <div class="nav-spacer"></div>
+  <div data-pb-lang-btn></div>
+  <button class="nav-icon nav-hide" onclick="goTo('07_home.html')" data-i18n-title="nav.home"><i class="ti ti-home"></i></button>
+  <button class="nav-icon nav-hide" onclick="goTo('12_notifications.html')" data-i18n-title="nav.notif"><i class="ti ti-bell"></i></button>
+  <div class="nav-avatar" id="nav-avatar" onclick="goTo('29_user_profile.html')">A</div>
 </nav>
 
 <!-- ── HERO ── -->
-<div class="hero">
-  <div class="hero-inner">
-    <div class="hero-badge">🛡️</div>
+<header class="hero">
+  <div class="hero-in">
     <div>
-      <div class="hero-text-title">Animal Welfare & Abuse Reporting</div>
-      <div class="hero-text-sub">Report animal cruelty — every voice counts. Reports are handled with strict confidentiality.</div>
+      <span class="eyebrow"><i class="ti ti-heart-handshake"></i><span data-i18n="hero.eyebrow">Animal Welfare &amp; Protection</span></span>
+      <h1><span data-i18n="hero.t1">They can't speak.</span><br><span class="accent" data-i18n="hero.t2">Be their voice.</span></h1>
+      <p class="hero-sub" data-i18n="hero.sub">Seen an animal being beaten, starved, abandoned or caged cruelly? Report it on PawBook — safely, confidentially and in your own language. Every report reaches people who can help.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-coral" href="#report" onclick="switchTab('report')"><i class="ti ti-shield-heart"></i><span data-i18n="hero.cta">Report abuse now</span></a>
+        <a class="btn btn-ghost" href="#helplines"><i class="ti ti-phone-call"></i><span data-i18n="hero.cta2">Emergency helplines</span></a>
+      </div>
+      <div class="trust">
+        <span><i class="ti ti-lock" style="background:#eef5ff;color:var(--blue)"></i><span data-i18n="trust.conf">100% confidential</span></span>
+        <span><i class="ti ti-clock-check" style="background:#f3efff;color:var(--purple)"></i><span data-i18n="trust.review">Reviewed in 24–48 hrs</span></span>
+        <span><i class="ti ti-circle-check" style="background:#ecfdf3;color:var(--green)"></i><span data-i18n="trust.ngo">Verified NGOs only</span></span>
+      </div>
+    </div>
+
+    <div class="collage">
+      <div class="ph ph-main">
+        <img src="https://images.pexels.com/photos/7469274/pexels-photo-7469274.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=900&q=80'">
+        <div class="ph-tag"><i class="ti ti-stethoscope"></i><span data-i18n="hero.tag1">Treated &amp; cared for</span></div>
+      </div>
+      <div class="ph">
+        <img src="https://images.pexels.com/photos/27471521/pexels-photo-27471521.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80'">
+        <div class="ph-tag"><i class="ti ti-bowl"></i><span data-i18n="hero.tag2">Fed &amp; protected</span></div>
+      </div>
+      <div class="ph">
+        <img src="https://images.pexels.com/photos/7474854/pexels-photo-7474854.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=600&q=80'">
+        <div class="ph-tag"><i class="ti ti-heart"></i><span data-i18n="hero.tag3">Rescued &amp; loved</span></div>
+      </div>
+      <div class="float-card float-1">
+        <div class="fc-ic">🐾</div>
+        <div><div class="fc-t" data-i18n="hero.float">Every report can save a life</div><div class="fc-s" data-i18n="hero.floats">Rescue · Recover · Rehome</div></div>
+      </div>
+      <div class="float-card float-2"><div class="chip-row"><i class="ti ti-language"></i><span data-i18n="hero.lang">Report in your language</span></div></div>
     </div>
   </div>
-</div>
+</header>
 
-<!-- ── ACTION STRIP ── -->
-<div class="action-strip">
-  <div class="act-card act-red" onclick="switchTab('report')">
-    <div class="act-icon"><i class="ti ti-alert-triangle" style="color:#fff"></i></div>
-    <div><div class="act-title">Report Abuse</div><div class="act-sub">File a new report</div></div>
-  </div>
-  <div class="act-card act-orange" onclick="switchTab('my')">
-    <div class="act-icon"><i class="ti ti-clipboard-list" style="color:#fff"></i></div>
-    <div><div class="act-title">My Reports</div><div class="act-sub">Track your cases</div></div>
-  </div>
-  <div class="act-card act-blue" onclick="switchTab('orgs')">
-    <div class="act-icon"><i class="ti ti-building-community" style="color:#fff"></i></div>
-    <div><div class="act-title">Organizations</div><div class="act-sub">Welfare NGOs</div></div>
-  </div>
-  <div class="act-card act-teal" onclick="document.getElementById('helpline-card').scrollIntoView({behavior:'smooth'})">
-    <div class="act-icon"><i class="ti ti-phone-call" style="color:#fff"></i></div>
-    <div><div class="act-title">Helplines</div><div class="act-sub">Emergency contacts</div></div>
+<!-- ── EMERGENCY STRIP ── -->
+<div class="em-wrap">
+  <div class="em">
+    <div class="em-ic"><i class="ti ti-urgent"></i></div>
+    <div>
+      <div class="em-t" data-i18n="em.t">Animal in immediate danger?</div>
+      <div class="em-s" data-i18n="em.s">Call 112 first. Then file a report here so rescuers can follow up.</div>
+    </div>
+    <a class="btn btn-coral" href="tel:112"><i class="ti ti-phone"></i><span data-i18n="em.call">Call 112</span></a>
   </div>
 </div>
 
-<!-- ── MAIN LAYOUT ── -->
-<div class="page-wrap">
-  <div class="main-col">
+<!-- ── HOW IT WORKS ── -->
+<section class="section">
+  <h2 class="sec-title" data-i18n="how.t">How PawBook helps</h2>
+  <p class="sec-sub" data-i18n="how.s">Three simple steps from your report to real help on the ground</p>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-ic" style="background:#fff1f1;color:var(--coral)"><i class="ti ti-message-report"></i></div><div class="step-t" data-i18n="how.1t">You report</div><div class="step-s" data-i18n="how.1s">Tell us what you saw and where. Add photos only if it is safe to take them.</div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-ic" style="background:#eef5ff;color:var(--blue)"><i class="ti ti-shield-check"></i></div><div class="step-t" data-i18n="how.2t">We verify</div><div class="step-s" data-i18n="how.2s">Our welfare team reviews every report within 24–48 hours and keeps your identity private.</div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-ic" style="background:#ecfdf3;color:var(--green)"><i class="ti ti-heart-handshake"></i></div><div class="step-t" data-i18n="how.3t">Rescuers step in</div><div class="step-s" data-i18n="how.3s">Verified cases are shared with nearby NGOs, rescuers and authorities. You can track progress here.</div></div>
+  </div>
+</section>
 
-    <!-- TAB BAR -->
-    <div class="card" style="overflow:visible">
-      <div class="tab-bar">
-        <button class="tab-btn active" id="tab-report" onclick="switchTab('report')">
-          <i class="ti ti-alert-triangle"></i>File Report
-        </button>
-        <button class="tab-btn" id="tab-my" onclick="switchTab('my')">
-          <i class="ti ti-clipboard-list"></i>My Reports
-        </button>
-        <button class="tab-btn" id="tab-orgs" onclick="switchTab('orgs')">
-          <i class="ti ti-building-community"></i>Organizations
-        </button>
+<!-- ── MAIN ── -->
+<div class="page" id="report">
+  <main class="card" style="overflow:visible">
+    <div class="tabs" role="tablist">
+      <button class="tab active" id="tab-report" onclick="switchTab('report')"><i class="ti ti-shield-heart"></i><span data-i18n="tab.report">File a report</span></button>
+      <button class="tab" id="tab-my" onclick="switchTab('my')"><i class="ti ti-clipboard-list"></i><span data-i18n="tab.my">My reports</span></button>
+      <button class="tab" id="tab-orgs" onclick="switchTab('orgs')"><i class="ti ti-building-community"></i><span data-i18n="tab.orgs">Organizations</span></button>
+    </div>
+
+    <!-- ══ FILE REPORT ══ -->
+    <section class="panel active" id="panel-report">
+      <div class="progress">
+        <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+        <div class="prog-steps">
+          <button class="ps on" data-s="1" onclick="goStep(1)"><span class="ps-dot">1</span><span data-i18n="st.1">What happened</span></button>
+          <button class="ps" data-s="2" onclick="goStep(2)"><span class="ps-dot">2</span><span data-i18n="st.2">Location</span></button>
+          <button class="ps" data-s="3" onclick="goStep(3)"><span class="ps-dot">3</span><span data-i18n="st.3">Evidence</span></button>
+          <button class="ps" data-s="4" onclick="goStep(4)"><span class="ps-dot">4</span><span data-i18n="st.4">Submit</span></button>
+        </div>
       </div>
 
-      <!-- ══ TAB: FILE REPORT ══ -->
-      <div class="tab-panel active" id="panel-report">
+      <!-- STEP 1 -->
+      <div class="wstep active" id="ws-1">
+        <h3 class="w-title" data-i18n="s1.t">What happened?</h3>
+        <p class="w-sub" data-i18n="s1.s">Tell us about the animal and the situation. Fields marked * are required.</p>
 
-        <!-- Emergency Toggle -->
-        <div style="padding:16px 16px 0">
-          <div class="emergency-toggle" id="emergency-toggle" onclick="toggleEmergency()">
-            <div class="toggle-icon">🚨</div>
-            <div class="toggle-info">
-              <div class="toggle-title">This is an Emergency</div>
-              <div class="toggle-sub">Animal in immediate danger — will alert authorities faster</div>
-            </div>
-            <div class="toggle-switch" id="toggle-sw"><div class="toggle-knob"></div></div>
+        <button type="button" class="em-toggle" id="emergency-toggle" onclick="toggleEmergency()">
+          <span class="ti-ic">🚨</span>
+          <span><span class="et-t" data-i18n="s1.emt" style="display:block">This is an emergency</span><span class="et-s" data-i18n="s1.ems" style="display:block">The animal is in immediate danger — your report is flagged as top priority</span></span>
+          <span class="sw"></span>
+        </button>
+
+        <div class="blk">
+          <label class="lbl"><span data-i18n="s1.type">Type of abuse</span> <span class="req">*</span></label>
+          <div class="cats" id="cat-grid">
+            <div class="cat-skel"></div><div class="cat-skel"></div><div class="cat-skel"></div><div class="cat-skel"></div>
           </div>
         </div>
 
-        <!-- Category -->
-        <div class="form-section" style="margin:16px 16px 0">
-          <div class="form-section-title"><i class="ti ti-tag"></i> Type of Abuse *</div>
-          <div class="category-grid" id="cat-grid">
-            <!-- populated by JS -->
+        <div class="blk grid2">
+          <div>
+            <label class="lbl" for="f-species" data-i18n="s1.species">Animal</label>
+            <select id="f-species" class="sel">
+              <option value="" data-i18n="sp.select">Select animal</option>
+              <option value="Dog" data-i18n="sp.dog">Dog</option>
+              <option value="Cat" data-i18n="sp.cat">Cat</option>
+              <option value="Cow" data-i18n="sp.cow">Cow / Cattle</option>
+              <option value="Horse" data-i18n="sp.horse">Horse / Donkey</option>
+              <option value="Bird" data-i18n="sp.bird">Bird</option>
+              <option value="Monkey" data-i18n="sp.monkey">Monkey</option>
+              <option value="Other" data-i18n="sp.other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="lbl" for="f-breed" data-i18n="s1.breed">Breed / description</label>
+            <input id="f-breed" class="inp" data-i18n-ph="s1.breedph" placeholder="e.g. Indie, Labrador, brown street dog">
+          </div>
+          <div>
+            <label class="lbl" for="f-count" data-i18n="s1.count">Number of animals</label>
+            <input id="f-count" class="inp" type="number" min="1" value="1">
+          </div>
+          <div>
+            <label class="lbl" for="f-date" data-i18n="s1.date">When did it happen?</label>
+            <input id="f-date" class="inp" type="date">
           </div>
         </div>
 
-        <!-- Animal Details -->
-        <div class="form-section" style="margin:14px 16px 0">
-          <div class="form-section-title"><i class="ti ti-paw"></i> Animal Details</div>
-          <div class="form-grid">
-            <div>
-              <label class="field-label">Species</label>
-              <select id="f-species" class="field-select">
-                <option value="">Select species</option>
-                <option>Dog</option><option>Cat</option><option>Cow</option>
-                <option>Horse</option><option>Bird</option><option>Monkey</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div>
-              <label class="field-label">Breed / Type</label>
-              <input id="f-breed" class="field-input" placeholder="e.g. Labrador, Street dog">
-            </div>
-            <div>
-              <label class="field-label">Number of Animals</label>
-              <input id="f-count" class="field-input" type="number" min="1" value="1">
-            </div>
-            <div>
-              <label class="field-label">Incident Date</label>
-              <input id="f-date" class="field-input" type="date">
-            </div>
-          </div>
-          <div style="margin-top:14px">
-            <label class="field-label">What happened? *</label>
-            <textarea id="f-desc" class="field-textarea" placeholder="Describe the abuse or neglect in as much detail as possible. Include appearance of the animal, what you witnessed, and any other relevant information."></textarea>
-          </div>
-          <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
-            <input type="checkbox" id="f-ongoing" style="width:18px;height:18px;accent-color:#dc2626;cursor:pointer">
-            <label for="f-ongoing" style="font-size:13px;font-weight:700;color:#333;cursor:pointer">This situation is still ongoing</label>
-          </div>
+        <div class="blk">
+          <label class="lbl" for="f-desc"><span data-i18n="s1.desc">Describe what you saw</span> <span class="req">*</span></label>
+          <textarea id="f-desc" class="ta" data-i18n-ph="s1.descph" placeholder="What is happening to the animal? How does it look? Who is involved? Any detail helps rescuers act faster."></textarea>
+          <div class="hint"><i class="ti ti-language"></i><span data-i18n="s1.deschint">You can write in any language you are comfortable with.</span></div>
+          <label class="check"><input type="checkbox" id="f-ongoing"><span data-i18n="s1.ongoing">This is still happening</span></label>
         </div>
+      </div>
 
-        <!-- Location -->
-        <div class="form-section" style="margin:14px 16px 0">
-          <div class="form-section-title"><i class="ti ti-map-pin"></i> Location of Incident *</div>
-          <div class="suggest-wrap">
-            <input id="f-address" class="field-input" placeholder="Search address or locality…" oninput="onAddressInput()" autocomplete="off">
-            <div class="suggest-box" id="addr-suggest"></div>
-          </div>
-          <div class="loc-row" style="margin-top:12px">
-            <div>
-              <label class="field-label">City</label>
-              <input id="f-city" class="field-input" placeholder="City">
-            </div>
-            <div>
-              <label class="field-label">State</label>
-              <input id="f-state" class="field-input" placeholder="State">
-            </div>
-          </div>
-          <button onclick="useMyLocation()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid #1a56db;background:#eff6ff;color:#1a56db;font-size:13px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
-            <i class="ti ti-current-location"></i> Use My Current Location
-          </button>
-          <div id="coord-display" style="display:none">
-            <div class="coord-badge"><i class="ti ti-map-pin" style="font-size:14px"></i> <span id="coord-text"></span></div>
-          </div>
-          <div id="abuse-map"></div>
+      <!-- STEP 2 -->
+      <div class="wstep" id="ws-2">
+        <h3 class="w-title" data-i18n="s2.t">Where did it happen?</h3>
+        <p class="w-sub" data-i18n="s2.s">An accurate location helps rescuers reach the animal quickly.</p>
+        <label class="lbl" for="f-address"><span data-i18n="s2.addr">Address or landmark</span> <span class="req">*</span></label>
+        <div class="sugg-wrap">
+          <i class="ti ti-search"></i>
+          <input id="f-address" class="inp" autocomplete="off" oninput="onAddressInput()" data-i18n-ph="s2.addrph" placeholder="Search area, street or landmark…">
+          <div class="sugg" id="addr-suggest"></div>
         </div>
-
-        <!-- Evidence -->
-        <div class="form-section" style="margin:14px 16px 0">
-          <div class="form-section-title"><i class="ti ti-photo"></i> Evidence (Photos / Videos)</div>
-          <div class="upload-box" onclick="document.getElementById('ev-file-input').click()">
-            <i class="ti ti-cloud-upload"></i>
-            <div class="upload-box-title">Upload Photos or Videos</div>
-            <div class="upload-box-sub">JPG, PNG, MP4 — max 10MB each. All evidence is kept confidential.</div>
-          </div>
-          <input type="file" id="ev-file-input" accept="image/*,video/*" multiple style="display:none" onchange="onEvidenceSelected(event)">
-          <div id="evidence-preview"></div>
-          <div class="field-hint" style="margin-top:8px"><i class="ti ti-lock" style="font-size:12px;color:#dc2626"></i> Evidence is encrypted and only accessible to authorized welfare officers</div>
+        <div class="grid2" style="margin-top:14px">
+          <div><label class="lbl" for="f-city" data-i18n="s2.city">City</label><input id="f-city" class="inp" data-i18n-ph="s2.city" placeholder="City"></div>
+          <div><label class="lbl" for="f-state" data-i18n="s2.state">State</label><input id="f-state" class="inp" data-i18n-ph="s2.state" placeholder="State"></div>
         </div>
+        <button type="button" class="gps-btn" onclick="useMyLocation()"><i class="ti ti-current-location"></i><span data-i18n="s2.gps">Use my current location</span></button>
+        <div id="coord-display" style="display:none"><span class="coord"><i class="ti ti-map-pin-filled"></i><span id="coord-text"></span></span></div>
+        <div id="abuse-map"></div>
+        <div class="hint"><i class="ti ti-hand-click"></i><span data-i18n="s2.maphint">Tap the map to drop a pin at the exact spot.</span></div>
+      </div>
 
-        <!-- Witnesses -->
-        <div class="form-section" style="margin:14px 16px 0">
-          <div class="form-section-title"><i class="ti ti-users"></i> Witness Information <span style="font-size:12px;font-weight:500;color:#65676b">(Optional)</span></div>
+      <!-- STEP 3 -->
+      <div class="wstep" id="ws-3">
+        <h3 class="w-title" data-i18n="s3.t">Add evidence</h3>
+        <p class="w-sub" data-i18n="s3.s">Photos and videos make it much easier to verify and act on a report. This step is optional.</p>
+        <div class="drop" id="drop" onclick="document.getElementById('ev-file-input').click()">
+          <div class="drop-ic"><i class="ti ti-camera-plus"></i></div>
+          <div class="drop-t" data-i18n="s3.drop">Tap to add photos or videos</div>
+          <div class="drop-s" data-i18n="s3.drops">JPG, PNG or MP4 · up to 10 MB each · visible only to welfare officers</div>
+        </div>
+        <input type="file" id="ev-file-input" accept="image/*,video/*" multiple style="display:none" onchange="onEvidenceSelected(event)">
+        <div id="evidence-preview"></div>
+        <div class="safety"><i class="ti ti-alert-triangle"></i><span data-i18n="s3.safety">Your safety comes first. Take photos only from a safe distance and never confront the person responsible.</span></div>
+
+        <div class="blk">
+          <label class="lbl"><span data-i18n="s3.wit">Witnesses</span> <span style="font-weight:500;color:var(--muted)" data-i18n="s3.opt">(optional)</span></label>
           <div id="witnesses-container"></div>
-          <button class="add-witness-btn" onclick="addWitness()"><i class="ti ti-plus"></i> Add Witness</button>
-        </div>
-
-        <!-- Privacy -->
-        <div class="form-section" style="margin:14px 16px 0">
-          <div class="form-section-title"><i class="ti ti-eye"></i> Report Visibility</div>
-          <div class="privacy-opts">
-            <div class="priv-opt selected" id="priv-private" onclick="selectPrivacy('private')">
-              <i class="ti ti-eye-off"></i>
-              <div class="priv-opt-title">Private</div>
-              <div class="priv-opt-sub">Only welfare officers can see</div>
-            </div>
-            <div class="priv-opt" id="priv-confidential" onclick="selectPrivacy('confidential')">
-              <i class="ti ti-lock"></i>
-              <div class="priv-opt-title">Confidential</div>
-              <div class="priv-opt-sub">Hidden from public, shared with orgs</div>
-            </div>
-            <div class="priv-opt" id="priv-public" onclick="selectPrivacy('public')">
-              <i class="ti ti-world"></i>
-              <div class="priv-opt-title">Public Awareness</div>
-              <div class="priv-opt-sub">Shared to raise community awareness</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Consents -->
-        <div class="form-section" style="margin:14px 16px 0">
-          <div class="form-section-title"><i class="ti ti-checks"></i> Your Consents</div>
-          <div class="consent-row">
-            <input type="checkbox" class="consent-cb" id="c-identity">
-            <div class="consent-text"><strong>Identity Sharing</strong> — I consent to sharing my identity with assigned welfare organizations for follow-up.</div>
-          </div>
-          <div class="consent-row">
-            <input type="checkbox" class="consent-cb" id="c-evidence" checked>
-            <div class="consent-text"><strong>Evidence Sharing</strong> — I consent to sharing uploaded evidence with authorized welfare officers and legal authorities.</div>
-          </div>
-          <div class="consent-row">
-            <input type="checkbox" class="consent-cb" id="c-followup" checked>
-            <div class="consent-text"><strong>Follow-up Contact</strong> — I agree to be contacted for updates on this case.</div>
-          </div>
-        </div>
-
-        <div style="height:80px"></div><!-- spacer for sticky bar -->
-      </div><!-- /panel-report -->
-
-      <!-- ══ TAB: MY REPORTS ══ -->
-      <div class="tab-panel" id="panel-my">
-        <div id="my-reports-list">
-          <div class="empty-state">
-            <i class="ti ti-clipboard-list"></i>
-            <div class="empty-state-title">Loading your reports…</div>
-            <div class="empty-state-sub">Please wait</div>
-          </div>
+          <button type="button" class="add-btn" onclick="addWitness()"><i class="ti ti-user-plus"></i><span data-i18n="s3.addwit">Add a witness</span></button>
         </div>
       </div>
 
-      <!-- ══ TAB: ORGANIZATIONS ══ -->
-      <div class="tab-panel" id="panel-orgs">
-        <div style="padding:14px 16px;border-bottom:1px solid #e4e6eb;display:flex;gap:10px">
-          <input id="org-search-city" class="field-input" style="flex:1" placeholder="Filter by city…" oninput="loadOrgs()">
-          <input id="org-search-state" class="field-input" style="flex:1" placeholder="Filter by state…" oninput="loadOrgs()">
+      <!-- STEP 4 -->
+      <div class="wstep" id="ws-4">
+        <h3 class="w-title" data-i18n="s4.t">Review &amp; submit</h3>
+        <p class="w-sub" data-i18n="s4.s">Choose who can see your report and confirm your consents.</p>
+
+        <label class="lbl" data-i18n="s4.vis">Who can see this report?</label>
+        <div class="priv">
+          <button type="button" class="pv picked" id="priv-private" onclick="selectPrivacy('private')"><i class="ti ti-eye-off"></i><div class="pv-t" data-i18n="pv.private">Private</div><div class="pv-s" data-i18n="pv.privates">Only PawBook welfare officers</div></button>
+          <button type="button" class="pv" id="priv-confidential" onclick="selectPrivacy('confidential')"><i class="ti ti-lock"></i><div class="pv-t" data-i18n="pv.conf">Confidential</div><div class="pv-s" data-i18n="pv.confs">Shared with verified NGOs, hidden from public</div></button>
+          <button type="button" class="pv" id="priv-public" onclick="selectPrivacy('public')"><i class="ti ti-world"></i><div class="pv-t" data-i18n="pv.public">Public awareness</div><div class="pv-s" data-i18n="pv.publics">Shared with the community to raise awareness</div></button>
         </div>
-        <div id="orgs-list">
-          <div class="empty-state">
-            <i class="ti ti-building-community"></i>
-            <div class="empty-state-title">Loading organizations…</div>
-            <div class="empty-state-sub">Please wait</div>
-          </div>
+
+        <div class="blk">
+          <label class="lbl" data-i18n="s4.consent">Your consents</label>
+          <label class="consent"><input type="checkbox" id="c-identity"><span class="consent-t"><b data-i18n="c.id">Share my identity</b> — <span data-i18n="c.ids">with the assigned welfare organization for follow-up.</span></span></label>
+          <label class="consent"><input type="checkbox" id="c-evidence" checked><span class="consent-t"><b data-i18n="c.ev">Share my evidence</b> — <span data-i18n="c.evs">with authorized welfare officers and legal authorities.</span></span></label>
+          <label class="consent"><input type="checkbox" id="c-followup" checked><span class="consent-t"><b data-i18n="c.fu">Contact me with updates</b> — <span data-i18n="c.fus">about the progress of this case.</span></span></label>
+        </div>
+
+        <div class="blk">
+          <label class="lbl" data-i18n="s4.summary">Summary</label>
+          <div class="review" id="review"></div>
         </div>
       </div>
 
-    </div><!-- /card tabs -->
-  </div><!-- /main-col -->
+      <div class="wnav" id="submit-bar">
+        <button type="button" class="btn btn-sm-ghost" id="btn-back" onclick="prevStep()" style="visibility:hidden"><i class="ti ti-arrow-left"></i><span class="hide-sm" data-i18n="w.back">Back</span></button>
+        <button type="button" class="btn btn-sm-ghost" onclick="saveDraft()"><i class="ti ti-device-floppy"></i><span class="hide-sm" data-i18n="w.draft">Save draft</span></button>
+        <div class="grow"></div>
+        <button type="button" class="btn btn-blue" id="btn-next" onclick="nextStep()"><span data-i18n="w.next">Continue</span><i class="ti ti-arrow-right"></i></button>
+        <button type="button" class="btn btn-coral" id="submit-btn" onclick="submitReport()" style="display:none"><i class="ti ti-send"></i><span data-i18n="w.submit">Submit report</span></button>
+      </div>
+    </section>
+
+    <!-- ══ MY REPORTS ══ -->
+    <section class="panel" id="panel-my"><div class="list-pad" id="my-reports-list"></div></section>
+
+    <!-- ══ ORGANIZATIONS ══ -->
+    <section class="panel" id="panel-orgs">
+      <div class="filters">
+        <input id="org-search-city" class="inp" oninput="debouncedOrgs()" data-i18n-ph="org.city" placeholder="Filter by city…">
+        <input id="org-search-state" class="inp" oninput="debouncedOrgs()" data-i18n-ph="org.state" placeholder="Filter by state…">
+      </div>
+      <div class="list-pad" id="orgs-list"></div>
+    </section>
+  </main>
 
   <!-- ── SIDEBAR ── -->
-  <div class="side-col">
+  <aside class="side">
+    <div class="photo-card">
+      <img src="https://images.pexels.com/photos/16465597/pexels-photo-16465597.jpeg?auto=compress&cs=tinysrgb&w=700" alt="" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=700&q=80'">
+      <div class="pc-txt"><div class="pc-t" data-i18n="side.qt">Waiting for someone to notice.</div><div class="pc-s" data-i18n="side.qs">Your report stays confidential and could be the reason an animal gets a second chance.</div></div>
+    </div>
 
-    <!-- Helplines -->
-    <div class="helpline-card" id="helpline-card">
-      <div class="helpline-head">
-        <i class="ti ti-phone-call" style="color:#fff;font-size:20px"></i>
-        <div class="helpline-head-title">Animal Welfare Helplines</div>
-      </div>
-      <div class="helpline-item" onclick="window.open('tel:+911800200141')">
-        <div class="hl-icon" style="background:#fef2f2"><span style="font-size:20px">🇮🇳</span></div>
-        <div>
-          <div class="hl-name">AWBI Helpline</div>
-          <div class="hl-num">1800-200-141</div>
-        </div>
-        <div class="hl-call">Call</div>
-      </div>
-      <div class="helpline-item" onclick="window.open('tel:+911800110066')">
-        <div class="hl-icon" style="background:#eff6ff"><span style="font-size:20px">🏛️</span></div>
-        <div>
-          <div class="hl-name">PCA Act Helpline</div>
-          <div class="hl-num">1800-110-066</div>
-        </div>
-        <div class="hl-call">Call</div>
-      </div>
-      <div class="helpline-item" onclick="window.open('tel:100')">
-        <div class="hl-icon" style="background:#fef9c3"><span style="font-size:20px">👮</span></div>
-        <div>
-          <div class="hl-name">Police Emergency</div>
-          <div class="hl-num">100</div>
-        </div>
-        <div class="hl-call">Call</div>
-      </div>
-      <div class="helpline-item" onclick="window.open('tel:+911800110264')">
-        <div class="hl-icon" style="background:#f0fdf4"><span style="font-size:20px">🌿</span></div>
-        <div>
-          <div class="hl-name">Wildlife Crime</div>
-          <div class="hl-num">1800-110-264</div>
-        </div>
-        <div class="hl-call">Call</div>
+    <div class="card" id="helplines">
+      <div class="side-h"><div class="side-h-ic" style="background:var(--coral-soft);color:var(--coral)"><i class="ti ti-phone-call"></i></div><div class="side-h-t" data-i18n="hl.t">Emergency helplines</div></div>
+      <a class="hl" href="tel:112">
+        <div class="hl-ic" style="background:#fff1f1">🚨</div>
+        <div><div class="hl-n" data-i18n="hl.112">National Emergency</div><div class="hl-num">112</div><div class="hl-d" data-i18n="hl.112d">Police, fire &amp; ambulance — all of India</div></div>
+        <span class="hl-go"><i class="ti ti-phone"></i><span data-i18n="hl.call">Call</span></span>
+      </a>
+      <a class="hl" href="tel:1962">
+        <div class="hl-ic" style="background:#ecfdf3">🚑</div>
+        <div><div class="hl-n" data-i18n="hl.1962">Veterinary Ambulance</div><div class="hl-num">1962</div><div class="hl-d" data-i18n="hl.1962d">Govt. mobile vet units · availability varies by state</div></div>
+        <span class="hl-go"><i class="ti ti-phone"></i><span data-i18n="hl.call">Call</span></span>
+      </a>
+      <a class="hl" href="tel:18001199334">
+        <div class="hl-ic" style="background:#f0fdf4">🌿</div>
+        <div><div class="hl-n" data-i18n="hl.wild">Wildlife Crime</div><div class="hl-num">1800 119 334</div><div class="hl-d" data-i18n="hl.wildd">Poaching &amp; illegal wildlife trade (MoEFCC)</div></div>
+        <span class="hl-go"><i class="ti ti-phone"></i><span data-i18n="hl.call">Call</span></span>
+      </a>
+      <a class="hl" href="https://awbi.gov.in/Cruelty" target="_blank" rel="noopener">
+        <div class="hl-ic" style="background:#eef5ff">🏛️</div>
+        <div><div class="hl-n" data-i18n="hl.awbi">AWBI Cruelty Complaint</div><div class="hl-d" data-i18n="hl.awbid">Animal Welfare Board of India · online form</div></div>
+        <span class="hl-go" style="background:#eef5ff;color:var(--blue-d)"><i class="ti ti-external-link"></i><span data-i18n="hl.open">Open</span></span>
+      </a>
+    </div>
+
+    <div class="card">
+      <div class="side-h"><div class="side-h-ic" style="background:#fffbeb;color:var(--amber)"><i class="ti ti-bulb"></i></div><div class="side-h-t" data-i18n="tips.t">Report effectively</div></div>
+      <div class="tips">
+        <div class="tip"><div class="tip-n">1</div><div class="tip-t"><b data-i18n="tips.1t">Stay safe.</b> <span data-i18n="tips.1">Document from a distance; never confront anyone.</span></div></div>
+        <div class="tip"><div class="tip-n">2</div><div class="tip-t"><b data-i18n="tips.2t">Be specific.</b> <span data-i18n="tips.2">Exact location, time and what you saw.</span></div></div>
+        <div class="tip"><div class="tip-n">3</div><div class="tip-t"><b data-i18n="tips.3t">Add witnesses.</b> <span data-i18n="tips.3">Their details strengthen the case.</span></div></div>
+        <div class="tip"><div class="tip-n">4</div><div class="tip-t"><b data-i18n="tips.4t">Emergency?</b> <span data-i18n="tips.4">Call 112 first, then report here.</span></div></div>
       </div>
     </div>
 
-    <!-- Tips -->
-    <div class="tip-card">
-      <div class="tip-title"><i class="ti ti-bulb" style="color:#f59e0b"></i> How to Report Effectively</div>
-      <div class="tip-item">
-        <div class="tip-num">1</div>
-        <div class="tip-text"><strong>Document safely</strong> — Take photos/videos from a safe distance. Don't confront the abuser.</div>
-      </div>
-      <div class="tip-item">
-        <div class="tip-num">2</div>
-        <div class="tip-text"><strong>Be specific</strong> — Include exact location, time, description of perpetrator if visible.</div>
-      </div>
-      <div class="tip-item">
-        <div class="tip-num">3</div>
-        <div class="tip-text"><strong>Note witnesses</strong> — Add any witness contact info to strengthen the case.</div>
-      </div>
-      <div class="tip-item">
-        <div class="tip-num">4</div>
-        <div class="tip-text"><strong>Your identity is protected</strong> — All reports are confidential by default.</div>
-      </div>
-      <div class="tip-item">
-        <div class="tip-num">5</div>
-        <div class="tip-text"><strong>Emergency?</strong> — Toggle the emergency flag to alert authorities immediately.</div>
-      </div>
+    <div class="card">
+      <div class="side-h"><div class="side-h-ic" style="background:#eef5ff;color:var(--blue)"><i class="ti ti-scale"></i></div><div class="side-h-t" data-i18n="law.t">The law is on their side</div></div>
+      <div class="legal" data-i18n="law.s">Cruelty to animals is an offence under the Prevention of Cruelty to Animals Act, 1960. Killing, poisoning or maiming an animal is punishable under Section 325 of the Bharatiya Nyaya Sanhita, 2023 (earlier IPC Sections 428/429) with up to 5 years' imprisonment, a fine, or both.</div>
     </div>
-
-    <!-- Legal info -->
-    <div class="tip-card">
-      <div class="tip-title"><i class="ti ti-gavel" style="color:#1a56db"></i> Legal Framework</div>
-      <div style="font-size:12px;color:#333;line-height:1.6">
-        Animal cruelty is punishable under <strong>Section 11 of the Prevention of Cruelty to Animals Act, 1960</strong> and <strong>Section 428/429 of IPC</strong>. Offenders face fines up to ₹25,000 and imprisonment up to 5 years.
-      </div>
-    </div>
-
-  </div><!-- /side-col -->
-</div><!-- /page-wrap -->
-
-<!-- ── SUBMIT BAR (only visible on report tab) ── -->
-<div class="submit-bar" id="submit-bar">
-  <button class="draft-btn" onclick="saveDraft()"><i class="ti ti-device-floppy"></i> Save Draft</button>
-  <button class="submit-btn" onclick="submitReport()" id="submit-btn">
-    <i class="ti ti-send"></i> Submit Report
-  </button>
+  </aside>
 </div>
 
+<!-- ── RESCUE STRIP ── -->
+<section class="rescue">
+  <div class="rescue-in">
+    <img src="https://images.pexels.com/photos/35231857/pexels-photo-35231857.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=1400&q=80'">
+    <div class="rescue-txt">
+      <div class="rescue-t" data-i18n="rs.t">Behind every rescue is someone who chose to speak up.</div>
+      <div class="rescue-s" data-i18n="rs.s">Join thousands of PawBook pet parents building a kinder India for animals — one report at a time.</div>
+      <a class="btn btn-coral" href="#report" onclick="switchTab('report');goStep(1)"><i class="ti ti-shield-heart"></i><span data-i18n="hero.cta">Report abuse now</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- ── SUCCESS MODAL ── -->
-<div class="modal-overlay" id="success-modal">
+<div class="modal" id="success-modal">
   <div class="modal-box">
-    <div class="modal-icon">✅</div>
-    <div class="modal-title">Report Submitted</div>
-    <div class="modal-sub">Your report has been received. Our welfare team will review it within 24–48 hours. You'll receive updates at every stage.</div>
-    <div class="modal-ref" id="modal-ref-num">PB-ABR-20241121-0001</div>
-    <div class="modal-actions">
-      <button class="modal-btn-secondary" onclick="closeModal()">Close</button>
-      <button class="modal-btn-primary" onclick="switchTab('my');closeModal()"><i class="ti ti-clipboard-list"></i> Track Report</button>
+    <div class="modal-img">
+      <img src="https://images.pexels.com/photos/7474854/pexels-photo-7474854.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80'">
+      <div class="modal-check"><i class="ti ti-check"></i></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-t" data-i18n="m.t">Thank you for being their voice</div>
+      <div class="modal-s" data-i18n="m.s">Your report has been received. Our welfare team will review it within 24–48 hours and you will get updates at every stage.</div>
+      <div class="ref-lbl" data-i18n="m.ref">Your reference number</div>
+      <div class="ref" id="modal-ref-num">—</div>
+      <div class="modal-acts">
+        <button class="btn btn-sm-ghost" onclick="closeModal()" data-i18n="m.close">Close</button>
+        <button class="btn btn-blue" onclick="closeModal();switchTab('my')"><i class="ti ti-clipboard-list"></i><span data-i18n="m.track">Track report</span></button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── TOAST ── -->
 <div class="toast" id="toast"></div>
 
+<script src="pawbook-i18n.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
-const API_BASE = 'https://pawbook.deemona.com/api/v1';
-const GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk';
+/* ═══════════════════════════════════════════════════════════════════════════
+   PAGE TRANSLATIONS (Phase 1: en, hi, bn, ta, mr)
+   Phone numbers, reference numbers and pet names are never translated.
+   ═══════════════════════════════════════════════════════════════════════════ */
+PBi18n.register({
+en:{
+'nav.crumb':'Animal Welfare','nav.home':'Home','nav.notif':'Notifications',
+'hero.eyebrow':'Animal Welfare & Protection','hero.t1':"They can't speak.",'hero.t2':'Be their voice.',
+'hero.sub':'Seen an animal being beaten, starved, abandoned or caged cruelly? Report it on PawBook — safely, confidentially and in your own language. Every report reaches people who can help.',
+'hero.cta':'Report abuse now','hero.cta2':'Emergency helplines',
+'trust.conf':'100% confidential','trust.review':'Reviewed in 24–48 hrs','trust.ngo':'Verified NGOs only',
+'hero.tag1':'Treated & cared for','hero.tag2':'Fed & protected','hero.tag3':'Rescued & loved',
+'hero.float':'Every report can save a life','hero.floats':'Rescue · Recover · Rehome','hero.lang':'Report in your language',
+'em.t':'Animal in immediate danger?','em.s':'Call 112 first. Then file a report here so rescuers can follow up.','em.call':'Call 112',
+'how.t':'How PawBook helps','how.s':'Three simple steps from your report to real help on the ground',
+'how.1t':'You report','how.1s':'Tell us what you saw and where. Add photos only if it is safe to take them.',
+'how.2t':'We verify','how.2s':'Our welfare team reviews every report within 24–48 hours and keeps your identity private.',
+'how.3t':'Rescuers step in','how.3s':'Verified cases are shared with nearby NGOs, rescuers and authorities. You can track progress here.',
+'tab.report':'File a report','tab.my':'My reports','tab.orgs':'Organizations',
+'st.1':'What happened','st.2':'Location','st.3':'Evidence','st.4':'Submit',
+'s1.t':'What happened?','s1.s':'Tell us about the animal and the situation. Fields marked * are required.',
+'s1.emt':'This is an emergency','s1.ems':'The animal is in immediate danger — your report is flagged as top priority',
+'s1.type':'Type of abuse','s1.species':'Animal','s1.breed':'Breed / description','s1.breedph':'e.g. Indie, Labrador, brown street dog',
+'s1.count':'Number of animals','s1.date':'When did it happen?','s1.desc':'Describe what you saw',
+'s1.descph':'What is happening to the animal? How does it look? Who is involved? Any detail helps rescuers act faster.',
+'s1.deschint':'You can write in any language you are comfortable with.','s1.ongoing':'This is still happening',
+'sp.select':'Select animal','sp.dog':'Dog','sp.cat':'Cat','sp.cow':'Cow / Cattle','sp.horse':'Horse / Donkey','sp.bird':'Bird','sp.monkey':'Monkey','sp.other':'Other',
+'cat.Physical Abuse':'Physical abuse','cat.Animal Neglect':'Neglect','cat.Abandonment':'Abandonment','cat.Cruel Confinement':'Cruel confinement',
+'cat.Illegal Breeding':'Illegal breeding','cat.Animal Fighting':'Animal fighting','cat.Poisoning':'Poisoning','cat.Commercial Exploitation':'Commercial exploitation',
+'cat.Hoarding':'Hoarding','cat.Cruel Transportation':'Cruel transport','cat.Other':'Other',
+'s2.t':'Where did it happen?','s2.s':'An accurate location helps rescuers reach the animal quickly.','s2.addr':'Address or landmark',
+'s2.addrph':'Search area, street or landmark…','s2.city':'City','s2.state':'State','s2.gps':'Use my current location','s2.maphint':'Tap the map to drop a pin at the exact spot.',
+'s3.t':'Add evidence','s3.s':'Photos and videos make it much easier to verify and act on a report. This step is optional.',
+'s3.drop':'Tap to add photos or videos','s3.drops':'JPG, PNG or MP4 · up to 10 MB each · visible only to welfare officers',
+'s3.safety':'Your safety comes first. Take photos only from a safe distance and never confront the person responsible.',
+'s3.wit':'Witnesses','s3.opt':'(optional)','s3.addwit':'Add a witness',
+'w.name':'Name','w.nameph':'Witness name','w.phone':'Phone','w.email':'Email','w.stmt':'What did they see?','w.stmtph':'Short statement from the witness',
+'s4.t':'Review & submit','s4.s':'Choose who can see your report and confirm your consents.','s4.vis':'Who can see this report?',
+'pv.private':'Private','pv.privates':'Only PawBook welfare officers','pv.conf':'Confidential','pv.confs':'Shared with verified NGOs, hidden from public',
+'pv.public':'Public awareness','pv.publics':'Shared with the community to raise awareness',
+'s4.consent':'Your consents','c.id':'Share my identity','c.ids':'with the assigned welfare organization for follow-up.',
+'c.ev':'Share my evidence','c.evs':'with authorized welfare officers and legal authorities.','c.fu':'Contact me with updates','c.fus':'about the progress of this case.',
+'s4.summary':'Summary','rv.type':'Type of abuse','rv.animal':'Animal','rv.loc':'Location','rv.ev':'Evidence','rv.wit':'Witnesses','rv.em':'Emergency',
+'rv.files':'{n} file(s)','rv.none':'None','rv.yes':'Yes — top priority','rv.no':'No','rv.missing':'Not added yet',
+'w.back':'Back','w.draft':'Save draft','w.next':'Continue','w.submit':'Submit report','w.submitting':'Submitting…',
+'my.loading':'Loading your reports…','my.login':'Log in to see your reports','my.logins':'Your reports are linked to your PawBook account.','my.loginbtn':'Log in',
+'my.none':'No reports yet','my.nones':"You haven't filed any reports. If you ever see an animal in trouble, we're here.",'my.fail':'Could not load your reports','my.fails':'Check your connection and try again.',
+'my.noloc':'Location not specified','my.em':'Emergency',
+'stt.submitted':'Submitted','stt.under_review':'Under review','stt.verified_for_referral':'Verified','stt.referred':'Referred to NGO','stt.action_in_progress':'Action in progress','stt.resolved':'Resolved','stt.closed':'Closed',
+'org.city':'Filter by city…','org.state':'Filter by state…','org.loading':'Loading organizations…','org.none':'No organizations found yet',
+'org.nones':'We are onboarding verified NGOs city by city. Try another city, or use the helplines meanwhile.','org.fail':'Could not load organizations','org.covers':'Covers',
+'ot.ngo':'NGO','ot.rescue':'Rescue','ot.government':'Government','ot.shelter':'Shelter','ot.other':'Other',
+'side.qt':'Waiting for someone to notice.','side.qs':'Your report stays confidential and could be the reason an animal gets a second chance.',
+'hl.t':'Emergency helplines','hl.112':'National Emergency','hl.112d':'Police, fire & ambulance — all of India','hl.1962':'Veterinary Ambulance',
+'hl.1962d':'Govt. mobile vet units · availability varies by state','hl.wild':'Wildlife Crime','hl.wildd':'Poaching & illegal wildlife trade (MoEFCC)',
+'hl.awbi':'AWBI Cruelty Complaint','hl.awbid':'Animal Welfare Board of India · online form','hl.call':'Call','hl.open':'Open',
+'tips.t':'Report effectively','tips.1t':'Stay safe.','tips.1':'Document from a distance; never confront anyone.','tips.2t':'Be specific.','tips.2':'Exact location, time and what you saw.',
+'tips.3t':'Add witnesses.','tips.3':'Their details strengthen the case.','tips.4t':'Emergency?','tips.4':'Call 112 first, then report here.',
+'law.t':'The law is on their side','law.s':"Cruelty to animals is an offence under the Prevention of Cruelty to Animals Act, 1960. Killing, poisoning or maiming an animal is punishable under Section 325 of the Bharatiya Nyaya Sanhita, 2023 (earlier IPC Sections 428/429) with up to 5 years' imprisonment, a fine, or both.",
+'rs.t':'Behind every rescue is someone who chose to speak up.','rs.s':'Join PawBook pet parents building a kinder India for animals — one report at a time.',
+'m.t':'Thank you for being their voice','m.s':'Your report has been received. Our welfare team will review it within 24–48 hours and you will get updates at every stage.',
+'m.ref':'Your reference number','m.close':'Close','m.track':'Track report',
+'t.type':'Please choose the type of abuse','t.desc':'Please describe what you saw','t.loc':'Please add where it happened','t.locating':'Finding your location…',
+'t.locfail':"Couldn't get your location. Please type the address.",'t.nogeo':'Location is not supported on this device','t.big':'{name} is larger than 10 MB',
+'t.draft':'Draft saved on this device','t.draftfail':'Could not save draft','t.net':'Network problem. Your draft is saved — please try again.',
+'t.fail':'Could not submit the report','t.login':'Please log in to submit a report','t.upfail':'Some files could not be uploaded'
+},
+hi:{
+'nav.crumb':'पशु कल्याण','nav.home':'होम','nav.notif':'सूचनाएँ',
+'hero.eyebrow':'पशु कल्याण और सुरक्षा','hero.t1':'वे बोल नहीं सकते।','hero.t2':'उनकी आवाज़ बनिए।',
+'hero.sub':'किसी जानवर को पिटते, भूखा रखते, छोड़ते या क्रूरता से बाँधते देखा है? PawBook पर इसकी रिपोर्ट करें — सुरक्षित, गोपनीय और अपनी भाषा में। हर रिपोर्ट उन लोगों तक पहुँचती है जो मदद कर सकते हैं।',
+'hero.cta':'अभी रिपोर्ट करें','hero.cta2':'आपातकालीन हेल्पलाइन',
+'trust.conf':'100% गोपनीय','trust.review':'24–48 घंटे में समीक्षा','trust.ngo':'केवल सत्यापित NGO',
+'hero.tag1':'इलाज और देखभाल','hero.tag2':'भोजन और सुरक्षा','hero.tag3':'बचाया और प्यार मिला',
+'hero.float':'हर रिपोर्ट एक जान बचा सकती है','hero.floats':'बचाव · उपचार · नया घर','hero.lang':'अपनी भाषा में रिपोर्ट करें',
+'em.t':'जानवर तुरंत खतरे में है?','em.s':'पहले 112 पर कॉल करें। फिर यहाँ रिपोर्ट दर्ज करें ताकि बचाव दल आगे कार्रवाई कर सके।','em.call':'112 पर कॉल करें',
+'how.t':'PawBook कैसे मदद करता है','how.s':'आपकी रिपोर्ट से ज़मीनी मदद तक, तीन आसान कदम',
+'how.1t':'आप रिपोर्ट करें','how.1s':'बताइए आपने क्या और कहाँ देखा। फ़ोटो तभी लें जब ऐसा करना सुरक्षित हो।',
+'how.2t':'हम जाँच करते हैं','how.2s':'हमारी कल्याण टीम हर रिपोर्ट की 24–48 घंटे में समीक्षा करती है और आपकी पहचान गोपनीय रखती है।',
+'how.3t':'बचाव दल आगे आते हैं','how.3s':'सत्यापित मामले पास के NGO, बचाव दलों और अधिकारियों को भेजे जाते हैं। आप यहाँ प्रगति देख सकते हैं।',
+'tab.report':'रिपोर्ट दर्ज करें','tab.my':'मेरी रिपोर्ट','tab.orgs':'संस्थाएँ',
+'st.1':'क्या हुआ','st.2':'स्थान','st.3':'सबूत','st.4':'जमा करें',
+'s1.t':'क्या हुआ?','s1.s':'जानवर और स्थिति के बारे में बताइए। * वाले क्षेत्र ज़रूरी हैं।',
+'s1.emt':'यह आपात स्थिति है','s1.ems':'जानवर तुरंत खतरे में है — आपकी रिपोर्ट को सर्वोच्च प्राथमिकता दी जाएगी',
+'s1.type':'क्रूरता का प्रकार','s1.species':'जानवर','s1.breed':'नस्ल / विवरण','s1.breedph':'जैसे देसी, लैब्राडोर, भूरा गली का कुत्ता',
+'s1.count':'जानवरों की संख्या','s1.date':'यह कब हुआ?','s1.desc':'आपने जो देखा उसका वर्णन करें',
+'s1.descph':'जानवर के साथ क्या हो रहा है? वह कैसा दिखता है? कौन शामिल है? हर जानकारी बचाव दल को तेज़ी से मदद करती है।',
+'s1.deschint':'आप जिस भी भाषा में सहज हों, उसमें लिख सकते हैं।','s1.ongoing':'यह अभी भी हो रहा है',
+'sp.select':'जानवर चुनें','sp.dog':'कुत्ता','sp.cat':'बिल्ली','sp.cow':'गाय / मवेशी','sp.horse':'घोड़ा / गधा','sp.bird':'पक्षी','sp.monkey':'बंदर','sp.other':'अन्य',
+'cat.Physical Abuse':'मारपीट','cat.Animal Neglect':'उपेक्षा','cat.Abandonment':'छोड़ देना','cat.Cruel Confinement':'क्रूरता से बंद रखना',
+'cat.Illegal Breeding':'अवैध प्रजनन','cat.Animal Fighting':'जानवरों की लड़ाई','cat.Poisoning':'ज़हर देना','cat.Commercial Exploitation':'व्यावसायिक शोषण',
+'cat.Hoarding':'अत्यधिक जानवर रखना','cat.Cruel Transportation':'क्रूर परिवहन','cat.Other':'अन्य',
+'s2.t':'यह कहाँ हुआ?','s2.s':'सही स्थान से बचाव दल जल्दी जानवर तक पहुँच पाते हैं।','s2.addr':'पता या पहचान का स्थान',
+'s2.addrph':'इलाका, गली या पहचान का स्थान खोजें…','s2.city':'शहर','s2.state':'राज्य','s2.gps':'मेरी वर्तमान लोकेशन लें','s2.maphint':'सटीक जगह पर पिन लगाने के लिए मैप पर टैप करें।',
+'s3.t':'सबूत जोड़ें','s3.s':'फ़ोटो और वीडियो से रिपोर्ट की पुष्टि और कार्रवाई आसान होती है। यह कदम वैकल्पिक है।',
+'s3.drop':'फ़ोटो या वीडियो जोड़ने के लिए टैप करें','s3.drops':'JPG, PNG या MP4 · हर फ़ाइल 10 MB तक · केवल कल्याण अधिकारी देख सकते हैं',
+'s3.safety':'आपकी सुरक्षा सबसे पहले है। केवल सुरक्षित दूरी से फ़ोटो लें और ज़िम्मेदार व्यक्ति से कभी न उलझें।',
+'s3.wit':'गवाह','s3.opt':'(वैकल्पिक)','s3.addwit':'गवाह जोड़ें',
+'w.name':'नाम','w.nameph':'गवाह का नाम','w.phone':'फ़ोन','w.email':'ईमेल','w.stmt':'उन्होंने क्या देखा?','w.stmtph':'गवाह का संक्षिप्त बयान',
+'s4.t':'जाँचें और जमा करें','s4.s':'चुनें कि आपकी रिपोर्ट कौन देख सकता है और अपनी सहमति दें।','s4.vis':'यह रिपोर्ट कौन देख सकता है?',
+'pv.private':'निजी','pv.privates':'केवल PawBook कल्याण अधिकारी','pv.conf':'गोपनीय','pv.confs':'सत्यापित NGO के साथ साझा, जनता से छिपा',
+'pv.public':'जन जागरूकता','pv.publics':'जागरूकता के लिए समुदाय के साथ साझा',
+'s4.consent':'आपकी सहमति','c.id':'मेरी पहचान साझा करें','c.ids':'फ़ॉलो-अप के लिए संबंधित कल्याण संस्था के साथ।',
+'c.ev':'मेरे सबूत साझा करें','c.evs':'अधिकृत कल्याण अधिकारियों और कानूनी प्राधिकरणों के साथ।','c.fu':'मुझे अपडेट भेजें','c.fus':'इस मामले की प्रगति के बारे में।',
+'s4.summary':'सारांश','rv.type':'क्रूरता का प्रकार','rv.animal':'जानवर','rv.loc':'स्थान','rv.ev':'सबूत','rv.wit':'गवाह','rv.em':'आपात स्थिति',
+'rv.files':'{n} फ़ाइल','rv.none':'कोई नहीं','rv.yes':'हाँ — सर्वोच्च प्राथमिकता','rv.no':'नहीं','rv.missing':'अभी नहीं जोड़ा',
+'w.back':'पीछे','w.draft':'ड्राफ़्ट सेव करें','w.next':'आगे बढ़ें','w.submit':'रिपोर्ट जमा करें','w.submitting':'जमा हो रही है…',
+'my.loading':'आपकी रिपोर्ट लोड हो रही हैं…','my.login':'अपनी रिपोर्ट देखने के लिए लॉग इन करें','my.logins':'आपकी रिपोर्ट आपके PawBook खाते से जुड़ी हैं।','my.loginbtn':'लॉग इन',
+'my.none':'अभी कोई रिपोर्ट नहीं','my.nones':'आपने अभी तक कोई रिपोर्ट दर्ज नहीं की है। जब भी कोई जानवर मुसीबत में दिखे, हम यहाँ हैं।','my.fail':'रिपोर्ट लोड नहीं हो सकीं','my.fails':'अपना कनेक्शन जाँचें और फिर कोशिश करें।',
+'my.noloc':'स्थान नहीं बताया गया','my.em':'आपात',
+'stt.submitted':'जमा की गई','stt.under_review':'समीक्षा में','stt.verified_for_referral':'सत्यापित','stt.referred':'NGO को भेजी गई','stt.action_in_progress':'कार्रवाई जारी','stt.resolved':'हल हो गई','stt.closed':'बंद',
+'org.city':'शहर से खोजें…','org.state':'राज्य से खोजें…','org.loading':'संस्थाएँ लोड हो रही हैं…','org.none':'अभी कोई संस्था नहीं मिली',
+'org.nones':'हम शहर-दर-शहर सत्यापित NGO जोड़ रहे हैं। कोई दूसरा शहर आज़माएँ, या तब तक हेल्पलाइन का उपयोग करें।','org.fail':'संस्थाएँ लोड नहीं हो सकीं','org.covers':'क्षेत्र',
+'ot.ngo':'NGO','ot.rescue':'बचाव दल','ot.government':'सरकारी','ot.shelter':'आश्रय','ot.other':'अन्य',
+'side.qt':'किसी के ध्यान देने का इंतज़ार।','side.qs':'आपकी रिपोर्ट गोपनीय रहती है और किसी जानवर को दूसरा मौका दिला सकती है।',
+'hl.t':'आपातकालीन हेल्पलाइन','hl.112':'राष्ट्रीय आपातकालीन नंबर','hl.112d':'पुलिस, फ़ायर और एम्बुलेंस — पूरे भारत में','hl.1962':'पशु एम्बुलेंस',
+'hl.1962d':'सरकारी मोबाइल पशु चिकित्सा इकाई · राज्य के अनुसार उपलब्धता','hl.wild':'वन्यजीव अपराध','hl.wildd':'शिकार और अवैध वन्यजीव व्यापार (MoEFCC)',
+'hl.awbi':'AWBI क्रूरता शिकायत','hl.awbid':'भारतीय जीव जंतु कल्याण बोर्ड · ऑनलाइन फ़ॉर्म','hl.call':'कॉल','hl.open':'खोलें',
+'tips.t':'प्रभावी रिपोर्ट कैसे करें','tips.1t':'सुरक्षित रहें।','tips.1':'दूर से रिकॉर्ड करें; किसी से न उलझें।','tips.2t':'सटीक रहें।','tips.2':'सही जगह, समय और आपने क्या देखा।',
+'tips.3t':'गवाह जोड़ें।','tips.3':'उनकी जानकारी मामले को मज़बूत करती है।','tips.4t':'आपात स्थिति?','tips.4':'पहले 112 पर कॉल करें, फिर यहाँ रिपोर्ट करें।',
+'law.t':'क़ानून उनके साथ है','law.s':'पशुओं के प्रति क्रूरता, पशु क्रूरता निवारण अधिनियम, 1960 के तहत अपराध है। किसी जानवर को मारना, ज़हर देना या अपंग करना भारतीय न्याय संहिता, 2023 की धारा 325 (पहले IPC धारा 428/429) के तहत 5 साल तक की कैद, जुर्माना या दोनों से दंडनीय है।',
+'rs.t':'हर बचाव के पीछे कोई ऐसा होता है जिसने आवाज़ उठाई।','rs.s':'PawBook के पालतू प्रेमियों के साथ जुड़िए और जानवरों के लिए एक दयालु भारत बनाइए — एक रिपोर्ट से शुरुआत करें।',
+'m.t':'उनकी आवाज़ बनने के लिए धन्यवाद','m.s':'आपकी रिपोर्ट मिल गई है। हमारी कल्याण टीम 24–48 घंटे में इसकी समीक्षा करेगी और आपको हर चरण पर अपडेट मिलेगा।',
+'m.ref':'आपका संदर्भ नंबर','m.close':'बंद करें','m.track':'रिपोर्ट ट्रैक करें',
+'t.type':'कृपया क्रूरता का प्रकार चुनें','t.desc':'कृपया बताइए आपने क्या देखा','t.loc':'कृपया बताइए यह कहाँ हुआ','t.locating':'आपकी लोकेशन खोजी जा रही है…',
+'t.locfail':'लोकेशन नहीं मिल सकी। कृपया पता लिखें।','t.nogeo':'इस डिवाइस पर लोकेशन उपलब्ध नहीं है','t.big':'{name} 10 MB से बड़ी है',
+'t.draft':'ड्राफ़्ट इस डिवाइस पर सेव हो गया','t.draftfail':'ड्राफ़्ट सेव नहीं हो सका','t.net':'नेटवर्क समस्या। आपका ड्राफ़्ट सेव है — कृपया फिर कोशिश करें।',
+'t.fail':'रिपोर्ट जमा नहीं हो सकी','t.login':'रिपोर्ट जमा करने के लिए कृपया लॉग इन करें','t.upfail':'कुछ फ़ाइलें अपलोड नहीं हो सकीं'
+},
+bn:{
+'nav.crumb':'প্রাণী কল্যাণ','nav.home':'হোম','nav.notif':'বিজ্ঞপ্তি',
+'hero.eyebrow':'প্রাণী কল্যাণ ও সুরক্ষা','hero.t1':'ওরা কথা বলতে পারে না।','hero.t2':'ওদের কণ্ঠস্বর হোন।',
+'hero.sub':'কোনো প্রাণীকে মারধর, অনাহারে রাখা, পরিত্যাগ বা নিষ্ঠুরভাবে আটকে রাখতে দেখেছেন? PawBook-এ রিপোর্ট করুন — নিরাপদে, গোপনে এবং নিজের ভাষায়। প্রতিটি রিপোর্ট সাহায্য করতে পারেন এমন মানুষের কাছে পৌঁছায়।',
+'hero.cta':'এখনই রিপোর্ট করুন','hero.cta2':'জরুরি হেল্পলাইন',
+'trust.conf':'১০০% গোপনীয়','trust.review':'২৪–৪৮ ঘণ্টায় পর্যালোচনা','trust.ngo':'শুধু যাচাইকৃত NGO',
+'hero.tag1':'চিকিৎসা ও যত্ন','hero.tag2':'খাবার ও সুরক্ষা','hero.tag3':'উদ্ধার ও ভালোবাসা',
+'hero.float':'প্রতিটি রিপোর্ট একটি প্রাণ বাঁচাতে পারে','hero.floats':'উদ্ধার · সুস্থতা · নতুন ঘর','hero.lang':'নিজের ভাষায় রিপোর্ট করুন',
+'em.t':'প্রাণীটি কি এখনই বিপদে?','em.s':'প্রথমে 112-এ কল করুন। তারপর এখানে রিপোর্ট করুন যাতে উদ্ধারকারীরা পদক্ষেপ নিতে পারেন।','em.call':'112-এ কল করুন',
+'how.t':'PawBook কীভাবে সাহায্য করে','how.s':'আপনার রিপোর্ট থেকে বাস্তব সাহায্য পর্যন্ত তিনটি সহজ ধাপ',
+'how.1t':'আপনি রিপোর্ট করুন','how.1s':'কী দেখেছেন এবং কোথায়, জানান। নিরাপদ হলে তবেই ছবি তুলুন।',
+'how.2t':'আমরা যাচাই করি','how.2s':'আমাদের কল্যাণ দল ২৪–৪৮ ঘণ্টার মধ্যে প্রতিটি রিপোর্ট পর্যালোচনা করে এবং আপনার পরিচয় গোপন রাখে।',
+'how.3t':'উদ্ধারকারীরা এগিয়ে আসেন','how.3s':'যাচাইকৃত ঘটনা কাছের NGO, উদ্ধারকারী ও কর্তৃপক্ষের কাছে পাঠানো হয়। আপনি এখানে অগ্রগতি দেখতে পারবেন।',
+'tab.report':'রিপোর্ট করুন','tab.my':'আমার রিপোর্ট','tab.orgs':'সংস্থা',
+'st.1':'কী ঘটেছে','st.2':'স্থান','st.3':'প্রমাণ','st.4':'জমা দিন',
+'s1.t':'কী ঘটেছে?','s1.s':'প্রাণী ও পরিস্থিতি সম্পর্কে জানান। * চিহ্নিত ঘর পূরণ করা আবশ্যক।',
+'s1.emt':'এটি জরুরি অবস্থা','s1.ems':'প্রাণীটি এখনই বিপদে — আপনার রিপোর্ট সর্বোচ্চ অগ্রাধিকার পাবে',
+'s1.type':'নির্যাতনের ধরন','s1.species':'প্রাণী','s1.breed':'জাত / বিবরণ','s1.breedph':'যেমন দেশি, ল্যাব্রাডর, বাদামি রাস্তার কুকুর',
+'s1.count':'প্রাণীর সংখ্যা','s1.date':'কখন ঘটেছে?','s1.desc':'যা দেখেছেন তার বিবরণ দিন',
+'s1.descph':'প্রাণীটির সাথে কী হচ্ছে? দেখতে কেমন? কে জড়িত? প্রতিটি তথ্য উদ্ধারকারীদের দ্রুত পদক্ষেপ নিতে সাহায্য করে।',
+'s1.deschint':'যে ভাষায় স্বচ্ছন্দ, সেই ভাষায় লিখতে পারেন।','s1.ongoing':'এটি এখনও চলছে',
+'sp.select':'প্রাণী বেছে নিন','sp.dog':'কুকুর','sp.cat':'বিড়াল','sp.cow':'গরু / গবাদি পশু','sp.horse':'ঘোড়া / গাধা','sp.bird':'পাখি','sp.monkey':'বানর','sp.other':'অন্যান্য',
+'cat.Physical Abuse':'শারীরিক নির্যাতন','cat.Animal Neglect':'অবহেলা','cat.Abandonment':'পরিত্যাগ','cat.Cruel Confinement':'নিষ্ঠুরভাবে আটকে রাখা',
+'cat.Illegal Breeding':'অবৈধ প্রজনন','cat.Animal Fighting':'প্রাণীর লড়াই','cat.Poisoning':'বিষ প্রয়োগ','cat.Commercial Exploitation':'বাণিজ্যিক শোষণ',
+'cat.Hoarding':'অতিরিক্ত প্রাণী রাখা','cat.Cruel Transportation':'নিষ্ঠুর পরিবহন','cat.Other':'অন্যান্য',
+'s2.t':'কোথায় ঘটেছে?','s2.s':'সঠিক স্থান জানালে উদ্ধারকারীরা দ্রুত প্রাণীটির কাছে পৌঁছাতে পারেন।','s2.addr':'ঠিকানা বা চিহ্নিত স্থান',
+'s2.addrph':'এলাকা, রাস্তা বা চিহ্নিত স্থান খুঁজুন…','s2.city':'শহর','s2.state':'রাজ্য','s2.gps':'আমার বর্তমান অবস্থান ব্যবহার করুন','s2.maphint':'সঠিক জায়গায় পিন বসাতে ম্যাপে ট্যাপ করুন।',
+'s3.t':'প্রমাণ যোগ করুন','s3.s':'ছবি ও ভিডিও থাকলে রিপোর্ট যাচাই ও পদক্ষেপ নেওয়া অনেক সহজ হয়। এই ধাপটি ঐচ্ছিক।',
+'s3.drop':'ছবি বা ভিডিও যোগ করতে ট্যাপ করুন','s3.drops':'JPG, PNG বা MP4 · প্রতিটি ১০ MB পর্যন্ত · শুধু কল্যাণ কর্মকর্তারা দেখতে পাবেন',
+'s3.safety':'আপনার নিরাপত্তাই প্রথম। শুধু নিরাপদ দূরত্ব থেকে ছবি তুলুন এবং দায়ী ব্যক্তির মুখোমুখি হবেন না।',
+'s3.wit':'সাক্ষী','s3.opt':'(ঐচ্ছিক)','s3.addwit':'সাক্ষী যোগ করুন',
+'w.name':'নাম','w.nameph':'সাক্ষীর নাম','w.phone':'ফোন','w.email':'ইমেল','w.stmt':'তিনি কী দেখেছেন?','w.stmtph':'সাক্ষীর সংক্ষিপ্ত বিবৃতি',
+'s4.t':'দেখে নিন ও জমা দিন','s4.s':'কারা রিপোর্টটি দেখতে পাবে বেছে নিন এবং সম্মতি নিশ্চিত করুন।','s4.vis':'এই রিপোর্ট কারা দেখতে পাবে?',
+'pv.private':'ব্যক্তিগত','pv.privates':'শুধু PawBook কল্যাণ কর্মকর্তা','pv.conf':'গোপনীয়','pv.confs':'যাচাইকৃত NGO-র সাথে শেয়ার, জনসাধারণের থেকে লুকানো',
+'pv.public':'জনসচেতনতা','pv.publics':'সচেতনতা বাড়াতে সম্প্রদায়ের সাথে শেয়ার',
+'s4.consent':'আপনার সম্মতি','c.id':'আমার পরিচয় শেয়ার করুন','c.ids':'ফলো-আপের জন্য দায়িত্বপ্রাপ্ত কল্যাণ সংস্থার সাথে।',
+'c.ev':'আমার প্রমাণ শেয়ার করুন','c.evs':'অনুমোদিত কল্যাণ কর্মকর্তা ও আইনি কর্তৃপক্ষের সাথে।','c.fu':'আমাকে আপডেট জানান','c.fus':'এই মামলার অগ্রগতি সম্পর্কে।',
+'s4.summary':'সারসংক্ষেপ','rv.type':'নির্যাতনের ধরন','rv.animal':'প্রাণী','rv.loc':'স্থান','rv.ev':'প্রমাণ','rv.wit':'সাক্ষী','rv.em':'জরুরি',
+'rv.files':'{n}টি ফাইল','rv.none':'নেই','rv.yes':'হ্যাঁ — সর্বোচ্চ অগ্রাধিকার','rv.no':'না','rv.missing':'এখনও যোগ করা হয়নি',
+'w.back':'পিছনে','w.draft':'খসড়া সেভ করুন','w.next':'এগিয়ে যান','w.submit':'রিপোর্ট জমা দিন','w.submitting':'জমা হচ্ছে…',
+'my.loading':'আপনার রিপোর্ট লোড হচ্ছে…','my.login':'আপনার রিপোর্ট দেখতে লগ ইন করুন','my.logins':'আপনার রিপোর্ট আপনার PawBook অ্যাকাউন্টের সাথে যুক্ত।','my.loginbtn':'লগ ইন',
+'my.none':'এখনও কোনো রিপোর্ট নেই','my.nones':'আপনি এখনও কোনো রিপোর্ট করেননি। কোনো প্রাণীকে বিপদে দেখলে, আমরা আছি।','my.fail':'রিপোর্ট লোড করা যায়নি','my.fails':'সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।',
+'my.noloc':'স্থান উল্লেখ নেই','my.em':'জরুরি',
+'stt.submitted':'জমা দেওয়া হয়েছে','stt.under_review':'পর্যালোচনায়','stt.verified_for_referral':'যাচাইকৃত','stt.referred':'NGO-তে পাঠানো হয়েছে','stt.action_in_progress':'পদক্ষেপ চলছে','stt.resolved':'সমাধান হয়েছে','stt.closed':'বন্ধ',
+'org.city':'শহর দিয়ে খুঁজুন…','org.state':'রাজ্য দিয়ে খুঁজুন…','org.loading':'সংস্থা লোড হচ্ছে…','org.none':'এখনও কোনো সংস্থা পাওয়া যায়নি',
+'org.nones':'আমরা শহর ধরে ধরে যাচাইকৃত NGO যুক্ত করছি। অন্য শহর চেষ্টা করুন, অথবা ততক্ষণ হেল্পলাইন ব্যবহার করুন।','org.fail':'সংস্থা লোড করা যায়নি','org.covers':'এলাকা',
+'ot.ngo':'NGO','ot.rescue':'উদ্ধার দল','ot.government':'সরকারি','ot.shelter':'আশ্রয়কেন্দ্র','ot.other':'অন্যান্য',
+'side.qt':'কেউ লক্ষ্য করবে, সেই অপেক্ষায়।','side.qs':'আপনার রিপোর্ট গোপন থাকে এবং কোনো প্রাণীকে দ্বিতীয় সুযোগ দিতে পারে।',
+'hl.t':'জরুরি হেল্পলাইন','hl.112':'জাতীয় জরুরি নম্বর','hl.112d':'পুলিশ, দমকল ও অ্যাম্বুলেন্স — সারা ভারতে','hl.1962':'পশু অ্যাম্বুলেন্স',
+'hl.1962d':'সরকারি ভ্রাম্যমাণ পশু চিকিৎসা ইউনিট · রাজ্যভেদে উপলব্ধতা','hl.wild':'বন্যপ্রাণী অপরাধ','hl.wildd':'চোরাশিকার ও অবৈধ বন্যপ্রাণী ব্যবসা (MoEFCC)',
+'hl.awbi':'AWBI নিষ্ঠুরতা অভিযোগ','hl.awbid':'ভারতীয় প্রাণী কল্যাণ বোর্ড · অনলাইন ফর্ম','hl.call':'কল','hl.open':'খুলুন',
+'tips.t':'কার্যকরভাবে রিপোর্ট করুন','tips.1t':'নিরাপদ থাকুন।','tips.1':'দূর থেকে রেকর্ড করুন; কারও মুখোমুখি হবেন না।','tips.2t':'নির্দিষ্ট হন।','tips.2':'সঠিক স্থান, সময় এবং যা দেখেছেন।',
+'tips.3t':'সাক্ষী যোগ করুন।','tips.3':'তাদের তথ্য মামলাকে শক্তিশালী করে।','tips.4t':'জরুরি অবস্থা?','tips.4':'প্রথমে 112-এ কল করুন, তারপর এখানে রিপোর্ট করুন।',
+'law.t':'আইন ওদের পক্ষে','law.s':'প্রাণীর প্রতি নিষ্ঠুরতা প্রাণী নিষ্ঠুরতা প্রতিরোধ আইন, ১৯৬০ অনুযায়ী অপরাধ। কোনো প্রাণীকে হত্যা, বিষ প্রয়োগ বা বিকলাঙ্গ করা ভারতীয় ন্যায় সংহিতা, ২০২৩-এর ধারা ৩২৫ (আগে IPC ধারা ৪২৮/৪২৯) অনুযায়ী ৫ বছর পর্যন্ত কারাদণ্ড, জরিমানা বা উভয় শাস্তিযোগ্য।',
+'rs.t':'প্রতিটি উদ্ধারের পেছনে থাকে এমন কেউ, যিনি মুখ খুলেছেন।','rs.s':'PawBook-এর পোষ্যপ্রেমীদের সাথে যোগ দিন এবং প্রাণীদের জন্য আরও সদয় ভারত গড়ুন — একটি রিপোর্ট দিয়ে শুরু করুন।',
+'m.t':'ওদের কণ্ঠস্বর হওয়ার জন্য ধন্যবাদ','m.s':'আপনার রিপোর্ট পাওয়া গেছে। আমাদের কল্যাণ দল ২৪–৪৮ ঘণ্টার মধ্যে এটি পর্যালোচনা করবে এবং প্রতিটি ধাপে আপনাকে জানানো হবে।',
+'m.ref':'আপনার রেফারেন্স নম্বর','m.close':'বন্ধ করুন','m.track':'রিপোর্ট ট্র্যাক করুন',
+'t.type':'অনুগ্রহ করে নির্যাতনের ধরন বেছে নিন','t.desc':'অনুগ্রহ করে যা দেখেছেন তা লিখুন','t.loc':'অনুগ্রহ করে ঘটনার স্থান যোগ করুন','t.locating':'আপনার অবস্থান খোঁজা হচ্ছে…',
+'t.locfail':'অবস্থান পাওয়া যায়নি। অনুগ্রহ করে ঠিকানা লিখুন।','t.nogeo':'এই ডিভাইসে অবস্থান সমর্থিত নয়','t.big':'{name} ১০ MB-এর বেশি',
+'t.draft':'খসড়া এই ডিভাইসে সেভ হয়েছে','t.draftfail':'খসড়া সেভ করা যায়নি','t.net':'নেটওয়ার্ক সমস্যা। আপনার খসড়া সেভ আছে — আবার চেষ্টা করুন।',
+'t.fail':'রিপোর্ট জমা দেওয়া যায়নি','t.login':'রিপোর্ট জমা দিতে অনুগ্রহ করে লগ ইন করুন','t.upfail':'কিছু ফাইল আপলোড করা যায়নি'
+},
+ta:{
+'nav.crumb':'விலங்கு நலன்','nav.home':'முகப்பு','nav.notif':'அறிவிப்புகள்',
+'hero.eyebrow':'விலங்கு நலன் & பாதுகாப்பு','hero.t1':'அவற்றால் பேச முடியாது.','hero.t2':'அவற்றின் குரலாக இருங்கள்.',
+'hero.sub':'ஒரு விலங்கு அடிக்கப்படுவதையோ, பட்டினி போடப்படுவதையோ, கைவிடப்படுவதையோ, கொடூரமாக அடைக்கப்படுவதையோ பார்த்தீர்களா? PawBook-இல் புகாரளியுங்கள் — பாதுகாப்பாக, ரகசியமாக, உங்கள் மொழியில். ஒவ்வொரு புகாரும் உதவக்கூடியவர்களைச் சென்றடைகிறது.',
+'hero.cta':'இப்போதே புகாரளியுங்கள்','hero.cta2':'அவசர உதவி எண்கள்',
+'trust.conf':'100% ரகசியம்','trust.review':'24–48 மணி நேரத்தில் பரிசீலனை','trust.ngo':'சரிபார்க்கப்பட்ட NGO மட்டும்',
+'hero.tag1':'சிகிச்சை & பராமரிப்பு','hero.tag2':'உணவு & பாதுகாப்பு','hero.tag3':'மீட்கப்பட்டு அன்புடன்',
+'hero.float':'ஒவ்வொரு புகாரும் ஒரு உயிரைக் காப்பாற்றலாம்','hero.floats':'மீட்பு · குணம் · புதிய வீடு','hero.lang':'உங்கள் மொழியில் புகாரளியுங்கள்',
+'em.t':'விலங்கு உடனடி ஆபத்தில் உள்ளதா?','em.s':'முதலில் 112-ஐ அழையுங்கள். பிறகு மீட்புக் குழுவினர் தொடர்ந்து செயல்பட இங்கே புகாரளியுங்கள்.','em.call':'112-ஐ அழைக்கவும்',
+'how.t':'PawBook எப்படி உதவுகிறது','how.s':'உங்கள் புகாரிலிருந்து களத்தில் உண்மையான உதவி வரை மூன்று எளிய படிகள்',
+'how.1t':'நீங்கள் புகாரளிக்கிறீர்கள்','how.1s':'நீங்கள் என்ன, எங்கே பார்த்தீர்கள் என்று சொல்லுங்கள். பாதுகாப்பாக இருந்தால் மட்டும் புகைப்படம் எடுங்கள்.',
+'how.2t':'நாங்கள் சரிபார்க்கிறோம்','how.2s':'எங்கள் நலக் குழு ஒவ்வொரு புகாரையும் 24–48 மணி நேரத்தில் பரிசீலித்து, உங்கள் அடையாளத்தை ரகசியமாக வைக்கிறது.',
+'how.3t':'மீட்புக் குழுவினர் களமிறங்குகிறார்கள்','how.3s':'சரிபார்க்கப்பட்ட புகார்கள் அருகிலுள்ள NGO, மீட்பாளர்கள் மற்றும் அதிகாரிகளுக்கு அனுப்பப்படும். முன்னேற்றத்தை இங்கே பார்க்கலாம்.',
+'tab.report':'புகாரளி','tab.my':'என் புகார்கள்','tab.orgs':'அமைப்புகள்',
+'st.1':'என்ன நடந்தது','st.2':'இடம்','st.3':'ஆதாரம்','st.4':'சமர்ப்பி',
+'s1.t':'என்ன நடந்தது?','s1.s':'விலங்கு மற்றும் சூழ்நிலை பற்றிச் சொல்லுங்கள். * குறியிட்டவை அவசியம்.',
+'s1.emt':'இது அவசர நிலை','s1.ems':'விலங்கு உடனடி ஆபத்தில் உள்ளது — உங்கள் புகாருக்கு முதன்மை முன்னுரிமை வழங்கப்படும்',
+'s1.type':'கொடுமையின் வகை','s1.species':'விலங்கு','s1.breed':'இனம் / விவரம்','s1.breedph':'எ.கா. நாட்டு நாய், லாப்ரடார், பழுப்பு நிறத் தெரு நாய்',
+'s1.count':'விலங்குகளின் எண்ணிக்கை','s1.date':'எப்போது நடந்தது?','s1.desc':'நீங்கள் பார்த்ததை விவரியுங்கள்',
+'s1.descph':'விலங்குக்கு என்ன நடக்கிறது? அது எப்படி இருக்கிறது? யார் சம்பந்தப்பட்டுள்ளனர்? ஒவ்வொரு விவரமும் மீட்பாளர்கள் விரைவாக செயல்பட உதவும்.',
+'s1.deschint':'உங்களுக்கு வசதியான எந்த மொழியிலும் எழுதலாம்.','s1.ongoing':'இது இன்னும் நடந்துகொண்டிருக்கிறது',
+'sp.select':'விலங்கைத் தேர்ந்தெடுக்கவும்','sp.dog':'நாய்','sp.cat':'பூனை','sp.cow':'பசு / கால்நடை','sp.horse':'குதிரை / கழுதை','sp.bird':'பறவை','sp.monkey':'குரங்கு','sp.other':'மற்றவை',
+'cat.Physical Abuse':'உடல் ரீதியான துன்புறுத்தல்','cat.Animal Neglect':'புறக்கணிப்பு','cat.Abandonment':'கைவிடுதல்','cat.Cruel Confinement':'கொடூரமாக அடைத்தல்',
+'cat.Illegal Breeding':'சட்டவிரோத இனப்பெருக்கம்','cat.Animal Fighting':'விலங்குச் சண்டை','cat.Poisoning':'விஷம் வைத்தல்','cat.Commercial Exploitation':'வணிகச் சுரண்டல்',
+'cat.Hoarding':'அளவுக்கு மீறி வளர்த்தல்','cat.Cruel Transportation':'கொடூரமான போக்குவரத்து','cat.Other':'மற்றவை',
+'s2.t':'எங்கே நடந்தது?','s2.s':'துல்லியமான இடம் மீட்பாளர்கள் விலங்கை விரைவாக அடைய உதவும்.','s2.addr':'முகவரி அல்லது அடையாளச் சின்னம்',
+'s2.addrph':'பகுதி, தெரு அல்லது அடையாளச் சின்னத்தைத் தேடுங்கள்…','s2.city':'நகரம்','s2.state':'மாநிலம்','s2.gps':'என் தற்போதைய இருப்பிடத்தைப் பயன்படுத்து','s2.maphint':'சரியான இடத்தில் பின் இட வரைபடத்தில் தட்டவும்.',
+'s3.t':'ஆதாரம் சேர்க்கவும்','s3.s':'புகைப்படங்களும் வீடியோக்களும் புகாரைச் சரிபார்த்து நடவடிக்கை எடுக்க பெரிதும் உதவும். இந்தப் படி விருப்பத்திற்குரியது.',
+'s3.drop':'புகைப்படம் அல்லது வீடியோ சேர்க்கத் தட்டவும்','s3.drops':'JPG, PNG அல்லது MP4 · ஒவ்வொன்றும் 10 MB வரை · நல அலுவலர்கள் மட்டுமே பார்க்க முடியும்',
+'s3.safety':'உங்கள் பாதுகாப்பே முதன்மை. பாதுகாப்பான தூரத்திலிருந்து மட்டும் படம் எடுங்கள்; பொறுப்பானவரை ஒருபோதும் எதிர்கொள்ளாதீர்கள்.',
+'s3.wit':'சாட்சிகள்','s3.opt':'(விருப்பத்திற்குரியது)','s3.addwit':'சாட்சியைச் சேர்க்கவும்',
+'w.name':'பெயர்','w.nameph':'சாட்சியின் பெயர்','w.phone':'தொலைபேசி','w.email':'மின்னஞ்சல்','w.stmt':'அவர் என்ன பார்த்தார்?','w.stmtph':'சாட்சியின் சுருக்கமான வாக்குமூலம்',
+'s4.t':'சரிபார்த்து சமர்ப்பிக்கவும்','s4.s':'உங்கள் புகாரை யார் பார்க்கலாம் என்பதைத் தேர்ந்தெடுத்து, ஒப்புதல்களை உறுதிப்படுத்துங்கள்.','s4.vis':'இந்தப் புகாரை யார் பார்க்கலாம்?',
+'pv.private':'தனிப்பட்டது','pv.privates':'PawBook நல அலுவலர்கள் மட்டும்','pv.conf':'ரகசியம்','pv.confs':'சரிபார்க்கப்பட்ட NGO-களுடன் பகிரப்படும், பொதுமக்களுக்குத் தெரியாது',
+'pv.public':'பொது விழிப்புணர்வு','pv.publics':'விழிப்புணர்வுக்காக சமூகத்துடன் பகிரப்படும்',
+'s4.consent':'உங்கள் ஒப்புதல்கள்','c.id':'என் அடையாளத்தைப் பகிரவும்','c.ids':'பின்தொடர்தலுக்காக ஒதுக்கப்பட்ட நல அமைப்புடன்.',
+'c.ev':'என் ஆதாரங்களைப் பகிரவும்','c.evs':'அங்கீகரிக்கப்பட்ட நல அலுவலர்கள் மற்றும் சட்ட அதிகாரிகளுடன்.','c.fu':'எனக்குத் தகவல் அனுப்பவும்','c.fus':'இந்த வழக்கின் முன்னேற்றம் பற்றி.',
+'s4.summary':'சுருக்கம்','rv.type':'கொடுமையின் வகை','rv.animal':'விலங்கு','rv.loc':'இடம்','rv.ev':'ஆதாரம்','rv.wit':'சாட்சிகள்','rv.em':'அவசரம்',
+'rv.files':'{n} கோப்பு(கள்)','rv.none':'இல்லை','rv.yes':'ஆம் — முதன்மை முன்னுரிமை','rv.no':'இல்லை','rv.missing':'இன்னும் சேர்க்கவில்லை',
+'w.back':'பின்','w.draft':'வரைவைச் சேமி','w.next':'தொடரவும்','w.submit':'புகாரைச் சமர்ப்பி','w.submitting':'சமர்ப்பிக்கப்படுகிறது…',
+'my.loading':'உங்கள் புகார்கள் ஏற்றப்படுகின்றன…','my.login':'உங்கள் புகார்களைப் பார்க்க உள்நுழையுங்கள்','my.logins':'உங்கள் புகார்கள் உங்கள் PawBook கணக்குடன் இணைக்கப்பட்டுள்ளன.','my.loginbtn':'உள்நுழை',
+'my.none':'இன்னும் புகார்கள் இல்லை','my.nones':'நீங்கள் இதுவரை எந்தப் புகாரும் அளிக்கவில்லை. ஒரு விலங்கு சிக்கலில் இருப்பதைக் கண்டால், நாங்கள் இருக்கிறோம்.','my.fail':'புகார்களை ஏற்ற முடியவில்லை','my.fails':'இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.',
+'my.noloc':'இடம் குறிப்பிடப்படவில்லை','my.em':'அவசரம்',
+'stt.submitted':'சமர்ப்பிக்கப்பட்டது','stt.under_review':'பரிசீலனையில்','stt.verified_for_referral':'சரிபார்க்கப்பட்டது','stt.referred':'NGO-க்கு அனுப்பப்பட்டது','stt.action_in_progress':'நடவடிக்கை நடைபெறுகிறது','stt.resolved':'தீர்க்கப்பட்டது','stt.closed':'மூடப்பட்டது',
+'org.city':'நகரத்தின்படி தேடு…','org.state':'மாநிலத்தின்படி தேடு…','org.loading':'அமைப்புகள் ஏற்றப்படுகின்றன…','org.none':'இன்னும் அமைப்புகள் இல்லை',
+'org.nones':'நகரம் நகரமாக சரிபார்க்கப்பட்ட NGO-களைச் சேர்த்து வருகிறோம். வேறு நகரத்தை முயற்சிக்கவும், அல்லது அதுவரை உதவி எண்களைப் பயன்படுத்தவும்.','org.fail':'அமைப்புகளை ஏற்ற முடியவில்லை','org.covers':'பகுதி',
+'ot.ngo':'NGO','ot.rescue':'மீட்புக் குழு','ot.government':'அரசு','ot.shelter':'காப்பகம்','ot.other':'மற்றவை',
+'side.qt':'யாராவது கவனிப்பார்கள் எனக் காத்திருக்கிறது.','side.qs':'உங்கள் புகார் ரகசியமாக இருக்கும்; ஒரு விலங்குக்கு இரண்டாவது வாய்ப்பு கிடைக்க அதுவே காரணமாகலாம்.',
+'hl.t':'அவசர உதவி எண்கள்','hl.112':'தேசிய அவசர எண்','hl.112d':'காவல், தீயணைப்பு & ஆம்புலன்ஸ் — இந்தியா முழுவதும்','hl.1962':'கால்நடை ஆம்புலன்ஸ்',
+'hl.1962d':'அரசு நடமாடும் கால்நடை மருத்துவப் பிரிவு · மாநிலத்தைப் பொறுத்து கிடைக்கும்','hl.wild':'வனவிலங்கு குற்றம்','hl.wildd':'வேட்டையாடுதல் & சட்டவிரோத வனவிலங்கு வர்த்தகம் (MoEFCC)',
+'hl.awbi':'AWBI கொடுமை புகார்','hl.awbid':'இந்திய விலங்கு நல வாரியம் · இணையப் படிவம்','hl.call':'அழை','hl.open':'திற',
+'tips.t':'திறம்பட புகாரளிக்க','tips.1t':'பாதுகாப்பாக இருங்கள்.','tips.1':'தூரத்திலிருந்து பதிவு செய்யுங்கள்; யாரையும் எதிர்கொள்ளாதீர்கள்.','tips.2t':'துல்லியமாக இருங்கள்.','tips.2':'சரியான இடம், நேரம், நீங்கள் பார்த்தது.',
+'tips.3t':'சாட்சிகளைச் சேருங்கள்.','tips.3':'அவர்களின் விவரங்கள் வழக்கை வலுப்படுத்தும்.','tips.4t':'அவசரமா?','tips.4':'முதலில் 112-ஐ அழைத்து, பிறகு இங்கே புகாரளியுங்கள்.',
+'law.t':'சட்டம் அவற்றின் பக்கம்','law.s':'விலங்குகளுக்குக் கொடுமை செய்வது, விலங்குகள் வதைத் தடுப்புச் சட்டம், 1960-இன் கீழ் குற்றமாகும். ஒரு விலங்கைக் கொல்வது, விஷம் வைப்பது அல்லது ஊனப்படுத்துவது பாரதிய நியாய சன்ஹிதா, 2023 பிரிவு 325 (முன்பு IPC பிரிவு 428/429) இன் கீழ் 5 ஆண்டு வரை சிறை, அபராதம் அல்லது இரண்டும் விதிக்கத்தக்கது.',
+'rs.t':'ஒவ்வொரு மீட்புக்குப் பின்னும் குரல் கொடுத்த ஒருவர் இருக்கிறார்.','rs.s':'PawBook செல்லப்பிராணி பெற்றோருடன் இணைந்து விலங்குகளுக்கு அன்பான இந்தியாவை உருவாக்குங்கள் — ஒரு புகாரிலிருந்து தொடங்குங்கள்.',
+'m.t':'அவற்றின் குரலாக இருந்ததற்கு நன்றி','m.s':'உங்கள் புகார் பெறப்பட்டது. எங்கள் நலக் குழு 24–48 மணி நேரத்தில் பரிசீலிக்கும்; ஒவ்வொரு கட்டத்திலும் உங்களுக்குத் தகவல் கிடைக்கும்.',
+'m.ref':'உங்கள் குறிப்பு எண்','m.close':'மூடு','m.track':'புகாரைக் கண்காணி',
+'t.type':'கொடுமையின் வகையைத் தேர்ந்தெடுக்கவும்','t.desc':'நீங்கள் பார்த்ததை விவரிக்கவும்','t.loc':'சம்பவம் நடந்த இடத்தைச் சேர்க்கவும்','t.locating':'உங்கள் இருப்பிடம் தேடப்படுகிறது…',
+'t.locfail':'இருப்பிடம் கிடைக்கவில்லை. முகவரியைத் தட்டச்சு செய்யவும்.','t.nogeo':'இந்தச் சாதனத்தில் இருப்பிடம் ஆதரிக்கப்படவில்லை','t.big':'{name} 10 MB-ஐ விடப் பெரியது',
+'t.draft':'வரைவு இந்தச் சாதனத்தில் சேமிக்கப்பட்டது','t.draftfail':'வரைவைச் சேமிக்க முடியவில்லை','t.net':'இணையச் சிக்கல். உங்கள் வரைவு சேமிக்கப்பட்டுள்ளது — மீண்டும் முயற்சிக்கவும்.',
+'t.fail':'புகாரைச் சமர்ப்பிக்க முடியவில்லை','t.login':'புகாரைச் சமர்ப்பிக்க உள்நுழையவும்','t.upfail':'சில கோப்புகளைப் பதிவேற்ற முடியவில்லை'
+},
+mr:{
+'nav.crumb':'प्राणी कल्याण','nav.home':'होम','nav.notif':'सूचना',
+'hero.eyebrow':'प्राणी कल्याण आणि संरक्षण','hero.t1':'ते बोलू शकत नाहीत.','hero.t2':'त्यांचा आवाज बना.',
+'hero.sub':'एखाद्या प्राण्याला मारहाण होताना, उपाशी ठेवताना, सोडून देताना किंवा क्रूरपणे डांबून ठेवताना पाहिलंय? PawBook वर तक्रार करा — सुरक्षितपणे, गोपनीयपणे आणि तुमच्या भाषेत. प्रत्येक तक्रार मदत करू शकणाऱ्या लोकांपर्यंत पोहोचते.',
+'hero.cta':'आत्ताच तक्रार करा','hero.cta2':'आपत्कालीन हेल्पलाइन',
+'trust.conf':'100% गोपनीय','trust.review':'24–48 तासांत पडताळणी','trust.ngo':'फक्त पडताळलेल्या NGO',
+'hero.tag1':'उपचार आणि काळजी','hero.tag2':'अन्न आणि संरक्षण','hero.tag3':'वाचवले आणि प्रेम मिळाले',
+'hero.float':'प्रत्येक तक्रार एक जीव वाचवू शकते','hero.floats':'बचाव · उपचार · नवे घर','hero.lang':'तुमच्या भाषेत तक्रार करा',
+'em.t':'प्राणी तात्काळ धोक्यात आहे?','em.s':'आधी 112 वर कॉल करा. मग इथे तक्रार नोंदवा म्हणजे बचाव पथक पुढील कारवाई करू शकेल.','em.call':'112 वर कॉल करा',
+'how.t':'PawBook कशी मदत करते','how.s':'तुमच्या तक्रारीपासून प्रत्यक्ष मदतीपर्यंत तीन सोप्या पायऱ्या',
+'how.1t':'तुम्ही तक्रार करा','how.1s':'तुम्ही काय आणि कुठे पाहिलं ते सांगा. सुरक्षित असेल तरच फोटो काढा.',
+'how.2t':'आम्ही पडताळणी करतो','how.2s':'आमची कल्याण टीम प्रत्येक तक्रारीची 24–48 तासांत पडताळणी करते आणि तुमची ओळख गोपनीय ठेवते.',
+'how.3t':'बचाव पथक पुढे येते','how.3s':'पडताळलेली प्रकरणे जवळच्या NGO, बचाव पथके आणि अधिकाऱ्यांना पाठवली जातात. तुम्ही इथे प्रगती पाहू शकता.',
+'tab.report':'तक्रार नोंदवा','tab.my':'माझ्या तक्रारी','tab.orgs':'संस्था',
+'st.1':'काय झालं','st.2':'ठिकाण','st.3':'पुरावा','st.4':'सादर करा',
+'s1.t':'काय झालं?','s1.s':'प्राणी आणि परिस्थितीबद्दल सांगा. * असलेली माहिती आवश्यक आहे.',
+'s1.emt':'ही आपत्कालीन स्थिती आहे','s1.ems':'प्राणी तात्काळ धोक्यात आहे — तुमच्या तक्रारीला सर्वोच्च प्राधान्य दिले जाईल',
+'s1.type':'क्रूरतेचा प्रकार','s1.species':'प्राणी','s1.breed':'जात / वर्णन','s1.breedph':'उदा. देशी, लॅब्राडोर, तपकिरी भटका कुत्रा',
+'s1.count':'प्राण्यांची संख्या','s1.date':'हे कधी घडलं?','s1.desc':'तुम्ही जे पाहिलं त्याचं वर्णन करा',
+'s1.descph':'प्राण्यासोबत काय होत आहे? तो कसा दिसतो? कोण सहभागी आहे? प्रत्येक माहिती बचाव पथकाला लवकर कृती करण्यास मदत करते.',
+'s1.deschint':'तुम्हाला सोयीच्या कोणत्याही भाषेत लिहू शकता.','s1.ongoing':'हे अजूनही सुरू आहे',
+'sp.select':'प्राणी निवडा','sp.dog':'कुत्रा','sp.cat':'मांजर','sp.cow':'गाय / गुरे','sp.horse':'घोडा / गाढव','sp.bird':'पक्षी','sp.monkey':'माकड','sp.other':'इतर',
+'cat.Physical Abuse':'मारहाण','cat.Animal Neglect':'दुर्लक्ष','cat.Abandonment':'सोडून देणे','cat.Cruel Confinement':'क्रूरपणे डांबून ठेवणे',
+'cat.Illegal Breeding':'बेकायदेशीर प्रजनन','cat.Animal Fighting':'प्राण्यांची झुंज','cat.Poisoning':'विषबाधा','cat.Commercial Exploitation':'व्यावसायिक शोषण',
+'cat.Hoarding':'अतिरिक्त प्राणी ठेवणे','cat.Cruel Transportation':'क्रूर वाहतूक','cat.Other':'इतर',
+'s2.t':'हे कुठे घडलं?','s2.s':'अचूक ठिकाणामुळे बचाव पथक प्राण्यापर्यंत लवकर पोहोचू शकते.','s2.addr':'पत्ता किंवा खूण',
+'s2.addrph':'परिसर, रस्ता किंवा खूण शोधा…','s2.city':'शहर','s2.state':'राज्य','s2.gps':'माझे सध्याचे ठिकाण वापरा','s2.maphint':'अचूक ठिकाणी पिन लावण्यासाठी नकाशावर टॅप करा.',
+'s3.t':'पुरावा जोडा','s3.s':'फोटो आणि व्हिडिओमुळे तक्रारीची पडताळणी आणि कारवाई खूप सोपी होते. ही पायरी ऐच्छिक आहे.',
+'s3.drop':'फोटो किंवा व्हिडिओ जोडण्यासाठी टॅप करा','s3.drops':'JPG, PNG किंवा MP4 · प्रत्येकी 10 MB पर्यंत · फक्त कल्याण अधिकारी पाहू शकतात',
+'s3.safety':'तुमची सुरक्षा सर्वात महत्त्वाची. फक्त सुरक्षित अंतरावरून फोटो काढा आणि जबाबदार व्यक्तीशी कधीही वाद घालू नका.',
+'s3.wit':'साक्षीदार','s3.opt':'(ऐच्छिक)','s3.addwit':'साक्षीदार जोडा',
+'w.name':'नाव','w.nameph':'साक्षीदाराचे नाव','w.phone':'फोन','w.email':'ईमेल','w.stmt':'त्यांनी काय पाहिलं?','w.stmtph':'साक्षीदाराचे थोडक्यात निवेदन',
+'s4.t':'तपासा आणि सादर करा','s4.s':'तुमची तक्रार कोण पाहू शकेल ते निवडा आणि तुमची संमती द्या.','s4.vis':'ही तक्रार कोण पाहू शकेल?',
+'pv.private':'खाजगी','pv.privates':'फक्त PawBook कल्याण अधिकारी','pv.conf':'गोपनीय','pv.confs':'पडताळलेल्या NGO सोबत शेअर, लोकांपासून लपवलेले',
+'pv.public':'जनजागृती','pv.publics':'जागरूकतेसाठी समुदायासोबत शेअर',
+'s4.consent':'तुमची संमती','c.id':'माझी ओळख शेअर करा','c.ids':'पाठपुराव्यासाठी नेमलेल्या कल्याण संस्थेसोबत.',
+'c.ev':'माझे पुरावे शेअर करा','c.evs':'अधिकृत कल्याण अधिकारी आणि कायदेशीर प्राधिकरणांसोबत.','c.fu':'मला अपडेट पाठवा','c.fus':'या प्रकरणाच्या प्रगतीबद्दल.',
+'s4.summary':'सारांश','rv.type':'क्रूरतेचा प्रकार','rv.animal':'प्राणी','rv.loc':'ठिकाण','rv.ev':'पुरावा','rv.wit':'साक्षीदार','rv.em':'आपत्कालीन',
+'rv.files':'{n} फाइल','rv.none':'काहीही नाही','rv.yes':'होय — सर्वोच्च प्राधान्य','rv.no':'नाही','rv.missing':'अजून जोडलेले नाही',
+'w.back':'मागे','w.draft':'ड्राफ्ट सेव्ह करा','w.next':'पुढे जा','w.submit':'तक्रार सादर करा','w.submitting':'सादर होत आहे…',
+'my.loading':'तुमच्या तक्रारी लोड होत आहेत…','my.login':'तुमच्या तक्रारी पाहण्यासाठी लॉग इन करा','my.logins':'तुमच्या तक्रारी तुमच्या PawBook खात्याशी जोडलेल्या आहेत.','my.loginbtn':'लॉग इन',
+'my.none':'अजून कोणतीही तक्रार नाही','my.nones':'तुम्ही अजून कोणतीही तक्रार केलेली नाही. एखादा प्राणी संकटात दिसला तर आम्ही आहोत.','my.fail':'तक्रारी लोड होऊ शकल्या नाहीत','my.fails':'तुमचे कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.',
+'my.noloc':'ठिकाण नमूद नाही','my.em':'आपत्कालीन',
+'stt.submitted':'सादर केली','stt.under_review':'पडताळणी सुरू','stt.verified_for_referral':'पडताळली','stt.referred':'NGO कडे पाठवली','stt.action_in_progress':'कारवाई सुरू','stt.resolved':'निकाली निघाली','stt.closed':'बंद',
+'org.city':'शहरानुसार शोधा…','org.state':'राज्यानुसार शोधा…','org.loading':'संस्था लोड होत आहेत…','org.none':'अजून कोणतीही संस्था सापडली नाही',
+'org.nones':'आम्ही शहरानुसार पडताळलेल्या NGO जोडत आहोत. दुसरे शहर पाहा, किंवा तोपर्यंत हेल्पलाइन वापरा.','org.fail':'संस्था लोड होऊ शकल्या नाहीत','org.covers':'कार्यक्षेत्र',
+'ot.ngo':'NGO','ot.rescue':'बचाव पथक','ot.government':'सरकारी','ot.shelter':'निवारा','ot.other':'इतर',
+'side.qt':'कोणीतरी लक्ष देईल याची वाट पाहत.','side.qs':'तुमची तक्रार गोपनीय राहते आणि एखाद्या प्राण्याला दुसरी संधी मिळण्याचे कारण ठरू शकते.',
+'hl.t':'आपत्कालीन हेल्पलाइन','hl.112':'राष्ट्रीय आपत्कालीन क्रमांक','hl.112d':'पोलीस, अग्निशमन आणि रुग्णवाहिका — संपूर्ण भारतात','hl.1962':'पशु रुग्णवाहिका',
+'hl.1962d':'सरकारी फिरती पशुवैद्यकीय युनिट · राज्यानुसार उपलब्धता','hl.wild':'वन्यजीव गुन्हे','hl.wildd':'शिकार आणि बेकायदेशीर वन्यजीव व्यापार (MoEFCC)',
+'hl.awbi':'AWBI क्रूरता तक्रार','hl.awbid':'भारतीय जीवजंतू कल्याण मंडळ · ऑनलाइन फॉर्म','hl.call':'कॉल','hl.open':'उघडा',
+'tips.t':'प्रभावी तक्रार कशी करावी','tips.1t':'सुरक्षित राहा.','tips.1':'लांबून नोंद करा; कोणाशीही वाद घालू नका.','tips.2t':'नेमके सांगा.','tips.2':'अचूक ठिकाण, वेळ आणि तुम्ही काय पाहिलं.',
+'tips.3t':'साक्षीदार जोडा.','tips.3':'त्यांची माहिती प्रकरण मजबूत करते.','tips.4t':'आपत्कालीन?','tips.4':'आधी 112 वर कॉल करा, मग इथे तक्रार करा.',
+'law.t':'कायदा त्यांच्या बाजूने आहे','law.s':'प्राण्यांशी क्रूरता हा प्राणी क्रूरता प्रतिबंधक अधिनियम, 1960 अंतर्गत गुन्हा आहे. एखाद्या प्राण्याला मारणे, विष देणे किंवा अपंग करणे भारतीय न्याय संहिता, 2023 च्या कलम 325 (पूर्वी IPC कलम 428/429) अंतर्गत 5 वर्षांपर्यंत कारावास, दंड किंवा दोन्ही शिक्षेस पात्र आहे.',
+'rs.t':'प्रत्येक बचावामागे कोणीतरी असतो ज्याने आवाज उठवला.','rs.s':'PawBook च्या पाळीव प्राणीप्रेमींसोबत जोडा आणि प्राण्यांसाठी अधिक दयाळू भारत घडवा — एका तक्रारीपासून सुरुवात करा.',
+'m.t':'त्यांचा आवाज बनल्याबद्दल धन्यवाद','m.s':'तुमची तक्रार मिळाली आहे. आमची कल्याण टीम 24–48 तासांत तिची पडताळणी करेल आणि प्रत्येक टप्प्यावर तुम्हाला अपडेट मिळेल.',
+'m.ref':'तुमचा संदर्भ क्रमांक','m.close':'बंद करा','m.track':'तक्रार ट्रॅक करा',
+'t.type':'कृपया क्रूरतेचा प्रकार निवडा','t.desc':'कृपया तुम्ही काय पाहिलं ते लिहा','t.loc':'कृपया घटनेचे ठिकाण जोडा','t.locating':'तुमचे ठिकाण शोधत आहे…',
+'t.locfail':'ठिकाण मिळाले नाही. कृपया पत्ता लिहा.','t.nogeo':'या डिव्हाइसवर लोकेशन उपलब्ध नाही','t.big':'{name} 10 MB पेक्षा मोठी आहे',
+'t.draft':'ड्राफ्ट या डिव्हाइसवर सेव्ह झाला','t.draftfail':'ड्राफ्ट सेव्ह होऊ शकला नाही','t.net':'नेटवर्क समस्या. तुमचा ड्राफ्ट सेव्ह आहे — कृपया पुन्हा प्रयत्न करा.',
+'t.fail':'तक्रार सादर होऊ शकली नाही','t.login':'तक्रार सादर करण्यासाठी कृपया लॉग इन करा','t.upfail':'काही फाइल्स अपलोड होऊ शकल्या नाहीत'
+}
+});
+</script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   PAGE LOGIC
+   ═══════════════════════════════════════════════════════════════════════════ */
+var API_BASE = 'https://pawbook.deemona.com/api/v1';
+var T = PBi18n.t;
 
-function goTo(p){window.location.href=p;}
-function getToken(){return localStorage.getItem('pb_token')||'';}
-function authHdr(){return{'Authorization':'Bearer '+getToken(),'Content-Type':'application/json'};}
+function getToken(){ try{ return localStorage.getItem('pb_token')||''; }catch(e){ return ''; } }
+function authHdr(json){ var h={}; if(getToken()) h['Authorization']='Bearer '+getToken(); if(json!==false) h['Content-Type']='application/json'; return h; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
 
-// ── TOAST ──────────────────────────────────────────────────────────────────
+var toastTimer=null;
 function showToast(msg,type){
   var t=document.getElementById('toast');
   t.textContent=msg; t.className='toast '+(type||'success')+' show';
-  setTimeout(function(){t.className='toast';},3000);
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.className='toast';},3200);
 }
 
-// ── STATE ──────────────────────────────────────────────────────────────────
-var state={
-  categoryId:null,
-  isEmergency:false,
-  privacy:'private',
-  lat:null,lng:null,
-  evidenceFiles:[],
-  witnesses:[],
-};
+var state={ categoryId:null, categoryName:null, isEmergency:false, privacy:'private', lat:null, lng:null, evidenceFiles:[], witnesses:[], step:1 };
+var categories=[];
 
-// ── TABS ──────────────────────────────────────────────────────────────────
+/* ── tabs ── */
 function switchTab(t){
   ['report','my','orgs'].forEach(function(id){
-    document.getElementById('tab-'+id).classList.remove('active');
-    document.getElementById('panel-'+id).classList.remove('active');
+    document.getElementById('tab-'+id).classList.toggle('active',id===t);
+    document.getElementById('panel-'+id).classList.toggle('active',id===t);
   });
-  document.getElementById('tab-'+t).classList.add('active');
-  document.getElementById('panel-'+t).classList.add('active');
-  document.getElementById('submit-bar').style.display = t==='report'?'flex':'none';
   if(t==='my') loadMyReports();
   if(t==='orgs') loadOrgs();
+  if(t==='report' && map) setTimeout(function(){ map.invalidateSize(); },60);
 }
 
-// ── CATEGORIES ────────────────────────────────────────────────────────────
-var catIcons={
-  'Physical Abuse':'ti-hand-stop',
-  'Animal Neglect':'ti-droplet-off',
-  'Abandonment':'ti-door-exit',
-  'Cruel Confinement':'ti-lock',
-  'Illegal Breeding':'ti-dna',
-  'Animal Fighting':'ti-sword',
-  'Poisoning':'ti-skull',
-  'Commercial Exploitation':'ti-building-store',
-  'Hoarding':'ti-stack-2',
-  'Cruel Transportation':'ti-truck',
-  'Other':'ti-dots-circle-horizontal',
-};
+/* ── wizard ── */
+function validateStep(n){
+  if(n===1){
+    if(!state.categoryId){ showToast(T('t.type'),'error'); return false; }
+    if(!document.getElementById('f-desc').value.trim()){ showToast(T('t.desc'),'error'); document.getElementById('f-desc').focus(); return false; }
+  }
+  if(n===2){
+    if(!document.getElementById('f-address').value.trim() && !state.lat){ showToast(T('t.loc'),'error'); return false; }
+  }
+  return true;
+}
+function goStep(n){
+  if(n>state.step){ for(var i=state.step;i<n;i++){ if(!validateStep(i)) return; } }
+  state.step=n;
+  for(var s=1;s<=4;s++){ document.getElementById('ws-'+s).classList.toggle('active',s===n); }
+  document.querySelectorAll('.ps').forEach(function(p){
+    var k=+p.getAttribute('data-s'); p.classList.toggle('on',k===n); p.classList.toggle('done',k<n);
+  });
+  document.getElementById('prog-fill').style.width=(n*25)+'%';
+  document.getElementById('btn-back').style.visibility=n>1?'visible':'hidden';
+  document.getElementById('btn-next').style.display=n<4?'':'none';
+  document.getElementById('submit-btn').style.display=n===4?'':'none';
+  if(n===2){ initMap(); setTimeout(function(){ map.invalidateSize(); },80); }
+  if(n===4) renderReview();
+  var top=document.getElementById('report').getBoundingClientRect().top+window.scrollY-70;
+  if(window.scrollY>top) window.scrollTo({top:top,behavior:'smooth'});
+}
+function nextStep(){ goStep(state.step+1); }
+function prevStep(){ if(state.step>1) goStep(state.step-1); }
 
+/* ── categories ── */
+var catStyle={
+  'Physical Abuse':['ti-hand-stop','#fff1f1','#e5484d'], 'Animal Neglect':['ti-bowl','#fff7ed','#ea580c'],
+  'Abandonment':['ti-road','#fefce8','#ca8a04'], 'Cruel Confinement':['ti-lock','#f5f3ff','#7c3aed'],
+  'Illegal Breeding':['ti-dna-2','#fdf2f8','#db2777'], 'Animal Fighting':['ti-swords','#fef2f2','#b91c1c'],
+  'Poisoning':['ti-flask','#ecfdf5','#059669'], 'Commercial Exploitation':['ti-building-store','#eff6ff','#2563eb'],
+  'Hoarding':['ti-home-exclamation','#f0f9ff','#0284c7'], 'Cruel Transportation':['ti-truck','#f8fafc','#475569'],
+  'Other':['ti-dots','#f1f5f9','#64748b']
+};
+function catLabel(name){ return PBi18n.has('cat.'+name) ? T('cat.'+name) : name; }
+function renderCategories(){
+  var g=document.getElementById('cat-grid'); if(!categories.length) return;
+  g.innerHTML='';
+  categories.forEach(function(c){
+    var st=catStyle[c.name]||['ti-alert-circle','#f1f5f9','#64748b'];
+    var d=document.createElement('button'); d.type='button';
+    d.className='cat'+(state.categoryId===c.category_id?' picked':''); d.id='cat-'+c.category_id;
+    d.innerHTML='<div class="cat-ic" style="background:'+st[1]+';color:'+st[2]+'"><i class="ti '+st[0]+'"></i></div>'+esc(catLabel(c.name));
+    d.onclick=function(){ selectCategory(c,d); };
+    g.appendChild(d);
+  });
+}
+function selectCategory(c,el){
+  document.querySelectorAll('.cat').forEach(function(p){p.classList.remove('picked');});
+  el.classList.add('picked'); state.categoryId=c.category_id; state.categoryName=c.name;
+}
 fetch(API_BASE+'/abuse-reports/categories')
   .then(function(r){return r.json();})
   .then(function(res){
     if(!res.success) return;
-    var g=document.getElementById('cat-grid');
-    g.innerHTML='';
-    res.data.forEach(function(c){
-      var icon=catIcons[c.name]||'ti-alert-circle';
-      var d=document.createElement('div');
-      d.className='cat-pill';
-      d.id='cat-'+c.category_id;
-      d.innerHTML='<i class="ti '+icon+'" style="color:#dc2626"></i>'+c.name;
-      d.onclick=function(){selectCategory(c.category_id,d);};
-      g.appendChild(d);
-    });
-  })
-  .catch(function(){});
+    categories=res.data;
+    if(state.categoryId){ categories.forEach(function(c){ if(c.category_id===state.categoryId) state.categoryName=c.name; }); }
+    renderCategories();
+  }).catch(function(){});
 
-function selectCategory(id,el){
-  document.querySelectorAll('.cat-pill').forEach(function(p){p.classList.remove('selected');});
-  el.classList.add('selected');
-  state.categoryId=id;
-}
-
-// ── EMERGENCY TOGGLE ──────────────────────────────────────────────────────
+/* ── toggles ── */
 function toggleEmergency(){
   state.isEmergency=!state.isEmergency;
-  var sw=document.getElementById('toggle-sw');
-  var tog=document.getElementById('emergency-toggle');
-  sw.className='toggle-switch'+(state.isEmergency?' on':'');
-  tog.className='emergency-toggle'+(state.isEmergency?' active':'');
+  document.getElementById('emergency-toggle').classList.toggle('on',state.isEmergency);
 }
-
-// ── PRIVACY ───────────────────────────────────────────────────────────────
 function selectPrivacy(v){
   state.privacy=v;
-  ['private','confidential','public'].forEach(function(p){
-    document.getElementById('priv-'+p).classList.toggle('selected',p===v);
-  });
+  ['private','confidential','public'].forEach(function(p){ document.getElementById('priv-'+p).classList.toggle('picked',p===v); });
 }
 
-// ── MAP ───────────────────────────────────────────────────────────────────
-var map=null,marker=null;
+/* ── map ── */
+var map=null, marker=null;
 function initMap(lat,lng){
   if(!map){
-    map=L.map('abuse-map').setView([lat||20.5937,lng||78.9629],lat?15:5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-    map.on('click',function(e){setMapPin(e.latlng.lat,e.latlng.lng);});
-  } else if(lat){
-    map.setView([lat,lng],15);
+    map=L.map('abuse-map').setView([state.lat||20.5937,state.lng||78.9629],state.lat?15:5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
+    map.on('click',function(e){ setMapPin(e.latlng.lat,e.latlng.lng); reverseGeocode(e.latlng.lat,e.latlng.lng,true); });
+    if(state.lat) setMapPin(state.lat,state.lng);
   }
-  if(lat){ setMapPin(lat,lng); }
+  if(lat!=null){ map.setView([lat,lng],16); setMapPin(lat,lng); }
 }
 function setMapPin(lat,lng){
   state.lat=lat; state.lng=lng;
-  if(marker) map.removeLayer(marker);
-  marker=L.marker([lat,lng]).addTo(map);
+  if(map){ if(marker) map.removeLayer(marker); marker=L.marker([lat,lng]).addTo(map); }
   document.getElementById('coord-display').style.display='block';
-  document.getElementById('coord-text').textContent=lat.toFixed(5)+', '+lng.toFixed(5);
+  document.getElementById('coord-text').textContent=(+lat).toFixed(5)+', '+(+lng).toFixed(5);
 }
-
-document.addEventListener('DOMContentLoaded',function(){initMap(null,null);});
-
 function useMyLocation(){
-  if(!navigator.geolocation){showToast('Geolocation not supported','error');return;}
-  showToast('Getting your location…','info');
+  if(!navigator.geolocation){ showToast(T('t.nogeo'),'error'); return; }
+  showToast(T('t.locating'),'info');
   navigator.geolocation.getCurrentPosition(function(p){
-    var lat=p.coords.latitude,lng=p.coords.longitude;
-    initMap(lat,lng);
-    reverseGeocode(lat,lng);
-  },function(){showToast('Could not get location','error');});
+    initMap(p.coords.latitude,p.coords.longitude); reverseGeocode(p.coords.latitude,p.coords.longitude,true);
+  },function(){ showToast(T('t.locfail'),'error'); },{enableHighAccuracy:true,timeout:12000});
 }
-
-function reverseGeocode(lat,lng){
-  fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json')
+function reverseGeocode(lat,lng,fillAddr){
+  fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language='+PBi18n.lang+',en')
     .then(function(r){return r.json();})
     .then(function(d){
-      if(d.address){
-        var a=d.address;
-        document.getElementById('f-address').value=d.display_name||'';
-        document.getElementById('f-city').value=a.city||a.town||a.village||'';
-        document.getElementById('f-state').value=a.state||'';
-      }
+      if(!d.address) return; var a=d.address;
+      if(fillAddr) document.getElementById('f-address').value=d.display_name||'';
+      document.getElementById('f-city').value=a.city||a.town||a.village||a.suburb||a.county||'';
+      document.getElementById('f-state').value=a.state||'';
     }).catch(function(){});
 }
-
 var addrTimer=null;
 function onAddressInput(){
   clearTimeout(addrTimer);
   addrTimer=setTimeout(function(){
-    var q=document.getElementById('f-address').value;
-    if(q.length<3){document.getElementById('addr-suggest').style.display='none';return;}
-    fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=in')
+    var q=document.getElementById('f-address').value.trim(), box=document.getElementById('addr-suggest');
+    if(q.length<3){ box.style.display='none'; return; }
+    fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=in&accept-language='+PBi18n.lang+',en')
       .then(function(r){return r.json();})
       .then(function(res){
-        var box=document.getElementById('addr-suggest');
         box.innerHTML=''; box.style.display=res.length?'block':'none';
         res.forEach(function(r){
-          var d=document.createElement('div');
-          d.textContent=r.display_name;
+          var d=document.createElement('div'); d.textContent=r.display_name;
           d.onclick=function(){
-            document.getElementById('f-address').value=r.display_name;
-            box.style.display='none';
-            initMap(parseFloat(r.lat),parseFloat(r.lon));
-            reverseGeocode(parseFloat(r.lat),parseFloat(r.lon));
+            document.getElementById('f-address').value=r.display_name; box.style.display='none';
+            initMap(parseFloat(r.lat),parseFloat(r.lon)); reverseGeocode(parseFloat(r.lat),parseFloat(r.lon),false);
           };
           box.appendChild(d);
         });
       }).catch(function(){});
   },400);
 }
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.suggest-wrap')) document.getElementById('addr-suggest').style.display='none';
-});
+document.addEventListener('click',function(e){ if(!e.target.closest('.sugg-wrap')) document.getElementById('addr-suggest').style.display='none'; });
 
-// ── EVIDENCE ──────────────────────────────────────────────────────────────
-function onEvidenceSelected(e){
-  var files=Array.from(e.target.files);
+/* ── evidence ── */
+function onEvidenceSelected(e){ addFiles(Array.from(e.target.files)); e.target.value=''; }
+function addFiles(files){
   files.forEach(function(f){
-    if(f.size>10*1024*1024){showToast(f.name+' exceeds 10MB','error');return;}
+    if(!/^(image|video)\//.test(f.type)) return;
+    if(f.size>10*1024*1024){ showToast(T('t.big',{name:f.name}),'error'); return; }
     state.evidenceFiles.push(f);
-    var r=new FileReader();
-    r.onload=function(ev){
-      var wrap=document.createElement('div');
-      wrap.className='ev-thumb';
-      wrap.innerHTML='<img src="'+ev.target.result+'"><button class="ev-thumb-del" onclick="removeEvidence(this)">×</button>';
-      document.getElementById('evidence-preview').appendChild(wrap);
-    };
-    r.readAsDataURL(f);
+    var wrap=document.createElement('div'); wrap.className='ev'; wrap._file=f;
+    var url=URL.createObjectURL(f);
+    wrap.innerHTML=(f.type.indexOf('video')===0?'<video src="'+url+'" muted></video>':'<img src="'+url+'" alt="">')+'<button type="button" class="ev-x" aria-label="remove"><i class="ti ti-x"></i></button>';
+    wrap.querySelector('.ev-x').onclick=function(){ state.evidenceFiles=state.evidenceFiles.filter(function(x){return x!==f;}); URL.revokeObjectURL(url); wrap.remove(); };
+    document.getElementById('evidence-preview').appendChild(wrap);
   });
-  e.target.value='';
 }
-function removeEvidence(btn){
-  var idx=Array.from(document.getElementById('evidence-preview').children).indexOf(btn.parentElement);
-  state.evidenceFiles.splice(idx,1);
-  btn.parentElement.remove();
-}
+(function(){
+  var drop=document.getElementById('drop');
+  ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('drag');}); });
+  ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('drag');}); });
+  drop.addEventListener('drop',function(e){ addFiles(Array.from(e.dataTransfer.files)); });
+})();
 
-// ── WITNESSES ─────────────────────────────────────────────────────────────
+/* ── witnesses ── */
 var witnessCount=0;
 function addWitness(){
-  witnessCount++;
-  var id='w'+witnessCount;
-  var row=document.createElement('div');
-  row.className='witness-row';
-  row.id=id;
-  row.innerHTML='<button class="witness-del" onclick="removeWitness(\''+id+'\')"><i class="ti ti-x"></i></button>'
-    +'<div><label class="field-label">Name</label><input class="field-input" id="'+id+'-name" placeholder="Witness name"></div>'
-    +'<div><label class="field-label">Phone</label><input class="field-input" id="'+id+'-phone" placeholder="+91 …"></div>'
-    +'<div style="grid-column:1/-1"><label class="field-label">Email</label><input class="field-input" id="'+id+'-email" placeholder="witness@email.com"></div>'
-    +'<div style="grid-column:1/-1"><label class="field-label">Statement</label><textarea class="field-textarea" id="'+id+'-stmt" placeholder="What did this witness see?"></textarea></div>';
+  witnessCount++; var id='w'+witnessCount;
+  var row=document.createElement('div'); row.className='wit'; row.id=id;
+  row.innerHTML='<button type="button" class="wit-x" onclick="removeWitness(\''+id+'\')"><i class="ti ti-x"></i></button>'
+    +'<div class="grid2">'
+    +'<div><label class="lbl" data-i18n="w.name">'+T('w.name')+'</label><input class="inp" id="'+id+'-name" data-i18n-ph="w.nameph" placeholder="'+esc(T('w.nameph'))+'"></div>'
+    +'<div><label class="lbl" data-i18n="w.phone">'+T('w.phone')+'</label><input class="inp" id="'+id+'-phone" type="tel" placeholder="+91 …"></div>'
+    +'</div>'
+    +'<div style="margin-bottom:10px"><label class="lbl" data-i18n="w.email">'+T('w.email')+'</label><input class="inp" id="'+id+'-email" type="email" placeholder="name@email.com"></div>'
+    +'<div><label class="lbl" data-i18n="w.stmt">'+T('w.stmt')+'</label><textarea class="ta" style="min-height:80px" id="'+id+'-stmt" data-i18n-ph="w.stmtph" placeholder="'+esc(T('w.stmtph'))+'"></textarea></div>';
   document.getElementById('witnesses-container').appendChild(row);
   state.witnesses.push(id);
 }
-function removeWitness(id){
-  document.getElementById(id).remove();
-  state.witnesses=state.witnesses.filter(function(w){return w!==id;});
+function removeWitness(id){ document.getElementById(id).remove(); state.witnesses=state.witnesses.filter(function(w){return w!==id;}); }
+function collectWitnesses(){
+  return state.witnesses.map(function(id){
+    return { name:document.getElementById(id+'-name').value.trim()||null, phone:document.getElementById(id+'-phone').value.trim()||null,
+             email:document.getElementById(id+'-email').value.trim()||null, statement:document.getElementById(id+'-stmt').value.trim()||null };
+  }).filter(function(w){ return w.name||w.phone; });
 }
 
-// ── UPLOAD EVIDENCE TO SERVER ─────────────────────────────────────────────
+/* ── review ── */
+function renderReview(){
+  var sp=document.getElementById('f-species'); var spTxt=sp.value?sp.options[sp.selectedIndex].text:T('rv.missing');
+  var addr=document.getElementById('f-address').value.trim(), city=document.getElementById('f-city').value.trim();
+  var loc=city||addr.split(',').slice(0,2).join(',')||(state.lat?(state.lat.toFixed(4)+', '+state.lng.toFixed(4)):T('rv.missing'));
+  var rows=[
+    [T('rv.type'), state.categoryName?catLabel(state.categoryName):T('rv.missing')],
+    [T('rv.animal'), spTxt+(+document.getElementById('f-count').value>1?' × '+document.getElementById('f-count').value:'')],
+    [T('rv.loc'), loc],
+    [T('rv.ev'), state.evidenceFiles.length?T('rv.files',{n:state.evidenceFiles.length}):T('rv.none')],
+    [T('rv.wit'), collectWitnesses().length||T('rv.none')],
+    [T('rv.em'), state.isEmergency?T('rv.yes'):T('rv.no')]
+  ];
+  document.getElementById('review').innerHTML=rows.map(function(r){ return '<div class="rv-row"><span>'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></div>'; }).join('');
+}
+
+/* ── upload + submit ── */
 async function uploadEvidenceFiles(){
-  if(!state.evidenceFiles.length) return [];
-  var results=[];
+  var results=[], failed=0;
   for(var i=0;i<state.evidenceFiles.length;i++){
-    var f=state.evidenceFiles[i];
-    var fd=new FormData();
-    fd.append('file',f);
+    var f=state.evidenceFiles[i], fd=new FormData(); fd.append('file',f);
     try{
-      var r=await fetch(API_BASE+'/upload',{method:'POST',headers:{'Authorization':'Bearer '+getToken()},body:fd});
-      var j=await r.json();
-      if(j.url||j.data&&j.data.url){
-        var url=j.url||j.data.url;
-        var ftype=f.type.startsWith('image')?'image':f.type.startsWith('video')?'video':'document';
-        results.push({file_url:url,file_type:ftype,file_size:f.size,original_name:f.name});
-      }
-    }catch(e){console.warn('upload err',e);}
+      var r=await fetch(API_BASE+'/media/upload',{method:'POST',headers:authHdr(false),credentials:'include',body:fd});
+      var j=await r.json(), d=j.data||{};
+      var url=j.url||d.url||d.file_url||d.media_url||(d.media&&d.media.url);
+      if(url){ results.push({file_url:url,file_type:f.type.indexOf('image')===0?'image':f.type.indexOf('video')===0?'video':'document',file_size:f.size,original_name:f.name}); }
+      else failed++;
+    }catch(e){ failed++; }
   }
+  if(failed) showToast(T('t.upfail'),'error');
   return results;
 }
-
-// ── SUBMIT ────────────────────────────────────────────────────────────────
 async function submitReport(){
-  if(!state.categoryId){showToast('Please select type of abuse','error');return;}
-  var desc=document.getElementById('f-desc').value.trim();
-  if(!desc){showToast('Please describe what happened','error');return;}
-  var address=document.getElementById('f-address').value.trim();
-  if(!address&&!state.lat){showToast('Please add the incident location','error');return;}
-
+  if(!validateStep(1)){ goStep(1); return; }
+  if(!validateStep(2)){ goStep(2); return; }
   var btn=document.getElementById('submit-btn');
-  btn.disabled=true; btn.innerHTML='<i class="ti ti-loader-2" style="animation:spin 1s linear infinite"></i> Submitting…';
-
-  // Upload evidence files first
-  var evidenceArr=await uploadEvidenceFiles();
-
-  // Collect witnesses
-  var witnessArr=state.witnesses.map(function(id){
-    return{
-      name:document.getElementById(id+'-name').value||null,
-      phone:document.getElementById(id+'-phone').value||null,
-      email:document.getElementById(id+'-email').value||null,
-      statement:document.getElementById(id+'-stmt').value||null,
-    };
-  }).filter(function(w){return w.name||w.phone;});
-
-  var payload={
-    category_id:state.categoryId,
-    description:desc,
-    animal_species:document.getElementById('f-species').value||null,
-    animal_breed:document.getElementById('f-breed').value||null,
-    animal_count:parseInt(document.getElementById('f-count').value)||1,
-    incident_date:document.getElementById('f-date').value||null,
-    is_ongoing:document.getElementById('f-ongoing').checked,
-    is_emergency:state.isEmergency,
-    reporting_pref:state.privacy,
-    location:{
-      latitude:state.lat,longitude:state.lng,
-      address:address,
-      city:document.getElementById('f-city').value||null,
-      state:document.getElementById('f-state').value||null,
-    },
-    evidence:evidenceArr,
-    witnesses:witnessArr,
-    consent:{
-      identity_sharing:document.getElementById('c-identity').checked,
-      evidence_sharing:document.getElementById('c-evidence').checked,
-      follow_up_contact:document.getElementById('c-followup').checked,
-    },
-  };
-
+  btn.disabled=true; btn.innerHTML='<i class="ti ti-loader-2 spin"></i><span>'+T('w.submitting')+'</span>';
+  saveDraft(true);
   try{
-    var r=await fetch(API_BASE+'/abuse-reports',{method:'POST',headers:authHdr(),body:JSON.stringify(payload)});
+    var evidenceArr=await uploadEvidenceFiles();
+    var payload={
+      category_id:state.categoryId, description:document.getElementById('f-desc').value.trim(),
+      animal_species:document.getElementById('f-species').value||null, animal_breed:document.getElementById('f-breed').value.trim()||null,
+      animal_count:parseInt(document.getElementById('f-count').value,10)||1, incident_date:document.getElementById('f-date').value||null,
+      is_ongoing:document.getElementById('f-ongoing').checked, is_emergency:state.isEmergency, reporting_pref:state.privacy,
+      location:{ latitude:state.lat, longitude:state.lng, address:document.getElementById('f-address').value.trim()||null,
+                 city:document.getElementById('f-city').value.trim()||null, state:document.getElementById('f-state').value.trim()||null },
+      evidence:evidenceArr, witnesses:collectWitnesses(),
+      consent:{ identity_sharing:document.getElementById('c-identity').checked, evidence_sharing:document.getElementById('c-evidence').checked,
+                follow_up_contact:document.getElementById('c-followup').checked },
+      language:PBi18n.lang
+    };
+    var r=await fetch(API_BASE+'/abuse-reports',{method:'POST',headers:authHdr(),credentials:'include',body:JSON.stringify(payload)});
+    if(r.status===401){ showToast(T('t.login'),'error'); setTimeout(function(){ goTo('01_login.html'); },1600); return; }
     var j=await r.json();
     if(j.success){
       document.getElementById('modal-ref-num').textContent=j.data.reference_number;
       document.getElementById('success-modal').classList.add('show');
-      localStorage.removeItem('pb_abuse_draft');
-    } else {
-      showToast(j.message||'Submission failed','error');
-    }
-  } catch(e){
-    showToast('Network error. Please try again.','error');
-  } finally {
-    btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i> Submit Report';
-  }
+      try{ localStorage.removeItem('pb_abuse_draft'); }catch(e){}
+      resetForm();
+    } else showToast(j.message||T('t.fail'),'error');
+  }catch(e){ showToast(T('t.net'),'error'); }
+  finally{ btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i><span data-i18n="w.submit">'+T('w.submit')+'</span>'; }
 }
+function resetForm(){
+  ['f-desc','f-breed','f-address','f-city','f-state','f-date','f-species'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('f-count').value=1; document.getElementById('f-ongoing').checked=false;
+  document.getElementById('evidence-preview').innerHTML=''; document.getElementById('witnesses-container').innerHTML='';
+  document.getElementById('coord-display').style.display='none';
+  if(marker&&map){ map.removeLayer(marker); marker=null; }
+  if(state.isEmergency) toggleEmergency();
+  state.categoryId=null; state.categoryName=null; state.lat=null; state.lng=null; state.evidenceFiles=[]; state.witnesses=[];
+  selectPrivacy('private'); renderCategories(); goStep(1);
+}
+function closeModal(){ document.getElementById('success-modal').classList.remove('show'); }
 
-function closeModal(){document.getElementById('success-modal').classList.remove('show');}
-
-// ── DRAFT ─────────────────────────────────────────────────────────────────
-function saveDraft(){
+/* ── draft ── */
+function saveDraft(silent){
   try{
-    var d={
-      categoryId:state.categoryId,
-      isEmergency:state.isEmergency,
-      privacy:state.privacy,
-      lat:state.lat,lng:state.lng,
-      desc:document.getElementById('f-desc').value,
-      address:document.getElementById('f-address').value,
-      city:document.getElementById('f-city').value,
-      fstate:document.getElementById('f-state').value,
-      species:document.getElementById('f-species').value,
-      breed:document.getElementById('f-breed').value,
-      count:document.getElementById('f-count').value,
-      date:document.getElementById('f-date').value,
-    };
-    localStorage.setItem('pb_abuse_draft',JSON.stringify(d));
-    showToast('Draft saved','success');
-  }catch(e){showToast('Could not save draft','error');}
+    localStorage.setItem('pb_abuse_draft',JSON.stringify({
+      categoryId:state.categoryId, isEmergency:state.isEmergency, privacy:state.privacy, lat:state.lat, lng:state.lng,
+      desc:document.getElementById('f-desc').value, address:document.getElementById('f-address').value,
+      city:document.getElementById('f-city').value, fstate:document.getElementById('f-state').value,
+      species:document.getElementById('f-species').value, breed:document.getElementById('f-breed').value,
+      count:document.getElementById('f-count').value, date:document.getElementById('f-date').value,
+      ongoing:document.getElementById('f-ongoing').checked
+    }));
+    if(!silent) showToast(T('t.draft'),'success');
+  }catch(e){ if(!silent) showToast(T('t.draftfail'),'error'); }
 }
-
 function loadDraft(){
-  try{
-    var d=JSON.parse(localStorage.getItem('pb_abuse_draft')||'null');
-    if(!d) return;
-    if(d.desc) document.getElementById('f-desc').value=d.desc;
-    if(d.address) document.getElementById('f-address').value=d.address;
-    if(d.city) document.getElementById('f-city').value=d.city;
-    if(d.fstate) document.getElementById('f-state').value=d.fstate;
-    if(d.species) document.getElementById('f-species').value=d.species;
-    if(d.breed) document.getElementById('f-breed').value=d.breed;
-    if(d.count) document.getElementById('f-count').value=d.count;
-    if(d.date) document.getElementById('f-date').value=d.date;
-    if(d.isEmergency&&d.isEmergency!==state.isEmergency) toggleEmergency();
-    if(d.privacy) selectPrivacy(d.privacy);
-    if(d.lat&&d.lng){ state.lat=d.lat; state.lng=d.lng; initMap(d.lat,d.lng); }
-    if(d.categoryId){
-      state.categoryId=d.categoryId;
-      setTimeout(function(){
-        var el=document.getElementById('cat-'+d.categoryId);
-        if(el) el.classList.add('selected');
-      },500);
-    }
-  }catch(e){}
+  var d=null; try{ d=JSON.parse(localStorage.getItem('pb_abuse_draft')||'null'); }catch(e){}
+  if(!d) return;
+  var set=function(id,v){ if(v!=null&&v!=='') document.getElementById(id).value=v; };
+  set('f-desc',d.desc); set('f-address',d.address); set('f-city',d.city); set('f-state',d.fstate);
+  set('f-species',d.species); set('f-breed',d.breed); set('f-count',d.count); set('f-date',d.date);
+  document.getElementById('f-ongoing').checked=!!d.ongoing;
+  if(d.isEmergency) toggleEmergency();
+  if(d.privacy) selectPrivacy(d.privacy);
+  if(d.lat&&d.lng) setMapPin(d.lat,d.lng);
+  if(d.categoryId){ state.categoryId=d.categoryId; renderCategories(); }
 }
-document.addEventListener('DOMContentLoaded',loadDraft);
 
-// ── MY REPORTS ────────────────────────────────────────────────────────────
+/* ── my reports ── */
+function emptyHTML(icon,title,sub,btn){
+  return '<div class="empty"><div class="empty-ic"><i class="ti '+icon+'"></i></div><div class="empty-t">'+esc(title)+'</div><div class="empty-s">'+esc(sub)+'</div>'+(btn||'')+'</div>';
+}
 function loadMyReports(){
-  var container=document.getElementById('my-reports-list');
-  if(!getToken()){
-    container.innerHTML='<div class="empty-state"><i class="ti ti-lock"></i><div class="empty-state-title">Login Required</div><div class="empty-state-sub">Please log in to view your reports</div></div>';
-    return;
-  }
-  fetch(API_BASE+'/abuse-reports/my',{headers:authHdr()})
+  var c=document.getElementById('my-reports-list');
+  if(!getToken()){ c.innerHTML=emptyHTML('ti-lock',T('my.login'),T('my.logins'),'<button class="btn btn-blue" onclick="goTo(\'01_login.html\')"><i class="ti ti-login"></i>'+esc(T('my.loginbtn'))+'</button>'); return; }
+  c.innerHTML=emptyHTML('ti-loader-2 spin',T('my.loading'),'');
+  fetch(API_BASE+'/abuse-reports/my',{headers:authHdr(),credentials:'include'})
     .then(function(r){return r.json();})
     .then(function(res){
-      if(!res.success||!res.data.length){
-        container.innerHTML='<div class="empty-state"><i class="ti ti-clipboard-list"></i><div class="empty-state-title">No Reports Yet</div><div class="empty-state-sub">You haven\'t filed any reports. Use the "File Report" tab to submit one.</div></div>';
+      if(!res.success||!res.data||!res.data.length){
+        c.innerHTML='<div class="empty"><div class="empty-art"><img src="https://images.pexels.com/photos/27471521/pexels-photo-27471521.jpeg?auto=compress&cs=tinysrgb&w=300" alt="" onerror="this.remove()"></div><div class="empty-t">'+esc(T('my.none'))+'</div><div class="empty-s">'+esc(T('my.nones'))+'</div><button class="btn btn-coral" onclick="switchTab(\'report\')"><i class="ti ti-shield-heart"></i>'+esc(T('hero.cta'))+'</button></div>';
         return;
       }
-      container.innerHTML=res.data.map(function(r){
-        return '<div class="report-item">'
-          +'<div style="flex:1">'
-          +'<div class="report-ref">'+r.reference_number+'</div>'
-          +'<div class="report-cat">'+(r.category_name||'Abuse Report')+'</div>'
-          +'<div class="report-loc"><i class="ti ti-map-pin" style="font-size:12px"></i> '+(r.city?(r.city+(r.state?', '+r.state:'')):'Location not specified')+'</div>'
-          +'<div style="margin-top:8px"><span class="status-badge status-'+r.status+'">'+statusLabel(r.status)+'</span>'+(r.is_emergency?' <span style="color:#dc2626;font-size:11px;font-weight:800"><i class="ti ti-alert-triangle"></i> EMERGENCY</span>':'')+'</div>'
-          +'<div class="report-date"><i class="ti ti-calendar" style="font-size:12px"></i> '+new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+'</div>'
-          +'</div>'
-          +'<i class="ti ti-chevron-right" style="color:#65676b;font-size:18px;align-self:center"></i>'
-          +'</div>';
+      c.innerHTML=res.data.map(function(r){
+        var loc=r.city?(r.city+(r.state?', '+r.state:'')):T('my.noloc');
+        return '<div class="rep"><div class="rep-ic"><i class="ti ti-shield-heart"></i></div><div style="flex:1;min-width:0">'
+          +'<div class="rep-ref">'+esc(r.reference_number)+'</div>'
+          +'<div class="rep-cat">'+esc(r.category_name?catLabel(r.category_name):T('tab.report'))+'</div>'
+          +'<div class="rep-meta"><span><i class="ti ti-map-pin"></i> '+esc(loc)+'</span><span><i class="ti ti-calendar"></i> '+esc(PBi18n.fmtDate(r.created_at))+'</span></div></div>'
+          +'<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end"><span class="badge st-'+esc(r.status)+'">'+esc(T('stt.'+r.status))+'</span>'
+          +(r.is_emergency?'<span class="badge em-badge"><i class="ti ti-urgent"></i>'+esc(T('my.em'))+'</span>':'')+'</div></div>';
       }).join('');
     })
-    .catch(function(){
-      container.innerHTML='<div class="empty-state"><i class="ti ti-wifi-off"></i><div class="empty-state-title">Could not load reports</div><div class="empty-state-sub">Check your connection and try again</div></div>';
-    });
+    .catch(function(){ c.innerHTML=emptyHTML('ti-wifi-off',T('my.fail'),T('my.fails')); });
 }
 
-function statusLabel(s){
-  var m={'submitted':'Submitted','under_review':'Under Review','verified_for_referral':'Verified','referred':'Referred','action_in_progress':'In Progress','resolved':'Resolved','closed':'Closed'};
-  return m[s]||s;
-}
-
-// ── ORGANIZATIONS ─────────────────────────────────────────────────────────
+/* ── organizations ── */
+var orgTimer=null;
+function debouncedOrgs(){ clearTimeout(orgTimer); orgTimer=setTimeout(loadOrgs,350); }
 function loadOrgs(){
-  var city=document.getElementById('org-search-city').value;
-  var st=document.getElementById('org-search-state').value;
-  var url=API_BASE+'/abuse-reports/organizations';
-  var params=[];
-  if(city) params.push('city='+encodeURIComponent(city));
-  if(st) params.push('state='+encodeURIComponent(st));
-  if(params.length) url+='?'+params.join('&');
-
-  fetch(url)
+  var c=document.getElementById('orgs-list'), p=[];
+  var city=document.getElementById('org-search-city').value.trim(), st=document.getElementById('org-search-state').value.trim();
+  if(city) p.push('city='+encodeURIComponent(city)); if(st) p.push('state='+encodeURIComponent(st));
+  c.innerHTML=emptyHTML('ti-loader-2 spin',T('org.loading'),'');
+  fetch(API_BASE+'/abuse-reports/organizations'+(p.length?'?'+p.join('&'):''))
     .then(function(r){return r.json();})
     .then(function(res){
-      var container=document.getElementById('orgs-list');
-      if(!res.success||!res.data.length){
-        container.innerHTML='<div class="empty-state"><i class="ti ti-building-community"></i><div class="empty-state-title">No organizations found</div><div class="empty-state-sub">Try a different city or state</div></div>';
-        return;
+      if(!res.success||!res.data||!res.data.length){
+        c.innerHTML=emptyHTML('ti-building-community',T('org.none'),T('org.nones'),'<a class="btn btn-ghost" href="#helplines"><i class="ti ti-phone-call"></i>'+esc(T('hero.cta2'))+'</a>'); return;
       }
-      var orgIcons={'ngo':'🌱','rescue':'🚑','government':'🏛️','shelter':'🏠','other':'🤝'};
-      container.innerHTML=res.data.map(function(o){
-        return '<div class="org-item">'
-          +'<div class="org-logo">'+(orgIcons[o.org_type]||'🏢')+'</div>'
-          +'<div style="flex:1">'
-          +'<div class="org-name">'+o.name+'</div>'
-          +'<span class="org-type-badge">'+o.org_type.toUpperCase()+'</span>'
-          +(o.city?'<div class="org-meta"><i class="ti ti-map-pin" style="font-size:12px"></i> '+o.city+(o.state?', '+o.state:'')+'</div>':'')
-          +(o.coverage_area?'<div class="org-meta" style="margin-top:2px"><i class="ti ti-map" style="font-size:12px"></i> Covers: '+o.coverage_area+'</div>':'')
-          +'</div>'
-          +(o.phone?'<button class="org-call-btn" onclick="window.open(\'tel:'+o.phone+'\')"><i class="ti ti-phone"></i></button>':'')
-          +'</div>';
+      var icons={ngo:'🌱',rescue:'🚑',government:'🏛️',shelter:'🏠',other:'🤝'};
+      c.innerHTML=res.data.map(function(o){
+        return '<div class="org"><div class="org-logo">'+(icons[o.org_type]||'🏢')+'</div><div style="flex:1;min-width:0">'
+          +'<div class="org-n">'+esc(o.name)+'</div><span class="org-type">'+esc(T('ot.'+o.org_type))+'</span>'
+          +(o.city?'<div class="org-m"><i class="ti ti-map-pin"></i> '+esc(o.city+(o.state?', '+o.state:''))+'</div>':'')
+          +(o.coverage_area?'<div class="org-m"><i class="ti ti-map"></i> '+esc(T('org.covers'))+': '+esc(o.coverage_area)+'</div>':'')
+          +'</div>'+(o.phone?'<a class="org-call" style="display:flex;align-items:center;justify-content:center;text-decoration:none" href="tel:'+esc(o.phone)+'"><i class="ti ti-phone"></i></a>':'')+'</div>';
       }).join('');
     })
-    .catch(function(){
-      document.getElementById('orgs-list').innerHTML='<div class="empty-state"><i class="ti ti-wifi-off"></i><div class="empty-state-title">Could not load</div><div class="empty-state-sub">Check your connection</div></div>';
-    });
+    .catch(function(){ c.innerHTML=emptyHTML('ti-wifi-off',T('org.fail'),T('my.fails')); });
 }
 
-// ── NAV AVATAR ────────────────────────────────────────────────────────────
+/* ── language changes re-render dynamic parts ── */
+window.addEventListener('pb:langchange',function(){
+  renderCategories();
+  if(state.step===4) renderReview();
+  if(document.getElementById('panel-my').classList.contains('active')) loadMyReports();
+  if(document.getElementById('panel-orgs').classList.contains('active')) loadOrgs();
+});
+
+/* ── nav avatar ── */
 (function(){
-  var u=null;
-  try{u=JSON.parse(localStorage.getItem('pb_user')||'null');}catch(e){}
-  if(u){
-    var av=document.getElementById('nav-avatar');
-    if(av) av.textContent=(u.full_name||u.username||'A')[0].toUpperCase();
-  }
+  var u=null; try{ u=JSON.parse(localStorage.getItem('pb_user')||'null'); }catch(e){}
+  if(u){ var av=document.getElementById('nav-avatar'); if(av) av.textContent=((u.full_name||u.username||'A')+'').charAt(0).toUpperCase(); }
 })();
 
-// ── PWA ───────────────────────────────────────────────────────────────────
-if('serviceWorker' in navigator){
-  window.addEventListener('load',function(){
-    navigator.serviceWorker.register('service-worker.js').catch(function(){});
-  });
-}
+document.addEventListener('DOMContentLoaded',function(){ loadDraft(); });
+if(location.hash==='#report') setTimeout(function(){ document.getElementById('report').scrollIntoView(); },100);
+
+if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('service-worker.js').catch(function(){}); }); }
 </script>
 </body>
 </html>
