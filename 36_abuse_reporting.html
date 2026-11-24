@@ -308,6 +308,55 @@ img{display:block;max-width:100%}
 .spin{animation:spin 1s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── location selects + nearby help ── */
+.pin-quick{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:#f3f8ff;border:1px solid #dbe8fd;font-size:13px;font-weight:600;color:var(--blue-d);margin-bottom:16px}
+.pin-quick>i{font-size:20px}
+.pin-quick span{flex:1;min-width:180px}
+.pin-quick .inp{width:150px;height:42px;background:#fff;font-weight:700;letter-spacing:2px;text-align:center}
+.loc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sel:disabled{opacity:.6;cursor:not-allowed}
+.nearby{margin-top:20px;border-radius:18px;border:1px solid #e1e8fb;background:linear-gradient(180deg,#fbfcff,#f6f8fd);padding:16px}
+.nb-empty{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-weight:600}
+.nb-empty i{font-size:22px;color:var(--blue)}
+.nb-head{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.nb-head-ic{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--coral),#f97316);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb-title{font-size:16px;font-weight:900;color:var(--navy);line-height:1.3}
+.nb-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.nb-national{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.nb-chip{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;text-decoration:none;font-size:12.5px;font-weight:600;line-height:1.3}
+.nb-chip i{font-size:20px;flex-shrink:0}
+.nb-chip b{font-size:15px;font-weight:900;margin-right:2px}
+.nb-chip.red{background:#fff1f1;color:var(--coral-d);border:1px solid #ffd6d6}
+.nb-chip.green{background:#ecfdf3;color:#15803d;border:1px solid #c9f0d8}
+.nb-sec{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.nb-sec-h{display:flex;align-items:center;gap:9px;padding:11px 14px;font-size:13.5px;font-weight:800;color:var(--navy);border-bottom:1px solid #f0f3f8}
+.nb-sec-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nb-item{display:flex;gap:10px;align-items:center;padding:11px 14px;border-bottom:1px solid #f3f5f9}
+.nb-item:last-of-type{border-bottom:none}
+.nb-name{font-size:13.5px;font-weight:700;color:var(--navy)}
+.nb-addr{font-size:11.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nb-addr b{color:var(--blue-d);font-weight:700}
+.nb-phone{font-size:12px;font-weight:700;color:#15803d;margin-top:2px;letter-spacing:.2px}
+.nb-nophone{font-size:11.5px;color:#9aa3b5;margin-top:2px}
+.nb-partner{display:inline-block;padding:1px 7px;border-radius:999px;background:#ecfdf3;color:#15803d;font-size:10.5px;font-weight:800;vertical-align:1px}
+.nb-acts{display:flex;gap:6px;flex-shrink:0}
+.nb-btn{display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 11px;border-radius:999px;background:#eef5ff;color:var(--blue-d);font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+.nb-btn.call{background:#ecfdf3;color:#15803d}
+.nb-btn i{font-size:15px}
+.nb-none{padding:12px 14px;font-size:12.5px;color:var(--muted)}
+.nb-search{display:flex;align-items:center;gap:7px;padding:11px 14px;font-size:12.5px;font-weight:700;color:var(--blue-d);text-decoration:none;border-top:1px solid #f0f3f8;background:#fafcff}
+.nb-search i:last-child{margin-left:auto;font-size:14px}
+.nb-skel{height:44px;margin:10px 14px;border-radius:10px;background:linear-gradient(90deg,#f0f3f8,#e7ecf4,#f0f3f8);background-size:200% 100%;animation:sk 1.2s infinite}
+.nb-attr{margin-top:10px;font-size:11px;color:#9aa3b5;text-align:right}
+@media(max-width:900px){ .loc-grid{grid-template-columns:1fr 1fr} }
+@media(max-width:720px){
+  .loc-grid{grid-template-columns:1fr}
+  .pin-quick .inp{width:100%}
+  .nb-national{grid-template-columns:1fr}
+  .nb-btn span{display:none}
+  .nb-btn{width:36px;justify-content:center;padding:0}
+}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1080px){
   .hero-in{grid-template-columns:1fr;gap:34px}
@@ -500,20 +549,50 @@ img{display:block;max-width:100%}
       <div class="wstep" id="ws-2">
         <h3 class="w-title" data-i18n="s2.t">Where did it happen?</h3>
         <p class="w-sub" data-i18n="s2.s">An accurate location helps rescuers reach the animal quickly.</p>
-        <label class="lbl" for="f-address"><span data-i18n="s2.addr">Address or landmark</span> <span class="req">*</span></label>
-        <div class="sugg-wrap">
-          <i class="ti ti-search"></i>
-          <input id="f-address" class="inp" autocomplete="off" oninput="onAddressInput()" data-i18n-ph="s2.addrph" placeholder="Search area, street or landmark…">
-          <div class="sugg" id="addr-suggest"></div>
+
+        <div class="pin-quick">
+          <i class="ti ti-mailbox"></i>
+          <span data-i18n="loc.pintype">Know the PIN code? Type it to fill everything</span>
+          <input id="f-pin-input" class="inp" inputmode="numeric" maxlength="6" data-i18n-ph="loc.pinph" placeholder="6-digit PIN" oninput="onPinTyped(this.value)">
         </div>
-        <div class="grid2" style="margin-top:14px">
-          <div><label class="lbl" for="f-city" data-i18n="s2.city">City</label><input id="f-city" class="inp" data-i18n-ph="s2.city" placeholder="City"></div>
-          <div><label class="lbl" for="f-state" data-i18n="s2.state">State</label><input id="f-state" class="inp" data-i18n-ph="s2.state" placeholder="State"></div>
+
+        <div class="loc-grid">
+          <div>
+            <label class="lbl" for="f-country" data-i18n="loc.country">Country</label>
+            <select id="f-country" class="sel" disabled><option value="India">🇮🇳 India</option></select>
+          </div>
+          <div>
+            <label class="lbl" for="f-state-sel"><span data-i18n="loc.state">State / UT</span> <span class="req">*</span></label>
+            <select id="f-state-sel" class="sel" onchange="onStateSel()"><option value="" data-i18n="loc.loading">Loading locations…</option></select>
+          </div>
+          <div>
+            <label class="lbl" for="f-district-sel"><span data-i18n="loc.district">District / City</span> <span class="req">*</span></label>
+            <select id="f-district-sel" class="sel" onchange="onDistrictSel()" disabled><option value="" data-i18n="loc.seldistrict">Select district</option></select>
+          </div>
+          <div>
+            <label class="lbl" for="f-pin-sel" data-i18n="loc.pin">PIN code</label>
+            <select id="f-pin-sel" class="sel" onchange="onPinSel()" disabled><option value="" data-i18n="loc.selpin">Select PIN code</option></select>
+          </div>
+        </div>
+        <input type="hidden" id="f-city"><input type="hidden" id="f-state">
+
+        <div class="blk" style="margin-top:16px">
+          <label class="lbl" for="f-address" data-i18n="loc.addr2">Street, area or landmark</label>
+          <div class="sugg-wrap">
+            <i class="ti ti-search"></i>
+            <input id="f-address" class="inp" autocomplete="off" oninput="onAddressInput()" data-i18n-ph="s2.addrph" placeholder="Search area, street or landmark…">
+            <div class="sugg" id="addr-suggest"></div>
+          </div>
         </div>
         <button type="button" class="gps-btn" onclick="useMyLocation()"><i class="ti ti-current-location"></i><span data-i18n="s2.gps">Use my current location</span></button>
         <div id="coord-display" style="display:none"><span class="coord"><i class="ti ti-map-pin-filled"></i><span id="coord-text"></span></span></div>
         <div id="abuse-map"></div>
         <div class="hint"><i class="ti ti-hand-click"></i><span data-i18n="s2.maphint">Tap the map to drop a pin at the exact spot.</span></div>
+
+        <!-- Nearby help -->
+        <div class="nearby" id="nearby">
+          <div class="nb-empty"><i class="ti ti-map-search"></i><span data-i18n="nb.empty">Choose a location to see nearby police, shelters and helplines.</span></div>
+        </div>
       </div>
 
       <!-- STEP 3 -->
@@ -984,6 +1063,34 @@ mr:{
 't.fail':'तक्रार सादर होऊ शकली नाही','t.login':'तक्रार सादर करण्यासाठी कृपया लॉग इन करा','t.upfail':'काही फाइल्स अपलोड होऊ शकल्या नाहीत'
 }
 });
+
+PBi18n.register({
+en:{'loc.country':'Country','loc.state':'State / UT','loc.district':'District / City','loc.pin':'PIN code','loc.selstate':'Select state','loc.seldistrict':'Select district','loc.selpin':'Select PIN code',
+'loc.pintype':'Know the PIN code? Type it to fill everything','loc.pinph':'6-digit PIN','loc.pinbad':'PIN code not found. Please choose from the lists.','loc.loading':'Loading locations…','loc.addr2':'Street, area or landmark',
+'nb.title':'Help near {place}','nb.sub':'Call the nearest service directly. Places and numbers come from Google Maps and PawBook partners.','nb.police':'Police stations','nb.welfare':'Animal welfare & helplines',
+'nb.shelter':'Shelters & rescue','nb.vet':'Veterinary clinics','nb.community':'Pet communities','nb.none':'Nothing found nearby.','nb.search':'Search on Google Maps','nb.dir':'Directions','nb.call':'Call',
+'nb.nophone':'No phone number listed','nb.verified':'PawBook partner','nb.groups':'Find PawBook groups','nb.km':'{d} km','nb.empty':'Choose a location to see nearby police, shelters and helplines.','nb.powered':'Places data © Google'},
+hi:{'loc.country':'देश','loc.state':'राज्य / केंद्र शासित प्रदेश','loc.district':'ज़िला / शहर','loc.pin':'पिन कोड','loc.selstate':'राज्य चुनें','loc.seldistrict':'ज़िला चुनें','loc.selpin':'पिन कोड चुनें',
+'loc.pintype':'पिन कोड पता है? लिखें, बाकी अपने आप भर जाएगा','loc.pinph':'6 अंकों का पिन','loc.pinbad':'पिन कोड नहीं मिला। कृपया सूची से चुनें।','loc.loading':'स्थान लोड हो रहे हैं…','loc.addr2':'गली, इलाका या पहचान का स्थान',
+'nb.title':'{place} के पास मदद','nb.sub':'सबसे नज़दीकी सेवा को सीधे कॉल करें। स्थान और नंबर Google Maps और PawBook साझेदारों से लिए गए हैं।','nb.police':'पुलिस स्टेशन','nb.welfare':'पशु कल्याण और हेल्पलाइन',
+'nb.shelter':'आश्रय और बचाव','nb.vet':'पशु चिकित्सालय','nb.community':'पालतू समुदाय','nb.none':'पास में कुछ नहीं मिला।','nb.search':'Google Maps पर खोजें','nb.dir':'रास्ता','nb.call':'कॉल',
+'nb.nophone':'फ़ोन नंबर उपलब्ध नहीं','nb.verified':'PawBook साझेदार','nb.groups':'PawBook ग्रुप देखें','nb.km':'{d} किमी','nb.empty':'पास के पुलिस स्टेशन, आश्रय और हेल्पलाइन देखने के लिए स्थान चुनें।','nb.powered':'स्थान डेटा © Google'},
+bn:{'loc.country':'দেশ','loc.state':'রাজ্য / কেন্দ্রশাসিত অঞ্চল','loc.district':'জেলা / শহর','loc.pin':'পিন কোড','loc.selstate':'রাজ্য বেছে নিন','loc.seldistrict':'জেলা বেছে নিন','loc.selpin':'পিন কোড বেছে নিন',
+'loc.pintype':'পিন কোড জানেন? লিখুন, বাকিটা নিজেই পূরণ হবে','loc.pinph':'৬ অঙ্কের পিন','loc.pinbad':'পিন কোড পাওয়া যায়নি। তালিকা থেকে বেছে নিন।','loc.loading':'স্থান লোড হচ্ছে…','loc.addr2':'রাস্তা, এলাকা বা চিহ্নিত স্থান',
+'nb.title':'{place}-এর কাছে সাহায্য','nb.sub':'নিকটতম পরিষেবায় সরাসরি কল করুন। স্থান ও নম্বর Google Maps ও PawBook অংশীদারদের থেকে নেওয়া।','nb.police':'থানা','nb.welfare':'প্রাণী কল্যাণ ও হেল্পলাইন',
+'nb.shelter':'আশ্রয় ও উদ্ধার','nb.vet':'পশু চিকিৎসালয়','nb.community':'পোষ্য সম্প্রদায়','nb.none':'কাছাকাছি কিছু পাওয়া যায়নি।','nb.search':'Google Maps-এ খুঁজুন','nb.dir':'দিকনির্দেশ','nb.call':'কল',
+'nb.nophone':'ফোন নম্বর নেই','nb.verified':'PawBook অংশীদার','nb.groups':'PawBook গ্রুপ খুঁজুন','nb.km':'{d} কিমি','nb.empty':'কাছের থানা, আশ্রয় ও হেল্পলাইন দেখতে একটি স্থান বেছে নিন।','nb.powered':'স্থানের তথ্য © Google'},
+ta:{'loc.country':'நாடு','loc.state':'மாநிலம் / யூனியன் பிரதேசம்','loc.district':'மாவட்டம் / நகரம்','loc.pin':'அஞ்சல் குறியீடு','loc.selstate':'மாநிலத்தைத் தேர்ந்தெடுக்கவும்','loc.seldistrict':'மாவட்டத்தைத் தேர்ந்தெடுக்கவும்','loc.selpin':'அஞ்சல் குறியீட்டைத் தேர்ந்தெடுக்கவும்',
+'loc.pintype':'அஞ்சல் குறியீடு தெரியுமா? தட்டச்சு செய்தால் மற்றவை தானாக நிரம்பும்','loc.pinph':'6 இலக்க PIN','loc.pinbad':'அஞ்சல் குறியீடு கிடைக்கவில்லை. பட்டியலிலிருந்து தேர்ந்தெடுக்கவும்.','loc.loading':'இடங்கள் ஏற்றப்படுகின்றன…','loc.addr2':'தெரு, பகுதி அல்லது அடையாளச் சின்னம்',
+'nb.title':'{place} அருகே உதவி','nb.sub':'அருகிலுள்ள சேவையை நேரடியாக அழையுங்கள். இடங்களும் எண்களும் Google Maps மற்றும் PawBook கூட்டாளர்களிடமிருந்து பெறப்பட்டவை.','nb.police':'காவல் நிலையங்கள்','nb.welfare':'விலங்கு நலன் & உதவி எண்கள்',
+'nb.shelter':'காப்பகங்கள் & மீட்பு','nb.vet':'கால்நடை மருத்துவமனைகள்','nb.community':'செல்லப்பிராணி சமூகங்கள்','nb.none':'அருகில் எதுவும் கிடைக்கவில்லை.','nb.search':'Google Maps-இல் தேடு','nb.dir':'வழி','nb.call':'அழை',
+'nb.nophone':'தொலைபேசி எண் இல்லை','nb.verified':'PawBook கூட்டாளர்','nb.groups':'PawBook குழுக்களைக் காண்க','nb.km':'{d} கி.மீ','nb.empty':'அருகிலுள்ள காவல் நிலையங்கள், காப்பகங்கள், உதவி எண்களைப் பார்க்க இடத்தைத் தேர்ந்தெடுக்கவும்.','nb.powered':'இடத் தரவு © Google'},
+mr:{'loc.country':'देश','loc.state':'राज्य / केंद्रशासित प्रदेश','loc.district':'जिल्हा / शहर','loc.pin':'पिन कोड','loc.selstate':'राज्य निवडा','loc.seldistrict':'जिल्हा निवडा','loc.selpin':'पिन कोड निवडा',
+'loc.pintype':'पिन कोड माहीत आहे? टाइप करा, बाकी आपोआप भरेल','loc.pinph':'6 अंकी पिन','loc.pinbad':'पिन कोड सापडला नाही. कृपया यादीतून निवडा.','loc.loading':'ठिकाणे लोड होत आहेत…','loc.addr2':'रस्ता, परिसर किंवा खूण',
+'nb.title':'{place} जवळ मदत','nb.sub':'जवळच्या सेवेला थेट कॉल करा. ठिकाणे आणि क्रमांक Google Maps आणि PawBook भागीदारांकडून घेतले आहेत.','nb.police':'पोलीस ठाणी','nb.welfare':'प्राणी कल्याण आणि हेल्पलाइन',
+'nb.shelter':'निवारे आणि बचाव','nb.vet':'पशुवैद्यकीय दवाखाने','nb.community':'पाळीव प्राणी समुदाय','nb.none':'जवळपास काहीही सापडले नाही.','nb.search':'Google Maps वर शोधा','nb.dir':'मार्ग','nb.call':'कॉल',
+'nb.nophone':'फोन नंबर उपलब्ध नाही','nb.verified':'PawBook भागीदार','nb.groups':'PawBook ग्रुप शोधा','nb.km':'{d} किमी','nb.empty':'जवळची पोलीस ठाणी, निवारे आणि हेल्पलाइन पाहण्यासाठी ठिकाण निवडा.','nb.powered':'ठिकाण माहिती © Google'}
+});
 </script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1014,7 +1121,7 @@ function switchTab(t){
   });
   if(t==='my') loadMyReports();
   if(t==='orgs') loadOrgs();
-  if(t==='report' && map) setTimeout(function(){ map.invalidateSize(); },60);
+  if(t==='report' && map && mapMode==='leaflet') setTimeout(function(){ map.invalidateSize(); },60);
 }
 
 /* ── wizard ── */
@@ -1024,7 +1131,7 @@ function validateStep(n){
     if(!document.getElementById('f-desc').value.trim()){ showToast(T('t.desc'),'error'); document.getElementById('f-desc').focus(); return false; }
   }
   if(n===2){
-    if(!document.getElementById('f-address').value.trim() && !state.lat){ showToast(T('t.loc'),'error'); return false; }
+    if(!document.getElementById('f-city').value && !document.getElementById('f-address').value.trim() && state.lat==null){ showToast(T('t.loc'),'error'); return false; }
   }
   return true;
 }
@@ -1039,7 +1146,7 @@ function goStep(n){
   document.getElementById('btn-back').style.visibility=n>1?'visible':'hidden';
   document.getElementById('btn-next').style.display=n<4?'':'none';
   document.getElementById('submit-btn').style.display=n===4?'':'none';
-  if(n===2){ initMap(); setTimeout(function(){ map.invalidateSize(); },80); }
+  if(n===2){ loadLocations(); initMap().then(function(){ if(mapMode==='leaflet') setTimeout(function(){ map.invalidateSize(); },80); }); }
   if(n===4) renderReview();
   var top=document.getElementById('report').getBoundingClientRect().top+window.scrollY-70;
   if(window.scrollY>top) window.scrollTo({top:top,behavior:'smooth'});
@@ -1092,62 +1199,351 @@ function selectPrivacy(v){
   ['private','confidential','public'].forEach(function(p){ document.getElementById('priv-'+p).classList.toggle('picked',p===v); });
 }
 
-/* ── map ── */
-var map=null, marker=null;
-function initMap(lat,lng){
-  if(!map){
-    map=L.map('abuse-map').setView([state.lat||20.5937,state.lng||78.9629],state.lat?15:5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
-    map.on('click',function(e){ setMapPin(e.latlng.lat,e.latlng.lng); reverseGeocode(e.latlng.lat,e.latlng.lng,true); });
-    if(state.lat) setMapPin(state.lat,state.lng);
-  }
-  if(lat!=null){ map.setView([lat,lng],16); setMapPin(lat,lng); }
+/* ── map: Google Maps first, OpenStreetMap (Leaflet) fallback ── */
+var GMAPS_KEY='AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk';
+var mapMode=null;            // 'google' | 'leaflet'
+var map=null, marker=null, placeMarkers=[];
+var gReady=null;             // Promise<boolean>
+
+function loadGoogle(){
+  if(gReady) return gReady;
+  gReady=new Promise(function(resolve){
+    var done=false; function finish(ok){ if(!done){ done=true; resolve(ok); } }
+    window.gm_authFailure=function(){ console.warn('[PawBook] Google Maps key rejected — using OpenStreetMap'); finish(false); switchToLeaflet(); };
+    window.pbGmapsReady=function(){ finish(true); };
+    var s=document.createElement('script');
+    s.src='https://maps.googleapis.com/maps/api/js?key='+GMAPS_KEY+'&v=weekly&loading=async&libraries=places,geocoding&region=IN&language='+PBi18n.lang+'&callback=pbGmapsReady';
+    s.async=true; s.onerror=function(){ finish(false); };
+    document.head.appendChild(s);
+    setTimeout(function(){ finish(!!(window.google&&google.maps&&google.maps.Map)); },9000);
+  });
+  return gReady;
 }
-function setMapPin(lat,lng){
-  state.lat=lat; state.lng=lng;
-  if(map){ if(marker) map.removeLayer(marker); marker=L.marker([lat,lng]).addTo(map); }
+function initMap(lat,lng){
+  if(map){ if(lat!=null) setMapPin(lat,lng,16); return Promise.resolve(); }
+  return loadGoogle().then(function(ok){
+    if(map) return;
+    if(ok){
+      mapMode='google';
+      map=new google.maps.Map(document.getElementById('abuse-map'),{center:{lat:state.lat||22.9734,lng:state.lng||78.6569},zoom:state.lat?15:5,
+        mapTypeControl:false,streetViewControl:false,fullscreenControl:false,clickableIcons:false,gestureHandling:'cooperative'});
+      map.addListener('click',function(e){ onMapPicked(e.latLng.lat(),e.latLng.lng()); });
+    } else buildLeaflet();
+    if(state.lat) setMapPin(state.lat,state.lng,15);
+    if(lat!=null) setMapPin(lat,lng,16);
+  });
+}
+function buildLeaflet(){
+  mapMode='leaflet';
+  var el=document.getElementById('abuse-map'); el.innerHTML='';
+  map=L.map(el).setView([state.lat||22.9734,state.lng||78.6569],state.lat?15:5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
+  map.on('click',function(e){ onMapPicked(e.latlng.lat,e.latlng.lng); });
+}
+function switchToLeaflet(){
+  if(mapMode==='leaflet') return;
+  marker=null; placeMarkers=[]; map=null; buildLeaflet();
+  if(state.lat){ setMapPin(state.lat,state.lng,15); refreshNearby(true); }
+}
+function setMapPin(lat,lng,zoom){
+  state.lat=+lat; state.lng=+lng;
   document.getElementById('coord-display').style.display='block';
-  document.getElementById('coord-text').textContent=(+lat).toFixed(5)+', '+(+lng).toFixed(5);
+  document.getElementById('coord-text').textContent=state.lat.toFixed(5)+', '+state.lng.toFixed(5);
+  if(!map) return;
+  if(mapMode==='google'){
+    var p={lat:state.lat,lng:state.lng};
+    if(!marker) marker=new google.maps.Marker({map:map,position:p,draggable:true,zIndex:999});
+    else marker.setPosition(p);
+    google.maps.event.clearListeners(marker,'dragend');
+    marker.addListener('dragend',function(e){ onMapPicked(e.latLng.lat(),e.latLng.lng()); });
+    if(zoom){ map.setCenter(p); map.setZoom(zoom); }
+  } else {
+    if(marker) map.removeLayer(marker);
+    marker=L.marker([state.lat,state.lng],{draggable:true}).addTo(map);
+    marker.on('dragend',function(){ var ll=marker.getLatLng(); onMapPicked(ll.lat,ll.lng); });
+    if(zoom) map.setView([state.lat,state.lng],zoom);
+  }
+}
+function clearPlaceMarkers(){
+  placeMarkers.forEach(function(m){ if(mapMode==='google') m.setMap(null); else if(map) map.removeLayer(m); });
+  placeMarkers=[];
+}
+function addPlaceMarker(lat,lng,color,title){
+  if(!map||lat==null) return;
+  if(mapMode==='google'){
+    placeMarkers.push(new google.maps.Marker({map:map,position:{lat:lat,lng:lng},title:title,
+      icon:{path:google.maps.SymbolPath.CIRCLE,scale:7,fillColor:color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2}}));
+  } else {
+    placeMarkers.push(L.circleMarker([lat,lng],{radius:7,color:'#fff',weight:2,fillColor:color,fillOpacity:1}).bindTooltip(title).addTo(map));
+  }
+}
+function onMapPicked(lat,lng){
+  setMapPin(lat,lng);
+  reverseGeocode(lat,lng,true);
+  syncSelectsToNearestPin(lat,lng);
+  refreshNearby();
 }
 function useMyLocation(){
   if(!navigator.geolocation){ showToast(T('t.nogeo'),'error'); return; }
   showToast(T('t.locating'),'info');
   navigator.geolocation.getCurrentPosition(function(p){
-    initMap(p.coords.latitude,p.coords.longitude); reverseGeocode(p.coords.latitude,p.coords.longitude,true);
+    initMap().then(function(){ setMapPin(p.coords.latitude,p.coords.longitude,16); onMapPicked(p.coords.latitude,p.coords.longitude); });
   },function(){ showToast(T('t.locfail'),'error'); },{enableHighAccuracy:true,timeout:12000});
 }
+
+/* ── geocoding: Google first, Nominatim fallback ── */
 function reverseGeocode(lat,lng,fillAddr){
+  if(mapMode==='google' && google.maps.Geocoder){
+    new google.maps.Geocoder().geocode({location:{lat:lat,lng:lng},language:PBi18n.lang}).then(function(r){
+      var res=r.results&&r.results[0]; if(!res) return;
+      if(fillAddr) document.getElementById('f-address').value=res.formatted_address;
+      var pc=(res.address_components||[]).filter(function(c){return c.types.indexOf('postal_code')>=0;})[0];
+      if(pc) selectByPin(pc.long_name,true);
+    }).catch(function(){ reverseOSM(lat,lng,fillAddr); });
+  } else reverseOSM(lat,lng,fillAddr);
+}
+function reverseOSM(lat,lng,fillAddr){
   fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language='+PBi18n.lang+',en')
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(!d.address) return; var a=d.address;
+    .then(function(r){return r.json();}).then(function(d){
+      if(!d||!d.address) return;
       if(fillAddr) document.getElementById('f-address').value=d.display_name||'';
-      document.getElementById('f-city').value=a.city||a.town||a.village||a.suburb||a.county||'';
-      document.getElementById('f-state').value=a.state||'';
+      if(d.address.postcode) selectByPin(d.address.postcode,true);
     }).catch(function(){});
 }
-var addrTimer=null;
+
+/* ── address search: Google Places autocomplete, Nominatim fallback ── */
+var addrTimer=null, gSession=null;
 function onAddressInput(){
   clearTimeout(addrTimer);
   addrTimer=setTimeout(function(){
     var q=document.getElementById('f-address').value.trim(), box=document.getElementById('addr-suggest');
     if(q.length<3){ box.style.display='none'; return; }
-    fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=in&accept-language='+PBi18n.lang+',en')
-      .then(function(r){return r.json();})
-      .then(function(res){
-        box.innerHTML=''; box.style.display=res.length?'block':'none';
-        res.forEach(function(r){
-          var d=document.createElement('div'); d.textContent=r.display_name;
-          d.onclick=function(){
-            document.getElementById('f-address').value=r.display_name; box.style.display='none';
-            initMap(parseFloat(r.lat),parseFloat(r.lon)); reverseGeocode(parseFloat(r.lat),parseFloat(r.lon),false);
-          };
-          box.appendChild(d);
-        });
-      }).catch(function(){});
-  },400);
+    var show=function(items){
+      box.innerHTML=''; box.style.display=items.length?'block':'none';
+      items.forEach(function(it){ var d=document.createElement('div'); d.textContent=it.label; d.onclick=function(){ box.style.display='none'; document.getElementById('f-address').value=it.label; it.pick(); }; box.appendChild(d); });
+    };
+    if(mapMode==='google' && google.maps.places && google.maps.places.AutocompleteSuggestion){
+      if(!gSession) gSession=new google.maps.places.AutocompleteSessionToken();
+      var req={input:q,includedRegionCodes:['in'],language:PBi18n.lang,sessionToken:gSession};
+      if(state.lat) req.origin={lat:state.lat,lng:state.lng};
+      google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(req).then(function(r){
+        show((r.suggestions||[]).filter(function(s){return s.placePrediction;}).slice(0,5).map(function(s){
+          var pp=s.placePrediction;
+          return {label:pp.text.toString(),pick:function(){
+            var place=pp.toPlace(); gSession=null;
+            place.fetchFields({fields:['location','formattedAddress','addressComponents']}).then(function(){
+              var lat=place.location.lat(), lng=place.location.lng();
+              setMapPin(lat,lng,16);
+              var pc=(place.addressComponents||[]).filter(function(c){return c.types.indexOf('postal_code')>=0;})[0];
+              if(pc) selectByPin(pc.longText,true); else syncSelectsToNearestPin(lat,lng);
+              refreshNearby();
+            });
+          }};
+        }));
+      }).catch(function(){ searchOSM(q,show); });
+    } else searchOSM(q,show);
+  },350);
+}
+function searchOSM(q,show){
+  fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=in&addressdetails=1&accept-language='+PBi18n.lang+',en')
+    .then(function(r){return r.json();}).then(function(res){
+      show(res.map(function(r){ return {label:r.display_name,pick:function(){
+        var lat=parseFloat(r.lat), lng=parseFloat(r.lon);
+        initMap().then(function(){ setMapPin(lat,lng,16);
+          if(r.address&&r.address.postcode) selectByPin(r.address.postcode,true); else syncSelectsToNearestPin(lat,lng);
+          refreshNearby(); });
+      }}; }));
+    }).catch(function(){});
 }
 document.addEventListener('click',function(e){ if(!e.target.closest('.sugg-wrap')) document.getElementById('addr-suggest').style.display='none'; });
+
+/* ── Country → State → District → PIN (India Post directory) ── */
+var LOC=null, locLoading=null, pinIndex={};
+function loadLocations(){
+  if(locLoading) return locLoading;
+  locLoading=fetch('pawbook-in-locations.json').then(function(r){return r.json();}).then(function(d){
+    LOC=d.states;
+    Object.keys(LOC).forEach(function(s){ Object.keys(LOC[s]).forEach(function(dt){ LOC[s][dt].forEach(function(p){ pinIndex[p[0]]=[s,dt,p[1],p[2]]; }); }); });
+    var sel=document.getElementById('f-state-sel');
+    sel.innerHTML='<option value="">'+esc(T('loc.selstate'))+'</option>'+Object.keys(LOC).map(function(s){return '<option>'+esc(s)+'</option>';}).join('');
+    restoreLocSelects();
+  }).catch(function(){
+    document.getElementById('f-state-sel').innerHTML='<option value="">—</option>';
+  });
+  return locLoading;
+}
+function fillDistricts(s){
+  var dsel=document.getElementById('f-district-sel'), psel=document.getElementById('f-pin-sel');
+  dsel.innerHTML='<option value="">'+esc(T('loc.seldistrict'))+'</option>'+(s&&LOC[s]?Object.keys(LOC[s]).map(function(d){return '<option>'+esc(d)+'</option>';}).join(''):'');
+  dsel.disabled=!s;
+  psel.innerHTML='<option value="">'+esc(T('loc.selpin'))+'</option>'; psel.disabled=true;
+}
+function fillPins(s,d){
+  var psel=document.getElementById('f-pin-sel');
+  var pins=(LOC[s]&&LOC[s][d])||[];
+  psel.innerHTML='<option value="">'+esc(T('loc.selpin'))+'</option>'+pins.map(function(p){return '<option value="'+p[0]+'">'+p[0]+'</option>';}).join('');
+  psel.disabled=!pins.length;
+}
+function setCityState(s,d){ document.getElementById('f-state').value=s||''; document.getElementById('f-city').value=d||''; }
+function onStateSel(){
+  var s=document.getElementById('f-state-sel').value;
+  fillDistricts(s); setCityState(s,'');
+}
+function onDistrictSel(){
+  var s=document.getElementById('f-state-sel').value, d=document.getElementById('f-district-sel').value;
+  fillPins(s,d); setCityState(s,d);
+  if(!d) return;
+  var pins=LOC[s][d].filter(function(p){return p.length>2;});
+  if(pins.length){
+    var lat=pins.reduce(function(a,p){return a+p[1];},0)/pins.length, lng=pins.reduce(function(a,p){return a+p[2];},0)/pins.length;
+    initMap().then(function(){
+      if(mapMode==='google') { map.setCenter({lat:lat,lng:lng}); map.setZoom(11); } else map.setView([lat,lng],11);
+      if(!state.lat || !document.getElementById('f-pin-sel').value){ setMapPin(lat,lng); refreshNearby(); }
+    });
+  }
+}
+function onPinSel(){
+  var pin=document.getElementById('f-pin-sel').value; if(!pin) return;
+  document.getElementById('f-pin-input').value=pin;
+  var e=pinIndex[pin];
+  if(e && e[2]!=null) initMap().then(function(){ setMapPin(e[2],e[3],14); refreshNearby(); });
+}
+function onPinTyped(v){
+  v=String(v).replace(/\D/g,'').slice(0,6); document.getElementById('f-pin-input').value=v;
+  if(v.length<6) return;
+  loadLocations().then(function(){
+    if(!selectByPin(v,false)) showToast(T('loc.pinbad'),'error');
+  });
+}
+// Select state/district/PIN from a PIN code. keepPin=true when the map pin is already exact.
+function selectByPin(pin,keepPin){
+  pin=String(pin).replace(/\D/g,''); var e=pinIndex[pin];
+  if(!e) return false;
+  document.getElementById('f-state-sel').value=e[0]; fillDistricts(e[0]);
+  document.getElementById('f-district-sel').value=e[1]; fillPins(e[0],e[1]);
+  document.getElementById('f-pin-sel').value=pin; document.getElementById('f-pin-input').value=pin;
+  setCityState(e[0],e[1]);
+  if(!keepPin && e[2]!=null){ initMap().then(function(){ setMapPin(e[2],e[3],14); refreshNearby(); }); }
+  return true;
+}
+function syncSelectsToNearestPin(lat,lng){
+  loadLocations().then(function(){
+    var best=null, bd=1e9;
+    for(var pin in pinIndex){ var e=pinIndex[pin]; if(e[2]==null) continue;
+      var dd=(e[2]-lat)*(e[2]-lat)+(e[3]-lng)*(e[3]-lng); if(dd<bd){ bd=dd; best=pin; } }
+    if(best && bd<0.04 && !document.getElementById('f-pin-sel').value) selectByPin(best,true);
+  });
+}
+function restoreLocSelects(){
+  var p=state._draftPin, s=state._draftState, d=state._draftDistrict;
+  if(p && selectByPin(p,true)) return;
+  if(s && LOC[s]){ document.getElementById('f-state-sel').value=s; fillDistricts(s);
+    if(d && LOC[s][d]){ document.getElementById('f-district-sel').value=d; fillPins(s,d); } setCityState(s,d); }
+}
+
+/* ── Help near this location ── */
+var NB_CATS=[
+  {id:'police',   icon:'ti-shield-half-filled', color:'#2563eb', bg:'#eff6ff', title:'nb.police',    google:{nearby:['police'],radius:10000},                     q:'police station'},
+  {id:'welfare',  icon:'ti-heart-handshake',    color:'#e5484d', bg:'#fff1f1', title:'nb.welfare',   google:{text:'animal welfare organisation',radius:25000},     q:'animal welfare organisation', db:true},
+  {id:'shelter',  icon:'ti-home-heart',         color:'#16a34a', bg:'#ecfdf3', title:'nb.shelter',   google:{text:'animal shelter rescue',radius:25000},           q:'animal shelter'},
+  {id:'vet',      icon:'ti-stethoscope',        color:'#7c3aed', bg:'#f5f3ff', title:'nb.vet',       google:{nearby:['veterinary_care'],radius:8000},              q:'veterinary clinic'},
+  {id:'community',icon:'ti-users-group',        color:'#ea580c', bg:'#fff7ed', title:'nb.community', google:{text:'pet club dog lovers group',radius:25000},       q:'pet club', groups:true}
+];
+var nbCache={}, nbTimer=null, nbData=null, nbSeq=0;
+var PLACE_FIELDS=['displayName','formattedAddress','nationalPhoneNumber','location','googleMapsURI'];
+
+function distKm(a,b,c,d){ var R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180;
+  var h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2); return 2*R*Math.asin(Math.sqrt(h)); }
+function gmapsSearchURL(q,lat,lng){ return 'https://www.google.com/maps/search/'+encodeURIComponent(q)+'/@'+lat+','+lng+',14z'; }
+function gmapsDirURL(lat,lng){ return 'https://www.google.com/maps/dir/?api=1&destination='+lat+','+lng; }
+
+function refreshNearby(force){
+  if(state.lat==null) return;
+  clearTimeout(nbTimer);
+  nbTimer=setTimeout(function(){ runNearby(force); },500);
+}
+function placeLabel(){
+  var d=document.getElementById('f-city').value, s=document.getElementById('f-state').value, p=document.getElementById('f-pin-sel').value;
+  return [d,s].filter(Boolean).join(', ')+(p?' · '+p:'') || (state.lat.toFixed(3)+', '+state.lng.toFixed(3));
+}
+function runNearby(force){
+  var lat=state.lat, lng=state.lng, key=lat.toFixed(3)+','+lng.toFixed(3)+','+PBi18n.lang+','+mapMode;
+  var seq=++nbSeq;
+  if(!force && nbCache[key]){ nbData=nbCache[key]; renderNearby(); return; }
+  nbData={lat:lat,lng:lng,loading:true,google:mapMode==='google',cats:{}};
+  renderNearby();
+  var jobs=NB_CATS.map(function(c){
+    return searchCategory(c,lat,lng).then(function(list){ if(seq!==nbSeq) return; nbData.cats[c.id]=list; renderNearby(); });
+  });
+  Promise.all(jobs).then(function(){ if(seq!==nbSeq) return; nbData.loading=false; nbCache[key]=nbData; renderNearby(); drawNearbyMarkers(); });
+}
+function searchCategory(c,lat,lng){
+  var tasks=[];
+  if(mapMode==='google' && google.maps.places && google.maps.places.Place){
+    var P=google.maps.places.Place, g=c.google, req;
+    if(g.nearby){
+      req={fields:PLACE_FIELDS,locationRestriction:{center:{lat:lat,lng:lng},radius:g.radius},includedPrimaryTypes:g.nearby,maxResultCount:6,language:PBi18n.lang,region:'in'};
+      if(google.maps.places.SearchNearbyRankPreference) req.rankPreference=google.maps.places.SearchNearbyRankPreference.DISTANCE;
+      tasks.push(P.searchNearby(req).then(function(r){return mapPlaces(r.places,lat,lng);}).catch(function(e){ console.warn('[PawBook] places',c.id,e&&e.message); return null; }));
+    } else {
+      req={textQuery:g.text,fields:PLACE_FIELDS,locationBias:{center:{lat:lat,lng:lng},radius:g.radius},maxResultCount:6,language:PBi18n.lang,region:'in'};
+      tasks.push(P.searchByText(req).then(function(r){return mapPlaces(r.places,lat,lng).filter(function(p){return p.km<=40;});}).catch(function(e){ console.warn('[PawBook] places',c.id,e&&e.message); return null; }));
+    }
+  }
+  if(c.db){
+    var s=document.getElementById('f-state').value, d=document.getElementById('f-city').value, qs=[];
+    if(d) qs.push('city='+encodeURIComponent(d)); if(s) qs.push('state='+encodeURIComponent(s));
+    tasks.push(fetch(API_BASE+'/abuse-reports/organizations'+(qs.length?'?'+qs.join('&'):'')).then(function(r){return r.json();}).then(function(j){
+      return (j.success&&j.data?j.data:[]).map(function(o){ return {name:o.name,addr:[o.city,o.state].filter(Boolean).join(', '),phone:o.phone,partner:true,km:null}; });
+    }).catch(function(){return [];}));
+  }
+  return Promise.all(tasks).then(function(rs){
+    var failed=rs.length&&rs.every(function(x){return x===null;});
+    var all=[].concat.apply([],rs.filter(Boolean));
+    var seen={}; all=all.filter(function(p){ var k=(p.name||'').toLowerCase(); if(seen[k]) return false; seen[k]=1; return true; });
+    all.sort(function(a,b){ if(a.partner!==b.partner) return a.partner?-1:1; return (a.km==null?999:a.km)-(b.km==null?999:b.km); });
+    return {items:all.slice(0,6),failed:failed||mapMode!=='google'};
+  });
+}
+function mapPlaces(places,lat,lng){
+  return (places||[]).map(function(p){
+    var la=p.location?p.location.lat():null, ln=p.location?p.location.lng():null;
+    return {name:p.displayName,addr:p.formattedAddress,phone:p.nationalPhoneNumber,url:p.googleMapsURI,lat:la,lng:ln,km:la==null?null:distKm(lat,lng,la,ln)};
+  });
+}
+function drawNearbyMarkers(){
+  clearPlaceMarkers(); if(!nbData) return;
+  NB_CATS.forEach(function(c){ var r=nbData.cats[c.id]; if(!r) return;
+    r.items.forEach(function(p){ if(p.lat!=null) addPlaceMarker(p.lat,p.lng,c.color,p.name); }); });
+}
+function renderNearby(){
+  var box=document.getElementById('nearby'); if(!nbData){ return; }
+  var h='<div class="nb-head"><div class="nb-head-ic"><i class="ti ti-map-pin-heart"></i></div><div style="flex:1;min-width:0">'
+    +'<div class="nb-title">'+esc(T('nb.title',{place:placeLabel()}))+'</div><div class="nb-sub">'+esc(T('nb.sub'))+'</div></div></div>';
+  h+='<div class="nb-national">'
+    +'<a class="nb-chip red" href="tel:112"><i class="ti ti-urgent"></i><span><b>112</b> '+esc(T('hl.112'))+'</span></a>'
+    +'<a class="nb-chip green" href="tel:1962"><i class="ti ti-ambulance"></i><span><b>1962</b> '+esc(T('hl.1962'))+'</span></a></div>';
+  NB_CATS.forEach(function(c){
+    var r=nbData.cats[c.id];
+    h+='<div class="nb-sec"><div class="nb-sec-h"><span class="nb-sec-ic" style="background:'+c.bg+';color:'+c.color+'"><i class="ti '+c.icon+'"></i></span>'+esc(T(c.title))+'</div>';
+    if(!r){ h+='<div class="nb-skel"></div><div class="nb-skel"></div>'; }
+    else {
+      r.items.forEach(function(p){
+        h+='<div class="nb-item"><div style="flex:1;min-width:0"><div class="nb-name">'+esc(p.name)+(p.partner?' <span class="nb-partner">'+esc(T('nb.verified'))+'</span>':'')+'</div>'
+          +'<div class="nb-addr">'+(p.km!=null?'<b>'+esc(T('nb.km',{d:p.km<10?p.km.toFixed(1):Math.round(p.km)}))+'</b> · ':'')+esc(p.addr||'')+'</div>'
+          +(p.phone?'<div class="nb-phone">'+esc(p.phone)+'</div>':'<div class="nb-nophone">'+esc(T('nb.nophone'))+'</div>')+'</div>'
+          +'<div class="nb-acts">'+(p.phone?'<a class="nb-btn call" href="tel:'+esc(String(p.phone).replace(/[^\d+]/g,''))+'"><i class="ti ti-phone"></i><span>'+esc(T('nb.call'))+'</span></a>':'')
+          +(p.lat!=null?'<a class="nb-btn" target="_blank" rel="noopener" href="'+esc(p.url||gmapsDirURL(p.lat,p.lng))+'"><i class="ti ti-directions"></i><span>'+esc(T('nb.dir'))+'</span></a>':'')+'</div></div>';
+      });
+      if(!r.items.length && !r.failed) h+='<div class="nb-none">'+esc(T('nb.none'))+'</div>';
+      if(r.failed || r.items.length<3) h+='<a class="nb-search" target="_blank" rel="noopener" href="'+esc(gmapsSearchURL(c.q,nbData.lat,nbData.lng))+'"><i class="ti ti-brand-google-maps"></i>'+esc(T('nb.search'))+'<i class="ti ti-external-link"></i></a>';
+      if(c.groups) h+='<a class="nb-search" href="03_groups.html"><i class="ti ti-users"></i>'+esc(T('nb.groups'))+'<i class="ti ti-arrow-right"></i></a>';
+    }
+    h+='</div>';
+  });
+  if(nbData.google) h+='<div class="nb-attr">'+esc(T('nb.powered'))+'</div>';
+  box.innerHTML=h;
+}
 
 /* ── evidence ── */
 function onEvidenceSelected(e){ addFiles(Array.from(e.target.files)); e.target.value=''; }
@@ -1197,7 +1593,8 @@ function collectWitnesses(){
 function renderReview(){
   var sp=document.getElementById('f-species'); var spTxt=sp.value?sp.options[sp.selectedIndex].text:T('rv.missing');
   var addr=document.getElementById('f-address').value.trim(), city=document.getElementById('f-city').value.trim();
-  var loc=city||addr.split(',').slice(0,2).join(',')||(state.lat?(state.lat.toFixed(4)+', '+state.lng.toFixed(4)):T('rv.missing'));
+  var st=document.getElementById('f-state').value, pin=document.getElementById('f-pin-sel').value;
+  var loc=city?([city,st].filter(Boolean).join(', ')+(pin?' · '+pin:'')):(addr.split(',').slice(0,2).join(',')||(state.lat?(state.lat.toFixed(4)+', '+state.lng.toFixed(4)):T('rv.missing')));
   var rows=[
     [T('rv.type'), state.categoryName?catLabel(state.categoryName):T('rv.missing')],
     [T('rv.animal'), spTxt+(+document.getElementById('f-count').value>1?' × '+document.getElementById('f-count').value:'')],
@@ -1239,7 +1636,8 @@ async function submitReport(){
       animal_count:parseInt(document.getElementById('f-count').value,10)||1, incident_date:document.getElementById('f-date').value||null,
       is_ongoing:document.getElementById('f-ongoing').checked, is_emergency:state.isEmergency, reporting_pref:state.privacy,
       location:{ latitude:state.lat, longitude:state.lng, address:document.getElementById('f-address').value.trim()||null,
-                 city:document.getElementById('f-city').value.trim()||null, state:document.getElementById('f-state').value.trim()||null },
+                 city:document.getElementById('f-city').value.trim()||null, state:document.getElementById('f-state').value.trim()||null,
+                 pincode:document.getElementById('f-pin-sel').value||null, country:'India' },
       evidence:evidenceArr, witnesses:collectWitnesses(),
       consent:{ identity_sharing:document.getElementById('c-identity').checked, evidence_sharing:document.getElementById('c-evidence').checked,
                 follow_up_contact:document.getElementById('c-followup').checked },
@@ -1258,11 +1656,13 @@ async function submitReport(){
   finally{ btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i><span data-i18n="w.submit">'+T('w.submit')+'</span>'; }
 }
 function resetForm(){
-  ['f-desc','f-breed','f-address','f-city','f-state','f-date','f-species'].forEach(function(id){ document.getElementById(id).value=''; });
+  ['f-desc','f-breed','f-address','f-city','f-state','f-date','f-species','f-pin-input','f-state-sel'].forEach(function(id){ document.getElementById(id).value=''; });
   document.getElementById('f-count').value=1; document.getElementById('f-ongoing').checked=false;
   document.getElementById('evidence-preview').innerHTML=''; document.getElementById('witnesses-container').innerHTML='';
   document.getElementById('coord-display').style.display='none';
-  if(marker&&map){ map.removeLayer(marker); marker=null; }
+  if(marker&&map){ if(mapMode==='google') marker.setMap(null); else map.removeLayer(marker); marker=null; }
+  clearPlaceMarkers(); nbData=null; fillDistricts('');
+  document.getElementById('nearby').innerHTML='<div class="nb-empty"><i class="ti ti-map-search"></i><span>'+esc(T('nb.empty'))+'</span></div>';
   if(state.isEmergency) toggleEmergency();
   state.categoryId=null; state.categoryName=null; state.lat=null; state.lng=null; state.evidenceFiles=[]; state.witnesses=[];
   selectPrivacy('private'); renderCategories(); goStep(1);
@@ -1278,7 +1678,8 @@ function saveDraft(silent){
       city:document.getElementById('f-city').value, fstate:document.getElementById('f-state').value,
       species:document.getElementById('f-species').value, breed:document.getElementById('f-breed').value,
       count:document.getElementById('f-count').value, date:document.getElementById('f-date').value,
-      ongoing:document.getElementById('f-ongoing').checked
+      ongoing:document.getElementById('f-ongoing').checked,
+      pin:document.getElementById('f-pin-sel').value, district:document.getElementById('f-district-sel').value, stateSel:document.getElementById('f-state-sel').value
     }));
     if(!silent) showToast(T('t.draft'),'success');
   }catch(e){ if(!silent) showToast(T('t.draftfail'),'error'); }
@@ -1293,6 +1694,7 @@ function loadDraft(){
   if(d.isEmergency) toggleEmergency();
   if(d.privacy) selectPrivacy(d.privacy);
   if(d.lat&&d.lng) setMapPin(d.lat,d.lng);
+  state._draftPin=d.pin; state._draftState=d.stateSel; state._draftDistrict=d.district;
   if(d.categoryId){ state.categoryId=d.categoryId; renderCategories(); }
 }
 
@@ -1354,6 +1756,10 @@ function loadOrgs(){
 window.addEventListener('pb:langchange',function(){
   renderCategories();
   if(state.step===4) renderReview();
+  if(LOC){ var sv=document.getElementById('f-state-sel').value, dv=document.getElementById('f-district-sel').value, pv=document.getElementById('f-pin-sel').value;
+    document.getElementById('f-state-sel').options[0].textContent=T('loc.selstate');
+    fillDistricts(sv); if(dv){ document.getElementById('f-district-sel').value=dv; fillPins(sv,dv); document.getElementById('f-pin-sel').value=pv; } }
+  if(nbData){ renderNearby(); if(!nbData.loading) refreshNearby(); }
   if(document.getElementById('panel-my').classList.contains('active')) loadMyReports();
   if(document.getElementById('panel-orgs').classList.contains('active')) loadOrgs();
 });
