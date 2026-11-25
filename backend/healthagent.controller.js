@@ -174,3 +174,22 @@ exports.chat = async (req, res) => {
     return R.ok(res, { reply: reply || 'Sorry, I could not answer that. If you are worried, please contact your vet.' });
   } catch (e) { return fail(res, 'chat', e); }
 };
+
+// ── nearby help listed on PawBook (shelters, vets, verified welfare organisations) for a chosen place ──
+// GET /healthagent/nearby?country&state&city
+exports.nearby = async (req, res) => {
+  try {
+    const city = str(req.query.city, 80), state = str(req.query.state, 80);
+    if (!city && !state) return R.ok(res, { shelters: [], vets: [], orgs: [] });
+    const [sh, vt, og] = await Promise.all([
+      query(`SELECT shelter_id::text AS id, name, city, state, address, COALESCE(NULLIF(contact_phone, ''), phone) AS phone, is_verified FROM shelters
+        WHERE ($1 = '' OR lower(city) = lower($1)) AND ($2 = '' OR lower(state) = lower($2) OR $1 <> '') ORDER BY is_verified DESC, name LIMIT 15`, [city, state]).catch(() => ({ rows: [] })),
+      city ? query(`SELECT vet_id::text AS id, first_name, last_name, clinic_name, city, phone FROM vets WHERE lower(city) = lower($1) AND COALESCE(status, 'active') = 'active' ORDER BY clinic_name LIMIT 15`, [city]).catch(() => ({ rows: [] })) : { rows: [] },
+      query(`SELECT org_id::text AS id, name, org_type, phone, city, state, coverage_area FROM welfare_organizations WHERE is_active AND is_verified AND (($1 <> '' AND lower(city) = lower($1)) OR ($2 <> '' AND lower(state) = lower($2))) ORDER BY (lower(city) = lower($1)) DESC, name LIMIT 10`, [city, state]).catch(() => ({ rows: [] }))]);
+    return R.ok(res, {
+      shelters: sh.rows.map(s => ({ id: s.id, name: s.name, city: s.city, state: s.state, address: s.address || null, phone: s.phone || null, verified: !!s.is_verified })),
+      vets: vt.rows.map(v => ({ id: v.id, name: [v.first_name, v.last_name].filter(Boolean).length ? 'Dr. ' + [v.first_name, v.last_name].filter(Boolean).join(' ') : null, clinic: v.clinic_name || null, city: v.city, phone: v.phone || null })),
+      orgs: og.rows.map(o => ({ id: o.id, name: o.name, type: o.org_type, phone: o.phone || null, city: o.city, state: o.state, covers: o.coverage_area || null }))
+    });
+  } catch (e) { return fail(res, 'nearby', e); }
+};

@@ -289,6 +289,7 @@ haRouter.get('/pets/:id/checks',             authenticate, haCtrl.checks);
 haRouter.post('/pets/:id/checks',            authenticate, haWrite, haCtrl.addCheck);
 haRouter.delete('/checks/:cid',              authenticate, haWrite, haCtrl.deleteCheck);
 haRouter.get('/contacts',                    authenticate, haCtrl.contacts);
+haRouter.get('/nearby',                      authenticate, haCtrl.nearby);
 haRouter.post('/contacts',                   authenticate, haWrite, haCtrl.addContact);
 haRouter.delete('/contacts/:cid',            authenticate, haWrite, haCtrl.deleteContact);
 router.use('/healthagent', haRouter);

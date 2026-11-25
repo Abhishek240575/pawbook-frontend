@@ -6,6 +6,7 @@
 # Usage:  bash ~/pb-sync/backend/deploy_healthagent.sh
 set -u
 PREV=5098d1b
+PREV2=2d3f44a   # first version of this redesign (if that was already deployed, this upgrades it)
 REPO=~/pb-sync
 API=/var/www/1015d59e-67f5-4aea-838c-7f7392731800/api
 WEB=/var/www/1015d59e-67f5-4aea-838c-7f7392731800/public_html
@@ -19,25 +20,30 @@ git cat-file -e "$PREV" 2>/dev/null || { echo "Commit $PREV not found in $REPO";
 [ -f "$WEB/42_shop.html" ] || { echo "Web folder not found: $WEB"; exit 1; }
 
 # 1) Check everything before touching anything
-BAD=0
+BAD=0; UPGRADE=0
+if git show "$PREV2:37_pet_ai_health_agent.html" | cmp -s - "$WEB/37_pet_ai_health_agent.html"; then UPGRADE=1; echo "Found the first version of the redesigned page 37 — upgrading it."; fi
 for f in $FRONT; do
   if [ ! -e "$WEB/$f" ]; then echo "  missing (unexpected): $WEB/$f"; BAD=1; continue; fi
-  if ! git show "$PREV:$f" | cmp -s - "$WEB/$f"; then echo "  DIFFERS from $PREV: $WEB/$f"; BAD=1; fi
+  if [ "$UPGRADE" -eq 0 ] && ! git show "$PREV:$f" | cmp -s - "$WEB/$f"; then echo "  DIFFERS from $PREV: $WEB/$f"; BAD=1; fi
 done
-for d in $DIRS; do [ -e "$d/healthagent.controller.js" ] && { echo "  already exists (unexpected): $d/healthagent.controller.js"; BAD=1; }; done
-for f in "$API/src/routes/index.js" "$API/routes/index.js"; do
-  grep -q "(v15: lost & found)" "$f" || { echo "  routes are not at v15 (Lost & Found): $f"; BAD=1; }
-done
+if [ "$UPGRADE" -eq 1 ]; then
+  for d in $DIRS; do git show "$PREV2:backend/healthagent.controller.js" | cmp -s - "$d/healthagent.controller.js" || { echo "  DIFFERS from $PREV2: $d/healthagent.controller.js"; BAD=1; }; done
+  for f in "$API/src/routes/index.js" "$API/routes/index.js"; do grep -q "(v16: health agent)" "$f" || { echo "  routes are not at v16: $f"; BAD=1; }; done
+else
+  for d in $DIRS; do [ -e "$d/healthagent.controller.js" ] && { echo "  already exists (unexpected): $d/healthagent.controller.js"; BAD=1; }; done
+  for f in "$API/src/routes/index.js" "$API/routes/index.js"; do grep -q "(v15: lost & found)" "$f" || { echo "  routes are not at v15 (Lost & Found): $f"; BAD=1; }; done
+fi
 [ -f "$WEB/pb-save.js" ] || { echo "  missing $WEB/pb-save.js"; BAD=1; }
 [ -f "$API/.env" ] || { echo "  missing $API/.env"; BAD=1; }
 if [ "$BAD" -ne 0 ]; then echo "STOPPED: live files are not what was deployed. Nothing was changed. Send me this output."; exit 1; fi
-echo "Check OK: all live files match $PREV."
+echo "Check OK: live files match what was deployed."
 grep -q '^ANTHROPIC_API_KEY=' "$API/.env" && echo "AI key found in .env (AI chat on)." || echo "NOTE: ANTHROPIC_API_KEY not in .env — the page works, but the AI chat will say it is unavailable."
 
 # 2) Backup
 mkdir -p "$BK/web" "$BK/api-src" "$BK/api"
 for f in $FRONT; do [ -e "$WEB/$f" ] && cp -p "$WEB/$f" "$BK/web/"; done
 cp -p "$API/src/routes/index.js" "$BK/api-src/index.js"; cp -p "$API/routes/index.js" "$BK/api/index.js"
+if [ "$UPGRADE" -eq 1 ]; then mkdir -p "$BK/ctrl"; cp -p "$API/src/controllers/healthagent.controller.js" "$BK/ctrl/"; fi
 echo "Backup: $BK"
 
 # 3) Database migration 018 (idempotent; only ADDS tables)
@@ -47,11 +53,11 @@ if ! psql "$DATABASE_URL" -q -v ON_ERROR_STOP=1 -f "$REPO/backend/018_health_age
 echo "Migration 018 applied."
 
 # 4) Backend
-restore_backend() { cp "$BK/api-src/index.js" "$API/src/routes/index.js"; cp "$BK/api/index.js" "$API/routes/index.js"; rm -f "$API/src/controllers/healthagent.controller.js" "$API/controllers/healthagent.controller.js"; }
+restore_backend() { cp "$BK/api-src/index.js" "$API/src/routes/index.js"; cp "$BK/api/index.js" "$API/routes/index.js"; if [ "$UPGRADE" -eq 1 ]; then for d in $DIRS; do cp "$BK/ctrl/healthagent.controller.js" "$d/"; done; else rm -f "$API/src/controllers/healthagent.controller.js" "$API/controllers/healthagent.controller.js"; fi; }
 for d in $DIRS; do cp "$REPO/backend/healthagent.controller.js" "$d/healthagent.controller.js"; done
 node "$REPO/backend/add_shop_routes.js" || { echo "Route update failed; backend restored."; restore_backend; exit 1; }
 OK=1
-for f in "$API/src/routes/index.js" "$API/routes/index.js"; do node --check "$f" || OK=0; grep -q "haRouter" "$f" && grep -q "lfRouter" "$f" && grep -q "LOST & FOUND GUARD" "$f" || OK=0; done
+for f in "$API/src/routes/index.js" "$API/routes/index.js"; do node --check "$f" || OK=0; grep -q "haCtrl.nearby" "$f" && grep -q "lfRouter" "$f" && grep -q "LOST & FOUND GUARD" "$f" || OK=0; done
 node --check "$API/src/controllers/healthagent.controller.js" || OK=0
 if [ "$OK" -eq 1 ]; then echo "Backend files OK."; else echo "Check failed; backend restored."; restore_backend; exit 1; fi
 

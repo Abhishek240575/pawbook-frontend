@@ -517,6 +517,42 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
 .ctc .act{display:flex;gap:6px}
 .ctc a.btn,.ctc button.btn{height:36px}
 .mini{width:36px;height:36px;border-radius:50%;border:none;background:#f5f7fb;color:var(--muted);font-size:15px}
+
+/* location + nearby help */
+.locbar{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:10px;align-items:end}
+.locbar .fi{height:42px;font-size:13px}
+.lbtns{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:1000px){.locbar{grid-template-columns:1fr 1fr}.lbtns{grid-column:1/-1}}
+.locnow{margin-top:8px;font-size:12.5px;font-weight:700;color:var(--t-green-d);display:flex;gap:6px;align-items:center}
+.nb-empty{margin-top:14px;border:2px dashed #dbe4f3;border-radius:16px;padding:22px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;color:var(--muted);font-size:13px}
+.nb-empty i{font-size:32px;color:var(--blue)}.nb-empty b{color:var(--navy);font-size:15px}
+.nbs{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.nbs h4{font-size:14.5px;font-weight:800;color:var(--navy);display:flex;gap:8px;align-items:center}.nbs h4 i{color:var(--coral)}
+.nbs .sub{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:4px}
+.nbm{font-size:13px}
+.ctc{flex-wrap:wrap}.ctc .t{min-width:180px}
+.hlx{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:620px){.hlx{grid-template-columns:1fr}}
+.hlx a{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:#fff6f6;border:1px solid #ffdede}
+.hlx b{font-size:22px;font-weight:900;color:var(--coral-d)}.hlx span{font-size:12px;color:#6b4a4a;line-height:1.45}
+.gattr{font-size:11px;color:var(--muted);margin-top:12px}.gattr span{font-family:Arial,sans-serif;font-weight:700;color:#5f6368;margin-left:4px}
+/* SOS */
+.sosfab{position:fixed;right:20px;bottom:24px;z-index:320;width:66px;height:66px;border-radius:50%;border:none;background:linear-gradient(135deg,#e5484d,#c2353a);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:12px;letter-spacing:.06em;box-shadow:0 10px 26px rgba(229,72,77,.45);animation:sp 2.4s infinite}
+.sosfab i{font-size:24px}
+@keyframes sp{0%{box-shadow:0 0 0 0 rgba(229,72,77,.5)}70%{box-shadow:0 0 0 16px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
+@media(max-width:768px){.sosfab{display:none}}
+.bnav .bsos{color:var(--coral-d);font-weight:800}.bnav .bsos i{width:42px;height:28px;border-radius:9px;background:linear-gradient(135deg,#e5484d,#c2353a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px}
+.sosm .md{max-width:720px}
+@media(max-width:700px){.sosm .md{max-height:100vh;height:100vh;border-radius:0}}
+.sosh{background:linear-gradient(135deg,#e5484d,#c2353a);border-radius:22px 22px 0 0;padding:16px 20px;position:sticky;top:0;z-index:2}
+.sosh h3{color:#fff}.sosh .mx{background:rgba(255,255,255,.2);color:#fff}
+@media(max-width:700px){.sosh{border-radius:0}}
+.sos-top{display:flex;gap:12px;align-items:center;justify-content:space-between;background:#fff4f4;border:1px solid #ffd6d6;border-radius:14px;padding:12px 14px;margin-top:10px}
+.sos-top b{display:block;color:var(--coral-d);font-size:15px}.sos-top span{font-size:12.5px;color:#6b4a4a}
+.fachips{display:flex;flex-wrap:wrap;gap:6px}
+.fachips button{height:38px;padding:0 13px;border-radius:999px;border:1.5px solid #ffd6d6;background:#fff;font-weight:700;font-size:12.5px;color:var(--navy)}
+#faModal{z-index:720}
+#sosModal .locbar{grid-template-columns:1fr 1fr}#sosModal .lbtns{grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -541,8 +577,8 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
   <button onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
   <button onclick="location.href='36_pet_life_record.html'"><i class="ti ti-heart-handshake"></i>Pet health</button>
   <button class="on" onclick="setTab('symptoms',1)"><i class="ti ti-robot"></i>AI agent</button>
-  <button onclick="setTab('firstaid',1)"><i class="ti ti-first-aid-kit"></i>First aid</button>
-  <button onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i>Vets</button>
+  <button onclick="setTab('nearby',1)"><i class="ti ti-map-pin-heart"></i>Nearby</button>
+  <button class="bsos" onclick="openSOS()"><i class="ti ti-urgent"></i>SOS</button>
 </nav>
 
 <div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
@@ -560,6 +596,14 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
     <div class="mf"><span id="fa-call"></span><button type="button" class="btn btn-w" onclick="closeFA()">Close</button></div>
   </div>
 </div>
+
+<div class="mo sosm" id="sosModal" onclick="if(event.target===this)closeSOS()">
+  <div class="md" role="dialog" aria-modal="true" aria-labelledby="sos-title">
+    <div class="mh sosh"><h3 id="sos-title">SOS</h3><button class="mx" onclick="closeSOS()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <div class="mb" id="sos-body"></div>
+  </div>
+</div>
+<button class="sosfab" onclick="openSOS()" aria-label="SOS — emergency help"><i class="ti ti-urgent"></i><span>SOS</span></button>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -614,9 +658,10 @@ function boot(){
   if (!TOKEN) { location.href = '01_login.html'; return; }
   try { var u = JSON.parse(localStorage.getItem('pb_user') || 'null'); if (u) { var av = document.getElementById('nav-av'); if (u.avatar_url || u.avatar) av.innerHTML = '<img src="' + esc(u.avatar_url || u.avatar) + '" alt="">'; else av.textContent = (u.full_name || u.name || '·').charAt(0).toUpperCase(); } } catch (e) {}
   var q = new URLSearchParams(location.search), t = q.get('tab');
-  if (['symptoms', 'chat', 'firstaid', 'vitals', 'contacts', 'history'].indexOf(t) >= 0) TAB = t;
+  if (['symptoms', 'nearby', 'chat', 'firstaid', 'vitals', 'contacts', 'history'].indexOf(t) >= 0) TAB = t;
   Promise.all([api('/petcare/pets'), api('/healthagent/contacts').catch(function(){ return {contacts: [], vets: []}; })]).then(function(r){
     PETS = r[0].pets || []; CT = r[1];
+    if (q.get('sos') === '1') setTimeout(openSOS, 300);
     if (!PETS.length) return renderWelcome();
     var saved = null; try { saved = localStorage.getItem('pb_health_pet'); } catch (e) {}
     PID = [q.get('pet'), saved].filter(function(x){ return x && PETS.some(function(p){ return String(p.id) === String(x); }); })[0] || String(PETS[0].id);
@@ -643,9 +688,11 @@ function tel(p){ return 'tel:' + String(p).replace(/[^\d+]/g, ''); }
 function renderWelcome(){
   document.getElementById('app').innerHTML = '<div class="hero-band"><section class="hero"><div><span class="eyebrow"><i class="ti ti-robot"></i>AI Health Agent</span>'
     + '<h1>Your pet\'s health, <br><span class="accent">understood.</span></h1><p class="tag">Add your pet first. The AI Health Agent then checks symptoms and answers questions using your pet\'s own vaccination and health records.</p>'
-    + '<div class="hero-ctas"><button class="btn btn-o" onclick="location.href=\'36_pet_life_record.html\'"><i class="ti ti-plus"></i>Add my pet</button><button class="btn btn-w" onclick="TAB=\'firstaid\';renderFirstAidOnly()"><i class="ti ti-first-aid-kit"></i>First aid guide</button></div></div>'
+    + '<div class="hero-ctas"><button class="btn btn-o" onclick="location.href=\'36_pet_life_record.html\'"><i class="ti ti-plus"></i>Add my pet</button><button class="btn btn-w" onclick="TAB=\'firstaid\';renderFirstAidOnly()"><i class="ti ti-first-aid-kit"></i>First aid guide</button><button class="btn btn-r" onclick="openSOS()"><i class="ti ti-urgent"></i>SOS</button></div></div>'
     + '<div class="collage"><div class="ph ph-main">' + pimg('vet-dog') + '<div class="ph-tag"><i class="ti ti-stethoscope"></i>Know when to see a vet</div></div><div class="ph">' + pimg('phone-dog', 600) + '</div><div class="ph">' + pimg('cat-eye', 600) + '</div></div></section></div>'
+    + '<section class="card sec"><div class="ch"><h2><i class="ti ti-map-pin-heart"></i>Nearby vets, emergency clinics &amp; shelters</h2></div><div class="cb"><div class="locbar-wrap">' + locBar() + '</div><div id="nb-res">' + nearbyBody(false) + '</div></div></section>'
     + '<div id="fa-only"></div>' + careHTML(null) + credit();
+  loadNearby();
 }
 function renderFirstAidOnly(){ document.getElementById('fa-only').innerHTML = '<section class="card sec"><div class="cb" style="padding-top:18px">' + firstAidPanel({name: 'your pet', gender: ''}) + '</div></section>'; }
 
@@ -660,7 +707,7 @@ function render(){
   var st = !vc.records ? ['st-new', 'ti-vaccine', 'No vaccines recorded'] : vc.over.length ? ['st-care', 'ti-alert-circle', vc.over.length + ' vaccine' + (vc.over.length > 1 ? 's' : '') + ' overdue'] : vc.soon.length ? ['st-ok', 'ti-clock', vc.soon.length + ' due soon'] : ['st-great', 'ti-shield-check', 'Vaccines on track'];
   h += '<section class="hero" aria-label="' + esc(p.name) + ' health agent"><div><span class="eyebrow"><i class="ti ti-robot"></i>AI Health Agent</span>'
     + '<h1>' + esc(p.name) + '\'s health, <br><span class="accent">understood.</span></h1><p class="tag">Check symptoms, ask questions and get first-aid help — with answers that use ' + esc(p.name) + '\'s own vaccination and health records.</p>'
-    + '<div class="hero-ctas"><button class="btn btn-o" onclick="setTab(\'symptoms\',1)"><i class="ti ti-stethoscope"></i>Check symptoms</button><button class="btn btn-w" onclick="setTab(\'chat\',1)"><i class="ti ti-message-chatbot"></i>Ask the AI</button><button class="btn btn-w" style="color:var(--coral-d)" onclick="setTab(\'firstaid\',1)"><i class="ti ti-first-aid-kit"></i>Emergency</button></div>'
+    + '<div class="hero-ctas"><button class="btn btn-o" onclick="setTab(\'symptoms\',1)"><i class="ti ti-stethoscope"></i>Check symptoms</button><button class="btn btn-w" onclick="setTab(\'chat\',1)"><i class="ti ti-message-chatbot"></i>Ask the AI</button><button class="btn btn-r" onclick="openSOS()"><i class="ti ti-urgent"></i>SOS</button></div>'
     + '<div class="facts">' + facts.map(function(f){ return '<span class="fact"><i class="ti ' + f[1] + ' ' + f[2] + '"></i>' + esc(f[0]) + '</span>'; }).join('') + '<span class="status ' + st[0] + '"><i class="ti ' + st[1] + '"></i>' + esc(st[2]) + '</span></div></div>';
   var ph = petPhotos(p), smp = !ph.length, col;
   if (smp) { var set = spKey(p) === 'cat' ? ['cat-eye', 'cat-vaccine', 'phone-dog'] : ['golden', 'vet-dog', 'phone-dog'];
@@ -683,8 +730,8 @@ function render(){
   // emergency strip
   var call = phoneOf()[0];
   h += '<div class="sos">' + pimg('firstaid-kit', 500) + '<div><b><i class="ti ti-urgent"></i>Is ' + esc(p.name) + ' in danger right now?</b><p>Trouble breathing, collapse, a seizure, heavy bleeding, a swollen hard belly or a suspected poison need a vet <strong>immediately</strong> — don\'t wait for an app.</p></div><div class="act">'
-    + (call ? '<a class="btn btn-r btn-s" href="' + tel(call.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(call.name) + '</a>' : '<a class="btn btn-r btn-s" href="06_emergency.html"><i class="ti ti-phone"></i>Emergency vets</a>')
-    + '<button class="btn btn-w btn-s" onclick="setTab(\'firstaid\',1)"><i class="ti ti-first-aid-kit"></i>First aid steps</button></div></div>';
+    + (call ? '<a class="btn btn-r btn-s" href="' + tel(call.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(call.name) + '</a>' : '')
+    + '<button class="btn btn-r btn-s" onclick="openSOS()"><i class="ti ti-urgent"></i>SOS — get help</button><button class="btn btn-w btn-s" onclick="setTab(\'nearby\',1)"><i class="ti ti-map-pin-heart"></i>Nearby vets</button></div></div>';
   // snapshot + attention
   h += '<div class="grid sec" style="margin-top:22px">' + snapHTML(p) + attnHTML(p) + '</div>';
   // quick actions with photos
@@ -695,7 +742,7 @@ function render(){
     ['ultrasound', 'ti-heart-rate-monitor', 'c-sage', 'Log vitals', 'Heart rate, breathing, temperature', "setTab('vitals',1)"]
   ].map(function(a){ return '<button onclick="' + a[5] + '"><div class="im">' + pimg(a[0], 600) + '<i class="ti ' + a[1] + ' ' + a[2] + '"></i></div><div class="bd"><b>' + esc(a[3]) + '</b><small>' + esc(a[4]) + '</small></div></button>'; }).join('') + '</div>';
   // tabs
-  var TABS = [['symptoms', 'ti-stethoscope', 'Symptom checker'], ['chat', 'ti-message-chatbot', 'AI health chat'], ['firstaid', 'ti-first-aid-kit', 'First aid & emergency'], ['vitals', 'ti-heart-rate-monitor', 'Vitals'], ['contacts', 'ti-address-book', 'Vets & contacts'], ['history', 'ti-history', 'Check history']];
+  var TABS = [['symptoms', 'ti-stethoscope', 'Symptom checker'], ['nearby', 'ti-map-pin-heart', 'Nearby help'], ['chat', 'ti-message-chatbot', 'AI health chat'], ['firstaid', 'ti-first-aid-kit', 'First aid & emergency'], ['vitals', 'ti-heart-rate-monitor', 'Vitals'], ['contacts', 'ti-address-book', 'Vets & contacts'], ['history', 'ti-history', 'Check history']];
   h += '<div class="tabs" id="tabs" role="tablist">' + TABS.map(function(t){ return '<button class="tab' + (TAB === t[0] ? ' on' : '') + '" role="tab" data-tab="' + t[0] + '" aria-selected="' + (TAB === t[0]) + '" onclick="setTab(\'' + t[0] + '\')"><i class="ti ' + t[1] + '"></i>' + t[2] + '</button>'; }).join('') + '</div>';
   h += '<div id="panels">' + panels() + '</div>';
   h += careHTML(p) + credit();
@@ -738,8 +785,8 @@ function setTab(t, scroll){
   var pn = document.getElementById('panels'); if (!pn) return; pn.innerHTML = panels(); afterPanel();
   if (scroll) { var tb = document.getElementById('tabs'); if (tb) window.scrollTo({top: tb.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth'}); }
 }
-function panels(){ var p = pet(); switch (TAB) { case 'chat': return chatPanel(p); case 'firstaid': return '<section class="card"><div class="cb" style="padding-top:18px">' + firstAidPanel(p) + '</div></section>'; case 'vitals': return vitalsPanel(p); case 'contacts': return contactsPanel(p); case 'history': return historyPanel(p); default: return symptomPanel(p); } }
-function afterPanel(){ if (TAB === 'chat') { drawChat(); var ta = document.getElementById('cin'); if (ta && window.innerWidth > 700) ta.focus(); } if (TAB === 'symptoms' && LAST) showTriage(LAST, true); }
+function panels(){ var p = pet(); switch (TAB) { case 'chat': return chatPanel(p); case 'firstaid': return '<section class="card"><div class="cb" style="padding-top:18px">' + firstAidPanel(p) + '</div></section>'; case 'vitals': return vitalsPanel(p); case 'contacts': return contactsPanel(p); case 'nearby': return nearbyPanel(p); case 'history': return historyPanel(p); default: return symptomPanel(p); } }
+function afterPanel(){ if (TAB === 'chat') { drawChat(); var ta = document.getElementById('cin'); if (ta && window.innerWidth > 700) ta.focus(); } if (TAB === 'symptoms' && LAST) showTriage(LAST, true); if (TAB === 'nearby' && (NB.city || NB.geo) && !NRBUSY && !NR) loadNearby(); }
 
 /* ---------- symptom checker ---------- */
 var SYM = {
@@ -796,7 +843,7 @@ function analyse(){
 function showTriage(t, quiet){
   var p = pet(), L = LV[t.level], calls = phoneOf();
   var acts = t.level === 'emergency'
-    ? (calls.slice(0, 2).map(function(c){ return '<a class="btn btn-r btn-s" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(c.name) + '</a>'; }).join('') + '<a class="btn btn-w btn-s" href="06_emergency.html"><i class="ti ti-building-hospital"></i>Emergency vets near me</a><button class="btn btn-w btn-s" onclick="setTab(\'firstaid\',1)"><i class="ti ti-first-aid-kit"></i>First aid steps</button>')
+    ? (calls.slice(0, 2).map(function(c){ return '<a class="btn btn-r btn-s" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(c.name) + '</a>'; }).join('') + '<button class="btn btn-r btn-s" onclick="openSOS()"><i class="ti ti-urgent"></i>SOS — nearest emergency vets</button><button class="btn btn-w btn-s" onclick="setTab(\'firstaid\',1)"><i class="ti ti-first-aid-kit"></i>First aid steps</button>')
     : t.level === 'urgent' ? '<button class="btn btn-o btn-s" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-calendar-plus"></i>Book a vet</button><button class="btn btn-w btn-s" onclick="askAboutCheck()"><i class="ti ti-message-chatbot"></i>Ask the AI what to do now</button>'
     : '<button class="btn btn-b btn-s" onclick="askAboutCheck()"><i class="ti ti-message-chatbot"></i>Home-care tips from the AI</button><button class="btn btn-w btn-s" onclick="setTab(\'vitals\',1)"><i class="ti ti-heart-rate-monitor"></i>Log vitals</button>';
   var el = document.getElementById('tri'); if (!el) return;
@@ -877,7 +924,7 @@ var FA = {
 };
 function firstAidPanel(p){
   return '<div class="ch" style="padding:0 0 10px"><h2><i class="ti ti-first-aid-kit"></i>First aid &amp; emergency</h2></div>'
-    + '<div class="sos" style="margin-top:0">' + pimg('doctor-dog', 500) + '<div><b><i class="ti ti-urgent"></i>Go to a vet immediately if you see</b><p>These signs can\'t wait. First aid only buys time on the way.</p></div><div class="act"><a class="btn btn-r btn-s" href="06_emergency.html"><i class="ti ti-building-hospital"></i>Emergency vets</a></div></div>'
+    + '<div class="sos" style="margin-top:0">' + pimg('doctor-dog', 500) + '<div><b><i class="ti ti-urgent"></i>Go to a vet immediately if you see</b><p>These signs can\'t wait. First aid only buys time on the way.</p></div><div class="act"><button class="btn btn-r btn-s" onclick="openSOS()"><i class="ti ti-urgent"></i>SOS — nearest vets</button></div></div>'
     + '<div class="redlist" style="margin-top:12px">' + ['Breathing trouble, blue or very pale gums', 'Collapse, can\'t stand or unresponsive', 'Seizure longer than 5 minutes or repeated', 'Heavy bleeding that won\'t stop', 'Swollen hard belly with retching', 'Straining to urinate with little or nothing', 'Ate a poison, medicine, chocolate or xylitol', 'Hit by a vehicle or a fall from height'].map(function(s){ return '<div><i class="ti ti-alert-triangle"></i>' + esc(s) + '</div>'; }).join('') + '</div>'
     + '<h3 style="font-size:15px;font-weight:800;color:var(--navy);margin:18px 0 10px">Step-by-step guides</h3><div class="fa">'
     + Object.keys(FA).map(function(k){ return '<div class="first-aid-card" role="button" tabindex="0" onclick="openFA(\'' + k + '\'); setFirstAid(\'' + k + '\')" onkeydown="if(event.key===\'Enter\')openFA(\'' + k + '\')"><div class="first-aid-emoji">' + FA[k][0] + '</div><div><div class="first-aid-title">' + esc(FA[k][1]) + '</div><div class="first-aid-sub">' + FA[k][2].length + ' steps · tap to open</div></div></div>'; }).join('') + '</div>'
@@ -888,7 +935,7 @@ function openFA(k){
   var f = FA[k]; MO = null;
   document.getElementById('fa-title').textContent = f[0] + ' ' + f[1];
   document.getElementById('fa-body').innerHTML = '<ol class="steps2">' + f[2].map(function(s, i){ return '<li><b>' + (i + 1) + '</b><span>' + esc(s) + '</span></li>'; }).join('') + '</ol><div class="warn">⚠️ First aid only. Always get your pet checked by a vet straight after.</div>';
-  var c = phoneOf()[0]; document.getElementById('fa-call').innerHTML = c ? '<a class="btn btn-r" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(c.name) + '</a>' : '<a class="btn btn-r" href="06_emergency.html"><i class="ti ti-building-hospital"></i>Emergency vets</a>';
+  var c = phoneOf()[0]; document.getElementById('fa-call').innerHTML = c ? '<a class="btn btn-r" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(c.name) + '</a>' : '<button class="btn btn-r" onclick="closeFA();openSOS()"><i class="ti ti-urgent"></i>Nearest emergency vets</button>';
   document.getElementById('faModal').classList.add('open'); document.body.style.overflow = 'hidden';
 }
 function closeFA(){ document.getElementById('faModal').classList.remove('open'); document.body.style.overflow = ''; }
@@ -931,7 +978,7 @@ function contactsPanel(p){
   return '<div class="grid"><section class="card"><div class="ch"><h2><i class="ti ti-stethoscope"></i>Your vets</h2><button class="btn btn-w btn-s" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-search"></i>Find a vet</button></div><div class="cb">'
     + (vets.length ? '<div class="rows">' + vets.map(function(v){ return '<div class="ctc"><span class="ic c-sage"><i class="ti ti-stethoscope"></i></span><div class="t"><b>' + esc(v.clinic || v.name || 'Vet') + '</b><span>' + esc([v.clinic ? v.name : null, v.city].filter(Boolean).join(' · ')) + '</span></div><div class="act">' + (v.phone ? '<a class="btn btn-g btn-s" href="' + tel(v.phone) + '"><i class="ti ti-phone"></i>Call</a>' : '') + '<a class="btn btn-w btn-s" href="16_vet_profile.html?id=' + encodeURIComponent(v.id) + '">View</a></div></div>'; }).join('') + '</div>'
       : emptyBox('🩺', 'No vets yet', 'Vets you book or save on PawBook appear here with a one-tap call button.', '<button class="btn btn-o btn-s" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-search"></i>Find a vet</button>'))
-    + '<div class="disc"><i class="ti ti-building-hospital"></i><span>Need a 24-hour clinic? See <a href="06_emergency.html" style="color:var(--blue);font-weight:700">emergency vets by city</a>. Lost pet? Use <a href="38_lost_pet_network.html" style="color:var(--blue);font-weight:700">Lost &amp; Found</a>.</span></div></div></section>'
+    + '<div class="disc"><i class="ti ti-building-hospital"></i><span>Need a 24-hour clinic? See <a href="#" onclick="setTab(\'nearby\',1);return false" style="color:var(--blue);font-weight:700">Nearby help</a>. Lost pet? Use <a href="38_lost_pet_network.html" style="color:var(--blue);font-weight:700">Lost &amp; Found</a>.</span></div></div></section>'
     + '<section class="card"><div class="ch"><h2><i class="ti ti-address-book"></i>Your emergency contacts</h2><button class="btn btn-o btn-s" onclick="contactForm()"><i class="ti ti-plus"></i>Add</button></div><div class="cb">'
     + (cs.length ? '<div class="rows">' + cs.map(function(c){ return '<div class="ctc"><span class="ic c-sky"><i class="ti ti-user-heart"></i></span><div class="t"><b>' + esc(c.name) + '</b><span>' + esc([c.role, c.phone].filter(Boolean).join(' · ')) + '</span></div><div class="act"><a class="btn btn-g btn-s" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call</a><button class="mini" onclick="delContact(' + c.id + ',this)" aria-label="Remove"><i class="ti ti-trash"></i></button></div></div>'; }).join('') + '</div>'
       : emptyBox('📇', 'Add someone you trust', 'A neighbour who can drive, a pet sitter or your nearest clinic — saved here for when every minute counts. Only you can see this list.', '<button class="btn btn-o btn-s" onclick="contactForm()"><i class="ti ti-plus"></i>Add contact</button>'))
@@ -965,8 +1012,148 @@ function submitMo(e){ e.preventDefault(); if (MO && MO.submit) MO.submit(e.targe
 function busy(on){ var b = document.getElementById('mo-save'); if (b) b.disabled = !!on; }
 function markBad(f, l){ l.forEach(function(k){ var el = f.querySelector('[data-f="' + k + '"]'); if (el) el.classList.add('bad'); }); }
 function clearBad(f){ f.querySelectorAll('.fl.bad').forEach(function(x){ x.classList.remove('bad'); }); }
-document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeMo(); closeFA(); } });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { if (document.getElementById('faModal').classList.contains('open')) closeFA(); else { closeMo(); closeSOS(); } } });
 document.addEventListener('DOMContentLoaded', boot);
+
+/* ---------- nearby help: location + Google Maps places + PawBook listings ---------- */
+var LOC = {
+  'India':{'Delhi':['New Delhi','Gurgaon','Noida','Faridabad','Ghaziabad'],'Maharashtra':['Mumbai','Pune','Nagpur','Nashik'],'Karnataka':['Bangalore','Mysore','Mangalore'],'Tamil Nadu':['Chennai','Coimbatore','Madurai'],'Telangana':['Hyderabad','Warangal'],'West Bengal':['Kolkata','Howrah','Durgapur'],'Gujarat':['Ahmedabad','Surat','Vadodara'],'Rajasthan':['Jaipur','Jodhpur','Udaipur'],'Uttar Pradesh':['Lucknow','Kanpur','Agra','Varanasi'],'Punjab':['Chandigarh','Ludhiana','Amritsar'],'Kerala':['Kochi','Thiruvananthapuram','Kozhikode']},
+  'USA':{'California':['Los Angeles','San Francisco','San Diego','San Jose'],'New York':['New York City','Buffalo','Albany'],'Texas':['Houston','Dallas','Austin'],'Florida':['Miami','Orlando','Tampa'],'Illinois':['Chicago','Springfield']},
+  'UK':{'England':['London','Manchester','Birmingham','Liverpool'],'Scotland':['Edinburgh','Glasgow'],'Wales':['Cardiff','Swansea']},
+  'Australia':{'New South Wales':['Sydney','Newcastle'],'Victoria':['Melbourne','Geelong'],'Queensland':['Brisbane','Gold Coast']},
+  'Canada':{'Ontario':['Toronto','Ottawa','Hamilton'],'British Columbia':['Vancouver','Victoria'],'Quebec':['Montreal','Quebec City'],'Alberta':['Calgary','Edmonton']},
+  'Singapore':{'Singapore':['Singapore City','Jurong','Tampines']},
+  'UAE':{'Dubai':['Dubai City','Deira','Jumeirah'],'Abu Dhabi':['Abu Dhabi City','Al Ain']}
+};
+var GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk';
+var NB = {country: 'India', state: '', city: '', area: '', lat: null, lng: null, geo: false};
+try { var _nb = JSON.parse(localStorage.getItem('pb_health_loc') || localStorage.getItem('pb_lf_loc') || 'null'); if (_nb) { NB.country = _nb.country || 'India'; NB.state = _nb.state || ''; NB.city = _nb.city || ''; NB.area = _nb.area || ''; } } catch (e) {}
+var NR = null, NRKEY = '', NRBUSY = false;   // results for the current place
+function saveNB(){ try { localStorage.setItem('pb_health_loc', JSON.stringify({country: NB.country, state: NB.state, city: NB.city, area: NB.area})); } catch (e) {} }
+function placeLabel(){ return NB.geo ? 'your current location' : [NB.area, NB.city, NB.state].filter(Boolean).join(', ') || ''; }
+var GMP = null;
+function loadMaps(){
+  if (window.google && google.maps && google.maps.places && google.maps.places.Place) return Promise.resolve(google.maps);
+  if (GMP) return GMP;
+  GMP = new Promise(function(res, rej){ window._haMaps = function(){ res(google.maps); }; var s = document.createElement('script'); s.src = 'https://maps.googleapis.com/maps/api/js?key=' + GMAPS_KEY + '&libraries=places&v=weekly&region=IN&callback=_haMaps'; s.async = true; s.onerror = function(){ GMP = null; rej(new Error('maps')); }; document.head.appendChild(s); setTimeout(function(){ rej(new Error('timeout')); }, 15000); });
+  return GMP;
+}
+function km(a, b, c, d){ var r = function(x){ return x * Math.PI / 180; }, dl = r(c - a), dn = r(d - b), h = Math.sin(dl / 2) * Math.sin(dl / 2) + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(dn / 2) * Math.sin(dn / 2); return Math.round(6371 * 2 * Math.asin(Math.sqrt(h)) * 10) / 10; }
+function geoCenter(gm){
+  if (NB.lat != null) return Promise.resolve({lat: NB.lat, lng: NB.lng});
+  var q = [NB.area, NB.city, NB.state, NB.country].filter(Boolean).join(', ');
+  return new Promise(function(res){ try { new gm.Geocoder().geocode({address: q}, function(r, s){ if (s === 'OK' && r[0]) { var l = r[0].geometry.location; res({lat: l.lat(), lng: l.lng()}); } else res(null); }); } catch (e) { res(null); } });
+}
+function is24(p){ try { var o = p.regularOpeningHours; if (!o) return false; if ((o.weekdayDescriptions || []).some(function(d){ return /24 hours|24 घंटे/i.test(d); })) return true; var pr = o.periods || []; return pr.length === 1 && pr[0].open && pr[0].open.hour === 0 && pr[0].open.minute === 0 && !pr[0].close; } catch (e) { return false; } }
+function gSearch(gm, text, type, c){
+  var req = {textQuery: text, fields: ['id', 'displayName', 'formattedAddress', 'location', 'nationalPhoneNumber', 'internationalPhoneNumber', 'rating', 'userRatingCount', 'businessStatus', 'regularOpeningHours', 'utcOffsetMinutes', 'googleMapsURI'], maxResultCount: 12};
+  if (type) req.includedType = type; if (c) req.locationBias = new gm.Circle({center: c, radius: 15000});
+  return gm.places.Place.searchByText(req).then(function(r){
+    return Promise.all((r.places || []).filter(function(p){ return p.businessStatus !== 'CLOSED_PERMANENTLY'; }).map(function(p){
+      var o = {id: p.id, name: p.displayName, address: p.formattedAddress, phone: p.nationalPhoneNumber || p.internationalPhoneNumber || null, rating: p.rating || null, reviews: p.userRatingCount || 0, h24: is24(p),
+        lat: p.location ? p.location.lat() : null, lng: p.location ? p.location.lng() : null, url: p.googleMapsURI || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.displayName || '') + '&query_place_id=' + encodeURIComponent(p.id)), open: null};
+      if (c && o.lat != null) o.km = km(c.lat, c.lng, o.lat, o.lng);
+      return (typeof p.isOpen === 'function' ? p.isOpen().then(function(v){ o.open = v; }).catch(function(){}) : Promise.resolve()).then(function(){ return o; });
+    }));
+  }).then(function(l){ return l.filter(function(o){ return !c || o.km == null || o.km <= 40; }).sort(function(a, b){ return (b.open === true) - (a.open === true) || (a.km == null ? 999 : a.km) - (b.km == null ? 999 : b.km); }); });
+}
+function loadNearby(force){
+  var key = NB.geo ? 'geo:' + NB.lat + ',' + NB.lng : [NB.country, NB.state, NB.city, NB.area].join('|');
+  if (!NB.geo && !NB.city) { NR = null; NRKEY = ''; return Promise.resolve(null); }
+  if (!force && NR && NRKEY === key) return Promise.resolve(NR);
+  NRBUSY = true; NRKEY = key; paintNearby();
+  var where = NB.geo ? '' : ' in ' + [NB.area, NB.city, NB.state].filter(Boolean).join(', ');
+  var pb = api('/healthagent/nearby?' + new URLSearchParams({country: NB.country || '', state: NB.state || '', city: NB.city || ''})).catch(function(){ return {shelters: [], vets: [], orgs: []}; });
+  var g = loadMaps().then(function(gm){ return geoCenter(gm).then(function(c){
+    return Promise.all([gSearch(gm, '24 hour emergency veterinary hospital' + where, 'veterinary_care', c).catch(function(){ return null; }), gSearch(gm, 'veterinary clinic' + where, 'veterinary_care', c).catch(function(){ return null; }), gSearch(gm, 'animal shelter rescue' + where, null, c).catch(function(){ return null; })])
+      .then(function(r){ return {center: c, emergency: r[0], vets: r[1], shelters: r[2]}; }); }); }).catch(function(){ return {failed: true}; });
+  return Promise.all([pb, g]).then(function(r){
+    if (NRKEY !== key) return NR;
+    var G = r[1] || {};
+    var em = (G.emergency || []).filter(function(x){ return x.h24 || x.open; }), seen = {};
+    em.forEach(function(x){ seen[x.id] = 1; });
+    NR = {pb: r[0], g: G, emergency: em.length ? em : (G.emergency || []).slice(0, 5), vets: (G.vets || []).filter(function(x){ return !seen[x.id]; }), shelters: G.shelters || [], failed: !!G.failed || (!G.vets && !G.emergency)};
+    NRBUSY = false; paintNearby(); return NR;
+  });
+}
+function useMyLocation(cb){
+  if (!navigator.geolocation) { toast('Location is not available on this device — choose your city instead'); return; }
+  toast('Finding your location…');
+  navigator.geolocation.getCurrentPosition(function(p){ NB.lat = +p.coords.latitude.toFixed(5); NB.lng = +p.coords.longitude.toFixed(5); NB.geo = true; NR = null; paintNearby(); loadNearby(true).then(function(){ if (cb) cb(); }); },
+    function(){ toast('Location permission was not given — choose your city instead'); }, {enableHighAccuracy: true, timeout: 12000, maximumAge: 60000});
+}
+function setNB(k, v){ NB[k] = v; if (k === 'country') { NB.state = ''; NB.city = ''; } if (k === 'state') NB.city = ''; NB.geo = false; NB.lat = null; NB.lng = null; saveNB(); NR = null; paintNearby(); if (k !== 'area') loadNearby(); }
+function locBar(){
+  var states = Object.keys(LOC[NB.country] || {}), cities = (LOC[NB.country] || {})[NB.state] || [];
+  var sel = function(lbl, list, v, on){ return '<label class="fl"><span>' + lbl + '</span><select class="fi" aria-label="' + lbl + '" onchange="' + on + '"><option value="">Choose…</option>' + list.map(function(x){ return '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select></label>'; };
+  return '<div class="locbar">' + sel('Country', Object.keys(LOC), NB.country, "setNB('country',this.value)") + sel('State', states, NB.state, "setNB('state',this.value)") + sel('City', cities, NB.city, "setNB('city',this.value)")
+    + '<label class="fl"><span>Area / locality</span><input class="fi" id="nb-area" placeholder="e.g. Saket, Andheri West" value="' + esc(NB.area) + '" onkeydown="if(event.key===\'Enter\'){setNB(\'area\',this.value.trim());loadNearby(true)}"></label>'
+    + '<div class="lbtns"><button class="btn btn-b btn-s" onclick="NB.area=(document.getElementById(\'nb-area\')||{}).value||\'\';NB.area=NB.area.trim();NB.geo=false;NB.lat=null;NB.lng=null;saveNB();loadNearby(true)"><i class="ti ti-search"></i>Search</button><button class="btn btn-w btn-s" onclick="useMyLocation()"><i class="ti ti-current-location"></i>Use my location</button></div></div>'
+    + (NB.geo ? '<div class="locnow"><i class="ti ti-current-location"></i>Showing help near your current location</div>' : '');
+}
+function placeRow(x, kind){
+  var badge = x.h24 ? '<span class="pill p-ok">Open 24 hours</span>' : x.open === true ? '<span class="pill p-ok">Open now</span>' : x.open === false ? '<span class="pill p-none">Closed now</span>' : '';
+  return '<div class="ctc"><span class="ic ' + (kind === 'e' ? 'c-coral' : kind === 's' ? 'c-amber' : 'c-sage') + '"><i class="ti ' + (kind === 'e' ? 'ti-building-hospital' : kind === 's' ? 'ti-home-heart' : 'ti-stethoscope') + '"></i></span><div class="t"><b>' + esc(x.name) + '</b><span>' + esc([x.km != null ? x.km + ' km' : null, x.rating ? '★ ' + x.rating + ' (' + x.reviews + ')' : null, x.address].filter(Boolean).join(' · ')) + '</span><div style="margin-top:4px">' + badge + '</div></div>'
+    + '<div class="act">' + (x.phone ? '<a class="btn btn-' + (kind === 'e' ? 'r' : 'g') + ' btn-s" href="' + tel(x.phone) + '"><i class="ti ti-phone"></i>Call</a>' : '') + '<a class="btn btn-w btn-s" href="' + esc(x.url) + '" target="_blank" rel="noopener"><i class="ti ti-route"></i>Directions</a></div></div>';
+}
+function pbRow(x, kind){ return '<div class="ctc"><span class="ic ' + (kind === 's' ? 'c-amber' : kind === 'o' ? 'c-lav' : 'c-sage') + '"><i class="ti ' + (kind === 's' ? 'ti-home-heart' : kind === 'o' ? 'ti-heart-handshake' : 'ti-stethoscope') + '"></i></span><div class="t"><b>' + esc(x.clinic || x.name) + (x.verified ? ' <span class="pill p-ok" style="font-size:10.5px">Verified</span>' : '') + '</b><span>' + esc([x.clinic ? x.name : null, x.type ? cap(x.type) : null, x.address, x.city].filter(Boolean).join(' · ')) + '</span></div><div class="act">' + (x.phone ? '<a class="btn btn-g btn-s" href="' + tel(x.phone) + '"><i class="ti ti-phone"></i>Call</a>' : '') + (kind === 'v' ? '<a class="btn btn-w btn-s" href="16_vet_profile.html?id=' + encodeURIComponent(x.id) + '">View</a>' : '') + '</div></div>'; }
+function helplinesHTML(){
+  return '<div class="hlx"><a href="tel:1962"><b>1962</b><span>Government mobile veterinary units — mainly for livestock; availability varies by state</span></a><a href="tel:112"><b>112</b><span>National emergency number — for people in danger (e.g. a road accident with an injured animal)</span></a></div>';
+}
+function nearbyBody(compact){
+  var p = pet(), my = phoneOf();
+  if (!NB.geo && !NB.city) return '<div class="nb-empty"><i class="ti ti-map-search"></i><b>Choose your city or use your location</b><span>We\'ll list emergency vets, clinics and shelters near you, with call and directions buttons.</span></div>';
+  if (NRBUSY || !NR) return '<div class="skel" style="height:70px;margin-top:10px"></div><div class="skel" style="height:70px;margin-top:10px"></div><div class="skel" style="height:70px;margin-top:10px"></div>';
+  var h = '', lim = compact ? 3 : 8;
+  h += '<div class="nbs"><h4><i class="ti ti-urgent"></i>Emergency &amp; 24-hour vets near ' + esc(placeLabel()) + '</h4>' + (NR.emergency.length ? NR.emergency.slice(0, lim).map(function(x){ return placeRow(x, 'e'); }).join('') : '<p class="muted nbm">' + (NR.failed ? 'Google Maps results could not load right now.' : 'No emergency vets found here on Google Maps. Try a nearby city.') + '</p>') + '</div>';
+  if (!compact) h += '<div class="nbs"><h4><i class="ti ti-stethoscope"></i>Vet clinics nearby</h4>' + ((NR.vets || []).length ? NR.vets.slice(0, lim).map(function(x){ return placeRow(x, 'v'); }).join('') : '<p class="muted nbm">No clinics found on Google Maps for this place.</p>')
+    + ((NR.pb.vets || []).length ? '<div class="sub">Vets on PawBook in ' + esc(NB.city) + '</div>' + NR.pb.vets.map(function(x){ return pbRow(x, 'v'); }).join('') : '') + '</div>';
+  h += '<div class="nbs"><h4><i class="ti ti-home-heart"></i>Shelters &amp; rescue groups</h4>' + ((NR.pb.shelters || []).length ? '<div class="sub">On PawBook</div>' + NR.pb.shelters.slice(0, lim).map(function(x){ return pbRow(x, 's'); }).join('') : '')
+    + ((NR.pb.orgs || []).length ? '<div class="sub">Verified animal welfare organisations</div>' + NR.pb.orgs.slice(0, lim).map(function(x){ return pbRow(x, 'o'); }).join('') : '')
+    + ((NR.shelters || []).length ? '<div class="sub">On Google Maps</div>' + NR.shelters.slice(0, compact ? 2 : 6).map(function(x){ return placeRow(x, 's'); }).join('') : '')
+    + (!(NR.pb.shelters || []).length && !(NR.pb.orgs || []).length && !(NR.shelters || []).length ? '<p class="muted nbm">No shelters found for this place yet.</p>' : '') + '</div>';
+  h += '<div class="nbs"><h4><i class="ti ti-phone-call"></i>Helplines</h4>' + helplinesHTML() + '</div>';
+  h += '<p class="gattr">Clinic and shelter details from Google Maps — call ahead to confirm they can see your pet now. <span>Google</span></p>';
+  return h;
+}
+function nearbyPanel(p){
+  return '<section class="card"><div class="ch"><h2><i class="ti ti-map-pin-heart"></i>Nearby help for ' + esc(p.name) + '</h2>' + (NR && !NRBUSY ? '<button class="btn btn-w btn-s" onclick="loadNearby(true)"><i class="ti ti-refresh"></i>Refresh</button>' : '') + '</div><div class="cb">'
+    + locBar() + '<div id="nb-res">' + nearbyBody(false) + '</div></div></section>';
+}
+function paintNearby(){
+  var a = document.getElementById('nb-res'); if (a) a.innerHTML = nearbyBody(false);
+  var b = document.getElementById('sos-near'); if (b) b.innerHTML = nearbyBody(true);
+  var lb = document.querySelectorAll('.locbar-wrap'); lb.forEach(function(x){ x.innerHTML = locBar(); });
+  if (TAB === 'nearby' && document.getElementById('panels') && !document.querySelector('#panels .locbar')) setTab('nearby');
+  else if (TAB === 'nearby') { var l = document.querySelector('#panels .locbar'); if (l) l.outerHTML = locBar(); }
+}
+
+/* ---------- SOS: one screen with everything needed in an emergency ---------- */
+function openSOS(){
+  var p = pet(), my = phoneOf(), hasPet = !!PID;
+  var b = '<div class="sos-top"><div><b>Stay calm. Act fast.</b><span>Call a vet first, then follow first aid on the way.</span></div><a class="btn btn-w btn-s" href="tel:1962" title="Government mobile veterinary units"><i class="ti ti-ambulance"></i>1962</a></div>';
+  b += '<div class="nbs"><h4><i class="ti ti-phone"></i>Your vet &amp; contacts</h4>' + (my.length ? my.slice(0, 4).map(function(c){ return '<div class="ctc"><span class="ic c-sage"><i class="ti ti-stethoscope"></i></span><div class="t"><b>' + esc(c.name) + '</b><span>' + esc(c.sub) + ' · ' + esc(c.phone) + '</span></div><div class="act"><a class="btn btn-r btn-s" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call</a></div></div>'; }).join('')
+    : '<p class="muted nbm">No saved vet yet. <a href="#" onclick="closeSOS();setTab(\'contacts\',1);return false" style="color:var(--blue);font-weight:700">Add one now</a> so it\'s here next time.</p>') + '</div>';
+  b += '<div class="nbs"><h4><i class="ti ti-map-pin"></i>Nearest help</h4><div class="locbar-wrap">' + locBar() + '</div><div id="sos-near">' + nearbyBody(true) + '</div><button class="btn-link" onclick="closeSOS();setTab(\'nearby\',1)">See all vets, clinics &amp; shelters →</button></div>';
+  b += '<div class="nbs"><h4><i class="ti ti-first-aid-kit"></i>First aid right now</h4><div class="fachips">' + Object.keys(FA).map(function(k){ return '<button onclick="openFA(\'' + k + '\')">' + FA[k][0] + ' ' + esc(FA[k][1]) + '</button>'; }).join('') + '</div></div>';
+  if (hasPet) b += '<div class="nbs"><h4><i class="ti ti-id-badge-2"></i>Show this to the vet</h4>' + healthCard(p) + '<button class="btn btn-w btn-s" onclick="copyCard()"><i class="ti ti-copy"></i>Copy ' + esc(p.name) + '\'s health summary</button></div>';
+  document.getElementById('sos-title').textContent = 'SOS' + (hasPet ? ' · ' + p.name : '');
+  document.getElementById('sos-body').innerHTML = b;
+  document.getElementById('sosModal').classList.add('open'); document.body.style.overflow = 'hidden';
+  if (!NR && (NB.city || NB.geo)) loadNearby();
+  else if (!NB.city && !NB.geo && navigator.geolocation && navigator.permissions) navigator.permissions.query({name: 'geolocation'}).then(function(s){ if (s.state === 'granted') useMyLocation(); }).catch(function(){});
+}
+function closeSOS(){ document.getElementById('sosModal').classList.remove('open'); document.body.style.overflow = ''; }
+function summaryLines(p){
+  var vc = vcounts(), w = lastWeight(), m = activeMeds(), v = ((VIT && VIT.vitals) || [])[0];
+  return [[p.name, [cap(p.species), p.breed, p.age_label, p.gender && p.gender !== 'unknown' ? cap(p.gender) : null].filter(Boolean).join(' · ')], ['Weight', w ? w.kg + ' kg' + (w.date ? ' (' + fd(w.date) + ')' : '') : 'Not recorded'],
+    ['Vaccines', ((VX && VX.cards) || []).filter(function(c){ return c.status !== 'not_recorded'; }).map(function(c){ return c.label.split(' (')[0] + ': ' + c.status.replace(/_/g, ' ') + (c.latest && c.latest.given ? ' (last ' + fd(c.latest.given) + ')' : ''); }).join('; ') || 'None recorded'],
+    ['Medicines', m.length ? m.map(function(x){ return x.name + (x.dose ? ' ' + x.dose : ''); }).join('; ') : 'None recorded'],
+    ['Last vitals', v ? [v.heart_rate ? 'HR ' + v.heart_rate : '', v.resp_rate ? 'breathing ' + v.resp_rate : '', v.temp_f ? v.temp_f + '°F' : '', v.gums ? 'gums ' + v.gums : ''].filter(Boolean).join(', ') + ' (' + fdt(v.at) + ')' : 'Not recorded'],
+    ['Recent check', (CHK || [])[0] ? CHK[0].symptoms.map(function(k){ return SYML[k] || k; }).join(', ') + ' (' + fdt(CHK[0].at) + ')' : 'None']];
+}
+function healthCard(p){ return '<div class="hcard"><div class="kv">' + summaryLines(p).map(function(l, i){ return i === 0 ? '<span>Pet</span><b>' + esc(l[0] + ' — ' + l[1]) + '</b>' : '<span>' + esc(l[0]) + '</span><b>' + esc(l[1]) + '</b>'; }).join('') + '</div></div>'; }
+function copyCard(){ var p = pet(), t = summaryLines(p).map(function(l){ return l[0] + ': ' + l[1]; }).join('\n') + '\n(From PawBook — owner-recorded)'; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ toast('Health summary copied'); }).catch(function(){ prompt('Copy this:', t); }); }
 </script>
 
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
