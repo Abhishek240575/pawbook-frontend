@@ -1,166 +1,831 @@
-﻿<!DOCTYPE html><html lang="en"><head>
-<link rel="manifest" href="manifest.json"><meta charset="UTF-8"><title>PawBook â€” Search</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="robots" content="noindex">
+<title>Search – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
-</head><body>
-<nav class="topnav"><a class="topnav-logo" href="07_home.html"><div class="logo-icon">ðŸ¾</div> PawBook</a>
-<div class="topnav-search"><i class="ti ti-search"></i><input placeholder="Search PawBookâ€¦" id="q" value="Golden Retriever"></div>
-<div class="topnav-tabs">
-  <button class="topnav-tab active" onclick="goTo('07_home.html')"><i class="ti ti-home"></i></button>
-  <button class="topnav-tab" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i></button>
-  <button class="topnav-tab" onclick="goTo('09_marketplace.html')"><i class="ti ti-building-store"></i></button>
-  <button class="topnav-tab" onclick="goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i></button>
-  <button class="topnav-tab" onclick="goTo('12_notifications.html')"><i class="ti ti-bell"></i></button>
-</div>
-<div class="topnav-right"><div class="nav-avatar" onclick="goTo('08_pet_profile.html')">A</div></div></nav>
+<style>
+:root{
+  /* PawBook design system (same tokens as the Animal Welfare page) */
+  --blue:#1877F2;--blue-d:#1a56db;--navy:#0f2057;--purple:#8b5cf6;
+  --coral:#e5484d;--coral-d:#c2353a;--coral-soft:#fff1f1;
+  --green:#16a34a;--amber:#f59e0b;
+  --bg:#f0f4fa;--card:#fff;--line:#e4e9f2;--line2:#eef2f8;--text:#1a1f36;--muted:#65676b;--sub:#3d4560;
+  --r:18px;--r-sm:12px;--pill:999px;--shadow:0 6px 24px rgba(15,32,87,.08);--nav-h:60px;
+  /* soft category tints */
+  --t-blue:#e8f1ff;--t-blue-d:#1a56db;--t-coral:#fff1f1;--t-coral-d:#c2353a;--t-green:#e7f7ee;--t-green-d:#15803d;
+  --t-amber:#fff6e0;--t-amber-d:#b45309;--t-purple:#f1ecff;--t-purple-d:#6d4fd8;--t-teal:#e3f7f5;--t-teal-d:#0f766e;
+  --grad:linear-gradient(135deg,#e5484d,#f97316);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid rgba(24,119,242,.35);outline-offset:2px}
 
-<div style="max-width:900px;margin:16px auto;padding:0 16px">
-  <!-- Filter pills -->
-  <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px">
-    <button class="btn btn-blue btn-sm">All</button>
-    <button class="btn btn-gray btn-sm">ðŸ¾ Pets</button>
-    <button class="btn btn-gray btn-sm">ðŸ‘¤ People</button>
-    <button class="btn btn-gray btn-sm">ðŸ‘¥ Groups</button>
-    <button class="btn btn-gray btn-sm">ðŸ©º Vets</button>
-    <button class="btn btn-gray btn-sm">ðŸ  Shelters</button>
-    <button class="btn btn-gray btn-sm">ðŸ› Products</button>
-  </div>
-  <div style="font-size:14px;color:var(--muted);margin-bottom:14px">Showing results for <strong style="color:var(--text)">"Golden Retriever"</strong></div>
+/* ── top bar (matches the Animal Welfare page) ── */
+.nav{position:sticky;top:0;z-index:400;height:var(--nav-h);background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:10px;padding:0 16px}
+.nav .menu{width:38px;height:38px;border-radius:50%;border:none;background:transparent;font-size:21px;display:flex;align-items:center;justify-content:center;color:#1a3a6b}
+.nav .menu:hover{background:#f0f2f5}
+.logo{display:flex;align-items:center;gap:10px;color:var(--blue);font-size:21px;font-weight:900;cursor:pointer}
+.logo i{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:19px;font-style:normal}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.crumb b{color:var(--coral)}
+.nav .sp{flex:1}
+.nav-ic{width:38px;height:38px;border-radius:50%;border:none;background:#f0f2f5;color:#1a3a6b;font-size:19px;display:flex;align-items:center;justify-content:center}
+.nav-ic:hover{background:#e4ebf7;color:var(--blue)}
+.nav-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:none}
+.nav-av img{width:100%;height:100%;object-fit:cover}
+@media(max-width:640px){.crumb,.nav .hide-s{display:none}.logo{font-size:19px}}
 
-  <!-- Pets -->
-  <div class="card" style="margin-bottom:14px">
-    <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:16px;font-weight:800">ðŸ¾ Pets</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0">
-      <div style="padding:14px;border-right:1px solid var(--border);text-align:center;cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=100&q=80" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px">
-        <div style="font-size:13px;font-weight:700">Max</div><div style="font-size:11px;color:var(--muted)">Golden Retriever Â· 3 yrs</div>
-      </div>
-      <div style="padding:14px;border-right:1px solid var(--border);text-align:center;cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&q=80" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px">
-        <div style="font-size:13px;font-weight:700">Bella</div><div style="font-size:11px;color:var(--muted)">Golden Retriever Â· 2 yrs</div>
-      </div>
-      <div style="padding:14px;border-right:1px solid var(--border);text-align:center;cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=100&q=80" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px">
-        <div style="font-size:13px;font-weight:700">Charlie</div><div style="font-size:11px;color:var(--muted)">Golden Mix Â· 4 yrs</div>
-      </div>
-      <div style="padding:14px;text-align:center;cursor:pointer">
-        <img src="https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=100&q=80" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:8px">
-        <div style="font-size:13px;font-weight:700">Luna</div><div style="font-size:11px;color:var(--muted)">Golden Retriever Â· 1 yr</div>
-      </div>
-    </div>
-  </div>
+/* ── layout ── */
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px 120px}
+.hero-band{position:relative;overflow:hidden;background:radial-gradient(1200px 500px at 85% -10%,#e5edff 0%,transparent 60%),linear-gradient(180deg,#f7f9ff 0%,#eef3fb 100%);margin:0 -24px;padding:0 24px}
+.hero-band::before{content:'';position:absolute;inset:0;opacity:.5;background-image:radial-gradient(circle at 20px 20px,rgba(24,119,242,.07) 3px,transparent 4px);background-size:44px 44px;pointer-events:none}
+.pets{position:relative;display:flex;gap:8px;overflow-x:auto;padding:18px 0 4px;scrollbar-width:none;max-width:1240px;margin:0 auto}.pets::-webkit-scrollbar{display:none}
+.pchip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:700;font-size:13.5px;color:var(--navy);flex-shrink:0;box-shadow:0 2px 8px rgba(24,119,242,.06)}
+.pchip.on{border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 3px rgba(24,119,242,.12)}
+.pchip .av{width:32px;height:32px}
+.pchip.add{padding:5px 15px;color:var(--blue-d);border-style:dashed;background:rgba(255,255,255,.7)}
+.av{border-radius:50%;background:var(--t-blue);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
 
-  <!-- People -->
-  <div class="card" style="margin-bottom:14px">
-    <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:16px;font-weight:800">ðŸ‘¤ People</div>
-    <div style="display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer">
-      <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80" style="width:52px;height:52px;border-radius:50%;object-fit:cover">
-      <div style="flex:1"><div style="font-weight:700;font-size:14px">Priya Sharma</div><div style="font-size:12px;color:var(--muted)">Golden Retriever Parent Â· Delhi</div></div>
-      <button class="btn btn-blue btn-sm">Follow</button>
-    </div>
-    <div style="display:flex;gap:12px;padding:14px 16px;cursor:pointer">
-      <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80" style="width:52px;height:52px;border-radius:50%;object-fit:cover">
-      <div style="flex:1"><div style="font-weight:700;font-size:14px">Golden Paws Club</div><div style="font-size:12px;color:var(--muted)">Community Â· 2.4k members</div></div>
-      <button class="btn btn-blue btn-sm">Join</button>
-    </div>
-  </div>
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.ch{display:flex;align-items:center;gap:10px;padding:18px 22px 6px;flex-wrap:wrap}
+.ch h2{font-size:17px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+.ch h2 i{width:32px;height:32px;border-radius:10px;background:var(--t-blue);color:var(--blue);display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.ch .badge{font-size:12px;font-weight:700;padding:4px 11px;border-radius:var(--pill);background:var(--coral-soft);color:var(--coral-d)}
+.cb{padding:8px 22px 22px}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}}
+.sec{margin-top:18px}
+.sec-title{font-size:22px;font-weight:900;color:var(--navy);margin:34px 0 4px}
+.sec-sub{font-size:13.5px;color:var(--muted);margin-bottom:14px}
 
-  <!-- Vets -->
-  <div class="card">
-    <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:16px;font-weight:800">ðŸ©º Vets & Clinics</div>
-    <div style="display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer">
-      <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80" style="width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:top">
-      <div style="flex:1"><div style="font-weight:700;font-size:14px">Dr. Priya Sharma â€” Golden Retriever Specialist</div><div style="font-size:12px;color:var(--muted)">â­ 4.9 Â· 12 yrs exp Â· Delhi</div></div>
-      <button class="btn btn-blue btn-sm" onclick="goTo('11_vet_booking.html')">Book</button>
-    </div>
-    <div style="display:flex;gap:12px;padding:14px 16px;cursor:pointer">
-      <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=80&q=80" style="width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:top">
-      <div style="flex:1"><div style="font-weight:700;font-size:14px">Golden Paws Veterinary Clinic</div><div style="font-size:12px;color:var(--muted)">â­ 4.7 Â· Open Now Â· Gurugram</div></div>
-      <button class="btn btn-blue btn-sm" onclick="goTo('11_vet_booking.html')">Book</button>
-    </div>
-  </div>
-</div>
-<script src="pawbook-api.js"></script><script>function goTo(p){window.location.href=p;}</script>
+/* ── pet hero ── */
+.hero{position:relative;max-width:1240px;margin:0 auto;padding:22px 0 64px;display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #dbe4f3;color:var(--blue-d);font-size:12.5px;font-weight:700;box-shadow:0 2px 8px rgba(24,119,242,.08)}
+.eyebrow i{color:var(--coral);font-size:16px}
+.hero h1{font-size:48px;line-height:1.08;font-weight:900;color:var(--navy);margin:14px 0 10px;letter-spacing:-1px}
+.hero h1 .accent{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .tag{font-size:16px;line-height:1.6;color:var(--sub);max-width:520px}
+.facts{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px}
+.fact{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--sub)}
+.fact i{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:var(--pill)}
+.st-great{background:var(--t-green);color:var(--t-green-d)}.st-ok{background:var(--t-blue);color:var(--t-blue-d)}.st-care{background:var(--t-amber);color:var(--t-amber-d)}.st-new{background:var(--t-purple);color:var(--t-purple-d)}
+.collage{position:relative;display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:420px}
+.collage.one{grid-template-columns:1fr}.collage.one .ph{grid-row:1/3}
+.collage.two{grid-template-columns:1.35fr 1fr}.collage.two .ph{grid-row:1/3}
+.ph-sample{position:absolute;left:12px;top:12px;z-index:3;padding:4px 10px;border-radius:999px;background:rgba(15,32,87,.6);color:#fff;font-size:11px;font-weight:700;letter-spacing:.02em;backdrop-filter:blur(4px)}
+.px-credit{position:absolute;right:4px;bottom:-22px;font-size:10.5px;color:var(--muted)}.px-credit a{color:inherit}
+.ph{position:relative;border-radius:22px;overflow:hidden;background:#dfe7f5;box-shadow:0 14px 34px rgba(15,32,87,.16)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.ph:hover img{transform:scale(1.04)}
+.ph-main{grid-row:1/3}
+.ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35));pointer-events:none}
+.ph-tag{position:absolute;left:12px;bottom:12px;z-index:2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.ph-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#e8f1ff,#f1ecff);color:var(--navy);font-weight:700;font-size:13px;text-align:center;padding:16px}
+.ph-empty .e{font-size:76px;line-height:1}
+.ph-empty::after{display:none}
+.ph .cam{position:absolute;right:12px;top:12px;z-index:3;height:34px;padding:0 12px;border-radius:999px;border:none;background:rgba(255,255,255,.95);font-size:12.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.float-card{position:absolute;z-index:3;background:#fff;border-radius:16px;box-shadow:0 14px 34px rgba(15,32,87,.2);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.float-1{left:-22px;bottom:30px;max-width:260px}
+.float-2{right:-10px;top:-14px;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;color:var(--navy);gap:6px}
+.float-2 i{color:var(--coral)}
+.fc-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex-shrink:0}
+.fc-t{font-size:13px;font-weight:800;color:var(--navy);line-height:1.3}
+.fc-s{font-size:11.5px;color:var(--muted)}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:24px;padding-bottom:56px}.collage{height:300px}.float-1{left:10px;bottom:-18px}.float-2{right:8px}.hero h1{font-size:36px}}
+@media(max-width:520px){.collage{height:250px;grid-template-columns:1fr}.collage .ph:not(.ph-main){display:none}.hero h1{font-size:31px}}
+
+/* stats strip overlapping the hero (like the emergency strip) */
+.stats{position:relative;z-index:5;margin-top:-34px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;align-items:center;gap:12px}
+.stat .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.stat b{display:block;font-size:22px;font-weight:900;color:var(--navy);line-height:1.1}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:12px}.stat .ic{width:38px;height:38px;font-size:19px}.stat b{font-size:19px}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:14px;font-size:14px;font-weight:700;border:none;white-space:nowrap;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:active{transform:translateY(1px)}
+.btn-o{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(229,72,77,.3)}.btn-o:hover{filter:brightness(1.05);box-shadow:0 10px 24px rgba(229,72,77,.38)}
+.btn-w{background:#fff;color:var(--navy);border:1.5px solid #dbe4f3}.btn-w:hover{border-color:var(--blue);color:var(--blue)}
+.btn-b{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;box-shadow:0 8px 20px rgba(24,119,242,.26)}
+.btn-s{height:36px;padding:0 14px;font-size:13px;border-radius:11px}
+.btn-link{background:none;border:none;color:var(--blue);font-weight:700;font-size:13px;padding:0}
+.btn[disabled]{opacity:.55;pointer-events:none}
+
+/* wellness */
+.well{display:flex;gap:20px;align-items:center}
+.ring{position:relative;width:118px;height:118px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:30px;font-weight:900;color:var(--navy);line-height:1}
+.ring .num span{font-size:11px;color:var(--muted);font-weight:600}
+.well h3{font-size:18px;font-weight:800;color:var(--navy)}
+.well p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.inds{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.ind{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center}
+.ind .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.ind .t{font-size:13.5px;font-weight:700;color:var(--navy)}.ind .t small{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.ind .bar{grid-column:2/4;height:6px;border-radius:9px;background:#edf1f8;overflow:hidden;margin-top:-4px}
+.ind .bar i{display:block;height:100%;border-radius:9px}
+.ind .pts{font-size:12px;font-weight:700;color:var(--muted)}
+.disc{font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.55;background:#f5f7fb;border:1px solid var(--line2);border-radius:12px;padding:9px 12px;display:flex;gap:8px}
+.disc i{color:var(--blue);font-size:15px;margin-top:1px}
+
+/* reminders */
+.rems{display:flex;flex-direction:column;gap:10px}
+.rem{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe}
+.rem .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rem .t{flex:1;min-width:0}.rem .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.rem .t span{font-size:12.5px;color:var(--muted)}
+.pill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:var(--pill);white-space:nowrap}
+.p-over{background:var(--coral-soft);color:var(--coral-d)}.p-soon{background:var(--t-amber);color:var(--t-amber-d)}.p-ok{background:var(--t-green);color:var(--t-green-d)}.p-info{background:var(--t-blue);color:var(--t-blue-d)}
+.c-peach{background:var(--t-coral);color:var(--t-coral-d)}.c-sage{background:var(--t-green);color:var(--t-green-d)}.c-lav{background:var(--t-purple);color:var(--t-purple-d)}.c-sky{background:var(--t-blue);color:var(--t-blue-d)}.c-coral{background:var(--t-coral);color:var(--t-coral-d)}.c-amber{background:var(--t-amber);color:var(--t-amber-d)}.c-teal{background:var(--t-teal);color:var(--t-teal-d)}
+
+/* quick actions: white cards with tinted icon tiles (like "How PawBook helps") */
+.qa{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1000px){.qa{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.qa{grid-template-columns:repeat(2,1fr);gap:10px}}
+.qa button{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;text-align:left;display:flex;flex-direction:column;gap:10px;min-height:104px;font-weight:700;font-size:13.5px;line-height:1.3;color:var(--navy);transition:transform .12s,box-shadow .12s,border-color .12s}
+.qa button:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(15,32,87,.12);border-color:#cfdaf0}
+.qa button i{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
+
+/* tabs (segmented bar) */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:7px;background:#fff;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);scrollbar-width:none;margin:30px 0 16px;position:sticky;top:calc(var(--nav-h) + 8px);z-index:50}
+.tabs::-webkit-scrollbar{display:none}
+.tab{height:42px;padding:0 15px;border-radius:11px;border:none;background:none;font-weight:700;font-size:13.5px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tab i{font-size:18px}
+.tab:hover{color:var(--navy);background:#f5f7fb}.tab.on{background:var(--t-blue);color:var(--blue)}
+.tab.rec{margin-left:auto}.tab.rec.on{background:var(--t-purple);color:var(--t-purple-d)}
+.panel{display:none}.panel.on{display:block}
+
+/* timeline */
+.month{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:20px 2px 10px;display:flex;align-items:center;gap:10px}
+.month::after{content:'';flex:1;height:1px;background:var(--line)}
+.month:first-child{margin-top:4px}
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ev{background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;border:1px solid var(--line);border-top:4px solid var(--evc,#e4e9f2);box-shadow:0 2px 10px rgba(15,32,87,.04)}
+.ev .top{display:flex;gap:10px;align-items:center}
+.ev .ic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ev b{font-size:14px;font-weight:700;color:var(--navy);line-height:1.3}
+.ev .d{font-size:12px;color:var(--muted)}
+.ev .who{font-size:12.5px;font-weight:600;color:var(--sub);display:flex;gap:5px;align-items:center}
+.ev p{font-size:13px;line-height:1.55;color:var(--sub)}
+.ev img{width:100%;height:150px;object-fit:cover;border-radius:12px;margin-top:4px}
+.ev .del{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:none;background:#f5f7fb;font-size:14px;color:var(--muted);opacity:0;transition:opacity .15s}
+.ev:hover .del,.ev:focus-within .del{opacity:1}
+@media(hover:none){.ev .del{opacity:.8}}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.fchip{height:32px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:12.5px;color:var(--muted)}
+.fchip.on{border-color:var(--blue);color:var(--blue);background:var(--t-blue)}
+
+/* lists */
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe;flex-wrap:wrap}
+.row .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.row .t{flex:1;min-width:160px}.row .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.row .t span{font-size:12.5px;color:var(--muted)}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty .e{font-size:40px;margin-bottom:8px}
+.empty b{display:block;color:var(--navy);font-size:16px;font-weight:800;margin-bottom:4px}
+.empty p{font-size:13.5px;max-width:420px;margin:0 auto 14px;line-height:1.55}
+
+/* daily wellness */
+.dw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.dw{grid-template-columns:repeat(2,1fr)}}
+.dws{border-radius:16px;padding:14px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
+.dws i{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:6px}
+.dws b{font-size:21px;font-weight:900;color:var(--navy);line-height:1.1}.dws span{font-size:12.5px;font-weight:600;color:var(--sub)}
+.dws small{font-size:11.5px;color:var(--muted)}
+button.dws:hover{border-color:#cfdaf0;box-shadow:var(--shadow)}
+.week{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:14px;padding:0 2px}
+.wk{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.wk .b{width:100%;max-width:36px;border-radius:8px 8px 4px 4px;background:#cfe0fb;min-height:4px}
+.wk.today .b{background:linear-gradient(180deg,var(--blue),var(--purple))}
+.wk span{font-size:11.5px;font-weight:600;color:var(--muted)}.wk em{font-style:normal;font-size:11px;font-weight:700;color:var(--navy)}
+.moods{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mood{height:38px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:13px;color:var(--sub)}
+.mood.on{background:var(--t-purple);border-color:#cbbdf7;color:var(--t-purple-d)}
+.q{margin-top:16px;font-size:13.5px;font-weight:700;color:var(--navy)}
+.streak{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#fff6f0,#fff1f1);border:1px solid #ffe0d2;margin-top:14px;font-weight:700;font-size:13.5px;color:var(--navy)}
+.streak i{font-size:22px;color:#f97316}
+
+/* weight chart */
+.wchart{position:relative;height:210px;margin:12px 0 6px}
+.wchart svg{width:100%;height:100%;overflow:visible}
+.wtip{position:absolute;background:var(--navy);color:#fff;font-size:12px;font-weight:700;border-radius:10px;padding:6px 9px;pointer-events:none;transform:translate(-50%,-118%);white-space:nowrap;display:none}
+
+/* memories */
+.mems{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.mem{border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 2px 10px rgba(15,32,87,.05);position:relative}
+.mem img{width:100%;height:170px;object-fit:cover;display:block}
+.mem .noimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;background:linear-gradient(135deg,#e8f1ff,#f1ecff)}
+.mem .c{padding:11px 13px}.mem b{font-size:14px;font-weight:700;color:var(--navy);display:block}.mem span{font-size:12px;color:var(--muted)}
+.mem p{font-size:12.5px;margin-top:4px;line-height:1.5;color:var(--sub)}
+
+/* AI card */
+.ai{display:flex;gap:16px;align-items:center;padding:18px 20px;border-radius:var(--r);background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;margin-top:18px;flex-wrap:wrap;box-shadow:0 12px 30px rgba(24,119,242,.25)}
+.ai .ic{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:27px}
+.ai .t{flex:1;min-width:200px}.ai b{font-size:16px;font-weight:800;display:block}.ai span{font-size:12.5px;opacity:.9;line-height:1.5}
+.ai .btn-w{border:none}
+
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(15,32,87,.45);z-index:600;display:none;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+@media(min-width:620px){.mo{align-items:center}}
+.md{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;border-radius:22px 22px 0 0;animation:up .22s ease}
+@media(min-width:620px){.md{border-radius:22px}}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.mh{display:flex;align-items:center;gap:10px;padding:18px 22px 8px}
+.mh h3{flex:1;font-size:19px;font-weight:800;color:var(--navy)}
+.mx{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;font-size:16px}
+.mb{padding:6px 22px 8px;display:flex;flex-direction:column;gap:14px}
+.mf{padding:12px 22px 22px;display:flex;gap:8px;justify-content:flex-end}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl>span{font-size:13px;font-weight:700;color:#2b3250}
+.fl small{font-size:12px;color:var(--muted)}
+.fi{height:48px;border:1.5px solid #dfe5ef;border-radius:12px;padding:0 14px;font-size:14px;background:#f8fafd;outline:none;width:100%;transition:border-color .15s,background .15s}
+textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-height:1.55}
+.fi:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px rgba(24,119,242,.1)}
+.fl.bad .fi{border-color:var(--coral);background:#fff}.fl .err{display:none;color:var(--coral-d);font-size:12px;font-weight:600}.fl.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.seg{display:flex;flex-wrap:wrap;gap:7px}
+.seg label{cursor:pointer}.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border-radius:11px;border:1.5px solid #dfe5ef;font-weight:600;font-size:13px;background:#f8fafd}
+.seg input:checked+span{background:var(--t-blue);border-color:var(--blue);color:var(--blue)}
+.seg input:focus-visible+span{outline:3px solid rgba(24,119,242,.35)}
+
+/* health card */
+.hcard{border-radius:18px;padding:18px;background:linear-gradient(135deg,#f7f9ff,#eef3fb);border:1px solid #dbe4f3}
+.hcard .top{display:flex;gap:14px;align-items:center}
+.hcard .av{width:74px;height:74px;border-radius:20px;font-size:36px;border:3px solid #fff;box-shadow:0 6px 16px rgba(15,32,87,.12)}
+.hcard h4{font-size:20px;font-weight:900;color:var(--navy)}
+.hcard .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:12px}
+.hcard .kv span{color:var(--muted)}.hcard .kv b{font-weight:700;color:var(--navy)}
+.hcard ul{margin:8px 0 0 18px;font-size:13px;line-height:1.65}
+
+/* toast etc */
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;font-size:13.5px;opacity:0;transition:all .25s;z-index:700;pointer-events:none;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(15,32,87,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{background:linear-gradient(90deg,#e8edf6 25%,#f3f6fb 50%,#e8edf6 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:var(--r)}
+@keyframes sk{to{background-position:-200% 0}}
+.muted{color:var(--muted)}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;background:#fff;border-top:1px solid var(--line);z-index:300;padding-bottom:env(safe-area-inset-bottom)}
+@media(max-width:768px){.bnav{display:flex}.wrap{padding:0 16px 110px}.hero-band{margin:0 -16px;padding:0 16px}}
+.bnav button{flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted)}
+.bnav button i{font-size:22px}.bnav button.on{color:var(--blue)}
+@media print{
+  body{background:#fff}.nav,.bnav,.tabs,.qa,.no-print,#drawer-panel,#drawer-overlay{display:none!important}
+  body.print-card .wrap{display:none}body.print-card #cardModal{display:block!important;position:static;background:none}body.print-card #cardModal .md{box-shadow:none;max-height:none;animation:none}
+  body.print-card #cardModal .mf,body.print-card #cardModal .mx{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── vaccination diary (page 10) ── */
+.c-grey{background:#f1f3f8;color:#6b7387}
+.p-none{background:#f1f3f8;color:#5b6478}
+.p-chk{background:var(--t-blue);color:var(--t-blue-d)}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--sub);padding:5px 12px 5px 6px;border-radius:var(--pill);background:#f7f9fc;border:1px solid var(--line2)}
+.legend b{min-width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.core{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.core .row{padding:10px 12px}
+.young{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#f1ecff,#e8f1ff);font-size:13px;line-height:1.55;color:var(--sub)}
+.young i{font-size:20px;color:var(--purple)}
+.rem .act{display:flex;gap:6px;align-items:center}
+.rem.over{background:linear-gradient(90deg,#fff6f5,#fff);border-color:#ffd9d6}
+.rem.soon{background:linear-gradient(90deg,#fffaf0,#fff);border-color:#ffe8bf}
+.qa.q4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.qa.q4{grid-template-columns:repeat(2,1fr)}}
+.qa button small{font-size:12px;font-weight:500;color:var(--muted);margin-top:-6px}
+/* vaccine cards */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
+@media(max-width:420px){.vgrid{grid-template-columns:1fr}}
+.vc{background:#fff;border:1px solid var(--line);border-top:4px solid var(--evc,#e4e9f2);border-radius:18px;box-shadow:0 2px 12px rgba(15,32,87,.05);overflow:hidden}
+.vc-h{display:flex;gap:12px;align-items:center;padding:16px 16px 10px}
+.vc-h .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.vc-h .t{flex:1;min-width:0}.vc-h b{display:block;font-size:15px;font-weight:800;color:var(--navy);line-height:1.3}
+.vc-h .t span{font-size:12.5px;color:var(--muted)}
+.vtag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:2px}
+.vtag.core{background:var(--t-blue);color:var(--t-blue-d)}.vtag.opt{background:#f1f3f8;color:#5b6478}
+.vc-next{margin:0 16px;padding:12px 14px;border-radius:14px;background:#f7f9fc;display:flex;align-items:center;gap:12px}
+.vc-next i{font-size:22px;color:var(--blue)}
+.vc-next span{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.vc-next b{font-size:15px;font-weight:800;color:var(--navy)}
+.vc-next small{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);text-align:right}
+.vc.overdue .vc-next{background:#fff4f3}.vc.overdue .vc-next i{color:var(--coral)}
+.vc.due_soon .vc-next{background:#fff8ea}.vc.due_soon .vc-next i{color:var(--amber)}
+.vc-about{margin:0 16px;font-size:13px;line-height:1.55;color:var(--sub)}
+.vc-more{display:flex;align-items:center;gap:6px;width:100%;border:none;border-top:1px solid var(--line2);background:none;padding:12px 16px;margin-top:14px;font-weight:700;font-size:13px;color:var(--blue);text-align:left}
+.vc-more i{margin-left:auto;transition:transform .2s}
+.vc.open .vc-more i{transform:rotate(180deg)}
+.vc-body{display:none;padding:0 16px 16px}
+.vc.open .vc-body{display:block}
+.dose{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px;background:#fbfcfe}
+.dose .dh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dose .dh b{font-size:13.5px;font-weight:800;color:var(--navy);flex:1}
+.dose .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px;margin-top:8px}
+.dose .kv span{color:var(--muted)}.dose .kv em{font-style:normal;font-weight:600;color:var(--navy);word-break:break-word}
+.dose .da{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.vc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hist{margin-top:18px}
+.hist summary{cursor:pointer;font-weight:800;color:var(--navy);font-size:14px;list-style:none;display:flex;align-items:center;gap:8px}
+.hist summary::-webkit-details-marker{display:none}
+.hist summary i{color:var(--blue)}
+.hrow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13px;line-height:1.5}
+.hrow:last-child{border-bottom:none}
+.hrow .ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.hrow small{display:block;color:var(--muted);font-size:12px}
+/* guide + india */
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.phases{grid-template-columns:1fr}}
+.phase{border-radius:18px;padding:16px;border:1px solid var(--line);background:#fff}
+.phase h4{font-size:15px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.phase h4 em{font-style:normal;font-size:22px}
+.phase ul{margin-left:18px;font-size:13px;line-height:1.65;color:var(--sub)}
+.phase.p1{background:linear-gradient(160deg,#fff7ef,#fff)}.phase.p2{background:linear-gradient(160deg,#eef5ff,#fff)}.phase.p3{background:linear-gradient(160deg,#f4efff,#fff)}
+.law{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.lw{border:1px solid var(--line);border-radius:18px;padding:16px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.lw .top{display:flex;gap:10px;align-items:center}
+.lw .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.lw b{font-size:14.5px;font-weight:800;color:var(--navy);flex:1}
+.lw p{font-size:13px;line-height:1.6;color:var(--sub)}
+.lw a.src{font-size:12px;font-weight:700;color:var(--blue);display:inline-flex;gap:5px;align-items:center;margin-top:auto}
+.check{display:flex;flex-direction:column;gap:8px}
+.ok-i{color:var(--green)}.no-i{color:var(--coral)}
+/* summary (printable) */
+.sumt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+.sumt th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.sumt td{padding:8px;border-bottom:1px solid var(--line2);vertical-align:top}
+.sumt td b{color:var(--navy)}
+.leadseg{margin-top:12px}
+.ring .num b{font-size:25px}
+.collage.one .ph .cam{top:auto;bottom:12px}
+
+  /* ===== DRAWER STYLES ===== */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
+/* ── PawBook Search (page 15) — same look as Pet Health (36) ── */
+.crumb b{color:var(--blue-d)}
+.badge{font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--coral-soft);color:var(--coral-d)}
+.vbadge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:800;color:#15803d;background:#e7f7ee;padding:3px 8px;border-radius:999px}
+/* big search box in the hero */
+.sbox{display:flex;gap:8px;background:#fff;border:1.5px solid #dbe4f3;border-radius:20px;padding:8px;box-shadow:0 14px 34px rgba(15,32,87,.10);margin:18px 0 12px;align-items:center}
+.sbox:focus-within{border-color:var(--blue);box-shadow:0 14px 34px rgba(24,119,242,.18)}
+.sbox .si{font-size:22px;color:var(--blue);margin-left:8px}
+.sbox input{flex:1;min-width:0;border:none;outline:none;font:inherit;font-size:16px;font-weight:600;color:var(--navy);background:transparent;height:44px}
+.sbox select{height:44px;border:none;border-left:1.5px solid var(--line);background:transparent;font:inherit;font-size:13px;font-weight:700;color:var(--sub);padding:0 8px;max-width:140px;outline:none}
+.sbox .btn{height:46px;border-radius:14px;padding:0 20px}
+.sbox .clr{border:none;background:#f1f4fa;width:30px;height:30px;border-radius:50%;color:var(--muted);flex:0 0 30px;display:none}
+.sbox.has .clr{display:block}
+@media(max-width:620px){.sbox{flex-wrap:wrap;border-radius:18px}.sbox input{flex:1 1 60%}.sbox select{order:3;flex:1;border-left:none;border-top:1.5px solid var(--line);max-width:none}.sbox .btn{order:4;flex:1}}
+.sugg{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--muted);font-weight:700;margin-top:6px}
+.sugg button{height:32px;padding:0 12px;border-radius:999px;border:1.5px solid #dbe4f3;background:#fff;font-weight:700;font-size:12.5px;color:var(--sub);display:inline-flex;align-items:center;gap:5px}
+.sugg button:hover{border-color:var(--blue);color:var(--blue-d)}
+.sugg button em{font-style:normal;color:var(--muted);font-weight:600}
+.sugg .x{border:none;background:none;height:auto;padding:0 4px;color:var(--muted);font-size:12px;text-decoration:underline}
+/* browse tiles */
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1100px){.tiles{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{position:relative;border:none;border-radius:var(--r);overflow:hidden;min-height:128px;text-align:left;padding:0;box-shadow:var(--shadow);background:#dfe7f5;transition:transform .15s,box-shadow .15s;cursor:pointer}
+.tile:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,32,87,.16)}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 28%,rgba(10,20,45,.8))}
+.tile .in{position:absolute;left:12px;right:12px;bottom:10px;z-index:2;color:#fff}.tile b{display:flex;align-items:center;gap:5px;font-size:15px}.tile span{font-size:11.5px;opacity:.92}
+/* results */
+.rhead{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:26px 0 10px}
+.rhead h2{font-size:22px;font-weight:900;color:var(--navy)}.rhead h2 em{font-style:normal;color:var(--coral-d)}
+.rhead p{font-size:13px;color:var(--muted);margin-top:2px}
+.note{display:flex;gap:8px;align-items:flex-start;background:#fff8ec;border:1px solid #f6dfb5;color:#8a5a12;border-radius:14px;padding:10px 12px;font-size:13px;font-weight:600;margin-bottom:12px}
+.rtabs{display:flex;gap:6px;overflow-x:auto;padding:6px;background:#fff;border-radius:16px;border:1px solid var(--line);margin-bottom:14px;scrollbar-width:none;position:sticky;top:calc(var(--nav-h) + 6px);z-index:50;box-shadow:var(--shadow)}
+.rtabs::-webkit-scrollbar{display:none}
+.rtabs button{flex:0 0 auto;height:38px;padding:0 14px;border-radius:11px;border:none;background:transparent;font-weight:700;font-size:13px;color:var(--sub);display:inline-flex;align-items:center;gap:6px}
+.rtabs button.on{background:var(--navy);color:#fff}.rtabs button i{font-size:16px}
+.rtabs button span{font-size:11px;font-weight:800;background:rgba(15,32,87,.08);border-radius:999px;padding:2px 7px}.rtabs button.on span{background:rgba(255,255,255,.2)}
+.rsec{margin-bottom:18px}
+.rsec .ch{padding:14px 16px 10px}
+.rsec .ch h2 .ic{width:32px;height:32px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.rsec .cb{padding:0 16px 16px}
+.more{border:none;background:none;color:var(--blue-d);font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:4px}
+/* photo cards */
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:1100px){.pgrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.pgrid{grid-template-columns:repeat(2,1fr)}}
+.pc{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none;color:inherit}
+.pc:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,32,87,.13)}
+.pc .im{position:relative;aspect-ratio:4/3;background:linear-gradient(135deg,#e8f1ff,#f1ecff);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pc .im img{width:100%;height:100%;object-fit:cover}.pc .im .em{font-size:40px}
+.pc .im .tg{position:absolute;left:8px;top:8px;display:flex;gap:4px;flex-wrap:wrap}
+.pc .im .tg span{font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.95);color:var(--navy)}
+.pc .im .tg span.r{background:#fde8e8;color:#b42318}.pc .im .tg span.g{background:#e7f7ee;color:#15803d}.pc .im .tg span.b{background:#e8f1ff;color:var(--blue-d)}
+.pc .bd{padding:10px 12px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
+.pc b{font-size:14.5px;color:var(--navy);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc .s{font-size:12.5px;color:var(--sub)}.pc .m{font-size:12px;color:var(--muted)}
+.pc .pr{font-size:15px;font-weight:900;color:var(--navy);margin-top:2px}.pc .pr s{font-size:12px;color:var(--muted);font-weight:600;margin-left:5px}
+.pc .go{margin-top:auto;padding-top:6px;font-size:12.5px;font-weight:800;color:var(--blue-d);display:inline-flex;align-items:center;gap:3px}
+/* list rows */
+.lrows{display:flex;flex-direction:column;gap:8px}
+.lr{display:flex;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:#fff;text-decoration:none;color:inherit;transition:background .15s}
+.lr:hover{background:#f7f9ff}
+.lr .av3{width:52px;height:52px;border-radius:14px;flex:0 0 52px;overflow:hidden;background:linear-gradient(135deg,#e8f1ff,#f1ecff);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--blue-d);font-size:20px}
+.lr .av3.rd{border-radius:50%}.lr .av3 img{width:100%;height:100%;object-fit:cover}
+.lr .t{flex:1;min-width:0}.lr .t b{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:14.5px;color:var(--navy)}
+.lr .t span{display:block;font-size:12.5px;color:var(--sub);margin-top:1px}.lr .t small{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+.lr .ac2{display:flex;gap:6px;flex:0 0 auto}
+@media(max-width:560px){.lr{flex-wrap:wrap}.lr .ac2{width:100%;padding-left:64px}.lr .ac2 .btn{flex:1}}
+.nearb{font-size:10.5px;font-weight:800;color:#15803d;background:#e7f7ee;padding:2px 7px;border-radius:999px}
+/* empty / start states */
+.empty3{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+.empty3 img{width:100%;height:190px;object-fit:cover;border-radius:16px}
+.empty3 h3{font-size:19px;font-weight:900;color:var(--navy)}.empty3 p{font-size:13.5px;color:var(--sub);margin:6px 0 12px;line-height:1.55}
+.empty3 ul{font-size:13px;color:var(--sub);margin:0 0 12px 18px;line-height:1.7}
+@media(max-width:700px){.empty3{grid-template-columns:1fr}.empty3 img{height:160px}}
+.acts3{display:flex;gap:8px;flex-wrap:wrap}
+.credit{font-size:11.5px;color:var(--muted);text-align:center;margin:26px 0 8px}.credit a{color:inherit}
+.rload{opacity:.45;pointer-events:none;transition:opacity .15s}
+.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.c-rose{background:#fde8ef;color:#c2255c}
+/* compact header once a search is running */
+.hero-band.compact .collage,.hero-band.compact .tag,.hero-band.compact #facts{display:none}
+.hero-band.compact .hero{grid-template-columns:1fr;padding:14px 0 18px;max-width:880px}
+.hero-band.compact h1{font-size:28px;margin:8px 0 0}.hero-band.compact h1 br{display:none}
+.hero-band.compact .sbox{margin:12px 0 8px}
+.pc .im.noimg{aspect-ratio:auto;height:96px}.pc .im.noimg .em{font-size:34px}
+@media(max-width:620px){.hero-band.compact h1{font-size:23px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <button class="menu" onclick="openDrawer()" aria-label="Open menu"><i class="ti ti-menu-2"></i></button>
+  <div class="logo" onclick="location.href='07_home.html'"><i>🐾</i><span>PawBook</span></div>
+  <div class="crumb"><i class="ti ti-chevron-right"></i><b>Search</b></div>
+  <div class="sp"></div>
+  <button class="nav-ic hide-s" onclick="location.href='03_groups.html'" title="Communities" aria-label="Communities"><i class="ti ti-users-group"></i></button>
+  <button class="nav-ic hide-s" onclick="location.href='38_lost_pet_network.html'" title="Lost &amp; Found" aria-label="Lost and Found"><i class="ti ti-map-search"></i></button>
+  <button class="nav-ic" onclick="location.href='12_notifications.html'" title="Notifications" aria-label="Notifications"><i class="ti ti-bell"></i></button>
+  <button class="nav-av" id="nav-av" onclick="location.href='29_user_profile.html'" aria-label="My profile">·</button>
+</nav>
+
+<main class="wrap" id="app">
+  <div class="skel" style="height:56px;margin:18px 0 12px"></div>
+  <div class="skel" style="height:360px"></div>
+</main>
+
+<nav class="bnav">
+  <button onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
+  <button class="on" onclick="focusSearch()"><i class="ti ti-search"></i>Search</button>
+  <button onclick="location.href='03_groups.html'"><i class="ti ti-users-group"></i>Communities</button>
+  <button onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i>Vets</button>
+  <button onclick="location.href='42_shop.html'"><i class="ti ti-building-store"></i>Shop</button>
+</nav>
+
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
-      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
+/* ===================== PawBook Search (15) ===================== */
+var API = 'https://pawbook.deemona.com/api/v1';
+var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
+var LOC = {
+  'India':{'Delhi':['New Delhi','Gurgaon','Noida','Faridabad','Ghaziabad'],'Maharashtra':['Mumbai','Pune','Nagpur','Nashik'],'Karnataka':['Bangalore','Mysore','Mangalore'],'Tamil Nadu':['Chennai','Coimbatore','Madurai'],'Telangana':['Hyderabad','Warangal'],'West Bengal':['Kolkata','Howrah','Durgapur'],'Gujarat':['Ahmedabad','Surat','Vadodara'],'Rajasthan':['Jaipur','Jodhpur','Udaipur'],'Uttar Pradesh':['Lucknow','Kanpur','Agra','Varanasi'],'Punjab':['Chandigarh','Ludhiana','Amritsar'],'Kerala':['Kochi','Thiruvananthapuram','Kozhikode']},
+  'USA':{'California':['Los Angeles','San Francisco','San Diego','San Jose'],'New York':['New York City','Buffalo','Albany'],'Texas':['Houston','Dallas','Austin'],'Florida':['Miami','Orlando','Tampa'],'Illinois':['Chicago','Springfield']},
+  'UK':{'England':['London','Manchester','Birmingham','Liverpool'],'Scotland':['Edinburgh','Glasgow'],'Wales':['Cardiff','Swansea']},
+  'Australia':{'New South Wales':['Sydney','Newcastle'],'Victoria':['Melbourne','Geelong'],'Queensland':['Brisbane','Gold Coast']},
+  'Canada':{'Ontario':['Toronto','Ottawa','Hamilton'],'British Columbia':['Vancouver','Victoria'],'Quebec':['Montreal','Quebec City'],'Alberta':['Calgary','Edmonton']},
+  'Singapore':{'Singapore':['Singapore City','Jurong','Tampines']},
+  'UAE':{'Dubai':['Dubai City','Deira','Jumeirah'],'Abu Dhabi':['Abu Dhabi City','Al Ain']}
+};
+var Q = '', TYPE = 'all', CITY = '', HOME = null, RES = null, ALL = null, SEQ = 0, TMR = null;
+try { var _l = JSON.parse(localStorage.getItem('pb_search_city') || 'null'); if (typeof _l === 'string') CITY = _l; else { _l = JSON.parse(localStorage.getItem('pb_comm_loc') || localStorage.getItem('pb_health_loc') || 'null'); if (_l && _l.city) CITY = _l.city; } } catch (e) {}
+
+var T = {
+  pets: ['Pets', 'ti-paw', 'c-peach', 'grid', '🐾'], adoption: ['Adoption', 'ti-heart-handshake', 'c-rose', 'grid', '🏡'], lost: ['Lost & Found', 'ti-map-search', 'c-coral', 'grid', '📍'],
+  vets: ['Vets', 'ti-stethoscope', 'c-sage', 'list', '🩺'], communities: ['Communities', 'ti-users-group', 'c-lav', 'grid', '🤝'], products: ['Products', 'ti-shopping-bag', 'c-amber', 'grid', '🛍️'],
+  events: ['Events', 'ti-calendar-event', 'c-sky', 'grid', '🎉'], shelters: ['Shelters & NGOs', 'ti-home-heart', 'c-teal', 'list', '🏠'], people: ['People', 'ti-user', 'c-sky', 'list', '👤']
+};
+var ORDER = ['pets', 'vets', 'communities', 'products', 'adoption', 'lost', 'events', 'shelters', 'people'];
+var TILES = [
+  ['My pets', 'Health records & reminders', 'img/pets/dog-cat.jpg', 'ti-paw', '36_pet_life_record.html'],
+  ['Book a vet', 'Verified vets near you', 'img/vet/vet-exam.jpg', 'ti-stethoscope', '11_vet_booking.html'],
+  ['Communities', 'Pet parents near you', 'img/events/festival.jpg', 'ti-users-group', '03_groups.html'],
+  ['Pet shop', 'Food, toys & care', 'img/adopt/new-home-prep.jpg', 'ti-building-store', '42_shop.html'],
+  ['Events', 'Meetups, camps & shows', 'img/events/dog-party.jpg', 'ti-calendar-event', '30_events.html'],
+  ['Adopt a pet', 'Pets waiting for a home', 'img/adopt/rescue-golden.jpg', 'ti-heart-handshake', '39_adoption_matching.html'],
+  ['Lost & Found', 'Help pets get home', 'img/lost/missing-golden.jpg', 'ti-map-search', '38_lost_pet_network.html'],
+  ['AI health check', 'Symptoms, first aid & SOS', 'img/vet/vet-owner.jpg', 'ti-robot', '37_pet_ai_health_agent.html'],
+  ['Nearby help', 'Shelters, rescues & clinics', 'img/adopt/shelter-hug.jpg', 'ti-map-pin-heart', '37_pet_ai_health_agent.html?tab=nearby'],
+  ['Vaccinations', 'Never miss a dose', 'img/journey/thumb-vet.jpg', 'ti-vaccine', '10_vaccination.html']
+];
+var TRY = ['Labrador', 'Persian cat', 'Vet', 'Dog food', 'Adoption', 'Puppy training'];
+
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function toast(m){ var t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
+function api(path){
+  return fetch(API + path, {headers: TOKEN ? {Authorization: 'Bearer ' + TOKEN} : {}}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok || j.success === false) { var e = new Error(j.message || ('Something went wrong (' + r.status + ')')); e.status = r.status; throw e; } return j.data !== undefined ? j.data : j; });
   });
 }
+function n(v){ return Number(v || 0).toLocaleString('en-IN'); }
+function img(u, alt, cls){ return '<img src="' + esc(u) + '" alt="' + esc(alt || '') + '" loading="lazy"' + (cls ? ' class="' + cls + '"' : '') + ' onerror="this.style.visibility=\'hidden\'">'; }
+function fdt(v){ var d = new Date(v); return isNaN(d) ? '' : d.toLocaleString('en-IN', {weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}); }
+function ago(v){ var s = (Date.now() - new Date(v).getTime()) / 1000; if (s < 3600) return Math.max(1, Math.round(s / 60)) + ' min ago'; if (s < 86400) return Math.round(s / 3600) + ' hr ago'; var d = Math.round(s / 86400); return d === 1 ? 'yesterday' : d + ' days ago'; }
+function hl(t){ t = esc(t); if (!RES || !RES.words) return t; RES.words.forEach(function(w){ if (w.length < 2) return; t = t.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark style="background:#fff2b8;color:inherit;border-radius:3px;padding:0 1px">$1</mark>'); }); return t; }
+function recent(){ try { return JSON.parse(localStorage.getItem('pb_search_recent') || '[]').filter(function(x){ return typeof x === 'string'; }).slice(0, 8); } catch (e) { return []; } }
+function addRecent(q){ try { var l = recent().filter(function(x){ return x.toLowerCase() !== q.toLowerCase(); }); l.unshift(q); localStorage.setItem('pb_search_recent', JSON.stringify(l.slice(0, 8))); } catch (e) {} }
+function clearRecent(){ try { localStorage.removeItem('pb_search_recent'); } catch (e) {} renderSugg(); }
+function cities(){ var l = []; Object.keys(LOC).forEach(function(c){ Object.keys(LOC[c]).forEach(function(s){ (LOC[c][s] || []).forEach(function(x){ if (l.indexOf(x) < 0) l.push(x); }); }); }); return l.sort(); }
 
-// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
-(function initDrawerUser(){
-  var u = null;
-  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
-  if(!u) {
-    // fetch from API if not cached
-    var tok = localStorage.getItem("pb_token");
-    if(tok) {
-      fetch("https://pawbook.deemona.com/api/v1/auth/me", {
-        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
-      }).then(function(r){ return r.json(); }).then(function(res){
-        var ud = res.data || res;
-        if(ud && ud.username) {
-          localStorage.setItem("pb_user", JSON.stringify(ud));
-          populateDrawer(ud);
-        }
-      }).catch(function(){});
-    }
-    return;
-  }
-  populateDrawer(u);
-  function populateDrawer(ud){
-    var dn = document.getElementById("drawer-name");
-    var dh = document.getElementById("drawer-handle");
-    var da = document.getElementById("drawer-av");
-    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
-    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
-    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
-  }
-})();
+/* ---------- boot ---------- */
+function boot(){
+  if (!TOKEN) { location.href = '01_login.html'; return; }
+  try { var u = JSON.parse(localStorage.getItem('pb_user') || 'null'); if (u) { var av = document.getElementById('nav-av'); if (u.avatar_url || u.avatar) av.innerHTML = '<img src="' + esc(u.avatar_url || u.avatar) + '" alt="">'; else av.textContent = (u.full_name || u.name || '·').charAt(0).toUpperCase(); } } catch (e) {}
+  var q = new URLSearchParams(location.search);
+  Q = (q.get('q') || '').slice(0, 100); TYPE = T[q.get('type')] ? q.get('type') : 'all'; if (q.get('city') !== null) CITY = q.get('city').slice(0, 80);
+  renderShell();
+  api('/pbsearch/home').then(function(h){ HOME = h; renderFacts(); renderSugg(); }).catch(function(e){ if (e.status === 401) location.href = '01_login.html'; });
+  if (Q) run(true); else renderStart();
+}
+window.addEventListener('popstate', function(){ var q = new URLSearchParams(location.search); Q = q.get('q') || ''; TYPE = T[q.get('type')] ? q.get('type') : 'all'; var i = document.getElementById('sq'); if (i) { i.value = Q; syncClr(); } if (Q) run(true); else { RES = null; ALL = null; compact(false); renderStart(); } });
+function focusSearch(){ var i = document.getElementById('sq'); window.scrollTo({top: 0, behavior: 'smooth'}); if (i) setTimeout(function(){ i.focus(); }, 250); }
+
+function renderShell(){
+  var cl = cities();
+  var h = '<div class="hero-band' + (Q ? ' compact' : '') + '" id="hb"><section class="hero" aria-label="Search PawBook"><div><span class="eyebrow"><i class="ti ti-search"></i>Search PawBook</span>'
+    + '<h1>Find anything <br><span class="accent">for your pet.</span></h1><p class="tag">Pets, vets, communities, products, events, pets for adoption and lost &amp; found — all in one search. Small spelling mistakes are fine.</p>'
+    + '<form class="sbox' + (Q ? ' has' : '') + '" role="search" onsubmit="event.preventDefault();go(1)"><i class="ti ti-search si"></i><input id="sq" name="q" type="search" enterkeyhint="search" autocomplete="off" maxlength="100" placeholder="Try “Labrador”, “cat food” or a vet’s name" aria-label="Search PawBook" value="' + esc(Q) + '" oninput="onType()">'
+    + '<button type="button" class="clr" aria-label="Clear search" onclick="clearQ()"><i class="ti ti-x"></i></button>'
+    + '<select id="scity" aria-label="City" onchange="setCity(this.value)"><option value="">Anywhere</option>' + cl.map(function(c){ return '<option' + (c === CITY ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select>'
+    + '<button class="btn btn-o" id="sbtn"><i class="ti ti-search"></i>Search</button></form>'
+    + '<div id="sugg"></div><div class="facts" id="facts" style="margin-top:14px"></div></div>'
+    + '<div class="collage"><div class="ph ph-main">' + img('img/adopt/family-cat-dog.jpg', 'A family with their cat and dog') + '<div class="ph-tag"><i class="ti ti-heart"></i>Everything for your pet</div></div>'
+    + '<div class="ph">' + img('img/events/cat-cafe.jpg', 'Friends with cats at a cat café') + '<div class="ph-tag"><i class="ti ti-users"></i>Pet people</div></div>'
+    + '<div class="ph">' + img('img/vet/vet-owner.jpg', 'A vet checking a golden retriever with its owner') + '<div class="ph-tag"><i class="ti ti-stethoscope"></i>Vets</div></div>'
+    + '<div class="float-card float-1"><span class="fc-ic c-sage"><i class="ti ti-text-spellcheck" style="font-size:20px"></i></span><div><div class="fc-t">Typos are OK</div><div class="fc-s">“Labardor” still finds Labradors</div></div></div>'
+    + '<div class="float-card float-2"><i class="ti ti-shield-check"></i>Only real, live listings</div></div></section></div>'
+    + '<div id="res"></div>'
+    + '<h2 class="sec-title">Browse PawBook</h2><p class="sec-sub">Jump straight to what you need</p><div class="tiles">' + TILES.map(function(t){ return '<a class="tile" href="' + t[4] + '">' + img(t[2], t[0]) + '<div class="in"><b><i class="ti ' + t[3] + '"></i>' + t[0] + '</b><span>' + t[1] + '</span></div></a>'; }).join('') + '</div>'
+    + '<p class="credit">Search shows only what is already public on PawBook — never anyone’s email, phone number or exact address.</p>';
+  document.getElementById('app').innerHTML = h;
+  renderSugg(); renderFacts();
+}
+function renderFacts(){
+  var el = document.getElementById('facts'); if (!el) return;
+  if (!HOME) { el.innerHTML = ''; return; }
+  var c = HOME.counts, pl = function(v, one, many){ return n(v) + ' ' + (v === 1 ? one : many); };
+  el.innerHTML = [['ti-stethoscope c-sage', pl(c.vets, 'vet', 'vets')], ['ti-users-group c-lav', pl(c.communities, 'community', 'communities')], ['ti-shopping-bag c-amber', pl(c.products, 'product', 'products')], ['ti-heart-handshake c-rose', pl(c.adoption, 'pet for adoption', 'pets for adoption')]]
+    .map(function(x){ return '<span class="fact"><i class="ti ' + x[0] + '"></i>' + x[1] + '</span>'; }).join('');
+}
+function setCity(v){ CITY = v || ''; var sel = document.getElementById('scity'); if (sel) sel.value = CITY; try { localStorage.setItem('pb_search_city', JSON.stringify(CITY)); } catch (e) {} if (Q) run(); }
+function renderSugg(){
+  var el = document.getElementById('sugg'); if (!el) return;
+  var r = recent(), h = '';
+  if (r.length) h += '<div class="sugg"><span><i class="ti ti-history"></i> Recent:</span>' + r.slice(0, 5).map(function(x){ return '<button type="button" onclick="pick(this.dataset.q)" data-q="' + esc(x) + '">' + esc(x) + '</button>'; }).join('') + '<button type="button" class="x" onclick="clearRecent()">Clear</button></div>';
+  var b = HOME && HOME.breeds && HOME.breeds.length ? HOME.breeds.slice(0, 6).map(function(x){ return [x.name, x.count]; }) : TRY.map(function(x){ return [x, null]; });
+  h += '<div class="sugg"><span><i class="ti ti-sparkles"></i> ' + (HOME && HOME.breeds && HOME.breeds.length ? 'Popular breeds:' : 'Try:') + '</span>' + b.map(function(x){ return '<button type="button" onclick="pick(this.dataset.q)" data-q="' + esc(x[0]) + '">' + esc(x[0]) + (x[1] ? ' <em>' + x[1] + '</em>' : '') + '</button>'; }).join('') + '</div>';
+  el.innerHTML = h;
+}
+function compact(on){ var b = document.getElementById('hb'); if (b) b.classList.toggle('compact', !!on); }
+function syncClr(){ var f = document.querySelector('.sbox'); if (f) f.classList.toggle('has', !!document.getElementById('sq').value); }
+function onType(){ syncClr(); clearTimeout(TMR); var v = document.getElementById('sq').value.trim(); TMR = setTimeout(function(){ if (v.length >= 2 && v !== Q) { Q = v; TYPE = 'all'; run(false, true); } else if (!v && Q) clearQ(); }, 500); }
+function pick(q){ document.getElementById('sq').value = q; syncClr(); go(1); }
+function clearQ(){ clearTimeout(TMR); Q = ''; TYPE = 'all'; RES = null; ALL = null; var i = document.getElementById('sq'); i.value = ''; syncClr(); history.replaceState({}, '', '15_search.html'); compact(false); renderStart(); i.focus(); }
+function go(btn){
+  clearTimeout(TMR); var v = document.getElementById('sq').value.trim();
+  if (v.length < 2) { toast('Type at least 2 letters'); document.getElementById('sq').focus(); return; }
+  Q = v; TYPE = 'all'; run(false, false, btn);
+}
+function setType(t){ TYPE = t; run(false, false, null, true); }
+function urlFor(){ var p = new URLSearchParams(); p.set('q', Q); if (TYPE !== 'all') p.set('type', TYPE); if (CITY) p.set('city', CITY); return '15_search.html?' + p.toString(); }
+function run(fromUrl, live, btn, tabOnly){
+  var s = ++SEQ, b = document.getElementById('sbtn');
+  if (!fromUrl) history[live || tabOnly ? 'replaceState' : 'pushState']({}, '', urlFor());
+  if (btn && b) { b.disabled = true; b.innerHTML = '<i class="ti ti-loader-2 spin"></i>Searching…'; }
+  var r = document.getElementById('res'); if (r && r.firstChild) r.classList.add('rload'); else if (r) r.innerHTML = '<div class="skel" style="height:44px;margin-top:26px"></div><div class="skel" style="height:260px;margin-top:12px"></div>';
+  var p = new URLSearchParams({q: Q}); if (TYPE !== 'all') p.set('type', TYPE); if (CITY) p.set('city', CITY);
+  return api('/pbsearch?' + p.toString()).then(function(d){
+    if (s !== SEQ) return; RES = d; compact(true); if (TYPE === 'all') ALL = d; else if (!ALL || ALL.q !== d.q) ALL = null;
+    if (!live) addRecent(Q); renderRes();
+    if (!live && !tabOnly) { var el = document.getElementById('res'); if (el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth'}); }
+    if (btn) toast(d.total ? n(d.total) + ' result' + (d.total === 1 ? '' : 's') + ' found' : 'Nothing found — try other words');
+  }).catch(function(e){ if (s !== SEQ) return; if (e.status === 401) { location.href = '01_login.html'; return; } var el = document.getElementById('res'); if (el) { el.classList.remove('rload'); el.innerHTML = '<div class="empty" style="margin-top:22px"><div class="e">⚠️</div><b>Search is not available right now</b><p>' + esc(e.status === 429 ? 'Too many searches — please wait a moment.' : e.message) + '</p></div>'; } })
+    .then(function(){ if (b) { b.disabled = false; b.innerHTML = '<i class="ti ti-search"></i>Search'; } });
+}
+
+/* ---------- start state (no query) ---------- */
+function renderStart(){
+  var el = document.getElementById('res'); if (!el) return; el.classList.remove('rload');
+  el.innerHTML = '<div class="stats" style="margin-top:24px">' + [['c-peach', 'ti-paw', 'pets', 'Pets on PawBook'], ['c-sage', 'ti-stethoscope', 'vets', 'Verified vets'], ['c-lav', 'ti-users-group', 'communities', 'Communities'], ['c-coral', 'ti-map-search', 'lost', 'Open lost & found cases']]
+    .map(function(x){ return '<div class="stat"><span class="ic ' + x[0] + '"><i class="ti ' + x[1] + '"></i></span><div><b id="st-' + x[2] + '">' + (HOME ? n(HOME.counts[x[2]]) : '–') + '</b><span>' + x[3] + '</span></div></div>'; }).join('') + '</div>';
+  if (!HOME) api('/pbsearch/home').then(function(h){ HOME = h; ['pets', 'vets', 'communities', 'lost'].forEach(function(k){ var b = document.getElementById('st-' + k); if (b) b.textContent = n(h.counts[k]); }); renderFacts(); renderSugg(); }).catch(function(){});
+}
+
+/* ---------- results ---------- */
+function renderRes(){
+  var el = document.getElementById('res'), d = RES; if (!el) return; el.classList.remove('rload');
+  var where = CITY ? ' · near ' + esc(CITY) : '';
+  var h = '<div class="rhead"><div><h2>' + (d.total ? n(d.total) + ' result' + (d.total === 1 ? '' : 's') + ' for <em>“' + esc(d.q) + '”</em>' : 'No results for <em>“' + esc(d.q) + '”</em>') + '</h2><p>Across PawBook' + where + '</p></div>' + (CITY ? '<button class="btn btn-w btn-s" onclick="setCity(\'\')"><i class="ti ti-world"></i>Search everywhere</button>' : '') + '</div>';
+  if (d.match === 'close') h += '<div class="note"><i class="ti ti-text-spellcheck"></i><span>No exact match, so we\'re showing close spellings. Check the spelling if these aren\'t what you meant.</span></div>';
+  if (d.match === 'partial') h += '<div class="note"><i class="ti ti-filter-off"></i><span>Nothing matched all your words, so these match some of them. Try fewer words for better results.</span></div>';
+  if (!d.total) { el.innerHTML = h + noneHTML(); return; }
+  var src = ALL && ALL.q === d.q ? ALL : (TYPE === 'all' ? d : null);
+  if (src) { var tabs = [['all', 'ti-layout-grid', 'All', src.total]].concat(ORDER.filter(function(t){ return src.sections.some(function(s){ return s.type === t; }); }).map(function(t){ return [t, T[t][1], T[t][0], src.sections.filter(function(s){ return s.type === t; })[0].count]; }));
+    h += '<div class="rtabs" role="tablist">' + tabs.map(function(t){ return '<button role="tab" aria-selected="' + (TYPE === t[0]) + '" class="' + (TYPE === t[0] ? 'on' : '') + '" onclick="setType(\'' + t[0] + '\')"><i class="ti ' + t[1] + '"></i>' + t[2] + ' <span>' + n(t[3]) + '</span></button>'; }).join('') + '</div>'; }
+  else h += '<div class="rtabs"><button onclick="setType(\'all\')"><i class="ti ti-arrow-left"></i>All results</button><button class="on"><i class="ti ' + T[TYPE][1] + '"></i>' + T[TYPE][0] + '</button></div>';
+  var secs = d.sections.slice().sort(function(a, b){ return ORDER.indexOf(a.type) - ORDER.indexOf(b.type); });
+  h += secs.map(function(s){ return secHTML(s, TYPE === 'all'); }).join('');
+  el.innerHTML = h;
+}
+function secHTML(s, short){
+  var t = T[s.type], items = short ? s.items.slice(0, t[3] === 'grid' ? 4 : 3) : s.items;
+  var body = t[3] === 'grid' ? '<div class="pgrid">' + items.map(function(x){ return cardHTML(s.type, x); }).join('') + '</div>' : '<div class="lrows">' + items.map(function(x){ return rowHTML(s.type, x); }).join('') + '</div>';
+  var more = short && s.count > items.length ? '<button class="more" onclick="setType(\'' + s.type + '\')">See all ' + n(s.count) + ' <i class="ti ti-arrow-right"></i></button>' : '';
+  var link = {vets: ['11_vet_booking.html', 'All vets'], communities: ['03_groups.html', 'All communities'], products: ['42_shop.html', 'Open shop'], events: ['30_events.html', 'All events'], adoption: ['39_adoption_matching.html', 'All pets for adoption'], lost: ['38_lost_pet_network.html', 'Lost & Found']}[s.type];
+  return '<section class="card rsec" id="sec-' + s.type + '"><div class="ch"><h2><span class="ic ' + t[2] + '"><i class="ti ' + t[1] + '"></i></span>' + t[0] + ' <span class="badge" style="background:var(--line2);color:var(--sub)">' + n(s.count) + '</span></h2>' + (more || (link && !short ? '<a class="more" href="' + link[0] + '">' + link[1] + ' <i class="ti ti-arrow-right"></i></a>' : '')) + '</div><div class="cb">' + body + '</div></section>';
+}
+function cardHTML(type, x){
+  var tg = [];
+  if (x.badge) tg.push('<span class="' + (x.badge === 'Missing' || x.badge === 'Urgent' ? 'r' : x.badge === 'Found' ? 'g' : 'b') + '">' + esc(x.badge) + '</span>');
+  if (x.verified && type === 'communities') tg.push('<span class="g">✓ Verified</span>');
+  if (x.near) tg.push('<span class="g">Near you</span>');
+  var im = x.img ? img(x.img, x.title) : '<span class="em">' + T[type][4] + '</span>';
+  return '<a class="pc" href="' + esc(x.url || '#') + '"><div class="im' + (x.img ? '' : ' noimg') + '">' + im + (tg.length ? '<div class="tg">' + tg.join('') + '</div>' : '') + '</div><div class="bd"><b>' + hl(x.title) + '</b>'
+    + (x.sub ? '<span class="s">' + hl(x.sub) + '</span>' : '')
+    + (type === 'events' && x.at ? '<span class="m"><i class="ti ti-calendar"></i> ' + esc(fdt(x.at)) + '</span>' : '')
+    + (type === 'lost' && x.at ? '<span class="m">Reported ' + esc(ago(x.at)) + '</span>' : '')
+    + (x.price != null ? '<span class="pr">₹' + n(x.price) + (x.mrp ? '<s>₹' + n(x.mrp) + '</s>' : '') + '</span>' : '')
+    + (x.meta ? '<span class="m">' + esc(x.meta) + '</span>' : '')
+    + (x.text ? '<span class="m">' + esc(x.text) + '</span>' : '')
+    + '<span class="go">' + esc(x.action || 'Open') + ' <i class="ti ti-arrow-right"></i></span></div></a>';
+}
+function rowHTML(type, x){
+  var av = x.img ? img(x.img, x.title) : (type === 'shelters' ? '<i class="ti ti-home-heart"></i>' : esc((x.title || '?').replace(/^Dr\.\s*/, '').charAt(0).toUpperCase()));
+  var acts = '';
+  if (x.phone) acts += '<a class="btn btn-w btn-s" href="tel:' + esc(String(x.phone).replace(/[^\d+]/g, '')) + '" onclick="event.stopPropagation()"><i class="ti ti-phone"></i>Call</a>';
+  acts += '<a class="btn ' + (type === 'vets' ? 'btn-o' : 'btn-w') + ' btn-s" href="' + esc(x.url || '#') + '">' + esc(x.action || 'Open') + '</a>';
+  return '<div class="lr"><div class="av3' + (type === 'people' ? ' rd' : '') + '">' + av + '</div><div class="t"><b>' + hl(x.title) + (x.verified && type !== 'people' ? ' <span class="vbadge"><i class="ti ti-circle-check"></i>Verified</span>' : '') + (x.near ? ' <span class="nearb">Near you</span>' : '') + '</b>'
+    + (x.sub ? '<span>' + hl(x.sub) + '</span>' : '') + (x.meta ? '<small>' + esc(x.meta) + '</small>' : '') + '</div><div class="ac2">' + acts + '</div></div>';
+}
+function noneHTML(){
+  var q = esc(Q);
+  return '<div class="empty3">' + img('img/adopt/puppy-bed.jpg', 'A sleeping puppy') + '<div><h3>We couldn’t find “' + q + '”</h3><p>Nothing on PawBook matches yet. A few things that help:</p><ul><li>Use fewer or simpler words — “lab” instead of “labrador retriever puppy for sale”</li><li>Search a breed, a pet’s name, a vet’s name or a product</li>' + (CITY ? '<li>Search everywhere instead of only ' + esc(CITY) + '</li>' : '') + '</ul>'
+    + '<div class="acts3"><a class="btn btn-o btn-s" href="03_groups.html?create=1"><i class="ti ti-users-group"></i>Start a community</a><a class="btn btn-w btn-s" href="11_vet_booking.html"><i class="ti ti-stethoscope"></i>Find a vet</a><a class="btn btn-w btn-s" href="38_lost_pet_network.html"><i class="ti ti-map-search"></i>Lost &amp; Found</a>'
+    + (CITY ? '<button class="btn btn-w btn-s" onclick="setCity(\'\')"><i class="ti ti-world"></i>Search everywhere</button>' : '') + '</div></div></div>';
+}
+document.addEventListener('keydown', function(e){ if (e.key === '/' && document.activeElement && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); focusSearch(); } });
+document.addEventListener('DOMContentLoaded', boot);
 </script>
 
-<script>
-// ── REAL SEARCH API WIRING ──────────────────────────────────────────
-(function(){
-  var searchInput = document.getElementById('q');
-  var resultsLabel = document.querySelector('[style*="Showing results"]');
-  var debounce;
+<div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="drawer-panel">
+  <div class="drawer-header" style="position:relative">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-body">
 
-  function doSearch(query) {
-    if(!query || query.length < 2) return;
-    if(resultsLabel) resultsLabel.innerHTML = 'Searching for <strong style="color:var(--text)">"' + query + '"</strong>...';
-    var tok = localStorage.getItem('pb_token');
-    var headers = {'Content-Type':'application/json'};
-    if(tok) headers['Authorization'] = 'Bearer ' + tok;
-    fetch(API_BASE + '/search?q=' + encodeURIComponent(query) + '&category=all', {headers: headers})
-      .then(function(r){ return r.json(); })
-      .then(function(res) {
-        if(resultsLabel) resultsLabel.innerHTML = 'Results for <strong style="color:var(--text)">"' + query + '"</strong>';
-        // Results merged into page - real data shows alongside demo cards
-        console.log('[Search] Results:', res.data);
-      })
-      .catch(function(err){ console.warn('[Search] Error:', err); });
-  }
+    <div class="drawer-section">Home</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('15_search.html')"><i class="ti ti-search"></i> Search</button>
 
-  if(searchInput) {
-    searchInput.addEventListener('input', function(){
-      clearTimeout(debounce);
-      debounce = setTimeout(function(){ doSearch(searchInput.value.trim()); }, 400);
-    });
-    searchInput.addEventListener('keydown', function(e){
-      if(e.key === 'Enter') { clearTimeout(debounce); doSearch(searchInput.value.trim()); }
-    });
-    // Run initial search on page load
-    if(searchInput.value) doSearch(searchInput.value);
-  }
-})();
-</script>
+    <div class="drawer-section">My Pet</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('08_pet_profile.html')"><i class="ti ti-paw"></i> My Pets</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('36_pet_life_record.html')"><i class="ti ti-robot"></i> Pet Digital Twin ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('32_gallery.html')"><i class="ti ti-photo"></i> Media Gallery</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
 
-<script src="pawbook-ai-widget.v4.js?v=5"></script>
-</body></html>
+    <div class="drawer-section">Health &amp; Care</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html?sos=1')"><i class="ti ti-ambulance"></i> Emergency Services</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
 
+    <div class="drawer-section">Vet Services</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('11_vet_booking.html')"><i class="ti ti-stethoscope"></i> Find a Vet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('41_vet_portal.html')"><i class="ti ti-building-hospital"></i> Vet Portal 🩺 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('40_voice_pet_assistant.html')"><i class="ti ti-microphone"></i> Voice Assistant ✨</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_ai_agent.html')"><i class="ti ti-sparkles"></i> PawBook AI Assistant</button>
 
+    <div class="drawer-section">Community</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-news"></i> Social Feed</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_stories.html')"><i class="ti ti-circles"></i> Stories</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('28_reels.html')"><i class="ti ti-player-play"></i> Reels</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('34_live.html')"><i class="ti ti-live-photo"></i> Live</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> My PawBook</button>
+
+    <div class="drawer-section">Adoption &amp; Safety</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('39_adoption_matching.html')"><i class="ti ti-heart-handshake"></i> Adoption Matching</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('05_lost_pet.html')"><i class="ti ti-alert-triangle"></i> Lost Pet Alerts</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('38_lost_pet_network.html')"><i class="ti ti-map-search"></i> Lost Pet Network</button>
+
+    <div class="drawer-section">Connections</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('35_pawmatch.html')"><i class="ti ti-heart-plus"></i> PawMatch 🐾 <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('29_user_profile.html')"><i class="ti ti-user-circle"></i> My Profile</button>
+
+    <div class="drawer-section">Marketplace</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('42_shop.html')"><i class="ti ti-shopping-bag"></i> Marketplace</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('45_shop_brands.html')"><i class="ti ti-building-store"></i> Shop by Brand</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('50_seller_hub.html')"><i class="ti ti-briefcase"></i> Sell on PawBook</button>
+    <button class="drawer-item pb-admin-only" style="display:none" onclick="closeDrawer();goTo('48_shop_admin.html')"><i class="ti ti-shield-check"></i> Shop admin<span class="pb-admin-n" style="display:none;margin-left:auto;background:#e53935;color:#fff;border-radius:999px;font-size:11px;font-weight:800;padding:1px 8px"></span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('27_register_business.html')"><i class="ti ti-building"></i> Register Your Business</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('21_pet_insurance.html')"><i class="ti ti-shield"></i> Insurance</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('24_pet_travel.html')"><i class="ti ti-plane"></i> Pet Travel</button>
+
+    <div class="drawer-section">Knowledge Hub</div>
+    <button class="drawer-item" onclick="closeDrawer();goTo('33_breeds.html')"><i class="ti ti-book"></i> Breeds Encyclopedia</button>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-item" onclick="closeDrawer();goTo('14_settings.html')"><i class="ti ti-settings"></i> Settings</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('legal.html')"><i class="ti ti-file-text"></i> Legal &amp; Policies</button>
+    <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
+  </div>
+</div>
+
+  <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+    if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
+    if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+            var nu=(d.data&&(d.data.user||d.data))||d.user||d,nm=nu.full_name||nu.name||nu.username||'',pic=nu.avatar_url||nu.avatar||'',av=el('nav-av');
+            if(av){ if(/^https:\/\//.test(pic)){ var im=new Image(); im.alt=''; im.onerror=function(){ av.textContent=(nm.charAt(0)||'·').toUpperCase(); }; im.src=pic; av.textContent=''; av.appendChild(im); } else if(nm) av.textContent=nm.charAt(0).toUpperCase(); }
+          }).catch(()=>{});
+      }catch(e){}
+    })();
+  </script>
+<script>/* PB admin-only sidebar link */(function(){try{var t=localStorage.getItem('pb_token');if(!t)return;var u=JSON.parse(localStorage.getItem('pb_user')||'null')||{};
+var A='https://pawbook.deemona.com/api/v1/shop/admin/',o={headers:{Authorization:'Bearer '+t},credentials:'include'};
+var g=function(p){return fetch(A+p,o).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});};
+var show=function(){document.querySelectorAll('.pb-admin-only').forEach(function(e){e.style.display='';});
+Promise.all([g('kyc?status=submitted'),g('listings?status=pending')]).then(function(r){var n=(((r[0]||{}).data||{}).kyc||[]).length+((((r[1]||{}).data||{}).counts||{}).pending||0);
+if(n)document.querySelectorAll('.pb-admin-n').forEach(function(e){e.textContent=n;e.style.display='';});});};
+if(u.role==='admin')return show();
+var k='pb_is_admin:'+t.slice(-12),c=null;try{c=sessionStorage.getItem(k);}catch(e){}
+if(c==='1')return show();if(c==='0')return;
+g('settings').then(function(d){var a=!!(d&&d.success!==false);try{sessionStorage.setItem(k,a?'1':'0');}catch(e){}if(a)show();});}catch(e){}})();</script>
+<script src="pb-save.js"></script>
+</body>
+</html>

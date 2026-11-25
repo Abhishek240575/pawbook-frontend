@@ -2918,6 +2918,7 @@ function previewPhoto(input) {
 // ════════════════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
   (function(){ var q = new URLSearchParams(location.search); if (q.get('mode') === 'vet') setMode('vet');
+    var vq = (q.get('q') || '').slice(0, 80), vs = document.getElementById('vet-search-input'); if (vq && vs) vs.value = vq;
     var t = q.get('tab'); if (['appointments','prescriptions','chat','register'].indexOf(t) >= 0) { var b = Array.prototype.filter.call(document.querySelectorAll('.vtab'), function(x){ return (x.getAttribute('onclick') || '').indexOf("'" + t + "'") > 0; })[0]; switchVetTab(t, b); } })();
   loadVets();
   renderCalendar([]);

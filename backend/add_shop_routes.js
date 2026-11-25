@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v17: communities) ─────────────────────────────
+const BLOCK = `${START} (v18: search) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -323,6 +323,12 @@ cmRouter.delete('/:id/members/:uid',          authenticate, cmWrite, cmCtrl.setR
 cmRouter.get('/:id/posts',                    authenticate, cmCtrl.posts);
 cmRouter.post('/:id/posts',                   authenticate, fulCtrl.limit('communities-post', 30, 3600), cmCtrl.createPost);
 router.use('/communities', cmRouter);
+const srCtrl = require('../controllers/search.controller');
+const srRouter = require('express').Router();
+const srLimit = fulCtrl.limit('pbsearch', 240, 600);
+srRouter.get('/home',                         authenticate, srCtrl.home);
+srRouter.get('/',                             authenticate, srLimit, srCtrl.search);
+router.use('/pbsearch', srRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -357,7 +363,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop17');
+  fs.copyFileSync(f, f + '.bak-shop18');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -383,4 +389,4 @@ for (const f of FILES) {
   else console.log('  NOTE: old lost-pets routes not found in this file — guard not needed');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop17 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop18 — restart the app from the MilesWeb panel.');
