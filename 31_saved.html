@@ -511,6 +511,7 @@ body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg 
 .pvwrap .pv button{position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;font-size:12px}
 .wrap{padding-bottom:120px}
 @media(max-width:520px){.jc span{display:none}.jc{padding:10px}.jc i{width:32px;height:32px;font-size:18px}.book{height:170px}.kd{min-height:78px}.mph h1{font-size:30px}}
+.jc em.jn{font-style:normal;display:inline-flex;min-width:22px;height:20px;padding:0 6px;border-radius:999px;background:rgba(255,255,255,.85);font-size:11.5px;font-weight:800;align-items:center;justify-content:center;margin-left:4px;vertical-align:1px}.jc em.jn.z{opacity:.55}
 </style>
 </head>
 <body>
@@ -843,12 +844,23 @@ function loadJourney(more){
 function renderJourney(){
   var p = document.getElementById('p-journey'), f = JR.f, c = JR.counts || {};
   var h = '<div class="sh"><div><h2>🐾 Your PawBook Journey</h2><p>Everything you have done in your pet community life.</p></div><div class="sp"></div><button class="btn btn-w btn-s" onclick="exportJourney()"><i class="ti ti-download"></i>Export</button></div>' +
-    '<div class="jcats">' + Object.keys(JC).map(function(k){ var J = JC[k]; return '<button class="jc ' + J[3] + (f.cat === k ? ' on' : '') + '" onclick="JR.f.cat=JR.f.cat===\'' + k + '\'?\'\':\'' + k + '\';loadJourney()"><i class="ti ' + J[2] + '"></i><div><b>' + J[0] + (c[k] ? ' · ' + c[k] : '') + '</b><span>' + J[1] + '</span></div></button>'; }).join('') + '</div>' +
+    '<div class="jcats">' + Object.keys(JC).map(function(k){ var J = JC[k]; return '<button class="jc ' + J[3] + (f.cat === k ? ' on' : '') + '" onclick="JR.f.cat=JR.f.cat===\'' + k + '\'?\'\':\'' + k + '\';loadJourney()"><i class="ti ' + J[2] + '"></i><div><b>' + J[0] + (JR.counts ? ' <em class="jn' + (c[k] ? '' : ' z') + '">' + (c[k] || 0) + '</em>' : '') + '</b><span>' + J[1] + '</span></div></button>'; }).join('') + '</div>' +
     '<div class="tools"><input class="fi" type="search" placeholder="Search your journey…" value="' + esc(f.q) + '" onchange="JR.f.q=this.value.trim();loadJourney()" aria-label="Search">' +
     (S.pets.length > 1 ? '<select class="fi" onchange="setPet(this.value)" aria-label="Pet"><option value="">All pets</option>' + S.pets.map(function(x){ return '<option value="' + esc(x.id) + '"' + (PET === x.id ? ' selected' : '') + '>' + esc(x.name) + '</option>'; }).join('') + '</select>' : '') +
     '<input class="fi" type="date" value="' + esc(f.from) + '" max="' + todayIST() + '" onchange="JR.f.from=this.value;loadJourney()" aria-label="From date" style="max-width:170px"><input class="fi" type="date" value="' + esc(f.to) + '" max="' + todayIST() + '" onchange="JR.f.to=this.value;loadJourney()" aria-label="To date" style="max-width:170px">' +
     (f.cat || f.q || f.from || f.to || PET ? '<button class="lnk" onclick="JR.f={cat:\'\',q:\'\',from:\'\',to:\'\'};PET=\'\';renderChips();loadJourney()"><i class="ti ti-x"></i>Clear filters</button>' : '') + '</div>';
-  if (!JR.items.length) h += '<div class="mini-empty"><b>' + (f.cat || f.q || f.from || f.to || PET ? 'Nothing matches these filters' : JR.cleared ? 'Your journey history was cleared' : 'Your journey starts here') + '</b>' +
+  var JE = {social: ['No likes, comments or follows yet', 'When you like or comment on a post, or follow another pet parent, it appears here.', '07_home.html', 'Go to the feed'],
+    care: ['No pet-care records yet', 'Vaccines, weigh-ins, medicines, vitals and symptom checks you record for your pets appear here.', '10_vaccination.html', 'Open vaccination diary'],
+    shopping: ['No orders yet', 'Orders you place in the PawBook shop appear here.', '42_shop.html', 'Visit the shop'],
+    appointments: ['No vet bookings yet', 'Vet appointments you book appear here.', '11_vet_booking.html', 'Find a vet'],
+    community: ['No groups joined yet', 'Groups you join appear here.', '03_groups.html', 'Browse groups'],
+    events: ['No events yet', 'Events you register for or create appear here.', '30_events.html', 'See events'],
+    lost: ['No lost & found reports yet', 'Missing-pet alerts, found-pet reports and sightings you share appear here.', '38_lost_pet_network.html', 'Open Lost & Found'],
+    photos: ['No photos or memories yet', 'Photos you post or upload and memories you add appear here.', '31_saved.html?tab=memories', 'Add a memory'],
+    saved: ['Nothing saved yet', 'Tap the bookmark on vets, training sessions, travel tips, first-aid guides, posts or products to keep them.', '31_saved.html?tab=collection', 'Open My Collection']};
+  var onlyCat = f.cat && !f.q && !f.from && !f.to && !PET && JE[f.cat];
+  if (!JR.items.length) h += onlyCat ? '<div class="mini-empty"><b>' + JE[f.cat][0] + '</b>' + JE[f.cat][1] + '<div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a class="btn btn-o btn-s" href="' + JE[f.cat][2] + '">' + JE[f.cat][3] + '</a><button class="btn btn-w btn-s" onclick="JR.f.cat=\'\';loadJourney()">Show everything</button></div></div>'
+    : '<div class="mini-empty"><b>' + (f.cat || f.q || f.from || f.to || PET ? 'Nothing matches these filters' : JR.cleared ? 'Your journey history was cleared' : 'Your journey starts here') + '</b>' +
     (JR.cleared && !(f.cat || f.q) ? 'New activity will appear here. <button class="lnk" onclick="restoreJourney()">Restore earlier history</button>' : 'Like a post, join a group, book a vet or register for an event and it will show up here.') + '</div>';
   else { var day = null; JR.items.forEach(function(x, n){ var d = dayIST(x.at), J = JC[x.cat] || JC.social, t = todayIST();
       if (d !== day) { day = d; h += '<div class="jday">' + (d === t ? 'Today' : d === new Date(Date.now() + 330 * 60000 - 86400000).toISOString().slice(0, 10) ? 'Yesterday' : fd(d, {weekday: 'short'})) + '</div>'; }
