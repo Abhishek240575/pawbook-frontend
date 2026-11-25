@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v14: adoption) ─────────────────────────────
+const BLOCK = `${START} (v15: lost & found) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -255,6 +255,29 @@ adRouter.get('/stories',                             authenticate, adCtrl.storie
 adRouter.get('/admin/queue',                         authenticate, adCtrl.adminQueue);
 adRouter.post('/admin/:kind/:id',                    authenticate, adWrite, adCtrl.adminAction);
 router.use('/adopt', adRouter);
+const lfCtrl = require('../controllers/lostfound.controller');
+const lfRouter = require('express').Router();
+const lfWrite = fulCtrl.limit('lostfound', 240, 600);
+lfRouter.get('/config',                         authenticate, lfCtrl.config);
+lfRouter.get('/cases',                          authenticate, lfCtrl.list);
+lfRouter.get('/cases/:type/:id',                authenticate, lfCtrl.detail);
+lfRouter.post('/lost',                          authenticate, fulCtrl.limit('lostfound-report', 8, 3600), lfCtrl.reportLost);
+lfRouter.post('/found',                         authenticate, fulCtrl.limit('lostfound-report', 8, 3600), lfCtrl.reportFound);
+lfRouter.patch('/cases/:type/:id',              authenticate, lfWrite, lfCtrl.update);
+lfRouter.post('/cases/:type/:id/status',        authenticate, lfWrite, lfCtrl.setStatus);
+lfRouter.post('/cases/:type/:id/sightings',     authenticate, fulCtrl.limit('lostfound-sighting', 20, 3600), lfCtrl.addSighting);
+lfRouter.patch('/sightings/:id',                authenticate, lfWrite, lfCtrl.markSighting);
+lfRouter.get('/cases/:type/:id/messages',       authenticate, lfCtrl.messages);
+lfRouter.post('/cases/:type/:id/messages',      authenticate, fulCtrl.limit('lostfound-msg', 60, 3600), lfCtrl.sendMessage);
+lfRouter.post('/cases/:type/:id/flag',          authenticate, fulCtrl.limit('lostfound-flag', 20, 3600), lfCtrl.flag);
+lfRouter.post('/cases/:type/:id/translate',     authenticate, fulCtrl.limit('lostfound-tr', 120, 3600), lfCtrl.translate);
+lfRouter.get('/mine',                           authenticate, lfCtrl.mine);
+lfRouter.put('/prefs',                          authenticate, lfWrite, lfCtrl.savePrefs);
+lfRouter.put('/volunteer',                      authenticate, lfWrite, lfCtrl.saveVolunteer);
+lfRouter.get('/help',                           authenticate, lfCtrl.help);
+lfRouter.get('/admin/queue',                    authenticate, lfCtrl.adminQueue);
+lfRouter.post('/admin/:type/:id',               authenticate, lfWrite, lfCtrl.adminAction);
+router.use('/lostfound', lfRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -268,12 +291,28 @@ marketRouter.post('/orders', authenticate, require('../controllers/checkout.cont
 marketRouter.post('/listings/:listing_id/reviews', authenticate, require('../controllers/experience.controller').legacyReview);
 ${G_END} ──
 `;
+// Guard for the old /lost-pets endpoints, placed just before the old lost-pet routes so it answers first:
+// public lists never show phone numbers or exact locations, and new reports go through Lost & Found 2.0.
+const L_START = '// ── LOST & FOUND GUARD: legacy lost-pets';
+const L_END = '// ── END LOST & FOUND GUARD';
+const LGUARD = `${L_START} ──
+const lfLegacy = require('../controllers/lostfound.controller');
+router.get('/lost-pets', lfLegacy.legacyList);
+router.get('/lost-pets/mine', authenticate, lfLegacy.legacyMine);
+router.get('/lost-pets/:alert_id', lfLegacy.legacyGet);
+router.post('/lost-pets', authenticate, lfLegacy.legacyCreate);
+router.patch('/lost-pets/:alert_id', authenticate, lfLegacy.legacyUpdate);
+router.post('/lost-pets/:alert_id/sighting', authenticate, lfLegacy.legacySighting);
+router.post('/lost-pets/:alert_id/sightings', authenticate, lfLegacy.legacySighting);
+${L_END} ──
+`;
+const LP = /[^\n]*const\s+lostPetCtrl\s*=\s*require\([^)]*lost_pet\.controller[^)]*\)[^\n]*\n/;
 const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[^\n]*\n/;
 
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop14');
+  fs.copyFileSync(f, f + '.bak-shop15');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -292,6 +331,11 @@ for (const f of FILES) {
   if (ga >= 0 && gb > ga) { const le = out.indexOf('\n', gb); out = out.slice(0, ga) + GUARD + out.slice(le + 1); console.log('  legacy guard refreshed'); }
   else if (MR.test(out)) { out = out.replace(MR, m => m + GUARD); console.log('  legacy guard added'); }
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
+  // legacy lost-pets guard (idempotent); must sit before the old routes so it answers first
+  const la = out.indexOf(L_START), lb = out.indexOf(L_END);
+  if (la >= 0 && lb > la) { const le = out.indexOf('\n', lb); out = out.slice(0, la) + LGUARD + out.slice(le + 1); console.log('  lost-pets guard refreshed'); }
+  else if (LP.test(out)) { out = out.replace(LP, m => LGUARD + m); console.log('  lost-pets guard added'); }
+  else console.log('  NOTE: old lost-pets routes not found in this file — guard not needed');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop14 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop15 — restart the app from the MilesWeb panel.');
