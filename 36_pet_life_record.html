@@ -392,7 +392,7 @@ function daysTo(v){ if (!v) return null; var a = new Date(today() + 'T00:00:00')
 function rel(n){ return n === 0 ? 'today' : n === 1 ? 'tomorrow' : n === -1 ? 'yesterday' : n > 0 ? 'in ' + n + ' days' : Math.abs(n) + ' days ago'; }
 function num(v, d){ var n = Number(v); return isFinite(n) ? (d != null ? n.toFixed(d) : n) : ''; }
 var SPECIES = {dog: '🐕', cat: '🐈', bird: '🦜', rabbit: '🐇', fish: '🐠', hamster: '🐹', turtle: '🐢', horse: '🐴'};
-function emo(p){ return SPECIES[String((p && p.species) || '').toLowerCase()] || '🐾'; }
+function emo(p){ var k = String((p && p.species) || '').toLowerCase(); return SPECIES[k] || SPECIES[/dog|canine|puppy/.test(k) ? 'dog' : /cat|feline|kitten/.test(k) ? 'cat' : ''] || '🐾'; }
 function avatar(p, cls, size){ return '<div class="av ' + (cls || '') + '"' + (size ? ' style="width:' + size + 'px;height:' + size + 'px"' : '') + '>' + (p && p.photo ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" onerror="this.parentNode.textContent=\'' + emo(p) + '\'">' : emo(p)) + '</div>'; }
 function him(p){ var g = String((p && p.gender) || '').toLowerCase(); return g === 'male' ? ['he', 'his', 'him'] : g === 'female' ? ['she', 'her', 'her'] : ['they', 'their', 'them']; }
 
@@ -422,16 +422,24 @@ function renderWelcome(){
   document.getElementById('app').innerHTML = '<div class="hero-band"><section class="hero"><div><span class="eyebrow"><i class="ti ti-heart-handshake"></i>Pet health &amp; care</span>'
     + '<h1>Every pet deserves<br><span class="accent">a health story.</span></h1><p class="tag">Add your pet to keep vaccines, vet visits, medicines, weight, daily care and happy memories together in one place.</p>'
     + '<div class="hero-ctas"><button class="btn btn-o" onclick="openForm(\'pet\')"><i class="ti ti-plus"></i>Add my pet</button><button class="btn btn-w" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-stethoscope"></i>Find a vet</button></div></div>'
-    + '<div class="collage">' + sampleSet(null).map(function(x, i){ return '<div class="ph' + (i ? '' : ' ph-main') + '"><img src="' + esc(x[0]) + '" alt="" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.style.display=\'none\'"><span class="ph-tag"><i class="ti ti-heart"></i>' + esc(x[1]) + '</span></div>'; }).join('')
+    + '<div class="collage">' + sampleSet(null).map(function(x, i){ return '<div class="ph' + (i ? '' : ' ph-main') + '"><img src="' + esc(x[0]) + '" style="object-position:' + imgPos(x[0]) + '" alt="" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.style.display=\'none\'"><span class="ph-tag"><i class="ti ti-heart"></i>' + esc(x[1]) + '</span></div>'; }).join('')
     + '<div class="float-card float-1"><span class="fc-ic c-coral"><i class="ti ti-heart-handshake" style="font-size:20px"></i></span><div><div class="fc-t">Vaccines, vet visits &amp; more</div><div class="fc-s">All in one place</div></div></div>'
-    + '<div class="px-credit">Photos: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></div></div></section></div>';
+    + '</div></section></div>';
 }
-/* free-licence sample photos (Pexels), shown only while a pet has no photo of its own */
-function pxUrl(id, w){ return 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + (w || 800); }
-var PX_SAMPLES = {dog: [[40752554, 'Playtime in the park'], [32239907, 'Happy & healthy'], [3800470, 'Fetch champion']],
-  cat: [[979003, 'Curious & cared for'], [8287652, 'Bright eyes']],
-  other: [[40752554, 'Playtime in the park'], [979003, 'Curious & cared for'], [3800470, 'Fetch champion']]};
-function sampleSet(p){ var sp = String((p && p.species) || '').toLowerCase(); return (PX_SAMPLES[sp] || PX_SAMPLES.other).map(function(x, i){ return [pxUrl(x[0], i ? 600 : 900), x[1]]; }); }
+/* sample photos (PawBook's own image set), shown only while a pet has no photo of its own */
+function spKey(p){ var s = String((p && p.species) || '').toLowerCase(); return /dog|canine|puppy|pup\b/.test(s) ? 'dog' : /cat|feline|kitten/.test(s) ? 'cat' : s; }
+var SAMPLE_IMG = {'dog-run': 'Playtime in the park', 'dog-sunset': 'Golden hour', 'dog-cat': 'Best friends', 'dog-lab': 'Happy & healthy', 'dog-lab-face': 'All smiles', 'dog-puppy': 'Puppy days', 'cat-kitten': 'Bright eyes', 'cat-ginger': 'Curious & cared for'};
+var SAMPLE_SETS = {dog: {main: ['dog-run', 'dog-sunset', 'dog-cat'], side: ['dog-lab-face', 'dog-puppy', 'dog-lab', 'dog-sunset', 'dog-cat', 'dog-run']},
+  cat: {main: ['cat-kitten', 'dog-cat'], side: ['cat-ginger', 'dog-cat', 'cat-kitten']}, other: {main: ['dog-cat', 'dog-run'], side: ['cat-kitten', 'dog-puppy', 'cat-ginger', 'dog-sunset']}};
+var SAMPLE_POS = {'dog-puppy': '50% 12%', 'dog-lab': '50% 30%', 'cat-ginger': '50% 25%'};
+function imgPos(u){ var m = /img\/pets\/([\w-]+)\.jpg$/.exec(u || ''); return (m && SAMPLE_POS[m[1]]) || 'center'; }
+function sampleSet(p){
+  var set = SAMPLE_SETS[spKey(p)] || SAMPLE_SETS.other, id = String((p && p.id) || ''), h = 0; for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  var main = set.main[h % set.main.length], out = [main], side = set.side.filter(function(x){ return x !== main; });
+  for (var j = 0; out.length < 3 && j < side.length; j++) out.push(side[(h + j) % side.length]);
+  out = out.filter(function(x, k){ return out.indexOf(x) === k; });
+  return out.map(function(n){ return ['img/pets/' + n + '.jpg', SAMPLE_IMG[n]]; });
+}
 function petPhotos(p){
   var l = [], add = function(u){ if (u && /^https:\/\//.test(u) && l.indexOf(u) < 0) l.push(u); };
   add(p.photo); (p.photos || []).forEach(add);
@@ -457,7 +465,7 @@ function render(){
   var tags = ['Hello, ' + p.name + '!', 'Happy moments', 'Loved & cared for'];
   var smp = !ph.length;
   if (smp) { var sm = sampleSet(p); ph = sm.map(function(x){ return x[0]; }); tags = sm.map(function(x){ return x[1]; }); cam = '<button class="cam no-print" onclick="pickPhoto()"><i class="ti ti-camera"></i>Add ' + esc(p.name) + '\'s photo</button>'; }
-  var col = ph.length ? ph.map(function(u, i){ return '<div class="ph' + (i === 0 && ph.length === 3 ? ' ph-main' : '') + '"><img src="' + esc(u) + '" alt="' + esc(p.name) + '" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.classList.add(\'ph-empty\');this.outerHTML=\'<div class=e>' + emo(p) + '</div>\'">' + (smp ? '<span class="ph-sample">Sample photo</span>' : '') + '<span class="ph-tag"><i class="ti ti-heart"></i>' + esc(tags[i]) + '</span>' + (i === 0 ? cam : '') + '</div>'; }).join('') + (smp ? '<div class="px-credit">Sample photos: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></div>' : '')
+  var col = ph.length ? ph.map(function(u, i){ return '<div class="ph' + (i === 0 && ph.length === 3 ? ' ph-main' : '') + '"><img src="' + esc(u) + '" style="object-position:' + imgPos(u) + '" alt="' + esc(p.name) + '" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.classList.add(\'ph-empty\');this.outerHTML=\'<div class=e>' + emo(p) + '</div>\'">' + (smp ? '<span class="ph-sample">Sample photo</span>' : '') + '<span class="ph-tag"><i class="ti ti-heart"></i>' + esc(tags[i]) + '</span>' + (i === 0 ? cam : '') + '</div>'; }).join('')
     : '<div class="ph ph-empty"><div class="e">' + emo(p) + '</div>Show the world ' + esc(p.name) + '\'s best smile' + '<button class="btn btn-w btn-s no-print" onclick="pickPhoto()"><i class="ti ti-camera"></i>Add a photo</button></div>';
   var nextR = (D.reminders || []).filter(function(r){ return r.status === 'overdue' || r.status === 'soon'; })[0];
   h += '<div class="collage' + (ph.length <= 1 ? ' one' : ph.length === 2 ? ' two' : '') + '">' + col

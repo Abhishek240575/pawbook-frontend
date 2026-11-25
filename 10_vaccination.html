@@ -472,7 +472,7 @@ function fd(v, o){ if (!v) return ''; var d = new Date(String(v).length === 10 ?
 function rel(n){ return n === 0 ? 'today' : n === 1 ? 'tomorrow' : n === -1 ? 'yesterday' : n > 0 ? 'in ' + n + ' days' : Math.abs(n) + ' days ago'; }
 function cap(s){ s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
 var SPECIES = {dog: '🐕', cat: '🐈', bird: '🦜', rabbit: '🐇', fish: '🐠', hamster: '🐹', turtle: '🐢', horse: '🐴'};
-function emo(p){ return SPECIES[String((p && p.species) || '').toLowerCase()] || '🐾'; }
+function emo(p){ var k = String((p && p.species) || '').toLowerCase(); return SPECIES[k] || SPECIES[/dog|canine|puppy/.test(k) ? 'dog' : /cat|feline|kitten/.test(k) ? 'cat' : ''] || '🐾'; }
 function avatar(p){ return '<div class="av">' + (p && p.photo ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" onerror="this.parentNode.textContent=\'' + emo(p) + '\'">' : emo(p)) + '</div>'; }
 function him(p){ var g = String((p && p.gender) || '').toLowerCase(); return g === 'male' ? ['he', 'his', 'him'] : g === 'female' ? ['she', 'her', 'her'] : ['they', 'their', 'them']; }
 function emptyBox(e, t, p, btn){ return '<div class="empty"><div class="e">' + e + '</div><b>' + esc(t) + '</b>' + (p ? '<p>' + esc(p) + '</p>' : '') + (btn || '') + '</div>'; }
@@ -505,21 +505,29 @@ function loadPet(){
 }
 function pickPet(id){ if (String(id) === String(PID)) return; PID = String(id); OPEN = {}; document.getElementById('app').style.opacity = '.55'; loadPet().then(function(){ document.getElementById('app').style.opacity = ''; }); }
 
-/* sample photos (free licence, Pexels) only while the pet has no photo of its own */
-function pxUrl(id, w){ return 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + (w || 800); }
-var PX_SAMPLES = {dog: [[40752554, 'Playtime in the park'], [32239907, 'Happy & healthy'], [3800470, 'Fetch champion']],
-  cat: [[979003, 'Curious & cared for'], [8287652, 'Bright eyes']],
-  other: [[40752554, 'Playtime in the park'], [979003, 'Curious & cared for'], [3800470, 'Fetch champion']]};
-function sampleSet(p){ var sp = String((p && p.species) || '').toLowerCase(); return (PX_SAMPLES[sp] || PX_SAMPLES.other).map(function(x, i){ return [pxUrl(x[0], i ? 600 : 900), x[1]]; }); }
+/* sample photos (PawBook's own image set), shown only while a pet has no photo of its own */
+function spKey(p){ var s = String((p && p.species) || '').toLowerCase(); return /dog|canine|puppy|pup\b/.test(s) ? 'dog' : /cat|feline|kitten/.test(s) ? 'cat' : s; }
+var SAMPLE_IMG = {'dog-run': 'Playtime in the park', 'dog-sunset': 'Golden hour', 'dog-cat': 'Best friends', 'dog-lab': 'Happy & healthy', 'dog-lab-face': 'All smiles', 'dog-puppy': 'Puppy days', 'cat-kitten': 'Bright eyes', 'cat-ginger': 'Curious & cared for'};
+var SAMPLE_SETS = {dog: {main: ['dog-run', 'dog-sunset', 'dog-cat'], side: ['dog-lab-face', 'dog-puppy', 'dog-lab', 'dog-sunset', 'dog-cat', 'dog-run']},
+  cat: {main: ['cat-kitten', 'dog-cat'], side: ['cat-ginger', 'dog-cat', 'cat-kitten']}, other: {main: ['dog-cat', 'dog-run'], side: ['cat-kitten', 'dog-puppy', 'cat-ginger', 'dog-sunset']}};
+var SAMPLE_POS = {'dog-puppy': '50% 12%', 'dog-lab': '50% 30%', 'cat-ginger': '50% 25%'};
+function imgPos(u){ var m = /img\/pets\/([\w-]+)\.jpg$/.exec(u || ''); return (m && SAMPLE_POS[m[1]]) || 'center'; }
+function sampleSet(p){
+  var set = SAMPLE_SETS[spKey(p)] || SAMPLE_SETS.other, id = String((p && p.id) || ''), h = 0; for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  var main = set.main[h % set.main.length], out = [main], side = set.side.filter(function(x){ return x !== main; });
+  for (var j = 0; out.length < 3 && j < side.length; j++) out.push(side[(h + j) % side.length]);
+  out = out.filter(function(x, k){ return out.indexOf(x) === k; });
+  return out.map(function(n){ return ['img/pets/' + n + '.jpg', SAMPLE_IMG[n]]; });
+}
 function petPhotos(p){ var l = [], add = function(u){ if (u && /^https:\/\//.test(u) && l.indexOf(u) < 0) l.push(u); }; add(p.photo); (p.photos || []).forEach(add); return l.slice(0, 3); }
 
 function renderWelcome(){
   document.getElementById('app').innerHTML = '<div class="hero-band"><section class="hero"><div><span class="eyebrow"><i class="ti ti-vaccine"></i>Vaccination diary</span>'
     + '<h1>Every vaccine,<br><span class="accent">one happy diary.</span></h1><p class="tag">Add your pet on the Pet Health page, then keep every vaccination, booster date and certificate together here.</p>'
     + '<div class="hero-ctas"><button class="btn btn-o" onclick="location.href=\'36_pet_life_record.html\'"><i class="ti ti-plus"></i>Add my pet</button><button class="btn btn-w" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-stethoscope"></i>Find a vet</button></div></div>'
-    + '<div class="collage">' + sampleSet(null).map(function(x, i){ return '<div class="ph' + (i ? '' : ' ph-main') + '"><img src="' + esc(x[0]) + '" alt="" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.style.display=\'none\'"><span class="ph-tag"><i class="ti ti-heart"></i>' + esc(x[1]) + '</span></div>'; }).join('')
+    + '<div class="collage">' + sampleSet(null).map(function(x, i){ return '<div class="ph' + (i ? '' : ' ph-main') + '"><img src="' + esc(x[0]) + '" style="object-position:' + imgPos(x[0]) + '" alt="" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.style.display=\'none\'"><span class="ph-tag"><i class="ti ti-heart"></i>' + esc(x[1]) + '</span></div>'; }).join('')
     + '<div class="float-card float-1"><span class="fc-ic c-sky"><i class="ti ti-vaccine" style="font-size:20px"></i></span><div><div class="fc-t">Boosters on time</div><div class="fc-s">Reminders before each due date</div></div></div>'
-    + '<div class="px-credit">Photos: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></div></div></section></div>';
+    + '</div></section></div>';
 }
 
 /* ---------- render ---------- */
@@ -541,7 +549,7 @@ function render(){
   var ph = petPhotos(p), tags = ['Hello, ' + p.name + '!', 'Happy moments', 'Protected & loved'], smp = !ph.length;
   if (smp) { var sm = sampleSet(p); ph = sm.map(function(x){ return x[0]; }); tags = sm.map(function(x){ return x[1]; }); }
   var cam = '<button class="cam no-print" onclick="pickPhoto()"><i class="ti ti-camera"></i>' + (smp ? 'Add ' + esc(p.name) + '\'s photo' : 'Change photo') + '</button>';
-  var col = ph.map(function(u, i){ return '<div class="ph' + (i === 0 && ph.length === 3 ? ' ph-main' : '') + '"><img src="' + esc(u) + '" alt="' + esc(p.name) + '" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.classList.add(\'ph-empty\');this.outerHTML=\'<div class=e>' + emo(p) + '</div>\'">' + (smp ? '<span class="ph-sample">Sample photo</span>' : '') + '<span class="ph-tag"><i class="ti ti-heart"></i>' + esc(tags[i]) + '</span>' + (i === 0 ? cam : '') + '</div>'; }).join('') + (smp ? '<div class="px-credit">Sample photos: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></div>' : '');
+  var col = ph.map(function(u, i){ return '<div class="ph' + (i === 0 && ph.length === 3 ? ' ph-main' : '') + '"><img src="' + esc(u) + '" style="object-position:' + imgPos(u) + '" alt="' + esc(p.name) + '" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.classList.add(\'ph-empty\');this.outerHTML=\'<div class=e>' + emo(p) + '</div>\'">' + (smp ? '<span class="ph-sample">Sample photo</span>' : '') + '<span class="ph-tag"><i class="ti ti-heart"></i>' + esc(tags[i]) + '</span>' + (i === 0 ? cam : '') + '</div>'; }).join('');
   var nextR = (V.reminders || [])[0];
   var f1 = cv.applies ? '<span class="fc-ic ' + (cv.current === cv.total ? 'c-sage' : cv.current ? 'c-amber' : 'c-coral') + '">' + cv.current + '/' + cv.total + '</span><div><div class="fc-t">Core vaccines current</div><div class="fc-s">' + (cv.current === cv.total ? 'Great protection!' : 'See what\'s missing below') + '</div></div>'
     : '<span class="fc-ic c-sky"><i class="ti ti-notebook" style="font-size:20px"></i></span><div><div class="fc-t">' + (V.records || 0) + ' record' + (V.records === 1 ? '' : 's') + ' saved</div><div class="fc-s">Ask your vet for ' + esc(p.name) + '\'s schedule</div></div>';
