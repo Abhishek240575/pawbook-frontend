@@ -438,6 +438,7 @@ button.kpi:hover{border-color:#d9cbbb}
 .gate{max-width:640px;margin:40px auto;text-align:center}
 .gate img{width:100%;height:240px;object-fit:cover;border-radius:22px;margin-bottom:22px;box-shadow:var(--shadow)}
 .gate h1{font-size:28px;font-weight:900;color:var(--navy)}.gate p{color:var(--sub);margin:8px auto 18px;max-width:480px;line-height:1.6}
+.embed{--nav-h:0px}.embed .nav,.embed #drawer-panel,.embed #drawer-overlay{display:none!important}.embed .wrap{padding-top:4px}
 .medtbl{width:100%;border-collapse:collapse;font-size:13px}.medtbl td{padding:6px 4px;vertical-align:top}.medtbl input{height:40px}
 
   /* ===== DRAWER STYLES ===== */
@@ -501,6 +502,11 @@ button.kpi:hover{border-color:#d9cbbb}
 
 <script>
 /* ===================== PawBook VetCare (41) ===================== */
+/* VetCare lives inside the vet booking page (11_vet_booking.html → Vet Portal). Opened directly, it moves there. */
+var EMBED = false; try { EMBED = window.top !== window.self; } catch (e) { EMBED = true; }
+if (!EMBED) { var _s = new URLSearchParams(location.search).get('s'); location.replace('11_vet_booking.html?mode=vet' + (_s ? '&s=' + encodeURIComponent(_s) : '')); }
+else document.documentElement.classList.add('embed');
+function goTop(u){ try { window.top.location.href = u; } catch (e) { location.href = u; } }
 var API = 'https://pawbook.deemona.com/api/v1';
 var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
 var PRACTICE = '', SEC = 'dashboard', D = null, DAY = null, MO = null, PT = null, PTAB = 'summary', CACHE = {}, WEEK0 = null, AN_DAYS = 30, TIMER = null;
@@ -519,7 +525,7 @@ function api(path, o){
     });
   });
 }
-function fail(e){ if (e && e.status === 401) { location.href = '01_login.html'; return; } if (e && e.status === 409) { toast(e.message); refresh(); return; } toast(e && e.status === 429 ? 'Too many actions — please wait a moment' : ((e && e.message) || 'Something went wrong')); }
+function fail(e){ if (e && e.status === 401) { goTop('01_login.html'); return; } if (e && e.status === 409) { toast(e.message); refresh(); return; } toast(e && e.status === 429 ? 'Too many actions — please wait a moment' : ((e && e.message) || 'Something went wrong')); }
 function today(){ var d = new Date(Date.now() + 330 * 60000); return d.toISOString().slice(0, 10); }
 function addD(d, n){ var x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); }
 function fd(v, o){ if (!v) return ''; var d = new Date(String(v).length === 10 ? v + 'T00:00:00' : v); return isNaN(d) ? '' : d.toLocaleDateString('en-IN', o || {day: 'numeric', month: 'short', year: 'numeric'}); }
@@ -539,7 +545,7 @@ function greet(){ var h = new Date(Date.now() + 330 * 60000).getUTCHours(); retu
 
 /* ---------- boot ---------- */
 function boot(){
-  if (!TOKEN) { location.href = '01_login.html'; return; }
+  if (!TOKEN) { goTop('01_login.html'); return; }
   try { PRACTICE = localStorage.getItem('pb_vet_practice') || ''; } catch (e) {}
   var s = new URLSearchParams(location.search).get('s'); if (SECTIONS.some(function(x){ return x[0] === s; })) SEC = s;
   DAY = today();
@@ -550,13 +556,14 @@ function boot(){
     return refresh(true);
   }).catch(gate);
 }
+function practiceSel(){ var sel = document.getElementById('practice'); if (!EMBED || !sel || sel.options.length < 2) return ''; return '<select class="fi" style="width:auto;height:34px;border-radius:999px;font-size:13px" aria-label="Clinic" onchange="switchPractice(this.value)">' + sel.innerHTML.replace('value="' + PRACTICE + '"', 'value="' + PRACTICE + '" selected') + '</select>'; }
 function switchPractice(v){ PRACTICE = v; try { localStorage.setItem('pb_vet_practice', v); } catch (e) {} CACHE = {}; refresh(true); }
 function gate(e){
   if (e && e.status === 401) return fail(e);
   var code = e && e.code, h;
   if (code === 'not_vet' || code === 'pending' || code === 'suspended') {
-    var t = {not_vet: ['PawBook VetCare is for vets and their clinic teams', 'Register your practice to manage appointments, your waiting room and patient records here. Clinic staff: ask your vet to add you to their team.', '<button class="btn btn-g" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-stethoscope"></i>Register as a vet</button>'],
-      pending: ['Your registration is being verified', 'We check every vet\'s VCI registration before the workspace opens. This usually takes 2–3 business days.', '<button class="btn btn-w" onclick="location.href=\'07_home.html\'">Back to PawBook</button>'],
+    var t = {not_vet: ['PawBook VetCare is for vets and their clinic teams', 'Register your practice to manage appointments, your waiting room and patient records here. Clinic staff: ask your vet to add you to their team.', '<button class="btn btn-g" onclick="goTop(\'11_vet_booking.html?tab=register\')"><i class="ti ti-stethoscope"></i>Register as a vet</button>'],
+      pending: ['Your registration is being verified', 'We check every vet\'s VCI registration before the workspace opens. This usually takes 2–3 business days.', '<button class="btn btn-w" onclick="goTop(\'11_vet_booking.html\')">Find a vet instead</button>'],
       suspended: ['This clinic account is suspended', 'Please write to support@deemona.com and we\'ll help.', '<a class="btn btn-w" href="mailto:support@deemona.com">Contact support</a>']}[code];
     h = '<div class="gate"><img src="img/vet/vet-owner.jpg" alt=""><span class="eyebrow"><i class="ti ti-stethoscope"></i>PawBook VetCare</span><h1>' + esc(t[0]) + '</h1><p>' + esc(t[1]) + '</p>' + t[2] + '</div>';
   } else h = emptyBox('🩺', 'Could not open the workspace', ((e && e.message) || '') + ' Please refresh in a moment.');
@@ -584,7 +591,7 @@ function render(){
     var next = D.appointments.filter(function(a){ return a.status === 'upcoming' && !(a.queue && a.queue.status === 'done'); })[0];
     h += '<div class="hero-band"><section class="hero"><div><span class="eyebrow"><i class="ti ti-stethoscope"></i>PawBook VetCare</span>'
       + '<h1>' + greet() + ',<br><span class="accent">' + esc(who) + '!</span> 🐾</h1><p class="tag">Welcome to your PawBook VetCare workspace' + (D.role !== 'vet' ? ' — ' + esc(D.role === 'admin' ? 'clinic admin' : 'front desk') + ' view' : '') + '.</p>'
-      + '<div class="clinic"><span class="chip"><i class="ti ti-building-hospital"></i>' + esc([c.clinic || ('Dr. ' + c.vet_name), c.city].filter(Boolean).join(' · ')) + '</span><span class="chip live"><b></b>Clinic workspace active</span></div>'
+      + '<div class="clinic"><span class="chip"><i class="ti ti-building-hospital"></i>' + esc([c.clinic || ('Dr. ' + c.vet_name), c.city].filter(Boolean).join(' · ')) + '</span><span class="chip live"><b></b>Clinic workspace active</span>' + practiceSel() + '</div>'
       + '<div class="mini"><div><b>' + k.today + '</b><span>Today\'s appointments</span></div><div><b>' + k.patients + '</b><span>Registered patients</span></div><div><b>' + k.waiting + '</b><span>Waiting</span></div></div></div>'
       + '<div class="collage"><div class="ph ph-main"><img src="img/vet/vet-exam.jpg" alt="Vet examining a golden retriever"><span class="ph-tag"><i class="ti ti-heart"></i>Care, every visit</span></div>'
       + '<div class="ph"><img src="img/vet/golden-sun.jpg" alt="Happy golden retriever"><span class="ph-tag"><i class="ti ti-heart"></i>Healthy & happy</span></div>'
@@ -892,7 +899,7 @@ function submitMo(e){
   req().then(function(){ if (k === 'staff') { closeMo(); toast(msg); loadSec(); } else after(); }).catch(function(err){ if (err.fields) mark(f, err.fields); if (err.status === 409) { closeMo(); } fail(err); }).then(function(){ btn.disabled = false; });
 }
 
-boot();
+if (EMBED) boot();
 </script>
 
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
@@ -1003,7 +1010,7 @@ boot();
       }catch(e){}
     })();
   </script>
-<script src="pawbook-ai-widget.v4.js?v=5"></script>
+
 <script>/* PB admin-only sidebar link */(function(){try{var t=localStorage.getItem('pb_token');if(!t)return;var u=JSON.parse(localStorage.getItem('pb_user')||'null')||{};
 var A='https://pawbook.deemona.com/api/v1/shop/admin/',o={headers:{Authorization:'Bearer '+t},credentials:'include'};
 var g=function(p){return fetch(A+p,o).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});};

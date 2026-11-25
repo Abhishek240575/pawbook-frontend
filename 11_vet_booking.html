@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#1877F2">
+<meta name="theme-color" content="#269B70">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PawBook">
 <link rel="manifest" href="manifest.json">
@@ -14,7 +14,7 @@
   if(!token){window.location.replace('01_login.html');}
 })();
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="style.css">
 <style>
@@ -417,6 +417,84 @@ input,textarea,select{font-family:'Inter',sans-serif}
   .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
   .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
   /* ===== END DRAWER STYLES ===== */
+
+/* ═════════ PawBook design system refresh (same look as Pet Health, Vaccination Diary and VetCare) ═════════ */
+:root{--pb-blue:#1877F2;--pb-bg:#FFF9F3;--pb-border:#efe6dc;--pb-text:#2b2f3a;--pb-text2:#6b645d;--pb-text3:#8a827a;--pb-radius:18px;--pb-shadow:0 6px 22px rgba(64,58,53,.07);
+  --vet-blue:#269B70;--vet-teal:#1c7d59;--vet-green:#269B70;--vet-green-soft:#E6F2E7;--navy:#1f2a44;--coral:#e5484d;--orange:#F47A38;--ggrad:linear-gradient(135deg,#2aa676,#1c7d59)}
+body,button,input,textarea,select{font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif!important}
+body{background:var(--pb-bg);color:var(--pb-text)}
+body.vet-on{overflow:hidden}
+body.vet-on .pb-nav > div:last-child{margin-left:auto!important}
+.pb-nav{height:60px;box-shadow:0 1px 3px rgba(0,0,0,.05);border-bottom-color:var(--pb-border)}
+body{padding-top:60px}
+.nav-logo{color:#1877F2;font-size:21px}.nav-logo-icon{background:linear-gradient(135deg,#1877F2,#8b5cf6);border-radius:11px;width:38px;height:38px}
+.pb-icon-btn{background:#f4efe9;color:#5c5650}.pb-icon-btn:hover{background:#ece4da;color:var(--vet-blue)}
+.mode-toggle{background:#f4efe9;border-color:var(--pb-border)}
+.mode-btn{font-family:'Poppins',sans-serif!important}.mode-btn.active.vet-mode{background:var(--ggrad)}
+.nav-avatar{background:var(--ggrad)}
+/* hero */
+.vb-hero{position:relative;overflow:hidden;background:radial-gradient(1100px 480px at 85% -10%,#e3f4ea 0%,transparent 60%),linear-gradient(180deg,#fffaf5 0%,#fff1e4 100%)}
+.vb-hero::before{content:'';position:absolute;inset:0;opacity:.5;background-image:radial-gradient(circle at 20px 20px,rgba(38,155,112,.08) 3px,transparent 4px);background-size:44px 44px;pointer-events:none}
+.vb-in{position:relative;max-width:1240px;margin:0 auto;padding:46px 24px 62px;display:grid;grid-template-columns:1.05fr 1fr;gap:44px;align-items:center}
+@media(max-width:960px){.vb-in{grid-template-columns:1fr;padding:30px 16px 48px;gap:26px}}
+.vb-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #e9dfd3;color:var(--vet-teal);font-size:13px;font-weight:700;box-shadow:0 2px 8px rgba(64,58,53,.05)}
+.vb-eyebrow i{color:var(--coral)}
+.vb-left h1{font-size:clamp(34px,4.6vw,56px);line-height:1.05;font-weight:900;color:var(--navy);letter-spacing:-.02em;margin:18px 0 14px}
+.vb-left h1 .accent{background:linear-gradient(135deg,#e5484d,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent}
+.vb-tag{font-size:16px;line-height:1.65;color:#4d4740;max-width:540px}
+.vb-search{position:relative;margin-top:22px;background:#fff;border:1px solid var(--pb-border);border-radius:20px;padding:12px;box-shadow:0 12px 34px rgba(64,58,53,.09)}
+.vb-search > div[style*="grid-template-columns"]{max-width:none!important;margin:0 0 10px!important}
+.vb-search select{background:#faf6f1!important;border:1.5px solid #efe6dc!important;border-radius:12px!important;height:44px;color:var(--navy)!important}
+#loc-breadcrumb{max-width:none!important;margin:0 0 10px!important}
+#loc-breadcrumb > span{color:#4d4740!important}#loc-breadcrumb button{background:#f4efe9!important;color:var(--vet-teal)!important}
+.vb-search .vet-search-bar{box-shadow:none;border:1.5px solid #efe6dc;border-radius:14px;max-width:none;padding:6px 6px 6px 14px;background:#fff}
+.vb-search .vet-search-bar button{background:var(--ggrad)!important;border-radius:11px!important;font-family:'Poppins',sans-serif!important}
+.vb-facts{display:flex;flex-wrap:wrap;gap:18px;margin-top:18px}
+.vb-facts span{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#4d4740}
+.vb-facts i{width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;background:#E6F2E7;color:var(--vet-teal)}
+.vb-facts b{color:var(--navy)}
+.vb-collage{position:relative;display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:440px}
+@media(max-width:960px){.vb-collage{height:300px}}
+@media(max-width:520px){.vb-collage{grid-template-columns:1fr;height:240px}.vb-collage .vph:not(.vph-main){display:none}}
+.vph{position:relative;border-radius:22px;overflow:hidden;background:#efe4d8;box-shadow:0 14px 34px rgba(64,58,53,.16)}
+.vph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}.vph:hover img{transform:scale(1.04)}
+.vph-main{grid-row:1/3}
+.vph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35));pointer-events:none}
+.vph-tag{position:absolute;left:12px;bottom:12px;z-index:2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.vb-float{position:absolute;z-index:3;background:#fff;border:none;border-radius:16px;box-shadow:0 14px 34px rgba(64,58,53,.2);padding:12px 14px;display:flex;align-items:center;gap:10px;text-align:left}
+.vb-f1{left:-22px;bottom:30px;max-width:270px}.vb-f1 .ic{width:42px;height:42px;border-radius:12px;background:#E6F2E7;color:var(--vet-teal);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.vb-f1 b{display:block;font-size:13px;color:var(--navy)}.vb-f1 small{font-size:11.5px;color:#7a7068}
+.vb-f2{right:-10px;top:-14px;padding:9px 15px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--navy);gap:7px;cursor:pointer}.vb-f2 i{color:var(--vet-blue);font-size:16px}.vb-f2:hover{color:var(--vet-blue)}
+@media(max-width:960px){.vb-f1{left:10px;bottom:-18px}.vb-f2{right:8px}}
+/* tabs + layout */
+.vet-tabs{max-width:1240px;margin:-26px auto 0;position:relative;z-index:5;background:#fff;border:1px solid var(--pb-border);border-radius:16px;padding:6px;box-shadow:var(--pb-shadow);gap:4px}
+@media(max-width:1280px){.vet-tabs{margin:-26px 16px 0}}
+.vtab{border:none!important;border-radius:11px;padding:11px 16px;color:#7a7068;font-weight:600;margin:0}
+.vtab.active{background:#E6F2E7;color:var(--vet-teal)}.vtab:hover:not(.active){background:#faf5ef;color:var(--navy)}
+.vet-page{max-width:1240px;padding:20px 16px 80px;gap:18px}
+.filter-section{border-radius:18px;border-color:var(--pb-border);box-shadow:var(--pb-shadow)}
+.filter-title{color:var(--navy);font-size:13.5px}
+.filter-chip{border-color:#ecdfd1;color:#5c5650;border-radius:999px;font-weight:600}
+.filter-chip.active,.filter-chip:hover{background:var(--vet-blue);border-color:var(--vet-blue);color:#fff}
+.vet-card{border-radius:20px;border-color:var(--pb-border);box-shadow:var(--pb-shadow);padding:20px}
+.vet-card:hover{box-shadow:0 12px 30px rgba(64,58,53,.12);border-color:#e3d5c6}
+.vet-avatar-img img{border-radius:18px;border-color:#fff;box-shadow:0 6px 16px rgba(64,58,53,.15);width:80px;height:80px}
+.vet-name{color:var(--navy);font-size:17px}.vet-spec-label{color:var(--vet-teal)}
+.vet-fee{color:var(--navy)}
+.vbtn{border-radius:12px;height:40px;font-family:'Poppins',sans-serif!important}
+.vbtn-primary{background:var(--ggrad)}.vbtn-primary:hover{filter:brightness(1.05);background:var(--ggrad)}
+.vbtn-video{background:linear-gradient(135deg,#F47A38,#f59e0b)}
+.vbtn-outline{background:#fff;border-color:#ecdfd1}
+.ctab.active{border-color:var(--vet-blue);background:#E6F2E7;color:var(--vet-teal)}
+.time-slot.available:hover,.time-slot.selected{background:var(--vet-blue);border-color:var(--vet-blue)}
+.modal-box{border-radius:22px}
+.appt-card{border-radius:16px;border-color:var(--pb-border);background:#fff}
+.cal-day.today{background:var(--vet-blue)}
+.reg-prog-bar.done{background:var(--vet-blue)}
+.upload-zone{border-color:#cfe6d4;background:#f6fbf7}.upload-zone:hover{border-color:var(--vet-blue);background:#eef8f1}
+/* VetCare workspace inside this page */
+#vetFrame{position:fixed;left:0;right:0;top:60px;bottom:0;width:100%;height:calc(100% - 60px);border:0;background:var(--pb-bg)}
+@media(max-width:640px){.vet-portal-badge.show{display:none}}
 </style>
 </head>
 <body>
@@ -464,11 +542,13 @@ input,textarea,select{font-family:'Inter',sans-serif}
 <div id="mode-owner">
 
   <!-- HERO -->
-  <div class="vet-hero">
-    <div class="vet-hero-inner">
-      <div style="font-size:40px;margin-bottom:8px">🩺🐾</div>
-      <h1>Find a Verified Vet</h1>
-      <p>Government-authorised vets for in-clinic, audio &amp; video consultations</p>
+  <div class="vb-hero">
+    <section class="vb-in">
+      <div class="vb-left">
+        <span class="vb-eyebrow"><i class="ti ti-stethoscope"></i>Vet care on PawBook</span>
+        <h1>Expert care for<br><span class="accent">every paw.</span></h1>
+        <p class="vb-tag">Book verified vets for clinic visits, video and chat consultations — prescriptions and vaccinations land straight in your pet's health record.</p>
+        <div class="vb-search">
       <!-- Location filter row -->
       <div style="max-width:720px;margin:0 auto 10px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
         <select id="loc-country" onchange="onCountryChange()" style="border:none;border-radius:10px;padding:10px 12px;font-size:13px;outline:none;background:#fff;color:#1e293b;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.15)">
@@ -506,15 +586,22 @@ input,textarea,select{font-family:'Inter',sans-serif}
         <input placeholder="Search by name or speciality…" id="vet-search-input" oninput="_searchDebounce()">
         <button onclick="filterVets()" style="height:42px;padding:0 18px;border-radius:10px;border:none;background:var(--vet-blue);color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap"><i class="ti ti-search" style="margin-right:4px"></i>Search</button>
       </div>
-      <div style="display:flex;gap:24px;justify-content:center;margin-top:20px;flex-wrap:wrap">
-        <div style="color:#fff;text-align:center"><div id="stat-count" style="font-size:22px;font-weight:900">…</div><div style="font-size:11px;opacity:0.8">Verified Vets</div></div>
-        <div style="color:#fff;text-align:center"><div style="font-size:22px;font-weight:900">48</div><div style="font-size:11px;opacity:0.8">Online Now</div></div>
-        <div style="color:#fff;text-align:center"><div style="font-size:22px;font-weight:900">4.8★</div><div style="font-size:11px;opacity:0.8">Avg Rating</div></div>
-        <div style="color:#fff;text-align:center"><div style="font-size:22px;font-weight:900">15 min</div><div style="font-size:11px;opacity:0.8">Avg Wait</div></div>
+        </div>
+        <div class="vb-facts">
+          <span><i class="ti ti-stethoscope"></i><b id="stat-count">…</b>&nbsp;vets listed</span>
+          <span><i class="ti ti-shield-check"></i>VCI registration checked</span>
+          <span><i class="ti ti-video"></i>Clinic, video &amp; chat</span>
+        </div>
       </div>
-    </div>
+      <div class="vb-collage">
+        <div class="vph vph-main"><img src="img/vet/vet-exam.jpg" alt="Vet examining a golden retriever"><span class="vph-tag"><i class="ti ti-heart"></i>Gentle, expert care</span></div>
+        <div class="vph"><img src="img/vet/golden-sun.jpg" alt="Happy golden retriever"><span class="vph-tag"><i class="ti ti-heart"></i>Healthy &amp; happy</span></div>
+        <div class="vph"><img src="img/vet/dog-cat-beds.jpg" alt="Dog and cat resting"><span class="vph-tag"><i class="ti ti-heart"></i>Dogs, cats &amp; more</span></div>
+        <div class="vb-float vb-f1"><span class="ic"><i class="ti ti-calendar-heart"></i></span><div><b>Book in a few taps</b><small>Pick a vet, a time and how to meet</small></div></div>
+        <button class="vb-float vb-f2" onclick="setMode('vet')"><i class="ti ti-building-hospital"></i>Are you a vet? Open VetCare</button>
+      </div>
+    </section>
   </div>
-
   <!-- TABS -->
   <div class="vet-tabs">
     <button class="vtab active" onclick="switchVetTab('find',this)"><i class="ti ti-search" style="font-size:14px;margin-right:4px"></i>Find a Vet</button>
@@ -815,191 +902,8 @@ input,textarea,select{font-family:'Inter',sans-serif}
      VET PORTAL MODE
 ══════════════════════════════════════════════════════════════════════════ -->
 <div id="mode-vet" style="display:none">
-  <div class="vp-layout">
-    <div class="vp-views">
-
-      <!-- ===== DASHBOARD ===== -->
-      <div id="view-dashboard" class="active">
-        <div class="stat-grid">
-          <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:var(--vet-green-soft);color:var(--vet-green)"><i class="ti ti-calendar-check"></i></div><span class="stat-change up">↑ 3</span></div><div class="stat-val">8</div><div class="stat-label">Appointments Today</div></div>
-          <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:var(--pb-blue-soft);color:var(--pb-blue)"><i class="ti ti-users"></i></div><span class="stat-change up">↑ 12</span></div><div class="stat-val">247</div><div class="stat-label">Total Patients</div></div>
-          <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:var(--pb-amber-soft);color:var(--pb-amber)"><i class="ti ti-clock"></i></div><span class="stat-change down">↓ 2</span></div><div class="stat-val">3</div><div class="stat-label">In Waiting Room</div></div>
-          <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:var(--pb-purple-soft);color:var(--pb-purple)"><i class="ti ti-vaccine"></i></div><span class="stat-change up">↑ 5</span></div><div class="stat-val">14</div><div class="stat-label">Vaccine Reminders Sent</div></div>
-        </div>
-
-        <div class="vp-grid">
-          <!-- Today's Appointments -->
-          <div class="pb-card">
-            <div class="pb-card-header">
-              <h3><i class="ti ti-calendar" style="color:var(--vet-green)"></i> Today's Schedule</h3>
-              <button class="pb-btn pb-btn-green pb-btn-sm" onclick="vpOpenModal('addApptModal')"><i class="ti ti-plus"></i> New Appt</button>
-            </div>
-            <div class="appt-list-vp">
-              <div class="appt-item" onclick="vpOpenPatient('bruno')"><div class="appt-time"><div class="appt-time-val">9:00</div><div class="appt-time-ampm">AM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐕</div><div class="appt-info"><div class="appt-pet-name">Bruno <span style="font-size:11px;color:var(--pb-text3)">· Labrador</span></div><div class="appt-owner">Abhishek Sharma · +91 98765 43210</div><div class="appt-type"><i class="ti ti-stethoscope" style="font-size:11px"></i> Annual Wellness + Hip Follow-up</div></div><span class="appt-status completed">Done</span></div>
-              <div class="appt-item" onclick="vpOpenPatient('milo')"><div class="appt-time"><div class="appt-time-val">10:30</div><div class="appt-time-ampm">AM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐕</div><div class="appt-info"><div class="appt-pet-name">Milo <span style="font-size:11px;color:var(--pb-text3)">· Golden Retriever</span></div><div class="appt-owner">Preethi Nair · +91 97654 32109</div><div class="appt-type"><i class="ti ti-vaccine" style="font-size:11px"></i> Rabies + DHPPiL Booster</div></div><span class="appt-status in-progress">● In Progress</span></div>
-              <div class="appt-item" onclick="vpOpenPatient('luna')"><div class="appt-time"><div class="appt-time-val">11:15</div><div class="appt-time-ampm">AM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐈</div><div class="appt-info"><div class="appt-pet-name">Luna <span style="font-size:11px;color:var(--pb-text3)">· Persian Cat</span></div><div class="appt-owner">Ritika Desai · +91 95432 10987</div><div class="appt-type"><i class="ti ti-bandage" style="font-size:11px"></i> Skin issue — itching</div></div><span class="appt-status waiting">Waiting</span></div>
-              <div class="appt-item"><div class="appt-time"><div class="appt-time-val">2:00</div><div class="appt-time-ampm">PM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐕</div><div class="appt-info"><div class="appt-pet-name">Rocky <span style="font-size:11px;color:var(--pb-text3)">· German Shepherd</span></div><div class="appt-owner">Vikram Singh · +91 93210 98765</div><div class="appt-type"><i class="ti ti-urgent" style="font-size:11px"></i> Limping — left hind leg</div></div><span class="appt-status confirmed">Confirmed</span></div>
-              <div class="appt-item"><div class="appt-time"><div class="appt-time-val">3:30</div><div class="appt-time-ampm">PM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐇</div><div class="appt-info"><div class="appt-pet-name">Coco <span style="font-size:11px;color:var(--pb-text3)">· Rabbit</span></div><div class="appt-owner">Meera Pillai · +91 91098 76543</div><div class="appt-type"><i class="ti ti-eye" style="font-size:11px"></i> Routine checkup + nail trim</div></div><span class="appt-status confirmed">Confirmed</span></div>
-              <div class="appt-item"><div class="appt-time"><div class="appt-time-val">4:45</div><div class="appt-time-ampm">PM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐕</div><div class="appt-info"><div class="appt-pet-name">Max <span style="font-size:11px;color:var(--pb-text3)">· Pomeranian</span></div><div class="appt-owner">Ananya Khanna · +91 89876 54321</div><div class="appt-type"><i class="ti ti-pill" style="font-size:11px"></i> Follow-up — ear infection</div></div><span class="appt-status confirmed">Confirmed</span></div>
-            </div>
-          </div>
-
-          <!-- Right column -->
-          <div style="display:flex;flex-direction:column;gap:14px">
-            <!-- Waiting Queue -->
-            <div class="pb-card">
-              <div class="pb-card-header"><h3><i class="ti ti-clock" style="color:var(--pb-amber)"></i> Waiting Room</h3><span style="font-size:12px;font-weight:700;padding:3px 10px;background:var(--pb-amber-soft);color:#92400e;border-radius:var(--pb-pill)">3 waiting</span></div>
-              <div>
-                <div class="queue-item" onclick="vpOpenPatient('milo')"><div class="queue-num" style="background:var(--pb-blue);color:#fff">1</div><div class="queue-pet-emoji">🐕</div><div class="queue-info"><div class="queue-name">Milo — Golden Retriever</div><div class="queue-reason">Vaccinations</div></div><div class="queue-wait">Now</div></div>
-                <div class="queue-item"><div class="queue-num" style="background:var(--pb-bg);color:var(--pb-text2)">2</div><div class="queue-pet-emoji">🐈</div><div class="queue-info"><div class="queue-name">Luna — Persian</div><div class="queue-reason">Skin issue</div></div><div class="queue-wait">8 min</div></div>
-                <div class="queue-item"><div class="queue-num" style="background:var(--pb-bg);color:var(--pb-text2)">3</div><div class="queue-pet-emoji">🐕</div><div class="queue-info"><div class="queue-name">Rocky — G. Shepherd</div><div class="queue-reason">Early walk-in</div></div><div class="queue-wait">22 min</div></div>
-              </div>
-            </div>
-
-            <!-- Alerts -->
-            <div class="pb-card">
-              <div class="pb-card-header"><h3><i class="ti ti-alert-triangle" style="color:var(--pb-red)"></i> Alerts</h3><span style="font-size:12px;font-weight:700;padding:3px 10px;background:var(--pb-red-soft);color:var(--pb-red);border-radius:var(--pb-pill)">4 active</span></div>
-              <div style="padding:12px;display:flex;flex-direction:column;gap:6px">
-                <div class="alert-banner urgent"><i class="ti ti-urgent"></i><span><b>Bruno</b> — Canine Influenza 3 wks overdue. Owner notified Nov 9.</span></div>
-                <div class="alert-banner urgent"><i class="ti ti-urgent"></i><span><b>Rocky</b> — Walk-in with limping. X-ray may be needed.</span></div>
-                <div class="alert-banner warning"><i class="ti ti-clock"></i><span><b>Whiskers</b> — Annual wellness overdue by 2 months.</span></div>
-                <div class="alert-banner info"><i class="ti ti-vaccine"></i><span>14 patients have vaccines due this week. Reminders sent automatically.</span></div>
-              </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="pb-card">
-              <div class="pb-card-header"><h3><i class="ti ti-chart-pie" style="color:var(--pb-purple)"></i> This Week</h3></div>
-              <div style="padding:12px 16px;display:flex;flex-direction:column;gap:8px">
-                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Appointments</span><span style="font-weight:700">38</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Vaccinations given</span><span style="font-weight:700;color:var(--vet-green)">22</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Prescriptions issued</span><span style="font-weight:700">15</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">New patients</span><span style="font-weight:700;color:var(--pb-blue)">6</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Avg wait time</span><span style="font-weight:700;color:var(--pb-amber)">12 min</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Patient Detail Panel -->
-        <div id="patientPanel" class="patient-panel">
-          <div class="patient-header-vp">
-            <div class="patient-header-emoji" id="panelEmoji">🐕</div>
-            <div style="flex:1">
-              <div style="font-size:20px;font-weight:900" id="panelName">Bruno</div>
-              <div style="font-size:13px;opacity:.85;margin-top:4px" id="panelMeta">Labrador · 3 yrs · 28.4 kg · Abhishek Sharma</div>
-              <div class="patient-header-actions-vp">
-                <button class="pb-btn pb-btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)" onclick="vpOpenModal('writeRecordModal')"><i class="ti ti-file-text"></i> Write Record</button>
-                <button class="pb-btn pb-btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)" onclick="vpOpenModal('prescribeModal')"><i class="ti ti-pill"></i> Prescribe</button>
-                <button class="pb-btn pb-btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)" onclick="vpSendFollowUpReminder(this)"><i class="ti ti-calendar"></i> Send Follow-up Reminder</button>
-              </div>
-            </div>
-            <button onclick="vpClosePatient()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;align-self:flex-start">✕</button>
-          </div>
-          <div class="pb-card">
-            <div style="padding:10px 12px">
-              <div class="patient-tabs">
-                <button class="patient-tab active" onclick="switchPTab(this,'pSummary')">Summary</button>
-                <button class="patient-tab" onclick="switchPTab(this,'pHistory')">History</button>
-                <button class="patient-tab" onclick="switchPTab(this,'pVaccines')">Vaccines</button>
-                <button class="patient-tab" onclick="switchPTab(this,'pMeds')">Medications</button>
-                <button class="patient-tab" onclick="switchPTab(this,'pNotes')">Notes</button>
-              </div>
-            </div>
-            <div id="pSummary" class="patient-tab-content active" style="padding:16px">
-              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-                <div style="padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900;color:var(--vet-green)">87</div><div style="font-size:11px;color:var(--pb-text3)">Health Score</div></div>
-                <div style="padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900">28.4<span style="font-size:12px;font-weight:500">kg</span></div><div style="font-size:11px;color:var(--pb-text3)">Weight</div></div>
-                <div style="padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900;color:var(--pb-amber)">2</div><div style="font-size:11px;color:var(--pb-text3)">Open Alerts</div></div>
-              </div>
-              <div style="font-size:13px;color:var(--pb-text2);line-height:1.7"><b>Last visit:</b> Oct 15, 2026 — Annual wellness. Hip joints show mild early-stage concern. Blood work normal. Recommended monitoring and hip X-ray at age 4.<br><br><b>Active medications:</b> Heartgard Plus (monthly), NexGard (monthly), Omega-3 fish oil (daily).<br><br><b>Allergies:</b> None known. <b>Blood type:</b> DEA 1.1 positive.</div>
-            </div>
-            <div id="pHistory" class="patient-tab-content" style="padding:16px;display:flex;flex-direction:column;gap:10px">
-              <div style="padding:12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)"><div style="font-size:13px;font-weight:700">Annual Wellness Check</div><div style="font-size:11px;color:var(--pb-text3)">Oct 15, 2026 · Dr. Priya Sharma</div><div style="font-size:12px;color:var(--pb-text2);margin-top:4px;line-height:1.5">Weight stable. Mild hip concern noted. CBC normal. Dental health good.</div></div>
-              <div style="padding:12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)"><div style="font-size:13px;font-weight:700">Emergency — Swallowed Object</div><div style="font-size:11px;color:var(--pb-text3)">Aug 3, 2026 · Animal Emergency Hospital</div><div style="font-size:12px;color:var(--pb-text2);margin-top:4px;line-height:1.5">Small plastic toy ingested. X-ray confirmed. Conservative management. Full recovery.</div></div>
-              <div style="padding:12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)"><div style="font-size:13px;font-weight:700">Vaccination + Check-up</div><div style="font-size:11px;color:var(--pb-text3)">Mar 5, 2026 · Dr. Priya Sharma</div><div style="font-size:12px;color:var(--pb-text2);margin-top:4px;line-height:1.5">DHPPiL booster. Physical exam normal. Weight slightly elevated — portion control advised.</div></div>
-            </div>
-            <div id="pVaccines" class="patient-tab-content" style="padding:16px;display:flex;flex-direction:column;gap:8px">
-              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--pb-amber-soft);border-radius:var(--pb-radius-sm)"><span style="color:var(--pb-amber);font-size:16px">⚠️</span><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#92400e">Rabies — Due Nov 23</div><div style="font-size:11px;color:#92400e">12 days remaining · Must book this week</div></div><button class="pb-btn pb-btn-sm" style="background:var(--pb-amber);color:#fff" onclick="vpSendVaccineReminder(this,'Rabies','Nov 23')"><i class="ti ti-send"></i> Remind Owner</button></div>
-              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--pb-red-soft);border-radius:var(--pb-radius-sm)"><span style="color:var(--pb-red);font-size:16px">❌</span><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--pb-red)">Canine Influenza — 3 wks overdue</div><div style="font-size:11px;color:var(--pb-red)">Owner notified Nov 9</div></div><button class="pb-btn pb-btn-sm pb-btn-red" onclick="vpSendVaccineReminder(this,'Canine Influenza','overdue')"><i class="ti ti-send"></i> Remind Again</button></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px"><span style="font-weight:600">DHPPiL</span><span style="font-weight:700;color:var(--vet-green)">✅ Current — Mar 2027</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px"><span style="font-weight:600">Leptospirosis</span><span style="font-weight:700;color:var(--vet-green)">✅ Current — Nov 2027</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px"><span style="font-weight:600">Bordetella</span><span style="font-weight:700;color:var(--vet-green)">✅ Current — Sep 2027</span></div>
-            </div>
-            <div id="pMeds" class="patient-tab-content" style="padding:16px;display:flex;flex-direction:column;gap:8px">
-              <div style="padding:10px 12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:700">Heartgard Plus</div><div style="font-size:11px;color:var(--pb-text3)">Monthly · Heartworm prevention · Next: Dec 1</div></div><span style="font-size:11px;font-weight:700;padding:3px 8px;background:var(--vet-green-soft);color:var(--vet-green);border-radius:var(--pb-pill)">Active</span></div>
-              <div style="padding:10px 12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:700">NexGard</div><div style="font-size:11px;color:var(--pb-text3)">Monthly · Flea &amp; tick · Next: Nov 25</div></div><span style="font-size:11px;font-weight:700;padding:3px 8px;background:var(--vet-green-soft);color:var(--vet-green);border-radius:var(--pb-pill)">Active</span></div>
-              <div style="padding:10px 12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:700">Omega-3 Fish Oil</div><div style="font-size:11px;color:var(--pb-text3)">Daily · Joint &amp; coat health · Ongoing</div></div><span style="font-size:11px;font-weight:700;padding:3px 8px;background:var(--vet-green-soft);color:var(--vet-green);border-radius:var(--pb-pill)">Active</span></div>
-              <button class="pb-btn pb-btn-blue pb-btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="vpOpenModal('prescribeModal')"><i class="ti ti-plus"></i> Add Prescription</button>
-            </div>
-            <div id="pNotes" class="patient-tab-content" style="padding:16px">
-              <textarea style="width:100%;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:12px;font-size:13px;line-height:1.6;resize:vertical;min-height:140px;outline:none" placeholder="Clinical notes for Bruno…">Hip joint concern noted Oct 15. Owner educated on weight management for Labradors. Recommended X-ray at age 4. Suggested Omega-3 supplementation for joint health.
-
-Watch for: progressive limping, difficulty rising, reluctance to exercise — indicators of hip dysplasia progression.</textarea>
-              <button class="pb-btn pb-btn-green" style="margin-top:8px"><i class="ti ti-check"></i> Save Notes</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== PATIENTS VIEW ===== -->
-      <div id="view-patients">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div><div style="font-size:20px;font-weight:900">Patient Records</div><div style="font-size:13px;color:var(--pb-text3)">247 patients · Sorted by last visit</div></div>
-          <div style="display:flex;gap:8px">
-            <input type="text" style="height:36px;border:1px solid var(--pb-border);border-radius:var(--pb-pill);padding:0 14px;font-size:13px;outline:none;width:200px" placeholder="🔍 Search patients…">
-            <button class="pb-btn pb-btn-green" onclick="vpOpenModal('addPatientModal')"><i class="ti ti-plus"></i> Add Patient</button>
-          </div>
-        </div>
-        <div class="pb-card">
-          <div class="patient-list-view">
-            <div class="pl-row" onclick="vpOpenPatient('bruno')"><div class="pl-avatar">🐕</div><div class="pl-info"><div class="pl-name">Bruno <span style="color:var(--pb-text3);font-weight:400">· Labrador</span></div><div class="pl-meta">Abhishek Sharma · Last visit: Nov 11, 2026 · Hip concern</div></div><div class="pl-last"><div style="font-size:11px;color:var(--pb-amber);font-weight:700">⚠️ Vax due</div><div style="font-size:10px;color:var(--pb-text3)">12 days</div></div><div class="pl-score" style="background:var(--pb-green-soft);color:#166534">87</div></div>
-            <div class="pl-row" onclick="vpOpenPatient('milo')"><div class="pl-avatar">🐕</div><div class="pl-info"><div class="pl-name">Milo <span style="color:var(--pb-text3);font-weight:400">· Golden Retriever</span></div><div class="pl-meta">Preethi Nair · Last visit: Nov 11, 2026 · In for vaccines</div></div><div class="pl-last"><div style="font-size:11px;color:var(--pb-blue);font-weight:700">In clinic</div><div style="font-size:10px;color:var(--pb-text3)">Today</div></div><div class="pl-score" style="background:var(--pb-green-soft);color:#166534">92</div></div>
-            <div class="pl-row"><div class="pl-avatar">🐈</div><div class="pl-info"><div class="pl-name">Luna <span style="color:var(--pb-text3);font-weight:400">· Persian Cat</span></div><div class="pl-meta">Ritika Desai · Last visit: Sep 3, 2026 · Skin issue</div></div><div class="pl-last"><div style="font-size:11px;color:var(--pb-amber);font-weight:700">⚠️ Wellness due</div><div style="font-size:10px;color:var(--pb-text3)">2 months</div></div><div class="pl-score" style="background:var(--pb-amber-soft);color:#92400e">71</div></div>
-            <div class="pl-row"><div class="pl-avatar">🐕</div><div class="pl-info"><div class="pl-name">Rocky <span style="color:var(--pb-text3);font-weight:400">· German Shepherd</span></div><div class="pl-meta">Vikram Singh · Last visit: Aug 20, 2026 · Walk-in limping</div></div><div class="pl-last"><div style="font-size:11px;color:var(--pb-red);font-weight:700">🚨 Urgent</div><div style="font-size:10px;color:var(--pb-text3)">Today</div></div><div class="pl-score" style="background:var(--pb-red-soft);color:var(--pb-red)">63</div></div>
-            <div class="pl-row"><div class="pl-avatar">🐇</div><div class="pl-info"><div class="pl-name">Coco <span style="color:var(--pb-text3);font-weight:400">· Rabbit</span></div><div class="pl-meta">Meera Pillai · Last visit: Oct 1, 2026 · Routine</div></div><div class="pl-last"><div style="font-size:11px;color:var(--vet-green);font-weight:700">✅ All clear</div><div style="font-size:10px;color:var(--pb-text3)">Nov 2026</div></div><div class="pl-score" style="background:var(--pb-green-soft);color:#166534">95</div></div>
-            <div style="padding:14px 18px;text-align:center"><button class="pb-btn pb-btn-gray">Load more patients…</button></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== SCHEDULE VIEW ===== -->
-      <div id="view-appointments">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div><div style="font-size:20px;font-weight:900">Appointment Schedule</div><div id="vpSchedSubtitle" style="font-size:13px;color:var(--pb-text3)">Loading…</div></div>
-          <div style="display:flex;gap:8px">
-            <input type="date" id="vpSchedDate" style="border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:6px 10px;font-size:13px;outline:none" onchange="loadVetSchedule(this.value)">
-            <button class="pb-btn pb-btn-blue pb-btn-xs" onclick="loadVetSchedule()"><i class="ti ti-refresh"></i></button>
-          </div>
-        </div>
-        <div class="pb-card">
-          <div class="pb-card-header"><h3 id="vpSchedCardTitle"><i class="ti ti-calendar" style="color:var(--vet-green)"></i> Today's Appointments</h3></div>
-          <div class="appt-list-vp" id="vpSchedList"><div style="padding:32px;text-align:center;color:var(--pb-text3)"><i class="ti ti-loader" style="font-size:24px"></i><div style="margin-top:8px;font-size:13px">Loading appointments…</div></div></div>
-        </div>
-      </div>
-
-      <!-- ===== ANALYTICS VIEW ===== -->
-      <div id="view-analytics">
-        <div style="font-size:20px;font-weight:900;margin-bottom:16px">Practice Analytics</div>
-        <div class="analytics-grid">
-          <div class="pb-card"><div class="pb-card-header"><h3><i class="ti ti-chart-bar" style="color:var(--pb-blue)"></i> Appointments This Month</h3></div><div style="padding:16px"><div class="chart-bar-wrap" id="apptChart"></div><div style="font-size:13px;color:var(--pb-text2);text-align:center">Total: 142 appointments in November</div></div></div>
-          <div class="pb-card"><div class="pb-card-header"><h3><i class="ti ti-vaccine" style="color:var(--vet-green)"></i> Top Vaccines This Month</h3></div><div style="padding:16px;display:flex;flex-direction:column;gap:6px"><div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">Rabies</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:85%;background:var(--pb-red)"></div></div><span class="disease-pct">42</span></div><div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">DHPPiL</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:72%;background:var(--pb-blue)"></div></div><span class="disease-pct">36</span></div><div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">Leptospirosis</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:50%;background:var(--pb-teal)"></div></div><span class="disease-pct">25</span></div><div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">Bordetella</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:36%;background:var(--pb-purple)"></div></div><span class="disease-pct">18</span></div><div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">Canine Flu</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:22%;background:var(--pb-amber)"></div></div><span class="disease-pct">11</span></div></div></div>
-          <div class="pb-card"><div class="pb-card-header"><h3><i class="ti ti-paw" style="color:var(--pb-orange)"></i> Patient Species Mix</h3></div><div style="padding:16px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🐕</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Dogs</div><div style="height:6px;background:var(--pb-bg);border-radius:var(--pb-pill);overflow:hidden;margin-top:4px"><div style="height:100%;width:72%;background:var(--pb-blue);border-radius:var(--pb-pill)"></div></div></div><span style="font-size:12px;font-weight:700;width:30px;text-align:right">72%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🐈</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Cats</div><div style="height:6px;background:var(--pb-bg);border-radius:var(--pb-pill);overflow:hidden;margin-top:4px"><div style="height:100%;width:18%;background:var(--pb-orange);border-radius:var(--pb-pill)"></div></div></div><span style="font-size:12px;font-weight:700;width:30px;text-align:right">18%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🐇</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Others</div><div style="height:6px;background:var(--pb-bg);border-radius:var(--pb-pill);overflow:hidden;margin-top:4px"><div style="height:100%;width:10%;background:var(--pb-teal);border-radius:var(--pb-pill)"></div></div></div><span style="font-size:12px;font-weight:700;width:30px;text-align:right">10%</span></div><div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="padding:10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900">247</div><div style="font-size:11px;color:var(--pb-text3)">Total Patients</div></div><div style="padding:10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900;color:var(--vet-green)">+6</div><div style="font-size:11px;color:var(--pb-text3)">New This Week</div></div></div></div></div>
-          <div class="pb-card"><div class="pb-card-header"><h3><i class="ti ti-clock" style="color:var(--pb-amber)"></i> Operational Metrics</h3></div><div style="padding:16px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">Avg appointment duration</span><span style="font-size:13px;font-weight:700">22 min</span></div><div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">Avg wait time</span><span style="font-size:13px;font-weight:700;color:var(--pb-amber)">12 min</span></div><div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">No-show rate</span><span style="font-size:13px;font-weight:700;color:var(--pb-red)">7%</span></div><div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">Vaccine reminders sent</span><span style="font-size:13px;font-weight:700;color:var(--vet-green)">58 this month</span></div><div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">Owner app engagement</span><span style="font-size:13px;font-weight:700;color:var(--pb-blue)">84% active</span></div></div></div>
-        </div>
-      </div>
-
-    </div><!-- end vp-views -->
-  </div><!-- end vp-layout -->
-
-  <!-- Bottom nav (vet mode, mobile) -->
-  <nav class="vet-bnav show" id="vetBnav">
-    <button class="bnav-item active" onclick="vpSwitchView('dashboard',this)"><i class="ti ti-dashboard"></i><span>Dashboard</span></button>
-    <button class="bnav-item" onclick="vpSwitchView('patients',this)"><i class="ti ti-paw"></i><span>Patients</span></button>
-    <button class="bnav-item" onclick="vpSwitchView('appointments',this)"><i class="ti ti-calendar"></i><span>Schedule</span></button>
-    <button class="bnav-item" onclick="vpSwitchView('analytics',this)"><i class="ti ti-chart-bar"></i><span>Analytics</span></button>
-    <button class="bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
-  </nav>
+  <!-- PawBook VetCare workspace (same app as 41_vet_portal.html, shown inside the vet booking page) -->
+  <iframe id="vetFrame" title="PawBook VetCare" allow="clipboard-write"></iframe>
 </div><!-- end #mode-vet -->
 
 <!-- ══════════════════════════════════════════════════════════════════════════
@@ -1306,17 +1210,15 @@ function setMode(mode) {
   document.getElementById('mode-owner').style.display = isVet ? 'none' : 'block';
   document.getElementById('mode-vet').style.display   = isVet ? 'block' : 'none';
   document.getElementById('vetBadge').classList.toggle('show', isVet);
-  document.getElementById('vetNavLinks').style.display = isVet ? 'flex' : 'none';
   document.getElementById('ownerNavTabs').style.display = isVet ? 'none' : 'flex';
   var fab = document.getElementById('sosFab'); if(fab) fab.style.display = isVet ? 'none' : 'flex';
   document.getElementById('btnOwnerMode').classList.toggle('active', !isVet);
   document.getElementById('btnVetMode').classList.toggle('active', isVet);
   document.getElementById('btnVetMode').classList.toggle('vet-mode', isVet);
-  if (isVet) {
-    renderApptChart();
-    var today = new Date().toISOString().split('T')[0];
-    document.querySelectorAll('#mode-vet input[type="date"]').forEach(function(el){if(!el.value)el.value=today;});
-  }
+  document.body.classList.toggle('vet-on', isVet);
+  if (isVet) { var fr = document.getElementById('vetFrame'); if (!fr.getAttribute('src')) { var sec = new URLSearchParams(location.search).get('s'); fr.setAttribute('src', '41_vet_portal.html?embed=1' + (sec ? '&s=' + encodeURIComponent(sec) : '')); } }
+  try { var u = new URL(location.href); if (isVet) u.searchParams.set('mode', 'vet'); else { u.searchParams.delete('mode'); u.searchParams.delete('s'); } history.replaceState(null, '', u.pathname + (u.search || '')); } catch (e) {}
+  window.scrollTo(0, 0);
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -3015,6 +2917,8 @@ function previewPhoto(input) {
 //  INIT
 // ════════════════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
+  (function(){ var q = new URLSearchParams(location.search); if (q.get('mode') === 'vet') setMode('vet');
+    var t = q.get('tab'); if (['appointments','prescriptions','chat','register'].indexOf(t) >= 0) { var b = Array.prototype.filter.call(document.querySelectorAll('.vtab'), function(x){ return (x.getAttribute('onclick') || '').indexOf("'" + t + "'") > 0; })[0]; switchVetTab(t, b); } })();
   loadVets();
   renderCalendar([]);
   _updateBellBadge(); // Show badge if there are unread notifications from previous sessions
