@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v13: my pawbook) ─────────────────────────────
+const BLOCK = `${START} (v14: adoption) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -226,6 +226,35 @@ mpRouter.get('/celebrations',                   authenticate, mpCtrl.celebration
 mpRouter.put('/celebrations/pets/:id',          authenticate, mpWrite, mpCtrl.setMilestones);
 mpRouter.post('/celebrations/wish',             authenticate, fulCtrl.limit('mypawbook-wish', 40, 3600), mpCtrl.wish);
 router.use('/mypawbook', mpRouter);
+const adCtrl = require('../controllers/adopt.controller');
+const adRouter = require('express').Router();
+const adWrite = fulCtrl.limit('adopt', 240, 600);
+adRouter.get('/config',                              authenticate, adCtrl.config);
+adRouter.get('/pets',                                authenticate, adCtrl.list);
+adRouter.get('/pets/:id',                            authenticate, adCtrl.detail);
+adRouter.post('/pets/:id/apply',                     authenticate, fulCtrl.limit('adopt-apply', 10, 3600), adCtrl.apply);
+adRouter.post('/pets/:id/wish',                      authenticate, adWrite, adCtrl.toggleWish);
+adRouter.delete('/pets/:id/wish',                    authenticate, adWrite, adCtrl.toggleWish);
+adRouter.get('/wishlist',                            authenticate, adCtrl.wishlist);
+adRouter.put('/preferences',                         authenticate, adWrite, adCtrl.savePrefs);
+adRouter.delete('/preferences',                      authenticate, adWrite, adCtrl.clearPrefs);
+adRouter.get('/applications',                        authenticate, adCtrl.myApplications);
+adRouter.post('/applications/:id/withdraw',          authenticate, adWrite, adCtrl.withdraw);
+adRouter.post('/applications/:id/story',             authenticate, fulCtrl.limit('adopt-story', 5, 3600), adCtrl.shareStory);
+adRouter.get('/shelters',                            authenticate, adCtrl.shelters);
+adRouter.post('/partners/apply',                     authenticate, fulCtrl.limit('adopt-partner', 3, 86400), adCtrl.applyPartner);
+adRouter.get('/partner',                             authenticate, adCtrl.partner);
+adRouter.post('/partner/pets',                       authenticate, adWrite, adCtrl.createPet);
+adRouter.patch('/partner/pets/:id',                  authenticate, adWrite, adCtrl.updatePet);
+adRouter.patch('/partner/applications/:id',          authenticate, adWrite, adCtrl.updateApplication);
+adRouter.post('/partner/applications/:id/followups', authenticate, adWrite, adCtrl.addFollowup);
+adRouter.post('/reports',                            authenticate, fulCtrl.limit('adopt-report', 10, 3600), adCtrl.report);
+adRouter.get('/foster',                              authenticate, adCtrl.myFoster);
+adRouter.put('/foster',                              authenticate, adWrite, adCtrl.saveFoster);
+adRouter.get('/stories',                             authenticate, adCtrl.stories);
+adRouter.get('/admin/queue',                         authenticate, adCtrl.adminQueue);
+adRouter.post('/admin/:kind/:id',                    authenticate, adWrite, adCtrl.adminAction);
+router.use('/adopt', adRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -244,7 +273,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop13');
+  fs.copyFileSync(f, f + '.bak-shop14');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -265,4 +294,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop13 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop14 — restart the app from the MilesWeb panel.');
