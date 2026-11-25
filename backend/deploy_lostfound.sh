@@ -21,7 +21,10 @@ git cat-file -e "$PREV" 2>/dev/null || { echo "Commit $PREV not found in $REPO";
 
 # 1) Check everything before touching anything
 BAD=0
-for f in $FRONT; do if ! git show "$PREV:$f" | cmp -s - "$WEB/$f"; then echo "  DIFFERS from $PREV: $WEB/$f"; BAD=1; fi; done
+for f in $FRONT; do
+  if [ ! -e "$WEB/$f" ]; then [ "$f" = "38_lost_pet_network.html" ] && { echo "  missing (unexpected): $WEB/$f"; BAD=1; } || echo "  not on the server yet (will be added): $f"; continue; fi
+  if ! git show "$PREV:$f" | cmp -s - "$WEB/$f"; then echo "  DIFFERS from $PREV: $WEB/$f"; BAD=1; fi
+done
 for d in $DIRS; do [ -e "$d/lostfound.controller.js" ] && { echo "  already exists (unexpected): $d/lostfound.controller.js"; BAD=1; }; done
 for f in "$API/src/routes/index.js" "$API/routes/index.js"; do
   grep -q "(v14: adoption)" "$f" || { echo "  routes are not at v14 (Adoption): $f"; BAD=1; }
@@ -36,7 +39,7 @@ grep -q '^ANTHROPIC_API_KEY=' "$API/.env" && echo "Translation key found in .env
 
 # 2) Backup
 mkdir -p "$BK/web" "$BK/api-src" "$BK/api"
-for f in $FRONT; do cp -p "$WEB/$f" "$BK/web/"; done
+for f in $FRONT; do [ -e "$WEB/$f" ] && cp -p "$WEB/$f" "$BK/web/"; done
 cp -p "$API/src/routes/index.js" "$BK/api-src/index.js"; cp -p "$API/routes/index.js" "$BK/api/index.js"
 echo "Backup: $BK"
 
@@ -69,4 +72,4 @@ echo "DONE. Now restart the app from the MilesWeb Node.js panel, then run:"
 echo "  bash ~/pb-sync/backend/smoke.sh"
 echo "  curl -s -o /dev/null -w '%{http_code}\\n' https://pawbook.deemona.com/api/v1/lostfound/config   (401 = Lost & Found 2.0 is live)"
 echo "  curl -s https://pawbook.deemona.com/api/v1/lost-pets | head -c 200   (old list, now without phone numbers)"
-echo "Undo (if ever needed): cp $BK/web/* $WEB/ ; cp $BK/api-src/index.js $API/src/routes/index.js ; cp $BK/api/index.js $API/routes/index.js ; rm -f $API/src/controllers/lostfound.controller.js $API/controllers/lostfound.controller.js"
+echo "Undo (if ever needed): cp $BK/web/* $WEB/ ; (rm -f $WEB/18_lost_pet_report.html if it was not there before) ; cp $BK/api-src/index.js $API/src/routes/index.js ; cp $BK/api/index.js $API/routes/index.js ; rm -f $API/src/controllers/lostfound.controller.js $API/controllers/lostfound.controller.js"
