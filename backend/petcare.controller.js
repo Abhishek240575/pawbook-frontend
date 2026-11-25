@@ -623,7 +623,8 @@ exports.deleteVaccination = async (req, res) => {
     if (!old) return R.notFound(res, 'Vaccination not found');
     try { const r = await cols('vaccination_reminders'); if (r.vaccination_id !== undefined) await query(`DELETE FROM vaccination_reminders WHERE vaccination_id::text = $1`, [vid]); }
     catch (x) { console.error('[PetCare] reminder delete:', x.message); }
-    await query(`DELETE FROM pet_vaccinations WHERE ${q(V.id)}::text = $1 AND pet_id::text = $2`, [vid, m.pet.id]);
+    try { await query(`DELETE FROM pet_vaccinations WHERE ${q(V.id)}::text = $1 AND pet_id::text = $2`, [vid, m.pet.id]); }
+    catch (x) { if (x.code === '23503') return res.status(409).json({ success: false, message: 'This record is linked to other PawBook data and cannot be deleted. You can edit it instead.' }); throw x; }
     await query(`DELETE FROM pet_vaccine_details WHERE vaccination_id = $1`, [vid]).catch(() => {});
     await audit(m.pet.id, vid, uid(req.user), 'deleted', { record: old });
     return R.ok(res, { deleted: true });
