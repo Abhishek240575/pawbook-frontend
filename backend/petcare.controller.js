@@ -305,7 +305,13 @@ exports.addVaccination = async (req, res) => {
     // fill every "given" column the table has (older code used different names) so other pages see it too
     ['given_date', 'administered_at', 'date_given', 'vaccinated_on'].forEach(k => { if (c[k] !== undefined) set[k] = given; });
     const nextC = pick(c, ['next_due_date', 'next_due', 'due_date']); if (nextC && next) set[nextC] = next;
-    const clinicC = pick(c, ['vet_name', 'clinic_name', 'clinic']); if (clinicC && b.clinic) set[clinicC] = str(b.clinic, 120);
+    // newer forms send vet_name and clinic separately; older forms send one "vet / clinic" field as clinic
+    const newStyle = b.vet_name !== undefined, vetVal = str(newStyle ? b.vet_name : b.clinic, 120);
+    const clinicC = pick(c, ['vet_name', 'clinic_name', 'clinic']); if (clinicC && vetVal) set[clinicC] = vetVal;
+    const ex = vaxFields({ brand: b.brand, manufacturer: b.manufacturer, clinic: newStyle ? b.clinic : undefined, dose_label: b.dose_label, reaction: b.reaction, cert_doc_id: b.cert_doc_id, batch_number: b.batch_number }, given);
+    if (ex.e.length) return bad(res, ex.e);
+    if (!(await certOk(ex.v.cert_doc_id, m.pet.id, uid(req.user)))) return bad(res, ['cert_doc_id'], 'Certificate not found');
+    const batchC = pick(c, ['batch_number', 'batch_no', 'lot_number']); if (batchC && ex.v.batch_number) set[batchC] = ex.v.batch_number;
     if (c.notes !== undefined && b.notes) set.notes = str(b.notes, 300);
     if (c.user_id !== undefined) { const { rows: u } = await query(`SELECT user_id::text AS id${(await cols('users')).user_no !== undefined ? ', user_no' : ''} FROM users WHERE user_id::text = $1`, [uid(req.user)]); set.user_id = ['integer', 'bigint'].includes(c.user_id) ? u[0].user_no : u[0].id; }
     if (c.reminder_set !== undefined && next) set.reminder_set = true;
@@ -323,7 +329,12 @@ exports.addVaccination = async (req, res) => {
         }
       } catch (x) { console.error('[PetCare] reminder row:', x.message); }
     }
-    return R.created(res, { saved: true });
+    if (ins && ins[0]) {
+      const dv = {}; ['brand', 'manufacturer', 'clinic', 'dose_label', 'reaction', 'cert_doc_id'].forEach(x => { if (ex.v[x]) dv[x] = ex.v[x]; });
+      try { await saveDetails(ins[0].id, m.pet.id, dv); } catch (x) { console.error('[PetCare] vaccine details:', x.message); }
+      await audit(m.pet.id, ins[0].id, uid(req.user), 'created', { name, given_date: given, next_due_date: next });
+    }
+    return R.created(res, { saved: true, id: ins && ins[0] ? String(ins[0].id) : null });
   } catch (e) { return fail(res, 'addVaccination', e); }
 };
 
@@ -438,6 +449,197 @@ exports.deleteDoc = async (req, res) => {
   } catch (e) { return fail(res, 'deleteDoc', e); }
 };
 
+// ── vaccination diary (page 10) ─────────────────────────────────────────────
+// Vaccine families, used to group records and to measure core-vaccine coverage.
+// Core / non-core follows the WSAVA 2024 Guidelines for the Vaccination of Dogs and Cats:
+// core = distemper, adenovirus, parvovirus (dogs) and panleukopenia, calicivirus, herpesvirus (cats);
+// rabies is essential wherever rabies is endemic (India). Everything else depends on lifestyle and the vet's advice.
+const VAX_FAMILIES = {
+  dog: [
+    { key: 'rabies', label: 'Rabies', core: true, rx: /rabi|raksharab|defensor|\barv\b/i,
+      about: 'Protects against rabies, which is present across India. Some city corporations, such as Delhi\'s, ask for an anti-rabies certificate to register a pet dog.' },
+    { key: 'dhpp', label: 'Distemper · Parvovirus · Hepatitis (DHPP)', core: true, rx: /dhp|da2p|dapp|dhlpp|distemper|parvo|adeno|hepatitis|\b[5-9]\s*-?\s*in\s*-?\s*1\b|vanguard|megavac|canigen|eurican|puppy\s*dp/i,
+      about: 'Core combination vaccine (often given as DHPPi or DHPPiL). Puppies get several doses, the last at 16 weeks or older, then a booster.' },
+    { key: 'lepto', label: 'Leptospirosis', core: false, rx: /lepto|dhppil|dhlpp|\bl4\b|\b[7-9]\s*-?\s*in\s*-?\s*1\b/i,
+      about: 'Spread through water and soil contaminated by urine; it can also infect people. WSAVA highly recommends it where leptospirosis is common. Ask your vet.' },
+    { key: 'kennel', label: 'Kennel cough (Bordetella)', core: false, rx: /bordetella|kennel|bronchi|\bkc\b/i,
+      about: 'For dogs that board, go to day care, grooming or dog parks. Boarding facilities often ask for it. Ask your vet.' },
+    { key: 'civ', label: 'Canine influenza', core: false, rx: /influenza|h3n2|h3n8|\bciv\b/i,
+      about: 'Only for dogs at higher risk (kennels, shows, busy dog areas). Ask your vet whether it is needed.' }
+  ],
+  cat: [
+    { key: 'rabies', label: 'Rabies', core: true, rx: /rabi|raksharab|defensor|\barv\b/i,
+      about: 'Protects against rabies, which is present across India. Essential for cats too, even indoor cats.' },
+    { key: 'fvrcp', label: 'Cat flu & panleukopenia (FVRCP)', core: true, rx: /fvrcp|tricat|felocell|rcp|panleu|calici|herpes|rhinotrach|feline\s*parvo|feligen/i,
+      about: 'Core vaccine for every cat. Kittens get several doses, the last at 16 weeks or older, then a booster.' },
+    { key: 'felv', label: 'Feline leukaemia (FeLV)', core: false, rx: /felv|leuk/i,
+      about: 'Recommended for kittens and for cats that go outdoors or live with outdoor cats. Ask your vet.' }
+  ]
+};
+const speciesKey = s => /dog|canine|puppy/i.test(s || '') ? 'dog' : /cat|feline|kitten/i.test(s || '') ? 'cat' : null;
+const LEADS = [7, 14, 30];
+const VEDIT = ['name', 'given_date', 'next_due_date', 'vet_name', 'batch_number', 'notes', 'brand', 'manufacturer', 'clinic', 'dose_label', 'reaction', 'cert_doc_id'];
+
+async function vaxCols() {
+  const c = await cols('pet_vaccinations'); if (!Object.keys(c).length) return null;
+  return { c, id: pick(c, ['id', 'vaccination_id', 'record_id']), name: pick(c, ['vaccine_name', 'name', 'vaccine']), given: pick(c, ['given_date', 'administered_at', 'date_given', 'vaccinated_on', 'date']),
+    next: pick(c, ['next_due_date', 'next_due', 'due_date']), vet: pick(c, ['vet_name', 'clinic_name', 'clinic', 'administered_by']), batch: pick(c, ['batch_number', 'batch_no', 'lot_number']), notes: pick(c, ['notes', 'note']),
+    created: pick(c, ['created_at']) };
+}
+async function vaxRecords(V, petId, where, args) {
+  const sel = [q(V.id) + '::text AS id', q(V.name) + ' AS name', V.given ? q(V.given) + ' AS given' : 'NULL AS given', V.next ? q(V.next) + ' AS next_due' : 'NULL AS next_due',
+    V.vet ? q(V.vet) + ' AS vet' : 'NULL AS vet', V.batch ? q(V.batch) + ' AS batch' : 'NULL AS batch', V.notes ? q(V.notes) + ' AS notes' : 'NULL AS notes', V.created ? q(V.created) + ' AS created_at' : 'NULL AS created_at'];
+  const { rows } = await query(`SELECT ${sel.join(', ')} FROM pet_vaccinations WHERE pet_id::text = $1${where || ''} ORDER BY ${V.given ? q(V.given) + ' DESC NULLS LAST, ' : ''}${q(V.id)} DESC LIMIT 300`, [petId].concat(args || []));
+  if (!rows.length) return [];
+  const det = await query(`SELECT * FROM pet_vaccine_details WHERE pet_id = $1`, [petId]).catch(() => ({ rows: [] }));
+  const D = {}; det.rows.forEach(d => { D[d.vaccination_id] = d; });
+  return rows.map(r => { const d = D[r.id] || {};
+    return { id: r.id, name: r.name, given: d10(r.given), next_due: d10(r.next_due), vet: r.vet || null, batch: r.batch || null, notes: r.notes || null,
+      brand: d.brand || null, manufacturer: d.manufacturer || null, clinic: d.clinic || null, dose_label: d.dose_label || null, reaction: d.reaction || null, cert_doc_id: d.cert_doc_id != null ? String(d.cert_doc_id) : null }; });
+}
+async function audit(petId, vid, owner, action, changes) {
+  try { await query(`INSERT INTO pet_vaccine_audit (pet_id, vaccination_id, owner_id, action, changes) VALUES ($1,$2,$3,$4,$5)`, [petId, String(vid), owner, action, JSON.stringify(changes || {})]); }
+  catch (e) { console.error('[PetCare] vaccine audit:', e.message); }
+}
+async function leadDays(petId) {
+  const { rows } = await query(`SELECT * FROM pet_care_settings WHERE pet_id = $1`, [petId]).catch(() => ({ rows: [] }));
+  const n = rows.length ? Number(rows[0].reminder_lead_days) : NaN; return LEADS.includes(n) ? n : 30;
+}
+// validates the optional detail fields; returns {vals, errors}
+function vaxFields(b, given) {
+  const e = [], v = {};
+  if (b.name !== undefined) { v.name = str(b.name, 100); if (!v.name) e.push('name'); }
+  if (b.given_date !== undefined) { v.given_date = str(b.given_date, 10); if (!DATE_RX.test(v.given_date) || isNaN(Date.parse(v.given_date)) || v.given_date > todayISO()) e.push('given_date'); }
+  if (b.next_due_date !== undefined) { v.next_due_date = str(b.next_due_date, 10) || null; const g = v.given_date || given; if (v.next_due_date && (!DATE_RX.test(v.next_due_date) || isNaN(Date.parse(v.next_due_date)) || (g && v.next_due_date <= g))) e.push('next_due_date'); }
+  [['vet_name', 120], ['batch_number', 60], ['notes', 300], ['brand', 80], ['manufacturer', 80], ['clinic', 120], ['dose_label', 40], ['reaction', 300]].forEach(([k, n]) => { if (b[k] !== undefined) v[k] = str(b[k], n) || null; });
+  if (b.cert_doc_id !== undefined) { v.cert_doc_id = b.cert_doc_id === null || b.cert_doc_id === '' ? null : str(b.cert_doc_id, 20); if (v.cert_doc_id && !/^\d+$/.test(v.cert_doc_id)) e.push('cert_doc_id'); }
+  return { v, e };
+}
+async function certOk(docId, petId, owner) {
+  if (!docId) return true;
+  const { rows } = await query(`SELECT 1 FROM pet_care_docs WHERE doc_id::text = $1 AND pet_id = $2 AND owner_id = $3`, [docId, petId, owner]); return rows.length > 0;
+}
+async function saveDetails(vid, petId, v) {
+  const keys = ['brand', 'manufacturer', 'clinic', 'dose_label', 'reaction', 'cert_doc_id'].filter(k => v[k] !== undefined);
+  if (!keys.length) return;
+  await query(`INSERT INTO pet_vaccine_details (vaccination_id, pet_id, ${keys.join(', ')}) VALUES ($1, $2, ${keys.map((_, i) => '$' + (i + 3)).join(', ')})
+    ON CONFLICT (vaccination_id) DO UPDATE SET ${keys.map(k => k + ' = EXCLUDED.' + k).join(', ')}, updated_at = NOW()`, [String(vid), petId].concat(keys.map(k => v[k])));
+}
+
+// GET /petcare/pets/:id/vaccines — the whole vaccination diary for one pet
+exports.vaccineDiary = async (req, res) => {
+  try {
+    const m = await guard(req, res); if (!m) return;
+    const pet = m.pet, id = pet.id, me = uid(req.user), t = todayISO();
+    const V = await vaxCols();
+    const recs = V && V.name && V.id ? await vaxRecords(V, id) : [];
+    const lead = await leadDays(id);
+    const sk = speciesKey(pet.species), fams = sk ? VAX_FAMILIES[sk] : [];
+    const days = d => Math.round((Date.parse(d) - Date.parse(t)) / 86400000);
+    // group records into vaccine cards
+    const groups = {}, order = [];
+    recs.forEach(r => {
+      const hit = fams.filter(f => f.rx.test(r.name || ''));
+      const keys = hit.length ? hit.map(f => f.key) : ['n:' + String(r.name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()];
+      keys.forEach((k, i) => { if (!groups[k]) { groups[k] = { key: k, doses: [] }; order.push(k); } groups[k].doses.push(Object.assign({ also: i > 0 }, r)); });
+    });
+    const statusOf = latest => {
+      if (!latest) return { status: 'not_recorded' };
+      if (latest.next_due) { const n = days(latest.next_due); return { status: n < 0 ? 'overdue' : n <= lead ? 'due_soon' : 'up_to_date', days: n, next_due: latest.next_due }; }
+      const age = latest.given ? -days(latest.given) : 9999;
+      return { status: age <= 365 ? 'recorded' : 'check', days: null, next_due: null };
+    };
+    const cards = [];
+    fams.forEach(f => { const g = groups[f.key], latest = g ? g.doses[0] : null;
+      cards.push(Object.assign({ key: f.key, label: f.label, core: f.core, about: f.about, in_guide: true, doses: g ? g.doses : [], latest }, statusOf(latest))); });
+    order.filter(k => k.startsWith('n:')).forEach(k => { const g = groups[k], latest = g.doses[0];
+      cards.push(Object.assign({ key: k, label: latest.name, core: false, about: null, in_guide: false, doses: g.doses, latest }, statusOf(latest))); });
+    // coverage of core vaccines only (a defined, sourced list); other vaccines depend on the vet's advice
+    let coverage = { applies: false };
+    if (sk) {
+      const core = cards.filter(c => c.core), cur = core.filter(c => ['up_to_date', 'due_soon', 'recorded'].includes(c.status));
+      coverage = { applies: true, total: core.length, current: cur.length, percent: Math.round(cur.length / core.length * 100),
+        young: pet.age_years != null && pet.age_years <= 0.5,
+        items: core.map(c => ({ key: c.key, label: c.label, status: c.status })),
+        counts: { up_to_date: cards.filter(c => c.status === 'up_to_date' || c.status === 'recorded').length, due_soon: cards.filter(c => c.status === 'due_soon').length, overdue: cards.filter(c => c.status === 'overdue').length } };
+    }
+    const reminders = cards.filter(c => c.next_due && c.latest && !c.latest.also)   // a combination dose is reminded once, under its main vaccine
+     .map(c => ({ key: c.key, label: c.label, next_due: c.next_due, days: c.days, status: c.status, reminder_date: c.days > lead ? addDays(c.next_due, -lead) : null }))
+      .sort((a, b) => a.days - b.days);
+    const [docsR, audR] = await Promise.all([
+      query(`SELECT doc_id::text AS doc_id, doc_kind, title, original_name, mime, size_bytes, uploaded_at FROM pet_care_docs WHERE pet_id = $1 AND owner_id = $2 AND doc_kind = 'certificate' ORDER BY uploaded_at DESC LIMIT 100`, [id, me]),
+      query(`SELECT vaccination_id, action, changes, at FROM pet_vaccine_audit WHERE pet_id = $1 ORDER BY at DESC, audit_id DESC LIMIT 200`, [id]).catch(() => ({ rows: [] }))
+    ]);
+    return R.ok(res, { pet, species_key: sk, lead_days: lead, coverage, cards, records: recs.length, reminders, certificates: docsR.rows,
+      history: audR.rows.map(a => ({ vaccination_id: a.vaccination_id, action: a.action, changes: typeof a.changes === 'string' ? JSON.parse(a.changes) : a.changes, at: a.at })) });
+  } catch (e) { return fail(res, 'vaccineDiary', e); }
+};
+
+// PATCH /petcare/pets/:id/vaccinations/:vid — edit a record (kept in the audit history)
+exports.updateVaccination = async (req, res) => {
+  try {
+    const m = await guard(req, res); if (!m) return;
+    const V = await vaxCols(); if (!V || !V.id) return R.notFound(res, 'Vaccination not found');
+    const vid = str(req.params.vid, 40), old = (await vaxRecords(V, m.pet.id, ` AND ${q(V.id)}::text = $2`, [vid]))[0];
+    if (!old) return R.notFound(res, 'Vaccination not found');
+    const b = req.body || {}, { v, e } = vaxFields(b, old.given);
+    if (v.given_date && v.next_due_date === undefined && old.next_due && old.next_due <= v.given_date) e.push('next_due_date');
+    if (e.length) return bad(res, e);
+    if (!(await certOk(v.cert_doc_id, m.pet.id, uid(req.user)))) return bad(res, ['cert_doc_id'], 'Certificate not found');
+    const map = { name: 'name', given_date: 'given', next_due_date: 'next_due', vet_name: 'vet', batch_number: 'batch', notes: 'notes', brand: 'brand', manufacturer: 'manufacturer', clinic: 'clinic', dose_label: 'dose_label', reaction: 'reaction', cert_doc_id: 'cert_doc_id' };
+    const changes = {}; Object.keys(v).forEach(k => { const o = old[map[k]] == null ? null : String(old[map[k]]), n = v[k] == null ? null : String(v[k]); if (o !== n) changes[k] = [o, n]; });
+    if (!Object.keys(changes).length) return R.ok(res, { saved: true, changed: 0 });
+    const set = {};
+    if (changes.name) set[V.name] = v.name;
+    if (changes.given_date) ['given_date', 'administered_at', 'date_given', 'vaccinated_on'].forEach(k => { if (V.c[k] !== undefined) set[k] = v.given_date; });
+    if (changes.next_due_date && V.next) set[V.next] = v.next_due_date;
+    if (changes.vet_name && V.vet) set[V.vet] = v.vet_name;
+    if (changes.batch_number && V.batch) set[V.batch] = v.batch_number;
+    if (changes.notes && V.notes) set[V.notes] = v.notes;
+    if (changes.next_due_date && V.c.reminder_set !== undefined) set.reminder_set = !!v.next_due_date;
+    const k = Object.keys(set);
+    if (k.length) await query(`UPDATE pet_vaccinations SET ${k.map((x, i) => q(x) + ' = $' + (i + 1)).join(', ')}${V.c.updated_at !== undefined ? ', updated_at = NOW()' : ''} WHERE ${q(V.id)}::text = $${k.length + 1} AND pet_id::text = $${k.length + 2}`, k.map(x => set[x]).concat([vid, m.pet.id]));
+    const dv = {}; ['brand', 'manufacturer', 'clinic', 'dose_label', 'reaction', 'cert_doc_id'].forEach(x => { if (changes[x]) dv[x] = v[x]; });
+    await saveDetails(vid, m.pet.id, dv);
+    if (changes.next_due_date || changes.name) {   // keep the older reminder rows in step; never blocks saving
+      try { const r = await cols('vaccination_reminders');
+        if (r.vaccination_id !== undefined) {
+          if (changes.next_due_date && !v.next_due_date) await query(`DELETE FROM vaccination_reminders WHERE vaccination_id::text = $1`, [vid]);
+          else { const s = {}; if (changes.next_due_date && r.reminder_date !== undefined) s.reminder_date = v.next_due_date; if (changes.name && r.vaccine_name !== undefined) s.vaccine_name = v.name;
+            const sk2 = Object.keys(s); if (sk2.length) await query(`UPDATE vaccination_reminders SET ${sk2.map((x, i) => q(x) + ' = $' + (i + 1)).join(', ')} WHERE vaccination_id::text = $${sk2.length + 1}`, sk2.map(x => s[x]).concat([vid])); }
+        } } catch (x) { console.error('[PetCare] reminder update:', x.message); }
+    }
+    await audit(m.pet.id, vid, uid(req.user), 'updated', changes);
+    return R.ok(res, { saved: true, changed: Object.keys(changes).length });
+  } catch (e) { return fail(res, 'updateVaccination', e); }
+};
+
+// DELETE /petcare/pets/:id/vaccinations/:vid — removes a record; a full copy stays in the audit history
+exports.deleteVaccination = async (req, res) => {
+  try {
+    const m = await guard(req, res); if (!m) return;
+    const V = await vaxCols(); if (!V || !V.id) return R.notFound(res, 'Vaccination not found');
+    const vid = str(req.params.vid, 40), old = (await vaxRecords(V, m.pet.id, ` AND ${q(V.id)}::text = $2`, [vid]))[0];
+    if (!old) return R.notFound(res, 'Vaccination not found');
+    try { const r = await cols('vaccination_reminders'); if (r.vaccination_id !== undefined) await query(`DELETE FROM vaccination_reminders WHERE vaccination_id::text = $1`, [vid]); }
+    catch (x) { console.error('[PetCare] reminder delete:', x.message); }
+    await query(`DELETE FROM pet_vaccinations WHERE ${q(V.id)}::text = $1 AND pet_id::text = $2`, [vid, m.pet.id]);
+    await query(`DELETE FROM pet_vaccine_details WHERE vaccination_id = $1`, [vid]).catch(() => {});
+    await audit(m.pet.id, vid, uid(req.user), 'deleted', { record: old });
+    return R.ok(res, { deleted: true });
+  } catch (e) { return fail(res, 'deleteVaccination', e); }
+};
+
+// PUT /petcare/pets/:id/vaccine-settings {lead_days: 7|14|30}
+exports.setVaccineSettings = async (req, res) => {
+  try {
+    const m = await guard(req, res); if (!m) return;
+    const n = Number((req.body || {}).lead_days); if (!LEADS.includes(n)) return bad(res, ['lead_days'], 'Choose 7, 14 or 30 days');
+    await query(`INSERT INTO pet_care_settings (pet_id, reminder_lead_days) VALUES ($1, $2) ON CONFLICT (pet_id) DO UPDATE SET reminder_lead_days = EXCLUDED.reminder_lead_days, updated_at = NOW()`, [m.pet.id, n]);
+    return R.ok(res, { lead_days: n });
+  } catch (e) { return fail(res, 'setVaccineSettings', e); }
+};
+
 // ── overview (everything the page needs, one call) ───────────────────────────
 // GET /petcare/pets/:id/overview
 exports.overview = async (req, res) => {
@@ -449,12 +651,13 @@ exports.overview = async (req, res) => {
       query(`SELECT log_id::text AS log_id, kind, logged_at, value::float AS value, title, details, data FROM pet_health_logs WHERE pet_id = $1 AND logged_at > NOW() - INTERVAL '3 years' ORDER BY logged_at DESC, log_id DESC LIMIT 1500`, [id]),
       query(`SELECT med_id::text AS med_id, name, dose, frequency, start_date, end_date, next_due, last_given, active, notes, created_at FROM pet_medicines WHERE pet_id = $1 ORDER BY active DESC, created_at DESC LIMIT 100`, [id]),
       query(`SELECT doc_id::text AS doc_id, doc_kind, title, original_name, mime, size_bytes, uploaded_at FROM pet_care_docs WHERE pet_id = $1 AND owner_id = $2 ORDER BY uploaded_at DESC LIMIT 200`, [id, me]),
-      query(`SELECT goal_min FROM pet_care_settings WHERE pet_id = $1`, [id]).catch(() => ({ rows: [] })),
+      query(`SELECT * FROM pet_care_settings WHERE pet_id = $1`, [id]).catch(() => ({ rows: [] })),
       query(`SELECT full_name FROM users WHERE user_id::text = $1`, [me]).catch(() => ({ rows: [] }))
     ]);
     const logs = logsR.rows.map(l => { l.data = typeof l.data === 'string' ? (() => { try { return JSON.parse(l.data); } catch (e) { return {}; } })() : (l.data || {}); return l; });
     const meds = medsR.rows.map(x => Object.assign(x, { start_date: d10(x.start_date), end_date: d10(x.end_date), next_due: d10(x.next_due) }));
     const goal = setR.rows.length ? setR.rows[0].goal_min : null;
+    const vLead = setR.rows.length && LEADS.includes(Number(setR.rows[0].reminder_lead_days)) ? Number(setR.rows[0].reminder_lead_days) : 30;
     const istDay = v => new Date(new Date(v).getTime() + 330 * 60000).toISOString().slice(0, 10);
 
     // weights (logs; fall back to the profile weight)
@@ -488,7 +691,7 @@ exports.overview = async (req, res) => {
     vax.forEach(v => { if (!v.next_due) return; const n = Math.round((Date.parse(v.next_due) - Date.parse(t)) / 86400000);
       // an older record is superseded when the same vaccine was given again later
       if (vax.some(o => o !== v && o.name && v.name && o.name.toLowerCase() === v.name.toLowerCase() && (o.given || '') > (v.given || ''))) return;
-      if (n <= 30) rem.push({ kind: 'vaccine', title: v.name + (/booster|vaccin/i.test(v.name) ? '' : ' vaccine'), detail: n < 0 ? 'Was due ' + fmt(v.next_due) + ' · please book it' : 'Due ' + fmt(v.next_due) + ' · ' + (n === 0 ? 'today' : n === 1 ? 'tomorrow' : n + ' days left'), status: n < 0 ? 'overdue' : 'soon', sort: n }); });
+      if (n <= vLead) rem.push({ kind: 'vaccine', title: v.name + (/booster|vaccin/i.test(v.name) ? '' : ' vaccine'), detail: n < 0 ? 'Was due ' + fmt(v.next_due) + ' · please book it' : 'Due ' + fmt(v.next_due) + ' · ' + (n === 0 ? 'today' : n === 1 ? 'tomorrow' : n + ' days left'), status: n < 0 ? 'overdue' : 'soon', sort: n }); });
     meds.filter(x => x.active && x.next_due && x.frequency !== 'as_needed').forEach(x => { const n = Math.round((Date.parse(x.next_due) - Date.parse(t)) / 86400000);
       rem.push({ kind: 'medicine', ref: x.med_id, title: x.name + (x.dose ? ' · ' + x.dose : ''), detail: n < 0 ? 'Dose was due ' + fmt(x.next_due) : n === 0 ? 'Next dose · today' : 'Next dose · ' + fmt(x.next_due), status: n < 0 ? 'overdue' : n === 0 ? 'soon' : 'ok', sort: n + (n > 0 ? 100 : 0) }); });
     appts.filter(a => a.upcoming).forEach(a => { const n = Math.round((Date.parse(a.date) - Date.parse(t)) / 86400000); rem.push({ kind: 'appointment', title: a.title || 'Vet appointment', detail: fmt(a.date) + (a.time ? ' · ' + a.time : '') + (a.vet ? ' · ' + a.vet : ''), status: 'info', sort: n + 50 }); });

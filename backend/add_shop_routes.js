@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v9: pet health records) ─────────────────────────────
+const BLOCK = `${START} (v10: vaccination diary) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -144,6 +144,10 @@ petcareRouter.get('/pets/:id/overview',          authenticate, pcCtrl.overview);
 petcareRouter.post('/pets/:id/logs',             authenticate, pcWrite, pcCtrl.createLog);
 petcareRouter.put('/pets/:id/goal',              authenticate, pcWrite, pcCtrl.setGoal);
 petcareRouter.post('/pets/:id/vaccinations',     authenticate, pcWrite, pcCtrl.addVaccination);
+petcareRouter.get('/pets/:id/vaccines',          authenticate, pcCtrl.vaccineDiary);
+petcareRouter.patch('/pets/:id/vaccinations/:vid', authenticate, pcWrite, pcCtrl.updateVaccination);
+petcareRouter.delete('/pets/:id/vaccinations/:vid', authenticate, pcWrite, pcCtrl.deleteVaccination);
+petcareRouter.put('/pets/:id/vaccine-settings',  authenticate, pcWrite, pcCtrl.setVaccineSettings);
 petcareRouter.post('/pets/:id/medicines',        authenticate, pcWrite, pcCtrl.addMedicine);
 petcareRouter.post('/pets/:id/documents',        authenticate, fulCtrl.limit('petcare-doc', 30, 3600), pcCtrl.uploadMiddleware, pcCtrl.uploadDoc);
 petcareRouter.delete('/logs/:id',                authenticate, pcWrite, pcCtrl.deleteLog);
@@ -170,7 +174,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop9');
+  fs.copyFileSync(f, f + '.bak-shop10');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -191,4 +195,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop9 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop10 — restart the app from the MilesWeb panel.');

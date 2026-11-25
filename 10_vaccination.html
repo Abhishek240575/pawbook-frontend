@@ -2,226 +2,375 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vaccination Intelligence – PawBook</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="robots" content="noindex">
+<title>Vaccination Diary – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
-  --pb-green:#22c55e;--pb-green-soft:#dcfce7;--pb-red:#ef4444;--pb-red-soft:#fee2e2;
-  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;--pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
-  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;--pb-orange:#f97316;--pb-orange-soft:#ffedd5;
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
-  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
-  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
-  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --pb-nav-h:56px;
+  /* PawBook design system (same tokens as the Animal Welfare page) */
+  --blue:#1877F2;--blue-d:#1a56db;--navy:#0f2057;--purple:#8b5cf6;
+  --coral:#e5484d;--coral-d:#c2353a;--coral-soft:#fff1f1;
+  --green:#16a34a;--amber:#f59e0b;
+  --bg:#f0f4fa;--card:#fff;--line:#e4e9f2;--line2:#eef2f8;--text:#1a1f36;--muted:#65676b;--sub:#3d4560;
+  --r:18px;--r-sm:12px;--pill:999px;--shadow:0 6px 24px rgba(15,32,87,.08);--nav-h:60px;
+  /* soft category tints */
+  --t-blue:#e8f1ff;--t-blue-d:#1a56db;--t-coral:#fff1f1;--t-coral-d:#c2353a;--t-green:#e7f7ee;--t-green-d:#15803d;
+  --t-amber:#fff6e0;--t-amber-d:#b45309;--t-purple:#f1ecff;--t-purple-d:#6d4fd8;--t-teal:#e3f7f5;--t-teal-d:#0f766e;
+  --grad:linear-gradient(135deg,#e5484d,#f97316);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
-a{text-decoration:none;color:inherit}
-button{font-family:'Inter',sans-serif;cursor:pointer}
-input,textarea,select{font-family:'Inter',sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid rgba(24,119,242,.35);outline-offset:2px}
 
-/* NAV */
-.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
-.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
-.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.pb-nav-search{flex:1;max-width:240px;height:40px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
-.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;width:100%;color:var(--pb-text)}
-.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
-.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
-.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
-.pb-nav-tab.active{color:var(--pb-blue)}
-.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-blue);border-radius:3px 3px 0 0}
-.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
-.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px}
-.pb-icon-btn:hover{background:var(--pb-border)}
-.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+/* ── top bar (matches the Animal Welfare page) ── */
+.nav{position:sticky;top:0;z-index:400;height:var(--nav-h);background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:10px;padding:0 16px}
+.nav .menu{width:38px;height:38px;border-radius:50%;border:none;background:transparent;font-size:21px;display:flex;align-items:center;justify-content:center;color:#1a3a6b}
+.nav .menu:hover{background:#f0f2f5}
+.logo{display:flex;align-items:center;gap:10px;color:var(--blue);font-size:21px;font-weight:900;cursor:pointer}
+.logo i{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:19px;font-style:normal}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.crumb b{color:var(--coral)}
+.nav .sp{flex:1}
+.nav-ic{width:38px;height:38px;border-radius:50%;border:none;background:#f0f2f5;color:#1a3a6b;font-size:19px;display:flex;align-items:center;justify-content:center}
+.nav-ic:hover{background:#e4ebf7;color:var(--blue)}
+.nav-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:none}
+.nav-av img{width:100%;height:100%;object-fit:cover}
+@media(max-width:640px){.crumb,.nav .hide-s{display:none}.logo{font-size:19px}}
 
-/* BUTTONS */
-.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
-.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
-.pb-btn-green{background:var(--pb-green);color:#fff}
-.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
-.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
+/* ── layout ── */
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px 120px}
+.hero-band{position:relative;overflow:hidden;background:radial-gradient(1200px 500px at 85% -10%,#e5edff 0%,transparent 60%),linear-gradient(180deg,#f7f9ff 0%,#eef3fb 100%);margin:0 -24px;padding:0 24px}
+.hero-band::before{content:'';position:absolute;inset:0;opacity:.5;background-image:radial-gradient(circle at 20px 20px,rgba(24,119,242,.07) 3px,transparent 4px);background-size:44px 44px;pointer-events:none}
+.pets{position:relative;display:flex;gap:8px;overflow-x:auto;padding:18px 0 4px;scrollbar-width:none;max-width:1240px;margin:0 auto}.pets::-webkit-scrollbar{display:none}
+.pchip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:700;font-size:13.5px;color:var(--navy);flex-shrink:0;box-shadow:0 2px 8px rgba(24,119,242,.06)}
+.pchip.on{border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 3px rgba(24,119,242,.12)}
+.pchip .av{width:32px;height:32px}
+.pchip.add{padding:5px 15px;color:var(--blue-d);border-style:dashed;background:rgba(255,255,255,.7)}
+.av{border-radius:50%;background:var(--t-blue);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
 
-/* LAYOUT */
-.vi-layout{max-width:1100px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:300px 1fr;gap:20px}
-@media(max-width:768px){.vi-layout{grid-template-columns:1fr}.vi-sidebar{display:none}}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.ch{display:flex;align-items:center;gap:10px;padding:18px 22px 6px;flex-wrap:wrap}
+.ch h2{font-size:17px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+.ch h2 i{width:32px;height:32px;border-radius:10px;background:var(--t-blue);color:var(--blue);display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.ch .badge{font-size:12px;font-weight:700;padding:4px 11px;border-radius:var(--pill);background:var(--coral-soft);color:var(--coral-d)}
+.cb{padding:8px 22px 22px}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}}
+.sec{margin-top:18px}
+.sec-title{font-size:22px;font-weight:900;color:var(--navy);margin:34px 0 4px}
+.sec-sub{font-size:13.5px;color:var(--muted);margin-bottom:14px}
 
-/* CARDS */
-.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
-.pb-card-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
-.pb-card-header h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+/* ── pet hero ── */
+.hero{position:relative;max-width:1240px;margin:0 auto;padding:22px 0 64px;display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #dbe4f3;color:var(--blue-d);font-size:12.5px;font-weight:700;box-shadow:0 2px 8px rgba(24,119,242,.08)}
+.eyebrow i{color:var(--coral);font-size:16px}
+.hero h1{font-size:48px;line-height:1.08;font-weight:900;color:var(--navy);margin:14px 0 10px;letter-spacing:-1px}
+.hero h1 .accent{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .tag{font-size:16px;line-height:1.6;color:var(--sub);max-width:520px}
+.facts{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px}
+.fact{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--sub)}
+.fact i{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:var(--pill)}
+.st-great{background:var(--t-green);color:var(--t-green-d)}.st-ok{background:var(--t-blue);color:var(--t-blue-d)}.st-care{background:var(--t-amber);color:var(--t-amber-d)}.st-new{background:var(--t-purple);color:var(--t-purple-d)}
+.collage{position:relative;display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:420px}
+.collage.one{grid-template-columns:1fr}.collage.one .ph{grid-row:1/3}
+.collage.two{grid-template-columns:1.35fr 1fr}.collage.two .ph{grid-row:1/3}
+.ph-sample{position:absolute;left:12px;top:12px;z-index:3;padding:4px 10px;border-radius:999px;background:rgba(15,32,87,.6);color:#fff;font-size:11px;font-weight:700;letter-spacing:.02em;backdrop-filter:blur(4px)}
+.px-credit{position:absolute;right:4px;bottom:-22px;font-size:10.5px;color:var(--muted)}.px-credit a{color:inherit}
+.ph{position:relative;border-radius:22px;overflow:hidden;background:#dfe7f5;box-shadow:0 14px 34px rgba(15,32,87,.16)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.ph:hover img{transform:scale(1.04)}
+.ph-main{grid-row:1/3}
+.ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35));pointer-events:none}
+.ph-tag{position:absolute;left:12px;bottom:12px;z-index:2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.ph-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#e8f1ff,#f1ecff);color:var(--navy);font-weight:700;font-size:13px;text-align:center;padding:16px}
+.ph-empty .e{font-size:76px;line-height:1}
+.ph-empty::after{display:none}
+.ph .cam{position:absolute;right:12px;top:12px;z-index:3;height:34px;padding:0 12px;border-radius:999px;border:none;background:rgba(255,255,255,.95);font-size:12.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.float-card{position:absolute;z-index:3;background:#fff;border-radius:16px;box-shadow:0 14px 34px rgba(15,32,87,.2);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.float-1{left:-22px;bottom:30px;max-width:260px}
+.float-2{right:-10px;top:-14px;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;color:var(--navy);gap:6px}
+.float-2 i{color:var(--coral)}
+.fc-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex-shrink:0}
+.fc-t{font-size:13px;font-weight:800;color:var(--navy);line-height:1.3}
+.fc-s{font-size:11.5px;color:var(--muted)}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:24px;padding-bottom:56px}.collage{height:300px}.float-1{left:10px;bottom:-18px}.float-2{right:8px}.hero h1{font-size:36px}}
+@media(max-width:520px){.collage{height:250px;grid-template-columns:1fr}.collage .ph:not(.ph-main){display:none}.hero h1{font-size:31px}}
 
-/* COVERAGE RING */
-.coverage-wrap{padding:24px 20px 16px;display:flex;flex-direction:column;align-items:center}
-.ring-container{position:relative;width:120px;height:120px}
-.ring-container svg{transform:rotate(-90deg)}
-.ring-bg{fill:none;stroke:#f0f2f5;stroke-width:10}
-.ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
-.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring-pct{font-size:28px;font-weight:900}
-.ring-label{font-size:10px;font-weight:600;color:var(--pb-text3);text-transform:uppercase;letter-spacing:.5px}
-.coverage-status{font-size:14px;font-weight:700;margin-top:8px}
-.coverage-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 20px 16px}
-.cov-stat{background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:10px;text-align:center}
-.cov-stat-val{font-size:18px;font-weight:900}
-.cov-stat-label{font-size:10px;color:var(--pb-text2);margin-top:2px}
+/* stats strip overlapping the hero (like the emergency strip) */
+.stats{position:relative;z-index:5;margin-top:-34px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;align-items:center;gap:12px}
+.stat .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.stat b{display:block;font-size:22px;font-weight:900;color:var(--navy);line-height:1.1}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:12px}.stat .ic{width:38px;height:38px;font-size:19px}.stat b{font-size:19px}}
 
-/* PET SELECTOR */
-.pet-selector{padding:14px}
-.pet-sel-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:var(--pb-radius-sm);cursor:pointer;border:2px solid transparent;transition:all .15s}
-.pet-sel-item:hover{background:var(--pb-bg)}
-.pet-sel-item.active{background:var(--pb-blue-soft);border-color:var(--pb-blue)}
-.pet-sel-avatar{width:40px;height:40px;border-radius:50%;font-size:20px;display:flex;align-items:center;justify-content:center;background:var(--pb-bg);flex-shrink:0}
-.pet-sel-info{flex:1;min-width:0}
-.pet-sel-name{font-size:13px;font-weight:700}
-.pet-sel-breed{font-size:11px;color:var(--pb-text3)}
-.pet-cov-badge{padding:3px 8px;border-radius:var(--pb-pill);font-size:11px;font-weight:800}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:14px;font-size:14px;font-weight:700;border:none;white-space:nowrap;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:active{transform:translateY(1px)}
+.btn-o{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(229,72,77,.3)}.btn-o:hover{filter:brightness(1.05);box-shadow:0 10px 24px rgba(229,72,77,.38)}
+.btn-w{background:#fff;color:var(--navy);border:1.5px solid #dbe4f3}.btn-w:hover{border-color:var(--blue);color:var(--blue)}
+.btn-b{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;box-shadow:0 8px 20px rgba(24,119,242,.26)}
+.btn-s{height:36px;padding:0 14px;font-size:13px;border-radius:11px}
+.btn-link{background:none;border:none;color:var(--blue);font-weight:700;font-size:13px;padding:0}
+.btn[disabled]{opacity:.55;pointer-events:none}
 
-/* UPCOMING REMINDERS */
-.reminder-list{padding:12px;display:flex;flex-direction:column;gap:8px}
-.reminder-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
-.reminder-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.reminder-info{flex:1;min-width:0}
-.reminder-name{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.reminder-when{font-size:11px;color:var(--pb-text2);margin-top:1px}
-.reminder-badge{padding:3px 8px;border-radius:var(--pb-pill);font-size:10px;font-weight:700;white-space:nowrap}
+/* wellness */
+.well{display:flex;gap:20px;align-items:center}
+.ring{position:relative;width:118px;height:118px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:30px;font-weight:900;color:var(--navy);line-height:1}
+.ring .num span{font-size:11px;color:var(--muted);font-weight:600}
+.well h3{font-size:18px;font-weight:800;color:var(--navy)}
+.well p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.inds{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.ind{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center}
+.ind .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.ind .t{font-size:13.5px;font-weight:700;color:var(--navy)}.ind .t small{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.ind .bar{grid-column:2/4;height:6px;border-radius:9px;background:#edf1f8;overflow:hidden;margin-top:-4px}
+.ind .bar i{display:block;height:100%;border-radius:9px}
+.ind .pts{font-size:12px;font-weight:700;color:var(--muted)}
+.disc{font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.55;background:#f5f7fb;border:1px solid var(--line2);border-radius:12px;padding:9px 12px;display:flex;gap:8px}
+.disc i{color:var(--blue);font-size:15px;margin-top:1px}
 
-/* MAIN TABS */
-.vi-tabs{display:flex;gap:2px;padding:0 20px;border-bottom:1px solid var(--pb-border);overflow-x:auto;scrollbar-width:none}
-.vi-tabs::-webkit-scrollbar{display:none}
-.vi-tab{padding:14px 14px;font-size:13px;font-weight:600;color:var(--pb-text2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
-.vi-tab:hover{color:var(--pb-text)}
-.vi-tab.active{color:var(--pb-blue);border-bottom-color:var(--pb-blue)}
-.vi-tab-content{display:none}
-.vi-tab-content.active{display:block}
+/* reminders */
+.rems{display:flex;flex-direction:column;gap:10px}
+.rem{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe}
+.rem .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rem .t{flex:1;min-width:0}.rem .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.rem .t span{font-size:12.5px;color:var(--muted)}
+.pill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:var(--pill);white-space:nowrap}
+.p-over{background:var(--coral-soft);color:var(--coral-d)}.p-soon{background:var(--t-amber);color:var(--t-amber-d)}.p-ok{background:var(--t-green);color:var(--t-green-d)}.p-info{background:var(--t-blue);color:var(--t-blue-d)}
+.c-peach{background:var(--t-coral);color:var(--t-coral-d)}.c-sage{background:var(--t-green);color:var(--t-green-d)}.c-lav{background:var(--t-purple);color:var(--t-purple-d)}.c-sky{background:var(--t-blue);color:var(--t-blue-d)}.c-coral{background:var(--t-coral);color:var(--t-coral-d)}.c-amber{background:var(--t-amber);color:var(--t-amber-d)}.c-teal{background:var(--t-teal);color:var(--t-teal-d)}
 
-/* SCHEDULE TABLE */
-.vax-schedule{padding:20px;display:flex;flex-direction:column;gap:10px}
-.vax-row{border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);overflow:hidden}
-.vax-row-header{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;transition:background .15s}
-.vax-row-header:hover{background:var(--pb-bg)}
-.vax-status-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-.vax-status-dot.done{background:var(--pb-green)}
-.vax-status-dot.due-soon{background:var(--pb-amber)}
-.vax-status-dot.overdue{background:var(--pb-red)}
-.vax-status-dot.not-given{background:#cbd5e1}
-.vax-row-name{font-size:14px;font-weight:700;flex:1}
-.vax-row-next{font-size:12px;color:var(--pb-text2)}
-.vax-status-pill{padding:4px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:700;white-space:nowrap}
-.vax-status-pill.done{background:var(--pb-green-soft);color:#166534}
-.vax-status-pill.due-soon{background:var(--pb-amber-soft);color:#92400e}
-.vax-status-pill.overdue{background:var(--pb-red-soft);color:var(--pb-red)}
-.vax-status-pill.not-given{background:var(--pb-bg);color:var(--pb-text3)}
-.vax-row-expand{font-size:16px;color:var(--pb-text3);transition:transform .2s;flex-shrink:0}
-.vax-row.open .vax-row-expand{transform:rotate(180deg)}
-.vax-row-body{display:none;padding:14px;border-top:1px solid var(--pb-border);background:var(--pb-bg);font-size:13px;line-height:1.7;color:var(--pb-text2)}
-.vax-row.open .vax-row-body{display:block}
-.vax-history-entry{display:flex;align-items:center;gap:8px;margin-top:8px;padding:8px 10px;background:#fff;border-radius:var(--pb-radius-sm)}
-.vax-history-date{font-size:12px;font-weight:700;color:var(--pb-text);min-width:90px}
-.vax-history-vet{font-size:12px;color:var(--pb-text3)}
-.vax-row-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+/* quick actions: white cards with tinted icon tiles (like "How PawBook helps") */
+.qa{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1000px){.qa{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.qa{grid-template-columns:repeat(2,1fr);gap:10px}}
+.qa button{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;text-align:left;display:flex;flex-direction:column;gap:10px;min-height:104px;font-weight:700;font-size:13.5px;line-height:1.3;color:var(--navy);transition:transform .12s,box-shadow .12s,border-color .12s}
+.qa button:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(15,32,87,.12);border-color:#cfdaf0}
+.qa button i{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
 
-/* BREED GUIDE */
-.breed-guide-wrap{padding:20px;display:flex;flex-direction:column;gap:16px}
-.breed-hero{background:linear-gradient(135deg,#1877F2,#8b5cf6);border-radius:var(--pb-radius);padding:20px;color:#fff;display:flex;align-items:center;gap:16px}
-.breed-hero-icon{font-size:48px;flex-shrink:0}
-.breed-hero-title{font-size:18px;font-weight:900}
-.breed-hero-sub{font-size:13px;opacity:.85;margin-top:4px}
-.breed-phase{border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);overflow:hidden}
-.breed-phase-header{padding:12px 14px;background:var(--pb-bg);font-size:13px;font-weight:800;display:flex;align-items:center;gap:8px}
-.breed-phase-body{padding:14px;display:flex;flex-direction:column;gap:8px}
-.breed-phase-vax{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--pb-radius-sm);background:var(--pb-bg)}
-.breed-phase-vax-name{font-size:13px;font-weight:600;flex:1}
-.breed-phase-vax-when{font-size:11px;color:var(--pb-text3)}
-.breed-intel{padding:14px;border-radius:var(--pb-radius-sm);border-left:4px solid var(--pb-blue);background:var(--pb-blue-soft)}
-.breed-intel-title{font-size:13px;font-weight:700;color:var(--pb-blue);display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.breed-intel-text{font-size:12px;color:var(--pb-text2);line-height:1.6}
+/* tabs (segmented bar) */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:7px;background:#fff;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);scrollbar-width:none;margin:30px 0 16px;position:sticky;top:calc(var(--nav-h) + 8px);z-index:50}
+.tabs::-webkit-scrollbar{display:none}
+.tab{height:42px;padding:0 15px;border-radius:11px;border:none;background:none;font-weight:700;font-size:13.5px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tab i{font-size:18px}
+.tab:hover{color:var(--navy);background:#f5f7fb}.tab.on{background:var(--t-blue);color:var(--blue)}
+.tab.rec{margin-left:auto}.tab.rec.on{background:var(--t-purple);color:var(--t-purple-d)}
+.panel{display:none}.panel.on{display:block}
 
-/* INDIA SCHEDULE */
-.india-schedule{padding:20px;display:flex;flex-direction:column;gap:14px}
-.india-mandate{background:linear-gradient(135deg,#f97316,#ef4444);border-radius:var(--pb-radius);padding:16px 20px;color:#fff}
-.india-mandate-title{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
-.india-mandate-sub{font-size:12px;opacity:.85;margin-top:4px}
-.india-vax-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
-.india-vax-flag{font-size:16px;width:30px;text-align:center;flex-shrink:0}
-.india-vax-name{font-size:14px;font-weight:700;flex:1}
-.india-vax-law{font-size:11px;color:var(--pb-text3);margin-top:2px}
-.india-vax-req{padding:3px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:700;white-space:nowrap}
-.india-vax-req.mandatory{background:var(--pb-red-soft);color:var(--pb-red)}
-.india-vax-req.recommended{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.india-vax-req.seasonal{background:var(--pb-amber-soft);color:#92400e}
-.seasonal-alert{padding:14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-amber);background:var(--pb-amber-soft);display:flex;gap:10px}
+/* timeline */
+.month{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:20px 2px 10px;display:flex;align-items:center;gap:10px}
+.month::after{content:'';flex:1;height:1px;background:var(--line)}
+.month:first-child{margin-top:4px}
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ev{background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;border:1px solid var(--line);border-top:4px solid var(--evc,#e4e9f2);box-shadow:0 2px 10px rgba(15,32,87,.04)}
+.ev .top{display:flex;gap:10px;align-items:center}
+.ev .ic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ev b{font-size:14px;font-weight:700;color:var(--navy);line-height:1.3}
+.ev .d{font-size:12px;color:var(--muted)}
+.ev .who{font-size:12.5px;font-weight:600;color:var(--sub);display:flex;gap:5px;align-items:center}
+.ev p{font-size:13px;line-height:1.55;color:var(--sub)}
+.ev img{width:100%;height:150px;object-fit:cover;border-radius:12px;margin-top:4px}
+.ev .del{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:none;background:#f5f7fb;font-size:14px;color:var(--muted);opacity:0;transition:opacity .15s}
+.ev:hover .del,.ev:focus-within .del{opacity:1}
+@media(hover:none){.ev .del{opacity:.8}}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.fchip{height:32px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:12.5px;color:var(--muted)}
+.fchip.on{border-color:var(--blue);color:var(--blue);background:var(--t-blue)}
 
-/* CERTIFICATE */
-.cert-wrap{padding:20px;display:flex;flex-direction:column;gap:16px}
-.cert-preview{border:2px solid var(--pb-border);border-radius:var(--pb-radius);overflow:hidden}
-.cert-header{background:var(--pb-grad);padding:20px 24px;color:#fff;display:flex;align-items:center;gap:14px}
-.cert-header-icon{font-size:36px}
-.cert-header-title{font-size:18px;font-weight:900}
-.cert-header-sub{font-size:12px;opacity:.85;margin-top:3px}
-.cert-body{padding:20px 24px}
-.cert-pet-row{display:flex;gap:20px;padding:14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);margin-bottom:16px;flex-wrap:wrap}
-.cert-pet-field{flex:1;min-width:120px}
-.cert-pet-label{font-size:10px;font-weight:700;color:var(--pb-text3);text-transform:uppercase;letter-spacing:.5px}
-.cert-pet-val{font-size:14px;font-weight:700;color:var(--pb-text);margin-top:3px}
-.cert-vax-table{width:100%;border-collapse:collapse;font-size:13px}
-.cert-vax-table th{text-align:left;padding:8px 10px;background:var(--pb-bg);font-size:11px;font-weight:700;color:var(--pb-text3);text-transform:uppercase;letter-spacing:.5px}
-.cert-vax-table td{padding:9px 10px;border-bottom:1px solid var(--pb-border)}
-.cert-vax-table tr:last-child td{border-bottom:none}
-.cert-footer{padding:14px 24px;border-top:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;background:var(--pb-bg)}
-.cert-footer-vet{font-size:12px;color:var(--pb-text2)}
-.cert-qr-placeholder{width:50px;height:50px;border:2px solid var(--pb-border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px}
-.cert-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* lists */
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe;flex-wrap:wrap}
+.row .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.row .t{flex:1;min-width:160px}.row .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.row .t span{font-size:12.5px;color:var(--muted)}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty .e{font-size:40px;margin-bottom:8px}
+.empty b{display:block;color:var(--navy);font-size:16px;font-weight:800;margin-bottom:4px}
+.empty p{font-size:13.5px;max-width:420px;margin:0 auto 14px;line-height:1.55}
 
-/* REMINDER SETTINGS */
-.reminder-settings{padding:20px;display:flex;flex-direction:column;gap:14px}
-.reminder-channel{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
-.reminder-channel-icon{width:40px;height:40px;border-radius:var(--pb-radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.reminder-channel-info{flex:1}
-.reminder-channel-name{font-size:14px;font-weight:700}
-.reminder-channel-sub{font-size:11px;color:var(--pb-text2);margin-top:2px}
-.toggle{width:44px;height:24px;background:#cbd5e1;border-radius:var(--pb-pill);position:relative;cursor:pointer;border:none;transition:background .2s;flex-shrink:0}
-.toggle.on{background:var(--pb-blue)}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.toggle.on::after{left:23px}
-.reminder-advance{display:flex;flex-direction:column;gap:6px}
-.advance-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--pb-radius-sm);border:2px solid var(--pb-border);cursor:pointer;transition:all .15s}
-.advance-option.selected{border-color:var(--pb-blue);background:var(--pb-blue-soft)}
-.advance-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--pb-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
-.advance-option.selected .advance-radio{border-color:var(--pb-blue);background:var(--pb-blue)}
-.advance-option.selected .advance-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+/* daily wellness */
+.dw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.dw{grid-template-columns:repeat(2,1fr)}}
+.dws{border-radius:16px;padding:14px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
+.dws i{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:6px}
+.dws b{font-size:21px;font-weight:900;color:var(--navy);line-height:1.1}.dws span{font-size:12.5px;font-weight:600;color:var(--sub)}
+.dws small{font-size:11.5px;color:var(--muted)}
+button.dws:hover{border-color:#cfdaf0;box-shadow:var(--shadow)}
+.week{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:14px;padding:0 2px}
+.wk{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.wk .b{width:100%;max-width:36px;border-radius:8px 8px 4px 4px;background:#cfe0fb;min-height:4px}
+.wk.today .b{background:linear-gradient(180deg,var(--blue),var(--purple))}
+.wk span{font-size:11.5px;font-weight:600;color:var(--muted)}.wk em{font-style:normal;font-size:11px;font-weight:700;color:var(--navy)}
+.moods{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mood{height:38px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:13px;color:var(--sub)}
+.mood.on{background:var(--t-purple);border-color:#cbbdf7;color:var(--t-purple-d)}
+.q{margin-top:16px;font-size:13.5px;font-weight:700;color:var(--navy)}
+.streak{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#fff6f0,#fff1f1);border:1px solid #ffe0d2;margin-top:14px;font-weight:700;font-size:13.5px;color:var(--navy)}
+.streak i{font-size:22px;color:#f97316}
 
-/* BOTTOM NAV */
-.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);z-index:300}
-@media(max-width:768px){.bnav{display:flex}}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;color:var(--pb-text3);cursor:pointer;border:none;background:transparent}
-.bnav-item.active,.bnav-item:hover{color:var(--pb-blue)}
-.bnav-item i{font-size:22px}
+/* weight chart */
+.wchart{position:relative;height:210px;margin:12px 0 6px}
+.wchart svg{width:100%;height:100%;overflow:visible}
+.wtip{position:absolute;background:var(--navy);color:#fff;font-size:12px;font-weight:700;border-radius:10px;padding:6px 9px;pointer-events:none;transform:translate(-50%,-118%);white-space:nowrap;display:none}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:flex-end;justify-content:center}
-@media(min-width:600px){.modal-overlay{align-items:center}}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;animation:slideUp .25s ease}
-@media(min-width:600px){.modal{border-radius:16px}}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-.modal-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
-.modal-header h3{font-size:16px;font-weight:800}
-.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;font-size:16px}
-.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px}
-.modal-footer{padding:14px 20px;border-top:1px solid var(--pb-border);display:flex;gap:8px;justify-content:flex-end}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-label{font-size:13px;font-weight:600}
-.form-input{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;transition:border .15s}
-.form-input:focus{border-color:var(--pb-blue)}
-.form-select{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;background:#fff}
-.form-textarea{border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:10px 12px;font-size:14px;outline:none;resize:vertical;min-height:70px}
+/* memories */
+.mems{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.mem{border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 2px 10px rgba(15,32,87,.05);position:relative}
+.mem img{width:100%;height:170px;object-fit:cover;display:block}
+.mem .noimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;background:linear-gradient(135deg,#e8f1ff,#f1ecff)}
+.mem .c{padding:11px 13px}.mem b{font-size:14px;font-weight:700;color:var(--navy);display:block}.mem span{font-size:12px;color:var(--muted)}
+.mem p{font-size:12.5px;margin-top:4px;line-height:1.5;color:var(--sub)}
+
+/* AI card */
+.ai{display:flex;gap:16px;align-items:center;padding:18px 20px;border-radius:var(--r);background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;margin-top:18px;flex-wrap:wrap;box-shadow:0 12px 30px rgba(24,119,242,.25)}
+.ai .ic{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:27px}
+.ai .t{flex:1;min-width:200px}.ai b{font-size:16px;font-weight:800;display:block}.ai span{font-size:12.5px;opacity:.9;line-height:1.5}
+.ai .btn-w{border:none}
+
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(15,32,87,.45);z-index:600;display:none;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+@media(min-width:620px){.mo{align-items:center}}
+.md{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;border-radius:22px 22px 0 0;animation:up .22s ease}
+@media(min-width:620px){.md{border-radius:22px}}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.mh{display:flex;align-items:center;gap:10px;padding:18px 22px 8px}
+.mh h3{flex:1;font-size:19px;font-weight:800;color:var(--navy)}
+.mx{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;font-size:16px}
+.mb{padding:6px 22px 8px;display:flex;flex-direction:column;gap:14px}
+.mf{padding:12px 22px 22px;display:flex;gap:8px;justify-content:flex-end}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl>span{font-size:13px;font-weight:700;color:#2b3250}
+.fl small{font-size:12px;color:var(--muted)}
+.fi{height:48px;border:1.5px solid #dfe5ef;border-radius:12px;padding:0 14px;font-size:14px;background:#f8fafd;outline:none;width:100%;transition:border-color .15s,background .15s}
+textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-height:1.55}
+.fi:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px rgba(24,119,242,.1)}
+.fl.bad .fi{border-color:var(--coral);background:#fff}.fl .err{display:none;color:var(--coral-d);font-size:12px;font-weight:600}.fl.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.seg{display:flex;flex-wrap:wrap;gap:7px}
+.seg label{cursor:pointer}.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border-radius:11px;border:1.5px solid #dfe5ef;font-weight:600;font-size:13px;background:#f8fafd}
+.seg input:checked+span{background:var(--t-blue);border-color:var(--blue);color:var(--blue)}
+.seg input:focus-visible+span{outline:3px solid rgba(24,119,242,.35)}
+
+/* health card */
+.hcard{border-radius:18px;padding:18px;background:linear-gradient(135deg,#f7f9ff,#eef3fb);border:1px solid #dbe4f3}
+.hcard .top{display:flex;gap:14px;align-items:center}
+.hcard .av{width:74px;height:74px;border-radius:20px;font-size:36px;border:3px solid #fff;box-shadow:0 6px 16px rgba(15,32,87,.12)}
+.hcard h4{font-size:20px;font-weight:900;color:var(--navy)}
+.hcard .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:12px}
+.hcard .kv span{color:var(--muted)}.hcard .kv b{font-weight:700;color:var(--navy)}
+.hcard ul{margin:8px 0 0 18px;font-size:13px;line-height:1.65}
+
+/* toast etc */
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;font-size:13.5px;opacity:0;transition:all .25s;z-index:700;pointer-events:none;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(15,32,87,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{background:linear-gradient(90deg,#e8edf6 25%,#f3f6fb 50%,#e8edf6 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:var(--r)}
+@keyframes sk{to{background-position:-200% 0}}
+.muted{color:var(--muted)}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;background:#fff;border-top:1px solid var(--line);z-index:300;padding-bottom:env(safe-area-inset-bottom)}
+@media(max-width:768px){.bnav{display:flex}.wrap{padding:0 16px 110px}.hero-band{margin:0 -16px;padding:0 16px}}
+.bnav button{flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted)}
+.bnav button i{font-size:22px}.bnav button.on{color:var(--blue)}
+@media print{
+  body{background:#fff}.nav,.bnav,.tabs,.qa,.no-print,#drawer-panel,#drawer-overlay{display:none!important}
+  body.print-card .wrap{display:none}body.print-card #cardModal{display:block!important;position:static;background:none}body.print-card #cardModal .md{box-shadow:none;max-height:none;animation:none}
+  body.print-card #cardModal .mf,body.print-card #cardModal .mx{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── vaccination diary (page 10) ── */
+.c-grey{background:#f1f3f8;color:#6b7387}
+.p-none{background:#f1f3f8;color:#5b6478}
+.p-chk{background:var(--t-blue);color:var(--t-blue-d)}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--sub);padding:5px 12px 5px 6px;border-radius:var(--pill);background:#f7f9fc;border:1px solid var(--line2)}
+.legend b{min-width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.core{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.core .row{padding:10px 12px}
+.young{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#f1ecff,#e8f1ff);font-size:13px;line-height:1.55;color:var(--sub)}
+.young i{font-size:20px;color:var(--purple)}
+.rem .act{display:flex;gap:6px;align-items:center}
+.rem.over{background:linear-gradient(90deg,#fff6f5,#fff);border-color:#ffd9d6}
+.rem.soon{background:linear-gradient(90deg,#fffaf0,#fff);border-color:#ffe8bf}
+.qa.q4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.qa.q4{grid-template-columns:repeat(2,1fr)}}
+.qa button small{font-size:12px;font-weight:500;color:var(--muted);margin-top:-6px}
+/* vaccine cards */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
+@media(max-width:420px){.vgrid{grid-template-columns:1fr}}
+.vc{background:#fff;border:1px solid var(--line);border-top:4px solid var(--evc,#e4e9f2);border-radius:18px;box-shadow:0 2px 12px rgba(15,32,87,.05);overflow:hidden}
+.vc-h{display:flex;gap:12px;align-items:center;padding:16px 16px 10px}
+.vc-h .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.vc-h .t{flex:1;min-width:0}.vc-h b{display:block;font-size:15px;font-weight:800;color:var(--navy);line-height:1.3}
+.vc-h .t span{font-size:12.5px;color:var(--muted)}
+.vtag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:2px}
+.vtag.core{background:var(--t-blue);color:var(--t-blue-d)}.vtag.opt{background:#f1f3f8;color:#5b6478}
+.vc-next{margin:0 16px;padding:12px 14px;border-radius:14px;background:#f7f9fc;display:flex;align-items:center;gap:12px}
+.vc-next i{font-size:22px;color:var(--blue)}
+.vc-next span{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.vc-next b{font-size:15px;font-weight:800;color:var(--navy)}
+.vc-next small{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);text-align:right}
+.vc.overdue .vc-next{background:#fff4f3}.vc.overdue .vc-next i{color:var(--coral)}
+.vc.due_soon .vc-next{background:#fff8ea}.vc.due_soon .vc-next i{color:var(--amber)}
+.vc-about{margin:0 16px;font-size:13px;line-height:1.55;color:var(--sub)}
+.vc-more{display:flex;align-items:center;gap:6px;width:100%;border:none;border-top:1px solid var(--line2);background:none;padding:12px 16px;margin-top:14px;font-weight:700;font-size:13px;color:var(--blue);text-align:left}
+.vc-more i{margin-left:auto;transition:transform .2s}
+.vc.open .vc-more i{transform:rotate(180deg)}
+.vc-body{display:none;padding:0 16px 16px}
+.vc.open .vc-body{display:block}
+.dose{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px;background:#fbfcfe}
+.dose .dh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dose .dh b{font-size:13.5px;font-weight:800;color:var(--navy);flex:1}
+.dose .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px;margin-top:8px}
+.dose .kv span{color:var(--muted)}.dose .kv em{font-style:normal;font-weight:600;color:var(--navy);word-break:break-word}
+.dose .da{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.vc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hist{margin-top:18px}
+.hist summary{cursor:pointer;font-weight:800;color:var(--navy);font-size:14px;list-style:none;display:flex;align-items:center;gap:8px}
+.hist summary::-webkit-details-marker{display:none}
+.hist summary i{color:var(--blue)}
+.hrow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13px;line-height:1.5}
+.hrow:last-child{border-bottom:none}
+.hrow .ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.hrow small{display:block;color:var(--muted);font-size:12px}
+/* guide + india */
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.phases{grid-template-columns:1fr}}
+.phase{border-radius:18px;padding:16px;border:1px solid var(--line);background:#fff}
+.phase h4{font-size:15px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.phase h4 em{font-style:normal;font-size:22px}
+.phase ul{margin-left:18px;font-size:13px;line-height:1.65;color:var(--sub)}
+.phase.p1{background:linear-gradient(160deg,#fff7ef,#fff)}.phase.p2{background:linear-gradient(160deg,#eef5ff,#fff)}.phase.p3{background:linear-gradient(160deg,#f4efff,#fff)}
+.law{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.lw{border:1px solid var(--line);border-radius:18px;padding:16px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.lw .top{display:flex;gap:10px;align-items:center}
+.lw .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.lw b{font-size:14.5px;font-weight:800;color:var(--navy);flex:1}
+.lw p{font-size:13px;line-height:1.6;color:var(--sub)}
+.lw a.src{font-size:12px;font-weight:700;color:var(--blue);display:inline-flex;gap:5px;align-items:center;margin-top:auto}
+.check{display:flex;flex-direction:column;gap:8px}
+.ok-i{color:var(--green)}.no-i{color:var(--coral)}
+/* summary (printable) */
+.sumt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+.sumt th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.sumt td{padding:8px;border-bottom:1px solid var(--line2);vertical-align:top}
+.sumt td b{color:var(--navy)}
+.leadseg{margin-top:12px}
+.ring .num b{font-size:25px}
+.collage.one .ph .cam{top:auto;bottom:12px}
 
   /* ===== DRAWER STYLES ===== */
   .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
@@ -251,649 +400,403 @@ input,textarea,select{font-family:'Inter',sans-serif}
 </head>
 <body>
 
-<!-- TOP NAV -->
-<nav class="pb-nav">
-  <div class="pb-nav-logo" onclick="location.href='07_home.html'">
-    <div class="pb-nav-logo-icon">🐾</div>
-    <span>PawBook</span>
-  </div>
-  <div class="pb-nav-search">
-    <i class="ti ti-search" style="color:var(--pb-text3);font-size:16px"></i>
-    <input type="text" placeholder="Search vaccines…">
-  </div>
-  <div class="pb-nav-tabs">
-    <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
-    <button class="pb-nav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
-    <button class="pb-nav-tab active"><i class="ti ti-vaccine"></i></button>
-    <button class="pb-nav-tab" onclick="location.href='09_marketplace.html'"><i class="ti ti-shopping-bag"></i></button>
-  </div>
-  <div class="pb-nav-right">
-    <button class="pb-icon-btn" onclick="openModal('addVaxModal')" title="Log Vaccination"><i class="ti ti-plus"></i></button>
-    <button class="pb-icon-btn" onclick="openModal('certModal')" title="View Certificate"><i class="ti ti-certificate"></i></button>
-    <div class="pb-avatar">A</div>
-  </div>
+<nav class="nav">
+  <button class="menu" onclick="openDrawer()" aria-label="Open menu"><i class="ti ti-menu-2"></i></button>
+  <div class="logo" onclick="location.href='07_home.html'"><i>🐾</i><span>PawBook</span></div>
+  <div class="crumb"><i class="ti ti-chevron-right"></i><b>Vaccination Diary</b></div>
+  <div class="sp"></div>
+  <button class="nav-ic hide-s" onclick="location.href='36_pet_life_record.html'" title="Pet health" aria-label="Pet health"><i class="ti ti-heart-handshake"></i></button>
+  <button class="nav-ic" onclick="location.href='07_home.html'" title="Home" aria-label="Home"><i class="ti ti-home"></i></button>
+  <button class="nav-ic" onclick="location.href='12_notifications.html'" title="Notifications" aria-label="Notifications"><i class="ti ti-bell"></i></button>
+  <button class="nav-av" id="nav-av" onclick="location.href='29_user_profile.html'" aria-label="My profile">·</button>
 </nav>
 
-<!-- MAIN LAYOUT -->
-<div class="vi-layout">
+<main class="wrap" id="app">
+  <div class="skel" style="height:56px;margin:18px 0 12px"></div>
+  <div class="skel" style="height:360px"></div>
+</main>
 
-  <!-- SIDEBAR -->
-  <aside class="vi-sidebar">
-    <!-- Pet selector -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div class="pb-card-header"><h3><i class="ti ti-paw" style="color:var(--pb-blue)"></i> My Pets</h3></div>
-      <div class="pet-selector">
-        <div class="pet-sel-item active" onclick="selectPet(this,'Bruno')">
-          <div class="pet-sel-avatar">🐕</div>
-          <div class="pet-sel-info">
-            <div class="pet-sel-name">Bruno</div>
-            <div class="pet-sel-breed">Labrador · 3 yrs</div>
-          </div>
-          <span class="pet-cov-badge" style="background:var(--pb-green-soft);color:#166534">78%</span>
-        </div>
-        <div class="pet-sel-item" onclick="selectPet(this,'Whiskers')">
-          <div class="pet-sel-avatar">🐈</div>
-          <div class="pet-sel-info">
-            <div class="pet-sel-name">Whiskers</div>
-            <div class="pet-sel-breed">Persian · 5 yrs</div>
-          </div>
-          <span class="pet-cov-badge" style="background:var(--pb-amber-soft);color:#92400e">55%</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Coverage Ring -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div class="pb-card-header"><h3><i class="ti ti-shield-check" style="color:var(--pb-green)"></i> Vaccine Coverage</h3></div>
-      <div class="coverage-wrap">
-        <div class="ring-container">
-          <svg width="120" height="120" viewBox="0 0 120 120">
-            <defs>
-              <linearGradient id="covGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#22c55e"/>
-                <stop offset="100%" style="stop-color:#1877F2"/>
-              </linearGradient>
-            </defs>
-            <circle class="ring-bg" cx="60" cy="60" r="50"/>
-            <circle class="ring-fill" id="covRing" cx="60" cy="60" r="50"
-              stroke="url(#covGrad)" stroke-dasharray="314" stroke-dashoffset="314"/>
-          </svg>
-          <div class="ring-center">
-            <div class="ring-pct" id="covPct" style="color:var(--pb-green)">0%</div>
-            <div class="ring-label">Coverage</div>
-          </div>
-        </div>
-        <div class="coverage-status" style="color:var(--pb-green)">Good Coverage</div>
-        <div style="font-size:12px;color:var(--pb-text3);margin-top:4px;text-align:center">7 of 9 recommended vaccines given</div>
-      </div>
-      <div class="coverage-breakdown">
-        <div class="cov-stat">
-          <div class="cov-stat-val" style="color:var(--pb-green)">7</div>
-          <div class="cov-stat-label">Up to Date</div>
-        </div>
-        <div class="cov-stat">
-          <div class="cov-stat-val" style="color:var(--pb-amber)">1</div>
-          <div class="cov-stat-label">Due Soon</div>
-        </div>
-        <div class="cov-stat">
-          <div class="cov-stat-val" style="color:var(--pb-red)">1</div>
-          <div class="cov-stat-label">Overdue</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Upcoming Reminders -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div class="pb-card-header"><h3><i class="ti ti-bell" style="color:var(--pb-amber)"></i> Upcoming</h3></div>
-      <div class="reminder-list">
-        <div class="reminder-item" style="border-color:var(--pb-red);background:var(--pb-red-soft)">
-          <div class="reminder-dot" style="background:var(--pb-red)"></div>
-          <div class="reminder-info">
-            <div class="reminder-name">Canine Influenza</div>
-            <div class="reminder-when" style="color:var(--pb-red)">3 weeks overdue!</div>
-          </div>
-          <span class="reminder-badge" style="background:var(--pb-red);color:#fff">Overdue</span>
-        </div>
-        <div class="reminder-item" style="border-color:var(--pb-amber);background:var(--pb-amber-soft)">
-          <div class="reminder-dot" style="background:var(--pb-amber)"></div>
-          <div class="reminder-info">
-            <div class="reminder-name">Rabies Booster</div>
-            <div class="reminder-when">Due Nov 23 · 12 days</div>
-          </div>
-          <span class="reminder-badge" style="background:var(--pb-amber);color:#fff">12 days</span>
-        </div>
-        <div class="reminder-item">
-          <div class="reminder-dot" style="background:var(--pb-green)"></div>
-          <div class="reminder-info">
-            <div class="reminder-name">DHPPiL Booster</div>
-            <div class="reminder-when">Due Mar 5, 2027</div>
-          </div>
-          <span class="reminder-badge" style="background:var(--pb-green-soft);color:#166534">On Track</span>
-        </div>
-        <div class="reminder-item">
-          <div class="reminder-dot" style="background:var(--pb-green)"></div>
-          <div class="reminder-info">
-            <div class="reminder-name">Leptospirosis</div>
-            <div class="reminder-when">Due Nov 1, 2027</div>
-          </div>
-          <span class="reminder-badge" style="background:var(--pb-green-soft);color:#166534">On Track</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="pb-card">
-      <div class="pb-card-header"><h3><i class="ti ti-bolt" style="color:var(--pb-amber)"></i> Quick Actions</h3></div>
-      <div style="padding:12px;display:flex;flex-direction:column;gap:6px">
-        <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center" onclick="openModal('addVaxModal')"><i class="ti ti-plus"></i> Log Vaccination</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="location.href='11_vet_booking.html'"><i class="ti ti-calendar"></i> Book Appointment</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="openModal('certModal')"><i class="ti ti-certificate"></i> View Certificate</button>
-        <button class="pb-btn pb-btn-gray" style="width:100%;justify-content:center" onclick="switchTab('reminders')"><i class="ti ti-bell"></i> Manage Reminders</button>
-      </div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main>
-    <!-- AI Intelligence Banner -->
-    <div class="pb-card" style="margin-bottom:16px;background:var(--pb-grad);border:none">
-      <div style="padding:18px 20px;display:flex;align-items:center;gap:14px;color:#fff">
-        <div style="font-size:36px">🧬</div>
-        <div style="flex:1">
-          <div style="font-size:16px;font-weight:900">Vaccination Intelligence · Bruno</div>
-          <div style="font-size:12px;opacity:.85;margin-top:3px">Labrador · 3 years · Delhi — AI-powered breed-specific schedule active</div>
-        </div>
-        <button class="pb-btn" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)" onclick="openModal('addVaxModal')"><i class="ti ti-plus"></i> Log Vaccine</button>
-      </div>
-    </div>
-
-    <!-- ALERT STRIP -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--pb-red-soft);border-radius:var(--pb-radius-sm);border-left:4px solid var(--pb-red)">
-          <i class="ti ti-alert-circle" style="color:var(--pb-red);font-size:18px;flex-shrink:0"></i>
-          <div style="flex:1"><span style="font-size:13px;font-weight:700;color:var(--pb-red)">Canine Influenza is 3 weeks overdue.</span> <span style="font-size:12px;color:var(--pb-text2)">Common in Delhi boarding facilities and dog parks. Book a vet visit soon.</span></div>
-          <button class="pb-btn pb-btn-sm" style="background:var(--pb-red);color:#fff" onclick="location.href='11_vet_booking.html'">Book</button>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--pb-amber-soft);border-radius:var(--pb-radius-sm);border-left:4px solid var(--pb-amber)">
-          <i class="ti ti-clock" style="color:var(--pb-amber);font-size:18px;flex-shrink:0"></i>
-          <div style="flex:1"><span style="font-size:13px;font-weight:700;color:#92400e">Rabies booster due in 12 days</span> <span style="font-size:12px;color:var(--pb-text2)">(Nov 23). Mandatory under Indian Prevention of Cruelty to Animals Act.</span></div>
-          <button class="pb-btn pb-btn-sm" style="background:var(--pb-amber);color:#fff" onclick="location.href='11_vet_booking.html'">Schedule</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB CONTAINER -->
-    <div class="pb-card">
-      <div class="vi-tabs">
-        <button class="vi-tab active" onclick="switchTab('schedule')">📋 Full Schedule</button>
-        <button class="vi-tab" onclick="switchTab('breed')">🧬 Breed Guide</button>
-        <button class="vi-tab" onclick="switchTab('india')">🇮🇳 India Laws</button>
-        <button class="vi-tab" onclick="switchTab('certificate')">📜 Certificate</button>
-        <button class="vi-tab" onclick="switchTab('reminders')">🔔 Reminders</button>
-      </div>
-
-      <!-- FULL SCHEDULE TAB -->
-      <div id="tab-schedule" class="vi-tab-content active">
-        <div style="padding:14px 20px 6px;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">Bruno · Labrador · 3 years · 9 vaccines tracked</span>
-          <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="openModal('addVaxModal')"><i class="ti ti-plus"></i> Log Vaccine</button>
-        </div>
-        <div class="vax-schedule" id="vaccineSchedule">
-          <!-- Dynamically rendered by JS -->
-        </div>
-      </div>
-
-      <!-- BREED GUIDE TAB -->
-      <div id="tab-breed" class="vi-tab-content">
-        <div class="breed-guide-wrap">
-          <div class="breed-hero">
-            <div class="breed-hero-icon">🐕</div>
-            <div>
-              <div class="breed-hero-title">Labrador Retriever — Vaccination Profile</div>
-              <div class="breed-hero-sub">Age 3 · Male · India · Delhi region · AI-curated schedule</div>
-            </div>
-          </div>
-
-          <div class="breed-intel">
-            <div class="breed-intel-title"><i class="ti ti-sparkles"></i> AI Breed Intelligence · Age 3</div>
-            <div class="breed-intel-text">At age 3, Labradors are highly social and active — their biggest vaccine risks come from dog parks, boarding, and Delhi's monsoon season. The Leptospirosis and Canine Influenza vaccines are especially critical for dogs in NCR. Hip dysplasia screening is now recommended. Joint health supplements (Omega-3, glucosamine) should be part of the routine alongside vaccinations.</div>
-          </div>
-
-          <div class="breed-phase">
-            <div class="breed-phase-header" style="background:var(--pb-blue-soft);color:var(--pb-blue)">🐣 Puppy Phase (6–16 weeks) — Core Vaccines</div>
-            <div class="breed-phase-body">
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">DHPPiL — 1st dose</div><div class="breed-phase-vax-when">6–8 weeks</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">DHPPiL — 2nd dose</div><div class="breed-phase-vax-when">10–12 weeks</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">DHPPiL — 3rd dose</div><div class="breed-phase-vax-when">14–16 weeks</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">Rabies — 1st dose</div><div class="breed-phase-vax-when">12–16 weeks</div></div>
-            </div>
-          </div>
-
-          <div class="breed-phase">
-            <div class="breed-phase-header" style="background:var(--pb-green-soft);color:#166534">🐾 Adult Phase (1–7 years) — Annual Boosters</div>
-            <div class="breed-phase-body">
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">Rabies</div><div class="breed-phase-vax-when">Every 1–3 years (annual in India)</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">DHPPiL</div><div class="breed-phase-vax-when">Every 1–3 years</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">Leptospirosis ⭐</div><div class="breed-phase-vax-when">Annual — critical for NCR dogs</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">Bordetella (Kennel Cough)</div><div class="breed-phase-vax-when">Annual or before boarding</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">Canine Influenza ⭐</div><div class="breed-phase-vax-when">Annual — high risk in Delhi parks</div></div>
-            </div>
-          </div>
-
-          <div class="breed-phase">
-            <div class="breed-phase-header" style="background:var(--pb-amber-soft);color:#92400e">🌙 Senior Phase (7+ years) — Enhanced Monitoring</div>
-            <div class="breed-phase-body">
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">All adult vaccines continue</div><div class="breed-phase-vax-when">Same schedule</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">Bi-annual vet wellness checks</div><div class="breed-phase-vax-when">Every 6 months</div></div>
-              <div class="breed-phase-vax"><div class="breed-phase-vax-name">Hip & joint X-rays</div><div class="breed-phase-vax-when">Annual after age 7</div></div>
-            </div>
-          </div>
-
-          <div style="padding:14px;border-radius:var(--pb-radius-sm);background:var(--pb-orange-soft);border-left:4px solid var(--pb-orange)">
-            <div style="font-size:13px;font-weight:700;color:var(--pb-orange);display:flex;align-items:center;gap:6px;margin-bottom:6px"><i class="ti ti-map-pin"></i> Delhi / NCR Region Advisory</div>
-            <div style="font-size:12px;color:var(--pb-text2);line-height:1.6">Delhi's high dog population density and monsoon season increase risk of Leptospirosis (via contaminated water), Canine Influenza (dog parks, kennels), and tick-borne diseases. PawBook recommends quarterly deworming and monthly tick/flea prevention for Labradors in Delhi NCR.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- INDIA LAWS TAB -->
-      <div id="tab-india" class="vi-tab-content">
-        <div class="india-schedule">
-          <div class="india-mandate">
-            <div class="india-mandate-title">🇮🇳 Indian Pet Vaccination Laws</div>
-            <div class="india-mandate-sub">Prevention of Cruelty to Animals Act, 1960 · Municipal Corporation Rules · State animal welfare guidelines</div>
-          </div>
-
-          <div style="font-size:13px;font-weight:700;color:var(--pb-text2)">Legal Requirements for Dogs in India:</div>
-
-          <div class="india-vax-row" style="border-color:var(--pb-red);background:var(--pb-red-soft)">
-            <div class="india-vax-flag">⚖️</div>
-            <div style="flex:1">
-              <div class="india-vax-name">Rabies Vaccination</div>
-              <div class="india-vax-law">Mandatory under Prevention of Cruelty to Animals Act, 1960 and all major Municipal Corporations. Failure can result in fines and mandatory quarantine.</div>
-            </div>
-            <span class="india-vax-req mandatory">Mandatory</span>
-          </div>
-
-          <div class="india-vax-row">
-            <div class="india-vax-flag">📋</div>
-            <div style="flex:1">
-              <div class="india-vax-name">DHPPiL (5-in-1)</div>
-              <div class="india-vax-law">Required for registration in most municipalities. Mandatory for entry into boarding facilities, dog shows, and parks in Delhi NCR.</div>
-            </div>
-            <span class="india-vax-req recommended">Required for boarding</span>
-          </div>
-
-          <div class="india-vax-row">
-            <div class="india-vax-flag">🏥</div>
-            <div style="flex:1">
-              <div class="india-vax-name">Bordetella (Kennel Cough)</div>
-              <div class="india-vax-law">Mandatory for all dogs using boarding facilities, dog hotels, or grooming salons — per AWBI (Animal Welfare Board of India) boarding facility norms.</div>
-            </div>
-            <span class="india-vax-req recommended">Required for boarding</span>
-          </div>
-
-          <div class="india-vax-row">
-            <div class="india-vax-flag">✈️</div>
-            <div style="flex:1">
-              <div class="india-vax-name">Travel Health Certificate</div>
-              <div class="india-vax-law">For interstate travel or international travel, a Fit to Travel certificate from a registered vet is required. All vaccines must be current.</div>
-            </div>
-            <span class="india-vax-req mandatory">For travel</span>
-          </div>
-
-          <div class="india-vax-row">
-            <div class="india-vax-flag">💉</div>
-            <div style="flex:1">
-              <div class="india-vax-name">Leptospirosis</div>
-              <div class="india-vax-law">Strongly recommended by Indian Veterinary Association, especially in flood-prone and urban areas. Leptospira can spread to humans (zoonotic).</div>
-            </div>
-            <span class="india-vax-req seasonal">Recommended</span>
-          </div>
-
-          <div class="india-vax-row">
-            <div class="india-vax-flag">🌧️</div>
-            <div style="flex:1">
-              <div class="india-vax-name">Canine Influenza</div>
-              <div class="india-vax-law">Recommended for dogs in high-density urban areas. Risk increases significantly during monsoon season (Jun–Sep) in Delhi, Mumbai, Bengaluru.</div>
-            </div>
-            <span class="india-vax-req seasonal">Seasonal Risk</span>
-          </div>
-
-          <div class="seasonal-alert">
-            <div style="font-size:24px">🌧️</div>
-            <div>
-              <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:4px">Monsoon Season Advisory · Delhi NCR</div>
-              <div style="font-size:12px;color:#92400e;line-height:1.6">November–December: Post-monsoon period. Standing water risk reduces, but Leptospirosis bacteria remain in soil for weeks. Ensure Bruno's Leptospirosis vaccine is current. Avoid stagnant water puddles during walks.</div>
-            </div>
-          </div>
-
-          <div style="padding:14px;border-radius:var(--pb-radius-sm);background:var(--pb-blue-soft);border:1px solid var(--pb-blue)">
-            <div style="font-size:13px;font-weight:700;color:var(--pb-blue);margin-bottom:6px">📋 Bruno's Legal Compliance Status</div>
-            <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
-              <div style="display:flex;justify-content:space-between"><span>Rabies (Mandatory)</span><span style="font-weight:700;color:var(--pb-amber)">⚠️ Due in 12 days</span></div>
-              <div style="display:flex;justify-content:space-between"><span>DHPPiL</span><span style="font-weight:700;color:var(--pb-green)">✅ Current</span></div>
-              <div style="display:flex;justify-content:space-between"><span>Bordetella</span><span style="font-weight:700;color:var(--pb-green)">✅ Current</span></div>
-              <div style="display:flex;justify-content:space-between"><span>Leptospirosis</span><span style="font-weight:700;color:var(--pb-green)">✅ Current</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CERTIFICATE TAB -->
-      <div id="tab-certificate" class="vi-tab-content">
-        <div class="cert-wrap">
-          <div style="font-size:13px;font-weight:600;color:var(--pb-text2)">Official digital vaccination certificate — accepted at vet clinics, boarding facilities, and for travel.</div>
-
-          <div class="cert-preview">
-            <div class="cert-header">
-              <div class="cert-header-icon">🏥</div>
-              <div>
-                <div class="cert-header-title">Pet Vaccination Certificate</div>
-                <div class="cert-header-sub">PawBook · Deemona Technologies · Issued Nov 11, 2026</div>
-              </div>
-            </div>
-            <div class="cert-body">
-              <div class="cert-pet-row">
-                <div class="cert-pet-field"><div class="cert-pet-label">Pet Name</div><div class="cert-pet-val">Bruno</div></div>
-                <div class="cert-pet-field"><div class="cert-pet-label">Species / Breed</div><div class="cert-pet-val">Dog · Labrador</div></div>
-                <div class="cert-pet-field"><div class="cert-pet-label">Age</div><div class="cert-pet-val">3 Years</div></div>
-                <div class="cert-pet-field"><div class="cert-pet-label">Microchip ID</div><div class="cert-pet-val">INX-934721</div></div>
-              </div>
-              <table class="cert-vax-table">
-                <thead>
-                  <tr>
-                    <th>Vaccine</th>
-                    <th>Date Given</th>
-                    <th>Next Due</th>
-                    <th>Vet</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>Rabies</td><td>Nov 11, 2025</td><td>Nov 23, 2026</td><td>Dr. Priya Sharma</td><td><span style="color:var(--pb-amber);font-weight:700">⚠️ Due</span></td></tr>
-                  <tr><td>DHPPiL</td><td>Mar 5, 2026</td><td>Mar 5, 2027</td><td>Dr. Priya Sharma</td><td><span style="color:var(--pb-green);font-weight:700">✅ Current</span></td></tr>
-                  <tr><td>Leptospirosis</td><td>Nov 1, 2026</td><td>Nov 1, 2027</td><td>Dr. Priya Sharma</td><td><span style="color:var(--pb-green);font-weight:700">✅ Current</span></td></tr>
-                  <tr><td>Bordetella</td><td>Sep 20, 2026</td><td>Sep 20, 2027</td><td>Dr. Priya Sharma</td><td><span style="color:var(--pb-green);font-weight:700">✅ Current</span></td></tr>
-                  <tr><td>Canine Influenza</td><td>Oct 10, 2025</td><td>Oct 10, 2026</td><td>Dr. Priya Sharma</td><td><span style="color:var(--pb-red);font-weight:700">❌ Overdue</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="cert-footer">
-              <div class="cert-footer-vet">
-                <div style="font-weight:700;font-size:13px">Dr. Priya Sharma</div>
-                <div style="font-size:11px;color:var(--pb-text3)">Paws Animal Clinic · Reg. No. DL-VET-2341</div>
-              </div>
-              <div style="text-align:center">
-                <div class="cert-qr-placeholder">▣</div>
-                <div style="font-size:9px;color:var(--pb-text3);margin-top:4px">Scan to verify</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="cert-actions">
-            <button class="pb-btn pb-btn-blue" style="justify-content:center" onclick="alert('Certificate PDF downloaded!')"><i class="ti ti-download"></i> Download PDF</button>
-            <button class="pb-btn pb-btn-gray" style="justify-content:center" onclick="alert('Certificate link copied!')"><i class="ti ti-share"></i> Share Link</button>
-            <button class="pb-btn pb-btn-gray" style="justify-content:center" onclick="alert('Sent to Dr. Priya!')"><i class="ti ti-mail"></i> Email to Vet</button>
-            <button class="pb-btn pb-btn-gray" style="justify-content:center"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
-          </div>
-
-          <div style="padding:12px 14px;background:var(--pb-blue-soft);border-radius:var(--pb-radius-sm);font-size:12px;color:var(--pb-blue);display:flex;align-items:center;gap:8px">
-            <i class="ti ti-shield-check" style="font-size:16px"></i>
-            <span>This certificate is digitally signed and can be verified at <strong>pawbook.deemona.com/verify</strong></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- REMINDERS TAB -->
-      <div id="tab-reminders" class="vi-tab-content">
-        <div class="reminder-settings">
-          <div style="font-size:14px;font-weight:700;color:var(--pb-text)">Notification Channels</div>
-          <div class="reminder-channel">
-            <div class="reminder-channel-icon" style="background:var(--pb-blue-soft);color:var(--pb-blue)"><i class="ti ti-bell"></i></div>
-            <div class="reminder-channel-info">
-              <div class="reminder-channel-name">Push Notifications</div>
-              <div class="reminder-channel-sub">In-app alerts on your phone</div>
-            </div>
-            <button class="toggle on" id="toggle-push" onclick="toggleToggle(this)"></button>
-          </div>
-          <div class="reminder-channel">
-            <div class="reminder-channel-icon" style="background:var(--pb-green-soft);color:var(--pb-green)"><i class="ti ti-brand-whatsapp"></i></div>
-            <div class="reminder-channel-info">
-              <div class="reminder-channel-name">WhatsApp Reminders</div>
-              <div class="reminder-channel-sub">+91 98765 43210 · Connected</div>
-            </div>
-            <button class="toggle on" id="toggle-wa" onclick="toggleToggle(this)"></button>
-          </div>
-          <div class="reminder-channel">
-            <div class="reminder-channel-icon" style="background:var(--pb-orange-soft);color:var(--pb-orange)"><i class="ti ti-mail"></i></div>
-            <div class="reminder-channel-info">
-              <div class="reminder-channel-name">Email Reminders</div>
-              <div class="reminder-channel-sub">abhishek@deemona.com</div>
-            </div>
-            <button class="toggle" id="toggle-email" onclick="toggleToggle(this)"></button>
-          </div>
-          <div class="reminder-channel">
-            <div class="reminder-channel-icon" style="background:var(--pb-teal-soft);color:var(--pb-teal)"><i class="ti ti-stethoscope"></i></div>
-            <div class="reminder-channel-info">
-              <div class="reminder-channel-name">Vet Auto-Reminder</div>
-              <div class="reminder-channel-sub">PawBook notifies Dr. Priya automatically</div>
-            </div>
-            <button class="toggle on" id="toggle-vet" onclick="toggleToggle(this)"></button>
-          </div>
-
-          <div style="font-size:14px;font-weight:700;color:var(--pb-text);margin-top:4px">Reminder Timing</div>
-          <div class="reminder-advance">
-            <div class="advance-option" onclick="selectAdvance(this)">
-              <div class="advance-radio"></div>
-              <div style="font-size:13px;font-weight:600">1 week before due date</div>
-            </div>
-            <div class="advance-option selected" onclick="selectAdvance(this)">
-              <div class="advance-radio"><span style="width:6px;height:6px;border-radius:50%;background:#fff;display:block"></span></div>
-              <div style="font-size:13px;font-weight:600">2 weeks before due date <span style="font-size:11px;color:var(--pb-blue);font-weight:700">(Recommended)</span></div>
-            </div>
-            <div class="advance-option" onclick="selectAdvance(this)">
-              <div class="advance-radio"></div>
-              <div style="font-size:13px;font-weight:600">1 month before due date</div>
-            </div>
-            <div class="advance-option" onclick="selectAdvance(this)">
-              <div class="advance-radio"></div>
-              <div style="font-size:13px;font-weight:600">On the day</div>
-            </div>
-          </div>
-
-          <div style="font-size:14px;font-weight:700;color:var(--pb-text)">Reminder Schedule — Bruno</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
-              <div><div style="font-size:13px;font-weight:700">Rabies Booster</div><div style="font-size:11px;color:var(--pb-text3)">Nov 23 · Reminder set for Nov 9 ✓</div></div>
-              <span style="font-size:11px;font-weight:700;padding:3px 10px;background:var(--pb-green-soft);color:#166534;border-radius:var(--pb-pill)">Active</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
-              <div><div style="font-size:13px;font-weight:700">Canine Influenza</div><div style="font-size:11px;color:var(--pb-red)">3 weeks overdue — reminder was sent Oct 25</div></div>
-              <span style="font-size:11px;font-weight:700;padding:3px 10px;background:var(--pb-red-soft);color:var(--pb-red);border-radius:var(--pb-pill)">Missed</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)">
-              <div><div style="font-size:13px;font-weight:700">DHPPiL Booster</div><div style="font-size:11px;color:var(--pb-text3)">Mar 2027 · Reminder will be sent Feb 15</div></div>
-              <span style="font-size:11px;font-weight:700;padding:3px 10px;background:var(--pb-blue-soft);color:var(--pb-blue);border-radius:var(--pb-pill)">Scheduled</span>
-            </div>
-          </div>
-
-          <button class="pb-btn pb-btn-blue" style="width:100%;justify-content:center"><i class="ti ti-check"></i> Save Reminder Settings</button>
-        </div>
-      </div>
-
-    </div>
-  </main>
-</div>
-
-<!-- BOTTOM NAV -->
 <nav class="bnav">
-  <button class="bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
-  <button class="bnav-item" onclick="location.href='13_messages.html'"><i class="ti ti-message-circle"></i><span>Messages</span></button>
-  <button class="bnav-item" onclick="location.href='36_pet_life_record.html'"><i class="ti ti-heart-rate-monitor"></i><span>Health</span></button>
-  <button class="bnav-item active"><i class="ti ti-vaccine"></i><span>Vaccines</span></button>
-  <button class="bnav-item" onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i><span>Vet</span></button>
+  <button onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
+  <button onclick="location.href='36_pet_life_record.html'"><i class="ti ti-heart-handshake"></i>Pet health</button>
+  <button class="on"><i class="ti ti-vaccine"></i>Vaccines</button>
+  <button onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i>Vets</button>
+  <button onclick="location.href='29_user_profile.html'"><i class="ti ti-user"></i>Profile</button>
 </nav>
 
-<!-- LOG VACCINATION MODAL -->
-<div class="modal-overlay" id="addVaxModal" onclick="closeModalOutside(event,'addVaxModal')">
-  <div class="modal">
-    <div class="modal-header"><h3><i class="ti ti-vaccine"></i> Log Vaccination</h3><button class="modal-close" onclick="closeModal('addVaxModal')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Vaccine Name</label>
-        <select class="form-select">
-          <option>Rabies</option><option>DHPPiL (5-in-1)</option><option>Leptospirosis</option>
-          <option>Bordetella (Kennel Cough)</option><option>Canine Influenza</option>
-          <option>Tick-borne Encephalitis</option><option>Other</option>
-        </select>
-      </div>
-      <div class="form-group"><label class="form-label">Date Administered</label><input type="date" class="form-input" id="vaxDate"></div>
-      <div class="form-group"><label class="form-label">Next Due Date</label><input type="date" class="form-input"></div>
-      <div class="form-group"><label class="form-label">Administered By</label><input type="text" class="form-input" placeholder="Dr. Name, Clinic Name"></div>
-      <div class="form-group"><label class="form-label">Batch / Lot Number (optional)</label><input type="text" class="form-input" placeholder="For traceability"></div>
-      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" placeholder="Any reactions, observations…"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('addVaxModal')">Cancel</button>
-      <button class="pb-btn pb-btn-blue" onclick="closeModal('addVaxModal')"><i class="ti ti-check"></i> Save Vaccination</button>
+<!-- generic form modal -->
+<div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
+  <div class="md" role="dialog" aria-modal="true" aria-labelledby="mo-title">
+    <div class="mh"><h3 id="mo-title"></h3><button class="mx" onclick="closeMo()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <form id="mo-form" novalidate onsubmit="submitMo(event)"><div class="mb" id="mo-body"></div>
+      <div class="mf"><button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-check"></i><span>Save</span></button></div></form>
+  </div>
+</div>
+
+<!-- printable vaccination record -->
+<div class="mo" id="cardModal" onclick="if(event.target===this)closeCard()">
+  <div class="md" role="dialog" aria-modal="true" aria-labelledby="card-title" style="max-width:640px">
+    <div class="mh"><h3 id="card-title">Vaccination record</h3><button class="mx" onclick="closeCard()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <div class="mb" id="card-body"></div>
+    <div class="mf" style="flex-wrap:wrap">
+      <button class="btn btn-w" onclick="shareCardWA()"><i class="ti ti-brand-whatsapp"></i>Send on WhatsApp</button>
+      <button class="btn btn-o" onclick="printCard()"><i class="ti ti-printer"></i>Print / save PDF</button>
     </div>
   </div>
 </div>
 
-<!-- CERTIFICATE SHARE MODAL -->
-<div class="modal-overlay" id="certModal" onclick="closeModalOutside(event,'certModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>📜 Share Certificate</h3><button class="modal-close" onclick="closeModal('certModal')">✕</button></div>
-    <div class="modal-body">
-      <div style="text-align:center;padding:16px 0">
-        <div style="font-size:48px;margin-bottom:8px">📋</div>
-        <div style="font-size:16px;font-weight:800">Bruno's Vaccination Certificate</div>
-        <div style="font-size:13px;color:var(--pb-text2);margin-top:4px">7 of 9 vaccines current · Issued Nov 11, 2026</div>
-      </div>
-      <div style="display:flex;gap:6px">
-        <input type="text" class="form-input" value="https://pawbook.deemona.com/cert/bruno-vax-2026" readonly style="flex:1;background:var(--pb-bg);font-size:12px">
-        <button class="pb-btn pb-btn-blue" onclick="this.textContent='Copied!'">Copy</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <button class="pb-btn pb-btn-gray" style="justify-content:center"><i class="ti ti-download"></i> Download PDF</button>
-        <button class="pb-btn pb-btn-gray" style="justify-content:center"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
-        <button class="pb-btn pb-btn-gray" style="justify-content:center"><i class="ti ti-mail"></i> Email to Vet</button>
-        <button class="pb-btn pb-btn-gray" style="justify-content:center"><i class="ti ti-qrcode"></i> QR Code</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="photo-in" accept="image/jpeg,image/png,image/webp" hidden>
 
 <script>
-// ===== VACCINE DATA =====
-const vaccines = [
-  { id:'rabies', name:'Rabies', status:'due-soon', lastDate:'Nov 11, 2025', nextDate:'Nov 23, 2026', vet:'Dr. Priya Sharma', history:[{date:'Nov 11, 2025',vet:'Dr. Priya Sharma'},{date:'Nov 15, 2024',vet:'Dr. Priya Sharma'}], info:'Mandatory under Indian law. Annual booster required. Zoonotic — protects both Bruno and your family.', required:true },
-  { id:'dhppil', name:'DHPPiL (Distemper, Hepatitis, Parvovirus, Parainfluenza, Leptospira)', status:'done', lastDate:'Mar 5, 2026', nextDate:'Mar 5, 2027', vet:'Dr. Priya Sharma', history:[{date:'Mar 5, 2026',vet:'Dr. Priya Sharma'},{date:'Mar 10, 2025',vet:'Dr. Priya Sharma'},{date:'Feb 28, 2024',vet:'City Pet Clinic'}], info:'Core 5-in-1 vaccine. Protects against the most dangerous canine diseases. Triennial after puppy series, though many Indian vets recommend annual.' },
-  { id:'lepto', name:'Leptospirosis', status:'done', lastDate:'Nov 1, 2026', nextDate:'Nov 1, 2027', vet:'Dr. Priya Sharma', history:[{date:'Nov 1, 2026',vet:'Dr. Priya Sharma'}], info:'Annual vaccine, especially critical in Delhi due to monsoon flooding and contaminated water. Leptospira is zoonotic — can infect humans.' },
-  { id:'bordetella', name:'Bordetella (Kennel Cough)', status:'done', lastDate:'Sep 20, 2026', nextDate:'Sep 20, 2027', vet:'Dr. Priya Sharma', history:[{date:'Sep 20, 2026',vet:'Dr. Priya Sharma'}], info:'Intranasal or injectable. Required for boarding, dog shows, grooming. Administered before the annual dog show.' },
-  { id:'canflu', name:'Canine Influenza (H3N2/H3N8)', status:'overdue', lastDate:'Oct 10, 2025', nextDate:'Oct 10, 2026', vet:'Dr. Priya Sharma', history:[{date:'Oct 10, 2025',vet:'Dr. Priya Sharma'}], info:'3 weeks overdue. High risk for social dogs in Delhi NCR dog parks. The H3N2 strain is now prevalent in India. Book immediately.' },
-  { id:'tbe', name:'Tick-borne Encephalitis', status:'not-given', lastDate:'—', nextDate:'Discuss with vet', vet:'—', history:[], info:'Recommended for Labradors in Delhi NCR, especially post-monsoon. Discuss with Dr. Priya at Bruno\'s next visit.' },
+/* ===================== PawBook Vaccination Diary (10) ===================== */
+var API = 'https://pawbook.deemona.com/api/v1';
+var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
+var PETS = [], PID = null, V = null, TAB = 'diary', MO = null, OPEN = {};
+
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function toast(m){ var t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
+function api(path, o){
+  o = o || {}; var h = {}; if (TOKEN) h.Authorization = 'Bearer ' + TOKEN;
+  var body = o.body; if (body && !(body instanceof FormData)) { h['Content-Type'] = 'application/json'; body = JSON.stringify(body); }
+  return fetch(API + path, {method: o.method || 'GET', headers: h, body: body}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if (!r.ok || j.success === false) { var e = new Error(j.message || j.error || ('Something went wrong (' + r.status + ')')); e.status = r.status; e.fields = j.fields; throw e; }
+      return j.data !== undefined ? j.data : j;
+    });
+  });
+}
+function fail(e){ if (e && e.status === 401) { location.href = '01_login.html'; return; } toast(e && e.status === 429 ? 'Too many attempts — please wait a moment' : ((e && e.message) || 'Something went wrong')); }
+function today(){ var d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
+function fd(v, o){ if (!v) return ''; var d = new Date(String(v).length === 10 ? v + 'T00:00:00' : v); return isNaN(d) ? '' : d.toLocaleDateString('en-IN', o || {day: 'numeric', month: 'short', year: 'numeric'}); }
+function rel(n){ return n === 0 ? 'today' : n === 1 ? 'tomorrow' : n === -1 ? 'yesterday' : n > 0 ? 'in ' + n + ' days' : Math.abs(n) + ' days ago'; }
+function cap(s){ s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+var SPECIES = {dog: '🐕', cat: '🐈', bird: '🦜', rabbit: '🐇', fish: '🐠', hamster: '🐹', turtle: '🐢', horse: '🐴'};
+function emo(p){ return SPECIES[String((p && p.species) || '').toLowerCase()] || '🐾'; }
+function avatar(p){ return '<div class="av">' + (p && p.photo ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" onerror="this.parentNode.textContent=\'' + emo(p) + '\'">' : emo(p)) + '</div>'; }
+function him(p){ var g = String((p && p.gender) || '').toLowerCase(); return g === 'male' ? ['he', 'his', 'him'] : g === 'female' ? ['she', 'her', 'her'] : ['they', 'their', 'them']; }
+function emptyBox(e, t, p, btn){ return '<div class="empty"><div class="e">' + e + '</div><b>' + esc(t) + '</b>' + (p ? '<p>' + esc(p) + '</p>' : '') + (btn || '') + '</div>'; }
+function P(){ return '/petcare/pets/' + encodeURIComponent(PID); }
+
+/* status + vaccine look */
+var ST = {up_to_date: ['p-ok', 'Up to date', 'ti-shield-check', 'c-sage', '#16a34a'], recorded: ['p-ok', 'Recorded', 'ti-circle-check', 'c-sage', '#16a34a'],
+  due_soon: ['p-soon', 'Due soon', 'ti-clock', 'c-amber', '#f59e0b'], overdue: ['p-over', 'Overdue', 'ti-alert-circle', 'c-coral', '#e5484d'],
+  check: ['p-chk', 'Check with vet', 'ti-help-circle', 'c-sky', '#1877F2'], not_recorded: ['p-none', 'Not recorded', 'ti-circle-dashed', 'c-grey', '#cfd6e4']};
+var VX = {rabies: ['ti-shield-heart', 'c-coral'], dhpp: ['ti-vaccine', 'c-sky'], lepto: ['ti-droplet', 'c-teal'], kennel: ['ti-wind', 'c-lav'], civ: ['ti-virus', 'c-amber'], fvrcp: ['ti-vaccine', 'c-sky'], felv: ['ti-shield', 'c-lav']};
+function vx(c){ return VX[c.key] || ['ti-vaccine-bottle', 'c-peach']; }
+var ORDER = {overdue: 0, due_soon: 1, up_to_date: 2, recorded: 2, check: 3, not_recorded: 4};
+
+/* ---------- load ---------- */
+function boot(){
+  if (!TOKEN) { location.href = '01_login.html'; return; }
+  api('/petcare/pets').then(function(d){
+    PETS = d.pets || [];
+    if (!PETS.length) return renderWelcome();
+    var saved = null; try { saved = localStorage.getItem('pb_health_pet'); } catch (e) {}
+    var q = new URLSearchParams(location.search).get('pet');
+    PID = [q, saved].filter(function(x){ return x && PETS.some(function(p){ return String(p.id) === String(x); }); })[0] || String(PETS[0].id);
+    var t = new URLSearchParams(location.search).get('tab'); if (['diary', 'guide', 'india', 'certs', 'reminders'].indexOf(t) >= 0) TAB = t;
+    loadPet();
+  }).catch(function(e){ if (e.status === 401) return fail(e); document.getElementById('app').innerHTML = emptyBox('🐾', 'Could not load your pets', (e.message || '') + ' Please refresh in a moment.'); });
+}
+function loadPet(){
+  try { localStorage.setItem('pb_health_pet', PID); } catch (e) {}
+  return api(P() + '/vaccines').then(function(d){ V = d; render(); }).catch(fail);
+}
+function pickPet(id){ if (String(id) === String(PID)) return; PID = String(id); OPEN = {}; document.getElementById('app').style.opacity = '.55'; loadPet().then(function(){ document.getElementById('app').style.opacity = ''; }); }
+
+/* sample photos (free licence, Pexels) only while the pet has no photo of its own */
+function pxUrl(id, w){ return 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + (w || 800); }
+var PX_SAMPLES = {dog: [[40752554, 'Playtime in the park'], [32239907, 'Happy & healthy'], [3800470, 'Fetch champion']],
+  cat: [[979003, 'Curious & cared for'], [8287652, 'Bright eyes']],
+  other: [[40752554, 'Playtime in the park'], [979003, 'Curious & cared for'], [3800470, 'Fetch champion']]};
+function sampleSet(p){ var sp = String((p && p.species) || '').toLowerCase(); return (PX_SAMPLES[sp] || PX_SAMPLES.other).map(function(x, i){ return [pxUrl(x[0], i ? 600 : 900), x[1]]; }); }
+function petPhotos(p){ var l = [], add = function(u){ if (u && /^https:\/\//.test(u) && l.indexOf(u) < 0) l.push(u); }; add(p.photo); (p.photos || []).forEach(add); return l.slice(0, 3); }
+
+function renderWelcome(){
+  document.getElementById('app').innerHTML = '<div class="hero-band"><section class="hero"><div><span class="eyebrow"><i class="ti ti-vaccine"></i>Vaccination diary</span>'
+    + '<h1>Every vaccine,<br><span class="accent">one happy diary.</span></h1><p class="tag">Add your pet on the Pet Health page, then keep every vaccination, booster date and certificate together here.</p>'
+    + '<div class="hero-ctas"><button class="btn btn-o" onclick="location.href=\'36_pet_life_record.html\'"><i class="ti ti-plus"></i>Add my pet</button><button class="btn btn-w" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-stethoscope"></i>Find a vet</button></div></div>'
+    + '<div class="collage">' + sampleSet(null).map(function(x, i){ return '<div class="ph' + (i ? '' : ' ph-main') + '"><img src="' + esc(x[0]) + '" alt="" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.style.display=\'none\'"><span class="ph-tag"><i class="ti ti-heart"></i>' + esc(x[1]) + '</span></div>'; }).join('')
+    + '<div class="float-card float-1"><span class="fc-ic c-sky"><i class="ti ti-vaccine" style="font-size:20px"></i></span><div><div class="fc-t">Boosters on time</div><div class="fc-s">Reminders before each due date</div></div></div>'
+    + '<div class="px-credit">Photos: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></div></div></section></div>';
+}
+
+/* ---------- render ---------- */
+function render(){
+  var p = V.pet, pr = him(p), cv = V.coverage || {}, cards = V.cards || [], h = '';
+  document.title = p.name + "'s vaccination diary – PawBook";
+  var cnt = {over: cards.filter(function(c){ return c.status === 'overdue'; }).length, soon: cards.filter(function(c){ return c.status === 'due_soon'; }).length, ok: cards.filter(function(c){ return c.status === 'up_to_date' || c.status === 'recorded'; }).length};
+  var st = !V.records ? ['st-new', 'ti-sparkles', 'No records yet'] : cnt.over ? ['st-care', 'ti-alert-circle', cnt.over + ' vaccine' + (cnt.over > 1 ? 's' : '') + ' overdue'] : ['st-great', 'ti-shield-check', 'Vaccination records active'];
+  h += '<div class="hero-band"><div class="pets" role="tablist" aria-label="Your pets">' + PETS.map(function(x){ var on = String(x.id) === String(PID);
+    return '<button class="pchip' + (on ? ' on' : '') + '" role="tab" aria-selected="' + on + '" onclick="pickPet(\'' + esc(x.id) + '\')">' + avatar(x) + esc(x.name) + '</button>'; }).join('')
+    + '<button class="pchip add no-print" onclick="location.href=\'36_pet_life_record.html\'"><i class="ti ti-plus"></i> Add pet</button></div>';
+  var g = String(p.gender || ''), facts = [[p.breed || cap(p.species) || 'Pet', 'ti-paw', 'c-sky'], [p.age_label, 'ti-cake', 'c-amber'], [g && g !== 'unknown' ? cap(g) : '', g === 'female' ? 'ti-gender-female' : 'ti-gender-male', 'c-lav']].filter(function(f){ return f[0]; });
+  var tag = V.records ? 'Keeping ' + p.name + ' protected and healthy! ' + V.records + ' vaccination record' + (V.records > 1 ? 's' : '') + ' saved.' : 'Start ' + p.name + '\'s diary by adding the vaccines from ' + pr[1] + ' vaccination card.';
+  h += '<section class="hero" aria-label="' + esc(p.name) + ' vaccinations"><div><span class="eyebrow"><i class="ti ti-vaccine"></i>Vaccination diary</span>'
+    + '<h1>' + esc(p.name) + '\'s vaccination<br><span class="accent">journey.</span></h1><p class="tag">' + esc(tag) + '</p>'
+    + '<div class="hero-ctas no-print"><button class="btn btn-o" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Log vaccine</button><button class="btn btn-w" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-stethoscope"></i>Book a vet</button><button class="btn btn-w" onclick="openCard()"><i class="ti ti-id-badge-2"></i><span>Vaccination record</span></button></div>'
+    + '<div class="facts">' + facts.map(function(f){ return '<span class="fact"><i class="ti ' + f[1] + ' ' + f[2] + '"></i>' + esc(f[0]) + '</span>'; }).join('') + '<span class="status ' + st[0] + '"><i class="ti ' + st[1] + '"></i>' + esc(st[2]) + '</span></div></div>';
+  // collage
+  var ph = petPhotos(p), tags = ['Hello, ' + p.name + '!', 'Happy moments', 'Protected & loved'], smp = !ph.length;
+  if (smp) { var sm = sampleSet(p); ph = sm.map(function(x){ return x[0]; }); tags = sm.map(function(x){ return x[1]; }); }
+  var cam = '<button class="cam no-print" onclick="pickPhoto()"><i class="ti ti-camera"></i>' + (smp ? 'Add ' + esc(p.name) + '\'s photo' : 'Change photo') + '</button>';
+  var col = ph.map(function(u, i){ return '<div class="ph' + (i === 0 && ph.length === 3 ? ' ph-main' : '') + '"><img src="' + esc(u) + '" alt="' + esc(p.name) + '" loading="' + (i ? 'lazy' : 'eager') + '" onerror="this.parentNode.classList.add(\'ph-empty\');this.outerHTML=\'<div class=e>' + emo(p) + '</div>\'">' + (smp ? '<span class="ph-sample">Sample photo</span>' : '') + '<span class="ph-tag"><i class="ti ti-heart"></i>' + esc(tags[i]) + '</span>' + (i === 0 ? cam : '') + '</div>'; }).join('') + (smp ? '<div class="px-credit">Sample photos: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></div>' : '');
+  var nextR = (V.reminders || [])[0];
+  var f1 = cv.applies ? '<span class="fc-ic ' + (cv.current === cv.total ? 'c-sage' : cv.current ? 'c-amber' : 'c-coral') + '">' + cv.current + '/' + cv.total + '</span><div><div class="fc-t">Core vaccines current</div><div class="fc-s">' + (cv.current === cv.total ? 'Great protection!' : 'See what\'s missing below') + '</div></div>'
+    : '<span class="fc-ic c-sky"><i class="ti ti-notebook" style="font-size:20px"></i></span><div><div class="fc-t">' + (V.records || 0) + ' record' + (V.records === 1 ? '' : 's') + ' saved</div><div class="fc-s">Ask your vet for ' + esc(p.name) + '\'s schedule</div></div>';
+  h += '<div class="collage' + (ph.length <= 1 ? ' one' : ph.length === 2 ? ' two' : '') + '">' + col + '<div class="float-card float-1">' + f1 + '</div>'
+    + '<div class="float-card float-2"><i class="ti ti-' + (nextR ? 'bell-ringing' : 'circle-check') + '"></i>' + esc(nextR ? nextR.label.split(' (')[0] + ' · ' + (nextR.days < 0 ? 'overdue' : 'due ' + fd(nextR.next_due, {day: 'numeric', month: 'short'})) : 'No vaccines due') + '</div></div></section></div>';
+  // stats
+  h += '<div class="stats">' + [['c-sage', 'ti-shield-check', cnt.ok, 'Up to date'], ['c-amber', 'ti-clock', cnt.soon, 'Due soon'], ['c-coral', 'ti-alert-circle', cnt.over, 'Overdue'], ['c-sky', 'ti-notebook', V.records || 0, 'Records saved']]
+    .map(function(s){ return '<div class="stat"><span class="ic ' + s[0] + '"><i class="ti ' + s[1] + '"></i></span><div><b>' + s[2] + '</b><span>' + s[3] + '</span></div></div>'; }).join('') + '</div>';
+  // protection + reminders
+  h += '<div class="grid sec" style="margin-top:22px">' + protectHTML(p) + remHTML(p) + '</div>';
+  // quick actions
+  h += '<h2 class="sec-title no-print">Let\'s take care of ' + esc(p.name) + '</h2><p class="sec-sub no-print">Everything for ' + esc(p.name) + '\'s vaccinations in one tap</p><section class="no-print" aria-label="Quick actions"><div class="qa q4">' + [
+    ['c-coral', 'ti-vaccine', 'Log vaccine', 'Record a new vaccination', "openForm('vaccine')"], ['c-sage', 'ti-stethoscope', 'Book a vet', 'Schedule a check-up', "location.href='11_vet_booking.html'"],
+    ['c-lav', 'ti-id-badge-2', 'Health passport', 'View ' + p.name + '\'s health card', "location.href='36_pet_life_record.html?pet=" + encodeURIComponent(PID) + "&card=1'"], ['c-amber', 'ti-bell', 'Reminders', 'Manage vaccine alerts', "setTab('reminders',1)"]
+  ].map(function(a){ return '<button onclick="' + a[4] + '"><i class="ti ' + a[1] + ' ' + a[0] + '"></i>' + esc(a[2]) + '<small>' + esc(a[3]) + '</small></button>'; }).join('') + '</div></section>';
+  // tabs
+  var TABS = [['diary', 'ti-notebook', 'Vaccine diary'], ['guide', 'ti-paw', 'Breed guide'], ['india', 'ti-map-pin-heart', 'India guidelines'], ['certs', 'ti-certificate', 'Certificates'], ['reminders', 'ti-bell', 'Reminders']];
+  h += '<div class="tabs no-print" id="tabs" role="tablist">' + TABS.map(function(t){ return '<button class="tab' + (TAB === t[0] ? ' on' : '') + '" role="tab" aria-selected="' + (TAB === t[0]) + '" onclick="setTab(\'' + t[0] + '\')"><i class="ti ' + t[1] + '"></i>' + t[2] + '</button>'; }).join('') + '</div>';
+  h += '<div id="panels">' + panels() + '</div>';
+  document.getElementById('app').innerHTML = h;
+  animateRing();
+}
+function setTab(t, scroll){ TAB = t; document.querySelectorAll('.tab').forEach(function(b){ var on = b.getAttribute('onclick').indexOf("'" + t + "'") > 0; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }); document.getElementById('panels').innerHTML = panels(); if (scroll) { var tb = document.getElementById('tabs'); if (tb) window.scrollTo({top: tb.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth'}); } }
+function panels(){ var p = V.pet; switch (TAB) { case 'guide': return guidePanel(p); case 'india': return indiaPanel(p); case 'certs': return certPanel(p); case 'reminders': return remPanel(p); default: return diaryPanel(p); } }
+
+/* protection progress */
+function protectHTML(p){
+  var cv = V.coverage || {}, h = '<section class="card"><div class="ch"><h2><i class="ti ti-shield-heart"></i>' + esc(p.name) + '\'s protection progress</h2></div><div class="cb">';
+  if (!cv.applies) return h + emptyBox(emo(p), 'Ask your vet about ' + p.name + '\'s vaccines', 'We only show a vaccine plan for dogs and cats, based on published veterinary guidelines. Your vet will advise what ' + p.name + ' needs, and you can still keep every record here.', '<button class="btn btn-o btn-s" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Log vaccine</button>') + '</div></section>';
+  var pc = cv.percent, col = pc >= 100 ? '#16a34a' : pc > 0 ? '#f59e0b' : '#e5484d', c = 2 * Math.PI * 50;
+  var msg = !V.records ? 'Let\'s start ' + p.name + '\'s diary' : pc >= 100 ? p.name + ' is protected!' : pc > 0 ? 'Almost there' : 'Let\'s catch up';
+  var k = cv.counts || {};
+  h += '<div class="well"><div class="ring" role="img" aria-label="' + cv.current + ' of ' + cv.total + ' core vaccines current"><svg width="118" height="118" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#edf1f8" stroke-width="11"/><circle id="ring" cx="60" cy="60" r="50" fill="none" stroke="' + col + '" stroke-width="11" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + c.toFixed(1) + '" data-off="' + (c * (1 - pc / 100)).toFixed(1) + '" style="transition:stroke-dashoffset 1s ease"/></svg><div class="num"><b>' + pc + '%</b><span>core vaccines</span></div></div>'
+    + '<div><h3>' + esc(msg) + '</h3><p>' + cv.current + ' of ' + cv.total + ' core vaccines are current for ' + esc(p.name) + '. ' + (pc >= 100 ? 'Keep the boosters on time.' : 'Your vet can help with the rest.') + '</p></div></div>';
+  h += '<div class="legend"><span><b class="c-sage">' + (k.up_to_date || 0) + '</b>Up to date</span><span><b class="c-amber">' + (k.due_soon || 0) + '</b>Due soon</span><span><b class="c-coral">' + (k.overdue || 0) + '</b>Overdue</span></div>';
+  h += '<div class="core">' + cv.items.map(function(it){ var s = ST[it.status] || ST.not_recorded, ic = vx(it); return '<div class="row"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div class="t"><b>' + esc(it.label) + '</b><span>Core vaccine</span></div><span class="pill ' + s[0] + '">' + s[1] + '</span></div>'; }).join('') + '</div>';
+  if (cv.young) h += '<div class="young"><i class="ti ti-baby-carriage"></i><div><b>' + (V.species_key === 'cat' ? 'Kitten' : 'Puppy') + ' series:</b> young pets get several core doses 2–4 weeks apart, the last at 16 weeks or older, then a booster at about 6 months. Your vet sets the exact dates.</div></div>';
+  h += '<div class="disc"><i class="ti ti-info-circle"></i><span>“Core” follows the <a href="https://wsava.org/wp-content/uploads/2024/05/2024-Guidelines-for-the-Vaccination-of-Dogs-and-Cats.pdf" target="_blank" rel="noopener" style="color:var(--blue);font-weight:700">WSAVA 2024 vaccination guidelines</a>, with rabies included because rabies is present in India. Other vaccines depend on ' + esc(p.name) + '\'s lifestyle. Based only on the records you saved — not a veterinary assessment.</span></div>';
+  return h + '</div></section>';
+}
+function animateRing(){ var r = document.getElementById('ring'); if (!r) return; requestAnimationFrame(function(){ requestAnimationFrame(function(){ r.style.strokeDashoffset = r.getAttribute('data-off'); }); }); }
+
+/* reminders card */
+function remLine(r){ return r.days < 0 ? 'Was due ' + fd(r.next_due) + ' · please book a vet visit' : r.days <= (V.lead_days || 30) ? 'Due ' + fd(r.next_due) + ' · ' + rel(r.days) : 'Due ' + fd(r.next_due); }
+function remPill(r){ return r.days < 0 ? '<span class="pill p-over">Overdue</span>' : r.status === 'due_soon' ? '<span class="pill p-soon">' + (r.days === 0 ? 'Today' : r.days + ' day' + (r.days === 1 ? '' : 's')) + '</span>' : '<span class="pill p-ok">On track</span>'; }
+function remRow(r, act){ var ic = vx(r); return '<div class="rem' + (r.days < 0 ? ' over' : r.status === 'due_soon' ? ' soon' : '') + '"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div class="t"><b>' + esc(r.label) + '</b><span>' + esc(remLine(r)) + '</span></div><div class="act">' + remPill(r) + (act && r.status !== 'up_to_date' ? '<button class="btn btn-w btn-s no-print" onclick="location.href=\'11_vet_booking.html\'">Book</button>' : '') + '</div></div>'; }
+function remHTML(p){
+  var l = V.reminders || [], due = l.filter(function(r){ return r.status !== 'up_to_date'; }).length;
+  var h = '<section class="card"><div class="ch"><h2><i class="ti ti-paw"></i>' + esc(p.name) + '\'s vaccine reminders</h2>' + (due ? '<span class="badge">' + due + ' need' + (due === 1 ? 's' : '') + ' attention</span>' : '') + '</div><div class="cb">';
+  if (!l.length) return h + emptyBox('🔔', 'No dates to remember yet', 'Add the “next due” date from ' + p.name + '\'s vaccination card and we\'ll remind you ' + (V.lead_days || 30) + ' days before.', '<button class="btn btn-o btn-s" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Log vaccine</button>') + '</div></section>';
+  return h + '<div class="rems">' + l.slice(0, 5).map(function(r){ return remRow(r, true); }).join('') + '</div>' + (l.length > 5 ? '<div style="margin-top:12px"><button class="btn-link" onclick="setTab(\'reminders\',1)">See all ' + l.length + ' reminders</button></div>' : '') + '</div></section>';
+}
+
+/* ---------- vaccine diary ---------- */
+function diaryPanel(p){
+  var cards = (V.cards || []).slice().sort(function(a, b){ return (ORDER[a.status] - ORDER[b.status]) || ((b.core ? 1 : 0) - (a.core ? 1 : 0)); });
+  var h = '<section class="card"><div class="ch"><h2><i class="ti ti-notebook"></i>' + esc(p.name) + '\'s vaccination records</h2><span class="badge" style="background:var(--t-blue);color:var(--t-blue-d)">' + (V.records || 0) + ' recorded</span><button class="btn btn-o btn-s no-print" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Log vaccine</button></div><div class="cb">';
+  if (!cards.length) h += emptyBox('💉', p.name + '\'s diary is ready', 'Add each vaccine from ' + him(p)[1] + ' vaccination card — the date given, the next due date and the vet. Certificates can be attached too.', '<button class="btn btn-o btn-s" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Log first vaccine</button>');
+  else h += '<div class="vgrid">' + cards.map(vCard).join('') + '</div>';
+  h += histHTML() + '</div></section>';
+  return h;
+}
+function vCard(c){
+  var s = ST[c.status] || ST.not_recorded, ic = vx(c), L = c.latest, k = esc(c.key);
+  var sub = L ? 'Last given: ' + fd(L.given) : 'No vaccination record';
+  var h = '<article class="vc ' + c.status + (OPEN[c.key] ? ' open' : '') + '" id="vc-' + k + '" style="--evc:' + s[4] + '"><div class="vc-h"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div class="t"><b>' + esc(c.label) + (c.in_guide ? '<span class="vtag ' + (c.core ? 'core' : 'opt') + '">' + (c.core ? 'Core' : 'Lifestyle') + '</span>' : '') + '</b><span>' + esc(sub) + '</span></div><span class="pill ' + s[0] + '">' + s[1] + '</span></div>';
+  if (!L) h += '<p class="vc-about">' + esc(c.about || '') + (c.core ? '' : ' Check with your vet whether this vaccine is right for ' + V.pet.name + '.') + '</p>';
+  else if (c.next_due) h += '<div class="vc-next"><i class="ti ti-calendar-event"></i><div><span>Next scheduled date</span><b>' + esc(fd(c.next_due)) + '</b></div><small>' + esc(rel(c.days)) + '</small></div>';
+  else h += '<div class="vc-next"><i class="ti ti-calendar-question"></i><div><span>Next scheduled date</span><b>Not added</b></div><small>Ask your vet</small></div>';
+  h += '<button class="vc-more" onclick="toggleCard(\'' + k + '\')" aria-expanded="' + !!OPEN[c.key] + '">' + (L ? 'View details & certificate' : 'About this vaccine') + '<i class="ti ti-chevron-down"></i></button><div class="vc-body">';
+  if (L && c.about) h += '<p style="font-size:13px;line-height:1.55;color:var(--sub)">' + esc(c.about) + '</p>';
+  c.doses.forEach(function(d, i){ h += doseHTML(d, i, c); });
+  h += '<div class="vc-acts no-print"><button class="btn btn-o btn-s" onclick="openForm(\'vaccine\',{prefill:\'' + esc(jsq(L ? L.name : c.label.split(' (')[0].split(' · ')[0])) + '\'})"><i class="ti ti-plus"></i>' + (L ? 'Log new dose' : 'Log this vaccine') + '</button><button class="btn btn-w btn-s" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-calendar"></i>Book a vet</button>' + (L ? '<button class="btn btn-w btn-s" onclick="openForm(\'cert\',{vid:\'' + esc(L.id) + '\'})"><i class="ti ti-certificate"></i>Add certificate</button>' : '') + '</div>';
+  return h + '</div></article>';
+}
+function jsq(s){ return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+function doseHTML(d, i, c){
+  var rows = [['Vaccine', d.name], ['Brand', d.brand], ['Manufacturer', d.manufacturer], ['Date given', fd(d.given)], ['Next due', d.next_due ? fd(d.next_due) : ''], ['Vet', d.vet], ['Clinic', d.clinic], ['Batch / lot', d.batch], ['Reactions', d.reaction], ['Notes', d.notes]].filter(function(r){ return r[1]; });
+  var cert = d.cert_doc_id ? (V.certificates || []).filter(function(x){ return x.doc_id === d.cert_doc_id; })[0] : null;
+  return '<div class="dose"><div class="dh"><b>' + esc(d.dose_label || (i === 0 ? 'Latest dose' : 'Earlier dose')) + ' · ' + esc(fd(d.given)) + '</b>' + (d.also ? '<span class="pill p-info" title="Combination vaccine">Combination</span>' : '') + '</div>'
+    + '<div class="kv">' + rows.map(function(r){ return '<span>' + r[0] + '</span><em>' + esc(r[1]) + '</em>'; }).join('') + (d.cert_doc_id ? '<span>Certificate</span><em>' + (cert ? '<button class="btn-link" onclick="viewDoc(\'' + esc(d.cert_doc_id) + '\')"><i class="ti ti-file-certificate"></i> ' + esc(cert.title || cert.original_name || 'View') + '</button>' : 'Attached') + '</em>' : '') + '</div>'
+    + (d.also ? '' : '<div class="da no-print"><button class="btn btn-w btn-s" onclick="editDose(\'' + esc(d.id) + '\')"><i class="ti ti-pencil"></i>Edit</button><button class="btn btn-w btn-s" onclick="delDose(\'' + esc(d.id) + '\', this)"><i class="ti ti-trash"></i>Delete</button></div>') + '</div>';
+}
+function toggleCard(k){ OPEN[k] = !OPEN[k]; var el = document.getElementById('vc-' + k); if (el) { el.classList.toggle('open', !!OPEN[k]); el.querySelector('.vc-more').setAttribute('aria-expanded', !!OPEN[k]); } }
+function findDose(id){ var r = null; (V.cards || []).forEach(function(c){ c.doses.forEach(function(d){ if (d.id === id && !d.also) r = d; }); }); return r; }
+function editDose(id){ var d = findDose(id); if (d) openForm('vaccine', {edit: d}); }
+function delDose(id, btn){
+  if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.innerHTML = '<i class="ti ti-check"></i>Tap again to delete'; btn.style.color = '#B23A2B'; return; }
+  btn.disabled = true; api(P() + '/vaccinations/' + encodeURIComponent(id), {method: 'DELETE'}).then(function(){ toast('Record deleted · kept in change history'); loadPet(); }).catch(function(e){ btn.disabled = false; fail(e); });
+}
+var FIELD = {name: 'vaccine', given_date: 'date given', next_due_date: 'next due', vet_name: 'vet', batch_number: 'batch', notes: 'notes', brand: 'brand', manufacturer: 'manufacturer', clinic: 'clinic', dose_label: 'dose', reaction: 'reactions', cert_doc_id: 'certificate'};
+function histHTML(){
+  var l = V.history || []; if (!l.length) return '';
+  var names = {}; (V.cards || []).forEach(function(c){ c.doses.forEach(function(d){ names[d.id] = d.name; }); });
+  var fv = function(k, v){ return v == null || v === '' ? '—' : /date/.test(k) ? fd(v) : k === 'cert_doc_id' ? 'attached' : v; };
+  return '<details class="hist"><summary><i class="ti ti-history"></i>Change history (' + l.length + ')<span class="muted" style="font-weight:500;font-size:12.5px">— every add, edit and delete is kept</span></summary><div style="margin-top:8px">' + l.map(function(a){
+    var c = a.changes || {}, t, ic;
+    if (a.action === 'created') { t = 'Added <b>' + esc(c.name || names[a.vaccination_id] || 'a vaccination') + '</b>' + (c.given_date ? ' (given ' + esc(fd(c.given_date)) + ')' : ''); ic = ['ti-plus', 'c-sage']; }
+    else if (a.action === 'deleted') { var r = c.record || {}; t = 'Deleted <b>' + esc(r.name || 'a record') + '</b>' + (r.given ? ' (given ' + esc(fd(r.given)) + ')' : ''); ic = ['ti-trash', 'c-coral']; }
+    else { t = 'Edited <b>' + esc(names[a.vaccination_id] || (c.name && c.name[1]) || 'a record') + '</b>: ' + Object.keys(c).map(function(k){ return esc(FIELD[k] || k) + ' ' + esc(fv(k, c[k][0])) + ' → ' + esc(fv(k, c[k][1])); }).join(', '); ic = ['ti-pencil', 'c-sky']; }
+    return '<div class="hrow"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div>' + t + '<small>' + esc(new Date(a.at).toLocaleString('en-IN', {day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit'})) + '</small></div></div>';
+  }).join('') + '</div></details>';
+}
+
+/* ---------- breed guide ---------- */
+function guidePanel(p){
+  var sk = V.species_key, breed = p.breed || (sk === 'cat' ? 'Cats' : sk === 'dog' ? 'Dogs' : cap(p.species));
+  if (!sk) return '<section class="card"><div class="cb" style="padding-top:22px">' + emptyBox(emo(p), 'No vaccine plan for ' + p.name + ' here yet', 'We only show plans for dogs and cats. Please ask a vet who knows ' + (p.species ? String(p.species).toLowerCase() + 's' : 'this kind of pet') + ' what ' + p.name + ' needs, and keep the records in the diary.', '<button class="btn btn-w btn-s" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-stethoscope"></i>Find a vet</button>') + '</div></section>';
+  var young = sk === 'cat' ? 'Kitten' : 'Puppy', core = sk === 'cat' ? 'cat flu & panleukopenia (FVRCP)' : 'distemper, parvovirus & hepatitis (DHPP)';
+  var h = '<section class="card"><div class="ch"><h2><i class="ti ti-paw"></i>' + esc(breed) + ' — vaccination guide</h2><button class="btn-link" onclick="location.href=\'33_breeds.html\'">Breed encyclopedia</button></div><div class="cb">'
+    + '<p style="font-size:13.5px;line-height:1.6;color:var(--sub);margin-bottom:16px">Vaccines are planned by species, age and lifestyle rather than breed, so ' + esc(p.breed ? p.breed + 's' : (sk === 'cat' ? 'cats' : 'dogs')) + ' follow the standard ' + (sk === 'cat' ? 'cat' : 'dog') + ' plan below. ' + esc(p.name) + '\'s vet adjusts it for ' + him(p)[1] + ' age, health and daily life.</p>'
+    + '<div class="phases"><div class="phase p1"><h4><em>' + (sk === 'cat' ? '🐱' : '🐶') + '</em>' + young + ' (up to 6 months)</h4><ul><li>Core ' + core + ' doses every 2–4 weeks</li><li>Last core dose at 16 weeks or older</li><li>Booster at or after 26 weeks (about 6 months)</li><li>Rabies: your vet advises when to start</li></ul></div>'
+    + '<div class="phase p2"><h4><em>🐾</em>Adult</h4><ul><li>Core vaccines: no more often than needed — many protect for years, so your vet sets the interval</li><li>Rabies: follow the vaccine\'s licence and local rules</li><li>Lifestyle vaccines usually protect for about a year</li></ul></div>'
+    + '<div class="phase p3"><h4><em>🌙</em>Senior</h4><ul><li>Same vaccine plan as adults</li><li>Regular vet check-ups to review what is still needed</li></ul></div></div>'
+    + '<div class="sec-title" style="font-size:17px;margin-top:24px">Vaccines in ' + esc(p.name) + '\'s plan</div><div class="rows" style="margin-top:10px">'
+    + (V.cards || []).filter(function(c){ return c.in_guide; }).map(function(c){ var ic = vx(c), s = ST[c.status] || ST.not_recorded; return '<div class="row"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div class="t"><b>' + esc(c.label) + '<span class="vtag ' + (c.core ? 'core' : 'opt') + '">' + (c.core ? 'Core' : 'Lifestyle') + '</span></b><span>' + esc(c.about) + '</span></div><span class="pill ' + s[0] + '">' + s[1] + '</span></div>'; }).join('') + '</div>'
+    + '<div class="disc"><i class="ti ti-book"></i><span>Source: <a href="https://wsava.org/wp-content/uploads/2024/05/2024-Guidelines-for-the-Vaccination-of-Dogs-and-Cats.pdf" target="_blank" rel="noopener" style="color:var(--blue);font-weight:700">WSAVA 2024 Guidelines for the Vaccination of Dogs and Cats</a>. General guidance for owners — ' + esc(p.name) + '\'s vet decides the actual schedule.</span></div></div></section>';
+  return h;
+}
+
+/* ---------- India guidelines ---------- */
+var INDIA = [
+  ['c-coral', 'ti-shield-heart', 'Rabies vaccination', 'Essential', 'p-over', 'Rabies is present across India. Veterinary guidelines treat rabies vaccination as essential for dogs and cats wherever rabies is endemic, even where no law asks for it.', 'WSAVA 2024 guidelines', 'https://wsava.org/wp-content/uploads/2024/05/2024-Guidelines-for-the-Vaccination-of-Dogs-and-Cats.pdf'],
+  ['c-sky', 'ti-building-community', 'Registering a pet dog (Delhi)', 'Delhi', 'p-info', 'The Municipal Corporation of Delhi asks owners to register pet dogs under the Delhi Municipal Corporation Act, and an anti-rabies vaccination certificate is one of the documents needed. Other cities have their own rules — check with your municipal corporation.', 'ThePrint, Sept 2022', 'https://theprint.in/india/delhi-civic-body-urges-citizens-to-register-pets-after-rise-in-dog-bite-cases/1125373'],
+  ['c-lav', 'ti-plane', 'Flying within India', 'Air travel', 'p-info', 'Air India asks for a valid health and rabies vaccination certificate signed and stamped by a registered vet, plus a fit-to-fly health certificate issued within 7 days before departure. Other airlines set their own rules.', 'Air India — travelling with pets', 'https://www.airindia.com/in/en/travel-information/travelling-with-pets.html'],
+  ['c-amber', 'ti-home-heart', 'Boarding, day care & grooming', 'Varies', 'p-soon', 'Each facility sets its own rules. Many ask for proof of core vaccines and kennel cough before a stay — call ahead and carry the vet-signed certificates.', '', ''],
+  ['c-teal', 'ti-world', 'Travelling abroad', 'Plan early', 'p-soon', 'The destination country decides what is needed, and some ask for blood tests or waiting periods months before travel. Ask your vet early and check the country\'s official rules.', '', '']
 ];
-
-function renderSchedule() {
-  const container = document.getElementById('vaccineSchedule');
-  container.innerHTML = vaccines.map(v => `
-    <div class="vax-row" id="vrow-${v.id}">
-      <div class="vax-row-header" onclick="toggleVaxRow('${v.id}')">
-        <div class="vax-status-dot ${v.status}"></div>
-        <div style="flex:1">
-          <div class="vax-row-name">${v.name}</div>
-          <div class="vax-row-next">${v.status === 'not-given' ? 'Not yet administered' : `Last: ${v.lastDate} · Next: ${v.nextDate}`}</div>
-        </div>
-        <span class="vax-status-pill ${v.status}">${statusLabel(v.status)}</span>
-        <div class="vax-row-expand"><i class="ti ti-chevron-down"></i></div>
-      </div>
-      <div class="vax-row-body">
-        <div style="margin-bottom:8px;line-height:1.6">${v.info}</div>
-        ${v.history.length ? `<div style="font-size:12px;font-weight:700;color:var(--pb-text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">History</div>
-        ${v.history.map(h => `<div class="vax-history-entry"><div class="vax-history-date">${h.date}</div><div class="vax-history-vet">${h.vet}</div></div>`).join('')}` : ''}
-        <div class="vax-row-actions">
-          <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="openModal('addVaxModal')"><i class="ti ti-plus"></i> Log New Dose</button>
-          <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="location.href='11_vet_booking.html'"><i class="ti ti-calendar"></i> Book Appointment</button>
-          ${v.required ? '<button class="pb-btn pb-btn-sm" style="background:var(--pb-orange-soft);color:var(--pb-orange)"><i class="ti ti-certificate"></i> View Certificate</button>' : ''}
-        </div>
-      </div>
-    </div>`).join('');
+function indiaPanel(p){
+  var rab = (V.cards || []).filter(function(c){ return c.key === 'rabies'; })[0], certs = (V.certificates || []).length;
+  var h = '<section class="card"><div class="ch"><h2><i class="ti ti-map-pin-heart"></i>India guidelines for pet vaccinations</h2></div><div class="cb"><div class="law">'
+    + INDIA.map(function(x){ return '<div class="lw"><div class="top"><span class="ic ' + x[0] + '"><i class="ti ' + x[1] + '"></i></span><b>' + esc(x[2]) + '</b><span class="pill ' + x[4] + '">' + esc(x[3]) + '</span></div><p>' + esc(x[5]) + '</p>' + (x[7] ? '<a class="src" href="' + esc(x[7]) + '" target="_blank" rel="noopener"><i class="ti ti-external-link"></i>' + esc(x[6]) + '</a>' : '') + '</div>'; }).join('') + '</div>';
+  if (V.species_key) {
+    var rs = rab ? rab.status : 'not_recorded', rOk = ['up_to_date', 'due_soon', 'recorded'].indexOf(rs) >= 0;
+    h += '<div class="sec-title" style="font-size:17px;margin-top:24px">' + esc(p.name) + '\'s paperwork</div><div class="check" style="margin-top:10px">'
+      + '<div class="row"><span class="ic ' + (rOk ? 'c-sage' : 'c-coral') + '"><i class="ti ' + (rOk ? 'ti-circle-check' : 'ti-alert-circle') + '"></i></span><div class="t"><b>Rabies vaccination on record</b><span>' + esc(rab && rab.latest ? 'Given ' + fd(rab.latest.given) + (rab.next_due ? ' · next due ' + fd(rab.next_due) : '') : 'No rabies vaccination saved yet') + '</span></div><span class="pill ' + (ST[rs] || ST.not_recorded)[0] + '">' + (ST[rs] || ST.not_recorded)[1] + '</span></div>'
+      + '<div class="row"><span class="ic ' + (certs ? 'c-sage' : 'c-amber') + '"><i class="ti ' + (certs ? 'ti-circle-check' : 'ti-file-upload') + '"></i></span><div class="t"><b>Vet-signed certificates saved</b><span>' + (certs ? certs + ' certificate' + (certs > 1 ? 's' : '') + ' stored privately' : 'Upload a photo or PDF of the signed vaccination card') + '</span></div>' + (certs ? '<span class="pill p-ok">Saved</span>' : '<button class="btn btn-w btn-s no-print" onclick="openForm(\'cert\')">Upload</button>') + '</div></div>';
+  }
+  return h + '<div class="disc"><i class="ti ti-info-circle"></i><span>General information, checked November 2026 — not legal advice. Rules change and differ by city and airline, so please confirm with your vet, municipal corporation or airline before you rely on it.</span></div></div></section>';
 }
 
-function statusLabel(s) {
-  return { done:'Up to Date', 'due-soon':'Due Soon', overdue:'Overdue', 'not-given':'Not Given' }[s] || s;
+/* ---------- certificates ---------- */
+function certPanel(p){
+  var l = V.certificates || [], linked = {}; (V.cards || []).forEach(function(c){ c.doses.forEach(function(d){ if (d.cert_doc_id && !d.also) (linked[d.cert_doc_id] = linked[d.cert_doc_id] || []).push(d.name); }); });
+  var h = '<div class="grid"><section class="card"><div class="ch"><h2><i class="ti ti-certificate"></i>Vet certificates</h2><button class="btn btn-o btn-s no-print" onclick="openForm(\'cert\')"><i class="ti ti-upload"></i>Upload</button></div><div class="cb">';
+  if (!l.length) h += emptyBox('📜', 'Keep signed certificates safe', 'Upload a photo or PDF of ' + p.name + '\'s signed vaccination card or certificates (JPG, PNG or PDF, up to 5 MB). Only you can open them.', '<button class="btn btn-o btn-s" onclick="openForm(\'cert\')"><i class="ti ti-upload"></i>Upload a certificate</button>');
+  else h += '<div class="rows">' + l.map(function(d){ var ln = linked[d.doc_id]; return '<div class="row"><span class="ic c-lav"><i class="ti ' + (/pdf/.test(d.mime) ? 'ti-file-type-pdf' : 'ti-photo') + '"></i></span><div class="t"><b>' + esc(d.title || d.original_name || 'Certificate') + '</b><span>' + esc(fd(d.uploaded_at) + ' · ' + Math.max(1, Math.round(d.size_bytes / 1024)) + ' KB' + (ln ? ' · for ' + ln.join(', ') : '')) + '</span></div><button class="btn btn-w btn-s" onclick="viewDoc(\'' + esc(d.doc_id) + '\')"><i class="ti ti-eye"></i>Open</button><button class="btn btn-w btn-s no-print" onclick="delDoc(\'' + esc(d.doc_id) + '\', this)" aria-label="Delete"><i class="ti ti-trash"></i></button></div>'; }).join('') + '</div>';
+  h += '<div class="disc"><i class="ti ti-lock"></i><span>Stored privately on PawBook\'s server — never on a public link.</span></div></div></section>';
+  h += '<section class="card"><div class="ch"><h2><i class="ti ti-id-badge-2"></i>Vaccination record</h2></div><div class="cb"><p style="font-size:13.5px;line-height:1.6;color:var(--sub)">A one-page summary of ' + esc(p.name) + '\'s vaccinations to show a vet, boarding or groomer. You can print it, save it as a PDF or send it on WhatsApp.</p><div class="vc-acts"><button class="btn btn-o btn-s" onclick="openCard()"><i class="ti ti-file-text"></i>Open record</button></div>'
+    + '<div class="disc"><i class="ti ti-info-circle"></i><span>Made from the records you entered. It is not an official certificate — for travel or registration, use the vet-signed one.</span></div></div></section></div>';
+  return h;
 }
 
-function toggleVaxRow(id) {
-  document.getElementById('vrow-' + id).classList.toggle('open');
+/* ---------- reminders ---------- */
+function remPanel(p){
+  var l = V.reminders || [], lead = V.lead_days || 30, nod = (V.cards || []).filter(function(c){ return c.latest && !c.next_due; });
+  var h = '<div class="grid"><section class="card"><div class="ch"><h2><i class="ti ti-calendar-event"></i>Reminder schedule</h2></div><div class="cb">';
+  if (!l.length) h += emptyBox('🔔', 'No due dates yet', 'Add the “next due” date to a vaccination and it will appear here.', '<button class="btn btn-o btn-s" onclick="openForm(\'vaccine\')"><i class="ti ti-plus"></i>Log vaccine</button>');
+  else h += '<div class="rems">' + l.map(function(r){ var ic = vx(r);
+    return '<div class="rem' + (r.days < 0 ? ' over' : r.status === 'due_soon' ? ' soon' : '') + '"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div class="t"><b>' + esc(r.label) + '</b><span>' + esc('Due ' + fd(r.next_due) + ' · ' + (r.days < 0 ? 'overdue — reminder showing' : r.reminder_date ? 'reminder from ' + fd(r.reminder_date) : 'reminder showing now')) + '</span></div><div class="act">' + remPill(r) + '</div></div>'; }).join('') + '</div>';
+  if (nod.length) h += '<div class="sec-title" style="font-size:15px;margin-top:20px">No next date saved</div><div class="rows" style="margin-top:8px">' + nod.map(function(c){ var ic = vx(c); return '<div class="row"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div class="t"><b>' + esc(c.label) + '</b><span>Given ' + esc(fd(c.latest.given)) + ' · ask your vet when the next dose is due</span></div><button class="btn btn-w btn-s no-print" onclick="editDose(\'' + esc(c.latest.id) + '\')">Add date</button></div>'; }).join('') + '</div>';
+  h += '</div></section><section class="card"><div class="ch"><h2><i class="ti ti-bell"></i>When should reminders start?</h2></div><div class="cb"><p style="font-size:13.5px;line-height:1.6;color:var(--sub)">Vaccines show as <b>due soon</b> this many days before the due date — here and on ' + esc(p.name) + '\'s Pet Health page.</p>'
+    + '<div class="seg leadseg" role="radiogroup" aria-label="Reminder timing">' + [[7, '1 week before'], [14, '2 weeks before'], [30, '1 month before']].map(function(o){ return '<label><input type="radio" name="lead" value="' + o[0] + '"' + (o[0] === lead ? ' checked' : '') + ' onchange="setLead(' + o[0] + ')"><span>' + o[1] + '</span></label>'; }).join('') + '</div>'
+    + '<div class="disc"><i class="ti ti-info-circle"></i><span>Saved for ' + esc(p.name) + ' only. Each pet can have its own timing.</span></div></div></section></div>';
+  return h;
 }
+function setLead(n){ api(P() + '/vaccine-settings', {method: 'PUT', body: {lead_days: n}}).then(function(){ toast('Reminders will start ' + (n === 30 ? '1 month' : n === 14 ? '2 weeks' : '1 week') + ' before'); loadPet(); }).catch(fail); }
 
-// ===== TAB SWITCH =====
-function switchTab(tab) {
-  document.querySelectorAll('.vi-tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.vi-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  event.target.classList.add('active');
+/* ---------- forms ---------- */
+function seg(name, opts, val){ return '<div class="seg" role="radiogroup">' + opts.map(function(o, i){ return '<label><input type="radio" name="' + name + '" value="' + esc(o[0]) + '"' + ((val != null ? String(val) === String(o[0]) : i === 0) ? ' checked' : '') + '><span>' + o[1] + '</span></label>'; }).join('') + '</div>'; }
+function fl(label, inner, key, err, hint){ return '<label class="fl" data-f="' + (key || '') + '"><span>' + label + '</span>' + inner + (hint ? '<small>' + hint + '</small>' : '') + '<span class="err">' + (err || 'Please check this') + '</span></label>'; }
+function inp(name, type, val, extra){ return '<input class="fi" name="' + name + '" type="' + (type || 'text') + '" value="' + esc(val == null ? '' : val) + '" ' + (extra || '') + '>'; }
+var VLIST = {dog: ['Rabies', 'DHPPi', 'DHPPiL', 'DHPP', 'Leptospirosis', 'Kennel cough (Bordetella)', 'Canine influenza', 'Coronavirus'], cat: ['Rabies', 'FVRCP (Tricat)', 'FeLV'], other: ['Rabies']};
+var DOSES = [['', 'Not sure'], ['1st dose', '1st dose'], ['2nd dose', '2nd dose'], ['3rd dose', '3rd dose'], ['Booster', 'Booster'], ['Yearly', 'Yearly']];
+function certOptions(sel){ return '<select class="fi" name="cert_doc_id"><option value="">No certificate</option>' + (V.certificates || []).map(function(d){ return '<option value="' + esc(d.doc_id) + '"' + (String(sel) === d.doc_id ? ' selected' : '') + '>' + esc(d.title || d.original_name || 'Certificate') + ' · ' + esc(fd(d.uploaded_at)) + '</option>'; }).join('') + '<option value="new">+ Upload a new certificate…</option></select>'; }
+var FORMS = {
+  vaccine: function(o){ o = o || {}; var e = o.edit || {}, isEdit = !!o.edit;
+    return {title: isEdit ? 'Edit vaccination' : 'Log a vaccination', save: isEdit ? 'Save changes' : 'Save vaccination', body:
+    fl('Vaccine', inp('name', 'text', e.name || o.prefill || '', 'maxlength="100" list="vaxlist" required placeholder="e.g. Rabies, DHPPi, Leptospirosis"') + '<datalist id="vaxlist">' + (VLIST[V.species_key] || VLIST.other).map(function(x){ return '<option>' + esc(x) + '</option>'; }).join('') + '</datalist>', 'name', 'Please enter the vaccine name')
+    + '<div class="fl"><span>Dose</span>' + seg('dose_label', DOSES, e.dose_label || '') + '</div>'
+    + '<div class="two">' + fl('Date given', inp('given_date', 'date', e.given || today(), 'max="' + today() + '"'), 'given_date', 'Please pick the date it was given (not in the future)') + fl('Next due', inp('next_due_date', 'date', e.next_due || ''), 'next_due_date', 'Must be after the date given', 'From the vaccination card') + '</div>'
+    + '<div class="two">' + fl('Vet (optional)', inp('vet_name', 'text', e.vet, 'maxlength="120" placeholder="Dr. Name"'), 'vet_name') + fl('Clinic (optional)', inp('clinic', 'text', e.clinic, 'maxlength="120"'), 'clinic') + '</div>'
+    + '<div class="two">' + fl('Brand (optional)', inp('brand', 'text', e.brand, 'maxlength="80" placeholder="e.g. Nobivac, Rabisin"'), 'brand') + fl('Manufacturer (optional)', inp('manufacturer', 'text', e.manufacturer, 'maxlength="80"'), 'manufacturer') + '</div>'
+    + fl('Batch / lot number (optional)', inp('batch_number', 'text', e.batch, 'maxlength="60" placeholder="From the sticker on the card"'), 'batch_number')
+    + fl('Certificate (optional)', certOptions(e.cert_doc_id) + '<input class="fi" name="file" type="file" accept="image/jpeg,image/png,application/pdf" style="padding:9px;margin-top:8px;display:none">', 'cert_doc_id', 'Please choose a JPG, PNG or PDF up to 5 MB', 'Stored privately — only you can open it.')
+    + fl('Reactions (optional)', inp('reaction', 'text', e.reaction, 'maxlength="300" placeholder="e.g. Sleepy for a day, small lump"'), 'reaction')
+    + fl('Notes (optional)', inp('notes', 'text', e.notes, 'maxlength="300"'), 'notes') }; },
+  cert: function(o){ o = o || {}; var recs = []; (V.cards || []).forEach(function(c){ c.doses.forEach(function(d){ if (!d.also) recs.push(d); }); });
+    return {title: 'Upload a certificate', save: 'Upload', body: fl('Title (optional)', inp('title', 'text', '', 'maxlength="120" placeholder="e.g. Rabies certificate 2026"'), 'title')
+    + (recs.length ? fl('For which vaccination? (optional)', '<select class="fi" name="vid"><option value="">Not linked</option>' + recs.map(function(d){ return '<option value="' + esc(d.id) + '"' + (o.vid === d.id ? ' selected' : '') + '>' + esc(d.name + ' · ' + fd(d.given)) + '</option>'; }).join('') + '</select>', 'vid') : '')
+    + fl('File', '<input class="fi" name="file" type="file" accept="image/jpeg,image/png,application/pdf" required style="padding:9px">', 'file', 'Please choose a JPG, PNG or PDF up to 5 MB', 'Stored privately — only you can open it.') }; }
+};
+function openForm(kind, o){
+  if (!V) return;
+  var f = FORMS[kind](o); MO = {kind: kind, o: o || {}};
+  document.getElementById('mo-title').textContent = f.title; document.getElementById('mo-body').innerHTML = f.body; document.querySelector('#mo-save span').textContent = f.save;
+  var sel = document.querySelector('#mo-body select[name=cert_doc_id]'); if (sel) sel.onchange = function(){ var fi = document.querySelector('#mo-body input[name=file]'); fi.style.display = sel.value === 'new' ? '' : 'none'; };
+  document.getElementById('mo').classList.add('open'); document.body.style.overflow = 'hidden';
+  setTimeout(function(){ var i = document.querySelector('#mo-body input:not([type=radio]):not([type=hidden])'); if (i && window.innerWidth > 640) i.focus(); }, 60);
 }
-
-// ===== MODALS =====
-function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
-function closeModalOutside(e, id) { if (e.target.id === id) closeModal(id); }
-
-// ===== PET SELECTOR =====
-function selectPet(el, name) {
-  document.querySelectorAll('.pet-sel-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
+function closeMo(){ document.getElementById('mo').classList.remove('open'); document.body.style.overflow = ''; MO = null; }
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeMo(); closeCard(); } });
+function val(f, n){ var e = f.elements[n]; if (!e) return ''; if (e.length && e[0] && e[0].type === 'radio') { for (var i = 0; i < e.length; i++) if (e[i].checked) return e[i].value; return ''; } return (e.value || '').trim(); }
+function mark(f, keys){ f.querySelectorAll('.fl').forEach(function(l){ l.classList.toggle('bad', keys.indexOf(l.getAttribute('data-f')) >= 0); }); var b = f.querySelector('.fl.bad .fi'); if (b) b.focus(); }
+function okFile(file){ return file && file.size <= 5 * 1024 * 1024 && /^(image\/(jpeg|png)|application\/pdf)$/.test(file.type); }
+function upCert(file, title){ var fd2 = new FormData(); fd2.append('doc_kind', 'certificate'); fd2.append('title', title || ''); fd2.append('file', file); return api(P() + '/documents', {method: 'POST', body: fd2}).then(function(d){ return String(d.doc_id); }); }
+function submitMo(e){
+  e.preventDefault(); if (!MO) return; var f = e.target, k = MO.kind, btn = document.getElementById('mo-save'), bad = [];
+  var done = function(msg){ closeMo(); toast(msg); return loadPet(); }, err = function(x){ if (x.fields) mark(f, x.fields.map(function(n){ return n === 'file' ? 'cert_doc_id' : n; })); fail(x); };
+  if (k === 'cert') {
+    var file = f.elements.file.files[0]; if (!okFile(file)) bad.push('file'); if (bad.length) return mark(f, bad);
+    var vid = val(f, 'vid'); btn.disabled = true;
+    return upCert(file, val(f, 'title')).then(function(id){ return vid ? api(P() + '/vaccinations/' + encodeURIComponent(vid), {method: 'PATCH', body: {cert_doc_id: id}}) : null; })
+      .then(function(){ TAB = 'certs'; return done('Certificate saved privately'); }).catch(err).then(function(){ btn.disabled = false; });
+  }
+  var b = {name: val(f, 'name'), dose_label: val(f, 'dose_label'), given_date: val(f, 'given_date'), next_due_date: val(f, 'next_due_date'), vet_name: val(f, 'vet_name'), clinic: val(f, 'clinic'), brand: val(f, 'brand'), manufacturer: val(f, 'manufacturer'), batch_number: val(f, 'batch_number'), reaction: val(f, 'reaction'), notes: val(f, 'notes'), cert_doc_id: val(f, 'cert_doc_id')};
+  if (!b.name) bad.push('name'); if (!b.given_date || b.given_date > today()) bad.push('given_date'); if (b.next_due_date && b.next_due_date <= b.given_date) bad.push('next_due_date');
+  var nf = b.cert_doc_id === 'new' ? f.elements.file.files[0] : null; if (b.cert_doc_id === 'new' && !okFile(nf)) bad.push('cert_doc_id');
+  if (bad.length) return mark(f, bad);
+  btn.disabled = true;
+  var isEdit = !!MO.o.edit;
+  (nf ? upCert(nf, b.name + ' certificate') : Promise.resolve(b.cert_doc_id || null)).then(function(cid){
+    b.cert_doc_id = cid; b.next_due_date = b.next_due_date || null;
+    return isEdit ? api(P() + '/vaccinations/' + encodeURIComponent(MO.o.edit.id), {method: 'PATCH', body: b}) : api(P() + '/vaccinations', {method: 'POST', body: b});
+  }).then(function(){ return done(isEdit ? 'Changes saved' : 'Vaccination saved'); }).catch(err).then(function(){ btn.disabled = false; });
 }
+function viewDoc(id){ var w = window.open('', '_blank'); fetch(API + '/petcare/documents/' + encodeURIComponent(id), {headers: {Authorization: 'Bearer ' + TOKEN}}).then(function(r){ if (!r.ok) throw new Error('Could not open the document'); return r.blob(); }).then(function(b){ var u = URL.createObjectURL(b); if (w) w.location = u; else location.href = u; setTimeout(function(){ URL.revokeObjectURL(u); }, 60000); }).catch(function(e){ if (w) w.close(); fail(e); }); }
+function delDoc(id, btn){ if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.innerHTML = '<i class="ti ti-check"></i>'; toast('Tap again to delete'); return; } btn.disabled = true; api('/petcare/documents/' + encodeURIComponent(id), {method: 'DELETE'}).then(function(){ toast('Deleted'); loadPet(); }).catch(function(e){ btn.disabled = false; fail(e); }); }
+function upPhoto(file){ if (file.size > 10 * 1024 * 1024) return Promise.reject(new Error('Photo is larger than 10 MB')); var fd2 = new FormData(); fd2.append('file', file); return api('/media/upload', {method: 'POST', body: fd2}).then(function(d){ return d.url || d.secure_url || (d.file && d.file.url) || (d.media && d.media.url) || null; }); }
+function pickPhoto(){ var i = document.getElementById('photo-in'); i.value = ''; i.onchange = function(){ var f = i.files[0]; if (!f) return; toast('Uploading photo…'); upPhoto(f).then(function(url){ if (!url) throw new Error('Upload failed'); return api(P(), {method: 'PATCH', body: {photo_url: url}}); }).then(function(){ toast('Photo updated'); return api('/petcare/pets').then(function(x){ PETS = x.pets || []; return loadPet(); }); }).catch(fail); }; i.click(); }
 
-// ===== COVERAGE RING =====
-function animateCoverage(pct) {
-  const ring = document.getElementById('covRing');
-  const pctEl = document.getElementById('covPct');
-  const circ = 314;
-  let curr = 0;
-  const inc = pct / 60;
-  const t = setInterval(() => {
-    curr = Math.min(curr + inc, pct);
-    ring.style.strokeDashoffset = circ - (curr / 100) * circ;
-    pctEl.textContent = Math.round(curr) + '%';
-    if (curr >= pct) clearInterval(t);
-  }, 16);
+/* ---------- printable vaccination record ---------- */
+function latestList(){ return (V.cards || []).filter(function(c){ return c.latest; }).map(function(c){ return c; }); }
+function cardText(){
+  var p = V.pet, l = latestList();
+  return p.name + "'s vaccination record (PawBook)\n" + [p.breed || cap(p.species), p.age_label, p.gender && p.gender !== 'unknown' ? cap(p.gender) : ''].filter(Boolean).join(' · ') + '\n\n'
+    + (l.length ? l.map(function(c){ var d = c.latest; return '• ' + d.name + ' — given ' + fd(d.given) + (d.next_due ? ', next due ' + fd(d.next_due) : '') + (d.vet || d.clinic ? ' (' + [d.vet, d.clinic].filter(Boolean).join(', ') + ')' : '') + (d.batch ? ' · batch ' + d.batch : ''); }).join('\n') : '• No vaccinations recorded')
+    + '\n\nRecorded by the owner in PawBook. Not an official certificate.';
 }
-
-// ===== TOGGLE =====
-function toggleToggle(el) { el.classList.toggle('on'); }
-
-// ===== ADVANCE SELECT =====
-function selectAdvance(el) {
-  document.querySelectorAll('.advance-option').forEach(o => {
-    o.classList.remove('selected');
-    o.querySelector('.advance-radio').innerHTML = '';
-  });
-  el.classList.add('selected');
-  el.querySelector('.advance-radio').innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:#fff;display:block"></span>';
+function openCard(){
+  if (!V) return; var p = V.pet, l = latestList();
+  document.getElementById('card-title').textContent = p.name + "'s vaccination record";
+  document.getElementById('card-body').innerHTML = '<div class="hcard"><div class="top">' + avatar(p) + '<div><h4>' + esc(p.name) + '</h4><div class="muted" style="font-weight:600;font-size:13px">' + esc([p.breed || cap(p.species), p.age_label, p.gender && p.gender !== 'unknown' ? cap(p.gender) : ''].filter(Boolean).join(' · ')) + '</div></div></div>'
+    + (l.length ? '<table class="sumt"><thead><tr><th>Vaccine</th><th>Given</th><th>Next due</th><th>Vet / batch</th></tr></thead><tbody>' + l.map(function(c){ var d = c.latest, s = ST[c.status] || ST.recorded;
+      return '<tr><td><b>' + esc(d.name) + '</b>' + (d.brand && d.brand !== d.name ? '<br><span class="muted">' + esc(d.brand) + '</span>' : '') + '</td><td>' + esc(fd(d.given)) + '</td><td>' + (d.next_due ? esc(fd(d.next_due)) + (c.status === 'overdue' ? ' <b style="color:#c2353a">(overdue)</b>' : '') : '—') + '</td><td>' + esc([d.vet, d.clinic].filter(Boolean).join(', ') || '—') + (d.batch ? '<br><span class="muted">Batch ' + esc(d.batch) + '</span>' : '') + '</td></tr>'; }).join('') + '</tbody></table>'
+      : '<div class="muted" style="font-size:13px;margin-top:12px">No vaccinations recorded yet.</div>')
+    + '<div class="disc" style="background:rgba(255,255,255,.7)">Recorded by the owner in PawBook on ' + esc(fd(new Date().toISOString())) + '. Not an official certificate — for travel or registration, carry the vet-signed card.</div></div>';
+  document.getElementById('cardModal').classList.add('open'); document.body.style.overflow = 'hidden';
 }
+function closeCard(){ document.getElementById('cardModal').classList.remove('open'); document.body.style.overflow = ''; }
+function printCard(){ document.body.classList.add('print-card'); window.print(); setTimeout(function(){ document.body.classList.remove('print-card'); }, 500); }
+function shareCardWA(){ window.open('https://wa.me/?text=' + encodeURIComponent(cardText()), '_blank', 'noopener'); }
 
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded', () => {
-  renderSchedule();
-  setTimeout(() => animateCoverage(78), 300);
-  const today = new Date().toISOString().split('T')[0];
-  const vaxDate = document.getElementById('vaxDate');
-  if (vaxDate) vaxDate.value = today;
-});
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(r => console.log('[SW] Registered:', r.scope))
-      .catch(e => console.warn('[SW] Failed:', e));
-  });
-}
+boot();
+if ('serviceWorker' in navigator) { window.addEventListener('load', function(){ navigator.serviceWorker.register('service-worker.js').catch(function(){}); }); }
 </script>
 
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
@@ -998,6 +901,8 @@ if ('serviceWorker' in navigator) {
             if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
             if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
             if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+            var nu=(d.data&&(d.data.user||d.data))||d.user||d,nm=nu.full_name||nu.name||nu.username||'',pic=nu.avatar_url||nu.avatar||'',av=el('nav-av');
+            if(av){ if(/^https:\/\//.test(pic)){ var im=new Image(); im.alt=''; im.onerror=function(){ av.textContent=(nm.charAt(0)||'·').toUpperCase(); }; im.src=pic; av.textContent=''; av.appendChild(im); } else if(nm) av.textContent=nm.charAt(0).toUpperCase(); }
           }).catch(()=>{});
       }catch(e){}
     })();
