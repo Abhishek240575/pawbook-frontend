@@ -58,6 +58,30 @@ exports.config = async (req, res) => {
     return R.ok(res, { stats: rows[0], admin: M.admin, categories: CATS });
   } catch (e) { return fail(res, 'config', e); }
 };
+// ---- search helpers: word-by-word, accents/case ignored, small typos allowed ("sepherd" finds "shepherd") ----
+const CAT_WORDS = { dogs: 'dog dogs puppy', cats: 'cat cats kitten', birds: 'bird birds parrot', breed: 'breed club', local: 'neighbourhood neighborhood local', rescue: 'rescue volunteer shelter adoption', training: 'training trainer', health: 'health vet care' };
+const STOP = new Set(['the', 'and', 'for', 'of', 'in', 'a', 'an', 'to', 'with', 'group', 'community', 'communities', 'club', 'lovers', 'lover', 'owners', 'owner', 'parents', 'parent']);
+const norm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9ऀ-ॿ]+/g, ' ').trim();
+const wordsOf = t => { const all = norm(t).split(' ').filter(x => x.length >= 2); const k = all.filter(x => !STOP.has(x)); return (k.length ? k : all).slice(0, 6); };
+function dist(a, b, max) {   // Damerau-Levenshtein with an early exit
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let prev2 = null, prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) { const cur = [i]; let best = i;
+    for (let j = 1; j <= b.length; j++) { let v = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (prev2 && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, prev2[j - 2] + 1);
+      cur.push(v); if (v < best) best = v; }
+    if (best > max) return max + 1; prev2 = prev; prev = cur; }
+  return prev[b.length];
+}
+function textMatch(words, text) {
+  const t = norm(text), toks = [...new Set(t.split(' '))]; let n = 0, fuzzy = false;
+  for (const w of words) {
+    if (t.includes(w) || (w.length > 3 && w.endsWith('s') && t.includes(w.slice(0, -1)))) { n++; continue; }
+    const max = w.length >= 8 ? 2 : w.length >= 4 ? 1 : 0;
+    if (max && toks.some(k => dist(w, k, max) <= max || (k.length > w.length && dist(w, k.slice(0, w.length), max) <= max && w.length >= 5))) { n++; fuzzy = true; }
+  }
+  return { n, all: n === words.length, fuzzy };
+}
 // GET /communities?q&cat&country&state&city&area&sort&mine
 exports.list = async (req, res) => {
   try {
@@ -66,7 +90,7 @@ exports.list = async (req, res) => {
     if (q.mine === '1') w.push(`EXISTS (SELECT 1 FROM "GroupMember" x WHERE x.group_id = g.group_id AND x.user_id::text = $1)`);
     else w.push(`(g.moderation = 'visible' OR EXISTS (SELECT 1 FROM "GroupMember" x WHERE x.group_id = g.group_id AND x.user_id::text = $1))`);
     if (CATS.includes(q.cat)) w.push(`g.category = ${add(q.cat)}`);
-    const s = str(q.q, 60); if (s) w.push(`(g.name ILIKE ${add('%' + s + '%')} OR g.description ILIKE $${args.length} OR g.city ILIKE $${args.length} OR g.area ILIKE $${args.length})`);
+    const s = str(q.q, 60);   // matched below, word by word and tolerant of small spelling mistakes
     if (str(q.country, 80)) w.push(`lower(g.country) = lower(${add(str(q.country, 80))})`);
     if (str(q.state, 100)) w.push(`(lower(g.state) = lower(${add(str(q.state, 100))}) OR g.state IS NULL)`);
     if (str(q.city, 100)) { const c = str(q.city, 100).toLowerCase(), al = { 'new delhi': ['new delhi', 'delhi'], delhi: ['delhi', 'new delhi'], bangalore: ['bangalore', 'bengaluru'], bengaluru: ['bengaluru', 'bangalore'], gurgaon: ['gurgaon', 'gurugram'], mumbai: ['mumbai', 'bombay'] }[c] || [c];
@@ -78,8 +102,14 @@ exports.list = async (req, res) => {
         (SELECT COUNT(*)::int FROM pb_group_posts p WHERE p.group_id = g.group_id AND NOT p.hidden AND p.kind = 'meetup' AND p.meetup_at > NOW()) AS meetups,
         (SELECT role FROM "GroupMember" x WHERE x.group_id = g.group_id AND x.user_id::text = $1) AS my_role,
         EXISTS (SELECT 1 FROM "GroupJoinRequest" r WHERE r.group_id = g.group_id AND r.user_id::text = $1 AND r.status = 'pending') AS requested
-      FROM "Group" g WHERE ${w.join(' AND ')} ORDER BY ${sort} LIMIT 120`, args);
-    return R.ok(res, { communities: rows.map(card) });
+      FROM "Group" g WHERE ${w.join(' AND ')} ORDER BY ${sort} LIMIT ${s ? 1000 : 120}`, args);
+    if (!s) return R.ok(res, { communities: rows.map(card) });
+    const words = wordsOf(s); if (!words.length) return R.ok(res, { communities: rows.slice(0, 120).map(card) });
+    const scored = rows.map(r => ({ r, m: textMatch(words, [r.name, r.description, r.city, r.area, r.state, CAT_WORDS[r.category] || r.category, (r.pet_types || []).join(' ')].join(' ')) }));
+    let hit = scored.filter(x => x.m.all), match = 'exact';
+    if (hit.length && hit.every(x => x.m.fuzzy)) match = 'close';
+    if (!hit.length) { hit = scored.filter(x => x.m.n > 0).sort((a, b) => b.m.n - a.m.n); match = hit.length ? 'partial' : 'none'; }
+    return R.ok(res, { communities: hit.slice(0, 120).map(x => card(x.r)), match });
   } catch (e) { return fail(res, 'list', e); }
 };
 // GET /communities/:id

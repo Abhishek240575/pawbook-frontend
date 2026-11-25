@@ -513,6 +513,10 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
 .upl{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 14px;border-radius:12px;border:2px dashed #cfdaf0;background:#f8fafd;color:var(--sub);font-weight:700;font-size:12.5px}
 .lb{position:fixed;inset:0;background:rgba(10,20,45,.88);z-index:800;display:none;align-items:center;justify-content:center;padding:20px}.lb.open{display:flex}.lb img{max-width:100%;max-height:90vh;border-radius:14px}
 .adm{border:2px dashed #cbd6ea;background:#f8faff;border-radius:22px;padding:16px;margin-top:22px}
+
+#cgrid.loading{opacity:.45;pointer-events:none;transition:opacity .15s}
+.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.ctool .sbtn:disabled{opacity:.8;cursor:wait}
 </style>
 </head>
 <body>
@@ -627,7 +631,18 @@ function loadHome(){
     .then(function(r){ if (s !== SEQ || CUR) return; CFG = r[0]; LIST = r[1].communities; MINE = r[2].communities; MEET = r[3].meetups; renderHome(); })
     .catch(function(e){ if (e.status === 401) return fail(e); document.getElementById('app').innerHTML = emptyBox('🐾', 'Could not load communities', e.message + ' Please refresh in a moment.'); });
 }
-function refresh(){ var s = ++SEQ; saveLoc(); return api('/communities?' + qs()).then(function(d){ if (s !== SEQ) return; LIST = d.communities; var g = document.getElementById('cgrid'); if (g) g.outerHTML = gridHTML(); else setTab(TAB); }).catch(fail); }
+var MATCH = '';
+function refresh(){ var s = ++SEQ; saveLoc(); var g0 = document.getElementById('cgrid'); if (g0) g0.classList.add('loading');
+  return api('/communities?' + qs()).then(function(d){ if (s !== SEQ) return; LIST = d.communities; MATCH = d.match || ''; var g = document.getElementById('cgrid'); if (g) g.outerHTML = gridHTML(); else setTab(TAB); return true; })
+    .catch(function(e){ var g = document.getElementById('cgrid'); if (g) g.classList.remove('loading'); fail(e); }); }
+function doSearch(f){
+  clearTimeout(window._qt);
+  F.q = f.q.value.trim(); F.area = f.area.value.trim(); F.country = f.country.value; F.state = f.state.value; F.city = f.city.value;
+  var b = f.querySelector('.sbtn'); b.disabled = true; b.innerHTML = '<i class="ti ti-loader-2 spin"></i>Searching…';
+  refresh().then(function(done){ b.disabled = false; b.innerHTML = '<i class="ti ti-search"></i>Search'; if (!done) return;
+    var g = document.getElementById('cgrid'); if (g) window.scrollTo({top: g.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth'});
+    toast(LIST.length ? LIST.length + ' communit' + (LIST.length === 1 ? 'y' : 'ies') + ' found' + (MATCH === 'close' || MATCH === 'partial' ? ' (closest matches)' : '') : 'No communities found — try fewer words or a wider area'); });
+}
 function saveLoc(){ try { localStorage.setItem('pb_comm_loc', JSON.stringify({country: F.country, state: F.state, city: F.city, area: F.area})); } catch (e) {} }
 
 /* ---------- home ---------- */
@@ -683,22 +698,24 @@ function setTab(t, scroll){
   if (scroll) { var tb = document.getElementById('tabs'); if (tb) window.scrollTo({top: tb.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth'}); }
 }
 function panels(){ return TAB === 'mine' ? minePanel() : TAB === 'meetups' ? meetPanel() : discoverPanel(); }
-function locSel(lbl, list, v, k){ return '<label class="fl"><span>' + lbl + '</span><select class="fi" aria-label="' + lbl + '" onchange="setLoc(\'' + k + '\',this.value)"><option value="">' + (k === 'country' ? 'Any' : 'All') + '</option>' + list.map(function(x){ return '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select></label>'; }
+function locSel(lbl, list, v, k){ return '<label class="fl"><span>' + lbl + '</span><select class="fi" name="' + k + '" aria-label="' + lbl + '" onchange="setLoc(\'' + k + '\',this.value)"><option value="">' + (k === 'country' ? 'Any' : 'All') + '</option>' + list.map(function(x){ return '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select></label>'; }
 function setLoc(k, v){ F[k] = v; if (k === 'country') { F.state = ''; F.city = ''; } if (k === 'state') F.city = ''; var t = document.querySelector('.ctool'); if (t) t.outerHTML = toolHTML(); refresh(); }
 function toolHTML(){
   var states = Object.keys(LOC[F.country] || {}), cities = (LOC[F.country] || {})[F.state] || [];
-  return '<div class="ctool"><div class="crow"><label class="fl q"><span>Search</span><input class="fi" type="search" placeholder="Name, breed, area…" value="' + esc(F.q) + '" oninput="clearTimeout(window._qt);var v=this.value;window._qt=setTimeout(function(){F.q=v.trim();refresh()},350)"></label>'
+  return '<form class="ctool" role="search" onsubmit="event.preventDefault();doSearch(this)"><div class="crow"><label class="fl q"><span>Search</span><input class="fi" type="search" name="q" enterkeyhint="search" placeholder="Name, breed, area…" value="' + esc(F.q) + '" oninput="F.q=this.value.trim();clearTimeout(window._qt);window._qt=setTimeout(refresh,450)"></label>'
     + locSel('Country', Object.keys(LOC), F.country, 'country') + locSel('State', states, F.state, 'state') + locSel('City', cities, F.city, 'city')
-    + '<label class="fl"><span>Area</span><input class="fi" placeholder="e.g. Saket" value="' + esc(F.area) + '" onchange="F.area=this.value.trim();refresh()"></label>'
-    + '<button class="btn btn-b btn-s" style="height:42px" onclick="refresh()"><i class="ti ti-search"></i>Search</button></div>'
-    + '<div class="chips"><button class="chp' + (!F.cat ? ' on' : '') + '" onclick="F.cat=\'\';refresh();this.parentNode.outerHTML=chipsHTML()">All</button>' + Object.keys(CATS).map(function(k){ return '<button class="chp' + (F.cat === k ? ' on' : '') + '" onclick="F.cat=\'' + k + '\';refresh();this.parentNode.outerHTML=chipsHTML()"><i class="ti ' + CATS[k][3] + '"></i>' + CATS[k][0] + '</button>'; }).join('') + '</div></div>';
+    + '<label class="fl"><span>Area</span><input class="fi" name="area" enterkeyhint="search" placeholder="e.g. Saket" value="' + esc(F.area) + '" oninput="F.area=this.value.trim()"></label>'
+    + '<button type="submit" class="btn btn-b btn-s sbtn" style="height:42px"><i class="ti ti-search"></i>Search</button></div>'
+    + '<div class="chips"><button type="button" class="chp' + (!F.cat ? ' on' : '') + '" onclick="F.cat=\'\';refresh();this.parentNode.outerHTML=chipsHTML()">All</button>' + Object.keys(CATS).map(function(k){ return '<button type="button" class="chp' + (F.cat === k ? ' on' : '') + '" onclick="F.cat=\'' + k + '\';refresh();this.parentNode.outerHTML=chipsHTML()"><i class="ti ' + CATS[k][3] + '"></i>' + CATS[k][0] + '</button>'; }).join('') + '</div></form>';
 }
 function chipsHTML(){ var d = document.createElement('div'); d.innerHTML = toolHTML(); return d.querySelector('.chips').outerHTML; }
 function discoverPanel(){ return toolHTML() + gridHTML(); }
 function gridHTML(){
   var where = [F.area, F.city, F.state].filter(Boolean).join(', ');
-  var head = '<div class="sortr" style="margin-top:12px"><b style="color:var(--navy)">' + n(LIST.length) + ' communit' + (LIST.length === 1 ? 'y' : 'ies') + (where ? ' · ' + esc(where) : '') + (F.cat ? ' · ' + CATS[F.cat][0] : '') + '</b><select aria-label="Sort" onchange="F.sort=this.value;refresh()"><option value="">Nearest &amp; biggest</option><option value="active"' + (F.sort === 'active' ? ' selected' : '') + '>Most active</option><option value="new"' + (F.sort === 'new' ? ' selected' : '') + '>Newest</option></select></div>';
-  if (!LIST.length) return '<div id="cgrid">' + head + '<div class="empty2">' + pimg('family-picnic', 600) + '<div><h3>No communities match yet</h3><p>' + (where ? 'Nobody has started a ' + (F.cat ? CATS[F.cat][0].toLowerCase() + ' ' : '') + 'community in ' + esc(where) + ' yet. ' : '') + 'Start one — invite your park friends, your vet\'s clinic or your breed club.</p><button class="btn btn-o btn-s" onclick="createForm()"><i class="ti ti-plus"></i>Create a community</button> <button class="btn btn-w btn-s" onclick="F.q=\'\';F.cat=\'\';F.area=\'\';F.city=\'\';F.state=\'\';setTab(\'discover\');refresh()">Clear filters</button></div></div></div>';
+  var head = '<div class="sortr" style="margin-top:12px"><b style="color:var(--navy)">' + n(LIST.length) + ' communit' + (LIST.length === 1 ? 'y' : 'ies') + (F.q ? ' for “' + esc(F.q) + '”' : '') + (where ? ' · ' + esc(where) : '') + (F.cat ? ' · ' + CATS[F.cat][0] : '') + (F.q && LIST.length && (MATCH === 'close' || MATCH === 'partial') ? ' <span class="pill p-soon" style="margin-left:6px">Closest matches</span>' : '') + '</b><select aria-label="Sort" onchange="F.sort=this.value;refresh()"><option value="">Nearest &amp; biggest</option><option value="active"' + (F.sort === 'active' ? ' selected' : '') + '>Most active</option><option value="new"' + (F.sort === 'new' ? ' selected' : '') + '>Newest</option></select></div>';
+  if (!LIST.length) return '<div id="cgrid">' + head + '<div class="empty2">' + pimg('family-picnic', 600) + '<div><h3>' + (F.q ? 'No communities for “' + esc(F.q) + '” yet' : 'No communities match yet') + '</h3><p>' + (where ? 'Nobody has started ' + (F.q ? 'one' : 'a ' + (F.cat ? CATS[F.cat][0].toLowerCase() + ' ' : '') + 'community') + ' in ' + esc(where) + ' yet. ' : '') + 'Start one — invite your park friends, your vet\'s clinic or your breed club.</p><button class="btn btn-o btn-s" onclick="createForm(false,true)"><i class="ti ti-plus"></i>' + (F.q ? 'Create “' + esc(suggestName()) + '”' : 'Create a community') + '</button> '
+    + (F.area || F.city || F.state ? '<button class="btn btn-w btn-s" onclick="F.area=\'\';F.city=\'\';F.state=\'\';setTab(\'discover\');refresh()"><i class="ti ti-world"></i>Search all of ' + esc(F.country || 'India') + '</button> ' : '')
+    + '<button class="btn btn-w btn-s" onclick="F.q=\'\';F.cat=\'\';F.area=\'\';F.city=\'\';F.state=\'\';setTab(\'discover\');refresh()">Clear filters</button></div></div></div>';
   return '<div id="cgrid">' + head + '<div class="cgrid">' + LIST.map(cardHTML).join('') + '</div></div>';
 }
 function cardHTML(c){
@@ -753,8 +770,9 @@ function shareC(id, name){
 function copyText(t){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ toast('Link copied'); }).catch(function(){ prompt('', t); }); closeMo(); }
 
 /* ---------- create / edit ---------- */
-function createForm(edit){
-  var c = edit ? CUR : {}, st = c.state || F.state, states = Object.keys(LOC.India || {});
+function suggestName(){ var t = F.q.replace(/\s+/g, ' ').trim().replace(/\b\w/g, function(m){ return m.toUpperCase(); }); var pl = F.area || F.city; pl = pl ? pl.charAt(0).toUpperCase() + pl.slice(1) : ''; return (pl && t.toLowerCase().indexOf(pl.toLowerCase()) < 0 ? pl + ' ' : '') + t + (/parents|lovers|club|owners|community|group/i.test(t) ? '' : ' Parents'); }
+function createForm(edit, fromSearch){
+  var c = edit ? CUR : (fromSearch && F.q ? {name: suggestName().slice(0, 100), category: F.cat || '', area: F.area ? F.area.charAt(0).toUpperCase() + F.area.slice(1) : '', city: F.city, state: F.state} : {}), st = c.state || F.state, states = Object.keys(LOC.India || {});
   PH = c.cover ? [c.cover] : [];
   openMo(edit ? 'Edit community' : 'Create a community', '<label class="fl" data-f="name"><span>Community name *</span><input class="fi" name="name" maxlength="100" value="' + esc(c.name || '') + '" placeholder="e.g. Saket Dog Parents, Pune Persian Cats"><div class="err">At least 4 characters</div></label>'
     + '<label class="fl" data-f="category"><span>What is it about? *</span><div class="seg">' + Object.keys(CATS).map(function(k){ return '<label><input type="radio" name="category" value="' + k + '"' + (c.category === k ? ' checked' : '') + '><span><i class="ti ' + CATS[k][3] + '"></i>' + CATS[k][0] + '</span></label>'; }).join('') + '</div><div class="err">Choose one</div></label>'
