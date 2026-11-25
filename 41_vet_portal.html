@@ -2,210 +2,443 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vet Portal – PawBook</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#269B70">
+<meta name="robots" content="noindex">
+<title>VetCare – PawBook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
-  --pb-green:#22c55e;--pb-green-soft:#dcfce7;--pb-red:#ef4444;--pb-red-soft:#fee2e2;
-  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;--pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
-  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;--pb-orange:#f97316;--pb-orange-soft:#ffedd5;
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
-  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
-  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
-  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --pb-nav-h:56px;
-  /* Vet portal green accent */
-  --vet-green:#059669;--vet-green-soft:#d1fae5;--vet-bg:#f0fdf4;
+  /* PawBook design system (same tokens as the Animal Welfare page) */
+  --blue:#1877F2;--blue-d:#1a56db;--navy:#0f2057;--purple:#8b5cf6;
+  --coral:#e5484d;--coral-d:#c2353a;--coral-soft:#fff1f1;
+  --green:#16a34a;--amber:#f59e0b;
+  --bg:#f0f4fa;--card:#fff;--line:#e4e9f2;--line2:#eef2f8;--text:#1a1f36;--muted:#65676b;--sub:#3d4560;
+  --r:18px;--r-sm:12px;--pill:999px;--shadow:0 6px 24px rgba(15,32,87,.08);--nav-h:60px;
+  /* soft category tints */
+  --t-blue:#e8f1ff;--t-blue-d:#1a56db;--t-coral:#fff1f1;--t-coral-d:#c2353a;--t-green:#e7f7ee;--t-green-d:#15803d;
+  --t-amber:#fff6e0;--t-amber-d:#b45309;--t-purple:#f1ecff;--t-purple-d:#6d4fd8;--t-teal:#e3f7f5;--t-teal-d:#0f766e;
+  --grad:linear-gradient(135deg,#e5484d,#f97316);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
-a{text-decoration:none;color:inherit}
-button{font-family:'Inter',sans-serif;cursor:pointer}
-input,textarea,select{font-family:'Inter',sans-serif}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid rgba(24,119,242,.35);outline-offset:2px}
 
-/* NAV — VET BRANDING */
-.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
-.vet-logo{font-size:20px;font-weight:900;color:var(--vet-green);display:flex;align-items:center;gap:8px;cursor:pointer}
-.vet-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#059669,#1877F2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.vet-portal-badge{padding:3px 10px;background:var(--vet-green-soft);color:var(--vet-green);font-size:11px;font-weight:800;border-radius:var(--pb-pill);border:1px solid #6ee7b7}
-.vet-nav-links{display:flex;align-items:center;gap:2px;margin-left:auto}
-.vet-nav-link{padding:6px 14px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--pb-text3);transition:all .15s;display:flex;align-items:center;gap:5px}
-.vet-nav-link:hover{background:var(--pb-bg);color:var(--pb-text)}
-.vet-nav-link.active{background:var(--vet-green-soft);color:var(--vet-green)}
-.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s;position:relative}
-.pb-icon-btn:hover{background:var(--pb-border)}
-.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--pb-red);border:2px solid #fff}
-.vet-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#059669,#1877F2);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+/* ── top bar (matches the Animal Welfare page) ── */
+.nav{position:sticky;top:0;z-index:400;height:var(--nav-h);background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:10px;padding:0 16px}
+.nav .menu{width:38px;height:38px;border-radius:50%;border:none;background:transparent;font-size:21px;display:flex;align-items:center;justify-content:center;color:#1a3a6b}
+.nav .menu:hover{background:#f0f2f5}
+.logo{display:flex;align-items:center;gap:10px;color:var(--blue);font-size:21px;font-weight:900;cursor:pointer}
+.logo i{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:19px;font-style:normal}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.crumb b{color:var(--coral)}
+.nav .sp{flex:1}
+.nav-ic{width:38px;height:38px;border-radius:50%;border:none;background:#f0f2f5;color:#1a3a6b;font-size:19px;display:flex;align-items:center;justify-content:center}
+.nav-ic:hover{background:#e4ebf7;color:var(--blue)}
+.nav-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:none}
+.nav-av img{width:100%;height:100%;object-fit:cover}
+@media(max-width:640px){.crumb,.nav .hide-s{display:none}.logo{font-size:19px}}
 
-/* BUTTONS */
-.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
-.pb-btn-green{background:var(--vet-green);color:#fff}.pb-btn-green:hover{background:#047857}
-.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
-.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
-.pb-btn-red{background:var(--pb-red);color:#fff}
-.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
-.pb-btn-xs{height:26px;padding:0 10px;font-size:11px}
+/* ── layout ── */
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px 120px}
+.hero-band{position:relative;overflow:hidden;background:radial-gradient(1200px 500px at 85% -10%,#e5edff 0%,transparent 60%),linear-gradient(180deg,#f7f9ff 0%,#eef3fb 100%);margin:0 -24px;padding:0 24px}
+.hero-band::before{content:'';position:absolute;inset:0;opacity:.5;background-image:radial-gradient(circle at 20px 20px,rgba(24,119,242,.07) 3px,transparent 4px);background-size:44px 44px;pointer-events:none}
+.pets{position:relative;display:flex;gap:8px;overflow-x:auto;padding:18px 0 4px;scrollbar-width:none;max-width:1240px;margin:0 auto}.pets::-webkit-scrollbar{display:none}
+.pchip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:700;font-size:13.5px;color:var(--navy);flex-shrink:0;box-shadow:0 2px 8px rgba(24,119,242,.06)}
+.pchip.on{border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 3px rgba(24,119,242,.12)}
+.pchip .av{width:32px;height:32px}
+.pchip.add{padding:5px 15px;color:var(--blue-d);border-style:dashed;background:rgba(255,255,255,.7)}
+.av{border-radius:50%;background:var(--t-blue);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
 
-/* LAYOUT */
-.vp-layout{max-width:1200px;margin:0 auto;padding:20px 16px 80px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.ch{display:flex;align-items:center;gap:10px;padding:18px 22px 6px;flex-wrap:wrap}
+.ch h2{font-size:17px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+.ch h2 i{width:32px;height:32px;border-radius:10px;background:var(--t-blue);color:var(--blue);display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.ch .badge{font-size:12px;font-weight:700;padding:4px 11px;border-radius:var(--pill);background:var(--coral-soft);color:var(--coral-d)}
+.cb{padding:8px 22px 22px}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}}
+.sec{margin-top:18px}
+.sec-title{font-size:22px;font-weight:900;color:var(--navy);margin:34px 0 4px}
+.sec-sub{font-size:13.5px;color:var(--muted);margin-bottom:14px}
 
-/* CARDS */
-.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
-.pb-card-header{padding:14px 18px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
-.pb-card-header h3{font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px}
+/* ── pet hero ── */
+.hero{position:relative;max-width:1240px;margin:0 auto;padding:22px 0 64px;display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #dbe4f3;color:var(--blue-d);font-size:12.5px;font-weight:700;box-shadow:0 2px 8px rgba(24,119,242,.08)}
+.eyebrow i{color:var(--coral);font-size:16px}
+.hero h1{font-size:48px;line-height:1.08;font-weight:900;color:var(--navy);margin:14px 0 10px;letter-spacing:-1px}
+.hero h1 .accent{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .tag{font-size:16px;line-height:1.6;color:var(--sub);max-width:520px}
+.facts{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px}
+.fact{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--sub)}
+.fact i{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:var(--pill)}
+.st-great{background:var(--t-green);color:var(--t-green-d)}.st-ok{background:var(--t-blue);color:var(--t-blue-d)}.st-care{background:var(--t-amber);color:var(--t-amber-d)}.st-new{background:var(--t-purple);color:var(--t-purple-d)}
+.collage{position:relative;display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:420px}
+.collage.one{grid-template-columns:1fr}.collage.one .ph{grid-row:1/3}.collage.one .ph .cam{top:auto;bottom:12px}
+.collage.two{grid-template-columns:1.35fr 1fr}.collage.two .ph{grid-row:1/3}
+.ph-sample{position:absolute;left:12px;top:12px;z-index:3;padding:4px 10px;border-radius:999px;background:rgba(15,32,87,.6);color:#fff;font-size:11px;font-weight:700;letter-spacing:.02em;backdrop-filter:blur(4px)}
+.px-credit{position:absolute;right:4px;bottom:-22px;font-size:10.5px;color:var(--muted)}.px-credit a{color:inherit}
+.ph{position:relative;border-radius:22px;overflow:hidden;background:#dfe7f5;box-shadow:0 14px 34px rgba(15,32,87,.16)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.ph:hover img{transform:scale(1.04)}
+.ph-main{grid-row:1/3}
+.ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35));pointer-events:none}
+.ph-tag{position:absolute;left:12px;bottom:12px;z-index:2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.ph-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#e8f1ff,#f1ecff);color:var(--navy);font-weight:700;font-size:13px;text-align:center;padding:16px}
+.ph-empty .e{font-size:76px;line-height:1}
+.ph-empty::after{display:none}
+.ph .cam{position:absolute;right:12px;top:12px;z-index:3;height:34px;padding:0 12px;border-radius:999px;border:none;background:rgba(255,255,255,.95);font-size:12.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.float-card{position:absolute;z-index:3;background:#fff;border-radius:16px;box-shadow:0 14px 34px rgba(15,32,87,.2);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.float-1{left:-22px;bottom:30px;max-width:260px}
+.float-2{right:-10px;top:-14px;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;color:var(--navy);gap:6px}
+.float-2 i{color:var(--coral)}
+.fc-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex-shrink:0}
+.fc-t{font-size:13px;font-weight:800;color:var(--navy);line-height:1.3}
+.fc-s{font-size:11.5px;color:var(--muted)}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:24px;padding-bottom:56px}.collage{height:300px}.float-1{left:10px;bottom:-18px}.float-2{right:8px}.hero h1{font-size:36px}}
+@media(max-width:520px){.collage{height:250px;grid-template-columns:1fr}.collage .ph:not(.ph-main){display:none}.hero h1{font-size:31px}}
 
-/* STAT GRID */
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-@media(max-width:768px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
-.stat-card{background:#fff;border-radius:var(--pb-radius);border:1px solid var(--pb-border);padding:16px 18px;box-shadow:var(--pb-shadow)}
-.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.stat-icon{width:38px;height:38px;border-radius:var(--pb-radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px}
-.stat-change{font-size:11px;font-weight:700;padding:3px 7px;border-radius:var(--pb-pill)}
-.stat-change.up{background:var(--pb-green-soft);color:#166534}
-.stat-change.down{background:var(--pb-red-soft);color:var(--pb-red)}
-.stat-val{font-size:28px;font-weight:900;color:var(--pb-text)}
-.stat-label{font-size:12px;color:var(--pb-text3);margin-top:3px}
+/* stats strip overlapping the hero (like the emergency strip) */
+.stats{position:relative;z-index:5;margin-top:-34px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;align-items:center;gap:12px}
+.stat .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.stat b{display:block;font-size:22px;font-weight:900;color:var(--navy);line-height:1.1}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:12px}.stat .ic{width:38px;height:38px;font-size:19px}.stat b{font-size:19px}}
 
-/* TWO-COLUMN CONTENT */
-.vp-grid{display:grid;grid-template-columns:1fr 380px;gap:16px;margin-bottom:20px}
-@media(max-width:900px){.vp-grid{grid-template-columns:1fr}}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:14px;font-size:14px;font-weight:700;border:none;white-space:nowrap;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:active{transform:translateY(1px)}
+.btn-o{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(229,72,77,.3)}.btn-o:hover{filter:brightness(1.05);box-shadow:0 10px 24px rgba(229,72,77,.38)}
+.btn-w{background:#fff;color:var(--navy);border:1.5px solid #dbe4f3}.btn-w:hover{border-color:var(--blue);color:var(--blue)}
+.btn-b{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;box-shadow:0 8px 20px rgba(24,119,242,.26)}
+.btn-s{height:36px;padding:0 14px;font-size:13px;border-radius:11px}
+.btn-link{background:none;border:none;color:var(--blue);font-weight:700;font-size:13px;padding:0}
+.btn[disabled]{opacity:.55;pointer-events:none}
 
-/* APPOINTMENT LIST */
-.appt-list{display:flex;flex-direction:column}
-.appt-item{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--pb-border);cursor:pointer;transition:background .15s}
-.appt-item:hover{background:var(--pb-bg)}
-.appt-item:last-child{border-bottom:none}
-.appt-time{text-align:center;width:52px;flex-shrink:0}
-.appt-time-val{font-size:14px;font-weight:900;color:var(--pb-text)}
-.appt-time-ampm{font-size:10px;font-weight:600;color:var(--pb-text3)}
-.appt-divider{width:1px;height:40px;background:var(--pb-border);flex-shrink:0}
-.appt-pet-avatar{width:40px;height:40px;border-radius:50%;background:var(--pb-bg);font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.appt-info{flex:1;min-width:0}
-.appt-pet-name{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.appt-owner{font-size:12px;color:var(--pb-text3)}
-.appt-type{font-size:12px;font-weight:600;color:var(--pb-text2);margin-top:2px}
-.appt-status{padding:4px 10px;border-radius:var(--pb-pill);font-size:11px;font-weight:700;white-space:nowrap}
-.appt-status.confirmed{background:var(--vet-green-soft);color:var(--vet-green)}
-.appt-status.waiting{background:var(--pb-amber-soft);color:#92400e}
-.appt-status.in-progress{background:var(--pb-blue-soft);color:var(--pb-blue);animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
-.appt-status.completed{background:var(--pb-bg);color:var(--pb-text3)}
-.appt-actions{display:flex;gap:5px;flex-shrink:0}
+/* wellness */
+.well{display:flex;gap:20px;align-items:center}
+.ring{position:relative;width:118px;height:118px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:30px;font-weight:900;color:var(--navy);line-height:1}
+.ring .num span{font-size:11px;color:var(--muted);font-weight:600}
+.well h3{font-size:18px;font-weight:800;color:var(--navy)}
+.well p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.inds{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.ind{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center}
+.ind .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.ind .t{font-size:13.5px;font-weight:700;color:var(--navy)}.ind .t small{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.ind .bar{grid-column:2/4;height:6px;border-radius:9px;background:#edf1f8;overflow:hidden;margin-top:-4px}
+.ind .bar i{display:block;height:100%;border-radius:9px}
+.ind .pts{font-size:12px;font-weight:700;color:var(--muted)}
+.disc{font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.55;background:#f5f7fb;border:1px solid var(--line2);border-radius:12px;padding:9px 12px;display:flex;gap:8px}
+.disc i{color:var(--blue);font-size:15px;margin-top:1px}
 
-/* PATIENT QUEUE */
-.queue-item{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--pb-border);cursor:pointer;transition:background .15s}
-.queue-item:hover{background:var(--pb-bg)}
-.queue-item:last-child{border-bottom:none}
-.queue-num{width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.queue-pet-emoji{font-size:22px;flex-shrink:0}
-.queue-info{flex:1;min-width:0}
-.queue-name{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.queue-reason{font-size:11px;color:var(--pb-text3)}
-.queue-wait{font-size:11px;font-weight:700;color:var(--pb-amber)}
+/* reminders */
+.rems{display:flex;flex-direction:column;gap:10px}
+.rem{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe}
+.rem .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rem .t{flex:1;min-width:0}.rem .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.rem .t span{font-size:12.5px;color:var(--muted)}
+.pill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:var(--pill);white-space:nowrap}
+.p-over{background:var(--coral-soft);color:var(--coral-d)}.p-soon{background:var(--t-amber);color:var(--t-amber-d)}.p-ok{background:var(--t-green);color:var(--t-green-d)}.p-info{background:var(--t-blue);color:var(--t-blue-d)}
+.c-peach{background:var(--t-coral);color:var(--t-coral-d)}.c-sage{background:var(--t-green);color:var(--t-green-d)}.c-lav{background:var(--t-purple);color:var(--t-purple-d)}.c-sky{background:var(--t-blue);color:var(--t-blue-d)}.c-coral{background:var(--t-coral);color:var(--t-coral-d)}.c-amber{background:var(--t-amber);color:var(--t-amber-d)}.c-teal{background:var(--t-teal);color:var(--t-teal-d)}
 
-/* PATIENT DETAIL PANEL */
-.patient-panel{display:none;flex-direction:column;gap:14px}
-.patient-panel.open{display:flex}
-.patient-header{background:var(--pb-grad);border-radius:var(--pb-radius);padding:18px 20px;color:#fff;display:flex;align-items:center;gap:14px}
-.patient-header-emoji{font-size:44px;flex-shrink:0}
-.patient-header-info{flex:1}
-.patient-header-name{font-size:20px;font-weight:900}
-.patient-header-meta{font-size:13px;opacity:.85;margin-top:4px}
-.patient-header-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.patient-tabs{display:flex;gap:2px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:4px}
-.patient-tab{flex:1;padding:8px 10px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--pb-text3);transition:all .15s;white-space:nowrap}
-.patient-tab.active{background:#fff;color:var(--pb-text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.patient-tab-content{display:none}
-.patient-tab-content.active{display:block}
+/* quick actions: white cards with tinted icon tiles (like "How PawBook helps") */
+.qa{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1000px){.qa{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.qa{grid-template-columns:repeat(2,1fr);gap:10px}}
+.qa button{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;text-align:left;display:flex;flex-direction:column;gap:10px;min-height:104px;font-weight:700;font-size:13.5px;line-height:1.3;color:var(--navy);transition:transform .12s,box-shadow .12s,border-color .12s}
+.qa button:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(15,32,87,.12);border-color:#cfdaf0}
+.qa button i{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
 
-/* MEDICAL RECORD WRITER */
-.soap-section{display:flex;flex-direction:column;gap:14px;padding:16px}
-.soap-block{border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);overflow:hidden}
-.soap-label{padding:8px 12px;background:var(--pb-bg);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
-.soap-textarea{width:100%;border:none;padding:10px 12px;font-size:13px;line-height:1.6;resize:vertical;min-height:70px;outline:none;font-family:'Inter',sans-serif}
-.soap-textarea:focus{background:var(--pb-blue-soft)}
-.dx-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px}
-.dx-chip{padding:5px 12px;border-radius:var(--pb-pill);background:var(--pb-blue-soft);color:var(--pb-blue);font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px}
-.dx-chip button{background:transparent;border:none;cursor:pointer;color:var(--pb-blue);font-size:14px;line-height:1;padding:0}
+/* tabs (segmented bar) */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:7px;background:#fff;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);scrollbar-width:none;margin:30px 0 16px;position:sticky;top:calc(var(--nav-h) + 8px);z-index:50}
+.tabs::-webkit-scrollbar{display:none}
+.tab{height:42px;padding:0 15px;border-radius:11px;border:none;background:none;font-weight:700;font-size:13.5px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tab i{font-size:18px}
+.tab:hover{color:var(--navy);background:#f5f7fb}.tab.on{background:var(--t-blue);color:var(--blue)}
+.tab.rec{margin-left:auto}.tab.rec.on{background:var(--t-purple);color:var(--t-purple-d)}
+.panel{display:none}.panel.on{display:block}
 
-/* PRESCRIPTION WRITER */
-.rx-wrap{padding:16px;display:flex;flex-direction:column;gap:12px}
-.rx-header-banner{background:linear-gradient(135deg,#059669,#1877F2);border-radius:var(--pb-radius-sm);padding:14px 16px;color:#fff;display:flex;align-items:center;gap:10px}
-.rx-drug{padding:12px 14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;align-items:center;gap:10px}
-.rx-drug-num{width:24px;height:24px;border-radius:50%;background:var(--pb-blue);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.rx-drug-info{flex:1}
-.rx-drug-name{font-size:13px;font-weight:700}
-.rx-drug-dose{font-size:12px;color:var(--pb-text2);margin-top:2px}
-.rx-drug-delete{width:28px;height:28px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;color:var(--pb-red);font-size:14px;display:flex;align-items:center;justify-content:center}
-.rx-add-row{display:flex;gap:6px}
-.rx-input{height:36px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 10px;font-size:13px;outline:none;flex:1;min-width:0;transition:border .15s}
-.rx-input:focus{border-color:var(--pb-blue)}
+/* timeline */
+.month{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:20px 2px 10px;display:flex;align-items:center;gap:10px}
+.month::after{content:'';flex:1;height:1px;background:var(--line)}
+.month:first-child{margin-top:4px}
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ev{background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;border:1px solid var(--line);border-top:4px solid var(--evc,#e4e9f2);box-shadow:0 2px 10px rgba(15,32,87,.04)}
+.ev .top{display:flex;gap:10px;align-items:center}
+.ev .ic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ev b{font-size:14px;font-weight:700;color:var(--navy);line-height:1.3}
+.ev .d{font-size:12px;color:var(--muted)}
+.ev .who{font-size:12.5px;font-weight:600;color:var(--sub);display:flex;gap:5px;align-items:center}
+.ev p{font-size:13px;line-height:1.55;color:var(--sub)}
+.ev img{width:100%;height:150px;object-fit:cover;border-radius:12px;margin-top:4px}
+.ev .del{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:none;background:#f5f7fb;font-size:14px;color:var(--muted);opacity:0;transition:opacity .15s}
+.ev:hover .del,.ev:focus-within .del{opacity:1}
+@media(hover:none){.ev .del{opacity:.8}}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.fchip{height:32px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:12.5px;color:var(--muted)}
+.fchip.on{border-color:var(--blue);color:var(--blue);background:var(--t-blue)}
 
-/* VET ANALYTICS */
-.analytics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.chart-bar-wrap{display:flex;align-items:flex-end;gap:6px;height:100px;margin:10px 0 4px}
-.chart-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
-.chart-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .6s}
-.chart-bar-label{font-size:10px;color:var(--pb-text3)}
-.chart-bar-val{font-size:11px;font-weight:700;color:var(--pb-text2)}
-.disease-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--pb-border)}
-.disease-row:last-child{border-bottom:none}
-.disease-bar-bg{flex:1;height:6px;background:var(--pb-bg);border-radius:var(--pb-pill);overflow:hidden}
-.disease-bar-fill{height:100%;border-radius:var(--pb-pill);background:var(--pb-blue)}
-.disease-pct{font-size:12px;font-weight:700;color:var(--pb-text2);width:30px;text-align:right}
+/* lists */
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe;flex-wrap:wrap}
+.row .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.row .t{flex:1;min-width:160px}.row .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.row .t span{font-size:12.5px;color:var(--muted)}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty .e{font-size:40px;margin-bottom:8px}
+.empty b{display:block;color:var(--navy);font-size:16px;font-weight:800;margin-bottom:4px}
+.empty p{font-size:13.5px;max-width:420px;margin:0 auto 14px;line-height:1.55}
 
-/* PATIENT LIST VIEW */
-.patient-list-view{display:flex;flex-direction:column;gap:0}
-.pl-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--pb-border);cursor:pointer;transition:background .15s}
-.pl-row:hover{background:var(--pb-bg)}
-.pl-avatar{width:40px;height:40px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;background:var(--pb-bg);flex-shrink:0}
-.pl-info{flex:1;min-width:0}
-.pl-name{font-size:14px;font-weight:700}
-.pl-meta{font-size:12px;color:var(--pb-text3)}
-.pl-last{font-size:11px;color:var(--pb-text3);text-align:right;white-space:nowrap}
-.pl-score{width:34px;height:34px;border-radius:50%;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* daily wellness */
+.dw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.dw{grid-template-columns:repeat(2,1fr)}}
+.dws{border-radius:16px;padding:14px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
+.dws i{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:6px}
+.dws b{font-size:21px;font-weight:900;color:var(--navy);line-height:1.1}.dws span{font-size:12.5px;font-weight:600;color:var(--sub)}
+.dws small{font-size:11.5px;color:var(--muted)}
+button.dws:hover{border-color:#cfdaf0;box-shadow:var(--shadow)}
+.week{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:14px;padding:0 2px}
+.wk{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.wk .b{width:100%;max-width:36px;border-radius:8px 8px 4px 4px;background:#cfe0fb;min-height:4px}
+.wk.today .b{background:linear-gradient(180deg,var(--blue),var(--purple))}
+.wk span{font-size:11.5px;font-weight:600;color:var(--muted)}.wk em{font-style:normal;font-size:11px;font-weight:700;color:var(--navy)}
+.moods{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mood{height:38px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:13px;color:var(--sub)}
+.mood.on{background:var(--t-purple);border-color:#cbbdf7;color:var(--t-purple-d)}
+.q{margin-top:16px;font-size:13.5px;font-weight:700;color:var(--navy)}
+.streak{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#fff6f0,#fff1f1);border:1px solid #ffe0d2;margin-top:14px;font-weight:700;font-size:13.5px;color:var(--navy)}
+.streak i{font-size:22px;color:#f97316}
 
-/* ALERTS */
-.alert-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--pb-radius-sm);font-size:13px;border-left:4px solid;margin-bottom:8px}
-.alert-banner.urgent{background:var(--pb-red-soft);border-color:var(--pb-red);color:var(--pb-red)}
-.alert-banner.warning{background:var(--pb-amber-soft);border-color:var(--pb-amber);color:#92400e}
-.alert-banner.info{background:var(--pb-blue-soft);border-color:var(--pb-blue);color:var(--pb-blue)}
+/* weight chart */
+.wchart{position:relative;height:210px;margin:12px 0 6px}
+.wchart svg{width:100%;height:100%;overflow:visible}
+.wtip{position:absolute;background:var(--navy);color:#fff;font-size:12px;font-weight:700;border-radius:10px;padding:6px 9px;pointer-events:none;transform:translate(-50%,-118%);white-space:nowrap;display:none}
 
-/* BOTTOM NAV */
-.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);z-index:300}
-@media(max-width:768px){.bnav{display:flex}}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;color:var(--pb-text3);cursor:pointer;border:none;background:transparent}
-.bnav-item.active,.bnav-item:hover{color:var(--vet-green)}
-.bnav-item i{font-size:22px}
+/* memories */
+.mems{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.mem{border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 2px 10px rgba(15,32,87,.05);position:relative}
+.mem img{width:100%;height:170px;object-fit:cover;display:block}
+.mem .noimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;background:linear-gradient(135deg,#e8f1ff,#f1ecff)}
+.mem .c{padding:11px 13px}.mem b{font-size:14px;font-weight:700;color:var(--navy);display:block}.mem span{font-size:12px;color:var(--muted)}
+.mem p{font-size:12.5px;margin-top:4px;line-height:1.5;color:var(--sub)}
 
-/* VIEW SWITCHER */
-.vp-views > div{display:none}
-.vp-views > div.active{display:block}
+/* AI card */
+.ai{display:flex;gap:16px;align-items:center;padding:18px 20px;border-radius:var(--r);background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;margin-top:18px;flex-wrap:wrap;box-shadow:0 12px 30px rgba(24,119,242,.25)}
+.ai .ic{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:27px}
+.ai .t{flex:1;min-width:200px}.ai b{font-size:16px;font-weight:800;display:block}.ai span{font-size:12.5px;opacity:.9;line-height:1.5}
+.ai .btn-w{border:none}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:flex-end;justify-content:center}
-@media(min-width:600px){.modal-overlay{align-items:center}}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;animation:slideUp .25s ease}
-@media(min-width:600px){.modal{border-radius:16px}}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-.modal-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
-.modal-header h3{font-size:16px;font-weight:800}
-.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;font-size:16px}
-.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px}
-.modal-footer{padding:14px 20px;border-top:1px solid var(--pb-border);display:flex;gap:8px;justify-content:flex-end}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-label{font-size:13px;font-weight:600}
-.form-input{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;transition:border .15s}
-.form-input:focus{border-color:var(--pb-blue)}
-.form-select{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;background:#fff}
-.form-textarea{border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:10px 12px;font-size:14px;outline:none;resize:vertical;min-height:70px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(15,32,87,.45);z-index:600;display:none;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+@media(min-width:620px){.mo{align-items:center}}
+.md{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;border-radius:22px 22px 0 0;animation:up .22s ease}
+@media(min-width:620px){.md{border-radius:22px}}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.mh{display:flex;align-items:center;gap:10px;padding:18px 22px 8px}
+.mh h3{flex:1;font-size:19px;font-weight:800;color:var(--navy)}
+.mx{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;font-size:16px}
+.mb{padding:6px 22px 8px;display:flex;flex-direction:column;gap:14px}
+.mf{padding:12px 22px 22px;display:flex;gap:8px;justify-content:flex-end}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl>span{font-size:13px;font-weight:700;color:#2b3250}
+.fl small{font-size:12px;color:var(--muted)}
+.fi{height:48px;border:1.5px solid #dfe5ef;border-radius:12px;padding:0 14px;font-size:14px;background:#f8fafd;outline:none;width:100%;transition:border-color .15s,background .15s}
+textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-height:1.55}
+.fi:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px rgba(24,119,242,.1)}
+.fl.bad .fi{border-color:var(--coral);background:#fff}.fl .err{display:none;color:var(--coral-d);font-size:12px;font-weight:600}.fl.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.seg{display:flex;flex-wrap:wrap;gap:7px}
+.seg label{cursor:pointer}.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border-radius:11px;border:1.5px solid #dfe5ef;font-weight:600;font-size:13px;background:#f8fafd}
+.seg input:checked+span{background:var(--t-blue);border-color:var(--blue);color:var(--blue)}
+.seg input:focus-visible+span{outline:3px solid rgba(24,119,242,.35)}
+
+/* health card */
+.hcard{border-radius:18px;padding:18px;background:linear-gradient(135deg,#f7f9ff,#eef3fb);border:1px solid #dbe4f3}
+.hcard .top{display:flex;gap:14px;align-items:center}
+.hcard .av{width:74px;height:74px;border-radius:20px;font-size:36px;border:3px solid #fff;box-shadow:0 6px 16px rgba(15,32,87,.12)}
+.hcard h4{font-size:20px;font-weight:900;color:var(--navy)}
+.hcard .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:12px}
+.hcard .kv span{color:var(--muted)}.hcard .kv b{font-weight:700;color:var(--navy)}
+.hcard ul{margin:8px 0 0 18px;font-size:13px;line-height:1.65}
+
+/* toast etc */
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;font-size:13.5px;opacity:0;transition:all .25s;z-index:700;pointer-events:none;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(15,32,87,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{background:linear-gradient(90deg,#e8edf6 25%,#f3f6fb 50%,#e8edf6 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:var(--r)}
+@keyframes sk{to{background-position:-200% 0}}
+.muted{color:var(--muted)}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;background:#fff;border-top:1px solid var(--line);z-index:300;padding-bottom:env(safe-area-inset-bottom)}
+@media(max-width:768px){.bnav{display:flex}.wrap{padding:0 16px 110px}.hero-band{margin:0 -16px;padding:0 16px}}
+.bnav button{flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted)}
+.bnav button i{font-size:22px}.bnav button.on{color:var(--blue)}
+@media print{
+  body{background:#fff}.nav,.bnav,.tabs,.qa,.no-print,#drawer-panel,#drawer-overlay{display:none!important}
+  body.print-card .wrap{display:none}body.print-card #cardModal{display:block!important;position:static;background:none}body.print-card #cardModal .md{box-shadow:none;max-height:none;animation:none}
+  body.print-card #cardModal .mf,body.print-card #cardModal .mx{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── PawBook VetCare: same design language, more green and a little more professional ── */
+:root{--blue:#269B70;--blue-d:#1c7d59;--purple:#41b88e;--navy:#1f2a44;--coral:#D83D3D;--coral-d:#b52f2f;--coral-soft:#fdeeee;
+  --bg:#FFF9F3;--line:#efe6dc;--line2:#f5eee6;--text:#403A35;--sub:#4d4740;--muted:#7a7068;
+  --orange:#F47A38;--cream:#FFF0E5;--sage:#E6F2E7;--lav:#EEE8FF;--info:#E8F1FF;
+  --grad:linear-gradient(135deg,#F47A38,#f59e0b);--ggrad:linear-gradient(135deg,#2aa676,#1c7d59);
+  --t-blue:#e8f1ff;--t-blue-d:#1a56db;--t-green:#e6f2e7;--t-green-d:#1c7d59;--shadow:0 6px 22px rgba(64,58,53,.07)}
+.logo{color:#1877F2}.logo i{background:linear-gradient(135deg,#1877F2,#8b5cf6)}
+.crumb b{color:var(--blue)}
+.nav-av{background:var(--ggrad)}
+.btn-g{background:var(--ggrad);color:#fff;box-shadow:0 8px 20px rgba(38,155,112,.28)}.btn-g:hover{filter:brightness(1.05)}
+.btn-r{background:#fff;color:var(--coral-d);border:1.5px solid #f3c9c9}.btn-r:hover{background:var(--coral-soft)}
+.btn-w:hover{border-color:var(--blue);color:var(--blue)}
+.hero-band{background:radial-gradient(1100px 480px at 85% -10%,#e3f4ea 0%,transparent 60%),linear-gradient(180deg,#fffaf5 0%,#fff3e9 100%)}
+.hero-band::before{background-image:radial-gradient(circle at 20px 20px,rgba(38,155,112,.07) 3px,transparent 4px)}
+.eyebrow{color:var(--blue-d)!important}
+.hero h1 .accent{background:var(--ggrad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* workspace nav */
+.wnav{display:flex;gap:4px;overflow-x:auto;padding:6px;background:#fff;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);scrollbar-width:none;margin:16px 0 0;position:sticky;top:calc(var(--nav-h) + 8px);z-index:60}
+.wnav::-webkit-scrollbar{display:none}
+.wnav button{height:40px;padding:0 14px;border-radius:11px;border:none;background:none;font-weight:600;font-size:13.5px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.wnav button i{font-size:18px}.wnav button:hover{color:var(--navy);background:#faf5ef}.wnav button.on{background:var(--sage);color:var(--blue-d)}
+.wnav .cnt{background:var(--coral);color:#fff;border-radius:999px;font-size:10.5px;font-weight:800;padding:1px 7px}
+/* welcome */
+.clinic{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.chip{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--sub)}
+.chip i{color:var(--blue)}.chip.live{background:var(--sage);border-color:#cfe6d4;color:var(--blue-d)}.chip.live b{width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px rgba(38,155,112,.18)}
+.mini{display:flex;gap:26px;margin-top:22px;flex-wrap:wrap}.mini div b{display:block;font-size:28px;font-weight:900;color:var(--navy);line-height:1}.mini div span{font-size:12.5px;color:var(--muted);font-weight:600}
+.collage .ph{background:#efe4d8}
+/* KPI */
+.kpis{position:relative;z-index:5;margin-top:-34px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:16px 18px;min-height:118px;text-align:left}
+button.kpi:hover{border-color:#d9cbbb}
+.kpi .ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.kpi b{display:block;font-size:28px;font-weight:900;color:var(--navy);line-height:1}.kpi .l{font-size:13.5px;font-weight:700;color:var(--navy);margin-top:4px}.kpi small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.kpi .thumb{position:absolute;right:-14px;bottom:-14px;width:86px;height:86px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 6px 16px rgba(64,58,53,.15)}
+@media(max-width:520px){.kpi .thumb{width:62px;height:62px;right:-12px;bottom:-12px}.kpi b{font-size:24px}}
+.c-sage{background:var(--sage);color:var(--blue-d)}.c-cream{background:var(--cream);color:#c25e1f}.c-lav{background:var(--lav);color:#6d4fd8}.c-info{background:var(--info);color:#1a56db}.c-red{background:var(--coral-soft);color:var(--coral-d)}.c-grey{background:#f3efea;color:#7a7068}
+/* layout */
+.dgrid{display:grid;grid-template-columns:1.55fr 1fr;gap:18px;margin-top:22px;align-items:start}
+@media(max-width:1000px){.dgrid{display:flex;flex-direction:column}.dgrid>.side{order:-1}}
+.card{border-color:var(--line)}
+.ch h2 i{background:var(--sage);color:var(--blue-d)}
+.daynav{display:flex;align-items:center;gap:6px}
+.daynav button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:16px;color:var(--sub)}
+.daynav .today{width:auto;padding:0 12px;font-size:12.5px;font-weight:700}
+.sumchips{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 14px}
+.sumchips span{font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;background:#faf5ef;color:var(--sub)}
+/* appointment timeline */
+.tline{position:relative;display:flex;flex-direction:column;gap:12px}
+.ap{display:grid;grid-template-columns:62px 1fr;gap:12px}
+.ap .tm{font-size:13px;font-weight:800;color:var(--navy);padding-top:16px;text-align:right;position:relative}
+.ap .tm small{display:block;font-size:11px;font-weight:600;color:var(--muted)}
+.apc{background:#fff;border:1px solid var(--line);border-left:4px solid var(--stc,#e8ddd1);border-radius:16px;padding:14px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;transition:box-shadow .15s}
+.apc:hover{box-shadow:var(--shadow)}
+.pav{width:56px;height:56px;border-radius:16px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--cream)}
+.pav img{width:100%;height:100%;object-fit:cover}
+.pav.sm{width:42px;height:42px;border-radius:13px;font-size:22px}
+.pav.lg{width:96px;height:96px;border-radius:24px;font-size:48px;border:4px solid #fff;box-shadow:0 8px 20px rgba(64,58,53,.15)}
+.apc .t{flex:1;min-width:180px}
+.apc .t b{font-size:15px;font-weight:800;color:var(--navy)}.apc .t .s{font-size:12.5px;color:var(--muted);margin-top:1px}
+.apc .why{font-size:13px;color:var(--sub);margin-top:6px;display:flex;gap:6px;align-items:flex-start}.apc .why i{color:var(--orange);margin-top:2px}
+.apc .own{font-size:12.5px;color:var(--sub);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.apc .own a{color:var(--blue-d);font-weight:700;display:inline-flex;gap:4px;align-items:center}
+.apc .acts{display:flex;gap:6px;flex-wrap:wrap;width:100%;padding-top:10px;border-top:1px dashed var(--line);margin-top:4px}
+.st{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.st-up{background:var(--info);color:#1a56db}.st-wait{background:var(--cream);color:#c25e1f}.st-in{background:var(--sage);color:var(--blue-d)}.st-done{background:#eef0f3;color:#56607a}.st-x{background:var(--coral-soft);color:var(--coral-d)}
+.st-in::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--blue);animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.typ{font-size:11px;font-weight:700;padding:3px 8px;border-radius:7px;background:#faf5ef;color:var(--muted);margin-left:6px;vertical-align:2px}
+/* queue */
+.qlist{display:flex;flex-direction:column;gap:10px}
+.qi{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;border:1px solid var(--line);background:#fffdfb;flex-wrap:wrap}
+.qi.urgent{border-color:#f3c0c0;background:linear-gradient(90deg,#fff4f4,#fff)}
+.qi.priority{border-color:#f7dcae;background:linear-gradient(90deg,#fffaf0,#fff)}
+.qi.in{border-color:#bfe0cc;background:linear-gradient(90deg,#f1faf4,#fff)}
+.qn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qi .t{flex:1;min-width:120px}.qi .t b{font-size:14px;font-weight:800;color:var(--navy)}.qi .t span{display:block;font-size:12px;color:var(--muted)}
+.qi .w{text-align:right;font-size:12px;color:var(--muted);font-weight:600}.qi .w b{display:block;font-size:15px;color:var(--navy)}
+.qi .qa2{display:flex;gap:6px;width:100%;flex-wrap:wrap}
+.pri{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 7px;border-radius:6px}
+.pri.urgent{background:var(--coral);color:#fff}.pri.priority{background:#f59e0b;color:#fff}
+/* attention */
+.att{display:flex;flex-direction:column;gap:12px}
+.ag{border-radius:16px;padding:12px 14px;border:1px solid var(--line)}
+.ag h4{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800;color:var(--navy)}
+.ag h4 .n{margin-left:auto;min-width:24px;height:24px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0 8px}
+.ag.urg{background:#fff6f6;border-color:#f6d0d0}.ag.urg h4 i,.ag.urg .n{color:var(--coral-d)}.ag.urg .n{background:#fde2e2}
+.ag.fol{background:#fffaf2;border-color:#f6e3c2}.ag.fol h4 i{color:#c27a12}.ag.fol .n{background:#fdefd5;color:#a5650c}
+.ag.pre{background:#f4faf5;border-color:#d4ead9}.ag.pre h4 i{color:var(--blue-d)}.ag.pre .n{background:var(--sage);color:var(--blue-d)}
+.ag.adm{background:#f8f7f5;border-color:#ebe6df}.ag.adm h4 i{color:#7a7068}.ag.adm .n{background:#eee9e3;color:#5d564f}
+.ag ul{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:7px}
+.ag li{font-size:12.5px;line-height:1.45;color:var(--sub);cursor:default}.ag li b{color:var(--navy);display:block;font-size:13px}
+.ag li.go{cursor:pointer}.ag li.go:hover b{color:var(--blue-d)}
+.ag .none{font-size:12.5px;color:var(--muted);margin-top:6px}
+/* week */
+.wstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:700px){.wstats{grid-template-columns:repeat(2,1fr)}}
+.ws{border-radius:14px;padding:12px;background:#fffaf5;border:1px solid var(--line2)}.ws b{display:block;font-size:22px;font-weight:900;color:var(--navy)}.ws span{font-size:12px;color:var(--muted);font-weight:600}
+.bars{display:flex;align-items:flex-end;gap:10px;height:150px;margin-top:16px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:5px;position:relative}
+.bar .stk{width:100%;max-width:38px;display:flex;flex-direction:column-reverse;border-radius:9px 9px 4px 4px;overflow:hidden;min-height:4px;background:#f1e8de}
+.bar .stk i{display:block;background:var(--blue)}.bar .stk em{display:block;background:#bfe0cc}
+.bar span{font-size:11px;font-weight:600;color:var(--muted)}.bar u{text-decoration:none;font-size:11px;font-weight:800;color:var(--navy)}
+.legend2{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:10px}.legend2 i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+/* patients grid */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.pc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;gap:12px;align-items:center;text-align:left;width:100%}
+.pc:hover{box-shadow:var(--shadow);border-color:#e3d5c6}
+.pc .t{flex:1;min-width:0}.pc b{font-size:14.5px;font-weight:800;color:var(--navy);display:block}.pc span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search{display:flex;gap:8px;margin-bottom:14px}.search .fi{flex:1}
+/* schedule week */
+.week7{display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px}
+.dcol{background:#fffaf5;border:1px solid var(--line2);border-radius:16px;padding:10px;min-height:160px}
+.dcol h5{font-size:12px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;display:flex;justify-content:space-between}
+.dcol.today{background:#f1faf4;border-color:#cfe6d4}
+.sa{background:#fff;border:1px solid var(--line);border-left:3px solid var(--stc,#e8ddd1);border-radius:11px;padding:8px;margin-bottom:7px;font-size:12px;cursor:pointer}
+.sa b{display:block;font-size:12.5px;color:var(--navy)}.sa span{color:var(--muted)}
+/* drawer (patient profile) */
+.pd-ov{position:fixed;inset:0;background:rgba(31,42,68,.4);z-index:550;display:none}.pd-ov.open{display:block}
+.pd{position:fixed;top:0;right:0;bottom:0;width:min(760px,100%);background:var(--bg);z-index:560;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(31,42,68,.2)}
+.pd.open{transform:none}
+.pd-h{background:linear-gradient(135deg,#fff3e8,#eaf6ee);padding:20px 22px 14px;position:relative}
+.pd-h .x{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:50%;border:none;background:#fff;font-size:16px}
+.pd-id{display:flex;gap:16px;align-items:center}
+.pd-id h3{font-size:24px;font-weight:900;color:var(--navy)}.pd-id .s{font-size:13px;color:var(--sub);margin-top:2px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tagp{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--sub);display:inline-flex;gap:5px;align-items:center}
+.tagp.red{background:var(--coral-soft);border-color:#f3c9c9;color:var(--coral-d)}
+.pd-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pd-tabs{display:flex;gap:4px;overflow-x:auto;padding:8px 16px;background:#fff;border-bottom:1px solid var(--line);scrollbar-width:none}
+.pd-tabs button{height:36px;padding:0 13px;border:none;background:none;border-radius:10px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}
+.pd-tabs button.on{background:var(--sage);color:var(--blue-d)}
+.pd-b{flex:1;overflow-y:auto;padding:16px 22px 40px}
+.box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.box h5{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:7px}.box h5 i{color:var(--blue)}
+.kv2{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:13px}.kv2 span{color:var(--muted)}.kv2 em{font-style:normal;font-weight:600;color:var(--navy)}
+.vit{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.vit div{background:#fffaf5;border-radius:12px;padding:10px;text-align:center}.vit b{display:block;font-size:18px;color:var(--navy)}.vit span{font-size:11px;color:var(--muted)}
+@media(max-width:520px){.vit{grid-template-columns:repeat(2,1fr)}}
+.note{border-left:3px solid var(--blue);padding:4px 0 4px 12px;margin-bottom:12px}
+.note.old{border-left-color:#d8cfc5;opacity:.75}
+.note .m{font-size:12px;color:var(--muted)}.note p{font-size:13px;line-height:1.55;color:var(--sub);white-space:pre-wrap;margin-top:4px}
+.rxm{font-size:13px;margin:4px 0 0 18px;line-height:1.6}
+.spark{height:60px;margin-top:6px}
+.gate{max-width:640px;margin:40px auto;text-align:center}
+.gate img{width:100%;height:240px;object-fit:cover;border-radius:22px;margin-bottom:22px;box-shadow:var(--shadow)}
+.gate h1{font-size:28px;font-weight:900;color:var(--navy)}.gate p{color:var(--sub);margin:8px auto 18px;max-width:480px;line-height:1.6}
+.medtbl{width:100%;border-collapse:collapse;font-size:13px}.medtbl td{padding:6px 4px;vertical-align:top}.medtbl input{height:40px}
 
   /* ===== DRAWER STYLES ===== */
   .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
@@ -235,658 +468,431 @@ input,textarea,select{font-family:'Inter',sans-serif}
 </head>
 <body>
 
-<!-- TOP NAV — VET PORTAL -->
-<nav class="pb-nav">
-  <div class="vet-logo" onclick="location.href='07_home.html'">
-    <div class="vet-logo-icon">🩺</div>
-    <span>PawBook</span>
-  </div>
-  <span class="vet-portal-badge">Vet Portal</span>
-
-  <div class="vet-nav-links">
-    <button class="vet-nav-link active" onclick="switchView('dashboard',this)"><i class="ti ti-dashboard"></i> Dashboard</button>
-    <button class="vet-nav-link" onclick="switchView('patients',this)"><i class="ti ti-paw"></i> Patients</button>
-    <button class="vet-nav-link" onclick="switchView('appointments',this)"><i class="ti ti-calendar"></i> Schedule</button>
-    <button class="vet-nav-link" onclick="switchView('analytics',this)"><i class="ti ti-chart-bar"></i> Analytics</button>
-  </div>
-
-  <div style="display:flex;align-items:center;gap:6px;margin-left:12px">
-    <button class="pb-icon-btn" onclick="openModal('addApptModal')">
-      <i class="ti ti-plus"></i>
-    </button>
-    <button class="pb-icon-btn">
-      <i class="ti ti-bell"></i>
-      <span class="notif-dot"></span>
-    </button>
-    <div style="display:flex;align-items:center;gap:8px;padding:0 8px;cursor:pointer">
-      <div class="vet-avatar">PS</div>
-      <div style="display:none;flex-direction:column">
-        <span style="font-size:12px;font-weight:700">Dr. Priya Sharma</span>
-        <span style="font-size:10px;color:var(--pb-text3)">Paws Animal Clinic</span>
-      </div>
-    </div>
-  </div>
+<nav class="nav">
+  <button class="menu" onclick="openDrawer()" aria-label="Open menu"><i class="ti ti-menu-2"></i></button>
+  <div class="logo" onclick="location.href='07_home.html'"><i>🐾</i><span>PawBook</span></div>
+  <div class="crumb"><i class="ti ti-chevron-right"></i><b>VetCare</b></div>
+  <div class="sp"></div>
+  <select class="fi hide-s" id="practice" style="display:none;width:auto;height:38px" onchange="switchPractice(this.value)" aria-label="Clinic"></select>
+  <button class="nav-ic" onclick="refresh(true)" title="Refresh" aria-label="Refresh"><i class="ti ti-refresh"></i></button>
+  <button class="nav-ic" onclick="location.href='12_notifications.html'" title="Notifications" aria-label="Notifications"><i class="ti ti-bell"></i></button>
+  <button class="nav-av" id="nav-av" onclick="location.href='29_user_profile.html'" aria-label="My profile">·</button>
 </nav>
 
-<!-- MAIN CONTENT -->
-<div class="vp-layout">
+<main class="wrap" id="app">
+  <div class="skel" style="height:300px;margin-top:18px"></div>
+  <div class="skel" style="height:420px;margin-top:18px"></div>
+</main>
 
-  <div class="vp-views">
+<!-- patient profile -->
+<div class="pd-ov" id="pd-ov" onclick="closePatient()"></div>
+<aside class="pd" id="pd" role="dialog" aria-modal="true" aria-labelledby="pd-name"><div id="pd-in"></div></aside>
 
-    <!-- ===== DASHBOARD VIEW ===== -->
-    <div id="view-dashboard" class="active">
-
-      <!-- Stat Cards -->
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-top">
-            <div class="stat-icon" style="background:var(--vet-green-soft);color:var(--vet-green)"><i class="ti ti-calendar-check"></i></div>
-            <span class="stat-change up">↑ 3</span>
-          </div>
-          <div class="stat-val">8</div>
-          <div class="stat-label">Appointments Today</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-top">
-            <div class="stat-icon" style="background:var(--pb-blue-soft);color:var(--pb-blue)"><i class="ti ti-users"></i></div>
-            <span class="stat-change up">↑ 12</span>
-          </div>
-          <div class="stat-val">247</div>
-          <div class="stat-label">Total Patients</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-top">
-            <div class="stat-icon" style="background:var(--pb-amber-soft);color:var(--pb-amber)"><i class="ti ti-clock"></i></div>
-            <span class="stat-change down">↓ 2</span>
-          </div>
-          <div class="stat-val">3</div>
-          <div class="stat-label">In Waiting Room</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-top">
-            <div class="stat-icon" style="background:var(--pb-purple-soft);color:var(--pb-purple)"><i class="ti ti-vaccine"></i></div>
-            <span class="stat-change up">↑ 5</span>
-          </div>
-          <div class="stat-val">14</div>
-          <div class="stat-label">Vaccine Reminders Sent</div>
-        </div>
-      </div>
-
-      <!-- Main two-column grid -->
-      <div class="vp-grid">
-        <!-- Today's Appointments -->
-        <div class="pb-card">
-          <div class="pb-card-header">
-            <h3><i class="ti ti-calendar" style="color:var(--vet-green)"></i> Today — Nov 11, 2026</h3>
-            <button class="pb-btn pb-btn-green pb-btn-sm" onclick="openModal('addApptModal')"><i class="ti ti-plus"></i> New Appt</button>
-          </div>
-          <div class="appt-list">
-            <div class="appt-item" onclick="openPatient('bruno')">
-              <div class="appt-time"><div class="appt-time-val">9:00</div><div class="appt-time-ampm">AM</div></div>
-              <div class="appt-divider"></div>
-              <div class="appt-pet-avatar">🐕</div>
-              <div class="appt-info">
-                <div class="appt-pet-name">Bruno <span style="font-size:11px;color:var(--pb-text3)">· Labrador</span></div>
-                <div class="appt-owner">Abhishek Sharma · +91 98765 43210</div>
-                <div class="appt-type"><i class="ti ti-stethoscope" style="font-size:11px"></i> Annual Wellness + Hip Follow-up</div>
-              </div>
-              <span class="appt-status completed">Done</span>
-            </div>
-            <div class="appt-item" onclick="openPatient('milo')">
-              <div class="appt-time"><div class="appt-time-val">10:30</div><div class="appt-time-ampm">AM</div></div>
-              <div class="appt-divider"></div>
-              <div class="appt-pet-avatar">🐕</div>
-              <div class="appt-info">
-                <div class="appt-pet-name">Milo <span style="font-size:11px;color:var(--pb-text3)">· Golden Retriever</span></div>
-                <div class="appt-owner">Preethi Nair · +91 97654 32109</div>
-                <div class="appt-type"><i class="ti ti-vaccine" style="font-size:11px"></i> Rabies + DHPPiL Booster</div>
-              </div>
-              <span class="appt-status in-progress">● In Progress</span>
-            </div>
-            <div class="appt-item" onclick="openPatient('luna')">
-              <div class="appt-time"><div class="appt-time-val">11:15</div><div class="appt-time-ampm">AM</div></div>
-              <div class="appt-divider"></div>
-              <div class="appt-pet-avatar">🐈</div>
-              <div class="appt-info">
-                <div class="appt-pet-name">Luna <span style="font-size:11px;color:var(--pb-text3)">· Persian Cat</span></div>
-                <div class="appt-owner">Ritika Desai · +91 95432 10987</div>
-                <div class="appt-type"><i class="ti ti-bandage" style="font-size:11px"></i> Skin issue — itching</div>
-              </div>
-              <span class="appt-status waiting">Waiting</span>
-            </div>
-            <div class="appt-item">
-              <div class="appt-time"><div class="appt-time-val">2:00</div><div class="appt-time-ampm">PM</div></div>
-              <div class="appt-divider"></div>
-              <div class="appt-pet-avatar">🐕</div>
-              <div class="appt-info">
-                <div class="appt-pet-name">Rocky <span style="font-size:11px;color:var(--pb-text3)">· German Shepherd</span></div>
-                <div class="appt-owner">Vikram Singh · +91 93210 98765</div>
-                <div class="appt-type"><i class="ti ti-urgent" style="font-size:11px"></i> Limping — left hind leg</div>
-              </div>
-              <span class="appt-status confirmed">Confirmed</span>
-            </div>
-            <div class="appt-item">
-              <div class="appt-time"><div class="appt-time-val">3:30</div><div class="appt-time-ampm">PM</div></div>
-              <div class="appt-divider"></div>
-              <div class="appt-pet-avatar">🐇</div>
-              <div class="appt-info">
-                <div class="appt-pet-name">Coco <span style="font-size:11px;color:var(--pb-text3)">· Rabbit</span></div>
-                <div class="appt-owner">Meera Pillai · +91 91098 76543</div>
-                <div class="appt-type"><i class="ti ti-eye" style="font-size:11px"></i> Routine checkup + nail trim</div>
-              </div>
-              <span class="appt-status confirmed">Confirmed</span>
-            </div>
-            <div class="appt-item">
-              <div class="appt-time"><div class="appt-time-val">4:45</div><div class="appt-time-ampm">PM</div></div>
-              <div class="appt-divider"></div>
-              <div class="appt-pet-avatar">🐕</div>
-              <div class="appt-info">
-                <div class="appt-pet-name">Max <span style="font-size:11px;color:var(--pb-text3)">· Pomeranian</span></div>
-                <div class="appt-owner">Ananya Khanna · +91 89876 54321</div>
-                <div class="appt-type"><i class="ti ti-pill" style="font-size:11px"></i> Follow-up — ear infection</div>
-              </div>
-              <span class="appt-status confirmed">Confirmed</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right column -->
-        <div style="display:flex;flex-direction:column;gap:14px">
-
-          <!-- Waiting Queue -->
-          <div class="pb-card">
-            <div class="pb-card-header"><h3><i class="ti ti-clock" style="color:var(--pb-amber)"></i> Waiting Room</h3><span style="font-size:12px;font-weight:700;padding:3px 10px;background:var(--pb-amber-soft);color:#92400e;border-radius:var(--pb-pill)">3 waiting</span></div>
-            <div>
-              <div class="queue-item" onclick="openPatient('milo')">
-                <div class="queue-num" style="background:var(--pb-blue);color:#fff">1</div>
-                <div class="queue-pet-emoji">🐕</div>
-                <div class="queue-info">
-                  <div class="queue-name">Milo — Golden Retriever</div>
-                  <div class="queue-reason">Vaccinations</div>
-                </div>
-                <div class="queue-wait">Now</div>
-              </div>
-              <div class="queue-item">
-                <div class="queue-num" style="background:var(--pb-bg);color:var(--pb-text2)">2</div>
-                <div class="queue-pet-emoji">🐈</div>
-                <div class="queue-info">
-                  <div class="queue-name">Luna — Persian</div>
-                  <div class="queue-reason">Skin issue</div>
-                </div>
-                <div class="queue-wait">8 min</div>
-              </div>
-              <div class="queue-item">
-                <div class="queue-num" style="background:var(--pb-bg);color:var(--pb-text2)">3</div>
-                <div class="queue-pet-emoji">🐕</div>
-                <div class="queue-info">
-                  <div class="queue-name">Rocky — G. Shepherd</div>
-                  <div class="queue-reason">Early walk-in</div>
-                </div>
-                <div class="queue-wait">22 min</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Alerts -->
-          <div class="pb-card">
-            <div class="pb-card-header"><h3><i class="ti ti-alert-triangle" style="color:var(--pb-red)"></i> Alerts</h3><span style="font-size:12px;font-weight:700;padding:3px 10px;background:var(--pb-red-soft);color:var(--pb-red);border-radius:var(--pb-pill)">4 active</span></div>
-            <div style="padding:12px;display:flex;flex-direction:column;gap:6px">
-              <div class="alert-banner urgent"><i class="ti ti-urgent"></i><span><b>Bruno</b> — Canine Influenza 3 wks overdue. Owner notified Nov 9.</span></div>
-              <div class="alert-banner urgent"><i class="ti ti-urgent"></i><span><b>Rocky</b> — Walk-in with limping. X-ray may be needed. Flag for priority.</span></div>
-              <div class="alert-banner warning"><i class="ti ti-clock"></i><span><b>Whiskers</b> — Annual wellness overdue by 2 months.</span></div>
-              <div class="alert-banner info"><i class="ti ti-vaccine"></i><span>14 patients have vaccines due this week. Reminders sent automatically.</span></div>
-            </div>
-          </div>
-
-          <!-- Quick Stats -->
-          <div class="pb-card">
-            <div class="pb-card-header"><h3><i class="ti ti-chart-pie" style="color:var(--pb-purple)"></i> This Week</h3></div>
-            <div style="padding:12px 16px;display:flex;flex-direction:column;gap:8px">
-              <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Appointments</span><span style="font-weight:700">38</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Vaccinations given</span><span style="font-weight:700;color:var(--vet-green)">22</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Prescriptions issued</span><span style="font-weight:700">15</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">New patients</span><span style="font-weight:700;color:var(--pb-blue)">6</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--pb-text2)">Avg wait time</span><span style="font-weight:700;color:var(--pb-amber)">12 min</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Patient Detail Panel (shown when patient selected) -->
-      <div id="patientPanel" class="patient-panel">
-        <div class="patient-header">
-          <div class="patient-header-emoji" id="panelEmoji">🐕</div>
-          <div>
-            <div class="patient-header-name" id="panelName">Bruno</div>
-            <div class="patient-header-meta" id="panelMeta">Labrador · 3 yrs · 28.4 kg · Abhishek Sharma</div>
-            <div class="patient-header-actions">
-              <button class="pb-btn pb-btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)" onclick="openModal('writeRecordModal')"><i class="ti ti-file-text"></i> Write Record</button>
-              <button class="pb-btn pb-btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)" onclick="openModal('prescribeModal')"><i class="ti ti-pill"></i> Prescribe</button>
-              <button class="pb-btn pb-btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)" onclick="openModal('addApptModal')"><i class="ti ti-calendar"></i> Schedule Follow-up</button>
-            </div>
-          </div>
-          <button onclick="closePatient()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;margin-left:auto;align-self:flex-start">✕</button>
-        </div>
-
-        <div class="pb-card">
-          <div style="padding:10px 12px">
-            <div class="patient-tabs">
-              <button class="patient-tab active" onclick="switchPTab(this,'pSummary')">Summary</button>
-              <button class="patient-tab" onclick="switchPTab(this,'pHistory')">History</button>
-              <button class="patient-tab" onclick="switchPTab(this,'pVaccines')">Vaccines</button>
-              <button class="patient-tab" onclick="switchPTab(this,'pMeds')">Medications</button>
-              <button class="patient-tab" onclick="switchPTab(this,'pNotes')">Notes</button>
-            </div>
-          </div>
-
-          <!-- SUMMARY -->
-          <div id="pSummary" class="patient-tab-content active" style="padding:16px">
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-              <div style="padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900;color:var(--vet-green)">87</div><div style="font-size:11px;color:var(--pb-text3)">Health Score</div></div>
-              <div style="padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900">28.4<span style="font-size:12px;font-weight:500">kg</span></div><div style="font-size:11px;color:var(--pb-text3)">Weight</div></div>
-              <div style="padding:12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900;color:var(--pb-amber)">2</div><div style="font-size:11px;color:var(--pb-text3)">Open Alerts</div></div>
-            </div>
-            <div style="font-size:13px;color:var(--pb-text2);line-height:1.7"><b>Last visit:</b> Oct 15, 2026 — Annual wellness. Hip joints show mild early-stage concern. Blood work normal. Recommended monitoring and hip X-ray at age 4.<br><br><b>Active medications:</b> Heartgard Plus (monthly), NexGard (monthly), Omega-3 fish oil (daily).<br><br><b>Allergies:</b> None known.<br><b>Blood type:</b> DEA 1.1 positive.</div>
-          </div>
-
-          <!-- HISTORY -->
-          <div id="pHistory" class="patient-tab-content" style="padding:16px;display:flex;flex-direction:column;gap:10px">
-            <div style="padding:12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)"><div style="font-size:13px;font-weight:700">Annual Wellness Check</div><div style="font-size:11px;color:var(--pb-text3)">Oct 15, 2026 · Dr. Priya Sharma</div><div style="font-size:12px;color:var(--pb-text2);margin-top:4px;line-height:1.5">Weight stable. Mild hip concern noted. CBC normal. Dental health good.</div></div>
-            <div style="padding:12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)"><div style="font-size:13px;font-weight:700">Emergency — Swallowed Object</div><div style="font-size:11px;color:var(--pb-text3)">Aug 3, 2026 · Animal Emergency Hospital</div><div style="font-size:12px;color:var(--pb-text2);margin-top:4px;line-height:1.5">Small plastic toy ingested. X-ray confirmed. Conservative management. Full recovery.</div></div>
-            <div style="padding:12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)"><div style="font-size:13px;font-weight:700">Vaccination + Check-up</div><div style="font-size:11px;color:var(--pb-text3)">Mar 5, 2026 · Dr. Priya Sharma</div><div style="font-size:12px;color:var(--pb-text2);margin-top:4px;line-height:1.5">DHPPiL booster. Physical exam normal. Weight slightly elevated — portion control advised.</div></div>
-          </div>
-
-          <!-- VACCINES -->
-          <div id="pVaccines" class="patient-tab-content" style="padding:16px;display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--pb-amber-soft);border-radius:var(--pb-radius-sm)"><span style="color:var(--pb-amber);font-size:16px">⚠️</span><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#92400e">Rabies — Due Nov 23</div><div style="font-size:11px;color:#92400e">12 days remaining · Must book this week</div></div><button class="pb-btn pb-btn-sm" style="background:var(--pb-amber);color:#fff">Schedule</button></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--pb-red-soft);border-radius:var(--pb-radius-sm)"><span style="color:var(--pb-red);font-size:16px">❌</span><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--pb-red)">Canine Influenza — 3 wks overdue</div><div style="font-size:11px;color:var(--pb-red)">Owner notified Nov 9</div></div><button class="pb-btn pb-btn-sm pb-btn-red">Book Now</button></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px"><span style="font-weight:600">DHPPiL</span><span style="font-weight:700;color:var(--vet-green)">✅ Current — Mar 2027</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px"><span style="font-weight:600">Leptospirosis</span><span style="font-weight:700;color:var(--vet-green)">✅ Current — Nov 2027</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);font-size:13px"><span style="font-weight:600">Bordetella</span><span style="font-weight:700;color:var(--vet-green)">✅ Current — Sep 2027</span></div>
-          </div>
-
-          <!-- MEDS -->
-          <div id="pMeds" class="patient-tab-content" style="padding:16px;display:flex;flex-direction:column;gap:8px">
-            <div style="padding:10px 12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:700">Heartgard Plus</div><div style="font-size:11px;color:var(--pb-text3)">Monthly · Heartworm prevention · Next: Dec 1</div></div><span style="font-size:11px;font-weight:700;padding:3px 8px;background:var(--vet-green-soft);color:var(--vet-green);border-radius:var(--pb-pill)">Active</span></div>
-            <div style="padding:10px 12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:700">NexGard</div><div style="font-size:11px;color:var(--pb-text3)">Monthly · Flea & tick · Next: Nov 25</div></div><span style="font-size:11px;font-weight:700;padding:3px 8px;background:var(--vet-green-soft);color:var(--vet-green);border-radius:var(--pb-pill)">Active</span></div>
-            <div style="padding:10px 12px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:700">Omega-3 Fish Oil</div><div style="font-size:11px;color:var(--pb-text3)">Daily · Joint & coat health · Ongoing</div></div><span style="font-size:11px;font-weight:700;padding:3px 8px;background:var(--vet-green-soft);color:var(--vet-green);border-radius:var(--pb-pill)">Active</span></div>
-            <button class="pb-btn pb-btn-blue pb-btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="openModal('prescribeModal')"><i class="ti ti-plus"></i> Add Prescription</button>
-          </div>
-
-          <!-- NOTES -->
-          <div id="pNotes" class="patient-tab-content" style="padding:16px">
-            <textarea style="width:100%;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:12px;font-size:13px;line-height:1.6;resize:vertical;min-height:140px;outline:none;font-family:'Inter',sans-serif" placeholder="Clinical notes for Bruno…">Hip joint concern noted Oct 15. Owner educated on weight management for Labradors. Recommended X-ray at age 4. Suggested Omega-3 supplementation for joint health.
-
-Watch for: progressive limping, difficulty rising, reluctance to exercise — indicators of hip dysplasia progression.</textarea>
-            <button class="pb-btn pb-btn-green" style="margin-top:8px"><i class="ti ti-check"></i> Save Notes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== PATIENTS VIEW ===== -->
-    <div id="view-patients">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-        <div>
-          <div style="font-size:20px;font-weight:900">Patient Records</div>
-          <div style="font-size:13px;color:var(--pb-text3)">247 patients · Sorted by last visit</div>
-        </div>
-        <div style="display:flex;gap:8px">
-          <input type="text" style="height:36px;border:1px solid var(--pb-border);border-radius:var(--pb-pill);padding:0 14px;font-size:13px;outline:none;width:200px" placeholder="🔍 Search patients…">
-          <button class="pb-btn pb-btn-green" onclick="openModal('addPatientModal')"><i class="ti ti-plus"></i> Add Patient</button>
-        </div>
-      </div>
-      <div class="pb-card">
-        <div class="patient-list-view">
-          <div class="pl-row" onclick="openPatient('bruno')">
-            <div class="pl-avatar">🐕</div>
-            <div class="pl-info"><div class="pl-name">Bruno <span style="color:var(--pb-text3);font-weight:400">· Labrador</span></div><div class="pl-meta">Abhishek Sharma · Last visit: Nov 11, 2026 · Hip concern</div></div>
-            <div class="pl-last"><div style="font-size:11px;color:var(--pb-amber);font-weight:700">⚠️ Vax due</div><div style="font-size:10px;color:var(--pb-text3)">12 days</div></div>
-            <div class="pl-score" style="background:var(--pb-green-soft);color:#166534">87</div>
-          </div>
-          <div class="pl-row" onclick="openPatient('milo')">
-            <div class="pl-avatar">🐕</div>
-            <div class="pl-info"><div class="pl-name">Milo <span style="color:var(--pb-text3);font-weight:400">· Golden Retriever</span></div><div class="pl-meta">Preethi Nair · Last visit: Nov 11, 2026 · In for vaccines</div></div>
-            <div class="pl-last"><div style="font-size:11px;color:var(--pb-blue);font-weight:700">In clinic</div><div style="font-size:10px;color:var(--pb-text3)">Today</div></div>
-            <div class="pl-score" style="background:var(--pb-green-soft);color:#166534">92</div>
-          </div>
-          <div class="pl-row">
-            <div class="pl-avatar">🐈</div>
-            <div class="pl-info"><div class="pl-name">Luna <span style="color:var(--pb-text3);font-weight:400">· Persian Cat</span></div><div class="pl-meta">Ritika Desai · Last visit: Sep 3, 2026 · Skin issue</div></div>
-            <div class="pl-last"><div style="font-size:11px;color:var(--pb-amber);font-weight:700">⚠️ Wellness due</div><div style="font-size:10px;color:var(--pb-text3)">2 months</div></div>
-            <div class="pl-score" style="background:var(--pb-amber-soft);color:#92400e">71</div>
-          </div>
-          <div class="pl-row">
-            <div class="pl-avatar">🐕</div>
-            <div class="pl-info"><div class="pl-name">Rocky <span style="color:var(--pb-text3);font-weight:400">· German Shepherd</span></div><div class="pl-meta">Vikram Singh · Last visit: Aug 20, 2026 · Walk-in limping</div></div>
-            <div class="pl-last"><div style="font-size:11px;color:var(--pb-red);font-weight:700">🚨 Urgent</div><div style="font-size:10px;color:var(--pb-text3)">Today</div></div>
-            <div class="pl-score" style="background:var(--pb-red-soft);color:var(--pb-red)">63</div>
-          </div>
-          <div class="pl-row">
-            <div class="pl-avatar">🐇</div>
-            <div class="pl-info"><div class="pl-name">Coco <span style="color:var(--pb-text3);font-weight:400">· Rabbit</span></div><div class="pl-meta">Meera Pillai · Last visit: Oct 1, 2026 · Routine</div></div>
-            <div class="pl-last"><div style="font-size:11px;color:var(--vet-green);font-weight:700">✅ All clear</div><div style="font-size:10px;color:var(--pb-text3)">Nov 2026</div></div>
-            <div class="pl-score" style="background:var(--pb-green-soft);color:#166534">95</div>
-          </div>
-          <div style="padding:14px 18px;text-align:center">
-            <button class="pb-btn pb-btn-gray">Load more patients…</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== SCHEDULE VIEW ===== -->
-    <div id="view-appointments">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-        <div><div style="font-size:20px;font-weight:900">Appointment Schedule</div><div style="font-size:13px;color:var(--pb-text3)">Week of Nov 11–17, 2026</div></div>
-        <button class="pb-btn pb-btn-green" onclick="openModal('addApptModal')"><i class="ti ti-plus"></i> New Appointment</button>
-      </div>
-      <!-- Week strip -->
-      <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px">
-        <div style="text-align:center;padding:10px 14px;background:linear-gradient(135deg,#059669,#1877F2);color:#fff;border-radius:var(--pb-radius-sm);min-width:60px"><div style="font-size:11px;font-weight:600;opacity:.8">MON</div><div style="font-size:18px;font-weight:900">11</div><div style="font-size:10px;opacity:.8;margin-top:2px">8 appts</div></div>
-        <div style="text-align:center;padding:10px 14px;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);min-width:60px;cursor:pointer"><div style="font-size:11px;font-weight:600;color:var(--pb-text3)">TUE</div><div style="font-size:18px;font-weight:900">12</div><div style="font-size:10px;color:var(--pb-text3);margin-top:2px">5 appts</div></div>
-        <div style="text-align:center;padding:10px 14px;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);min-width:60px;cursor:pointer"><div style="font-size:11px;font-weight:600;color:var(--pb-text3)">WED</div><div style="font-size:18px;font-weight:900">13</div><div style="font-size:10px;color:var(--pb-text3);margin-top:2px">7 appts</div></div>
-        <div style="text-align:center;padding:10px 14px;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);min-width:60px;cursor:pointer"><div style="font-size:11px;font-weight:600;color:var(--pb-text3)">THU</div><div style="font-size:18px;font-weight:900">14</div><div style="font-size:10px;color:var(--pb-text3);margin-top:2px">4 appts</div></div>
-        <div style="text-align:center;padding:10px 14px;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);min-width:60px;cursor:pointer"><div style="font-size:11px;font-weight:600;color:var(--pb-text3)">FRI</div><div style="font-size:18px;font-weight:900">15</div><div style="font-size:10px;color:var(--pb-text3);margin-top:2px">6 appts</div></div>
-        <div style="text-align:center;padding:10px 14px;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);min-width:60px;cursor:pointer"><div style="font-size:11px;font-weight:600;color:var(--pb-text3)">SAT</div><div style="font-size:18px;font-weight:900">16</div><div style="font-size:10px;color:var(--pb-text3);margin-top:2px">10 appts</div></div>
-        <div style="text-align:center;padding:10px 14px;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);min-width:60px;cursor:pointer;opacity:.5"><div style="font-size:11px;font-weight:600;color:var(--pb-text3)">SUN</div><div style="font-size:18px;font-weight:900">17</div><div style="font-size:10px;color:var(--pb-text3);margin-top:2px">Closed</div></div>
-      </div>
-      <div class="pb-card">
-        <div class="pb-card-header"><h3><i class="ti ti-calendar" style="color:var(--vet-green)"></i> Monday, Nov 11 — 8 Appointments</h3></div>
-        <div class="appt-list">
-          <div class="appt-item"><div class="appt-time"><div class="appt-time-val">9:00</div><div class="appt-time-ampm">AM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐕</div><div class="appt-info"><div class="appt-pet-name">Bruno · Labrador</div><div class="appt-owner">Abhishek Sharma</div><div class="appt-type">Annual Wellness + Hip Follow-up</div></div><span class="appt-status completed">Done</span><div class="appt-actions"><button class="pb-btn pb-btn-gray pb-btn-xs"><i class="ti ti-eye"></i></button></div></div>
-          <div class="appt-item"><div class="appt-time"><div class="appt-time-val">10:30</div><div class="appt-time-ampm">AM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐕</div><div class="appt-info"><div class="appt-pet-name">Milo · Golden Retriever</div><div class="appt-owner">Preethi Nair</div><div class="appt-type">Rabies + DHPPiL Booster</div></div><span class="appt-status in-progress">● In Progress</span><div class="appt-actions"><button class="pb-btn pb-btn-green pb-btn-xs" onclick="openModal('writeRecordModal')"><i class="ti ti-file"></i></button></div></div>
-          <div class="appt-item"><div class="appt-time"><div class="appt-time-val">11:15</div><div class="appt-time-ampm">AM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐈</div><div class="appt-info"><div class="appt-pet-name">Luna · Persian</div><div class="appt-owner">Ritika Desai</div><div class="appt-type">Skin issue — itching</div></div><span class="appt-status waiting">Waiting</span><div class="appt-actions"><button class="pb-btn pb-btn-blue pb-btn-xs">Start</button></div></div>
-          <div class="appt-item"><div class="appt-time"><div class="appt-time-val">2:00</div><div class="appt-time-ampm">PM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐕</div><div class="appt-info"><div class="appt-pet-name">Rocky · German Shepherd</div><div class="appt-owner">Vikram Singh</div><div class="appt-type">Limping — left hind leg</div></div><span class="appt-status confirmed">Confirmed</span><div class="appt-actions"><button class="pb-btn pb-btn-gray pb-btn-xs"><i class="ti ti-phone"></i></button></div></div>
-          <div class="appt-item"><div class="appt-time"><div class="appt-time-val">3:30</div><div class="appt-time-ampm">PM</div></div><div class="appt-divider"></div><div class="appt-pet-avatar">🐇</div><div class="appt-info"><div class="appt-pet-name">Coco · Rabbit</div><div class="appt-owner">Meera Pillai</div><div class="appt-type">Routine + nail trim</div></div><span class="appt-status confirmed">Confirmed</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== ANALYTICS VIEW ===== -->
-    <div id="view-analytics">
-      <div style="font-size:20px;font-weight:900;margin-bottom:16px">Practice Analytics</div>
-      <div class="analytics-grid">
-
-        <div class="pb-card">
-          <div class="pb-card-header"><h3><i class="ti ti-chart-bar" style="color:var(--pb-blue)"></i> Appointments This Month</h3></div>
-          <div style="padding:16px">
-            <div class="chart-bar-wrap" id="apptChart"></div>
-            <div style="font-size:13px;color:var(--pb-text2);text-align:center">Total: 142 appointments in November</div>
-          </div>
-        </div>
-
-        <div class="pb-card">
-          <div class="pb-card-header"><h3><i class="ti ti-vaccine" style="color:var(--vet-green)"></i> Top Vaccines This Month</h3></div>
-          <div style="padding:16px;display:flex;flex-direction:column;gap:6px">
-            <div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">Rabies</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:85%;background:var(--pb-red)"></div></div><span class="disease-pct">42</span></div>
-            <div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">DHPPiL</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:72%;background:var(--pb-blue)"></div></div><span class="disease-pct">36</span></div>
-            <div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">Leptospirosis</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:50%;background:var(--pb-teal)"></div></div><span class="disease-pct">25</span></div>
-            <div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">Bordetella</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:36%;background:var(--pb-purple)"></div></div><span class="disease-pct">18</span></div>
-            <div class="disease-row"><span style="font-size:13px;font-weight:600;width:120px">Canine Flu</span><div class="disease-bar-bg"><div class="disease-bar-fill" style="width:22%;background:var(--pb-amber)"></div></div><span class="disease-pct">11</span></div>
-          </div>
-        </div>
-
-        <div class="pb-card">
-          <div class="pb-card-header"><h3><i class="ti ti-paw" style="color:var(--pb-orange)"></i> Patient Species Mix</h3></div>
-          <div style="padding:16px;display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🐕</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Dogs</div><div style="height:6px;background:var(--pb-bg);border-radius:var(--pb-pill);overflow:hidden;margin-top:4px"><div style="height:100%;width:72%;background:var(--pb-blue);border-radius:var(--pb-pill)"></div></div></div><span style="font-size:12px;font-weight:700;width:30px;text-align:right">72%</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🐈</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Cats</div><div style="height:6px;background:var(--pb-bg);border-radius:var(--pb-pill);overflow:hidden;margin-top:4px"><div style="height:100%;width:18%;background:var(--pb-orange);border-radius:var(--pb-pill)"></div></div></div><span style="font-size:12px;font-weight:700;width:30px;text-align:right">18%</span></div>
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🐇</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Others</div><div style="height:6px;background:var(--pb-bg);border-radius:var(--pb-pill);overflow:hidden;margin-top:4px"><div style="height:100%;width:10%;background:var(--pb-teal);border-radius:var(--pb-pill)"></div></div></div><span style="font-size:12px;font-weight:700;width:30px;text-align:right">10%</span></div>
-            <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <div style="padding:10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900">247</div><div style="font-size:11px;color:var(--pb-text3)">Total Patients</div></div>
-              <div style="padding:10px;background:var(--pb-bg);border-radius:var(--pb-radius-sm);text-align:center"><div style="font-size:18px;font-weight:900;color:var(--vet-green)">+6</div><div style="font-size:11px;color:var(--pb-text3)">New This Week</div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pb-card">
-          <div class="pb-card-header"><h3><i class="ti ti-clock" style="color:var(--pb-amber)"></i> Operational Metrics</h3></div>
-          <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">Avg appointment duration</span><span style="font-size:13px;font-weight:700">22 min</span></div>
-            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">Avg wait time</span><span style="font-size:13px;font-weight:700;color:var(--pb-amber)">12 min</span></div>
-            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">No-show rate</span><span style="font-size:13px;font-weight:700;color:var(--pb-red)">7%</span></div>
-            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">Vaccine reminders sent</span><span style="font-size:13px;font-weight:700;color:var(--vet-green)">58 this month</span></div>
-            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)"><span style="font-size:13px;color:var(--pb-text2)">Owner app engagement</span><span style="font-size:13px;font-weight:700;color:var(--pb-blue)">84% active</span></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </div><!-- end vp-views -->
-</div>
-
-<!-- BOTTOM NAV -->
-<nav class="bnav">
-  <button class="bnav-item active" onclick="switchView('dashboard',this)"><i class="ti ti-dashboard"></i><span>Dashboard</span></button>
-  <button class="bnav-item" onclick="switchView('patients',this)"><i class="ti ti-paw"></i><span>Patients</span></button>
-  <button class="bnav-item" onclick="switchView('appointments',this)"><i class="ti ti-calendar"></i><span>Schedule</span></button>
-  <button class="bnav-item" onclick="switchView('analytics',this)"><i class="ti ti-chart-bar"></i><span>Analytics</span></button>
-  <button class="bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
-</nav>
-
-<!-- WRITE RECORD MODAL -->
-<div class="modal-overlay" id="writeRecordModal" onclick="closeModalOutside(event,'writeRecordModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>📋 Write Medical Record — SOAP</h3><button class="modal-close" onclick="closeModal('writeRecordModal')">✕</button></div>
-    <div class="soap-section" style="padding:16px 20px">
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--pb-blue-soft);border-radius:var(--pb-radius-sm);font-size:12px;color:var(--pb-blue)"><i class="ti ti-sparkles"></i> AI suggestion: Based on visit type (Wellness + Hip Follow-up), consider documenting joint mobility score and body condition score.</div>
-      <div class="soap-block"><div class="soap-label" style="color:var(--pb-blue)"><i class="ti ti-eye"></i> S — Subjective (Owner Report)</div><textarea class="soap-textarea" placeholder="Owner reports Bruno has been limping occasionally on left hind leg since last week…"></textarea></div>
-      <div class="soap-block"><div class="soap-label" style="color:var(--vet-green)"><i class="ti ti-stethoscope"></i> O — Objective (Examination)</div><textarea class="soap-textarea" placeholder="Weight: 28.4 kg. BCS: 5/9. HR: 78 bpm. Temp: 101.4°F. Hip joints: mild crepitus on left hip. ROM slightly reduced…"></textarea></div>
-      <div class="soap-block">
-        <div class="soap-label" style="color:var(--pb-amber)"><i class="ti ti-clipboard-list"></i> A — Assessment (Diagnosis)</div>
-        <div class="dx-chips" id="dxChips">
-          <div class="dx-chip">Hip Dysplasia (mild) <button onclick="removeDx(this)">×</button></div>
-          <div class="dx-chip">Healthy Adult Dog <button onclick="removeDx(this)">×</button></div>
-        </div>
-        <div style="padding:0 12px 10px;display:flex;gap:6px">
-          <input type="text" id="dxInput" style="flex:1;height:32px;border:1px solid var(--pb-border);border-radius:var(--pb-pill);padding:0 12px;font-size:12px;outline:none" placeholder="Add diagnosis…">
-          <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="addDx()">Add</button>
-        </div>
-      </div>
-      <div class="soap-block"><div class="soap-label" style="color:var(--pb-purple)"><i class="ti ti-checklist"></i> P — Plan (Treatment & Follow-up)</div><textarea class="soap-textarea" placeholder="1. Continue Omega-3 supplementation daily&#10;2. Weight management — target 27 kg&#10;3. Hip X-ray recommended at age 4&#10;4. Follow-up in 3 months&#10;5. Refer to orthopedic specialist if worsens"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('writeRecordModal')">Cancel</button>
-      <button class="pb-btn pb-btn-green" onclick="closeModal('writeRecordModal')"><i class="ti ti-check"></i> Save Record & Sign</button>
-    </div>
+<!-- generic form modal -->
+<div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
+  <div class="md" role="dialog" aria-modal="true" aria-labelledby="mo-title">
+    <div class="mh"><h3 id="mo-title"></h3><button class="mx" onclick="closeMo()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <form id="mo-form" novalidate onsubmit="submitMo(event)"><div class="mb" id="mo-body"></div>
+      <div class="mf"><button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-g" id="mo-save"><i class="ti ti-check"></i><span>Save</span></button></div></form>
   </div>
 </div>
 
-<!-- PRESCRIBE MODAL -->
-<div class="modal-overlay" id="prescribeModal" onclick="closeModalOutside(event,'prescribeModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>💊 Write Prescription</h3><button class="modal-close" onclick="closeModal('prescribeModal')">✕</button></div>
-    <div class="rx-wrap">
-      <div class="rx-header-banner"><div style="font-size:22px">🏥</div><div><div style="font-size:14px;font-weight:800">Bruno · Labrador · 3 yrs · 28.4 kg</div><div style="font-size:11px;opacity:.85">Dr. Priya Sharma · Paws Animal Clinic · DL-VET-2341</div></div></div>
-      <div id="rxDrugList" style="display:flex;flex-direction:column;gap:8px">
-        <div class="rx-drug"><div class="rx-drug-num">1</div><div class="rx-drug-info"><div class="rx-drug-name">Heartgard Plus</div><div class="rx-drug-dose">1 chewable tablet · Monthly · Heartworm prevention</div></div><button class="rx-drug-delete" onclick="removeRxDrug(this)"><i class="ti ti-trash"></i></button></div>
-      </div>
-      <div style="font-size:13px;font-weight:700;color:var(--pb-text2)">Add Medication:</div>
-      <div class="rx-add-row">
-        <input type="text" class="rx-input" id="rxDrug" placeholder="Drug name…">
-        <input type="text" class="rx-input" id="rxDose" placeholder="Dose &amp; frequency…">
-        <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="addRxDrug()"><i class="ti ti-plus"></i></button>
-      </div>
-      <div class="form-group"><label class="form-label">Special Instructions</label><textarea class="form-textarea" placeholder="Administer with food. Avoid if adverse reaction. Return if symptoms worsen…" style="min-height:60px"></textarea></div>
-      <div class="form-group"><label class="form-label">Valid Until</label><input type="date" class="form-input" id="rxDate"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('prescribeModal')">Cancel</button>
-      <button class="pb-btn pb-btn-green" onclick="closeModal('prescribeModal')"><i class="ti ti-certificate"></i> Issue Prescription</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD APPOINTMENT MODAL -->
-<div class="modal-overlay" id="addApptModal" onclick="closeModalOutside(event,'addApptModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>📅 New Appointment</h3><button class="modal-close" onclick="closeModal('addApptModal')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Pet Name</label><input type="text" class="form-input" placeholder="Bruno, Milo…"></div>
-        <div class="form-group"><label class="form-label">Owner Name</label><input type="text" class="form-input" placeholder="Owner name"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Visit Type</label>
-        <select class="form-select"><option>Wellness Check</option><option>Vaccination</option><option>Emergency</option><option>Surgery</option><option>Follow-up</option><option>Dental</option><option>Grooming</option><option>Other</option></select>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" id="apptDate"></div>
-        <div class="form-group"><label class="form-label">Time</label><input type="time" class="form-input" value="09:00"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Notes / Reason</label><textarea class="form-textarea" placeholder="Reason for visit, special instructions…"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('addApptModal')">Cancel</button>
-      <button class="pb-btn pb-btn-green" onclick="closeModal('addApptModal')"><i class="ti ti-check"></i> Book Appointment</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD PATIENT MODAL -->
-<div class="modal-overlay" id="addPatientModal" onclick="closeModalOutside(event,'addPatientModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>🐾 Add New Patient</h3><button class="modal-close" onclick="closeModal('addPatientModal')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Pet Name</label><input type="text" class="form-input"></div>
-        <div class="form-group"><label class="form-label">Species</label><select class="form-select"><option>Dog</option><option>Cat</option><option>Rabbit</option><option>Bird</option><option>Other</option></select></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Breed</label><input type="text" class="form-input" placeholder="Labrador, Persian…"></div>
-        <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" class="form-input" step="0.1"></div>
-        <div class="form-group"><label class="form-label">Blood Type</label><input type="text" class="form-input" placeholder="DEA 1.1+"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Owner Name</label><input type="text" class="form-input"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Owner Phone</label><input type="tel" class="form-input" placeholder="+91 XXXXX XXXXX"></div>
-        <div class="form-group"><label class="form-label">Owner Email</label><input type="email" class="form-input"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Known Allergies</label><input type="text" class="form-input" placeholder="None, Penicillin…"></div>
-      <div class="form-group"><label class="form-label">Microchip ID (optional)</label><input type="text" class="form-input"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('addPatientModal')">Cancel</button>
-      <button class="pb-btn pb-btn-green" onclick="closeModal('addPatientModal')"><i class="ti ti-check"></i> Add Patient</button>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-// ===== VIEW SWITCHER =====
-function switchView(view, btnEl) {
-  document.querySelectorAll('.vp-views > div').forEach(d => d.classList.remove('active'));
-  document.getElementById('view-' + view).classList.add('active');
-  document.querySelectorAll('.vet-nav-link').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
-  if (btnEl) {
-    btnEl.classList.add('active');
-  }
-}
+/* ===================== PawBook VetCare (41) ===================== */
+var API = 'https://pawbook.deemona.com/api/v1';
+var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
+var PRACTICE = '', SEC = 'dashboard', D = null, DAY = null, MO = null, PT = null, PTAB = 'summary', CACHE = {}, WEEK0 = null, AN_DAYS = 30, TIMER = null;
 
-// ===== MODALS =====
-function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
-function closeModalOutside(e, id) { if (e.target.id === id) closeModal(id); }
-
-// ===== PATIENT PANEL =====
-const patientData = {
-  bruno: { emoji:'🐕', name:'Bruno', meta:'Labrador · 3 yrs · 28.4 kg · Abhishek Sharma' },
-  milo:  { emoji:'🐕', name:'Milo',  meta:'Golden Retriever · 2 yrs · 32.1 kg · Preethi Nair' },
-  luna:  { emoji:'🐈', name:'Luna',  meta:'Persian · 5 yrs · 4.2 kg · Ritika Desai' }
-};
-function openPatient(id) {
-  const p = patientData[id];
-  if (!p) return;
-  document.getElementById('panelEmoji').textContent = p.emoji;
-  document.getElementById('panelName').textContent = p.name;
-  document.getElementById('panelMeta').textContent = p.meta;
-  document.getElementById('patientPanel').classList.add('open');
-  document.getElementById('patientPanel').scrollIntoView({ behavior:'smooth', block:'nearest' });
-  // reset tabs
-  document.querySelectorAll('.patient-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.patient-tab-content').forEach(c => c.classList.remove('active'));
-  document.querySelector('.patient-tab').classList.add('active');
-  document.getElementById('pSummary').classList.add('active');
-}
-function closePatient() {
-  document.getElementById('patientPanel').classList.remove('open');
-}
-
-// ===== PATIENT SUB-TABS =====
-function switchPTab(btn, contentId) {
-  document.querySelectorAll('.patient-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.patient-tab-content').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(contentId).classList.add('active');
-}
-
-// ===== DIAGNOSIS CHIPS =====
-function addDx() {
-  const val = document.getElementById('dxInput').value.trim();
-  if (!val) return;
-  const container = document.getElementById('dxChips');
-  const chip = document.createElement('div');
-  chip.className = 'dx-chip';
-  chip.innerHTML = `${val} <button onclick="removeDx(this)">×</button>`;
-  container.appendChild(chip);
-  document.getElementById('dxInput').value = '';
-}
-function removeDx(btn) { btn.closest('.dx-chip').remove(); }
-
-// ===== RX DRUGS =====
-let rxCount = 2;
-function addRxDrug() {
-  const drug = document.getElementById('rxDrug').value.trim();
-  const dose = document.getElementById('rxDose').value.trim();
-  if (!drug) return;
-  const list = document.getElementById('rxDrugList');
-  const item = document.createElement('div');
-  item.className = 'rx-drug';
-  item.innerHTML = `<div class="rx-drug-num">${rxCount++}</div><div class="rx-drug-info"><div class="rx-drug-name">${drug}</div><div class="rx-drug-dose">${dose || 'As directed'}</div></div><button class="rx-drug-delete" onclick="removeRxDrug(this)"><i class="ti ti-trash"></i></button>`;
-  list.appendChild(item);
-  document.getElementById('rxDrug').value = '';
-  document.getElementById('rxDose').value = '';
-}
-function removeRxDrug(btn) { btn.closest('.rx-drug').remove(); }
-
-// ===== APPOINTMENT CHART =====
-function renderApptChart() {
-  const data = [
-    {d:'1',v:5},{d:'3',v:8},{d:'5',v:6},{d:'7',v:9},{d:'8',v:7},
-    {d:'10',v:10},{d:'11',v:8},{d:'12',v:0},{d:'13',v:0},{d:'14',v:0},
-  ];
-  const max = 12;
-  const container = document.getElementById('apptChart');
-  if (!container) return;
-  container.innerHTML = data.map(d => {
-    const pct = (d.v / max) * 100;
-    return `<div class="chart-bar-col">
-      <div class="chart-bar-val">${d.v || ''}</div>
-      <div class="chart-bar" style="height:${pct}%;background:${d.d==='11'?'var(--vet-green)':'var(--pb-blue-soft)'}"></div>
-      <div class="chart-bar-label">${d.d}</div>
-    </div>`;
-  }).join('');
-}
-
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded', () => {
-  renderApptChart();
-  const today = new Date().toISOString().split('T')[0];
-  document.querySelectorAll('input[type="date"]').forEach(el => { if (!el.value) el.value = today; });
-});
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(r => console.log('[SW] Registered:', r.scope))
-      .catch(e => console.warn('[SW] Failed:', e));
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function toast(m){ var t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2800); }
+function qs(o){ var p = []; o = o || {}; if (PRACTICE) o.practice = PRACTICE; Object.keys(o).forEach(function(k){ if (o[k] != null && o[k] !== '') p.push(encodeURIComponent(k) + '=' + encodeURIComponent(o[k])); }); return p.length ? '?' + p.join('&') : ''; }
+function api(path, o){
+  o = o || {}; var h = {}; if (TOKEN) h.Authorization = 'Bearer ' + TOKEN;
+  var body = o.body; if (body) { if (PRACTICE) body.practice = PRACTICE; h['Content-Type'] = 'application/json'; body = JSON.stringify(body); }
+  var url = API + '/vetcare' + path + (o.method && o.method !== 'GET' ? '' : '');
+  return fetch(url, {method: o.method || 'GET', headers: h, body: body}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if (!r.ok || j.success === false) { var e = new Error(j.message || j.error || ('Something went wrong (' + r.status + ')')); e.status = r.status; e.code = j.code; e.fields = j.fields; throw e; }
+      return j.data !== undefined ? j.data : j;
+    });
   });
 }
+function fail(e){ if (e && e.status === 401) { location.href = '01_login.html'; return; } if (e && e.status === 409) { toast(e.message); refresh(); return; } toast(e && e.status === 429 ? 'Too many actions — please wait a moment' : ((e && e.message) || 'Something went wrong')); }
+function today(){ var d = new Date(Date.now() + 330 * 60000); return d.toISOString().slice(0, 10); }
+function addD(d, n){ var x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); }
+function fd(v, o){ if (!v) return ''; var d = new Date(String(v).length === 10 ? v + 'T00:00:00' : v); return isNaN(d) ? '' : d.toLocaleDateString('en-IN', o || {day: 'numeric', month: 'short', year: 'numeric'}); }
+function ft(v){ var d = new Date(v); return isNaN(d) ? '' : d.toLocaleString('en-IN', {day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}); }
+function t12(t){ if (!t) return ''; var p = t.split(':'), h = +p[0]; return (h % 12 || 12) + ':' + p[1] + ' ' + (h < 12 ? 'AM' : 'PM'); }
+function cap(s){ s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+function inr(n){ return '₹' + Number(n || 0).toLocaleString('en-IN'); }
+var SP = {dog: '🐕', cat: '🐈', bird: '🦜', rabbit: '🐇', fish: '🐠', hamster: '🐹', turtle: '🐢', horse: '🐴'};
+function emo(s){ s = String(s || '').toLowerCase(); return SP[s] || SP[/dog|canine|pupp/.test(s) ? 'dog' : /cat|feline|kitten/.test(s) ? 'cat' : /rabbit|bunny/.test(s) ? 'rabbit' : /bird|parrot/.test(s) ? 'bird' : ''] || '🐾'; }
+function pav(p, cls){ p = p || {}; return '<div class="pav ' + (cls || '') + '">' + (p.photo ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name || '') + '" loading="lazy" onerror="this.parentNode.textContent=\'' + emo(p.species) + '\'">' : emo(p.species)) + '</div>'; }
+function petLine(p){ return [p.species ? cap(p.species) : '', p.breed, p.age].filter(Boolean).join(' · '); }
+function tel(ph){ return String(ph || '').replace(/[^\d+]/g, ''); }
+function wa(ph, text){ var d = tel(ph).replace(/^\+/, ''); if (d.length === 10) d = '91' + d; return 'https://wa.me/' + d + (text ? '?text=' + encodeURIComponent(text) : ''); }
+function emptyBox(e, t, p, btn){ return '<div class="empty"><div class="e">' + e + '</div><b>' + esc(t) + '</b>' + (p ? '<p>' + esc(p) + '</p>' : '') + (btn || '') + '</div>'; }
+function clinical(){ return D && (D.role === 'vet' || D.role === 'admin'); }
+function greet(){ var h = new Date(Date.now() + 330 * 60000).getUTCHours(); return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'; }
+
+/* ---------- boot ---------- */
+function boot(){
+  if (!TOKEN) { location.href = '01_login.html'; return; }
+  try { PRACTICE = localStorage.getItem('pb_vet_practice') || ''; } catch (e) {}
+  var s = new URLSearchParams(location.search).get('s'); if (SECTIONS.some(function(x){ return x[0] === s; })) SEC = s;
+  DAY = today();
+  api('/me').then(function(m){
+    var l = m.practices || [];
+    if (l.length > 1) { var sel = document.getElementById('practice'); sel.innerHTML = l.map(function(p){ return '<option value="' + esc(p.vet_id) + '">' + esc((p.clinic || p.vet_name) + ' · ' + cap(p.role)) + '</option>'; }).join(''); sel.style.display = ''; if (!l.some(function(p){ return p.vet_id === PRACTICE; })) PRACTICE = l[0].vet_id; sel.value = PRACTICE; }
+    else PRACTICE = l.length ? l[0].vet_id : '';
+    return refresh(true);
+  }).catch(gate);
+}
+function switchPractice(v){ PRACTICE = v; try { localStorage.setItem('pb_vet_practice', v); } catch (e) {} CACHE = {}; refresh(true); }
+function gate(e){
+  if (e && e.status === 401) return fail(e);
+  var code = e && e.code, h;
+  if (code === 'not_vet' || code === 'pending' || code === 'suspended') {
+    var t = {not_vet: ['PawBook VetCare is for vets and their clinic teams', 'Register your practice to manage appointments, your waiting room and patient records here. Clinic staff: ask your vet to add you to their team.', '<button class="btn btn-g" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-stethoscope"></i>Register as a vet</button>'],
+      pending: ['Your registration is being verified', 'We check every vet\'s VCI registration before the workspace opens. This usually takes 2–3 business days.', '<button class="btn btn-w" onclick="location.href=\'07_home.html\'">Back to PawBook</button>'],
+      suspended: ['This clinic account is suspended', 'Please write to support@deemona.com and we\'ll help.', '<a class="btn btn-w" href="mailto:support@deemona.com">Contact support</a>']}[code];
+    h = '<div class="gate"><img src="img/vet/vet-owner.jpg" alt=""><span class="eyebrow"><i class="ti ti-stethoscope"></i>PawBook VetCare</span><h1>' + esc(t[0]) + '</h1><p>' + esc(t[1]) + '</p>' + t[2] + '</div>';
+  } else h = emptyBox('🩺', 'Could not open the workspace', ((e && e.message) || '') + ' Please refresh in a moment.');
+  document.getElementById('app').innerHTML = h;
+}
+
+/* ---------- data ---------- */
+function refresh(full){
+  clearTimeout(TIMER);
+  var p = api('/dashboard' + qs({date: DAY})).then(function(d){ D = d; render(); });
+  if (full) p = p.catch(gate); else p = p.catch(fail);
+  TIMER = setTimeout(function(){ if (document.visibilityState === 'visible' && !MO && SEC === 'dashboard') refresh(); }, 60000);   // waiting times stay current
+  return p;
+}
+var SECTIONS = [['dashboard', 'ti-layout-dashboard', 'Dashboard'], ['patients', 'ti-paw', 'Patients'], ['schedule', 'ti-calendar-event', 'Schedule'], ['consultations', 'ti-stethoscope', 'Consultations'],
+  ['vaccinations', 'ti-vaccine', 'Vaccinations'], ['owners', 'ti-users', 'Pet owners'], ['analytics', 'ti-chart-bar', 'Analytics'], ['settings', 'ti-settings', 'Settings']];
+function setSec(s){ SEC = s; try { history.replaceState(null, '', '?s=' + s); } catch (e) {} render(); window.scrollTo({top: 0}); }
+
+/* ---------- render ---------- */
+function render(){
+  var c = D.clinic, k = D.kpi, h = '', first = (c.vet_name || '').split(' ')[0];
+  var who = D.role === 'vet' ? 'Dr. ' + first : (D.viewer.name || '').split(' ')[0] || 'there';
+  document.title = 'VetCare · ' + (c.clinic || c.vet_name) + ' – PawBook';
+  if (SEC === 'dashboard') {
+    var next = D.appointments.filter(function(a){ return a.status === 'upcoming' && !(a.queue && a.queue.status === 'done'); })[0];
+    h += '<div class="hero-band"><section class="hero"><div><span class="eyebrow"><i class="ti ti-stethoscope"></i>PawBook VetCare</span>'
+      + '<h1>' + greet() + ',<br><span class="accent">' + esc(who) + '!</span> 🐾</h1><p class="tag">Welcome to your PawBook VetCare workspace' + (D.role !== 'vet' ? ' — ' + esc(D.role === 'admin' ? 'clinic admin' : 'front desk') + ' view' : '') + '.</p>'
+      + '<div class="clinic"><span class="chip"><i class="ti ti-building-hospital"></i>' + esc([c.clinic || ('Dr. ' + c.vet_name), c.city].filter(Boolean).join(' · ')) + '</span><span class="chip live"><b></b>Clinic workspace active</span></div>'
+      + '<div class="mini"><div><b>' + k.today + '</b><span>Today\'s appointments</span></div><div><b>' + k.patients + '</b><span>Registered patients</span></div><div><b>' + k.waiting + '</b><span>Waiting</span></div></div></div>'
+      + '<div class="collage"><div class="ph ph-main"><img src="img/vet/vet-exam.jpg" alt="Vet examining a golden retriever"><span class="ph-tag"><i class="ti ti-heart"></i>Care, every visit</span></div>'
+      + '<div class="ph"><img src="img/vet/golden-sun.jpg" alt="Happy golden retriever"><span class="ph-tag"><i class="ti ti-heart"></i>Healthy & happy</span></div>'
+      + '<div class="ph"><img src="img/vet/vet-owner.jpg" alt="Vet with a pet owner and dog"><span class="ph-tag"><i class="ti ti-heart"></i>Owners we partner with</span></div>'
+      + '<div class="float-card float-1"><span class="fc-ic c-sage"><i class="ti ti-clock" style="font-size:20px"></i></span><div><div class="fc-t">' + (next ? 'Next: ' + esc(next.pet ? next.pet.name : 'Appointment') + ' at ' + t12(next.time) : 'No more visits ' + (DAY === D.today ? 'today' : 'this day')) + '</div><div class="fc-s">' + (next ? esc(next.reason || next.type || '') : 'Enjoy a breather') + '</div></div></div>'
+      + '<div class="float-card float-2"><i class="ti ti-paw"></i>' + k.waiting + ' waiting · ' + k.in_consult + ' in consultation</div></div></section></div>';
+    h += '<div class="kpis">' + [
+      ['c-sage', 'ti-calendar-heart', k.today, 'Today\'s appointments', k.completed + ' completed · ' + k.remaining + ' remaining', 'img/pets/dog-lab-face.jpg', "setSec('schedule')"],
+      ['c-cream', 'ti-paw', k.patients, 'My pet patients', k.new_patients_30 ? '+' + k.new_patients_30 + ' new in 30 days' : 'Registered clinic patients', 'img/pets/cat-ginger.jpg', "setSec('patients')"],
+      ['c-lav', 'ti-armchair', k.waiting, 'Little ones waiting', k.in_consult ? k.in_consult + ' in consultation' : 'Pets in the waiting room', 'img/pets/dog-sunset.jpg', "document.getElementById('queue').scrollIntoView({behavior:'smooth'})"],
+      ['c-info', 'ti-vaccine', k.vaccines_due_7, 'Vaccines due this week', k.vaccines_overdue ? k.vaccines_overdue + ' overdue among patients' : 'None overdue', 'img/pets/cat-kitten.jpg', "setSec('vaccinations')"]
+    ].map(function(x){ return '<button class="kpi" onclick="' + x[6] + '"><span class="ic ' + x[0] + '"><i class="ti ' + x[1] + '"></i></span><b>' + x[2] + '</b><div class="l">' + x[3] + '</div><small>' + esc(x[4]) + '</small><img class="thumb" src="' + x[5] + '" alt="" loading="lazy"></button>'; }).join('') + '</div>';
+  }
+  h += '<div class="wnav" role="tablist">' + SECTIONS.map(function(s){ var n = s[0] === 'dashboard' && D.attention.urgent.length ? '<span class="cnt">' + D.attention.urgent.length + '</span>' : '';
+    if (s[0] === 'consultations' && !clinical()) return ''; return '<button class="' + (SEC === s[0] ? 'on' : '') + '" role="tab" aria-selected="' + (SEC === s[0]) + '" onclick="setSec(\'' + s[0] + '\')"><i class="ti ' + s[1] + '"></i>' + s[2] + n + '</button>'; }).join('') + '</div>';
+  h += '<div id="sec">' + (SEC === 'dashboard' ? dashHTML() : '<div class="skel" style="height:320px;margin-top:18px"></div>') + '</div>';
+  document.getElementById('app').innerHTML = h;
+  if (SEC !== 'dashboard') loadSec();
+}
+
+/* ---------- dashboard ---------- */
+var STL = {upcoming: ['st-up', 'Upcoming', '#9cc0f5'], waiting: ['st-wait', 'Waiting', '#F47A38'], in_consult: ['st-in', 'In consultation', '#269B70'], completed: ['st-done', 'Completed', '#c9ced8'], done: ['st-done', 'Seen', '#c9ced8'], cancelled: ['st-x', 'Cancelled', '#D83D3D'], 'no-show': ['st-x', 'No-show', '#D83D3D'], left: ['st-x', 'Left', '#D83D3D']};
+function apState(a){ if (a.status !== 'upcoming') return a.status; if (a.queue && (a.queue.status === 'waiting' || a.queue.status === 'in_consult')) return a.queue.status; if (a.queue && a.queue.status === 'done') return 'done'; return 'upcoming'; }
+function dashHTML(){
+  var h = '<div class="dgrid"><div>' + visitsHTML() + weekHTML() + '</div><div class="side">' + queueHTML() + attentionHTML() + quickHTML() + '</div></div>';
+  return h;
+}
+function visitsHTML(){
+  var l = D.appointments, isT = DAY === D.today;
+  var h = '<section class="card"><div class="ch"><h2><i class="ti ti-calendar-heart"></i>' + (isT ? 'Today\'s pet visits' : 'Pet visits') + '</h2><div class="daynav no-print"><button onclick="goDay(-1)" aria-label="Previous day"><i class="ti ti-chevron-left"></i></button>' + (isT ? '' : '<button class="today" onclick="goDay(0)">Today</button>') + '<button onclick="goDay(1)" aria-label="Next day"><i class="ti ti-chevron-right"></i></button></div></div><div class="cb">'
+    + '<div class="muted" style="font-size:13px;font-weight:600;margin:-4px 0 10px">' + esc(fd(DAY, {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'})) + '</div>';
+  if (!l.length) return h + emptyBox('📅', 'No appointments ' + (isT ? 'today' : 'on this day'), 'Appointments that pet owners book with you on PawBook appear here.', '<button class="btn btn-w btn-s" onclick="setSec(\'schedule\')"><i class="ti ti-calendar"></i>Open schedule</button>') + '</div></section>';
+  var cnt = {}; l.forEach(function(a){ var s = apState(a); cnt[s] = (cnt[s] || 0) + 1; });
+  h += '<div class="sumchips"><span>' + l.length + ' appointment' + (l.length > 1 ? 's' : '') + '</span>' + Object.keys(cnt).map(function(s){ return '<span>' + cnt[s] + ' ' + STL[s][1].toLowerCase() + '</span>'; }).join('') + '</div>';
+  return h + '<div class="tline">' + l.map(apCard).join('') + '</div></div></section>';
+}
+function apCard(a){
+  var s = apState(a), u = STL[s] || STL.upcoming, p = a.pet || {name: 'Pet', species: ''}, isT = a.date === D.today, past = a.date < D.today || (isT && a.time && a.time < new Date(Date.now() + 330 * 60000).toISOString().slice(11, 16));
+  var acts = [];
+  if (a.pet && a.pet.id) acts.push('<button class="btn btn-w btn-s" onclick="openPatient(\'' + esc(a.pet.id) + '\')"><i class="ti ti-file-text"></i>Patient record</button>');
+  if (a.status === 'upcoming') {
+    if (isT && !a.queue) acts.push('<button class="btn btn-g btn-s" onclick="checkIn(\'' + esc(a.id) + '\', this)"><i class="ti ti-login-2"></i>Check in</button>');
+    if (a.queue && a.queue.status === 'waiting') acts.push('<button class="btn btn-g btn-s" onclick="qAct(\'' + esc(a.queue.id) + '\',\'call\',\'' + esc(a.queue.token) + '\', this)"><i class="ti ti-player-play"></i>Start consultation</button>');
+    if (clinical() && (a.queue && a.queue.status === 'in_consult')) acts.push('<button class="btn btn-g btn-s" onclick="qAct(\'' + esc(a.queue.id) + '\',\'finish\',\'' + esc(a.queue.token) + '\', this)"><i class="ti ti-check"></i>Finish visit</button>');
+    if (clinical() && !a.queue) acts.push('<button class="btn btn-w btn-s" onclick="apAct(\'' + esc(a.id) + '\',\'complete\',\'' + esc(a.token) + '\', this)"><i class="ti ti-check"></i>Completed</button>');
+    acts.push('<button class="btn btn-w btn-s" onclick="openForm(\'reschedule\',{id:\'' + esc(a.id) + '\',token:\'' + esc(a.token) + '\',date:\'' + esc(a.date) + '\',time:\'' + esc(a.time) + '\'})"><i class="ti ti-calendar-repeat"></i>Reschedule</button>');
+    if (past && !a.queue) acts.push('<button class="btn btn-w btn-s" onclick="apAct(\'' + esc(a.id) + '\',\'no_show\',\'' + esc(a.token) + '\', this)"><i class="ti ti-user-x"></i>No-show</button>');
+    acts.push('<button class="btn btn-r btn-s" onclick="openForm(\'cancel\',{id:\'' + esc(a.id) + '\',token:\'' + esc(a.token) + '\',name:\'' + esc(jsq(p.name)) + '\'})"><i class="ti ti-x"></i>Cancel</button>');
+  }
+  var wait = a.queue && a.queue.status === 'waiting' ? ' · ' + a.queue.wait_min + ' min' : '';
+  return '<div class="ap"><div class="tm">' + t12(a.time) + '<small>' + esc(a.type || '') + '</small></div><div class="apc" style="--stc:' + u[2] + '">' + pav(p) + '<div class="t"><b>' + esc(p.name) + '</b>' + (a.queue && a.queue.priority !== 'routine' ? ' <span class="pri ' + a.queue.priority + '">' + a.queue.priority + '</span>' : '') + '<div class="s">' + esc(petLine(p) || 'Pet details not added') + '</div>'
+    + (a.reason ? '<div class="why"><i class="ti ti-notes"></i>' + esc(a.reason) + '</div>' : '')
+    + '<div class="own"><span><i class="ti ti-user"></i> ' + esc(a.owner.name || 'Owner') + '</span>' + (a.owner.phone ? '<a href="tel:' + esc(tel(a.owner.phone)) + '"><i class="ti ti-phone"></i>' + esc(a.owner.phone) + '</a>' : '') + '</div></div>'
+    + '<span class="st ' + u[0] + '">' + u[1] + wait + '</span>' + (acts.length ? '<div class="acts no-print">' + acts.join('') + '</div>' : '') + '</div></div>';
+}
+function jsq(s){ return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+function goDay(n){ DAY = n === 0 ? D.today : addD(DAY, n); refresh(); }
+function queueHTML(){
+  var l = D.queue;
+  var h = '<section class="card" id="queue"><div class="ch"><h2><i class="ti ti-armchair"></i>Little ones waiting</h2><span class="badge" style="background:var(--sage);color:var(--blue-d)">' + l.length + ' patient' + (l.length === 1 ? '' : 's') + '</span><button class="btn btn-w btn-s no-print" onclick="openForm(\'walkin\')"><i class="ti ti-plus"></i>Walk-in</button></div><div class="cb">';
+  if (!l.length) return h + emptyBox('🛋️', 'The waiting room is empty', 'Check in today\'s appointments as pets arrive, or add a walk-in.') + '</div></section>';
+  var n = 0;
+  return h + '<div class="qlist">' + l.map(function(x){ var p = x.pet || {}, inC = x.status === 'in_consult';
+    return '<div class="qi ' + (inC ? 'in' : x.priority) + '"><span class="qn">' + (inC ? '<i class="ti ti-stethoscope"></i>' : ++n) + '</span>' + pav(p, 'sm') + '<div class="t"><b>' + esc(p.name || 'Walk-in') + '</b> ' + (x.priority !== 'routine' ? '<span class="pri ' + x.priority + '">' + x.priority + '</span>' : '') + '<span>' + esc([p.species ? cap(p.species) : '', p.breed, x.reason].filter(Boolean).join(' · ') || 'Walk-in') + (p.walkin ? ' · walk-in' : '') + '</span></div>'
+      + '<div class="w"><b>' + (inC ? 'Now' : x.wait_min + ' min') + '</b>' + (inC ? 'in consultation' : 'waiting') + '</div>'
+      + '<div class="qa2 no-print">' + (inC ? (clinical() ? '<button class="btn btn-g btn-s" onclick="qAct(\'' + x.id + '\',\'finish\',\'' + x.token + '\', this)"><i class="ti ti-check"></i>Finish</button>' : '') : '<button class="btn btn-g btn-s" onclick="qAct(\'' + x.id + '\',\'call\',\'' + x.token + '\', this)"><i class="ti ti-player-play"></i>Call in</button>')
+      + (p.id ? '<button class="btn btn-w btn-s" onclick="openPatient(\'' + esc(p.id) + '\')">Record</button>' : '')
+      + '<select class="fi" style="height:36px;width:auto;font-size:12.5px" aria-label="Priority" onchange="qPri(\'' + x.id + '\', this.value, \'' + x.token + '\')">' + [['routine', 'Routine'], ['priority', 'Priority'], ['urgent', 'Urgent']].map(function(o){ return '<option value="' + o[0] + '"' + (x.priority === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'
+      + '<button class="btn btn-w btn-s" onclick="qAct(\'' + x.id + '\',\'leave\',\'' + x.token + '\', this)" title="Left without being seen">Left</button></div></div>'; }).join('') + '</div><div class="muted" style="font-size:12px;margin-top:10px">Urgent cases are seen first, then priority, then by arrival time.</div></div></section>';
+}
+function attentionHTML(){
+  var a = D.attention, pre = a.preventive;
+  var li = function(x){ return '<li' + (x.pet_id ? ' class="go" onclick="openPatient(\'' + esc(x.pet_id) + '\')"' : '') + '><b>' + esc(x.title) + '</b>' + esc(x.detail || '') + '</li>'; };
+  return '<section class="card sec"><div class="ch"><h2><i class="ti ti-heart-rate-monitor"></i>Patient care attention</h2></div><div class="cb"><div class="att">'
+    + '<div class="ag urg"><h4><i class="ti ti-urgent"></i>Urgent clinical attention<span class="n">' + a.urgent.length + '</span></h4>' + (a.urgent.length ? '<ul>' + a.urgent.map(li).join('') + '</ul>' : '<div class="none">No urgent cases right now.</div>') + '</div>'
+    + '<div class="ag fol"><h4><i class="ti ti-calendar-time"></i>Routine follow-ups<span class="n">' + a.follow_up.length + '</span></h4>' + (a.follow_up.length ? '<ul>' + a.follow_up.slice(0, 5).map(li).join('') + '</ul>' : '<div class="none">Every patient has been seen within a year or has a visit booked.</div>') + '</div>'
+    + '<div class="ag pre"><h4><i class="ti ti-vaccine"></i>Preventive care<span class="n">' + (pre.overdue + pre.due_7) + '</span></h4><div class="none" style="margin-top:4px">' + pre.due_7 + ' vaccine' + (pre.due_7 === 1 ? '' : 's') + ' due in the next 7 days · ' + pre.overdue + ' overdue</div>' + (pre.items.length ? '<ul>' + pre.items.map(li).join('') + '</ul>' : '') + (pre.overdue + pre.due_7 ? '<button class="btn-link" style="margin-top:8px" onclick="setSec(\'vaccinations\')">Open vaccination list</button>' : '') + '</div>'
+    + '<div class="ag adm"><h4><i class="ti ti-clipboard-list"></i>Administrative<span class="n">' + a.admin.length + '</span></h4>' + (a.admin.length ? '<ul>' + a.admin.map(function(x){ return '<li class="go" onclick="setSec(\'schedule\')"><b>' + esc(x.title) + '</b>' + esc(x.detail) + '</li>'; }).join('') + '</ul>' : '<div class="none">Nothing to tidy up.</div>') + '</div>'
+    + '</div></div></section>';
+}
+function quickHTML(){
+  return '<section class="card sec no-print"><div class="ch"><h2><i class="ti ti-bolt"></i>Quick actions</h2></div><div class="cb"><div class="qa q2" style="grid-template-columns:repeat(2,1fr)">'
+    + [['c-cream', 'ti-user-plus', 'Add walk-in', "openForm('walkin')"], ['c-sage', 'ti-calendar-plus', 'Book follow-up', "pickPatient('followup')"]].concat(clinical() ? [['c-info', 'ti-vaccine', 'Record vaccination', "pickPatient('vaccination')"], ['c-lav', 'ti-prescription', 'Write prescription', "pickPatient('prescription')"]] : [])
+      .map(function(x){ return '<button onclick="' + x[3] + '"><i class="ti ' + x[1] + ' ' + x[0] + '"></i>' + x[2] + '</button>'; }).join('') + '</div></div></section>';
+}
+function barsHTML(days, n){
+  var max = Math.max.apply(null, days.map(function(d){ return d.total; }).concat([1]));
+  return '<div class="bars" role="img" aria-label="Appointments per day">' + days.map(function(d){ var label = n > 7 ? (d.day.slice(8) === '01' || days.indexOf(d) % Math.ceil(n / 8) === 0 ? fd(d.day, {day: 'numeric', month: 'short'}) : '') : fd(d.day, {weekday: 'short'});
+    return '<div class="bar" title="' + esc(fd(d.day) + ': ' + d.total + ' appointments, ' + d.completed + ' completed') + '"><u>' + (n <= 7 && d.total ? d.total : '') + '</u><div class="stk" style="height:' + Math.max(3, d.total / max * 100) + '%"><i style="height:' + (d.total ? d.completed / d.total * 100 : 0) + '%"></i><em style="flex:1"></em></div><span>' + esc(label) + '</span></div>'; }).join('') + '</div><div class="legend2"><span><i style="background:var(--blue)"></i>Completed</span><span><i style="background:#bfe0cc"></i>Other appointments</span></div>';
+}
+function weekHTML(){
+  var w = D.week;
+  var tiles = [[w.total, 'Appointments'], [w.completed, 'Completed'], [w.cancelled + w.no_show, 'Cancelled / no-show'], [w.new_patients, 'New patients'], [w.vaccinations, 'Vaccinations recorded'], [w.prescriptions, 'Prescriptions'], [w.avg_wait_min == null ? '—' : w.avg_wait_min + ' min', 'Average wait'], [w.completion_rate == null ? '—' : w.completion_rate + '%', 'Completion rate']];
+  if (w.revenue != null) tiles.push([inr(w.revenue), 'Fees received']);
+  return '<section class="card sec"><div class="ch"><h2><i class="ti ti-chart-bar"></i>This week at the clinic</h2><button class="btn-link" onclick="setSec(\'analytics\')">Analytics</button></div><div class="cb"><div class="muted" style="font-size:12.5px;margin:-4px 0 12px">' + esc(fd(w.from, {day: 'numeric', month: 'short'}) + ' – ' + fd(w.to, {day: 'numeric', month: 'short'})) + '</div>'
+    + '<div class="wstats">' + tiles.map(function(t){ return '<div class="ws"><b>' + esc(t[0]) + '</b><span>' + esc(t[1]) + '</span></div>'; }).join('') + '</div>' + barsHTML(w.days, 7) + '</div></section>';
+}
+
+/* ---------- actions ---------- */
+function busy(btn){ if (btn) { btn.disabled = true; } }
+function checkIn(id, btn){ busy(btn); api('/queue', {method: 'POST', body: {appointment_id: id}}).then(function(){ toast('Checked in'); refresh(); }).catch(function(e){ if (btn) btn.disabled = false; fail(e); }); }
+function qAct(id, act, token, btn){ busy(btn); api('/queue/' + id, {method: 'PATCH', body: {action: act, token: token}}).then(function(){ toast({call: 'Consultation started', finish: 'Visit finished', leave: 'Marked as left'}[act] || 'Saved'); refresh(); }).catch(function(e){ if (btn) btn.disabled = false; fail(e); }); }
+function qPri(id, p, token){ api('/queue/' + id, {method: 'PATCH', body: {action: 'priority', priority: p, token: token}}).then(function(){ toast('Priority: ' + p); refresh(); }).catch(fail); }
+function apAct(id, act, token, btn, extra){ busy(btn); api('/appointments/' + id, {method: 'PATCH', body: Object.assign({action: act, token: token}, extra || {})}).then(function(){ toast({complete: 'Marked completed', no_show: 'Marked as no-show', cancel: 'Appointment cancelled'}[act] || 'Saved'); CACHE = {}; refresh(); if (PT) openPatient(PT.pet.id, true); }).catch(function(e){ if (btn) btn.disabled = false; fail(e); }); }
+
+/* ---------- other sections ---------- */
+function loadSec(){
+  var el = function(){ return document.getElementById('sec'); }, s = SEC;
+  var go = function(p, fn){ p.then(function(d){ if (SEC === s) el().innerHTML = fn(d); }).catch(function(e){ if (SEC === s) el().innerHTML = '<div class="card sec"><div class="cb">' + emptyBox('🩺', 'Could not load this section', e.message) + '</div></div>'; }); };
+  if (s === 'patients') return go(api('/patients' + qs({q: CACHE.q || ''})), patientsHTML);
+  if (s === 'schedule') { WEEK0 = WEEK0 || D.today; return go(api('/schedule' + qs({from: WEEK0, days: 7})), scheduleHTML); }
+  if (s === 'consultations') return go(api('/consultations' + qs()), consultHTML);
+  if (s === 'vaccinations') return go(api('/vaccinations' + qs()), vaxHTML);
+  if (s === 'owners') return go(api('/owners' + qs()), ownersHTML);
+  if (s === 'analytics') return go(api('/analytics' + qs({days: AN_DAYS})), analyticsHTML);
+  if (s === 'settings') return go(api('/staff' + qs()), settingsHTML);
+}
+function patientsHTML(d){
+  var l = d.patients;
+  var h = '<section class="card sec"><div class="ch"><h2><i class="ti ti-paw"></i>Patients</h2><span class="badge" style="background:var(--sage);color:var(--blue-d)">' + l.length + '</span></div><div class="cb">'
+    + '<form class="search" onsubmit="event.preventDefault();CACHE.q=this.q.value;loadSec()"><input class="fi" name="q" value="' + esc(CACHE.q || '') + '" placeholder="Search by pet name, breed or owner"><button class="btn btn-g"><i class="ti ti-search"></i>Search</button></form>';
+  if (!l.length) return h + emptyBox('🐾', CACHE.q ? 'No patients match' : 'No patients yet', 'A pet becomes your patient when its owner books an appointment with you on PawBook.') + '</div></section>';
+  return h + '<div class="pgrid">' + l.map(function(x){ var p = x.pet;
+    return '<button class="pc" onclick="openPatient(\'' + esc(p.id) + '\')">' + pav(p) + '<div class="t"><b>' + esc(p.name) + '</b><span>' + esc(petLine(p)) + '</span><span><i class="ti ti-user"></i> ' + esc(x.owner.name || '—') + '</span><span>' + esc(x.next_visit ? 'Next visit ' + fd(x.next_visit) : x.last_visit ? 'Last visit ' + fd(x.last_visit) : x.visits + ' visit' + (x.visits > 1 ? 's' : '')) + '</span></div>' + (x.vax_overdue ? '<span class="st st-x" title="Vaccines overdue">' + x.vax_overdue + ' vaccine' + (x.vax_overdue > 1 ? 's' : '') + '</span>' : '') + '</button>'; }).join('') + '</div></div></section>';
+}
+function scheduleHTML(d){
+  var by = {}; d.appointments.forEach(function(a){ (by[a.date] = by[a.date] || []).push(a); });
+  var h = '<section class="card sec"><div class="ch"><h2><i class="ti ti-calendar-event"></i>Schedule</h2><div class="daynav"><button onclick="WEEK0=addD(WEEK0,-7);loadSec()" aria-label="Previous week"><i class="ti ti-chevron-left"></i></button><button class="today" onclick="WEEK0=D.today;loadSec()">This week</button><button onclick="WEEK0=addD(WEEK0,7);loadSec()" aria-label="Next week"><i class="ti ti-chevron-right"></i></button></div><button class="btn btn-g btn-s no-print" onclick="pickPatient(\'followup\')"><i class="ti ti-plus"></i>Follow-up</button></div><div class="cb">'
+    + '<div class="muted" style="font-size:13px;font-weight:600;margin:-4px 0 12px">' + esc(fd(d.from, {day: 'numeric', month: 'short'}) + ' – ' + fd(d.to, {day: 'numeric', month: 'short', year: 'numeric'})) + ' · ' + d.appointments.length + ' appointments</div><div class="week7">';
+  for (var i = 0; i < 7; i++) { var day = addD(d.from, i), l = by[day] || [];
+    h += '<div class="dcol' + (day === D.today ? ' today' : '') + '"><h5><span>' + esc(fd(day, {weekday: 'short', day: 'numeric'})) + '</span><span class="muted">' + l.length + '</span></h5>' + (l.length ? l.map(function(a){ var u = STL[a.status] || STL.upcoming, p = a.pet || {};
+      return '<div class="sa" style="--stc:' + u[2] + '" onclick="DAY=\'' + a.date + '\';setSec(\'dashboard\');refresh()"><b>' + t12(a.time) + ' · ' + esc(p.name || 'Pet') + '</b><span>' + esc(a.reason || a.type || '') + '</span><br><span class="st ' + u[0] + '" style="margin-top:4px">' + u[1] + '</span></div>'; }).join('') : '<div class="muted" style="font-size:12px">No appointments</div>') + '</div>'; }
+  return h + '</div><div class="muted" style="font-size:12px;margin-top:10px">Tap an appointment to open that day\'s timeline with all actions.</div></div></section>';
+}
+function consultHTML(d){
+  var h = '<section class="card sec"><div class="ch"><h2><i class="ti ti-stethoscope"></i>Recent consultations</h2></div><div class="cb">';
+  if (!d.notes.length) return h + emptyBox('🩺', 'No consultation records yet', 'Open a patient and choose “Write record” to document a visit.') + '</div></section>';
+  return h + '<div class="rows">' + d.notes.map(function(n){ return '<div class="row" style="cursor:pointer" onclick="openPatient(\'' + esc(n.pet.id) + '\')">' + pav(n.pet, 'sm') + '<div class="t"><b>' + esc(n.pet.name) + (n.diagnosis ? ' · ' + esc(n.diagnosis) : '') + '</b><span>' + esc(ft(n.at) + (n.author ? ' · ' + n.author : '') + (n.follow_up_date ? ' · follow-up ' + fd(n.follow_up_date) : '')) + '</span>' + (n.notes ? '<span style="display:block;margin-top:3px">' + esc(n.notes) + '</span>' : '') + '</div></div>'; }).join('') + '</div></div></section>';
+}
+function vaxHTML(d){
+  var row = function(x, over){ var p = x.pet || {}, msg = 'Hello ' + (x.owner.name || '') + ', this is a reminder from ' + (D.clinic.clinic || ('Dr. ' + D.clinic.vet_name)) + ': ' + p.name + '\'s ' + x.vaccine + ' vaccination is ' + (over ? 'overdue (was due ' + fd(x.next_due) + ')' : 'due on ' + fd(x.next_due)) + '. Reply to book a visit. 🐾';
+    return '<div class="row">' + pav(p, 'sm') + '<div class="t" style="cursor:pointer" onclick="openPatient(\'' + esc(p.id) + '\')"><b>' + esc(p.name + ' · ' + x.vaccine) + '</b><span>' + esc((over ? 'Was due ' : 'Due ') + fd(x.next_due) + ' · ' + (x.owner.name || 'Owner')) + '</span></div>'
+      + (x.owner.phone ? '<a class="btn btn-w btn-s" href="' + esc(wa(x.owner.phone, msg)) + '" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i>Remind</a><a class="btn btn-w btn-s" href="tel:' + esc(tel(x.owner.phone)) + '"><i class="ti ti-phone"></i></a>' : '') + '<span class="st ' + (over ? 'st-x' : 'st-wait') + '">' + (over ? 'Overdue' : 'Due') + '</span></div>'; };
+  return '<div class="dgrid" style="grid-template-columns:1fr 1fr"><section class="card"><div class="ch"><h2><i class="ti ti-alert-circle"></i>Overdue</h2><span class="badge">' + d.overdue.length + '</span></div><div class="cb">' + (d.overdue.length ? '<div class="rows">' + d.overdue.map(function(x){ return row(x, true); }).join('') + '</div>' : emptyBox('✅', 'Nothing overdue', '')) + '</div></section>'
+    + '<section class="card"><div class="ch"><h2><i class="ti ti-calendar-due"></i>Due in the next 30 days</h2><span class="badge" style="background:var(--sage);color:var(--blue-d)">' + d.upcoming.length + '</span></div><div class="cb">' + (d.upcoming.length ? '<div class="rows">' + d.upcoming.map(function(x){ return row(x, false); }).join('') + '</div>' : emptyBox('💉', 'No vaccines due soon', '')) + '</div></section></div>'
+    + '<div class="disc"><i class="ti ti-info-circle"></i><span>Based on the vaccination records of your patients (entered by owners or by your clinic). “Remind” opens WhatsApp with a ready message for you to send.</span></div>';
+}
+function ownersHTML(d){
+  var h = '<section class="card sec"><div class="ch"><h2><i class="ti ti-users"></i>Pet owners</h2><span class="badge" style="background:var(--sage);color:var(--blue-d)">' + d.owners.length + '</span></div><div class="cb">';
+  if (!d.owners.length) return h + emptyBox('👪', 'No pet owners yet', 'Owners appear here once they book with you.') + '</div></section>';
+  return h + '<div class="rows">' + d.owners.map(function(o){ return '<div class="row"><span class="ic c-cream" style="font-weight:800">' + esc((o.name || '?').charAt(0).toUpperCase()) + '</span><div class="t"><b>' + esc(o.name || 'Owner') + '</b><span>' + o.pets.map(function(p){ return '<a href="#" onclick="event.preventDefault();openPatient(\'' + esc(p.id) + '\')" style="color:var(--blue-d);font-weight:700">' + emo(p.species) + ' ' + esc(p.name) + '</a>'; }).join(' · ') + (o.last_visit ? ' · last visit ' + esc(fd(o.last_visit)) : '') + '</span></div>'
+    + (o.phone ? '<a class="btn btn-w btn-s" href="tel:' + esc(tel(o.phone)) + '"><i class="ti ti-phone"></i>' + esc(o.phone) + '</a><a class="btn btn-w btn-s" href="' + esc(wa(o.phone)) + '" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="ti ti-brand-whatsapp"></i></a>' : '') + (o.email ? '<a class="btn btn-w btn-s" href="mailto:' + esc(o.email) + '" aria-label="Email"><i class="ti ti-mail"></i></a>' : '') + '</div>'; }).join('') + '</div>'
+    + '<div class="disc"><i class="ti ti-lock"></i><span>Owner contact details are visible only to your clinic team. Please use them for clinical care only.</span></div></div></section>';
+}
+function analyticsHTML(d){
+  var tiles = [[d.total, 'Appointments'], [d.completed, 'Completed'], [d.cancelled, 'Cancelled'], [d.no_show, 'No-shows'], [d.completion_rate == null ? '—' : d.completion_rate + '%', 'Completion rate'], [d.avg_wait_min == null ? '—' : d.avg_wait_min + ' min', 'Average wait'], [d.consultations, 'Consultation records'], [d.vaccinations, 'Vaccinations recorded'], [d.prescriptions, 'Prescriptions']];
+  if (d.revenue != null) tiles.push([inr(d.revenue), 'Fees received']);
+  var types = Object.keys(d.by_type), tt = types.reduce(function(s, k){ return s + d.by_type[k]; }, 0);
+  return '<section class="card sec"><div class="ch"><h2><i class="ti ti-chart-bar"></i>Clinic analytics</h2><div class="seg">' + [7, 30, 90].map(function(n){ return '<label><input type="radio" name="an" ' + (AN_DAYS === n ? 'checked' : '') + ' onchange="AN_DAYS=' + n + ';loadSec()"><span>' + n + ' days</span></label>'; }).join('') + '</div></div><div class="cb">'
+    + '<div class="muted" style="font-size:12.5px;margin:-4px 0 12px">' + esc(fd(d.from) + ' – ' + fd(d.to)) + '</div><div class="wstats">' + tiles.map(function(t){ return '<div class="ws"><b>' + esc(t[0]) + '</b><span>' + esc(t[1]) + '</span></div>'; }).join('') + '</div>'
+    + barsHTML(d.by_day, d.days)
+    + (tt ? '<div class="sec-title" style="font-size:15px;margin-top:20px">Consultation types</div><div class="inds">' + types.map(function(k){ var pc = Math.round(d.by_type[k] / tt * 100); return '<div class="ind"><span class="ic c-sage"><i class="ti ti-stethoscope"></i></span><div class="t">' + esc(k) + '</div><span class="pts">' + d.by_type[k] + ' · ' + pc + '%</span><div class="bar2" style="grid-column:2/4;height:6px;border-radius:9px;background:#f1e8de;overflow:hidden"><i style="display:block;height:100%;width:' + pc + '%;background:var(--blue)"></i></div></div>'; }).join('') + '</div>' : '')
+    + '</div></section>';
+}
+function settingsHTML(d){
+  var c = d.clinic, canTeam = d.role === 'vet' || d.role === 'admin';
+  var h = '<div class="dgrid" style="grid-template-columns:1fr 1fr"><section class="card"><div class="ch"><h2><i class="ti ti-building-hospital"></i>Clinic profile</h2></div><div class="cb"><div class="kv2">'
+    + [['Vet', c.vet_name ? 'Dr. ' + c.vet_name : ''], ['Clinic', c.clinic], ['City', c.city], ['Address', c.address], ['VCI registration', c.vci], ['Consultation fee', c.fee != null ? inr(c.fee) : ''], ['Hours', c.hours], ['Days', (c.days || []).join(', ')]].filter(function(x){ return x[1]; }).map(function(x){ return '<span>' + x[0] + '</span><em>' + esc(x[1]) + '</em>'; }).join('')
+    + '</div><div class="disc"><i class="ti ti-info-circle"></i><span>These details come from the vet registration. To change them, write to support@deemona.com.</span></div></div></section>';
+  h += '<section class="card"><div class="ch"><h2><i class="ti ti-users-group"></i>Clinic team</h2>' + (canTeam ? '<button class="btn btn-g btn-s" onclick="openForm(\'staff\')"><i class="ti ti-user-plus"></i>Add</button>' : '') + '</div><div class="cb"><div class="rows">'
+    + d.team.map(function(m){ return '<div class="row"><span class="ic ' + (m.role === 'vet' ? 'c-sage' : m.role === 'admin' ? 'c-lav' : 'c-cream') + '"><i class="ti ' + (m.role === 'vet' ? 'ti-stethoscope' : m.role === 'admin' ? 'ti-shield-check' : 'ti-headset') + '"></i></span><div class="t"><b>' + esc(m.name || m.email || 'Team member') + '</b><span>' + esc({vet: 'Veterinarian', admin: 'Clinic admin', receptionist: 'Receptionist'}[m.role] + (m.email ? ' · ' + m.email : '')) + '</span></div>'
+      + (canTeam && m.id && (d.role === 'vet' || m.role === 'receptionist') ? '<button class="btn btn-w btn-s" onclick="rmStaff(\'' + esc(m.id) + '\', this)">Remove</button>' : '') + '</div>'; }).join('') + '</div>'
+    + '<div class="disc"><i class="ti ti-lock"></i><span><b>Receptionists</b> manage the schedule, waiting room and owner contacts. They cannot read clinical notes, prescriptions or full medical history, or see fees. <b>Clinic admins</b> can do everything except add or remove other admins.</span></div></div></section></div>';
+  if (d.notifications && d.notifications.length) h += '<section class="card sec"><div class="ch"><h2><i class="ti ti-send"></i>Owner notifications</h2></div><div class="cb"><div class="rows">' + d.notifications.map(function(n){ return '<div class="row"><span class="ic ' + (n.result === 'sent' ? 'c-sage' : n.result === 'failed' ? 'c-red' : 'c-grey') + '"><i class="ti ti-brand-whatsapp"></i></span><div class="t"><b>' + esc(cap(n.event)) + ' · ' + esc(n.result === 'unavailable' ? 'not sent (WhatsApp not set up)' : n.result) + '</b><span>' + esc(ft(n.at)) + '</span></div></div>'; }).join('') + '</div></div></section>';
+  return h;
+}
+function rmStaff(id, btn){ if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.textContent = 'Sure?'; return; } btn.disabled = true; api('/staff/' + id + qs(), {method: 'DELETE'}).then(function(){ toast('Removed from the team'); loadSec(); }).catch(function(e){ btn.disabled = false; fail(e); }); }
+
+/* ---------- patient profile ---------- */
+function openPatient(id, keepTab){
+  if (!keepTab) PTAB = 'summary';
+  document.getElementById('pd-in').innerHTML = '<div class="pd-h"><div class="skel" style="height:96px"></div></div>';
+  document.getElementById('pd').classList.add('open'); document.getElementById('pd-ov').classList.add('open'); document.body.style.overflow = 'hidden';
+  return api('/patients/' + encodeURIComponent(id) + qs()).then(function(d){ PT = d; renderPatient(); }).catch(function(e){ closePatient(); fail(e); });
+}
+function closePatient(){ document.getElementById('pd').classList.remove('open'); document.getElementById('pd-ov').classList.remove('open'); document.body.style.overflow = ''; PT = null; }
+function renderPatient(){
+  var d = PT, p = d.pet, o = d.owner, over = d.vaccine_status.filter(function(v){ return v.status === 'overdue'; }).length, upc = d.appointments.filter(function(a){ return a.status === 'upcoming' && a.date >= D.today; });
+  var TABS = [['summary', 'Summary'], ['visits', 'Visits'], ['vaccines', 'Vaccines']].concat(d.limited ? [] : [['prescriptions', 'Prescriptions'], ['notes', 'Medical notes'], ['audit', 'Record history']]);
+  var h = '<div class="pd-h"><button class="x" onclick="closePatient()" aria-label="Close"><i class="ti ti-x"></i></button><div class="pd-id">' + pav(p, 'lg') + '<div><h3 id="pd-name">' + esc(p.name) + '</h3><div class="s">' + esc([petLine(p), p.gender && p.gender !== 'unknown' ? cap(p.gender) : '', p.weight_kg ? p.weight_kg + ' kg' : ''].filter(Boolean).join(' · ')) + '</div>'
+    + '<div class="tags">' + (d.allergies ? '<span class="tagp red"><i class="ti ti-alert-triangle"></i>Allergies: ' + esc(d.allergies) + '</span>' : '') + (over ? '<span class="tagp red"><i class="ti ti-vaccine"></i>' + over + ' vaccine' + (over > 1 ? 's' : '') + ' overdue</span>' : '') + (upc.length ? '<span class="tagp"><i class="ti ti-calendar"></i>Next visit ' + esc(fd(upc[upc.length - 1].date)) + '</span>' : '') + '</div></div></div>'
+    + '<div class="box" style="margin:14px 0 0"><div class="kv2"><span>Owner</span><em>' + esc(o.name || '—') + '</em>' + (o.phone ? '<span>Phone</span><em><a href="tel:' + esc(tel(o.phone)) + '" style="color:var(--blue-d)">' + esc(o.phone) + '</a> · <a href="' + esc(wa(o.phone)) + '" target="_blank" rel="noopener" style="color:var(--blue-d)">WhatsApp</a></em>' : '') + (o.email ? '<span>Email</span><em>' + esc(o.email) + '</em>' : '') + '</div></div>'
+    + '<div class="pd-acts no-print">' + (d.limited ? '' : '<button class="btn btn-g btn-s" onclick="openForm(\'note\')"><i class="ti ti-pencil"></i>Write record</button><button class="btn btn-w btn-s" onclick="openForm(\'prescription\')"><i class="ti ti-prescription"></i>Prescribe</button><button class="btn btn-w btn-s" onclick="openForm(\'vaccination\')"><i class="ti ti-vaccine"></i>Record vaccination</button>') + '<button class="btn btn-w btn-s" onclick="openForm(\'followup\')"><i class="ti ti-calendar-plus"></i>Schedule follow-up</button></div></div>'
+    + '<div class="pd-tabs" role="tablist">' + TABS.map(function(t){ return '<button class="' + (PTAB === t[0] ? 'on' : '') + '" onclick="PTAB=\'' + t[0] + '\';renderPatient()">' + t[1] + '</button>'; }).join('') + '</div><div class="pd-b">' + ptBody() + '</div>';
+  document.getElementById('pd-in').innerHTML = h;
+}
+var VST = {overdue: ['st-x', 'Overdue'], due_soon: ['st-wait', 'Due soon'], up_to_date: ['st-in', 'Up to date'], recorded: ['st-done', 'Recorded']};
+function ptBody(){
+  var d = PT, h = '';
+  if (PTAB === 'summary') {
+    if (d.limited) h += '<div class="disc" style="margin:0 0 12px"><i class="ti ti-lock"></i><span>Front-desk view: clinical notes, prescriptions and full medical history are visible to the vet and clinic admins only.</span></div>';
+    var cur = d.notes.filter(function(n){ return n.current; })[0];
+    if (cur) h += '<div class="box"><h5><i class="ti ti-stethoscope"></i>Latest consultation · ' + esc(ft(cur.at)) + '</h5>' + (cur.diagnosis ? '<b style="color:var(--navy)">' + esc(cur.diagnosis) + '</b>' : '') + vitHTML(cur) + (cur.notes ? '<p style="font-size:13px;line-height:1.55;margin-top:8px;white-space:pre-wrap">' + esc(cur.notes) + '</p>' : '') + (cur.follow_up_date ? '<div class="muted" style="font-size:12.5px;margin-top:6px">Follow-up planned: ' + esc(fd(cur.follow_up_date)) + '</div>' : '') + '</div>';
+    if (d.vitals.length > 1) h += '<div class="box"><h5><i class="ti ti-scale"></i>Weight trend</h5>' + spark(d.vitals.filter(function(v){ return v.weight_kg != null; }).map(function(v){ return v.weight_kg; })) + '</div>';
+    var upc = d.appointments.filter(function(a){ return a.status === 'upcoming' && a.date >= D.today; });
+    h += '<div class="box"><h5><i class="ti ti-calendar"></i>Upcoming appointments</h5>' + (upc.length ? upc.map(function(a){ return '<div style="font-size:13px;margin-bottom:4px"><b>' + esc(fd(a.date) + ' · ' + t12(a.time)) + '</b> — ' + esc(a.reason || a.type) + '</div>'; }).join('') : '<div class="muted" style="font-size:13px">None booked.</div>') + '</div>';
+    h += '<div class="box"><h5><i class="ti ti-vaccine"></i>Vaccination status</h5>' + vstat() + '</div>';
+    if (!d.limited && d.prescriptions.length) h += '<div class="box"><h5><i class="ti ti-prescription"></i>Latest prescription</h5>' + rxHTML(d.prescriptions[0]) + '</div>';
+    h += '<div class="box"><h5><i class="ti ti-id-badge-2"></i>Digital health passport</h5><p style="font-size:13px;color:var(--sub);line-height:1.55">Vaccinations and prescriptions you record here appear in the owner\'s PawBook Pet Health and Vaccination Diary, so ' + esc(d.pet.name) + '\'s passport stays complete.</p></div>';
+  }
+  if (PTAB === 'visits') h += d.appointments.length ? d.appointments.map(function(a){ var u = STL[a.status] || STL.upcoming, notes = d.notes.filter(function(n){ return n.current && n.appointment_id === a.id; });
+    return '<div class="box"><h5><i class="ti ti-calendar-heart"></i>' + esc(fd(a.date) + ' · ' + t12(a.time)) + ' <span class="st ' + u[0] + '" style="margin-left:auto">' + u[1] + '</span></h5><div style="font-size:13px">' + esc([a.type, a.reason].filter(Boolean).join(' · ')) + '</div>' + (a.notes ? '<div class="muted" style="font-size:12.5px;margin-top:4px">' + esc(a.notes) + '</div>' : '') + notes.map(function(n){ return '<div class="note" style="margin-top:8px"><div class="m">Consultation record</div>' + (n.diagnosis ? '<b>' + esc(n.diagnosis) + '</b>' : '') + (n.notes ? '<p>' + esc(n.notes) + '</p>' : '') + '</div>'; }).join('') + '</div>'; }).join('') : emptyBox('📅', 'No visits yet', '');
+  if (PTAB === 'vaccines') { h += '<div class="box"><h5><i class="ti ti-shield-check"></i>Current status</h5>' + vstat() + '</div>';
+    if (!d.limited) h += '<div class="box"><h5><i class="ti ti-list"></i>All records</h5>' + (d.vaccinations.length ? '<table class="sumt" style="width:100%;font-size:12.5px"><tr><th style="text-align:left">Vaccine</th><th style="text-align:left">Given</th><th style="text-align:left">Next due</th><th style="text-align:left">By / batch</th></tr>' + d.vaccinations.map(function(v){ return '<tr><td><b>' + esc(v.name) + '</b></td><td>' + esc(fd(v.given)) + '</td><td>' + esc(v.next_due ? fd(v.next_due) : '—') + '</td><td>' + esc([v.vet, v.batch].filter(Boolean).join(' · ') || '—') + '</td></tr>'; }).join('') + '</table>' : '<div class="muted" style="font-size:13px">No records.</div>') + '</div>'; }
+  if (PTAB === 'prescriptions') h += d.prescriptions.length ? d.prescriptions.map(function(r){ return '<div class="box">' + rxHTML(r) + '</div>'; }).join('') : emptyBox('💊', 'No prescriptions from your clinic yet', '', '<button class="btn btn-g btn-s" onclick="openForm(\'prescription\')"><i class="ti ti-prescription"></i>Write prescription</button>');
+  if (PTAB === 'notes') h += d.notes.length ? d.notes.map(function(n){ return '<div class="note' + (n.current ? '' : ' old') + '"><div class="m">' + esc(ft(n.at) + (n.author ? ' · ' + n.author : '')) + (n.current ? '' : ' · <b>replaced by a later version</b>') + (n.supersedes ? ' · edited version' : '') + '</div>' + (n.diagnosis ? '<b style="color:var(--navy)">' + esc(n.diagnosis) + '</b>' : '') + vitHTML(n) + (n.notes ? '<p>' + esc(n.notes) + '</p>' : '') + (n.allergies ? '<div class="muted" style="font-size:12.5px">Allergies: ' + esc(n.allergies) + '</div>' : '') + (n.current ? '<button class="btn-link no-print" style="margin-top:6px" onclick="openForm(\'note\',{edit:\'' + n.id + '\'})">Edit (keeps the old version)</button>' : '') + '</div>'; }).join('') : emptyBox('📝', 'No medical notes yet', '', '<button class="btn btn-g btn-s" onclick="openForm(\'note\')"><i class="ti ti-pencil"></i>Write record</button>');
+  if (PTAB === 'audit') { var AL = {viewed_record: 'Opened the record', note_added: 'Added a consultation record', note_edited: 'Edited a consultation record', prescription: 'Wrote a prescription', vaccination: 'Recorded a vaccination', checked_in: 'Checked in', queue_call: 'Called in for consultation', queue_finish: 'Finished the visit', queue_leave: 'Left the waiting room', queue_priority: 'Changed priority', appointment_complete: 'Marked appointment completed', appointment_cancel: 'Cancelled an appointment', appointment_no_show: 'Marked no-show', appointment_reschedule: 'Rescheduled an appointment', appointment_created: 'Booked a follow-up'};
+    h += '<div class="box"><h5><i class="ti ti-history"></i>Who viewed or changed this record</h5>' + (d.audit.length ? d.audit.map(function(a){ return '<div class="hrow" style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line2);font-size:13px"><div style="flex:1"><b>' + esc(a.who || 'Team member') + '</b> — ' + esc(AL[a.action] || a.action) + '</div><span class="muted" style="font-size:12px;white-space:nowrap">' + esc(ft(a.at)) + '</span></div>'; }).join('') : '<div class="muted">No activity yet.</div>') + '</div>'; }
+  return h;
+}
+function vitHTML(n){ var v = [[n.weight_kg, 'kg', 'Weight'], [n.temperature_c, '°C', 'Temp'], [n.heart_rate, 'bpm', 'Heart rate'], [n.resp_rate, '/min', 'Resp. rate']].filter(function(x){ return x[0] != null; }); return v.length ? '<div class="vit" style="margin-top:8px">' + v.map(function(x){ return '<div><b>' + esc(x[0]) + '<small style="font-size:11px"> ' + x[1] + '</small></b><span>' + x[2] + '</span></div>'; }).join('') + '</div>' : ''; }
+function vstat(){ var l = PT.vaccine_status; return l.length ? l.map(function(v){ var s = VST[v.status]; return '<div style="display:flex;gap:8px;align-items:center;font-size:13px;padding:5px 0;border-bottom:1px solid var(--line2)"><b style="flex:1;color:var(--navy)">' + esc(v.name) + '</b><span class="muted">' + esc(v.next_due ? 'next ' + fd(v.next_due) : 'given ' + fd(v.given)) + '</span><span class="st ' + s[0] + '">' + s[1] + '</span></div>'; }).join('') : '<div class="muted" style="font-size:13px">No vaccinations recorded.</div>'; }
+function rxHTML(r){ return '<h5><i class="ti ti-prescription"></i>' + esc(r.title || 'Prescription') + ' <span class="muted" style="font-weight:500;margin-left:auto;font-size:12px">' + esc(fd(r.at)) + '</span></h5><ul class="rxm">' + r.medicines.map(function(m){ return '<li><b>' + esc(m.name) + '</b> ' + esc([m.dose, m.frequency, m.duration].filter(Boolean).join(' · ')) + '</li>'; }).join('') + '</ul>' + (r.instructions ? '<div style="font-size:12.5px;margin-top:6px;color:var(--sub)">' + esc(r.instructions) + '</div>' : '') + (r.valid_until ? '<div class="muted" style="font-size:12px;margin-top:4px">Valid until ' + esc(fd(r.valid_until)) + '</div>' : ''); }
+function spark(l){ if (l.length < 2) return ''; var mn = Math.min.apply(null, l), mx = Math.max.apply(null, l), W = 300, H = 56, r = mx - mn || 1;
+  var pts = l.map(function(v, i){ return [i / (l.length - 1) * W, H - 6 - (v - mn) / r * (H - 12)]; });
+  return '<svg class="spark" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" style="width:100%"><polyline fill="none" stroke="#269B70" stroke-width="2.5" points="' + pts.map(function(p){ return p.join(','); }).join(' ') + '"/>' + pts.map(function(p){ return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3.5" fill="#269B70"/>'; }).join('') + '</svg><div class="muted" style="font-size:12px">' + l[0] + ' kg → ' + l[l.length - 1] + ' kg</div>'; }
+
+/* ---------- picking a patient for a quick action ---------- */
+function pickPatient(kind){
+  api('/patients' + qs()).then(function(d){
+    if (!d.patients.length) return toast('No patients yet');
+    MO = {kind: 'pick', next: kind};
+    document.getElementById('mo-title').textContent = 'Choose a patient';
+    document.getElementById('mo-body').innerHTML = '<input class="fi" placeholder="Search" oninput="var q=this.value.toLowerCase();document.querySelectorAll(\'#mo-body .pc\').forEach(function(b){b.style.display=b.textContent.toLowerCase().indexOf(q)>=0?\'\':\'none\'})"><div style="display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow:auto">'
+      + d.patients.map(function(x){ return '<button type="button" class="pc" onclick="pickDone(\'' + esc(x.pet.id) + '\')">' + pav(x.pet, 'sm') + '<div class="t"><b>' + esc(x.pet.name) + '</b><span>' + esc(petLine(x.pet) + ' · ' + (x.owner.name || '')) + '</span></div></button>'; }).join('') + '</div>';
+    document.getElementById('mo-save').style.display = 'none';
+    document.getElementById('mo').classList.add('open'); document.body.style.overflow = 'hidden';
+  }).catch(fail);
+}
+function pickDone(id){ var k = MO.next; closeMo(); openPatient(id).then(function(){ if (PT) openForm(k); }); }
+
+/* ---------- forms ---------- */
+function seg(name, opts, val){ return '<div class="seg" role="radiogroup">' + opts.map(function(o, i){ return '<label><input type="radio" name="' + name + '" value="' + esc(o[0]) + '"' + ((val != null ? String(val) === String(o[0]) : i === 0) ? ' checked' : '') + '><span>' + o[1] + '</span></label>'; }).join('') + '</div>'; }
+function fl(label, inner, key, err, hint){ return '<label class="fl" data-f="' + (key || '') + '"><span>' + label + '</span>' + inner + (hint ? '<small>' + hint + '</small>' : '') + '<span class="err">' + (err || 'Please check this') + '</span></label>'; }
+function inp(name, type, val, extra){ return '<input class="fi" name="' + name + '" type="' + (type || 'text') + '" value="' + esc(val == null ? '' : val) + '" ' + (extra || '') + '>'; }
+var FORMS = {
+  walkin: function(){ return {title: 'Add a walk-in', save: 'Add to waiting room', body: '<div class="two">' + fl('Pet\'s name', inp('walkin_name', 'text', '', 'maxlength="80" required'), 'walkin_name', 'Please enter the pet\'s name') + fl('Species', inp('walkin_species', 'text', '', 'maxlength="40" list="splist" placeholder="Dog, Cat…"') + '<datalist id="splist"><option>Dog</option><option>Cat</option><option>Rabbit</option><option>Bird</option></datalist>', 'walkin_species') + '</div>'
+    + fl('Owner\'s name (optional)', inp('walkin_owner', 'text', '', 'maxlength="120"'), 'walkin_owner') + fl('Reason for visit', inp('reason', 'text', '', 'maxlength="200" placeholder="e.g. Limping, vomiting since morning"'), 'reason')
+    + '<div class="fl"><span>Priority</span>' + seg('priority', [['routine', 'Routine'], ['priority', 'Priority'], ['urgent', '🚨 Urgent']]) + '<small>Urgent cases are seen first regardless of arrival time.</small></div>' }; },
+  reschedule: function(o){ return {title: 'Reschedule appointment', save: 'Reschedule', body: '<div class="two">' + fl('New date', inp('date', 'date', o.date >= D.today ? o.date : D.today, 'min="' + D.today + '" required'), 'date', 'Please pick today or a later date') + fl('New time', inp('time', 'time', o.time, 'required step="300"'), 'time', 'Please pick a time') + '</div><small class="muted">The owner sees the new time in their PawBook appointments.</small>' }; },
+  cancel: function(o){ return {title: 'Cancel ' + o.name + '\'s appointment?', save: 'Cancel appointment', body: fl('Reason (optional)', inp('reason', 'text', '', 'maxlength="200" placeholder="e.g. Owner asked to cancel"'), 'reason') + '<small class="muted">The owner is notified through PawBook\'s WhatsApp messages where they are set up.</small>' }; },
+  followup: function(){ var p = PT.pet; return {title: 'Schedule a follow-up for ' + p.name, save: 'Book follow-up', body: '<div class="two">' + fl('Date', inp('date', 'date', addD(D.today, 14), 'min="' + D.today + '" required'), 'date', 'Please pick today or a later date') + fl('Time', inp('time', 'time', '10:00', 'required step="300"'), 'time', 'Please pick a time') + '</div>'
+    + '<div class="fl"><span>Type</span>' + seg('consult_type', [['in_clinic', 'In clinic'], ['video', 'Video'], ['chat', 'Chat']]) + '</div>' + fl('Reason', inp('reason', 'text', 'Follow-up', 'maxlength="300"'), 'reason') }; },
+  note: function(o){ var n = o && o.edit ? PT.notes.filter(function(x){ return x.id === o.edit; })[0] || {} : {}; var open = PT.appointments.filter(function(a){ return a.date === D.today; })[0];
+    return {title: n.id ? 'Edit consultation record' : 'Consultation record · ' + PT.pet.name, save: 'Save record', body:
+    (n.id ? '<div class="disc" style="margin:0"><i class="ti ti-history"></i><span>The current version is kept in the record history.</span></div>' : '')
+    + '<div class="two">' + fl('Weight (kg)', inp('weight_kg', 'number', n.weight_kg, 'min="0" max="200" step="0.1"'), 'weight_kg', '0–200 kg') + fl('Temperature (°C)', inp('temperature_c', 'number', n.temperature_c, 'min="30" max="45" step="0.1"'), 'temperature_c', '30–45 °C') + '</div>'
+    + '<div class="two">' + fl('Heart rate (bpm)', inp('heart_rate', 'number', n.heart_rate, 'min="10" max="400" step="1"'), 'heart_rate', '10–400') + fl('Respiratory rate (/min)', inp('resp_rate', 'number', n.resp_rate, 'min="2" max="200" step="1"'), 'resp_rate', '2–200') + '</div>'
+    + fl('Assessment / diagnosis', inp('diagnosis', 'text', n.diagnosis, 'maxlength="200"'), 'diagnosis') + fl('Clinical notes', '<textarea class="fi" name="notes" maxlength="5000" placeholder="History, examination findings, plan…">' + esc(n.notes || '') + '</textarea>', 'notes', 'Please add notes, a diagnosis or vitals')
+    + fl('Allergies', inp('allergies', 'text', n.allergies != null ? n.allergies : (PT.allergies || ''), 'maxlength="300" placeholder="None known"'), 'allergies') + fl('Follow-up date (optional)', inp('follow_up_date', 'date', n.follow_up_date, 'min="' + D.today + '"'), 'follow_up_date', 'Please pick today or a later date')
+    + (!n.id && open ? '<label style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox" name="link" checked> Link to today\'s appointment (' + esc(t12(open.time)) + ')</label><input type="hidden" name="appointment_id" value="' + esc(open.id) + '">' : '') }; },
+  prescription: function(){ var open = PT.appointments.filter(function(a){ return a.date === D.today; })[0]; return {title: 'Prescription · ' + PT.pet.name, save: 'Issue prescription', body: fl('Diagnosis / title', inp('title', 'text', '', 'maxlength="200" required placeholder="e.g. Allergic dermatitis"'), 'title', 'Please add a title')
+    + '<div class="fl" data-f="medicines"><span>Medicines</span><table class="medtbl" id="meds">' + medRow() + '</table><button type="button" class="btn-link" onclick="document.getElementById(\'meds\').insertAdjacentHTML(\'beforeend\', medRow())">+ Add another medicine</button><span class="err">Please add at least one medicine</span></div>'
+    + fl('Instructions (optional)', '<textarea class="fi" name="instructions" maxlength="2000" placeholder="Give with food, complete the course…"></textarea>', 'instructions') + fl('Valid until (optional)', inp('valid_until', 'date', addD(D.today, 30), 'min="' + D.today + '"'), 'valid_until', 'Please pick today or a later date')
+    + (open ? '<input type="hidden" name="appointment_id" value="' + esc(open.id) + '">' : '') + '<small class="muted">The prescription appears in the owner\'s PawBook Pet Health page.</small>' }; },
+  vaccination: function(){ return {title: 'Record a vaccination · ' + PT.pet.name, save: 'Save vaccination', body: fl('Vaccine', inp('name', 'text', '', 'maxlength="100" list="vxl" required placeholder="e.g. Rabies, DHPPiL"') + '<datalist id="vxl"><option>Rabies</option><option>DHPPiL</option><option>DHPPi</option><option>Leptospirosis</option><option>Kennel cough (Bordetella)</option><option>FVRCP</option><option>FeLV</option></datalist>', 'name', 'Please enter the vaccine')
+    + '<div class="two">' + fl('Date given', inp('given_date', 'date', D.today, 'max="' + D.today + '" required'), 'given_date', 'Not in the future') + fl('Next due', inp('next_due_date', 'date', ''), 'next_due_date', 'Must be after the date given') + '</div>'
+    + fl('Batch / lot number', inp('batch_number', 'text', '', 'maxlength="60"'), 'batch_number') + fl('Notes (optional)', inp('notes', 'text', '', 'maxlength="300"'), 'notes') + '<small class="muted">Saved under your name and added to the owner\'s Vaccination Diary.</small>' }; },
+  staff: function(){ return {title: 'Add a team member', save: 'Add', body: fl('Their PawBook email', inp('email', 'email', '', 'maxlength="200" required'), 'email', 'Please enter a valid email', 'They need a PawBook account first.') + '<div class="fl"><span>Role</span>' + seg('role', [['receptionist', 'Receptionist']].concat(D.role === 'vet' ? [['admin', 'Clinic admin']] : [])) + '</div>' }; }
+};
+function medRow(){ return '<tr><td><input class="fi" name="m_name" placeholder="Medicine" maxlength="100"></td><td><input class="fi" name="m_dose" placeholder="Dose" maxlength="80"></td><td><input class="fi" name="m_freq" placeholder="How often" maxlength="80"></td><td><input class="fi" name="m_dur" placeholder="How long" maxlength="80"></td></tr>'; }
+function openForm(kind, o){
+  if (['followup', 'note', 'prescription', 'vaccination'].indexOf(kind) >= 0 && !PT) return;
+  var f = FORMS[kind](o || {}); MO = {kind: kind, o: o || {}};
+  document.getElementById('mo-title').textContent = f.title; document.getElementById('mo-body').innerHTML = f.body; document.querySelector('#mo-save span').textContent = f.save;
+  var s = document.getElementById('mo-save'); s.style.display = ''; s.className = 'btn ' + (kind === 'cancel' ? 'btn-r' : 'btn-g');
+  document.getElementById('mo').classList.add('open'); document.body.style.overflow = 'hidden';
+  setTimeout(function(){ var i = document.querySelector('#mo-body input:not([type=radio]):not([type=hidden]):not([type=checkbox])'); if (i && window.innerWidth > 640) i.focus(); }, 60);
+}
+function closeMo(){ document.getElementById('mo').classList.remove('open'); document.body.style.overflow = PT ? 'hidden' : ''; MO = null; }
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { if (MO) closeMo(); else if (PT) closePatient(); } });
+function val(f, n){ var e = f.elements[n]; if (!e) return ''; if (e.length && e[0] && e[0].type === 'radio') { for (var i = 0; i < e.length; i++) if (e[i].checked) return e[i].value; return ''; } return (e.value || '').trim(); }
+function mark(f, keys){ f.querySelectorAll('.fl').forEach(function(l){ l.classList.toggle('bad', keys.indexOf(l.getAttribute('data-f')) >= 0); }); var b = f.querySelector('.fl.bad .fi'); if (b) b.focus(); }
+function nnum(x){ return x === '' ? null : Number(x); }
+function submitMo(e){
+  e.preventDefault(); if (!MO) return; var f = e.target, k = MO.kind, o = MO.o, btn = document.getElementById('mo-save'), bad = [], req, msg;
+  var pid = PT && PT.pet.id, after = function(){ closeMo(); toast(msg); refresh(); if (PT) openPatient(pid, true); };
+  if (k === 'walkin') { var b = {walkin_name: val(f, 'walkin_name'), walkin_species: val(f, 'walkin_species'), walkin_owner: val(f, 'walkin_owner'), reason: val(f, 'reason'), priority: val(f, 'priority')}; if (!b.walkin_name) bad.push('walkin_name'); req = function(){ return api('/queue', {method: 'POST', body: b}); }; msg = 'Added to the waiting room'; }
+  if (k === 'reschedule') { var d = val(f, 'date'), t = val(f, 'time'); if (!d || d < D.today) bad.push('date'); if (!t) bad.push('time'); req = function(){ return api('/appointments/' + o.id, {method: 'PATCH', body: {action: 'reschedule', token: o.token, date: d, time: t.slice(0, 5)}}); }; msg = 'Rescheduled to ' + fd(d) + ', ' + t12(t.slice(0, 5)); }
+  if (k === 'cancel') { req = function(){ return api('/appointments/' + o.id, {method: 'PATCH', body: {action: 'cancel', token: o.token, reason: val(f, 'reason')}}); }; msg = 'Appointment cancelled'; }
+  if (k === 'followup') { var fb = {pet_id: pid, date: val(f, 'date'), time: val(f, 'time').slice(0, 5), consult_type: val(f, 'consult_type'), reason: val(f, 'reason')}; if (!fb.date || fb.date < D.today) bad.push('date'); if (!fb.time) bad.push('time'); req = function(){ return api('/appointments', {method: 'POST', body: fb}); }; msg = 'Follow-up booked'; }
+  if (k === 'note') { var nb = {weight_kg: nnum(val(f, 'weight_kg')), temperature_c: nnum(val(f, 'temperature_c')), heart_rate: nnum(val(f, 'heart_rate')), resp_rate: nnum(val(f, 'resp_rate')), diagnosis: val(f, 'diagnosis'), notes: val(f, 'notes'), allergies: val(f, 'allergies'), follow_up_date: val(f, 'follow_up_date') || null};
+    if (o.edit) nb.supersedes = o.edit; else if (f.elements.link && f.elements.link.checked) nb.appointment_id = val(f, 'appointment_id');
+    if (nb.weight_kg != null && !(nb.weight_kg > 0 && nb.weight_kg <= 200)) bad.push('weight_kg'); if (nb.temperature_c != null && !(nb.temperature_c >= 30 && nb.temperature_c <= 45)) bad.push('temperature_c');
+    if (!nb.notes && !nb.diagnosis && nb.weight_kg == null && nb.temperature_c == null) bad.push('notes');
+    req = function(){ return api('/patients/' + pid + '/notes', {method: 'POST', body: nb}); }; msg = o.edit ? 'Record updated · old version kept' : 'Consultation record saved'; }
+  if (k === 'prescription') { var meds = [], rows = f.querySelectorAll('#meds tr'); rows.forEach(function(r){ var g = function(n){ return (r.querySelector('[name=' + n + ']').value || '').trim(); }; if (g('m_name')) meds.push({name: g('m_name'), dose: g('m_dose'), frequency: g('m_freq'), duration: g('m_dur')}); });
+    var rb = {title: val(f, 'title'), medicines: meds, instructions: val(f, 'instructions'), valid_until: val(f, 'valid_until') || null, appointment_id: val(f, 'appointment_id') || undefined}; if (!rb.title) bad.push('title'); if (!meds.length) bad.push('medicines');
+    req = function(){ return api('/patients/' + pid + '/prescriptions', {method: 'POST', body: rb}); }; msg = 'Prescription issued'; }
+  if (k === 'vaccination') { var vb = {name: val(f, 'name'), given_date: val(f, 'given_date'), next_due_date: val(f, 'next_due_date') || null, batch_number: val(f, 'batch_number'), notes: val(f, 'notes')}; if (!vb.name) bad.push('name'); if (!vb.given_date || vb.given_date > D.today) bad.push('given_date'); if (vb.next_due_date && vb.next_due_date <= vb.given_date) bad.push('next_due_date');
+    req = function(){ return api('/patients/' + pid + '/vaccinations', {method: 'POST', body: vb}); }; msg = 'Vaccination recorded'; }
+  if (k === 'staff') { var sb = {email: val(f, 'email'), role: val(f, 'role')}; if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(sb.email)) bad.push('email'); req = function(){ return api('/staff', {method: 'POST', body: sb}); }; msg = 'Added to your clinic team'; }
+  if (bad.length) return mark(f, bad);
+  btn.disabled = true;
+  req().then(function(){ if (k === 'staff') { closeMo(); toast(msg); loadSec(); } else after(); }).catch(function(err){ if (err.fields) mark(f, err.fields); if (err.status === 409) { closeMo(); } fail(err); }).then(function(){ btn.disabled = false; });
+}
+
+boot();
 </script>
 
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
@@ -991,6 +997,8 @@ if ('serviceWorker' in navigator) {
             if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
             if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
             if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+            var nu=(d.data&&(d.data.user||d.data))||d.user||d,nm=nu.full_name||nu.name||nu.username||'',pic=nu.avatar_url||nu.avatar||'',av=el('nav-av');
+            if(av){ if(/^https:\/\//.test(pic)){ var im=new Image(); im.alt=''; im.onerror=function(){ av.textContent=(nm.charAt(0)||'·').toUpperCase(); }; im.src=pic; av.textContent=''; av.appendChild(im); } else if(nm) av.textContent=nm.charAt(0).toUpperCase(); }
           }).catch(()=>{});
       }catch(e){}
     })();

@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v10: vaccination diary) ─────────────────────────────
+const BLOCK = `${START} (v11: vetcare workspace) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -156,6 +156,29 @@ petcareRouter.patch('/medicines/:id',            authenticate, pcWrite, pcCtrl.u
 petcareRouter.get('/documents/:id',              authenticate, pcCtrl.getDoc);
 petcareRouter.delete('/documents/:id',           authenticate, pcWrite, pcCtrl.deleteDoc);
 router.use('/petcare', petcareRouter);
+const vcCtrl = require('../controllers/vetcare.controller');
+const vetcareRouter = require('express').Router();
+const vcWrite = fulCtrl.limit('vetcare', 240, 600);
+vetcareRouter.get('/me',                          authenticate, vcCtrl.me);
+vetcareRouter.get('/dashboard',                   authenticate, vcCtrl.dashboard);
+vetcareRouter.get('/schedule',                    authenticate, vcCtrl.schedule);
+vetcareRouter.post('/appointments',               authenticate, vcWrite, vcCtrl.createAppointment);
+vetcareRouter.patch('/appointments/:id',          authenticate, vcWrite, vcCtrl.updateAppointment);
+vetcareRouter.post('/queue',                      authenticate, vcWrite, vcCtrl.checkIn);
+vetcareRouter.patch('/queue/:id',                 authenticate, vcWrite, vcCtrl.updateQueue);
+vetcareRouter.get('/patients',                    authenticate, vcCtrl.patients);
+vetcareRouter.get('/patients/:pet_id',            authenticate, vcCtrl.patient);
+vetcareRouter.post('/patients/:pet_id/notes',     authenticate, vcWrite, vcCtrl.addNote);
+vetcareRouter.post('/patients/:pet_id/prescriptions', authenticate, vcWrite, vcCtrl.addPrescription);
+vetcareRouter.post('/patients/:pet_id/vaccinations',  authenticate, vcWrite, vcCtrl.addVaccination);
+vetcareRouter.get('/vaccinations',                authenticate, vcCtrl.vaccinations);
+vetcareRouter.get('/owners',                      authenticate, vcCtrl.owners);
+vetcareRouter.get('/consultations',               authenticate, vcCtrl.consultations);
+vetcareRouter.get('/analytics',                   authenticate, vcCtrl.analytics);
+vetcareRouter.get('/staff',                       authenticate, vcCtrl.staff);
+vetcareRouter.post('/staff',                      authenticate, fulCtrl.limit('vetcare-staff', 20, 3600), vcCtrl.addStaff);
+vetcareRouter.delete('/staff/:id',                authenticate, vcWrite, vcCtrl.removeStaff);
+router.use('/vetcare', vetcareRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -174,7 +197,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop10');
+  fs.copyFileSync(f, f + '.bak-shop11');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -195,4 +218,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop10 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop11 — restart the app from the MilesWeb panel.');
