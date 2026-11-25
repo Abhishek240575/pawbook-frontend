@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v15: lost & found) ─────────────────────────────
+const BLOCK = `${START} (v16: health agent) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -278,6 +278,20 @@ lfRouter.get('/help',                           authenticate, lfCtrl.help);
 lfRouter.get('/admin/queue',                    authenticate, lfCtrl.adminQueue);
 lfRouter.post('/admin/:type/:id',               authenticate, lfWrite, lfCtrl.adminAction);
 router.use('/lostfound', lfRouter);
+const haCtrl = require('../controllers/healthagent.controller');
+const haRouter = require('express').Router();
+const haWrite = fulCtrl.limit('healthagent', 120, 600);
+haRouter.post('/pets/:id/chat',              authenticate, fulCtrl.limit('healthagent-chat', 40, 3600), haCtrl.chat);
+haRouter.get('/pets/:id/vitals',             authenticate, haCtrl.vitals);
+haRouter.post('/pets/:id/vitals',            authenticate, haWrite, haCtrl.addVitals);
+haRouter.delete('/vitals/:vid',              authenticate, haWrite, haCtrl.deleteVitals);
+haRouter.get('/pets/:id/checks',             authenticate, haCtrl.checks);
+haRouter.post('/pets/:id/checks',            authenticate, haWrite, haCtrl.addCheck);
+haRouter.delete('/checks/:cid',              authenticate, haWrite, haCtrl.deleteCheck);
+haRouter.get('/contacts',                    authenticate, haCtrl.contacts);
+haRouter.post('/contacts',                   authenticate, haWrite, haCtrl.addContact);
+haRouter.delete('/contacts/:cid',            authenticate, haWrite, haCtrl.deleteContact);
+router.use('/healthagent', haRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -312,7 +326,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop15');
+  fs.copyFileSync(f, f + '.bak-shop16');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -338,4 +352,4 @@ for (const f of FILES) {
   else console.log('  NOTE: old lost-pets routes not found in this file — guard not needed');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop15 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop16 — restart the app from the MilesWeb panel.');

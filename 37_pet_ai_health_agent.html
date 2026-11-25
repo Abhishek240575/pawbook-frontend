@@ -2,210 +2,375 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1877F2">
+<meta name="robots" content="noindex">
 <title>AI Health Agent – PawBook</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --pb-blue:#1877F2;--pb-blue-dark:#0d65d9;--pb-blue-soft:#e7f0fd;
-  --pb-green:#22c55e;--pb-green-soft:#dcfce7;--pb-red:#ef4444;--pb-red-soft:#fee2e2;
-  --pb-amber:#f59e0b;--pb-amber-soft:#fef3c7;--pb-purple:#8b5cf6;--pb-purple-soft:#ede9fe;
-  --pb-teal:#14b8a6;--pb-teal-soft:#ccfbf1;--pb-orange:#f97316;--pb-orange-soft:#ffedd5;
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --pb-bg:#f0f2f5;--pb-card:#ffffff;--pb-border:#e4e6eb;
-  --pb-text:#050505;--pb-text2:#65676b;--pb-text3:#8a8d91;
-  --pb-radius:12px;--pb-radius-sm:8px;--pb-pill:999px;
-  --pb-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --pb-nav-h:56px;
+  /* PawBook design system (same tokens as the Animal Welfare page) */
+  --blue:#1877F2;--blue-d:#1a56db;--navy:#0f2057;--purple:#8b5cf6;
+  --coral:#e5484d;--coral-d:#c2353a;--coral-soft:#fff1f1;
+  --green:#16a34a;--amber:#f59e0b;
+  --bg:#f0f4fa;--card:#fff;--line:#e4e9f2;--line2:#eef2f8;--text:#1a1f36;--muted:#65676b;--sub:#3d4560;
+  --r:18px;--r-sm:12px;--pill:999px;--shadow:0 6px 24px rgba(15,32,87,.08);--nav-h:60px;
+  /* soft category tints */
+  --t-blue:#e8f1ff;--t-blue-d:#1a56db;--t-coral:#fff1f1;--t-coral-d:#c2353a;--t-green:#e7f7ee;--t-green-d:#15803d;
+  --t-amber:#fff6e0;--t-amber-d:#b45309;--t-purple:#f1ecff;--t-purple-d:#6d4fd8;--t-teal:#e3f7f5;--t-teal-d:#0f766e;
+  --grad:linear-gradient(135deg,#e5484d,#f97316);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased;padding-top:var(--pb-nav-h)}
-a{text-decoration:none;color:inherit}
-button{font-family:'Inter',sans-serif;cursor:pointer}
-input,textarea{font-family:'Inter',sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid rgba(24,119,242,.35);outline-offset:2px}
 
-/* NAV */
-.pb-nav{position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);background:#fff;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08)}
-.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
-.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
-.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
-.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
-.pb-nav-tab.active{color:var(--pb-blue)}
-.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-blue);border-radius:3px 3px 0 0}
-.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
-.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s}
-.pb-icon-btn:hover{background:var(--pb-border)}
-.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+/* ── top bar (matches the Animal Welfare page) ── */
+.nav{position:sticky;top:0;z-index:400;height:var(--nav-h);background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:10px;padding:0 16px}
+.nav .menu{width:38px;height:38px;border-radius:50%;border:none;background:transparent;font-size:21px;display:flex;align-items:center;justify-content:center;color:#1a3a6b}
+.nav .menu:hover{background:#f0f2f5}
+.logo{display:flex;align-items:center;gap:10px;color:var(--blue);font-size:21px;font-weight:900;cursor:pointer}
+.logo i{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:19px;font-style:normal}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.crumb b{color:var(--coral)}
+.nav .sp{flex:1}
+.nav-ic{width:38px;height:38px;border-radius:50%;border:none;background:#f0f2f5;color:#1a3a6b;font-size:19px;display:flex;align-items:center;justify-content:center}
+.nav-ic:hover{background:#e4ebf7;color:var(--blue)}
+.nav-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:none}
+.nav-av img{width:100%;height:100%;object-fit:cover}
+@media(max-width:640px){.crumb,.nav .hide-s{display:none}.logo{font-size:19px}}
 
-/* BUTTONS */
-.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
-.pb-btn-blue{background:var(--pb-blue);color:#fff}.pb-btn-blue:hover{background:var(--pb-blue-dark)}
-.pb-btn-red{background:var(--pb-red);color:#fff}.pb-btn-red:hover{background:#dc2626}
-.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}.pb-btn-gray:hover{background:var(--pb-border)}
-.pb-btn-sm{height:30px;padding:0 14px;font-size:12px}
-.pb-btn-lg{height:48px;padding:0 28px;font-size:15px;font-weight:800}
+/* ── layout ── */
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px 120px}
+.hero-band{position:relative;overflow:hidden;background:radial-gradient(1200px 500px at 85% -10%,#e5edff 0%,transparent 60%),linear-gradient(180deg,#f7f9ff 0%,#eef3fb 100%);margin:0 -24px;padding:0 24px}
+.hero-band::before{content:'';position:absolute;inset:0;opacity:.5;background-image:radial-gradient(circle at 20px 20px,rgba(24,119,242,.07) 3px,transparent 4px);background-size:44px 44px;pointer-events:none}
+.pets{position:relative;display:flex;gap:8px;overflow-x:auto;padding:18px 0 4px;scrollbar-width:none;max-width:1240px;margin:0 auto}.pets::-webkit-scrollbar{display:none}
+.pchip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:700;font-size:13.5px;color:var(--navy);flex-shrink:0;box-shadow:0 2px 8px rgba(24,119,242,.06)}
+.pchip.on{border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 3px rgba(24,119,242,.12)}
+.pchip .av{width:32px;height:32px}
+.pchip.add{padding:5px 15px;color:var(--blue-d);border-style:dashed;background:rgba(255,255,255,.7)}
+.av{border-radius:50%;background:var(--t-blue);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
 
-/* LAYOUT */
-.aha-layout{max-width:1100px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:320px 1fr;gap:20px}
-@media(max-width:768px){.aha-layout{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.ch{display:flex;align-items:center;gap:10px;padding:18px 22px 6px;flex-wrap:wrap}
+.ch h2{font-size:17px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+.ch h2 i{width:32px;height:32px;border-radius:10px;background:var(--t-blue);color:var(--blue);display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.ch .badge{font-size:12px;font-weight:700;padding:4px 11px;border-radius:var(--pill);background:var(--coral-soft);color:var(--coral-d)}
+.cb{padding:8px 22px 22px}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}}
+.sec{margin-top:18px}
+.sec-title{font-size:22px;font-weight:900;color:var(--navy);margin:34px 0 4px}
+.sec-sub{font-size:13.5px;color:var(--muted);margin-bottom:14px}
 
-/* CARDS */
-.pb-card{background:#fff;border-radius:var(--pb-radius);box-shadow:var(--pb-shadow);border:1px solid var(--pb-border);overflow:hidden}
-.pb-card-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
-.pb-card-header h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+/* ── pet hero ── */
+.hero{position:relative;max-width:1240px;margin:0 auto;padding:22px 0 64px;display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #dbe4f3;color:var(--blue-d);font-size:12.5px;font-weight:700;box-shadow:0 2px 8px rgba(24,119,242,.08)}
+.eyebrow i{color:var(--coral);font-size:16px}
+.hero h1{font-size:48px;line-height:1.08;font-weight:900;color:var(--navy);margin:14px 0 10px;letter-spacing:-1px}
+.hero h1 .accent{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .tag{font-size:16px;line-height:1.6;color:var(--sub);max-width:520px}
+.facts{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px}
+.fact{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--sub)}
+.fact i{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:var(--pill)}
+.st-great{background:var(--t-green);color:var(--t-green-d)}.st-ok{background:var(--t-blue);color:var(--t-blue-d)}.st-care{background:var(--t-amber);color:var(--t-amber-d)}.st-new{background:var(--t-purple);color:var(--t-purple-d)}
+.collage{position:relative;display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:420px}
+.collage.one{grid-template-columns:1fr}.collage.one .ph{grid-row:1/3}
+.collage.two{grid-template-columns:1.35fr 1fr}.collage.two .ph{grid-row:1/3}
+.ph-sample{position:absolute;left:12px;top:12px;z-index:3;padding:4px 10px;border-radius:999px;background:rgba(15,32,87,.6);color:#fff;font-size:11px;font-weight:700;letter-spacing:.02em;backdrop-filter:blur(4px)}
+.px-credit{position:absolute;right:4px;bottom:-22px;font-size:10.5px;color:var(--muted)}.px-credit a{color:inherit}
+.ph{position:relative;border-radius:22px;overflow:hidden;background:#dfe7f5;box-shadow:0 14px 34px rgba(15,32,87,.16)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.ph:hover img{transform:scale(1.04)}
+.ph-main{grid-row:1/3}
+.ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35));pointer-events:none}
+.ph-tag{position:absolute;left:12px;bottom:12px;z-index:2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.ph-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#e8f1ff,#f1ecff);color:var(--navy);font-weight:700;font-size:13px;text-align:center;padding:16px}
+.ph-empty .e{font-size:76px;line-height:1}
+.ph-empty::after{display:none}
+.ph .cam{position:absolute;right:12px;top:12px;z-index:3;height:34px;padding:0 12px;border-radius:999px;border:none;background:rgba(255,255,255,.95);font-size:12.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.float-card{position:absolute;z-index:3;background:#fff;border-radius:16px;box-shadow:0 14px 34px rgba(15,32,87,.2);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.float-1{left:-22px;bottom:30px;max-width:260px}
+.float-2{right:-10px;top:-14px;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;color:var(--navy);gap:6px}
+.float-2 i{color:var(--coral)}
+.fc-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex-shrink:0}
+.fc-t{font-size:13px;font-weight:800;color:var(--navy);line-height:1.3}
+.fc-s{font-size:11.5px;color:var(--muted)}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:24px;padding-bottom:56px}.collage{height:300px}.float-1{left:10px;bottom:-18px}.float-2{right:8px}.hero h1{font-size:36px}}
+@media(max-width:520px){.collage{height:250px;grid-template-columns:1fr}.collage .ph:not(.ph-main){display:none}.hero h1{font-size:31px}}
 
-/* EMERGENCY BANNER */
-.emergency-banner{background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:var(--pb-radius);padding:20px;color:#fff;display:flex;align-items:center;gap:16px;cursor:pointer;transition:transform .15s;border:none;width:100%;text-align:left}
-.emergency-banner:hover{transform:scale(1.01)}
-.emergency-pulse{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;position:relative;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4)}50%{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
-.emergency-title{font-size:18px;font-weight:900;line-height:1.2}
-.emergency-sub{font-size:12px;opacity:.85;margin-top:4px}
-.emergency-arrow{font-size:24px;margin-left:auto;opacity:.7}
+/* stats strip overlapping the hero (like the emergency strip) */
+.stats{position:relative;z-index:5;margin-top:-34px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;align-items:center;gap:12px}
+.stat .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.stat b{display:block;font-size:22px;font-weight:900;color:var(--navy);line-height:1.1}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:12px}.stat .ic{width:38px;height:38px;font-size:19px}.stat b{font-size:19px}}
 
-/* MODE TABS */
-.mode-tabs{display:flex;gap:0;background:var(--pb-bg);border-radius:var(--pb-radius-sm);padding:4px}
-.mode-tab{flex:1;padding:8px 12px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--pb-text2);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
-.mode-tab.active{background:#fff;color:var(--pb-text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:14px;font-size:14px;font-weight:700;border:none;white-space:nowrap;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:active{transform:translateY(1px)}
+.btn-o{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(229,72,77,.3)}.btn-o:hover{filter:brightness(1.05);box-shadow:0 10px 24px rgba(229,72,77,.38)}
+.btn-w{background:#fff;color:var(--navy);border:1.5px solid #dbe4f3}.btn-w:hover{border-color:var(--blue);color:var(--blue)}
+.btn-b{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;box-shadow:0 8px 20px rgba(24,119,242,.26)}
+.btn-s{height:36px;padding:0 14px;font-size:13px;border-radius:11px}
+.btn-link{background:none;border:none;color:var(--blue);font-weight:700;font-size:13px;padding:0}
+.btn[disabled]{opacity:.55;pointer-events:none}
 
-/* PET SELECTOR MINI */
-.pet-mini{display:flex;gap:8px;padding:12px 16px}
-.pet-mini-item{flex:1;padding:10px;border-radius:var(--pb-radius-sm);border:2px solid var(--pb-border);cursor:pointer;text-align:center;transition:all .15s}
-.pet-mini-item:hover{border-color:var(--pb-blue)}
-.pet-mini-item.selected{border-color:var(--pb-blue);background:var(--pb-blue-soft)}
-.pet-mini-emoji{font-size:24px;display:block;margin-bottom:4px}
-.pet-mini-name{font-size:12px;font-weight:700}
-.pet-mini-breed{font-size:10px;color:var(--pb-text3)}
+/* wellness */
+.well{display:flex;gap:20px;align-items:center}
+.ring{position:relative;width:118px;height:118px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:30px;font-weight:900;color:var(--navy);line-height:1}
+.ring .num span{font-size:11px;color:var(--muted);font-weight:600}
+.well h3{font-size:18px;font-weight:800;color:var(--navy)}
+.well p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.inds{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.ind{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center}
+.ind .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.ind .t{font-size:13.5px;font-weight:700;color:var(--navy)}.ind .t small{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.ind .bar{grid-column:2/4;height:6px;border-radius:9px;background:#edf1f8;overflow:hidden;margin-top:-4px}
+.ind .bar i{display:block;height:100%;border-radius:9px}
+.ind .pts{font-size:12px;font-weight:700;color:var(--muted)}
+.disc{font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.55;background:#f5f7fb;border:1px solid var(--line2);border-radius:12px;padding:9px 12px;display:flex;gap:8px}
+.disc i{color:var(--blue);font-size:15px;margin-top:1px}
 
-/* SYMPTOM CHECKER */
-.symptom-section{padding:20px;display:flex;flex-direction:column;gap:14px}
-.symptom-search{height:44px;border:1px solid var(--pb-border);border-radius:var(--pb-pill);padding:0 16px;font-size:14px;outline:none;width:100%;transition:border .15s}
-.symptom-search:focus{border-color:var(--pb-blue)}
-.symptom-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.symptom-chip{padding:10px 12px;border-radius:var(--pb-radius-sm);border:2px solid var(--pb-border);cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;transition:all .15s;background:#fff;color:var(--pb-text);text-align:left}
-.symptom-chip:hover{border-color:var(--pb-blue);background:var(--pb-blue-soft)}
-.symptom-chip.selected{border-color:var(--pb-blue);background:var(--pb-blue-soft);color:var(--pb-blue)}
-.symptom-chip.urgent{border-color:var(--pb-red);background:var(--pb-red-soft);color:var(--pb-red)}
-.symptom-chip.urgent.selected{background:var(--pb-red);color:#fff}
-.symptom-emoji{font-size:18px;flex-shrink:0}
-.symptom-label{font-size:12px;font-weight:600;line-height:1.3}
-.symptom-severity{font-size:10px;font-weight:500;padding:2px 6px;border-radius:var(--pb-pill);margin-left:auto}
-.symptom-severity.mild{background:var(--pb-green-soft);color:#166534}
-.symptom-severity.moderate{background:var(--pb-amber-soft);color:#92400e}
-.symptom-severity.severe{background:var(--pb-red-soft);color:var(--pb-red)}
+/* reminders */
+.rems{display:flex;flex-direction:column;gap:10px}
+.rem{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe}
+.rem .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rem .t{flex:1;min-width:0}.rem .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.rem .t span{font-size:12.5px;color:var(--muted)}
+.pill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:var(--pill);white-space:nowrap}
+.p-over{background:var(--coral-soft);color:var(--coral-d)}.p-soon{background:var(--t-amber);color:var(--t-amber-d)}.p-ok{background:var(--t-green);color:var(--t-green-d)}.p-info{background:var(--t-blue);color:var(--t-blue-d)}
+.c-peach{background:var(--t-coral);color:var(--t-coral-d)}.c-sage{background:var(--t-green);color:var(--t-green-d)}.c-lav{background:var(--t-purple);color:var(--t-purple-d)}.c-sky{background:var(--t-blue);color:var(--t-blue-d)}.c-coral{background:var(--t-coral);color:var(--t-coral-d)}.c-amber{background:var(--t-amber);color:var(--t-amber-d)}.c-teal{background:var(--t-teal);color:var(--t-teal-d)}
 
-/* TRIAGE RESULT */
-.triage-result{border-radius:var(--pb-radius);padding:16px;display:flex;flex-direction:column;gap:10px;animation:fadeIn .3s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.triage-result.emergency{background:var(--pb-red-soft);border:2px solid var(--pb-red)}
-.triage-result.urgent{background:var(--pb-amber-soft);border:2px solid var(--pb-amber)}
-.triage-result.monitor{background:var(--pb-blue-soft);border:2px solid var(--pb-blue)}
-.triage-result.safe{background:var(--pb-green-soft);border:2px solid var(--pb-green)}
-.triage-level{font-size:16px;font-weight:900;display:flex;align-items:center;gap:8px}
-.triage-level.emergency{color:var(--pb-red)}
-.triage-level.urgent{color:#92400e}
-.triage-level.monitor{color:var(--pb-blue)}
-.triage-level.safe{color:#166534}
-.triage-desc{font-size:13px;line-height:1.6;color:var(--pb-text2)}
-.triage-actions{display:flex;flex-direction:column;gap:6px}
-.triage-action{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--pb-radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;text-align:left;transition:all .15s}
-.triage-action.emergency-call{background:var(--pb-red);color:#fff}
-.triage-action.vet-book{background:var(--pb-blue);color:#fff}
-.triage-action.home-care{background:var(--pb-green-soft);color:#166534}
-.triage-action.monitor-watch{background:var(--pb-bg);color:var(--pb-text2)}
+/* quick actions: white cards with tinted icon tiles (like "How PawBook helps") */
+.qa{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1000px){.qa{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.qa{grid-template-columns:repeat(2,1fr);gap:10px}}
+.qa button{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;text-align:left;display:flex;flex-direction:column;gap:10px;min-height:104px;font-weight:700;font-size:13.5px;line-height:1.3;color:var(--navy);transition:transform .12s,box-shadow .12s,border-color .12s}
+.qa button:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(15,32,87,.12);border-color:#cfdaf0}
+.qa button i{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
 
-/* QUICK SYMPTOMS */
-.quick-symptoms{padding:0 20px 16px;display:flex;flex-wrap:wrap;gap:6px}
-.quick-chip{padding:6px 12px;border-radius:var(--pb-pill);background:var(--pb-bg);color:var(--pb-text2);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--pb-border);transition:all .15s}
-.quick-chip:hover{background:var(--pb-blue-soft);color:var(--pb-blue);border-color:var(--pb-blue)}
+/* tabs (segmented bar) */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:7px;background:#fff;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);scrollbar-width:none;margin:30px 0 16px;position:sticky;top:calc(var(--nav-h) + 8px);z-index:50}
+.tabs::-webkit-scrollbar{display:none}
+.tab{height:42px;padding:0 15px;border-radius:11px;border:none;background:none;font-weight:700;font-size:13.5px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tab i{font-size:18px}
+.tab:hover{color:var(--navy);background:#f5f7fb}.tab.on{background:var(--t-blue);color:var(--blue)}
+.tab.rec{margin-left:auto}.tab.rec.on{background:var(--t-purple);color:var(--t-purple-d)}
+.panel{display:none}.panel.on{display:block}
 
-/* CHAT INTERFACE */
-.chat-wrap{display:flex;flex-direction:column;height:500px}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.chat-bubble{max-width:80%;border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.6}
-.chat-bubble.ai{background:var(--pb-bg);color:var(--pb-text);border-radius:4px 16px 16px 16px;align-self:flex-start}
-.chat-bubble.user{background:var(--pb-blue);color:#fff;border-radius:16px 16px 4px 16px;align-self:flex-end}
-.chat-bubble.ai .ai-label{font-size:11px;font-weight:700;color:var(--pb-blue);margin-bottom:4px;display:flex;align-items:center;gap:4px}
-.chat-bubble.ai .ai-label::before{content:'🤖';font-size:12px}
-.chat-typing{display:flex;gap:4px;align-items:center;padding:14px 16px;background:var(--pb-bg);border-radius:4px 16px 16px 16px;width:72px}
-.chat-dot{width:8px;height:8px;border-radius:50%;background:var(--pb-text3);animation:bounce 1.4s infinite}
-.chat-dot:nth-child(2){animation-delay:.2s}
-.chat-dot:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-.chat-input-row{padding:12px 16px;border-top:1px solid var(--pb-border);display:flex;gap:8px;align-items:flex-end}
-.chat-input{flex:1;border:1px solid var(--pb-border);border-radius:20px;padding:10px 16px;font-size:14px;outline:none;resize:none;max-height:100px;overflow-y:auto;transition:border .15s}
-.chat-input:focus{border-color:var(--pb-blue)}
-.chat-send{width:40px;height:40px;border-radius:50%;border:none;background:var(--pb-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;transition:background .15s}
-.chat-send:hover{background:var(--pb-blue-dark)}
-.chat-quick-replies{padding:8px 16px;display:flex;flex-wrap:wrap;gap:6px}
-.chat-qr{padding:6px 14px;border-radius:var(--pb-pill);border:1px solid var(--pb-blue);color:var(--pb-blue);background:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
-.chat-qr:hover{background:var(--pb-blue);color:#fff}
+/* timeline */
+.month{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:20px 2px 10px;display:flex;align-items:center;gap:10px}
+.month::after{content:'';flex:1;height:1px;background:var(--line)}
+.month:first-child{margin-top:4px}
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ev{background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;border:1px solid var(--line);border-top:4px solid var(--evc,#e4e9f2);box-shadow:0 2px 10px rgba(15,32,87,.04)}
+.ev .top{display:flex;gap:10px;align-items:center}
+.ev .ic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ev b{font-size:14px;font-weight:700;color:var(--navy);line-height:1.3}
+.ev .d{font-size:12px;color:var(--muted)}
+.ev .who{font-size:12.5px;font-weight:600;color:var(--sub);display:flex;gap:5px;align-items:center}
+.ev p{font-size:13px;line-height:1.55;color:var(--sub)}
+.ev img{width:100%;height:150px;object-fit:cover;border-radius:12px;margin-top:4px}
+.ev .del{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:none;background:#f5f7fb;font-size:14px;color:var(--muted);opacity:0;transition:opacity .15s}
+.ev:hover .del,.ev:focus-within .del{opacity:1}
+@media(hover:none){.ev .del{opacity:.8}}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.fchip{height:32px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:12.5px;color:var(--muted)}
+.fchip.on{border-color:var(--blue);color:var(--blue);background:var(--t-blue)}
 
-/* EMERGENCY MODE */
-.emergency-mode{padding:20px;display:flex;flex-direction:column;gap:16px}
-.sos-header{background:linear-gradient(135deg,#ef4444,#b91c1c);border-radius:var(--pb-radius);padding:20px;color:#fff;text-align:center}
-.sos-title{font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:10px}
-.sos-desc{font-size:13px;opacity:.9;margin-top:6px}
-.sos-steps{display:flex;flex-direction:column;gap:10px}
-.sos-step{display:flex;gap:12px;padding:14px;border-radius:var(--pb-radius-sm);background:#fff;border:1px solid var(--pb-border);align-items:flex-start}
-.sos-step-num{width:28px;height:28px;border-radius:50%;background:var(--pb-red);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sos-step-info{flex:1}
-.sos-step-title{font-size:14px;font-weight:700}
-.sos-step-desc{font-size:12px;color:var(--pb-text2);margin-top:3px;line-height:1.5}
-.sos-step-action{margin-top:8px}
-.sos-contacts{display:flex;flex-direction:column;gap:8px}
-.sos-contact{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border)}
-.sos-contact-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.sos-contact-info{flex:1}
-.sos-contact-name{font-size:13px;font-weight:700}
-.sos-contact-detail{font-size:11px;color:var(--pb-text2);margin-top:1px}
-.sos-contact-call{padding:7px 16px;border-radius:var(--pb-pill);background:var(--pb-green);color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;gap:5px}
+/* lists */
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe;flex-wrap:wrap}
+.row .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.row .t{flex:1;min-width:160px}.row .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.row .t span{font-size:12.5px;color:var(--muted)}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty .e{font-size:40px;margin-bottom:8px}
+.empty b{display:block;color:var(--navy);font-size:16px;font-weight:800;margin-bottom:4px}
+.empty p{font-size:13.5px;max-width:420px;margin:0 auto 14px;line-height:1.55}
 
-/* FIRST AID CARDS */
-.first-aid-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.first-aid-card{padding:14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);cursor:pointer;transition:all .15s}
-.first-aid-card:hover{border-color:var(--pb-blue);background:var(--pb-blue-soft)}
-.first-aid-emoji{font-size:24px;margin-bottom:6px}
-.first-aid-title{font-size:13px;font-weight:700;line-height:1.3}
-.first-aid-sub{font-size:11px;color:var(--pb-text3);margin-top:3px}
+/* daily wellness */
+.dw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.dw{grid-template-columns:repeat(2,1fr)}}
+.dws{border-radius:16px;padding:14px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
+.dws i{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:6px}
+.dws b{font-size:21px;font-weight:900;color:var(--navy);line-height:1.1}.dws span{font-size:12.5px;font-weight:600;color:var(--sub)}
+.dws small{font-size:11.5px;color:var(--muted)}
+button.dws:hover{border-color:#cfdaf0;box-shadow:var(--shadow)}
+.week{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:14px;padding:0 2px}
+.wk{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.wk .b{width:100%;max-width:36px;border-radius:8px 8px 4px 4px;background:#cfe0fb;min-height:4px}
+.wk.today .b{background:linear-gradient(180deg,var(--blue),var(--purple))}
+.wk span{font-size:11.5px;font-weight:600;color:var(--muted)}.wk em{font-style:normal;font-size:11px;font-weight:700;color:var(--navy)}
+.moods{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mood{height:38px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:13px;color:var(--sub)}
+.mood.on{background:var(--t-purple);border-color:#cbbdf7;color:var(--t-purple-d)}
+.q{margin-top:16px;font-size:13.5px;font-weight:700;color:var(--navy)}
+.streak{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#fff6f0,#fff1f1);border:1px solid #ffe0d2;margin-top:14px;font-weight:700;font-size:13.5px;color:var(--navy)}
+.streak i{font-size:22px;color:#f97316}
 
-/* VITALS TRACKER */
-.vitals-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 20px}
-.vital-card{padding:14px;border-radius:var(--pb-radius-sm);border:1px solid var(--pb-border);position:relative}
-.vital-name{font-size:11px;font-weight:600;color:var(--pb-text3);text-transform:uppercase;letter-spacing:.5px}
-.vital-value{font-size:22px;font-weight:900;color:var(--pb-text);margin:6px 0 2px}
-.vital-unit{font-size:11px;font-weight:500;color:var(--pb-text3)}
-.vital-range{font-size:11px;color:var(--pb-text3)}
-.vital-status{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%}
-.vital-status.normal{background:var(--pb-green)}
-.vital-status.warning{background:var(--pb-amber)}
-.vital-status.critical{background:var(--pb-red)}
+/* weight chart */
+.wchart{position:relative;height:210px;margin:12px 0 6px}
+.wchart svg{width:100%;height:100%;overflow:visible}
+.wtip{position:absolute;background:var(--navy);color:#fff;font-size:12px;font-weight:700;border-radius:10px;padding:6px 9px;pointer-events:none;transform:translate(-50%,-118%);white-space:nowrap;display:none}
 
-/* BOTTOM NAV */
-.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);z-index:300}
-@media(max-width:768px){.bnav{display:flex}}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;color:var(--pb-text3);cursor:pointer;border:none;background:transparent}
-.bnav-item.active,.bnav-item:hover{color:var(--pb-blue)}
-.bnav-item i{font-size:22px}
+/* memories */
+.mems{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.mem{border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 2px 10px rgba(15,32,87,.05);position:relative}
+.mem img{width:100%;height:170px;object-fit:cover;display:block}
+.mem .noimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;background:linear-gradient(135deg,#e8f1ff,#f1ecff)}
+.mem .c{padding:11px 13px}.mem b{font-size:14px;font-weight:700;color:var(--navy);display:block}.mem span{font-size:12px;color:var(--muted)}
+.mem p{font-size:12.5px;margin-top:4px;line-height:1.5;color:var(--sub)}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:flex-end;justify-content:center}
-@media(min-width:600px){.modal-overlay{align-items:center}}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;animation:slideUp .25s ease}
-@media(min-width:600px){.modal{border-radius:16px}}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-.modal-header{padding:16px 20px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between}
-.modal-header h3{font-size:16px;font-weight:800}
-.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;font-size:16px}
-.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px}
-.modal-footer{padding:14px 20px;border-top:1px solid var(--pb-border);display:flex;gap:8px;justify-content:flex-end}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-label{font-size:13px;font-weight:600}
-.form-input{height:40px;border:1px solid var(--pb-border);border-radius:var(--pb-radius-sm);padding:0 12px;font-size:14px;outline:none;transition:border .15s}
-.form-input:focus{border-color:var(--pb-blue)}
+/* AI card */
+.ai{display:flex;gap:16px;align-items:center;padding:18px 20px;border-radius:var(--r);background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;margin-top:18px;flex-wrap:wrap;box-shadow:0 12px 30px rgba(24,119,242,.25)}
+.ai .ic{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:27px}
+.ai .t{flex:1;min-width:200px}.ai b{font-size:16px;font-weight:800;display:block}.ai span{font-size:12.5px;opacity:.9;line-height:1.5}
+.ai .btn-w{border:none}
+
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(15,32,87,.45);z-index:600;display:none;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+@media(min-width:620px){.mo{align-items:center}}
+.md{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;border-radius:22px 22px 0 0;animation:up .22s ease}
+@media(min-width:620px){.md{border-radius:22px}}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.mh{display:flex;align-items:center;gap:10px;padding:18px 22px 8px}
+.mh h3{flex:1;font-size:19px;font-weight:800;color:var(--navy)}
+.mx{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;font-size:16px}
+.mb{padding:6px 22px 8px;display:flex;flex-direction:column;gap:14px}
+.mf{padding:12px 22px 22px;display:flex;gap:8px;justify-content:flex-end}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl>span{font-size:13px;font-weight:700;color:#2b3250}
+.fl small{font-size:12px;color:var(--muted)}
+.fi{height:48px;border:1.5px solid #dfe5ef;border-radius:12px;padding:0 14px;font-size:14px;background:#f8fafd;outline:none;width:100%;transition:border-color .15s,background .15s}
+textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-height:1.55}
+.fi:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px rgba(24,119,242,.1)}
+.fl.bad .fi{border-color:var(--coral);background:#fff}.fl .err{display:none;color:var(--coral-d);font-size:12px;font-weight:600}.fl.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.seg{display:flex;flex-wrap:wrap;gap:7px}
+.seg label{cursor:pointer}.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border-radius:11px;border:1.5px solid #dfe5ef;font-weight:600;font-size:13px;background:#f8fafd}
+.seg input:checked+span{background:var(--t-blue);border-color:var(--blue);color:var(--blue)}
+.seg input:focus-visible+span{outline:3px solid rgba(24,119,242,.35)}
+
+/* health card */
+.hcard{border-radius:18px;padding:18px;background:linear-gradient(135deg,#f7f9ff,#eef3fb);border:1px solid #dbe4f3}
+.hcard .top{display:flex;gap:14px;align-items:center}
+.hcard .av{width:74px;height:74px;border-radius:20px;font-size:36px;border:3px solid #fff;box-shadow:0 6px 16px rgba(15,32,87,.12)}
+.hcard h4{font-size:20px;font-weight:900;color:var(--navy)}
+.hcard .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:12px}
+.hcard .kv span{color:var(--muted)}.hcard .kv b{font-weight:700;color:var(--navy)}
+.hcard ul{margin:8px 0 0 18px;font-size:13px;line-height:1.65}
+
+/* toast etc */
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;font-size:13.5px;opacity:0;transition:all .25s;z-index:700;pointer-events:none;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(15,32,87,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{background:linear-gradient(90deg,#e8edf6 25%,#f3f6fb 50%,#e8edf6 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:var(--r)}
+@keyframes sk{to{background-position:-200% 0}}
+.muted{color:var(--muted)}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;background:#fff;border-top:1px solid var(--line);z-index:300;padding-bottom:env(safe-area-inset-bottom)}
+@media(max-width:768px){.bnav{display:flex}.wrap{padding:0 16px 110px}.hero-band{margin:0 -16px;padding:0 16px}}
+.bnav button{flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted)}
+.bnav button i{font-size:22px}.bnav button.on{color:var(--blue)}
+@media print{
+  body{background:#fff}.nav,.bnav,.tabs,.qa,.no-print,#drawer-panel,#drawer-overlay{display:none!important}
+  body.print-card .wrap{display:none}body.print-card #cardModal{display:block!important;position:static;background:none}body.print-card #cardModal .md{box-shadow:none;max-height:none;animation:none}
+  body.print-card #cardModal .mf,body.print-card #cardModal .mx{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── vaccination diary (page 10) ── */
+.c-grey{background:#f1f3f8;color:#6b7387}
+.p-none{background:#f1f3f8;color:#5b6478}
+.p-chk{background:var(--t-blue);color:var(--t-blue-d)}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--sub);padding:5px 12px 5px 6px;border-radius:var(--pill);background:#f7f9fc;border:1px solid var(--line2)}
+.legend b{min-width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.core{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.core .row{padding:10px 12px}
+.young{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#f1ecff,#e8f1ff);font-size:13px;line-height:1.55;color:var(--sub)}
+.young i{font-size:20px;color:var(--purple)}
+.rem .act{display:flex;gap:6px;align-items:center}
+.rem.over{background:linear-gradient(90deg,#fff6f5,#fff);border-color:#ffd9d6}
+.rem.soon{background:linear-gradient(90deg,#fffaf0,#fff);border-color:#ffe8bf}
+.qa.q4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.qa.q4{grid-template-columns:repeat(2,1fr)}}
+.qa button small{font-size:12px;font-weight:500;color:var(--muted);margin-top:-6px}
+/* vaccine cards */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
+@media(max-width:420px){.vgrid{grid-template-columns:1fr}}
+.vc{background:#fff;border:1px solid var(--line);border-top:4px solid var(--evc,#e4e9f2);border-radius:18px;box-shadow:0 2px 12px rgba(15,32,87,.05);overflow:hidden}
+.vc-h{display:flex;gap:12px;align-items:center;padding:16px 16px 10px}
+.vc-h .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.vc-h .t{flex:1;min-width:0}.vc-h b{display:block;font-size:15px;font-weight:800;color:var(--navy);line-height:1.3}
+.vc-h .t span{font-size:12.5px;color:var(--muted)}
+.vtag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:2px}
+.vtag.core{background:var(--t-blue);color:var(--t-blue-d)}.vtag.opt{background:#f1f3f8;color:#5b6478}
+.vc-next{margin:0 16px;padding:12px 14px;border-radius:14px;background:#f7f9fc;display:flex;align-items:center;gap:12px}
+.vc-next i{font-size:22px;color:var(--blue)}
+.vc-next span{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.vc-next b{font-size:15px;font-weight:800;color:var(--navy)}
+.vc-next small{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);text-align:right}
+.vc.overdue .vc-next{background:#fff4f3}.vc.overdue .vc-next i{color:var(--coral)}
+.vc.due_soon .vc-next{background:#fff8ea}.vc.due_soon .vc-next i{color:var(--amber)}
+.vc-about{margin:0 16px;font-size:13px;line-height:1.55;color:var(--sub)}
+.vc-more{display:flex;align-items:center;gap:6px;width:100%;border:none;border-top:1px solid var(--line2);background:none;padding:12px 16px;margin-top:14px;font-weight:700;font-size:13px;color:var(--blue);text-align:left}
+.vc-more i{margin-left:auto;transition:transform .2s}
+.vc.open .vc-more i{transform:rotate(180deg)}
+.vc-body{display:none;padding:0 16px 16px}
+.vc.open .vc-body{display:block}
+.dose{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px;background:#fbfcfe}
+.dose .dh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dose .dh b{font-size:13.5px;font-weight:800;color:var(--navy);flex:1}
+.dose .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px;margin-top:8px}
+.dose .kv span{color:var(--muted)}.dose .kv em{font-style:normal;font-weight:600;color:var(--navy);word-break:break-word}
+.dose .da{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.vc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hist{margin-top:18px}
+.hist summary{cursor:pointer;font-weight:800;color:var(--navy);font-size:14px;list-style:none;display:flex;align-items:center;gap:8px}
+.hist summary::-webkit-details-marker{display:none}
+.hist summary i{color:var(--blue)}
+.hrow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13px;line-height:1.5}
+.hrow:last-child{border-bottom:none}
+.hrow .ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.hrow small{display:block;color:var(--muted);font-size:12px}
+/* guide + india */
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.phases{grid-template-columns:1fr}}
+.phase{border-radius:18px;padding:16px;border:1px solid var(--line);background:#fff}
+.phase h4{font-size:15px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.phase h4 em{font-style:normal;font-size:22px}
+.phase ul{margin-left:18px;font-size:13px;line-height:1.65;color:var(--sub)}
+.phase.p1{background:linear-gradient(160deg,#fff7ef,#fff)}.phase.p2{background:linear-gradient(160deg,#eef5ff,#fff)}.phase.p3{background:linear-gradient(160deg,#f4efff,#fff)}
+.law{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.lw{border:1px solid var(--line);border-radius:18px;padding:16px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.lw .top{display:flex;gap:10px;align-items:center}
+.lw .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.lw b{font-size:14.5px;font-weight:800;color:var(--navy);flex:1}
+.lw p{font-size:13px;line-height:1.6;color:var(--sub)}
+.lw a.src{font-size:12px;font-weight:700;color:var(--blue);display:inline-flex;gap:5px;align-items:center;margin-top:auto}
+.check{display:flex;flex-direction:column;gap:8px}
+.ok-i{color:var(--green)}.no-i{color:var(--coral)}
+/* summary (printable) */
+.sumt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+.sumt th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.sumt td{padding:8px;border-bottom:1px solid var(--line2);vertical-align:top}
+.sumt td b{color:var(--navy)}
+.leadseg{margin-top:12px}
+.ring .num b{font-size:25px}
+.collage.one .ph .cam{top:auto;bottom:12px}
 
   /* ===== DRAWER STYLES ===== */
   .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
@@ -231,689 +396,577 @@ input,textarea{font-family:'Inter',sans-serif}
   .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
   .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
   /* ===== END DRAWER STYLES ===== */
+
+/* ── AI Health Agent (page 37) — same look as the vaccination diary ── */
+.crumb b{color:var(--blue-d)}
+.hero h1 .accent{background:linear-gradient(90deg,#1877F2,#8b5cf6 60%,#e5484d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn-r{background:linear-gradient(135deg,#e5484d,#c2353a);color:#fff;box-shadow:0 8px 20px rgba(229,72,77,.28)}
+.btn-g{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 8px 20px rgba(22,163,74,.25)}
+.badge{font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--coral-soft);color:var(--coral-d)}
+.sos{position:relative;margin-top:18px;display:grid;grid-template-columns:200px 1fr auto;gap:18px;align-items:center;border-radius:var(--r);background:linear-gradient(120deg,#fff1f1,#fff 70%);border:1.5px solid #ffd2d2;padding:12px;box-shadow:var(--shadow)}
+.sos img{width:200px;height:120px;object-fit:cover;border-radius:14px}
+.sos b{font-size:17px;color:var(--coral-d);display:flex;gap:8px;align-items:center}.sos b i{animation:pz 1.6s infinite}
+@keyframes pz{50%{transform:scale(1.18)}}
+.sos p{font-size:13px;color:#6b3b3b;margin-top:4px;line-height:1.55}
+.sos .act{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:820px){.sos{grid-template-columns:1fr}.sos img{width:100%;height:130px}.sos .act{justify-content:flex-start}}
+.ia{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:1000px){.ia{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.ia{gap:10px}}
+.ia button{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;text-align:left;padding:0;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+.ia button:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,32,87,.14)}
+.ia .im{position:relative;height:130px;overflow:hidden;background:#e8eefa}.ia .im img{width:100%;height:100%;object-fit:cover}
+.ia .im i{position:absolute;left:12px;bottom:-18px;width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 16px rgba(15,32,87,.16);border:3px solid #fff}
+.ia .bd{padding:24px 14px 14px}.ia b{display:block;font-size:14.5px;color:var(--navy)}.ia small{font-size:12px;color:var(--muted);line-height:1.45;display:block;margin-top:2px}
+@media(max-width:480px){.ia .im{height:96px}.ia .bd{padding:22px 10px 12px}.ia b{font-size:13.5px}}
+/* symptom checker */
+.sgrp{margin-top:14px}.sgrp h4{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;gap:6px;align-items:center}
+.sgrp.e h4{color:var(--coral-d)}.sgrp.m h4{color:var(--t-amber-d)}.sgrp.l h4{color:var(--t-green-d)}
+.sgr{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.sy{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:14px;border:1.5px solid var(--line);background:#fbfcfe;text-align:left;font-size:13px;font-weight:600;color:var(--navy);min-height:48px}
+.sy i{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sy:hover{border-color:#cfdaf0}
+.sy.on{border-color:var(--blue);background:var(--t-blue);box-shadow:0 0 0 3px rgba(24,119,242,.1)}
+.sgrp.e .sy.on{border-color:var(--coral);background:var(--coral-soft);box-shadow:0 0 0 3px rgba(229,72,77,.12)}
+.sbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line2)}
+.sbar .fi{height:42px;font-size:13px;flex:1 1 220px;width:auto}
+.durs{display:flex;gap:6px;flex-wrap:wrap}
+.dur{height:36px;padding:0 13px;border-radius:999px;border:1.5px solid #dbe4f3;background:#fff;font-weight:700;font-size:12.5px;color:var(--sub)}
+.dur.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.tri{margin-top:16px;border-radius:18px;padding:16px 18px;border:1.5px solid;display:flex;flex-direction:column;gap:10px}
+.tri.emergency{background:#fff3f3;border-color:#ffc9c9}.tri.urgent{background:#fff8ec;border-color:#ffe1ad}.tri.monitor{background:#eef5ff;border-color:#cfe0fb}.tri.mild{background:#eefaf2;border-color:#c6ecd3}
+.tri h3{font-size:18px;font-weight:900;display:flex;gap:9px;align-items:center}
+.tri.emergency h3{color:var(--coral-d)}.tri.urgent h3{color:var(--t-amber-d)}.tri.monitor h3{color:var(--blue-d)}.tri.mild h3{color:var(--t-green-d)}
+.tri p{font-size:13.5px;line-height:1.6;color:var(--sub)}
+.tri ul{list-style:none;display:flex;flex-direction:column;gap:5px}.tri li{font-size:13px;color:var(--sub);display:flex;gap:7px;line-height:1.5}.tri li i{margin-top:2px;color:var(--blue)}
+.vflag{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px dashed #e8c3c3;border-radius:12px;padding:10px 12px;font-size:13px;color:#5b3a3a;line-height:1.5}
+.vflag i{font-size:20px;color:var(--coral)}
+.tri .acts{display:flex;gap:8px;flex-wrap:wrap}
+/* chat */
+.chatw{display:grid;grid-template-columns:1fr 300px;gap:18px}
+@media(max-width:960px){.chatw{grid-template-columns:1fr}}
+.chatbox{display:flex;flex-direction:column;height:560px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fbfcff}
+@media(max-width:700px){.chatbox{height:64vh}}
+.chead{display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:#fff}
+.chead .av{width:40px;height:40px}.chead b{font-size:14px;color:var(--navy);display:block}.chead span{font-size:11.5px;color:var(--t-green-d);font-weight:700}
+.chead select{margin-left:auto;height:34px;border-radius:10px;border:1.5px solid #dbe4f3;background:#fff;font-size:12.5px;font-weight:600;padding:0 8px}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.bb{max-width:86%;padding:10px 13px;border-radius:16px;font-size:13.5px;line-height:1.6;word-break:break-word}
+.bb.ai{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;color:var(--text)}
+.bb.me{align-self:flex-end;background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;border-bottom-right-radius:4px;white-space:pre-wrap}
+.bb.ai ul{margin:4px 0 4px 18px}.bb.ai li{margin:2px 0}.bb.ai .lbl{font-size:10.5px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;display:flex;gap:4px;align-items:center}
+.bb.err{align-self:center;background:#fff6e5;color:#8a5a1c;font-size:12.5px;border-radius:12px}
+.typing{align-self:flex-start;display:flex;gap:4px;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:16px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#9aa8c4;animation:ty 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes ty{50%{transform:translateY(-4px);opacity:.5}}
+.qrs{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;border-top:1px solid var(--line2);background:#fff;scrollbar-width:none}
+.qrs button{flex-shrink:0;height:32px;padding:0 12px;border-radius:999px;border:1.5px solid #dbe4f3;background:#f7f9fd;font-size:12px;font-weight:600;color:var(--navy)}
+.qrs button:hover{border-color:var(--blue);color:var(--blue)}
+.cin{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:#fff;align-items:flex-end}
+.cin textarea{flex:1;min-height:44px;max-height:120px;border:1.5px solid #dfe5ef;border-radius:12px;padding:11px 12px;font-size:14px;resize:none;outline:none;background:#f8fafd}
+.cin textarea:focus{border-color:var(--blue);background:#fff}
+.cin button{width:44px;height:44px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-size:19px;flex-shrink:0}
+.cin button.mic{background:var(--t-blue);color:var(--blue-d)}.cin button.mic.rec{background:var(--coral);color:#fff}
+.knows{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}
+.knows img{width:100%;height:150px;object-fit:cover}
+.knows .in{padding:14px}.knows b{font-size:14px;color:var(--navy)}.knows ul{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.knows li{font-size:12.5px;color:var(--sub);display:flex;gap:7px}.knows li i{color:var(--t-green-d);margin-top:2px}
+/* first aid */
+.fa{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.fa{grid-template-columns:repeat(2,1fr)}}
+.first-aid-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;cursor:pointer;display:flex;gap:12px;align-items:center;transition:transform .15s,box-shadow .15s}
+.first-aid-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(15,32,87,.12)}
+.first-aid-emoji{width:46px;height:46px;border-radius:14px;background:var(--coral-soft);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.first-aid-title{font-size:13.5px;font-weight:800;color:var(--navy);line-height:1.3;padding-right:26px}.first-aid-sub{font-size:11.5px;color:var(--muted)}
+.redlist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:700px){.redlist{grid-template-columns:1fr}}
+.redlist div{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--sub);padding:9px 11px;border-radius:12px;background:#fff7f7;border:1px solid #ffe1e1}
+.redlist i{color:var(--coral);margin-top:2px}
+.steps2 li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13.5px;line-height:1.6;color:var(--text);list-style:none}
+.steps2 li b{width:24px;height:24px;border-radius:50%;background:var(--coral);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.warn{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--coral-soft);color:var(--coral-d);font-size:12.5px;font-weight:700}
+/* vitals */
+.vgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:760px){.vgrid{grid-template-columns:repeat(2,1fr)}}
+.vt{border:1px solid var(--line);border-radius:16px;padding:13px;background:#fff;position:relative}
+.vt .dot{position:absolute;right:12px;top:12px;width:10px;height:10px;border-radius:50%;background:#cfd6e4}
+.vt .dot.ok{background:#16a34a}.vt .dot.hi{background:#e5484d}.vt .dot.lo{background:#f59e0b}
+.vt span{font-size:12px;color:var(--muted);font-weight:600;display:block}.vt b{font-size:22px;font-weight:900;color:var(--navy)}.vt b small{font-size:12px;font-weight:600;color:var(--muted)}
+.vt em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:2px}
+.how{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:center;margin-top:16px;background:#f7f9fd;border-radius:16px;padding:12px}
+.how img{width:220px;height:150px;object-fit:cover;border-radius:12px}
+.how ul{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--sub)}.how li{display:flex;gap:7px}.how li i{color:var(--blue);margin-top:2px}
+@media(max-width:700px){.how{grid-template-columns:1fr}.how img{width:100%}}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.tbl th{text-align:left;font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:6px 8px;border-bottom:1px solid var(--line)}
+.tbl td{padding:9px 8px;border-bottom:1px solid var(--line2);color:var(--navy)}
+.tbl button{width:30px;height:30px;border-radius:50%;border:none;background:#f5f7fb;color:var(--muted)}
+@media(max-width:600px){.tbl .hs{display:none}}
+/* care band */
+.care{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.care{grid-template-columns:1fr}}
+.cc2{position:relative;border-radius:20px;overflow:hidden;min-height:230px;display:flex;align-items:flex-end;box-shadow:var(--shadow);background:#dfe7f5}
+.cc2 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cc2::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(10,20,45,.82))}
+.cc2 .in{position:relative;z-index:2;padding:16px;color:#fff}.cc2 b{font-size:16px}.cc2 p{font-size:12.5px;opacity:.92;margin-top:4px;line-height:1.5}
+.cc2 a{display:inline-flex;gap:5px;align-items:center;margin-top:8px;font-weight:700;font-size:12.5px;color:#fff;text-decoration:underline}
+.credit{font-size:11px;color:var(--muted);margin-top:18px;text-align:center}.credit a{color:inherit;text-decoration:underline}
+.ctc{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe}
+.ctc .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ctc .t{flex:1;min-width:0}.ctc b{display:block;font-size:14px;color:var(--navy)}.ctc span{font-size:12.5px;color:var(--muted)}
+.ctc .act{display:flex;gap:6px}
+.ctc a.btn,.ctc button.btn{height:36px}
+.mini{width:36px;height:36px;border-radius:50%;border:none;background:#f5f7fb;color:var(--muted);font-size:15px}
 </style>
 </head>
 <body>
 
-<!-- TOP NAV -->
-<nav class="pb-nav">
-  <div class="pb-nav-logo" onclick="location.href='07_home.html'">
-    <div class="pb-nav-logo-icon">🐾</div>
-    <span>PawBook</span>
-  </div>
-  <div class="pb-nav-tabs">
-    <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
-    <button class="pb-nav-tab" onclick="location.href='03_groups.html'"><i class="ti ti-users"></i></button>
-    <button class="pb-nav-tab active"><i class="ti ti-robot"></i></button>
-    <button class="pb-nav-tab" onclick="location.href='09_marketplace.html'"><i class="ti ti-shopping-bag"></i></button>
-  </div>
-  <div class="pb-nav-right">
-    <button class="pb-icon-btn" onclick="openModal('addContactModal')" title="Add Emergency Contact"><i class="ti ti-user-plus"></i></button>
-    <div class="pb-avatar">A</div>
-  </div>
+<nav class="nav">
+  <button class="menu" onclick="openDrawer()" aria-label="Open menu"><i class="ti ti-menu-2"></i></button>
+  <div class="logo" onclick="location.href='07_home.html'"><i>🐾</i><span>PawBook</span></div>
+  <div class="crumb"><i class="ti ti-chevron-right"></i><b>AI Health Agent</b></div>
+  <div class="sp"></div>
+  <button class="nav-ic hide-s" onclick="location.href='10_vaccination.html'" title="Vaccination diary" aria-label="Vaccination diary"><i class="ti ti-vaccine"></i></button>
+  <button class="nav-ic hide-s" onclick="location.href='36_pet_life_record.html'" title="Pet health" aria-label="Pet health"><i class="ti ti-heart-handshake"></i></button>
+  <button class="nav-ic" onclick="location.href='12_notifications.html'" title="Notifications" aria-label="Notifications"><i class="ti ti-bell"></i></button>
+  <button class="nav-av" id="nav-av" onclick="location.href='29_user_profile.html'" aria-label="My profile">·</button>
 </nav>
 
-<!-- MAIN LAYOUT -->
-<div class="aha-layout">
+<main class="wrap" id="app">
+  <div class="skel" style="height:56px;margin:18px 0 12px"></div>
+  <div class="skel" style="height:360px"></div>
+</main>
 
-  <!-- SIDEBAR -->
-  <aside>
-    <!-- Emergency SOS Button -->
-    <button class="emergency-banner" style="margin-bottom:16px" onclick="switchMainMode('emergency')">
-      <div class="emergency-pulse">🚨</div>
-      <div>
-        <div class="emergency-title">Emergency SOS Mode</div>
-        <div class="emergency-sub">Pet in danger? Get instant triage + vet contacts</div>
-      </div>
-      <div class="emergency-arrow"><i class="ti ti-chevron-right"></i></div>
-    </button>
-
-    <!-- Pet Selector -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div class="pb-card-header"><h3><i class="ti ti-paw" style="color:var(--pb-blue)"></i> Checking for</h3></div>
-      <div class="pet-mini">
-        <div class="pet-mini-item selected" onclick="selectPetMini(this)">
-          <span class="pet-mini-emoji">🐕</span>
-          <div class="pet-mini-name">Bruno</div>
-          <div class="pet-mini-breed">Labrador · 3yr</div>
-        </div>
-        <div class="pet-mini-item" onclick="selectPetMini(this)">
-          <span class="pet-mini-emoji">🐈</span>
-          <div class="pet-mini-name">Whiskers</div>
-          <div class="pet-mini-breed">Persian · 5yr</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Current Vitals -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div class="pb-card-header">
-        <h3><i class="ti ti-heart-rate-monitor" style="color:var(--pb-red)"></i> Current Vitals</h3>
-        <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="openModal('logVitalsModal')"><i class="ti ti-edit"></i> Log</button>
-      </div>
-      <div class="vitals-grid">
-        <div class="vital-card">
-          <div class="vital-status normal" id="vital-dot-hr"></div>
-          <div class="vital-name">Heart Rate</div>
-          <div class="vital-value" id="vital-hr">78 <span class="vital-unit">bpm</span></div>
-          <div class="vital-range" id="vital-hr-range">Normal: 60–140</div>
-        </div>
-        <div class="vital-card">
-          <div class="vital-status normal" id="vital-dot-temp"></div>
-          <div class="vital-name">Temperature</div>
-          <div class="vital-value" id="vital-temp">101.4 <span class="vital-unit">°F</span></div>
-          <div class="vital-range" id="vital-temp-range">Normal: 99–102.5</div>
-        </div>
-        <div class="vital-card">
-          <div class="vital-status normal" id="vital-dot-resp"></div>
-          <div class="vital-name">Resp. Rate</div>
-          <div class="vital-value" id="vital-resp">22 <span class="vital-unit">/min</span></div>
-          <div class="vital-range" id="vital-resp-range">Normal: 15–30</div>
-        </div>
-        <div class="vital-card">
-          <div class="vital-status warning" id="vital-dot-weight"></div>
-          <div class="vital-name">Weight</div>
-          <div class="vital-value" id="vital-weight">28.4 <span class="vital-unit">kg</span></div>
-          <div class="vital-range" id="vital-weight-note">Monitor trend</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Emergency Contacts -->
-    <div class="pb-card">
-      <div class="pb-card-header">
-        <h3><i class="ti ti-phone" style="color:var(--pb-green)"></i> Emergency Contacts</h3>
-        <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="openModal('addContactModal')"><i class="ti ti-plus"></i></button>
-      </div>
-      <div style="padding:12px;display:flex;flex-direction:column;gap:8px">
-        <div class="sos-contact">
-          <div class="sos-contact-icon" style="background:var(--pb-teal-soft)">🩺</div>
-          <div class="sos-contact-info">
-            <div class="sos-contact-name">Dr. Priya Sharma</div>
-            <div class="sos-contact-detail">Paws Clinic · Primary Vet</div>
-          </div>
-          <button class="sos-contact-call" onclick="window.location.href='tel:+911234567890'"><i class="ti ti-phone" style="font-size:12px"></i> Call</button>
-        </div>
-        <div class="sos-contact">
-          <div class="sos-contact-icon" style="background:var(--pb-red-soft)">🏥</div>
-          <div class="sos-contact-info">
-            <div class="sos-contact-name">Pet ER Delhi</div>
-            <div class="sos-contact-detail">24/7 Emergency · 3.2 km away</div>
-          </div>
-          <button class="sos-contact-call" onclick="window.location.href='tel:+911800112233'"><i class="ti ti-phone" style="font-size:12px"></i> Call</button>
-        </div>
-        <div class="sos-contact">
-          <div class="sos-contact-icon" style="background:var(--pb-blue-soft)">📱</div>
-          <div class="sos-contact-info">
-            <div class="sos-contact-name">Pet Ambulance</div>
-            <div class="sos-contact-detail">PawCare Rescue · Delhi NCR</div>
-          </div>
-          <button class="sos-contact-call" onclick="window.location.href='tel:+919876543210'"><i class="ti ti-phone" style="font-size:12px"></i> Call</button>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main>
-    <!-- Mode Toggle -->
-    <div class="pb-card" style="margin-bottom:16px">
-      <div style="padding:14px 16px">
-        <div class="mode-tabs">
-          <button class="mode-tab active" id="tab-btn-symptom" onclick="switchMainMode('symptom')"><i class="ti ti-stethoscope"></i> Symptom Checker</button>
-          <button class="mode-tab" id="tab-btn-chat" onclick="switchMainMode('chat')"><i class="ti ti-robot"></i> AI Health Chat</button>
-          <button class="mode-tab" id="tab-btn-emergency" onclick="switchMainMode('emergency')"><i class="ti ti-urgent"></i> Emergency Guide</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== SYMPTOM CHECKER ===== -->
-    <div id="mode-symptom" class="pb-card">
-      <div class="pb-card-header">
-        <h3><i class="ti ti-stethoscope" style="color:var(--pb-blue)"></i> Symptom Checker · <span data-pet-name>Bruno</span></h3>
-        <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="clearSymptoms()"><i class="ti ti-refresh"></i> Clear</button>
-      </div>
-      <div class="symptom-section">
-        <input class="symptom-search" id="symptomSearch" placeholder="🔍 Search symptoms…" oninput="filterSymptoms(this.value)">
-        <div style="font-size:13px;font-weight:600;color:var(--pb-text2)">Common Symptoms — select all that apply:</div>
-        <div class="symptom-grid" id="symptomGrid">
-          <!-- urgent -->
-          <button class="symptom-chip urgent" data-id="seizure" onclick="toggleSymptom(this)"><span class="symptom-emoji">⚡</span><span class="symptom-label">Seizures / Convulsions</span><span class="symptom-severity severe">Severe</span></button>
-          <button class="symptom-chip urgent" data-id="breathing" onclick="toggleSymptom(this)"><span class="symptom-emoji">😮‍💨</span><span class="symptom-label">Difficulty Breathing</span><span class="symptom-severity severe">Severe</span></button>
-          <button class="symptom-chip urgent" data-id="collapse" onclick="toggleSymptom(this)"><span class="symptom-emoji">💫</span><span class="symptom-label">Collapse / Unconscious</span><span class="symptom-severity severe">Severe</span></button>
-          <button class="symptom-chip urgent" data-id="bleeding" onclick="toggleSymptom(this)"><span class="symptom-emoji">🩸</span><span class="symptom-label">Uncontrolled Bleeding</span><span class="symptom-severity severe">Severe</span></button>
-          <!-- moderate -->
-          <button class="symptom-chip" data-id="vomiting" onclick="toggleSymptom(this)"><span class="symptom-emoji">🤢</span><span class="symptom-label">Vomiting</span><span class="symptom-severity moderate">Moderate</span></button>
-          <button class="symptom-chip" data-id="diarrhea" onclick="toggleSymptom(this)"><span class="symptom-emoji">💧</span><span class="symptom-label">Diarrhea</span><span class="symptom-severity moderate">Moderate</span></button>
-          <button class="symptom-chip" data-id="lethargy" onclick="toggleSymptom(this)"><span class="symptom-emoji">😴</span><span class="symptom-label">Lethargy / Weakness</span><span class="symptom-severity moderate">Moderate</span></button>
-          <button class="symptom-chip" data-id="appetite" onclick="toggleSymptom(this)"><span class="symptom-emoji">🍽️</span><span class="symptom-label">Not Eating / Anorexia</span><span class="symptom-severity moderate">Moderate</span></button>
-          <button class="symptom-chip" data-id="limping" onclick="toggleSymptom(this)"><span class="symptom-emoji">🦵</span><span class="symptom-label">Limping / Pain</span><span class="symptom-severity moderate">Moderate</span></button>
-          <button class="symptom-chip" data-id="fever" onclick="toggleSymptom(this)"><span class="symptom-emoji">🌡️</span><span class="symptom-label">High Fever (&gt;103°F)</span><span class="symptom-severity moderate">Moderate</span></button>
-          <button class="symptom-chip" data-id="bloating" onclick="toggleSymptom(this)"><span class="symptom-emoji">🫃</span><span class="symptom-label">Bloated / Swollen Belly</span><span class="symptom-severity moderate">Moderate</span></button>
-          <button class="symptom-chip" data-id="itching" onclick="toggleSymptom(this)"><span class="symptom-emoji">🤲</span><span class="symptom-label">Excessive Itching</span><span class="symptom-severity mild">Mild</span></button>
-          <!-- mild -->
-          <button class="symptom-chip" data-id="coughing" onclick="toggleSymptom(this)"><span class="symptom-emoji">😮</span><span class="symptom-label">Coughing / Sneezing</span><span class="symptom-severity mild">Mild</span></button>
-          <button class="symptom-chip" data-id="discharge" onclick="toggleSymptom(this)"><span class="symptom-emoji">👁️</span><span class="symptom-label">Eye/Nose Discharge</span><span class="symptom-severity mild">Mild</span></button>
-          <button class="symptom-chip" data-id="drinking" onclick="toggleSymptom(this)"><span class="symptom-emoji">💧</span><span class="symptom-label">Excessive Thirst</span><span class="symptom-severity mild">Mild</span></button>
-          <button class="symptom-chip" data-id="odor" onclick="toggleSymptom(this)"><span class="symptom-emoji">👃</span><span class="symptom-label">Bad Breath / Odor</span><span class="symptom-severity mild">Mild</span></button>
-        </div>
-
-        <!-- Duration -->
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <span style="font-size:13px;font-weight:600;color:var(--pb-text2)">Duration:</span>
-          <button class="quick-chip" id="dur-lt1" onclick="setDuration(this,'<1hr')">Just started</button>
-          <button class="quick-chip" id="dur-day" onclick="setDuration(this,'<1day')">Today</button>
-          <button class="quick-chip" id="dur-week" onclick="setDuration(this,'2-3days')">2–3 days</button>
-          <button class="quick-chip" id="dur-more" onclick="setDuration(this,'>3days')">Over 3 days</button>
-        </div>
-
-        <button class="pb-btn pb-btn-blue pb-btn-lg" style="width:100%;justify-content:center" id="analyzeBtn" onclick="analyzeSymptoms()" disabled>
-          <i class="ti ti-stethoscope"></i> Analyze Symptoms
-        </button>
-
-        <!-- TRIAGE RESULT -->
-        <div id="triageResult" style="display:none"></div>
-      </div>
-    </div>
-
-    <!-- ===== AI CHAT MODE ===== -->
-    <div id="mode-chat" class="pb-card" style="display:none">
-      <div class="pb-card-header">
-        <h3><i class="ti ti-robot" style="color:var(--pb-blue)"></i> AI Health Agent · <span data-pet-name>Bruno</span></h3>
-        <span style="font-size:11px;padding:3px 10px;background:var(--pb-green-soft);color:#166534;border-radius:var(--pb-pill);font-weight:700">● Online</span>
-      </div>
-      <div class="chat-wrap">
-        <div class="chat-messages" id="chatMessages">
-          <div class="chat-bubble ai">
-            <div class="ai-label">PawBook AI Health Agent</div>
-            Hi! I'm your AI health agent for Bruno 🐕<br><br>
-            I can help you understand symptoms, review vaccination schedules, suggest dietary changes, and assess whether a vet visit is needed. What's on your mind today?
-          </div>
-        </div>
-        <div class="chat-quick-replies" id="quickReplies">
-          <button class="chat-qr" onclick="sendQuick('Bruno has been vomiting since morning')">🤢 Vomiting today</button>
-          <button class="chat-qr" onclick="sendQuick('Is Bruno up to date on vaccines?')">💉 Check vaccines</button>
-          <button class="chat-qr" onclick="sendQuick('Bruno is limping on his left leg')">🦵 Limping</button>
-          <button class="chat-qr" onclick="sendQuick('What food is safe for Labradors?')">🥩 Safe foods</button>
-          <button class="chat-qr" onclick="sendQuick('Bruno is not eating since yesterday')">🍽️ Not eating</button>
-        </div>
-        <div class="chat-input-row">
-          <textarea class="chat-input" id="chatInput" rows="1" placeholder="Ask about Bruno's health…" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
-          <button class="chat-send" onclick="sendMessage()"><i class="ti ti-send"></i></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== EMERGENCY GUIDE MODE ===== -->
-    <div id="mode-emergency" class="pb-card" style="display:none">
-      <div class="pb-card-header">
-        <h3><i class="ti ti-urgent" style="color:var(--pb-red)"></i> Emergency Response Guide</h3>
-      </div>
-      <div class="emergency-mode">
-        <div class="sos-header">
-          <div class="sos-title">🚨 Pet Emergency Protocol</div>
-          <div class="sos-desc">Follow these steps calmly. <span data-pet-name>Bruno</span>'s health data has been pre-loaded for your vet.</div>
-        </div>
-
-        <!-- Step by step -->
-        <div style="font-size:13px;font-weight:700;color:var(--pb-text2)">Immediate Steps:</div>
-        <div class="sos-steps">
-          <div class="sos-step">
-            <div class="sos-step-num">1</div>
-            <div class="sos-step-info">
-              <div class="sos-step-title">Stay Calm & Assess</div>
-              <div class="sos-step-desc">Keep Bruno still and comfortable. Check breathing, consciousness, and visible injuries. Do not move a pet with spinal injury.</div>
-            </div>
-          </div>
-          <div class="sos-step">
-            <div class="sos-step-num">2</div>
-            <div class="sos-step-info">
-              <div class="sos-step-title">Call Ahead to the Vet</div>
-              <div class="sos-step-desc">Alert your vet before arriving so they can prepare. Share Bruno's symptoms and your ETA. Use the contacts in the sidebar.</div>
-              <div class="sos-step-action">
-                <button class="pb-btn pb-btn-red pb-btn-sm" onclick="window.location.href='tel:+911234567890'"><i class="ti ti-phone"></i> Call Dr. Priya — Primary Vet</button>
-              </div>
-            </div>
-          </div>
-          <div class="sos-step">
-            <div class="sos-step-num">3</div>
-            <div class="sos-step-info">
-              <div class="sos-step-title">Share Bruno's Health Passport</div>
-              <div class="sos-step-desc">Your vet can scan the QR code or use the link to access Bruno's full history instantly — vaccines, medications, allergies, blood type.</div>
-              <div class="sos-step-action">
-                <button class="pb-btn pb-btn-blue pb-btn-sm" onclick="copyPassport()"><i class="ti ti-share"></i> Share Passport Link</button>
-              </div>
-            </div>
-          </div>
-          <div class="sos-step">
-            <div class="sos-step-num">4</div>
-            <div class="sos-step-info">
-              <div class="sos-step-title">Transport Safely</div>
-              <div class="sos-step-desc">Use a flat surface or stretcher for large dogs. Keep the pet warm. For small pets, use a carrier with ventilation. Drive safely — do not speed.</div>
-            </div>
-          </div>
-          <div class="sos-step">
-            <div class="sos-step-num">5</div>
-            <div class="sos-step-info">
-              <div class="sos-step-title">At the Hospital</div>
-              <div class="sos-step-desc">Hand your phone to staff showing the health passport. Mention current medications: Heartgard Plus + NexGard + Omega-3. No known allergies.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- First Aid Quick Reference -->
-        <div style="font-size:13px;font-weight:700;color:var(--pb-text2);margin-top:4px">First Aid Quick Reference:</div>
-        <div class="first-aid-grid">
-          <div class="first-aid-card" onclick="openModal('firstAidModal'); setFirstAid('choking')">
-            <div class="first-aid-emoji">😮</div>
-            <div class="first-aid-title">Choking / Object Swallowed</div>
-            <div class="first-aid-sub">Tap to see steps</div>
-          </div>
-          <div class="first-aid-card" onclick="openModal('firstAidModal'); setFirstAid('bleeding')">
-            <div class="first-aid-emoji">🩸</div>
-            <div class="first-aid-title">Severe Bleeding / Wound</div>
-            <div class="first-aid-sub">Tap to see steps</div>
-          </div>
-          <div class="first-aid-card" onclick="openModal('firstAidModal'); setFirstAid('seizure')">
-            <div class="first-aid-emoji">⚡</div>
-            <div class="first-aid-title">Seizure / Convulsion</div>
-            <div class="first-aid-sub">Tap to see steps</div>
-          </div>
-          <div class="first-aid-card" onclick="openModal('firstAidModal'); setFirstAid('poison')">
-            <div class="first-aid-emoji">☠️</div>
-            <div class="first-aid-title">Poisoning / Toxin Ingested</div>
-            <div class="first-aid-sub">Tap to see steps</div>
-          </div>
-          <div class="first-aid-card" onclick="openModal('firstAidModal'); setFirstAid('heatstroke')">
-            <div class="first-aid-emoji">🌡️</div>
-            <div class="first-aid-title">Heatstroke / Hyperthermia</div>
-            <div class="first-aid-sub">Tap to see steps</div>
-          </div>
-          <div class="first-aid-card" onclick="openModal('firstAidModal'); setFirstAid('fracture')">
-            <div class="first-aid-emoji">🦴</div>
-            <div class="first-aid-title">Broken Bone / Fracture</div>
-            <div class="first-aid-sub">Tap to see steps</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- BOTTOM NAV -->
 <nav class="bnav">
-  <button class="bnav-item" onclick="location.href='07_home.html'"><i class="ti ti-home"></i><span>Home</span></button>
-  <button class="bnav-item" onclick="location.href='13_messages.html'"><i class="ti ti-message-circle"></i><span>Messages</span></button>
-  <button class="bnav-item" onclick="location.href='36_pet_life_record.html'"><i class="ti ti-heart-rate-monitor"></i><span>Health</span></button>
-  <button class="bnav-item" onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i><span>Vet</span></button>
-  <button class="bnav-item active"><i class="ti ti-robot"></i><span>AI Agent</span></button>
+  <button onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
+  <button onclick="location.href='36_pet_life_record.html'"><i class="ti ti-heart-handshake"></i>Pet health</button>
+  <button class="on" onclick="setTab('symptoms',1)"><i class="ti ti-robot"></i>AI agent</button>
+  <button onclick="setTab('firstaid',1)"><i class="ti ti-first-aid-kit"></i>First aid</button>
+  <button onclick="location.href='11_vet_booking.html'"><i class="ti ti-stethoscope"></i>Vets</button>
 </nav>
 
-<!-- LOG VITALS MODAL -->
-<div class="modal-overlay" id="logVitalsModal" onclick="closeModalOutside(event,'logVitalsModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>Log Vitals</h3><button class="modal-close" onclick="closeModal('logVitalsModal')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Heart Rate (bpm)</label><input type="number" class="form-input" placeholder="Normal: 60–140"></div>
-      <div class="form-group"><label class="form-label">Temperature (°F)</label><input type="number" class="form-input" placeholder="Normal: 99–102.5" step="0.1"></div>
-      <div class="form-group"><label class="form-label">Respiration Rate (/min)</label><input type="number" class="form-input" placeholder="Normal: 15–30"></div>
-      <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" class="form-input" placeholder="Current: 28.4" step="0.1"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('logVitalsModal')">Cancel</button>
-      <button class="pb-btn pb-btn-blue" onclick="closeModal('logVitalsModal')"><i class="ti ti-check"></i> Save Vitals</button>
-    </div>
+<div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
+  <div class="md" role="dialog" aria-modal="true" aria-labelledby="mo-title">
+    <div class="mh"><h3 id="mo-title"></h3><button class="mx" onclick="closeMo()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <form id="mo-form" novalidate onsubmit="submitMo(event)"><div class="mb" id="mo-body"></div>
+      <div class="mf"><button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-check"></i><span>Save</span></button></div></form>
   </div>
 </div>
 
-<!-- ADD CONTACT MODAL -->
-<div class="modal-overlay" id="addContactModal" onclick="closeModalOutside(event,'addContactModal')">
-  <div class="modal">
-    <div class="modal-header"><h3>Add Emergency Contact</h3><button class="modal-close" onclick="closeModal('addContactModal')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input" placeholder="Dr. / Clinic name"></div>
-      <div class="form-group"><label class="form-label">Role</label><input type="text" class="form-input" placeholder="Primary Vet, Emergency, Ambulance…"></div>
-      <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" placeholder="+91 XXXXX XXXXX"></div>
-      <div class="form-group"><label class="form-label">Address / Distance</label><input type="text" class="form-input" placeholder="Clinic address or km away"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('addContactModal')">Cancel</button>
-      <button class="pb-btn pb-btn-blue" onclick="closeModal('addContactModal')"><i class="ti ti-check"></i> Add Contact</button>
-    </div>
+<div class="mo" id="faModal" onclick="if(event.target===this)closeFA()">
+  <div class="md" role="dialog" aria-modal="true" aria-labelledby="fa-title">
+    <div class="mh"><h3 id="fa-title">First aid</h3><button class="mx" onclick="closeFA()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <div class="mb" id="fa-body"></div>
+    <div class="mf"><span id="fa-call"></span><button type="button" class="btn btn-w" onclick="closeFA()">Close</button></div>
   </div>
 </div>
 
-<!-- FIRST AID MODAL -->
-<div class="modal-overlay" id="firstAidModal" onclick="closeModalOutside(event,'firstAidModal')">
-  <div class="modal">
-    <div class="modal-header"><h3 id="firstAidTitle">First Aid Guide</h3><button class="modal-close" onclick="closeModal('firstAidModal')">✕</button></div>
-    <div class="modal-body" id="firstAidBody"></div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-red" onclick="window.location.href='tel:+911234567890'"><i class="ti ti-phone"></i> Call Vet Now</button>
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('firstAidModal')">Close</button>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-// ===== MODE SWITCHER =====
-function switchMainMode(mode) {
-  ['symptom','chat','emergency'].forEach(m => {
-    document.getElementById('mode-' + m).style.display = m === mode ? 'block' : 'none';
-    const btn = document.getElementById('tab-btn-' + m);
-    if (btn) btn.classList.toggle('active', m === mode);
-  });
-  if (mode === 'chat' && document.querySelectorAll('.chat-bubble').length <= 1) {
-    // already has intro
-  }
-}
+/* ===================== PawBook AI Health Agent (37) ===================== */
+var API = 'https://pawbook.deemona.com/api/v1';
+var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
+var PETS = [], PID = null, OV = null, VX = null, VIT = null, CHK = null, CT = null, TAB = 'symptoms', MO = null;
+var SEL = {}, DUR = null, LAST = null, CHAT = {}, BUSY = false;
+var CHAT_LANG = 'en'; try { var _pl = localStorage.getItem('pb_health_ai_lang') || localStorage.getItem('pb_lang'); if (_pl) CHAT_LANG = _pl; } catch (e) {}
 
-// ===== MODALS =====
-function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
-function closeModalOutside(e, id) { if (e.target.id === id) closeModal(id); }
-
-// ===== PET DATA =====
-const petData = {
-  bruno: {
-    name: 'Bruno', emoji: '🐕', breed: 'Labrador', age: '3yr',
-    vitals: { hr: '78', hrRange: '60–140', temp: '101.4', tempRange: '99–102.5', resp: '22', respRange: '15–30', weight: '28.4', weightNote: 'Monitor trend', hrStatus: 'normal', tempStatus: 'normal', respStatus: 'normal', weightStatus: 'warning' },
-    meds: 'Heartgard Plus + NexGard + Omega-3',
-    chatIntro: "Hi! I'm your AI health agent for Bruno 🐕<br><br>I can help you understand symptoms, review vaccination schedules, suggest dietary changes, and assess whether a vet visit is needed. What's on your mind today?",
-    quickReplies: [
-      { label: '🤢 Vomiting today', msg: 'Bruno has been vomiting since morning' },
-      { label: '💉 Check vaccines', msg: 'Is Bruno up to date on vaccines?' },
-      { label: '🦵 Limping', msg: 'Bruno is limping on his left leg' },
-      { label: '🥩 Safe foods', msg: 'What food is safe for Labradors?' },
-      { label: '🍽️ Not eating', msg: 'Bruno is not eating since yesterday' }
-    ]
-  },
-  whiskers: {
-    name: 'Whiskers', emoji: '🐈', breed: 'Persian', age: '5yr',
-    vitals: { hr: '160', hrRange: '120–200', temp: '100.5', tempRange: '99–102.5', resp: '26', respRange: '15–30', weight: '4.2', weightNote: 'Normal range', hrStatus: 'normal', tempStatus: 'normal', respStatus: 'normal', weightStatus: 'normal' },
-    meds: 'Revolution Plus (monthly)',
-    chatIntro: "Hi! I'm your AI health agent for Whiskers 🐈<br><br>I can help you understand symptoms, review vaccination schedules, suggest dietary changes, and assess whether a vet visit is needed. What's on your mind today?",
-    quickReplies: [
-      { label: '🤢 Not eating', msg: 'Whiskers has not been eating today' },
-      { label: '💉 Check vaccines', msg: 'Is Whiskers up to date on vaccines?' },
-      { label: '😮 Sneezing', msg: 'Whiskers keeps sneezing frequently' },
-      { label: '🥩 Safe foods', msg: 'What food is safe for Persian cats?' },
-      { label: '👁️ Eye discharge', msg: 'Whiskers has eye discharge' }
-    ]
-  }
+/* Photos from Pexels (free licence). The server keeps a copy in img/ai/; if that is missing the page loads it from Pexels. */
+var PX = {
+  'vet-dog': [7469222, 'Veterinarian checking a brown dog'], 'doctor-dog': [7470634, 'A vet examining a dog'], 'vet-dog-2': [7469233, 'Vet checking on a dog'],
+  'phone-dog': [5256087, 'Pet parent using a phone while holding a dog'], 'cat-eye': [6816861, 'A vet checking a cat\'s eye'], 'cat-bandage': [6816862, 'Vet dressing a cat\'s bandage'],
+  'cat-vaccine': [6816869, 'A vet preparing a cat\'s vaccine'], 'ultrasound': [6234610, 'Vet checking a dog with an ultrasound'], 'sofa-hug': [5255530, 'Owner hugging a dog on the sofa'],
+  'water': [4873126, 'Helping a dog drink water'], 'golden': [2409503, 'A healthy golden retriever on the grass'], 'firstaid-kit': [5146534, 'First aid tools']
 };
-let currentPet = 'bruno';
+function pxUrl(id, w){ return 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + (w || 1000); }
+function pimg(k, w, extra){ var p = PX[k]; return '<img src="img/ai/' + k + '.jpg" data-px="' + p[0] + '" data-w="' + (w || 1000) + '" alt="' + esc(p[1]) + '" loading="lazy" onerror="pxFail(this)"' + (extra || '') + '>'; }
+function pxFail(im){ if (!im.getAttribute('data-tried')) { im.setAttribute('data-tried', '1'); im.src = pxUrl(im.getAttribute('data-px'), im.getAttribute('data-w')); } else { im.onerror = null; im.style.visibility = 'hidden'; } }
 
-// ===== PET SELECTOR =====
-function selectPetMini(el) {
-  document.querySelectorAll('.pet-mini-item').forEach(i => i.classList.remove('selected'));
-  el.classList.add('selected');
-  const name = el.querySelector('.pet-mini-name').textContent.toLowerCase();
-  currentPet = name === 'whiskers' ? 'whiskers' : 'bruno';
-  updatePageForPet(currentPet);
-}
-
-function updatePageForPet(petKey) {
-  const p = petData[petKey];
-  const v = p.vitals;
-
-  // Update all name references in headers
-  document.querySelectorAll('[data-pet-name]').forEach(el => el.textContent = p.name);
-
-  // Vitals
-  document.getElementById('vital-hr').textContent = v.hr;
-  document.getElementById('vital-hr-range').textContent = 'Normal: ' + v.hrRange;
-  document.getElementById('vital-temp').innerHTML = v.temp + ' <span class="vital-unit">°F</span>';
-  document.getElementById('vital-temp-range').textContent = 'Normal: ' + v.tempRange;
-  document.getElementById('vital-resp').textContent = v.resp;
-  document.getElementById('vital-resp-range').textContent = 'Normal: ' + v.respRange;
-  document.getElementById('vital-weight').innerHTML = v.weight + ' <span class="vital-unit">kg</span>';
-  document.getElementById('vital-weight-note').textContent = v.weightNote;
-  ['hr','temp','resp','weight'].forEach(k => {
-    const dot = document.getElementById('vital-dot-' + k);
-    if (dot) { dot.className = 'vital-status ' + v[k + 'Status']; }
-  });
-
-  // Chat intro reset
-  const msgs = document.getElementById('chatMessages');
-  if (msgs) {
-    msgs.innerHTML = `<div class="chat-bubble ai"><div class="ai-label">PawBook AI Health Agent</div>${p.chatIntro}</div>`;
-  }
-
-  // Quick replies
-  const qr = document.getElementById('quickReplies');
-  if (qr) {
-    qr.style.display = '';
-    qr.innerHTML = p.quickReplies.map(r =>
-      `<button class="chat-qr" onclick="sendQuick('${r.msg.replace(/'/g,"\\'")}')"> ${r.label}</button>`
-    ).join('');
-  }
-
-  // Clear symptoms on pet switch
-  clearSymptoms();
-}
-
-// ===== SYMPTOM CHECKER =====
-const selectedSymptoms = new Set();
-let selectedDuration = null;
-
-function toggleSymptom(el) {
-  const id = el.dataset.id;
-  el.classList.toggle('selected');
-  if (el.classList.contains('selected')) selectedSymptoms.add(id);
-  else selectedSymptoms.delete(id);
-  updateAnalyzeBtn();
-}
-
-function setDuration(el, val) {
-  document.querySelectorAll('[id^="dur-"]').forEach(b => {
-    b.classList.remove('pb-btn-blue');
-    b.style.background = '';
-    b.style.color = '';
-  });
-  el.style.background = 'var(--pb-blue)';
-  el.style.color = '#fff';
-  selectedDuration = val;
-  updateAnalyzeBtn();
-}
-
-function updateAnalyzeBtn() {
-  const btn = document.getElementById('analyzeBtn');
-  btn.disabled = selectedSymptoms.size === 0;
-  if (selectedSymptoms.size > 0) {
-    btn.textContent = '';
-    btn.innerHTML = `<i class="ti ti-stethoscope"></i> Analyze ${selectedSymptoms.size} Symptom${selectedSymptoms.size > 1 ? 's' : ''}`;
-  }
-}
-
-function clearSymptoms() {
-  document.querySelectorAll('.symptom-chip').forEach(c => c.classList.remove('selected'));
-  document.querySelectorAll('[id^="dur-"]').forEach(b => { b.style.background=''; b.style.color=''; });
-  selectedSymptoms.clear();
-  selectedDuration = null;
-  document.getElementById('triageResult').style.display = 'none';
-  updateAnalyzeBtn();
-}
-
-function filterSymptoms(query) {
-  const q = query.toLowerCase();
-  document.querySelectorAll('.symptom-chip').forEach(chip => {
-    const label = chip.querySelector('.symptom-label').textContent.toLowerCase();
-    chip.style.display = label.includes(q) ? '' : 'none';
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function toast(m){ var t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2800); }
+function api(path, o){
+  o = o || {}; var h = {}; if (TOKEN) h.Authorization = 'Bearer ' + TOKEN;
+  var body = o.body; if (body && !(body instanceof FormData)) { h['Content-Type'] = 'application/json'; body = JSON.stringify(body); }
+  return fetch(API + path, {method: o.method || 'GET', headers: h, body: body}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if (!r.ok || j.success === false) { var e = new Error(j.message || j.error || ('Something went wrong (' + r.status + ')')); e.status = r.status; e.fields = j.fields; throw e; }
+      return j.data !== undefined ? j.data : j;
+    });
   });
 }
+function fail(e){ if (e && e.status === 401) { location.href = '01_login.html'; return; } toast(e && e.status === 429 ? 'Too many requests — please wait a moment' : ((e && e.message) || 'Something went wrong')); }
+function fd(v, o){ if (!v) return ''; var d = new Date(String(v).length === 10 ? v + 'T00:00:00' : v); return isNaN(d) ? '' : d.toLocaleDateString('en-IN', o || {day: 'numeric', month: 'short', year: 'numeric'}); }
+function fdt(v){ var d = new Date(v); return isNaN(d) ? '' : d.toLocaleString('en-IN', {day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}); }
+function cap(s){ s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+var SPECIES = {dog: '🐕', cat: '🐈', bird: '🦜', rabbit: '🐇', fish: '🐠', hamster: '🐹', turtle: '🐢', horse: '🐴'};
+function spKey(p){ var s = String((p && p.species) || '').toLowerCase(); return /dog|canine|puppy|pup\b/.test(s) ? 'dog' : /cat|feline|kitten/.test(s) ? 'cat' : s; }
+function emo(p){ return SPECIES[spKey(p)] || '🐾'; }
+function avatar(p){ return '<div class="av">' + (p && p.photo ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" onerror="this.parentNode.textContent=\'' + emo(p) + '\'">' : emo(p)) + '</div>'; }
+function him(p){ var g = String((p && p.gender) || '').toLowerCase(); return g === 'male' ? ['he', 'his', 'him'] : g === 'female' ? ['she', 'her', 'her'] : ['they', 'their', 'them']; }
+function emptyBox(e, t, p, btn){ return '<div class="empty"><div class="e">' + e + '</div><b>' + esc(t) + '</b>' + (p ? '<p>' + esc(p) + '</p>' : '') + (btn || '') + '</div>'; }
+function petPhotos(p){ var l = [], add = function(u){ if (u && /^https:\/\//.test(u) && l.indexOf(u) < 0) l.push(u); }; add(p.photo); (p.photos || []).forEach(add); return l.slice(0, 3); }
+function P(){ return '/petcare/pets/' + encodeURIComponent(PID); }
+function HP(){ return '/healthagent/pets/' + encodeURIComponent(PID); }
+function pet(){ return (OV && OV.pet) || PETS.filter(function(x){ return String(x.id) === String(PID); })[0] || {name: 'your pet'}; }
 
-function analyzeSymptoms() {
-  const urgent = ['seizure','breathing','collapse','bleeding'];
-  const hasUrgent = [...selectedSymptoms].some(s => urgent.includes(s));
-  const hasMod = selectedSymptoms.has('vomiting') || selectedSymptoms.has('diarrhea') || selectedSymptoms.has('fever') || selectedSymptoms.has('lethargy') || selectedSymptoms.has('bloating');
-  const longDuration = selectedDuration === '>3days' || selectedDuration === '2-3days';
-
-  let level, title, desc, actions;
-
-  if (hasUrgent) {
-    level = 'emergency';
-    title = '🚨 EMERGENCY — Go to Vet Immediately';
-    desc = `${petData[currentPet].name} has symptoms that require <strong>immediate veterinary attention</strong>. Do not wait. Call ahead to alert the clinic and head to the nearest emergency vet now. ${petData[currentPet].name}'s health passport can be shared instantly.`;
-    actions = [
-      { cls: 'emergency-call', icon: '📞', label: 'Call Dr. Priya — Primary Vet', action: "window.location.href='tel:+911234567890'" },
-      { cls: 'emergency-call', icon: '🏥', label: 'Call Pet ER Delhi — 24/7', action: "window.location.href='tel:+911800112233'" },
-      { cls: 'vet-book', icon: '📋', label: 'Share Health Passport', action: 'copyPassport()' },
-    ];
-  } else if (hasMod || longDuration) {
-    level = 'urgent';
-    title = '⚠️ Vet Visit Recommended — Within 24 Hours';
-    desc = `${petData[currentPet].name}'s symptoms suggest something that needs professional evaluation soon. These are not immediately life-threatening, but delaying could worsen the condition. Book an appointment today or first thing tomorrow.`;
-    actions = [
-      { cls: 'vet-book', icon: '📅', label: 'Book Vet Appointment', action: "location.href='11_vet_booking.html'" },
-      { cls: 'vet-book', icon: '📞', label: 'Call Dr. Priya to Check', action: "window.location.href='tel:+911234567890'" },
-      { cls: 'home-care', icon: '🏠', label: 'View Home Care Tips', action: "switchMainMode('chat');sendQuick('Home care tips for Bruno\\'s symptoms')" },
-    ];
-  } else {
-    level = selectedSymptoms.size > 2 ? 'monitor' : 'safe';
-    title = selectedSymptoms.size > 2 ? '👁️ Monitor Closely — Watch for Changes' : '✅ Likely Mild — Home Care May Suffice';
-    desc = selectedSymptoms.size > 2
-      ? `${petData[currentPet].name}'s symptoms are not severe right now, but with ${selectedSymptoms.size} symptoms, monitoring closely is recommended. If symptoms worsen or new ones appear in the next 24 hours, contact your vet.`
-      : `${petData[currentPet].name}'s symptom(s) appear mild and may resolve with basic home care. Keep monitoring, ensure hydration and rest. If symptoms persist beyond 48 hours, consult your vet.`;
-    actions = [
-      { cls: 'home-care', icon: '💬', label: 'Ask AI for Home Care Advice', action: "switchMainMode('chat')" },
-      { cls: 'monitor-watch', icon: '📋', label: 'View Bruno\'s Health History', action: "location.href='36_pet_life_record.html'" },
-    ];
-  }
-
-  const html = `
-    <div class="triage-result ${level}">
-      <div class="triage-level ${level}">${title}</div>
-      <div class="triage-desc">${desc}</div>
-      <div class="triage-actions">
-        ${actions.map(a => `<button class="triage-action ${a.cls}" onclick="${a.action}">${a.icon} ${a.label}</button>`).join('')}
-      </div>
-    </div>`;
-
-  const el = document.getElementById('triageResult');
-  el.innerHTML = html;
-  el.style.display = 'block';
-  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+/* ---------- load ---------- */
+function boot(){
+  if (!TOKEN) { location.href = '01_login.html'; return; }
+  try { var u = JSON.parse(localStorage.getItem('pb_user') || 'null'); if (u) { var av = document.getElementById('nav-av'); if (u.avatar_url || u.avatar) av.innerHTML = '<img src="' + esc(u.avatar_url || u.avatar) + '" alt="">'; else av.textContent = (u.full_name || u.name || '·').charAt(0).toUpperCase(); } } catch (e) {}
+  var q = new URLSearchParams(location.search), t = q.get('tab');
+  if (['symptoms', 'chat', 'firstaid', 'vitals', 'contacts', 'history'].indexOf(t) >= 0) TAB = t;
+  Promise.all([api('/petcare/pets'), api('/healthagent/contacts').catch(function(){ return {contacts: [], vets: []}; })]).then(function(r){
+    PETS = r[0].pets || []; CT = r[1];
+    if (!PETS.length) return renderWelcome();
+    var saved = null; try { saved = localStorage.getItem('pb_health_pet'); } catch (e) {}
+    PID = [q.get('pet'), saved].filter(function(x){ return x && PETS.some(function(p){ return String(p.id) === String(x); }); })[0] || String(PETS[0].id);
+    loadPet();
+  }).catch(function(e){ if (e.status === 401) return fail(e); document.getElementById('app').innerHTML = emptyBox('🐾', 'Could not load your pets', (e.message || '') + ' Please refresh in a moment.'); });
 }
+function loadPet(){
+  try { localStorage.setItem('pb_health_pet', PID); } catch (e) {}
+  return Promise.all([api(P() + '/overview'), api(P() + '/vaccines').catch(function(){ return null; }), api(HP() + '/vitals').catch(function(){ return {vitals: [], ranges: {}}; }), api(HP() + '/checks').catch(function(){ return {checks: []}; })])
+    .then(function(r){ OV = r[0]; VX = r[1]; VIT = r[2]; CHK = r[3].checks; render(); }).catch(fail);
+}
+function pickPet(id){ if (String(id) === String(PID)) return; PID = String(id); SEL = {}; DUR = null; LAST = null; document.getElementById('app').style.opacity = '.55'; loadPet().then(function(){ document.getElementById('app').style.opacity = ''; }); }
 
-// ===== AI CHAT =====
-const aiResponses = {
-  vomiting: `Bruno vomiting is fairly common in dogs and can range from mild to serious. Here's my assessment:\n\n**Possible causes:** Eating too fast, dietary indiscretion (eating something outside), stomach upset, or infection.\n\n**What to do now:**\n• Withhold food for 2–4 hours but keep fresh water available\n• After the fast, offer a small bland meal (boiled chicken + rice)\n• Watch for blood in vomit, lethargy, or more than 3 episodes in a few hours\n\n**When to call the vet:** If vomiting continues beyond 24 hours, Bruno seems weak or in pain, or you notice blood. Want me to book a vet slot?`,
-  vaccines: `Bruno's current vaccine status:\n\n✅ DHPPiL — Up to date (Mar 2026)\n✅ Leptospirosis — Up to date (Nov 2026)\n✅ Bordetella — Up to date (Sep 2026)\n⚠️ **Rabies — Due in 12 days (Nov 23)**\n❌ Canine Influenza — 3 weeks overdue\n\nI'd recommend booking the rabies booster soon. The canine flu vaccine is also overdue. Want me to find available slots with Dr. Priya?`,
-  limping: `Bruno limping needs some attention. For a Labrador at age 3, limping can indicate:\n\n**Common causes:**\n• Paw pad injury (thorn, cut, or blister)\n• Joint inflammation\n• Muscle strain from exercise\n• Early signs of hip dysplasia (noted in Bruno's last check)\n\n**Check right now:**\n1. Examine the paw for cuts, thorns, or swelling\n2. Gently feel the leg for any tender spots\n3. Watch if it's consistent on one leg or shifting\n\n**Recommendation:** Given Bruno's hip concern from the Oct wellness check, a vet visit within 24–48 hours is advisable. Should I book an appointment?`,
-  food: `Safe foods for Labradors like Bruno:\n\n✅ **Safe to give:** Chicken (cooked, boneless), rice, carrots, pumpkin, sweet potato, blueberries, apples (no seeds), cucumber, watermelon (no seeds)\n\n❌ **Never give:** Chocolate, grapes, raisins, onions, garlic, avocado, macadamia nuts, xylitol (in sugar-free foods), alcohol, caffeine, cooked bones\n\n🦴 **Bruno-specific note:** Given his hip concern, foods rich in Omega-3 (salmon, fish oil) and glucosamine-rich treats help joint health. Avoid high-calorie treats to maintain ideal weight (25–32 kg).`,
-  notEating: `Bruno not eating for a day can be concerning. Let me help assess:\n\n**Possible reasons:**\n• Upset stomach or mild nausea\n• Dental pain (tooth or gum issue)\n• Stress or change in routine\n• Medication side effect (Heartgard can cause mild appetite loss)\n• More serious: intestinal blockage, infection\n\n**What to try:**\n• Offer a small amount of boiled chicken and rice\n• Check mouth for visible sores or broken teeth\n• Ensure fresh water is available\n• Note any other symptoms (vomiting, lethargy, diarrhea)\n\n**When to act:** If Bruno hasn't eaten in 48+ hours or shows other symptoms, call Dr. Priya. Want me to open the symptom checker?`,
-  default: `I understand your concern about Bruno. Based on what you've shared, I'd recommend monitoring him closely for the next few hours. Watch for any additional symptoms like lethargy, vomiting, difficulty breathing, or pain.\n\nIf you're worried, don't hesitate to contact Dr. Priya at Paws Clinic. You can also use the **Symptom Checker** tab to get a more precise triage assessment.\n\nIs there anything specific about Bruno's condition I can help with?`
+/* ---------- derived facts from the pet's records ---------- */
+function vcounts(){ var c = (VX && VX.cards) || []; return {over: c.filter(function(x){ return x.status === 'overdue'; }), soon: c.filter(function(x){ return x.status === 'due_soon'; }), ok: c.filter(function(x){ return x.status === 'up_to_date' || x.status === 'recorded'; }), records: (VX && VX.records) || 0}; }
+function vcard(key){ return ((VX && VX.cards) || []).filter(function(c){ return c.key === key; })[0] || null; }
+function lastWeight(){ var w = (OV && OV.weights) || []; return w[0] ? {kg: w[0].kg, date: w[0].date} : pet().weight_kg ? {kg: pet().weight_kg, date: null} : null; }
+function activeMeds(){ return ((OV && OV.medicines) || []).filter(function(m){ return m.active; }); }
+function recentChecks(){ var c = CHK || [], t = Date.now() - 30 * 86400000; return c.filter(function(x){ return new Date(x.at).getTime() > t; }); }
+function phoneOf(){ var l = []; ((CT && CT.vets) || []).forEach(function(v){ if (v.phone) l.push({name: v.clinic || v.name, sub: v.clinic && v.name ? v.name : 'Your vet', phone: v.phone, vet: v.id}); }); ((CT && CT.contacts) || []).forEach(function(c){ l.push({name: c.name, sub: c.role || 'Emergency contact', phone: c.phone}); }); return l; }
+function tel(p){ return 'tel:' + String(p).replace(/[^\d+]/g, ''); }
+
+/* ---------- welcome (no pets yet) ---------- */
+function renderWelcome(){
+  document.getElementById('app').innerHTML = '<div class="hero-band"><section class="hero"><div><span class="eyebrow"><i class="ti ti-robot"></i>AI Health Agent</span>'
+    + '<h1>Your pet\'s health, <br><span class="accent">understood.</span></h1><p class="tag">Add your pet first. The AI Health Agent then checks symptoms and answers questions using your pet\'s own vaccination and health records.</p>'
+    + '<div class="hero-ctas"><button class="btn btn-o" onclick="location.href=\'36_pet_life_record.html\'"><i class="ti ti-plus"></i>Add my pet</button><button class="btn btn-w" onclick="TAB=\'firstaid\';renderFirstAidOnly()"><i class="ti ti-first-aid-kit"></i>First aid guide</button></div></div>'
+    + '<div class="collage"><div class="ph ph-main">' + pimg('vet-dog') + '<div class="ph-tag"><i class="ti ti-stethoscope"></i>Know when to see a vet</div></div><div class="ph">' + pimg('phone-dog', 600) + '</div><div class="ph">' + pimg('cat-eye', 600) + '</div></div></section></div>'
+    + '<div id="fa-only"></div>' + careHTML(null) + credit();
+}
+function renderFirstAidOnly(){ document.getElementById('fa-only').innerHTML = '<section class="card sec"><div class="cb" style="padding-top:18px">' + firstAidPanel({name: 'your pet', gender: ''}) + '</div></section>'; }
+
+/* ---------- main render ---------- */
+function render(){
+  var p = pet(), vc = vcounts(), h = '';
+  document.title = p.name + '\'s AI Health Agent – PawBook';
+  h += '<div class="hero-band"><div class="pets" role="tablist" aria-label="Your pets">' + PETS.map(function(x){ var on = String(x.id) === String(PID);
+    return '<button class="pchip' + (on ? ' on' : '') + '" role="tab" aria-selected="' + on + '" onclick="pickPet(\'' + esc(x.id) + '\')">' + avatar(x) + esc(x.name) + '</button>'; }).join('')
+    + '<button class="pchip add" onclick="location.href=\'36_pet_life_record.html\'"><i class="ti ti-plus"></i> Add pet</button></div>';
+  var g = String(p.gender || ''), facts = [[p.breed || cap(p.species) || 'Pet', 'ti-paw', 'c-sky'], [p.age_label, 'ti-cake', 'c-amber'], [g && g !== 'unknown' ? cap(g) : '', g === 'female' ? 'ti-gender-female' : 'ti-gender-male', 'c-lav']].filter(function(f){ return f[0]; });
+  var st = !vc.records ? ['st-new', 'ti-vaccine', 'No vaccines recorded'] : vc.over.length ? ['st-care', 'ti-alert-circle', vc.over.length + ' vaccine' + (vc.over.length > 1 ? 's' : '') + ' overdue'] : vc.soon.length ? ['st-ok', 'ti-clock', vc.soon.length + ' due soon'] : ['st-great', 'ti-shield-check', 'Vaccines on track'];
+  h += '<section class="hero" aria-label="' + esc(p.name) + ' health agent"><div><span class="eyebrow"><i class="ti ti-robot"></i>AI Health Agent</span>'
+    + '<h1>' + esc(p.name) + '\'s health, <br><span class="accent">understood.</span></h1><p class="tag">Check symptoms, ask questions and get first-aid help — with answers that use ' + esc(p.name) + '\'s own vaccination and health records.</p>'
+    + '<div class="hero-ctas"><button class="btn btn-o" onclick="setTab(\'symptoms\',1)"><i class="ti ti-stethoscope"></i>Check symptoms</button><button class="btn btn-w" onclick="setTab(\'chat\',1)"><i class="ti ti-message-chatbot"></i>Ask the AI</button><button class="btn btn-w" style="color:var(--coral-d)" onclick="setTab(\'firstaid\',1)"><i class="ti ti-first-aid-kit"></i>Emergency</button></div>'
+    + '<div class="facts">' + facts.map(function(f){ return '<span class="fact"><i class="ti ' + f[1] + ' ' + f[2] + '"></i>' + esc(f[0]) + '</span>'; }).join('') + '<span class="status ' + st[0] + '"><i class="ti ' + st[1] + '"></i>' + esc(st[2]) + '</span></div></div>';
+  var ph = petPhotos(p), smp = !ph.length, col;
+  if (smp) { var set = spKey(p) === 'cat' ? ['cat-eye', 'cat-vaccine', 'phone-dog'] : ['golden', 'vet-dog', 'phone-dog'];
+    col = set.map(function(k, i){ return '<div class="ph' + (i === 0 ? ' ph-main' : '') + '">' + pimg(k, i ? 600 : 1100) + (i === 0 ? '<span class="ph-sample">Sample photo</span><div class="ph-tag"><i class="ti ti-heart"></i>Healthy &amp; happy</div>' : '') + '</div>'; }).join('');
+  } else col = ph.map(function(u, i){ return '<div class="ph' + (i === 0 && ph.length === 3 ? ' ph-main' : '') + '"><img src="' + esc(u) + '" alt="' + esc(p.name) + '" onerror="this.parentNode.classList.add(\'ph-empty\');this.outerHTML=\'<div class=e>' + emo(p) + '</div>\'">' + (i === 0 ? '<div class="ph-tag"><i class="ti ti-heart"></i>Hello, ' + esc(p.name) + '!</div>' : '') + '</div>'; }).join('');
+  var cv = (VX && VX.coverage) || {}, w = lastWeight();
+  var f1 = cv.applies ? '<span class="fc-ic ' + (cv.current === cv.total ? 'c-sage' : cv.current ? 'c-amber' : 'c-coral') + '">' + cv.current + '/' + cv.total + '</span><div><div class="fc-t">Core vaccines current</div><div class="fc-s">The AI knows this when you ask</div></div>'
+    : '<span class="fc-ic c-lav"><i class="ti ti-sparkles" style="font-size:20px"></i></span><div><div class="fc-t">Uses ' + esc(p.name) + '\'s records</div><div class="fc-s">Vaccines, weight, medicines</div></div>';
+  var lc = (CHK || [])[0];
+  h += '<div class="collage' + (!smp && ph.length <= 1 ? ' one' : !smp && ph.length === 2 ? ' two' : '') + '">' + col + '<div class="float-card float-1">' + f1 + '</div>'
+    + '<div class="float-card float-2"><i class="ti ti-' + (lc ? 'clipboard-heart' : 'robot') + '"></i>' + esc(lc ? 'Last check · ' + fd(lc.at, {day: 'numeric', month: 'short'}) : 'AI Health Agent ready') + '</div></div></section></div>';
+  // stats
+  var meds = activeMeds();
+  h += '<div class="stats">' + [
+    [vc.over.length ? 'c-coral' : 'c-sage', vc.over.length ? 'ti-alert-circle' : 'ti-shield-check', vc.over.length ? vc.over.length : vc.ok.length, vc.over.length ? 'Vaccines overdue' : 'Vaccines up to date'],
+    ['c-sky', 'ti-scale', w ? w.kg + ' kg' : '—', w && w.date ? 'Weight · ' + fd(w.date, {day: 'numeric', month: 'short'}) : 'Weight not logged'],
+    ['c-lav', 'ti-pill', meds.length, meds.length === 1 ? 'Active medicine' : 'Active medicines'],
+    ['c-amber', 'ti-clipboard-heart', recentChecks().length, 'Symptom checks · 30 days']
+  ].map(function(s){ return '<div class="stat"><span class="ic ' + s[0] + '"><i class="ti ' + s[1] + '"></i></span><div><b>' + esc(s[2]) + '</b><span>' + esc(s[3]) + '</span></div></div>'; }).join('') + '</div>';
+  // emergency strip
+  var call = phoneOf()[0];
+  h += '<div class="sos">' + pimg('firstaid-kit', 500) + '<div><b><i class="ti ti-urgent"></i>Is ' + esc(p.name) + ' in danger right now?</b><p>Trouble breathing, collapse, a seizure, heavy bleeding, a swollen hard belly or a suspected poison need a vet <strong>immediately</strong> — don\'t wait for an app.</p></div><div class="act">'
+    + (call ? '<a class="btn btn-r btn-s" href="' + tel(call.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(call.name) + '</a>' : '<a class="btn btn-r btn-s" href="06_emergency.html"><i class="ti ti-phone"></i>Emergency vets</a>')
+    + '<button class="btn btn-w btn-s" onclick="setTab(\'firstaid\',1)"><i class="ti ti-first-aid-kit"></i>First aid steps</button></div></div>';
+  // snapshot + attention
+  h += '<div class="grid sec" style="margin-top:22px">' + snapHTML(p) + attnHTML(p) + '</div>';
+  // quick actions with photos
+  h += '<h2 class="sec-title">How can I help ' + esc(p.name) + ' today?</h2><p class="sec-sub">Pick a tool — everything uses ' + esc(p.name) + '\'s own records</p><div class="ia">' + [
+    ['vet-dog-2', 'ti-stethoscope', 'c-sky', 'Symptom checker', 'Find out how urgent it is', "setTab('symptoms',1)"],
+    ['phone-dog', 'ti-message-chatbot', 'c-lav', 'Ask the AI agent', 'Questions about ' + p.name + '\'s health', "setTab('chat',1)"],
+    ['cat-bandage', 'ti-first-aid-kit', 'c-coral', 'First aid & emergency', 'Calm, step-by-step help', "setTab('firstaid',1)"],
+    ['ultrasound', 'ti-heart-rate-monitor', 'c-sage', 'Log vitals', 'Heart rate, breathing, temperature', "setTab('vitals',1)"]
+  ].map(function(a){ return '<button onclick="' + a[5] + '"><div class="im">' + pimg(a[0], 600) + '<i class="ti ' + a[1] + ' ' + a[2] + '"></i></div><div class="bd"><b>' + esc(a[3]) + '</b><small>' + esc(a[4]) + '</small></div></button>'; }).join('') + '</div>';
+  // tabs
+  var TABS = [['symptoms', 'ti-stethoscope', 'Symptom checker'], ['chat', 'ti-message-chatbot', 'AI health chat'], ['firstaid', 'ti-first-aid-kit', 'First aid & emergency'], ['vitals', 'ti-heart-rate-monitor', 'Vitals'], ['contacts', 'ti-address-book', 'Vets & contacts'], ['history', 'ti-history', 'Check history']];
+  h += '<div class="tabs" id="tabs" role="tablist">' + TABS.map(function(t){ return '<button class="tab' + (TAB === t[0] ? ' on' : '') + '" role="tab" data-tab="' + t[0] + '" aria-selected="' + (TAB === t[0]) + '" onclick="setTab(\'' + t[0] + '\')"><i class="ti ' + t[1] + '"></i>' + t[2] + '</button>'; }).join('') + '</div>';
+  h += '<div id="panels">' + panels() + '</div>';
+  h += careHTML(p) + credit();
+  document.getElementById('app').innerHTML = h;
+  afterPanel(); animateRing();
+}
+function credit(){ return '<p class="credit">Guidance only — not a diagnosis. Always follow your vet\'s advice. Photos: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a>.</p>'; }
+function careHTML(p){
+  var n = p ? p.name : 'your pet';
+  return '<h2 class="sec-title">Good care at home</h2><p class="sec-sub">Small habits that keep ' + esc(n) + ' healthy between vet visits</p><div class="care">'
+    + '<div class="cc2">' + pimg('water', 700) + '<div class="in"><b>Water, always</b><p>Fresh water all day, more in summer. Not drinking or drinking far more than usual is worth telling your vet.</p></div></div>'
+    + '<div class="cc2">' + pimg('sofa-hug', 700) + '<div class="in"><b>Know their normal</b><p>Notice appetite, energy, toilet habits and mood. Changes you spot early help your vet a lot.</p><a href="#" onclick="setTab(\'vitals\',1);return false">Log vitals <i class="ti ti-arrow-right"></i></a></div></div>'
+    + '<div class="cc2">' + pimg('cat-vaccine', 700) + '<div class="in"><b>Vaccines on time</b><p>Vaccines protect against rabies, parvovirus and more. Keep the diary up to date and the AI will remind you.</p><a href="10_vaccination.html' + (p ? '?pet=' + encodeURIComponent(PID) : '') + '">Open vaccination diary <i class="ti ti-arrow-right"></i></a></div></div></div>';
+}
+function snapHTML(p){
+  var wl = (OV && OV.wellness) || {}, cv = (VX && VX.coverage) || {}, h = '<section class="card"><div class="ch"><h2><i class="ti ti-heart-rate-monitor"></i>' + esc(p.name) + '\'s health snapshot</h2></div><div class="cb">';
+  var score = wl.score, c = 2 * Math.PI * 50, col = score == null ? '#cfd6e4' : score >= 75 ? '#16a34a' : score >= 45 ? '#f59e0b' : '#e5484d';
+  var msg = score == null ? 'Add records to see a snapshot' : score >= 75 ? p.name + ' is well cared for' : score >= 45 ? 'A few things to catch up on' : 'Let\'s catch up on care';
+  h += '<div class="well"><div class="ring" role="img" aria-label="Care score ' + (score == null ? 'not available' : score) + '"><svg width="118" height="118" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#edf1f8" stroke-width="11"/><circle id="ring" cx="60" cy="60" r="50" fill="none" stroke="' + col + '" stroke-width="11" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + c.toFixed(1) + '" data-off="' + (c * (1 - (score || 0) / 100)).toFixed(1) + '" style="transition:stroke-dashoffset 1s ease"/></svg><div class="num"><b>' + (score == null ? '—' : score) + '</b><span>care score</span></div></div>'
+    + '<div><h3>' + esc(msg) + '</h3><p>Based only on what is recorded on PawBook — vaccines, weigh-ins, vet visits, medicines and daily care. It is not a medical assessment.</p></div></div>';
+  var IC = {vaccines: ['ti-vaccine', 'c-coral', '#e5484d'], weight: ['ti-scale', 'c-sky', '#1877F2'], vet: ['ti-stethoscope', 'c-sage', '#16a34a'], medicines: ['ti-pill', 'c-lav', '#8b5cf6'], daily: ['ti-walk', 'c-amber', '#f59e0b']};
+  h += '<div class="inds">' + (wl.indicators || []).filter(function(i){ return i.applies; }).map(function(i){ var ic = IC[i.key] || ['ti-point', 'c-grey', '#999'];
+    return '<div class="ind"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div class="t">' + esc(i.label) + '<small>' + esc(i.detail) + '</small></div><span class="pts">' + i.points + '/' + i.max + '</span><div class="bar"><i style="width:' + Math.round(i.points / i.max * 100) + '%;background:' + ic[2] + '"></i></div></div>'; }).join('') + '</div>';
+  if (cv.applies && cv.items) h += '<div class="disc"><i class="ti ti-vaccine"></i><span>Core vaccines: ' + cv.items.map(function(it){ return esc(it.label.split(' (')[0]) + ' — <b>' + esc(it.status.replace(/_/g, ' ')) + '</b>'; }).join(' · ') + '. <a href="10_vaccination.html?pet=' + encodeURIComponent(PID) + '" style="color:var(--blue);font-weight:700">Vaccination diary →</a></span></div>';
+  return h + '</div></section>';
+}
+function attnHTML(p){
+  var l = ((OV && OV.reminders) || []).slice(0, 5), due = l.filter(function(r){ return r.status === 'overdue' || r.status === 'soon'; }).length;
+  var h = '<section class="card"><div class="ch"><h2><i class="ti ti-bell-ringing"></i>What needs attention</h2>' + (due ? '<span class="badge">' + due + ' to do</span>' : '') + '</div><div class="cb">';
+  if (!l.length) return h + emptyBox('✅', 'Nothing urgent on record', 'Vaccine boosters, medicine doses and vet visits you add will show here, and the AI uses them when you ask.', '<button class="btn btn-w btn-s" onclick="location.href=\'10_vaccination.html?pet=' + encodeURIComponent(PID) + '\'"><i class="ti ti-vaccine"></i>Vaccination diary</button>') + '</div></section>';
+  var IC = {vaccine: ['ti-vaccine', 'c-coral'], medicine: ['ti-pill', 'c-lav'], appointment: ['ti-calendar-event', 'c-sky'], weight: ['ti-scale', 'c-amber'], vet: ['ti-stethoscope', 'c-sage']};
+  return h + '<div class="rems">' + l.map(function(r){ var ic = IC[r.kind] || ['ti-bell', 'c-sky'], cls = r.status === 'overdue' ? 'over' : r.status === 'soon' ? 'soon' : '';
+    var act = r.kind === 'vaccine' || r.kind === 'vet' ? '<button class="btn btn-w btn-s" onclick="location.href=\'11_vet_booking.html\'">Book</button>' : r.kind === 'weight' ? '<button class="btn btn-w btn-s" onclick="location.href=\'36_pet_life_record.html\'">Log</button>' : '';
+    return '<div class="rem ' + cls + '"><span class="ic ' + ic[1] + '"><i class="ti ' + ic[0] + '"></i></span><div class="t"><b>' + esc(r.title) + '</b><span>' + esc(r.detail || '') + '</span></div>' + (r.status === 'overdue' ? '<span class="pill p-over">Overdue</span>' : r.status === 'soon' ? '<span class="pill p-soon">Soon</span>' : '') + act + '</div>'; }).join('') + '</div>'
+    + '<div class="ai"><span class="ic"><i class="ti ti-message-chatbot"></i></span><div class="t"><b>Not sure what to do first?</b><span>Ask the AI — it can see ' + esc(p.name) + '\'s reminders and vaccine dates.</span></div><button class="btn btn-w btn-s" onclick="askAI(\'What should I do first for ' + esc(p.name).replace(/'/g, '') + ' based on the reminders?\')">Ask now</button></div></div></section>';
+}
+function animateRing(){ var r = document.getElementById('ring'); if (!r) return; requestAnimationFrame(function(){ requestAnimationFrame(function(){ r.style.strokeDashoffset = r.getAttribute('data-off'); }); }); }
+function setTab(t, scroll){
+  TAB = t; document.querySelectorAll('.tab').forEach(function(b){ var on = b.getAttribute('data-tab') === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var pn = document.getElementById('panels'); if (!pn) return; pn.innerHTML = panels(); afterPanel();
+  if (scroll) { var tb = document.getElementById('tabs'); if (tb) window.scrollTo({top: tb.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth'}); }
+}
+function panels(){ var p = pet(); switch (TAB) { case 'chat': return chatPanel(p); case 'firstaid': return '<section class="card"><div class="cb" style="padding-top:18px">' + firstAidPanel(p) + '</div></section>'; case 'vitals': return vitalsPanel(p); case 'contacts': return contactsPanel(p); case 'history': return historyPanel(p); default: return symptomPanel(p); } }
+function afterPanel(){ if (TAB === 'chat') { drawChat(); var ta = document.getElementById('cin'); if (ta && window.innerWidth > 700) ta.focus(); } if (TAB === 'symptoms' && LAST) showTriage(LAST, true); }
+
+/* ---------- symptom checker ---------- */
+var SYM = {
+  e: [['breathing', 'ti-lungs', 'Trouble breathing / blue gums'], ['collapse', 'ti-zzz', 'Collapse or can\'t stand'], ['seizure', 'ti-bolt', 'Seizure / fits'], ['bleeding', 'ti-droplet', 'Heavy bleeding'], ['poison', 'ti-skull', 'Ate something poisonous'], ['bloat', 'ti-circle-dot', 'Swollen hard belly, retching'], ['urination', 'ti-droplet-off', 'Straining, little or no urine'], ['heatstroke', 'ti-temperature-sun', 'Overheated, heavy panting'], ['trauma', 'ti-car-crash', 'Hit by a vehicle / bad fall']],
+  m: [['vomiting', 'ti-mood-sick', 'Vomiting'], ['diarrhea', 'ti-droplets', 'Diarrhoea'], ['lethargy', 'ti-battery-1', 'Very tired / weak'], ['appetite', 'ti-bowl', 'Not eating'], ['limping', 'ti-walk', 'Limping'], ['fever', 'ti-temperature', 'Feels hot / fever'], ['pain', 'ti-mood-cry', 'Crying or in pain'], ['eye', 'ti-eye', 'Red, cloudy or hurt eye']],
+  l: [['itching', 'ti-hand-finger', 'Itching / scratching'], ['coughing', 'ti-wind', 'Coughing / sneezing'], ['discharge', 'ti-droplet-half-2', 'Eye or nose discharge'], ['drinking', 'ti-glass-full', 'Drinking much more'], ['odor', 'ti-mood-empty', 'Bad breath / smell'], ['weight', 'ti-scale', 'Weight change'], ['behaviour', 'ti-mood-confuzed', 'Behaviour change']]
 };
+var SYML = {}; Object.keys(SYM).forEach(function(g){ SYM[g].forEach(function(s){ SYML[s[0]] = s[2]; }); });
+function symptomPanel(p){
+  var grp = function(k, title, icon){ return '<div class="sgrp ' + k + '"><h4><i class="ti ' + icon + '"></i>' + title + '</h4><div class="sgr">' + SYM[k].map(function(s){ return '<button class="sy' + (SEL[s[0]] ? ' on' : '') + '" data-s="' + s[0] + '" onclick="tgl(this)" aria-pressed="' + !!SEL[s[0]] + '"><i class="ti ' + s[1] + ' ' + (k === 'e' ? 'c-coral' : k === 'm' ? 'c-amber' : 'c-sage') + '"></i>' + esc(s[2]) + '</button>'; }).join('') + '</div></div>'; };
+  var n = Object.keys(SEL).length;
+  return '<section class="card"><div class="ch"><h2><i class="ti ti-stethoscope"></i>What\'s going on with ' + esc(p.name) + '?</h2><button class="btn btn-w btn-s" onclick="clearSym()"><i class="ti ti-refresh"></i>Clear</button></div><div class="cb">'
+    + '<p class="muted" style="font-size:13px">Tap everything you notice. Red signs mean go to a vet now.</p>'
+    + grp('e', 'Emergency signs', 'ti-urgent') + grp('m', 'Needs attention', 'ti-alert-triangle') + grp('l', 'Usually milder', 'ti-leaf')
+    + '<div class="sbar"><b style="font-size:13px;color:var(--navy)">Since when?</b><div class="durs">' + [['now', 'Just now'], ['today', 'Today'], ['days', '2–3 days'], ['week', 'A week or more']].map(function(d){ return '<button class="dur' + (DUR === d[0] ? ' on' : '') + '" onclick="setDur(\'' + d[0] + '\',this)">' + d[1] + '</button>'; }).join('') + '</div>'
+    + '<button class="btn btn-o" id="an-btn" onclick="analyse()"' + (n ? '' : ' disabled') + ' style="margin-left:auto"><i class="ti ti-stethoscope"></i>' + (n ? 'Check ' + n + ' sign' + (n > 1 ? 's' : '') : 'Select signs') + '</button></div>'
+    + '<div id="tri"></div></div></section>';
+}
+function tgl(b){ var k = b.getAttribute('data-s'); if (SEL[k]) delete SEL[k]; else SEL[k] = 1; b.classList.toggle('on', !!SEL[k]); b.setAttribute('aria-pressed', !!SEL[k]); var n = Object.keys(SEL).length, a = document.getElementById('an-btn'); a.disabled = !n; a.innerHTML = '<i class="ti ti-stethoscope"></i>' + (n ? 'Check ' + n + ' sign' + (n > 1 ? 's' : '') : 'Select signs'); }
+function setDur(d, b){ DUR = DUR === d ? null : d; document.querySelectorAll('.dur').forEach(function(x){ x.classList.remove('on'); }); if (DUR) b.classList.add('on'); }
+function clearSym(){ SEL = {}; DUR = null; LAST = null; setTab('symptoms'); }
+// simple, cautious rules: a sign in the red group always means "vet now"; nothing here diagnoses
+function triage(sel, dur, p){
+  var ks = Object.keys(sel), E = SYM.e.map(function(s){ return s[0]; }), M = SYM.m.map(function(s){ return s[0]; });
+  var em = ks.filter(function(k){ return E.indexOf(k) >= 0; }), mo = ks.filter(function(k){ return M.indexOf(k) >= 0; }), long = dur === 'days' || dur === 'week';
+  var young = p.age_years != null && p.age_years < 0.5, why = [];
+  var level = 'mild';
+  if (em.length) { level = 'emergency'; why.push(em.map(function(k){ return SYML[k]; }).join(', ') + ' can be life-threatening'); }
+  else if (mo.length >= 2 || (mo.length && long)) { level = 'urgent'; why.push(mo.length >= 2 ? 'More than one sign that needs attention' : 'It has lasted more than a day'); }
+  else if (sel.vomiting && sel.diarrhea) { level = 'urgent'; why.push('Vomiting and diarrhoea together can dehydrate quickly'); }
+  else if (mo.length && young && (sel.vomiting || sel.diarrhea || sel.appetite || sel.lethargy)) { level = 'urgent'; why.push('Young ' + (spKey(p) === 'cat' ? 'kittens' : 'puppies') + ' get dehydrated and weak very fast'); }
+  else if (mo.length && spKey(p) === 'cat' && sel.appetite) { level = 'urgent'; why.push('Cats that stop eating can become seriously ill within a couple of days'); }
+  else if (mo.length) { level = 'monitor'; why.push('One sign so far — watch closely for the next 24 hours'); }
+  else if (long) { level = 'monitor'; why.push('Milder signs that have lasted a while are worth a check-up'); }
+  else why.push('These signs are usually not urgent on their own');
+  // vaccine-aware notes from the pet's own diary
+  var notes = [], over = function(k){ var c = vcard(k); return c && (c.status === 'overdue' || c.status === 'not_recorded' || c.status === 'check') ? c : null; };
+  var dh = over('dhpp') || over('fvrcp');
+  if ((sel.vomiting || sel.diarrhea || sel.lethargy || sel.appetite) && dh) notes.push(dh.label + ' is ' + (dh.status === 'overdue' ? 'overdue' : 'not recorded') + ' in ' + p.name + '\'s diary. It protects against ' + (spKey(p) === 'cat' ? 'panleukopenia' : 'parvovirus') + ', which causes vomiting and diarrhoea — tell your vet.');
+  var kc = over('kennel'); if ((sel.coughing) && kc && spKey(p) === 'dog') notes.push('Kennel cough vaccine is ' + (kc.status === 'overdue' ? 'overdue' : 'not recorded') + '. Mention it to your vet if the cough continues.');
+  var rb = over('rabies'); if ((sel.behaviour || sel.trauma) && rb) notes.push('Rabies vaccine is ' + (rb.status === 'overdue' ? 'overdue' : 'not recorded') + '. If ' + p.name + ' was bitten by another animal or is acting unusually aggressive, see a vet the same day.');
+  var lp = over('lepto'); if ((sel.fever || sel.vomiting || sel.drinking) && lp && spKey(p) === 'dog') notes.push('Leptospirosis vaccine is ' + (lp.status === 'overdue' ? 'overdue' : 'not recorded') + '. Leptospirosis spreads through flood and rat-contaminated water — tell your vet if ' + p.name + ' was near stagnant water.');
+  return {level: level, why: why, notes: notes, symptoms: ks, duration: dur};
+}
+var LV = {emergency: ['ti-urgent', 'Go to a vet now', 'Please contact your vet or an emergency clinic right away. Keep ' + '{n}' + ' calm and warm while you travel.'],
+  urgent: ['ti-calendar-exclamation', 'See a vet within 24 hours', 'These signs need a vet\'s check soon. Book today, and go immediately if things get worse.'],
+  monitor: ['ti-eye', 'Watch closely today', 'Keep an eye on {n} for the next 24 hours. If a new sign appears or this gets worse, book a vet.'],
+  mild: ['ti-mood-smile', 'Likely mild — home care', 'This is usually not urgent. Keep {n} comfortable and hydrated, and see a vet if it lasts more than 2 days.']};
+function analyse(){
+  var p = pet(); if (!Object.keys(SEL).length) return;
+  LAST = triage(SEL, DUR, p); showTriage(LAST);
+  api(HP() + '/checks', {method: 'POST', body: {symptoms: LAST.symptoms, duration: DUR || undefined, level: LAST.level}}).then(function(d){ (CHK = CHK || []).unshift({id: d.id, symptoms: LAST.symptoms, duration: DUR, level: LAST.level, at: new Date().toISOString()}); }).catch(function(){});
+}
+function showTriage(t, quiet){
+  var p = pet(), L = LV[t.level], calls = phoneOf();
+  var acts = t.level === 'emergency'
+    ? (calls.slice(0, 2).map(function(c){ return '<a class="btn btn-r btn-s" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(c.name) + '</a>'; }).join('') + '<a class="btn btn-w btn-s" href="06_emergency.html"><i class="ti ti-building-hospital"></i>Emergency vets near me</a><button class="btn btn-w btn-s" onclick="setTab(\'firstaid\',1)"><i class="ti ti-first-aid-kit"></i>First aid steps</button>')
+    : t.level === 'urgent' ? '<button class="btn btn-o btn-s" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-calendar-plus"></i>Book a vet</button><button class="btn btn-w btn-s" onclick="askAboutCheck()"><i class="ti ti-message-chatbot"></i>Ask the AI what to do now</button>'
+    : '<button class="btn btn-b btn-s" onclick="askAboutCheck()"><i class="ti ti-message-chatbot"></i>Home-care tips from the AI</button><button class="btn btn-w btn-s" onclick="setTab(\'vitals\',1)"><i class="ti ti-heart-rate-monitor"></i>Log vitals</button>';
+  var el = document.getElementById('tri'); if (!el) return;
+  el.innerHTML = '<div class="tri ' + t.level + '" role="status"><h3><i class="ti ' + L[0] + '"></i>' + esc(L[1]) + '</h3><p>' + esc(L[2].replace('{n}', p.name)) + '</p><ul>' + t.why.map(function(w){ return '<li><i class="ti ti-info-circle"></i>' + esc(w) + '</li>'; }).join('') + '<li><i class="ti ti-list-check"></i>Signs: ' + esc(t.symptoms.map(function(k){ return SYML[k]; }).join(', ')) + (t.duration ? ' · ' + esc({now: 'just now', today: 'since today', days: '2–3 days', week: 'a week or more'}[t.duration]) : '') + '</li></ul>'
+    + t.notes.map(function(n){ return '<div class="vflag"><i class="ti ti-vaccine"></i><span>' + esc(n) + '</span></div>'; }).join('')
+    + '<div class="acts">' + acts + '</div><p style="font-size:11.5px;color:var(--muted)">A guide based on what you selected — not a diagnosis. When in doubt, call your vet.</p></div>';
+  if (!quiet) el.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+}
+function askAboutCheck(){ if (!LAST) return; var p = pet(); askAI(p.name + ' has: ' + LAST.symptoms.map(function(k){ return SYML[k].toLowerCase(); }).join(', ') + (LAST.duration ? ' (' + {now: 'just started', today: 'since today', days: 'for 2–3 days', week: 'for a week or more'}[LAST.duration] + ')' : '') + '. What should I do at home and when should I see a vet?'); }
 
-function getAIResponse(msg) {
-  const m = msg.toLowerCase();
-  const pName = petData[currentPet].name;
-  const pBreed = petData[currentPet].breed;
-  const pMeds = petData[currentPet].meds;
-  // Replace Bruno/Labrador placeholders with current pet
-  function adapt(text) {
-    return text.replace(/Bruno/g, pName).replace(/Labrador/g, pBreed).replace(/Heartgard Plus \+ NexGard \+ Omega-3/g, pMeds);
-  }
-  if (m.includes('vomit')) return adapt(aiResponses.vomiting);
-  if (m.includes('vaccine') || m.includes('vaccin') || m.includes('up to date') || m.includes('booster')) return adapt(aiResponses.vaccines);
-  if (m.includes('limp') || m.includes('leg') || m.includes('pain')) return adapt(aiResponses.limping);
-  if (m.includes('food') || (m.includes('eat') && m.includes('safe'))) return adapt(aiResponses.food);
-  if (m.includes('not eating') || m.includes('anorexia') || m.includes('appetite')) return adapt(aiResponses.notEating);
-  return adapt(aiResponses.default);
+/* ---------- AI chat ---------- */
+function chatState(){ return CHAT[PID] = CHAT[PID] || {msgs: [], hist: []}; }
+function quickQs(p){
+  var q = [], vc = vcounts(), n = p.name;
+  q.push('Is ' + n + ' up to date on vaccines?');
+  if (vc.over.length) q.push('What happens if ' + n + '\'s ' + vc.over[0].label.split(' (')[0] + ' booster is late?');
+  else if (vc.soon.length) q.push('What should I watch for after ' + n + '\'s ' + vc.soon[0].label.split(' (')[0] + ' vaccine?');
+  q.push(n + ' is vomiting — what should I do?');
+  q.push('Is ' + (lastWeight() ? lastWeight().kg + ' kg' : 'my pet\'s weight') + ' healthy for ' + (p.breed || ('a ' + (spKey(p) || 'pet'))) + '?');
+  q.push('Which human foods are dangerous for ' + (spKey(p) === 'cat' ? 'cats' : 'dogs') + '?');
+  if (activeMeds()[0]) q.push('Any side effects of ' + activeMeds()[0].name + '?');
+  return q;
+}
+function chatPanel(p){
+  var S = chatState(), vc = vcounts(), w = lastWeight();
+  return '<section class="card"><div class="cb" style="padding-top:18px"><div class="chatw"><div class="chatbox"><div class="chead">' + avatar(p) + '<div><b>AI Health Agent · ' + esc(p.name) + '</b><span>● Knows ' + esc(p.name) + '\'s records</span></div>'
+    + '<select aria-label="Reply language" onchange="CHAT_LANG=this.value;try{localStorage.setItem(\'pb_health_ai_lang\',this.value)}catch(e){}">' + [['en', 'English'], ['hi', 'हिन्दी'], ['bn', 'বাংলা'], ['ta', 'தமிழ்'], ['mr', 'मराठी'], ['te', 'తెలుగు'], ['kn', 'ಕನ್ನಡ'], ['gu', 'ગુજરાતી'], ['pa', 'ਪੰਜਾਬੀ'], ['ml', 'മലയാളം']].map(function(l){ return '<option value="' + l[0] + '"' + (CHAT_LANG === l[0] ? ' selected' : '') + '>' + l[1] + '</option>'; }).join('') + '</select></div>'
+    + '<div class="msgs" id="msgs" aria-live="polite"></div>'
+    + '<div class="qrs">' + quickQs(p).map(function(q){ return '<button onclick="askAI(this.textContent)">' + esc(q) + '</button>'; }).join('') + '</div>'
+    + '<div class="cin"><button class="mic" type="button" onclick="voice(this)" aria-label="Speak your question" title="Speak your question"><i class="ti ti-microphone"></i></button><textarea id="cin" rows="1" maxlength="1500" placeholder="Ask about ' + esc(p.name) + '\'s health…" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendAI()}" oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,120)+\'px\'"></textarea><button type="button" onclick="sendAI()" aria-label="Send"><i class="ti ti-send"></i></button></div></div>'
+    + '<div class="knows">' + pimg('phone-dog', 600) + '<div class="in"><b>What the AI can see</b><ul>'
+    + '<li><i class="ti ti-check"></i>' + esc(p.name) + ' · ' + esc([p.breed || cap(p.species), p.age_label].filter(Boolean).join(' · ') || 'profile') + '</li>'
+    + '<li><i class="ti ti-check"></i>' + (vc.records ? vc.records + ' vaccination record' + (vc.records > 1 ? 's' : '') + (vc.over.length ? ' · ' + vc.over.length + ' overdue' : '') : 'No vaccinations recorded yet') + '</li>'
+    + '<li><i class="ti ti-check"></i>' + (w ? 'Weight ' + w.kg + ' kg' : 'No weight logged') + ' · ' + activeMeds().length + ' active medicine' + (activeMeds().length === 1 ? '' : 's') + '</li>'
+    + '<li><i class="ti ti-check"></i>Latest vitals and recent symptom checks</li>'
+    + '<li><i class="ti ti-lock"></i>Not your name or phone number. Chats are not saved.</li></ul>'
+    + '<p style="font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5">The AI can make mistakes and can\'t examine ' + esc(p.name) + '. For emergencies, call a vet.</p></div></div></div></div></section>';
+}
+function mdLite(s){
+  var lines = esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').split(/\n/), out = '', inl = false;
+  lines.forEach(function(l){ var m = /^\s*(?:[-•*]|\d+\.)\s+(.*)/.exec(l); if (m) { if (!inl) { out += '<ul>'; inl = true; } out += '<li>' + m[1] + '</li>'; } else { if (inl) { out += '</ul>'; inl = false; } if (l.trim()) out += '<div>' + l.replace(/^#+\s*/, '') + '</div>'; } });
+  return out + (inl ? '</ul>' : '');
+}
+function drawChat(){
+  var el = document.getElementById('msgs'); if (!el) return; var S = chatState(), p = pet();
+  var intro = '<div class="bb ai"><div class="lbl"><i class="ti ti-sparkles"></i>AI Health Agent</div>Hi! I\'m here to help with ' + esc(p.name) + '\'s health. I can see ' + esc(him(p)[1]) + ' vaccination diary, weight, medicines and recent checks. What\'s on your mind?</div>';
+  el.innerHTML = intro + S.msgs.map(function(m){ return m.role === 'user' ? '<div class="bb me">' + esc(m.text) + '</div>' : m.role === 'err' ? '<div class="bb err">' + esc(m.text) + '</div>' : '<div class="bb ai"><div class="lbl"><i class="ti ti-sparkles"></i>AI Health Agent</div>' + mdLite(m.text) + '</div>'; }).join('') + (BUSY ? '<div class="typing"><i></i><i></i><i></i></div>' : '');
+  el.scrollTop = el.scrollHeight;
+}
+function askAI(text){ if (TAB !== 'chat') setTab('chat', 1); var ta = document.getElementById('cin'); if (ta) { ta.value = text; } sendAI(); }
+function sendAI(){
+  var ta = document.getElementById('cin'); if (!ta || BUSY) return; var text = ta.value.trim(); if (text.length < 2) return;
+  ta.value = ''; ta.style.height = '';
+  var S = chatState(), pid = PID; S.msgs.push({role: 'user', text: text}); BUSY = true; drawChat();
+  api(HP() + '/chat', {method: 'POST', body: {message: text, history: S.hist.slice(-8), lang: CHAT_LANG}}).then(function(d){
+    S.hist.push({role: 'user', content: text}, {role: 'assistant', content: d.reply}); S.msgs.push({role: 'ai', text: d.reply});
+  }).catch(function(e){ if (e.status === 401) return fail(e); S.msgs.push({role: 'err', text: e.message || 'The AI is not available right now. If you are worried, please call your vet.'}); })
+    .then(function(){ BUSY = false; if (pid === PID) drawChat(); });
+}
+var REC = null;
+function voice(btn){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) { toast('Voice typing is not supported in this browser'); return; }
+  if (REC) { try { REC.stop(); } catch (e) {} REC = null; btn.classList.remove('rec'); return; }
+  REC = new SR(); REC.lang = {en: 'en-IN', hi: 'hi-IN', bn: 'bn-IN', ta: 'ta-IN', mr: 'mr-IN', te: 'te-IN', kn: 'kn-IN', gu: 'gu-IN', pa: 'pa-IN', ml: 'ml-IN'}[CHAT_LANG] || 'en-IN'; REC.interimResults = false;
+  REC.onresult = function(e){ var ta = document.getElementById('cin'); if (ta) ta.value = (ta.value ? ta.value + ' ' : '') + e.results[0][0].transcript; };
+  REC.onend = function(){ REC = null; btn.classList.remove('rec'); }; REC.onerror = REC.onend;
+  btn.classList.add('rec'); try { REC.start(); } catch (e) { REC = null; btn.classList.remove('rec'); }
 }
 
-function appendMessage(text, role) {
-  const wrap = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'chat-bubble ' + role;
-  if (role === 'ai') {
-    div.innerHTML = `<div class="ai-label">PawBook AI</div>${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}`;
-  } else {
-    div.textContent = text;
-  }
-  wrap.appendChild(div);
-  wrap.scrollTop = wrap.scrollHeight;
-}
-
-function showTyping() {
-  const wrap = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.id = 'typingIndicator';
-  div.className = 'chat-typing';
-  div.innerHTML = '<div class="chat-dot"></div><div class="chat-dot"></div><div class="chat-dot"></div>';
-  wrap.appendChild(div);
-  wrap.scrollTop = wrap.scrollHeight;
-}
-
-function hideTyping() {
-  const el = document.getElementById('typingIndicator');
-  if (el) el.remove();
-}
-
-function sendMessage() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = '';
-  input.style.height = '';
-  document.getElementById('quickReplies').style.display = 'none';
-  appendMessage(text, 'user');
-  showTyping();
-  setTimeout(() => {
-    hideTyping();
-    appendMessage(getAIResponse(text), 'ai');
-  }, 1000 + Math.random() * 800);
-}
-
-function sendQuick(text) {
-  document.getElementById('chatInput').value = text;
-  sendMessage();
-}
-
-function handleChatKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-}
-
-// ===== FIRST AID CONTENT =====
-const firstAidContent = {
-  choking: { title: '😮 Choking — First Aid Steps', steps: ['Stay calm and do NOT reach blindly into the throat.','If Bruno is conscious, try a modified Heimlich: place hands around his abdomen just behind the rib cage and give 3–5 firm upward thrusts.','If you can see the object, carefully remove it with fingers or blunt tweezers.','If Bruno loses consciousness, begin pet CPR and rush to the vet.','Never force food or water.','Call the vet immediately.'] },
-  bleeding: { title: '🩸 Severe Bleeding — First Aid Steps', steps: ['Apply firm direct pressure with a clean cloth or gauze for at least 5 minutes. Do not remove — add more cloth on top.','If a limb is bleeding, elevate it above heart level if possible.','Do NOT apply a tourniquet unless bleeding is life-threatening and you are trained.','Once bleeding slows, secure with a bandage (not too tight).','Keep Bruno still and calm.','Transport to emergency vet immediately.'] },
-  seizure: { title: '⚡ Seizure — First Aid Steps', steps: ['Do NOT restrain Bruno or put anything in his mouth.','Clear the area of furniture or sharp objects.','Time the seizure — if it lasts over 5 minutes, go to emergency immediately.','After seizure ends, keep him in a quiet dark room. He may be confused.','Do not offer food or water until fully alert.','Call the vet after every seizure — Bruno\'s medication may need review.'] },
-  poison: { title: '☠️ Poisoning — First Aid Steps', steps: ['Identify what Bruno may have eaten — bring the packaging to the vet.','Do NOT induce vomiting unless explicitly told to by a vet or poison helpline.','If substance is on skin/fur, wash with mild soap and water.','Note the time of ingestion and any symptoms.','Call Pet Poison Helpline or your vet immediately.','Common toxins: chocolate, grapes, onion, xylitol, rat poison, human medications.'] },
-  heatstroke: { title: '🌡️ Heatstroke — First Aid Steps', steps: ['Move Bruno to a cool shaded area immediately.','Apply cool (not ice cold) water to paws, neck, and armpits.','Place a wet towel on him — do NOT use ice as it constricts blood vessels.','Offer small sips of cool water if conscious.','Fan him while applying water.','Rush to vet even if he seems to recover — internal damage may not be visible.'] },
-  fracture: { title: '🦴 Broken Bone — First Aid Steps', steps: ['Do NOT try to set or straighten the bone.','Restrict Bruno\'s movement — carry him on a flat board if possible.','Muzzle gently if he seems like he might bite from pain.','For an open fracture (bone visible): cover loosely with clean cloth.','Immobilize the limb with a makeshift splint only if confident.','Transport to emergency vet as soon as possible.'] }
+/* ---------- first aid ---------- */
+var FA = {
+  choking: ['😮', 'Choking', ['If your pet can still breathe and cough, let them cough and go to the vet — don\'t put your hand in the mouth.', 'If you can clearly see the object and your pet allows it, remove it gently with fingers. Never push it deeper.', 'For a small pet: hold them with the back against your chest and give 5 firm thrusts just below the ribs. For a large dog: stand behind, hands below the ribs, 5 firm upward thrusts.', 'Check the mouth again after the thrusts.', 'Go to a vet straight away, even if the object comes out.']],
+  bleeding: ['🩸', 'Severe bleeding', ['Press firmly on the wound with a clean cloth or gauze for at least 5 minutes without lifting to check.', 'If blood soaks through, add more cloth on top — don\'t remove the first layer.', 'Keep your pet still and calm. Wrap the area firmly but not too tight.', 'Avoid a tourniquet unless you are trained.', 'Go to a vet immediately.']],
+  seizure: ['⚡', 'Seizure', ['Keep calm. Move furniture or sharp objects away. Don\'t hold your pet down or put anything in the mouth.', 'Note the time — a seizure longer than 5 minutes, or several in a row, is an emergency.', 'Keep the room quiet and dim. Keep children and other pets away.', 'After it stops your pet may be confused or blind for a while. Let them rest; no food or water until fully alert.', 'Call your vet after any seizure.']],
+  poison: ['☠️', 'Poisoning', ['Move your pet away from the substance and keep the packaging or a sample.', 'Do not make your pet vomit unless a vet tells you to — some poisons do more harm coming back up.', 'If it is on the skin or fur, rinse with lots of lukewarm water.', 'Call your vet immediately and tell them what, how much and when.', 'Common poisons: chocolate, grapes and raisins, onion and garlic, xylitol, rat poison, human medicines, insecticides, lilies (cats).']],
+  heatstroke: ['🌡️', 'Heatstroke', ['Move your pet to shade or a cool room straight away.', 'Pour cool (not ice-cold) water over the body, especially the belly, neck and paws, and use a fan.', 'Offer small amounts of cool water to drink if they are alert.', 'Stop cooling once breathing settles — over-cooling is also dangerous.', 'Go to a vet even if they seem better; heatstroke can damage organs.']],
+  fracture: ['🦴', 'Broken bone or injury', ['Keep your pet as still as possible. Don\'t try to straighten the limb.', 'A hurt pet may bite — use a soft muzzle or towel if needed (not if vomiting or struggling to breathe).', 'Cover open wounds with a clean cloth.', 'Carry large dogs on a flat board or blanket; small pets in a box or carrier.', 'Go to a vet straight away.']]
 };
-
-function setFirstAid(type) {
-  const data = firstAidContent[type];
-  document.getElementById('firstAidTitle').textContent = data.title;
-  document.getElementById('firstAidBody').innerHTML = data.steps.map((s,i) =>
-    `<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--pb-border)">
-      <div style="width:22px;height:22px;border-radius:50%;background:var(--pb-red);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
-      <div style="font-size:13px;line-height:1.6;color:var(--pb-text)">${s}</div>
-    </div>`
-  ).join('') + `<div style="padding:12px;margin-top:4px;background:var(--pb-red-soft);border-radius:var(--pb-radius-sm);font-size:12px;color:var(--pb-red);font-weight:700">⚠️ This is first aid guidance only. Always follow up with a qualified veterinarian immediately.</div>`;
+function firstAidPanel(p){
+  return '<div class="ch" style="padding:0 0 10px"><h2><i class="ti ti-first-aid-kit"></i>First aid &amp; emergency</h2></div>'
+    + '<div class="sos" style="margin-top:0">' + pimg('doctor-dog', 500) + '<div><b><i class="ti ti-urgent"></i>Go to a vet immediately if you see</b><p>These signs can\'t wait. First aid only buys time on the way.</p></div><div class="act"><a class="btn btn-r btn-s" href="06_emergency.html"><i class="ti ti-building-hospital"></i>Emergency vets</a></div></div>'
+    + '<div class="redlist" style="margin-top:12px">' + ['Breathing trouble, blue or very pale gums', 'Collapse, can\'t stand or unresponsive', 'Seizure longer than 5 minutes or repeated', 'Heavy bleeding that won\'t stop', 'Swollen hard belly with retching', 'Straining to urinate with little or nothing', 'Ate a poison, medicine, chocolate or xylitol', 'Hit by a vehicle or a fall from height'].map(function(s){ return '<div><i class="ti ti-alert-triangle"></i>' + esc(s) + '</div>'; }).join('') + '</div>'
+    + '<h3 style="font-size:15px;font-weight:800;color:var(--navy);margin:18px 0 10px">Step-by-step guides</h3><div class="fa">'
+    + Object.keys(FA).map(function(k){ return '<div class="first-aid-card" role="button" tabindex="0" onclick="openFA(\'' + k + '\'); setFirstAid(\'' + k + '\')" onkeydown="if(event.key===\'Enter\')openFA(\'' + k + '\')"><div class="first-aid-emoji">' + FA[k][0] + '</div><div><div class="first-aid-title">' + esc(FA[k][1]) + '</div><div class="first-aid-sub">' + FA[k][2].length + ' steps · tap to open</div></div></div>'; }).join('') + '</div>'
+    + '<div class="how">' + pimg('cat-bandage', 500) + '<div><b style="font-size:14px;color:var(--navy)">Keep a small pet first-aid kit</b><ul><li><i class="ti ti-check"></i>Gauze, a soft bandage roll and clean cloths</li><li><i class="ti ti-check"></i>Saline for rinsing eyes and wounds</li><li><i class="ti ti-check"></i>A towel or blanket to carry and keep warm</li><li><i class="ti ti-check"></i>Your vet\'s number saved — add it under Vets &amp; contacts</li></ul></div></div>';
 }
-
-function copyPassport() {
-  navigator.clipboard?.writeText('https://pawbook.deemona.com/passport/bruno-3x7k').catch(() => {});
-  alert('Health passport link copied! Share it with your vet.');
+function setFirstAid(){}   // kept for the "Save to My PawBook" buttons, which read the onclick
+function openFA(k){
+  var f = FA[k]; MO = null;
+  document.getElementById('fa-title').textContent = f[0] + ' ' + f[1];
+  document.getElementById('fa-body').innerHTML = '<ol class="steps2">' + f[2].map(function(s, i){ return '<li><b>' + (i + 1) + '</b><span>' + esc(s) + '</span></li>'; }).join('') + '</ol><div class="warn">⚠️ First aid only. Always get your pet checked by a vet straight after.</div>';
+  var c = phoneOf()[0]; document.getElementById('fa-call').innerHTML = c ? '<a class="btn btn-r" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call ' + esc(c.name) + '</a>' : '<a class="btn btn-r" href="06_emergency.html"><i class="ti ti-building-hospital"></i>Emergency vets</a>';
+  document.getElementById('faModal').classList.add('open'); document.body.style.overflow = 'hidden';
 }
+function closeFA(){ document.getElementById('faModal').classList.remove('open'); document.body.style.overflow = ''; }
 
-// Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(r => console.log('[SW] Registered:', r.scope))
-      .catch(e => console.warn('[SW] Failed:', e));
+/* ---------- vitals ---------- */
+function rangeOf(k){ var r = (VIT && VIT.ranges) || {}; return r[spKey(pet())] ? r[spKey(pet())][k] : null; }
+function vDot(v, k){ var r = rangeOf(k); if (v == null || !r) return ''; return v < r[0] ? 'lo' : v > r[1] ? 'hi' : 'ok'; }
+function vitalsPanel(p){
+  var l = (VIT && VIT.vitals) || [], v = l[0] || {}, w = lastWeight();
+  var tile = function(lbl, val, unit, k){ var r = rangeOf(k); return '<div class="vt"><i class="dot ' + vDot(val, k) + '"></i><span>' + lbl + '</span><b>' + (val == null ? '—' : val) + ' <small>' + unit + '</small></b><em>' + (r ? 'Typical at rest: ' + r[0] + '–' + r[1] : 'Ask your vet what\'s normal') + '</em></div>'; };
+  return '<section class="card"><div class="ch"><h2><i class="ti ti-heart-rate-monitor"></i>' + esc(p.name) + '\'s vitals</h2><button class="btn btn-o btn-s" onclick="vitalsForm()"><i class="ti ti-plus"></i>Log vitals</button></div><div class="cb">'
+    + '<div class="vgrid">' + tile('Heart rate', v.heart_rate, '/min', 'hr') + tile('Breathing', v.resp_rate, '/min', 'rr') + tile('Temperature', v.temp_f, '°F', 'temp_f')
+    + '<div class="vt"><i class="dot"></i><span>Weight</span><b>' + (w ? w.kg : '—') + ' <small>kg</small></b><em>' + (w && w.date ? 'Logged ' + fd(w.date) : 'Not logged yet') + '</em></div></div>'
+    + (v.at ? '<p class="muted" style="font-size:12px;margin-top:8px">Last measured ' + esc(fdt(v.at)) + (v.gums ? ' · gums ' + esc(v.gums) : '') + '. Ranges are general guides for healthy adult ' + (spKey(p) === 'cat' ? 'cats' : 'dogs') + ' at rest; puppies, kittens and small breeds can be higher.</p>' : '')
+    + (l.length ? '<table class="tbl"><thead><tr><th>When</th><th>Heart</th><th>Breathing</th><th>Temp</th><th class="hs">Gums</th><th class="hs">Note</th><th></th></tr></thead><tbody>' + l.slice(0, 12).map(function(x){ return '<tr><td>' + esc(fdt(x.at)) + '</td><td>' + (x.heart_rate == null ? '—' : x.heart_rate) + '</td><td>' + (x.resp_rate == null ? '—' : x.resp_rate) + '</td><td>' + (x.temp_f == null ? '—' : x.temp_f + '°F') + '</td><td class="hs">' + esc(x.gums || '—') + '</td><td class="hs">' + esc(x.note || '') + '</td><td><button onclick="delVit(' + x.id + ')" aria-label="Delete"><i class="ti ti-trash"></i></button></td></tr>'; }).join('') + '</tbody></table>'
+      : emptyBox('💓', 'No vitals logged yet', 'Measuring at home when ' + p.name + ' is calm gives your vet a useful baseline.', ''))
+    + '<div class="how">' + pimg('ultrasound', 500) + '<div><b style="font-size:14px;color:var(--navy)">How to measure at home</b><ul><li><i class="ti ti-heart"></i><span><b>Heart rate:</b> place a hand on the left side of the chest behind the elbow; count beats for 15 seconds and multiply by 4.</span></li><li><i class="ti ti-lungs"></i><span><b>Breathing:</b> while resting or asleep, count chest rises for 30 seconds and multiply by 2.</span></li><li><i class="ti ti-temperature"></i><span><b>Temperature:</b> only with a pet thermometer and if your pet is calm; ear or rectal. Skip it if unsure.</span></li><li><i class="ti ti-mood-smile"></i><span><b>Gums:</b> healthy gums are pink and moist. Pale, blue or yellow gums need a vet now.</span></li></ul></div></div></div></section>';
+}
+function vitalsForm(){
+  var p = pet();
+  openMo('Log vitals for ' + p.name, '<div class="two"><label class="fl" data-f="heart_rate"><span>Heart rate (/min)</span><input class="fi" name="heart_rate" type="number" inputmode="numeric" min="20" max="400"><div class="err">Check this number</div></label><label class="fl" data-f="resp_rate"><span>Breathing (/min)</span><input class="fi" name="resp_rate" type="number" inputmode="numeric" min="4" max="200"><div class="err">Check this number</div></label></div>'
+    + '<div class="two"><label class="fl" data-f="temp_f"><span>Temperature (°F)</span><input class="fi" name="temp_f" type="number" inputmode="decimal" step="0.1" min="90" max="110"><div class="err">Between 90 and 110 °F</div></label><label class="fl" data-f="weight"><span>Weight (kg)</span><input class="fi" name="weight" type="number" inputmode="decimal" step="0.1" min="0.05" max="200"><div class="err">Check the weight</div></label></div>'
+    + '<div class="fl"><span>Gum colour</span><div class="seg">' + [['', 'Not checked'], ['pink', 'Pink'], ['pale', 'Pale'], ['blue', 'Blue / grey'], ['red', 'Bright red'], ['yellow', 'Yellow']].map(function(g, i){ return '<label><input type="radio" name="gums" value="' + g[0] + '"' + (i === 0 ? ' checked' : '') + '><span>' + g[1] + '</span></label>'; }).join('') + '</div></div>'
+    + '<label class="fl"><span>Note (optional)</span><input class="fi" name="note" maxlength="300" placeholder="e.g. after a walk, resting, at night"></label><p class="muted" style="font-size:12px">Fill in only what you measured. Weight is also saved to ' + esc(p.name) + '\'s Pet Health record.</p>', function(f){
+    clearBad(f);
+    var b = {heart_rate: f.heart_rate.value || null, resp_rate: f.resp_rate.value || null, temp_f: f.temp_f.value || null, gums: (f.querySelector('input[name=gums]:checked') || {}).value || null, note: f.note.value.trim() || null}, wt = f.weight.value;
+    var has = b.heart_rate || b.resp_rate || b.temp_f || b.gums;
+    if (!has && !wt) return markBad(f, ['heart_rate']);
+    busy(true);
+    var jobs = []; if (has) jobs.push(api(HP() + '/vitals', {method: 'POST', body: b})); if (wt) jobs.push(api(P() + '/logs', {method: 'POST', body: {kind: 'weight', value: wt}}));
+    Promise.all(jobs).then(function(){ closeMo(); toast('Vitals saved'); var gc = b.gums === 'pale' || b.gums === 'blue' || b.gums === 'yellow'; if (gc) toast('Pale, blue or yellow gums need a vet now'); TAB = 'vitals'; return loadPet(); })
+      .catch(function(e){ busy(false); if (e.fields) markBad(f, e.fields.map(function(x){ return x === 'value' ? 'weight' : x; })); fail(e); });
   });
 }
+function delVit(id){ api('/healthagent/vitals/' + id, {method: 'DELETE'}).then(function(){ VIT.vitals = VIT.vitals.filter(function(x){ return x.id !== id; }); setTab('vitals'); toast('Deleted'); }).catch(fail); }
+
+/* ---------- vets & contacts ---------- */
+function contactsPanel(p){
+  var vets = (CT && CT.vets) || [], cs = (CT && CT.contacts) || [];
+  return '<div class="grid"><section class="card"><div class="ch"><h2><i class="ti ti-stethoscope"></i>Your vets</h2><button class="btn btn-w btn-s" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-search"></i>Find a vet</button></div><div class="cb">'
+    + (vets.length ? '<div class="rows">' + vets.map(function(v){ return '<div class="ctc"><span class="ic c-sage"><i class="ti ti-stethoscope"></i></span><div class="t"><b>' + esc(v.clinic || v.name || 'Vet') + '</b><span>' + esc([v.clinic ? v.name : null, v.city].filter(Boolean).join(' · ')) + '</span></div><div class="act">' + (v.phone ? '<a class="btn btn-g btn-s" href="' + tel(v.phone) + '"><i class="ti ti-phone"></i>Call</a>' : '') + '<a class="btn btn-w btn-s" href="16_vet_profile.html?id=' + encodeURIComponent(v.id) + '">View</a></div></div>'; }).join('') + '</div>'
+      : emptyBox('🩺', 'No vets yet', 'Vets you book or save on PawBook appear here with a one-tap call button.', '<button class="btn btn-o btn-s" onclick="location.href=\'11_vet_booking.html\'"><i class="ti ti-search"></i>Find a vet</button>'))
+    + '<div class="disc"><i class="ti ti-building-hospital"></i><span>Need a 24-hour clinic? See <a href="06_emergency.html" style="color:var(--blue);font-weight:700">emergency vets by city</a>. Lost pet? Use <a href="38_lost_pet_network.html" style="color:var(--blue);font-weight:700">Lost &amp; Found</a>.</span></div></div></section>'
+    + '<section class="card"><div class="ch"><h2><i class="ti ti-address-book"></i>Your emergency contacts</h2><button class="btn btn-o btn-s" onclick="contactForm()"><i class="ti ti-plus"></i>Add</button></div><div class="cb">'
+    + (cs.length ? '<div class="rows">' + cs.map(function(c){ return '<div class="ctc"><span class="ic c-sky"><i class="ti ti-user-heart"></i></span><div class="t"><b>' + esc(c.name) + '</b><span>' + esc([c.role, c.phone].filter(Boolean).join(' · ')) + '</span></div><div class="act"><a class="btn btn-g btn-s" href="' + tel(c.phone) + '"><i class="ti ti-phone"></i>Call</a><button class="mini" onclick="delContact(' + c.id + ',this)" aria-label="Remove"><i class="ti ti-trash"></i></button></div></div>'; }).join('') + '</div>'
+      : emptyBox('📇', 'Add someone you trust', 'A neighbour who can drive, a pet sitter or your nearest clinic — saved here for when every minute counts. Only you can see this list.', '<button class="btn btn-o btn-s" onclick="contactForm()"><i class="ti ti-plus"></i>Add contact</button>'))
+    + '</div></section></div>';
+}
+function contactForm(){
+  openMo('Add emergency contact', '<label class="fl" data-f="name"><span>Name *</span><input class="fi" name="name" maxlength="100" placeholder="e.g. Dr. Rao, Neighbour Ravi, City Pet Clinic"><div class="err">Please enter a name</div></label>'
+    + '<label class="fl"><span>Role</span><input class="fi" name="role" maxlength="60" placeholder="Vet, 24h clinic, pet sitter, can drive…"></label>'
+    + '<label class="fl" data-f="phone"><span>Phone *</span><input class="fi" name="phone" type="tel" maxlength="30" placeholder="+91"><div class="err">Please enter a valid phone number</div></label><p class="muted" style="font-size:12px">Private to you. The AI never sees these numbers.</p>', function(f){
+    clearBad(f); var b = {name: f.name.value.trim(), role: f.role.value.trim(), phone: f.phone.value.trim()}, e = [];
+    if (b.name.length < 2) e.push('name'); if (!/^[+\d][\d\s-]{5,20}$/.test(b.phone)) e.push('phone'); if (e.length) return markBad(f, e);
+    busy(true); api('/healthagent/contacts', {method: 'POST', body: b}).then(function(){ return api('/healthagent/contacts'); }).then(function(d){ CT = d; closeMo(); toast('Contact saved'); TAB = 'contacts'; render(); setTab('contacts', 1); }).catch(function(x){ busy(false); if (x.fields) markBad(f, x.fields); fail(x); });
+  });
+}
+function delContact(id, btn){ if (btn.getAttribute('data-sure') !== '1') { btn.setAttribute('data-sure', '1'); btn.innerHTML = '<i class="ti ti-check"></i>'; toast('Tap again to remove'); return; } api('/healthagent/contacts/' + id, {method: 'DELETE'}).then(function(){ CT.contacts = CT.contacts.filter(function(c){ return c.id !== id; }); render(); setTab('contacts'); }).catch(fail); }
+
+/* ---------- history ---------- */
+function historyPanel(p){
+  var l = CHK || [], LB = {emergency: ['p-over', 'Vet now'], urgent: ['p-soon', 'Within 24h'], monitor: ['p-info', 'Watch'], mild: ['p-ok', 'Mild']};
+  return '<section class="card"><div class="ch"><h2><i class="ti ti-history"></i>' + esc(p.name) + '\'s symptom checks</h2><span class="muted" style="font-size:12.5px">Show this to your vet</span></div><div class="cb">'
+    + (l.length ? '<div class="rows">' + l.map(function(c){ var lb = LB[c.level] || LB.mild; return '<div class="row"><span class="ic ' + (c.level === 'emergency' ? 'c-coral' : c.level === 'urgent' ? 'c-amber' : 'c-sky') + '"><i class="ti ti-clipboard-heart"></i></span><div class="t"><b>' + esc(c.symptoms.map(function(k){ return SYML[k] || k; }).join(', ')) + '</b><span>' + esc(fdt(c.at)) + (c.duration ? ' · ' + esc({now: 'just started', today: 'since that day', days: '2–3 days', week: 'a week or more'}[c.duration] || '') : '') + '</span></div><span class="pill ' + lb[0] + '">' + lb[1] + '</span><button class="mini" onclick="delCheck(' + c.id + ')" aria-label="Delete"><i class="ti ti-trash"></i></button></div>'; }).join('') + '</div>'
+      : emptyBox('📋', 'No checks yet', 'Each symptom check is saved here with the date, so you can tell your vet exactly what happened and when.', '<button class="btn btn-o btn-s" onclick="setTab(\'symptoms\',1)"><i class="ti ti-stethoscope"></i>Check symptoms</button>'))
+    + '</div></section>';
+}
+function delCheck(id){ api('/healthagent/checks/' + id, {method: 'DELETE'}).then(function(){ CHK = CHK.filter(function(c){ return c.id !== id; }); setTab('history'); }).catch(fail); }
+
+/* ---------- modal helpers ---------- */
+function openMo(title, body, onSubmit){ MO = {submit: onSubmit}; document.getElementById('mo-title').textContent = title; document.getElementById('mo-body').innerHTML = body; document.getElementById('mo').classList.add('open'); document.body.style.overflow = 'hidden'; busy(false); }
+function closeMo(){ document.getElementById('mo').classList.remove('open'); document.body.style.overflow = ''; MO = null; }
+function submitMo(e){ e.preventDefault(); if (MO && MO.submit) MO.submit(e.target); }
+function busy(on){ var b = document.getElementById('mo-save'); if (b) b.disabled = !!on; }
+function markBad(f, l){ l.forEach(function(k){ var el = f.querySelector('[data-f="' + k + '"]'); if (el) el.classList.add('bad'); }); }
+function clearBad(f){ f.querySelectorAll('.fl.bad').forEach(function(x){ x.classList.remove('bad'); }); }
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeMo(); closeFA(); } });
+document.addEventListener('DOMContentLoaded', boot);
 </script>
 
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
@@ -946,10 +999,9 @@ if ('serviceWorker' in navigator) {
     <button class="drawer-item" onclick="closeDrawer();goTo('25_analytics.html')"><i class="ti ti-chart-bar"></i> Analytics</button>
 
     <div class="drawer-section">Health &amp; Care</div>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('37_pet_ai_health_agent.html')"><i class="ti ti-urgent"></i> Emergency Health AI ⭐ <span class="drawer-badge">New</span></button>
     <button class="drawer-item" onclick="closeDrawer();goTo('36_abuse_reporting.html')"><i class="ti ti-shield-exclamation" style="color:#dc2626"></i> Report Abuse</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-ambulance"></i> Emergency</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-vaccine"></i> Vaccination Diary</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('06_emergency.html')"><i class="ti ti-ambulance"></i> Emergency Services</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('10_vaccination.html')"><i class="ti ti-sparkles"></i> Vaccination Intelligence ⭐ <span class="drawer-badge">New</span></button>
     <button class="drawer-item" onclick="closeDrawer();goTo('23_nutrition.html')"><i class="ti ti-apple"></i> Nutrition</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('22_training.html')"><i class="ti ti-school"></i> Training</button>
@@ -1019,11 +1071,12 @@ if ('serviceWorker' in navigator) {
             if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
             if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
             if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+            var nu=(d.data&&(d.data.user||d.data))||d.user||d,nm=nu.full_name||nu.name||nu.username||'',pic=nu.avatar_url||nu.avatar||'',av=el('nav-av');
+            if(av){ if(/^https:\/\//.test(pic)){ var im=new Image(); im.alt=''; im.onerror=function(){ av.textContent=(nm.charAt(0)||'·').toUpperCase(); }; im.src=pic; av.textContent=''; av.appendChild(im); } else if(nm) av.textContent=nm.charAt(0).toUpperCase(); }
           }).catch(()=>{});
       }catch(e){}
     })();
   </script>
-<script src="pawbook-ai-widget.v4.js?v=5"></script>
 <script>/* PB admin-only sidebar link */(function(){try{var t=localStorage.getItem('pb_token');if(!t)return;var u=JSON.parse(localStorage.getItem('pb_user')||'null')||{};
 var A='https://pawbook.deemona.com/api/v1/shop/admin/',o={headers:{Authorization:'Bearer '+t},credentials:'include'};
 var g=function(p){return fetch(A+p,o).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});};
