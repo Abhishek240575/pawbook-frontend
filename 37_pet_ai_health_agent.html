@@ -1031,23 +1031,25 @@ try { var _nb = JSON.parse(localStorage.getItem('pb_health_loc') || localStorage
 var NR = null, NRKEY = '', NRBUSY = false;   // results for the current place
 function saveNB(){ try { localStorage.setItem('pb_health_loc', JSON.stringify({country: NB.country, state: NB.state, city: NB.city, area: NB.area})); } catch (e) {} }
 function placeLabel(){ return NB.geo ? 'your current location' : [NB.area, NB.city, NB.state].filter(Boolean).join(', ') || ''; }
-var GMP = null;
+var GMP = null, GERR = '';
+window.gm_authFailure = function(){ GERR = 'Google Maps rejected the API key for this website (check the key\'s allowed websites and that "Places API (New)" is enabled).'; if (NR) NR.failed = true; paintNearby(); };
 function loadMaps(){
   if (window.google && google.maps && google.maps.places && google.maps.places.Place) return Promise.resolve(google.maps);
   if (GMP) return GMP;
-  GMP = new Promise(function(res, rej){ window._haMaps = function(){ res(google.maps); }; var s = document.createElement('script'); s.src = 'https://maps.googleapis.com/maps/api/js?key=' + GMAPS_KEY + '&libraries=places&v=weekly&region=IN&callback=_haMaps'; s.async = true; s.onerror = function(){ GMP = null; rej(new Error('maps')); }; document.head.appendChild(s); setTimeout(function(){ rej(new Error('timeout')); }, 15000); });
+  GMP = new Promise(function(res, rej){ window._haMaps = function(){ res(google.maps); }; var s = document.createElement('script'); s.src = 'https://maps.googleapis.com/maps/api/js?key=' + GMAPS_KEY + '&libraries=places&v=weekly&region=IN&callback=_haMaps'; s.async = true; s.onerror = function(){ GMP = null; GERR = 'Google Maps could not be loaded (network or blocked script).'; rej(new Error('maps')); }; document.head.appendChild(s); setTimeout(function(){ rej(new Error('timeout')); }, 15000); });
   return GMP;
 }
 function km(a, b, c, d){ var r = function(x){ return x * Math.PI / 180; }, dl = r(c - a), dn = r(d - b), h = Math.sin(dl / 2) * Math.sin(dl / 2) + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(dn / 2) * Math.sin(dn / 2); return Math.round(6371 * 2 * Math.asin(Math.sqrt(h)) * 10) / 10; }
 function geoCenter(gm){
   if (NB.lat != null) return Promise.resolve({lat: NB.lat, lng: NB.lng});
   var q = [NB.area, NB.city, NB.state, NB.country].filter(Boolean).join(', ');
-  return new Promise(function(res){ try { new gm.Geocoder().geocode({address: q}, function(r, s){ if (s === 'OK' && r[0]) { var l = r[0].geometry.location; res({lat: l.lat(), lng: l.lng()}); } else res(null); }); } catch (e) { res(null); } });
+  var viaPlaces = function(){ return gm.places.Place.searchByText({textQuery: q, fields: ['location'], maxResultCount: 1}).then(function(r){ var p = (r.places || [])[0]; return p && p.location ? {lat: p.location.lat(), lng: p.location.lng()} : null; }).catch(function(){ return null; }); };
+  return new Promise(function(res){ try { new gm.Geocoder().geocode({address: q}, function(r, s){ if (s === 'OK' && r[0]) { var l = r[0].geometry.location; res({lat: l.lat(), lng: l.lng()}); } else viaPlaces().then(res); }); } catch (e) { viaPlaces().then(res); } });
 }
 function is24(p){ try { var o = p.regularOpeningHours; if (!o) return false; if ((o.weekdayDescriptions || []).some(function(d){ return /24 hours|24 घंटे/i.test(d); })) return true; var pr = o.periods || []; return pr.length === 1 && pr[0].open && pr[0].open.hour === 0 && pr[0].open.minute === 0 && !pr[0].close; } catch (e) { return false; } }
 function gSearch(gm, text, type, c){
   var req = {textQuery: text, fields: ['id', 'displayName', 'formattedAddress', 'location', 'nationalPhoneNumber', 'internationalPhoneNumber', 'rating', 'userRatingCount', 'businessStatus', 'regularOpeningHours', 'utcOffsetMinutes', 'googleMapsURI'], maxResultCount: 12};
-  if (type) req.includedType = type; if (c) req.locationBias = new gm.Circle({center: c, radius: 15000});
+  if (type) req.includedType = type; if (c) req.locationBias = new gm.Circle({center: c, radius: NB.area || NB.geo ? 6000 : 15000});
   return gm.places.Place.searchByText(req).then(function(r){
     return Promise.all((r.places || []).filter(function(p){ return p.businessStatus !== 'CLOSED_PERMANENTLY'; }).map(function(p){
       var o = {id: p.id, name: p.displayName, address: p.formattedAddress, phone: p.nationalPhoneNumber || p.internationalPhoneNumber || null, rating: p.rating || null, reviews: p.userRatingCount || 0, h24: is24(p),
@@ -1055,7 +1057,7 @@ function gSearch(gm, text, type, c){
       if (c && o.lat != null) o.km = km(c.lat, c.lng, o.lat, o.lng);
       return (typeof p.isOpen === 'function' ? p.isOpen().then(function(v){ o.open = v; }).catch(function(){}) : Promise.resolve()).then(function(){ return o; });
     }));
-  }).then(function(l){ return l.filter(function(o){ return !c || o.km == null || o.km <= 40; }).sort(function(a, b){ return (b.open === true) - (a.open === true) || (a.km == null ? 999 : a.km) - (b.km == null ? 999 : b.km); }); });
+  }).then(function(l){ var max = NB.area || NB.geo ? 20 : 40; return l.filter(function(o){ return !c || o.km == null || o.km <= max; }).sort(function(a, b){ return (a.km == null ? 999 : a.km) - (b.km == null ? 999 : b.km) || (b.open === true) - (a.open === true); }); });
 }
 function loadNearby(force){
   var key = NB.geo ? 'geo:' + NB.lat + ',' + NB.lng : [NB.country, NB.state, NB.city, NB.area].join('|');
@@ -1063,9 +1065,11 @@ function loadNearby(force){
   if (!force && NR && NRKEY === key) return Promise.resolve(NR);
   NRBUSY = true; NRKEY = key; paintNearby();
   var where = NB.geo ? '' : ' in ' + [NB.area, NB.city, NB.state].filter(Boolean).join(', ');
-  var pb = api('/healthagent/nearby?' + new URLSearchParams({country: NB.country || '', state: NB.state || '', city: NB.city || ''})).catch(function(){ return {shelters: [], vets: [], orgs: []}; });
+  GERR = '';
+  var pb = api('/healthagent/nearby?' + new URLSearchParams({country: NB.country || '', state: NB.state || '', city: NB.city || '', area: NB.area || ''})).catch(function(){ return {shelters: [], vets: [], orgs: []}; });
   var g = loadMaps().then(function(gm){ return geoCenter(gm).then(function(c){
-    return Promise.all([gSearch(gm, '24 hour emergency veterinary hospital' + where, 'veterinary_care', c).catch(function(){ return null; }), gSearch(gm, 'veterinary clinic' + where, 'veterinary_care', c).catch(function(){ return null; }), gSearch(gm, 'animal shelter rescue' + where, null, c).catch(function(){ return null; })])
+    var ge = function(e){ GERR = 'Google Maps search failed: ' + ((e && e.message) || 'unknown error'); console.warn('[PawBook nearby]', e); return null; };
+    return Promise.all([gSearch(gm, '24 hour emergency veterinary hospital' + where, 'veterinary_care', c).catch(ge), gSearch(gm, 'veterinary clinic' + where, 'veterinary_care', c).catch(ge), gSearch(gm, 'animal shelter' + where, null, c).catch(ge)])
       .then(function(r){ return {center: c, emergency: r[0], vets: r[1], shelters: r[2]}; }); }); }).catch(function(){ return {failed: true}; });
   return Promise.all([pb, g]).then(function(r){
     if (NRKEY !== key) return NR;
@@ -1087,7 +1091,7 @@ function locBar(){
   var states = Object.keys(LOC[NB.country] || {}), cities = (LOC[NB.country] || {})[NB.state] || [];
   var sel = function(lbl, list, v, on){ return '<label class="fl"><span>' + lbl + '</span><select class="fi" aria-label="' + lbl + '" onchange="' + on + '"><option value="">Choose…</option>' + list.map(function(x){ return '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select></label>'; };
   return '<div class="locbar">' + sel('Country', Object.keys(LOC), NB.country, "setNB('country',this.value)") + sel('State', states, NB.state, "setNB('state',this.value)") + sel('City', cities, NB.city, "setNB('city',this.value)")
-    + '<label class="fl"><span>Area / locality</span><input class="fi" id="nb-area" placeholder="e.g. Saket, Andheri West" value="' + esc(NB.area) + '" onkeydown="if(event.key===\'Enter\'){setNB(\'area\',this.value.trim());loadNearby(true)}"></label>'
+    + '<label class="fl"><span>Area / locality</span><input class="fi" id="nb-area" placeholder="e.g. Saket, Andheri West" value="' + esc(NB.area) + '" onkeydown="if(event.key===\'Enter\'){setNB(\'area\',this.value.trim());loadNearby(true)}" onchange="if(this.value.trim()!==NB.area){setNB(\'area\',this.value.trim());loadNearby(true)}"></label>'
     + '<div class="lbtns"><button class="btn btn-b btn-s" onclick="NB.area=(document.getElementById(\'nb-area\')||{}).value||\'\';NB.area=NB.area.trim();NB.geo=false;NB.lat=null;NB.lng=null;saveNB();loadNearby(true)"><i class="ti ti-search"></i>Search</button><button class="btn btn-w btn-s" onclick="useMyLocation()"><i class="ti ti-current-location"></i>Use my location</button></div></div>'
     + (NB.geo ? '<div class="locnow"><i class="ti ti-current-location"></i>Showing help near your current location</div>' : '');
 }
@@ -1096,7 +1100,7 @@ function placeRow(x, kind){
   return '<div class="ctc"><span class="ic ' + (kind === 'e' ? 'c-coral' : kind === 's' ? 'c-amber' : 'c-sage') + '"><i class="ti ' + (kind === 'e' ? 'ti-building-hospital' : kind === 's' ? 'ti-home-heart' : 'ti-stethoscope') + '"></i></span><div class="t"><b>' + esc(x.name) + '</b><span>' + esc([x.km != null ? x.km + ' km' : null, x.rating ? '★ ' + x.rating + ' (' + x.reviews + ')' : null, x.address].filter(Boolean).join(' · ')) + '</span><div style="margin-top:4px">' + badge + '</div></div>'
     + '<div class="act">' + (x.phone ? '<a class="btn btn-' + (kind === 'e' ? 'r' : 'g') + ' btn-s" href="' + tel(x.phone) + '"><i class="ti ti-phone"></i>Call</a>' : '') + '<a class="btn btn-w btn-s" href="' + esc(x.url) + '" target="_blank" rel="noopener"><i class="ti ti-route"></i>Directions</a></div></div>';
 }
-function pbRow(x, kind){ return '<div class="ctc"><span class="ic ' + (kind === 's' ? 'c-amber' : kind === 'o' ? 'c-lav' : 'c-sage') + '"><i class="ti ' + (kind === 's' ? 'ti-home-heart' : kind === 'o' ? 'ti-heart-handshake' : 'ti-stethoscope') + '"></i></span><div class="t"><b>' + esc(x.clinic || x.name) + (x.verified ? ' <span class="pill p-ok" style="font-size:10.5px">Verified</span>' : '') + '</b><span>' + esc([x.clinic ? x.name : null, x.type ? cap(x.type) : null, x.address, x.city].filter(Boolean).join(' · ')) + '</span></div><div class="act">' + (x.phone ? '<a class="btn btn-g btn-s" href="' + tel(x.phone) + '"><i class="ti ti-phone"></i>Call</a>' : '') + (kind === 'v' ? '<a class="btn btn-w btn-s" href="16_vet_profile.html?id=' + encodeURIComponent(x.id) + '">View</a>' : '') + '</div></div>'; }
+function pbRow(x, kind){ return '<div class="ctc"><span class="ic ' + (kind === 's' ? 'c-amber' : kind === 'o' ? 'c-lav' : 'c-sage') + '"><i class="ti ' + (kind === 's' ? 'ti-home-heart' : kind === 'o' ? 'ti-heart-handshake' : 'ti-stethoscope') + '"></i></span><div class="t"><b>' + esc(x.clinic || x.name) + (x.verified ? ' <span class="pill p-ok" style="font-size:10.5px">Verified</span>' : '') + '</b><span>' + esc([x.clinic ? x.name : null, x.type ? cap(x.type) : null, x.address, x.city].filter(Boolean).join(' · ')) + '</span>' + (x.in_area ? '<div style="margin-top:4px"><span class="pill p-info">In ' + esc(NB.area) + '</span></div>' : '') + '</div><div class="act">' + (x.phone ? '<a class="btn btn-g btn-s" href="' + tel(x.phone) + '"><i class="ti ti-phone"></i>Call</a>' : '') + (kind === 'v' ? '<a class="btn btn-w btn-s" href="16_vet_profile.html?id=' + encodeURIComponent(x.id) + '">View</a>' : '') + '</div></div>'; }
 function helplinesHTML(){
   return '<div class="hlx"><a href="tel:1962"><b>1962</b><span>Government mobile veterinary units — mainly for livestock; availability varies by state</span></a><a href="tel:112"><b>112</b><span>National emergency number — for people in danger (e.g. a road accident with an injured animal)</span></a></div>';
 }
@@ -1105,10 +1109,10 @@ function nearbyBody(compact){
   if (!NB.geo && !NB.city) return '<div class="nb-empty"><i class="ti ti-map-search"></i><b>Choose your city or use your location</b><span>We\'ll list emergency vets, clinics and shelters near you, with call and directions buttons.</span></div>';
   if (NRBUSY || !NR) return '<div class="skel" style="height:70px;margin-top:10px"></div><div class="skel" style="height:70px;margin-top:10px"></div><div class="skel" style="height:70px;margin-top:10px"></div>';
   var h = '', lim = compact ? 3 : 8;
-  h += '<div class="nbs"><h4><i class="ti ti-urgent"></i>Emergency &amp; 24-hour vets near ' + esc(placeLabel()) + '</h4>' + (NR.emergency.length ? NR.emergency.slice(0, lim).map(function(x){ return placeRow(x, 'e'); }).join('') : '<p class="muted nbm">' + (NR.failed ? 'Google Maps results could not load right now.' : 'No emergency vets found here on Google Maps. Try a nearby city.') + '</p>') + '</div>';
+  h += '<div class="nbs"><h4><i class="ti ti-urgent"></i>Emergency &amp; 24-hour vets near ' + esc(placeLabel()) + '</h4>' + (NR.emergency.length ? NR.emergency.slice(0, lim).map(function(x){ return placeRow(x, 'e'); }).join('') : '<p class="muted nbm">' + (NR.failed ? 'Google Maps results could not load right now.' + (GERR ? ' <b style="color:var(--coral-d)">' + esc(GERR) + '</b>' : '') : 'No emergency vets found here on Google Maps. Try a nearby city.') + '</p>') + '</div>';
   if (!compact) h += '<div class="nbs"><h4><i class="ti ti-stethoscope"></i>Vet clinics nearby</h4>' + ((NR.vets || []).length ? NR.vets.slice(0, lim).map(function(x){ return placeRow(x, 'v'); }).join('') : '<p class="muted nbm">No clinics found on Google Maps for this place.</p>')
     + ((NR.pb.vets || []).length ? '<div class="sub">Vets on PawBook in ' + esc(NB.city) + '</div>' + NR.pb.vets.map(function(x){ return pbRow(x, 'v'); }).join('') : '') + '</div>';
-  h += '<div class="nbs"><h4><i class="ti ti-home-heart"></i>Shelters &amp; rescue groups</h4>' + ((NR.pb.shelters || []).length ? '<div class="sub">On PawBook</div>' + NR.pb.shelters.slice(0, lim).map(function(x){ return pbRow(x, 's'); }).join('') : '')
+  h += '<div class="nbs"><h4><i class="ti ti-home-heart"></i>Shelters &amp; rescue groups</h4>' + ((NR.pb.shelters || []).length ? '<div class="sub">On PawBook' + (NR.pb.shelter_scope === 'state' ? ' — elsewhere in ' + esc(NB.state) + ' (none listed in ' + esc(NB.city) + ' yet)' : '') + '</div>' + NR.pb.shelters.slice(0, lim).map(function(x){ return pbRow(x, 's'); }).join('') : '')
     + ((NR.pb.orgs || []).length ? '<div class="sub">Verified animal welfare organisations</div>' + NR.pb.orgs.slice(0, lim).map(function(x){ return pbRow(x, 'o'); }).join('') : '')
     + ((NR.shelters || []).length ? '<div class="sub">On Google Maps</div>' + NR.shelters.slice(0, compact ? 2 : 6).map(function(x){ return placeRow(x, 's'); }).join('') : '')
     + (!(NR.pb.shelters || []).length && !(NR.pb.orgs || []).length && !(NR.shelters || []).length ? '<p class="muted nbm">No shelters found for this place yet.</p>' : '') + '</div>';

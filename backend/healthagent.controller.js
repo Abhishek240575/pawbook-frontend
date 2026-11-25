@@ -176,20 +176,35 @@ exports.chat = async (req, res) => {
 };
 
 // ── nearby help listed on PawBook (shelters, vets, verified welfare organisations) for a chosen place ──
-// GET /healthagent/nearby?country&state&city
+// GET /healthagent/nearby?country&state&city&area — city names are matched with their common other spellings,
+// results in the chosen area come first, and when a city has none the rest of the state is shown (marked as such).
+const CITY_ALIASES = [['new delhi', 'delhi', 'delhi ncr'], ['bangalore', 'bengaluru'], ['gurgaon', 'gurugram'], ['mumbai', 'bombay', 'navi mumbai'], ['kolkata', 'calcutta'], ['chennai', 'madras'],
+  ['pune', 'poona'], ['mysore', 'mysuru'], ['mangalore', 'mangaluru'], ['thiruvananthapuram', 'trivandrum'], ['kochi', 'cochin', 'ernakulam'], ['kozhikode', 'calicut'], ['vadodara', 'baroda'], ['varanasi', 'banaras', 'benares'], ['howrah', 'haora'], ['noida', 'greater noida']];
+const cityNames = c => { c = String(c || '').toLowerCase().trim(); if (!c) return []; const g = CITY_ALIASES.find(x => x.includes(c)); return g ? g : [c]; };
 exports.nearby = async (req, res) => {
   try {
-    const city = str(req.query.city, 80), state = str(req.query.state, 80);
+    const city = str(req.query.city, 80), state = str(req.query.state, 80), area = str(req.query.area, 80);
     if (!city && !state) return R.ok(res, { shelters: [], vets: [], orgs: [] });
-    const [sh, vt, og] = await Promise.all([
-      query(`SELECT shelter_id::text AS id, name, city, state, address, COALESCE(NULLIF(contact_phone, ''), phone) AS phone, is_verified FROM shelters
-        WHERE ($1 = '' OR lower(city) = lower($1)) AND ($2 = '' OR lower(state) = lower($2) OR $1 <> '') ORDER BY is_verified DESC, name LIMIT 15`, [city, state]).catch(() => ({ rows: [] })),
-      city ? query(`SELECT vet_id::text AS id, first_name, last_name, clinic_name, city, phone FROM vets WHERE lower(city) = lower($1) AND COALESCE(status, 'active') = 'active' ORDER BY clinic_name LIMIT 15`, [city]).catch(() => ({ rows: [] })) : { rows: [] },
-      query(`SELECT org_id::text AS id, name, org_type, phone, city, state, coverage_area FROM welfare_organizations WHERE is_active AND is_verified AND (($1 <> '' AND lower(city) = lower($1)) OR ($2 <> '' AND lower(state) = lower($2))) ORDER BY (lower(city) = lower($1)) DESC, name LIMIT 10`, [city, state]).catch(() => ({ rows: [] }))]);
+    const names = cityNames(city), st = state.toLowerCase(), ar = area.toLowerCase();
+    // shelters: in the city (any spelling, or the city named in the address), else elsewhere in the state
+    const shQ = (inCity) => query(`SELECT shelter_id::text AS id, name, city, state, address, COALESCE(NULLIF(contact_phone, ''), phone) AS phone, is_verified,
+        ($3 <> '' AND (lower(COALESCE(address, '')) LIKE '%' || $3 || '%' OR lower(name) LIKE '%' || $3 || '%')) AS in_area
+      FROM shelters WHERE ${inCity ? `$2::text IS NOT NULL AND (lower(trim(city)) = ANY($1) OR EXISTS (SELECT 1 FROM unnest($1::text[]) n WHERE lower(COALESCE(address, '')) LIKE '%' || n || '%'))` : `$1::text[] IS NOT NULL AND $2 <> '' AND lower(trim(state)) = $2`}
+      ORDER BY in_area DESC, is_verified DESC, name LIMIT 20`, [names, st, ar]).catch(e => { console.error('[HealthAgent] nearby shelters:', e.message); return { rows: [] }; });
+    let shR = names.length ? await shQ(true) : { rows: [] }, shScope = 'city';
+    if (!shR.rows.length && st) { shR = await shQ(false); shScope = 'state'; }
+    const vtR = names.length ? await query(`SELECT vet_id::text AS id, first_name, last_name, clinic_name, city, phone, clinic_address,
+        ($2 <> '' AND lower(COALESCE(clinic_address, '')) LIKE '%' || $2 || '%') AS in_area
+      FROM vets WHERE (lower(trim(city)) = ANY($1) OR EXISTS (SELECT 1 FROM unnest($1::text[]) n WHERE lower(COALESCE(clinic_address, '')) LIKE '%' || n || '%')) AND COALESCE(status, 'active') = 'active'
+      ORDER BY in_area DESC, clinic_name LIMIT 20`, [names, ar]).catch(e => { console.error('[HealthAgent] nearby vets:', e.message); return { rows: [] }; }) : { rows: [] };
+    const ogR = await query(`SELECT org_id::text AS id, name, org_type, phone, city, state, coverage_area FROM welfare_organizations
+      WHERE is_active AND is_verified AND (lower(trim(COALESCE(city, ''))) = ANY($1) OR ($2 <> '' AND lower(trim(COALESCE(state, ''))) = $2) OR lower(COALESCE(coverage_area, '')) LIKE '%' || $3 || '%')
+      ORDER BY (lower(trim(COALESCE(city, ''))) = ANY($1)) DESC, name LIMIT 10`, [names.length ? names : ['-'], st, (names[0] || st || '-')]).catch(() => ({ rows: [] }));
     return R.ok(res, {
-      shelters: sh.rows.map(s => ({ id: s.id, name: s.name, city: s.city, state: s.state, address: s.address || null, phone: s.phone || null, verified: !!s.is_verified })),
-      vets: vt.rows.map(v => ({ id: v.id, name: [v.first_name, v.last_name].filter(Boolean).length ? 'Dr. ' + [v.first_name, v.last_name].filter(Boolean).join(' ') : null, clinic: v.clinic_name || null, city: v.city, phone: v.phone || null })),
-      orgs: og.rows.map(o => ({ id: o.id, name: o.name, type: o.org_type, phone: o.phone || null, city: o.city, state: o.state, covers: o.coverage_area || null }))
+      shelter_scope: shScope,
+      shelters: shR.rows.map(s => ({ id: s.id, name: s.name, city: s.city, state: s.state, address: s.address || null, phone: s.phone || null, verified: !!s.is_verified, in_area: !!s.in_area })),
+      vets: vtR.rows.map(v => ({ id: v.id, name: [v.first_name, v.last_name].filter(Boolean).length ? 'Dr. ' + [v.first_name, v.last_name].filter(Boolean).join(' ') : null, clinic: v.clinic_name || null, city: v.city, address: v.clinic_address || null, phone: v.phone || null, in_area: !!v.in_area })),
+      orgs: ogR.rows.map(o => ({ id: o.id, name: o.name, type: o.org_type, phone: o.phone || null, city: o.city, state: o.state, covers: o.coverage_area || null }))
     });
   } catch (e) { return fail(res, 'nearby', e); }
 };
