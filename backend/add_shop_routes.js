@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v16: health agent) ─────────────────────────────
+const BLOCK = `${START} (v17: communities) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -293,6 +293,36 @@ haRouter.get('/nearby',                      authenticate, haCtrl.nearby);
 haRouter.post('/contacts',                   authenticate, haWrite, haCtrl.addContact);
 haRouter.delete('/contacts/:cid',            authenticate, haWrite, haCtrl.deleteContact);
 router.use('/healthagent', haRouter);
+const cmCtrl = require('../controllers/communities.controller');
+const cmRouter = require('express').Router();
+const cmWrite = fulCtrl.limit('communities', 240, 600);
+cmRouter.get('/config',                       authenticate, cmCtrl.config);
+cmRouter.get('/meetups',                      authenticate, cmCtrl.meetups);
+cmRouter.post('/report',                      authenticate, fulCtrl.limit('communities-report', 20, 3600), cmCtrl.report);
+cmRouter.get('/admin/queue',                  authenticate, cmCtrl.adminQueue);
+cmRouter.post('/admin/:kind/:id',             authenticate, cmWrite, cmCtrl.adminAction);
+cmRouter.delete('/posts/:pid',                authenticate, cmWrite, cmCtrl.deletePost);
+cmRouter.post('/posts/:pid/pin',              authenticate, cmWrite, cmCtrl.modPost);
+cmRouter.post('/posts/:pid/hide',             authenticate, cmWrite, cmCtrl.modPost);
+cmRouter.post('/posts/:pid/like',             authenticate, cmWrite, cmCtrl.like);
+cmRouter.post('/posts/:pid/rsvp',             authenticate, cmWrite, cmCtrl.rsvp);
+cmRouter.get('/posts/:pid/comments',          authenticate, cmCtrl.comments);
+cmRouter.post('/posts/:pid/comments',         authenticate, fulCtrl.limit('communities-comment', 60, 3600), cmCtrl.addComment);
+cmRouter.delete('/comments/:cid',             authenticate, cmWrite, cmCtrl.deleteComment);
+cmRouter.get('/',                             authenticate, cmCtrl.list);
+cmRouter.post('/',                            authenticate, fulCtrl.limit('communities-create', 5, 86400), cmCtrl.create);
+cmRouter.get('/:id',                          authenticate, cmCtrl.detail);
+cmRouter.patch('/:id',                        authenticate, cmWrite, cmCtrl.update);
+cmRouter.post('/:id/join',                    authenticate, fulCtrl.limit('communities-join', 30, 3600), cmCtrl.join);
+cmRouter.post('/:id/leave',                   authenticate, cmWrite, cmCtrl.leave);
+cmRouter.get('/:id/requests',                 authenticate, cmCtrl.requests);
+cmRouter.post('/:id/requests/:rid',           authenticate, cmWrite, cmCtrl.decide);
+cmRouter.get('/:id/members',                  authenticate, cmCtrl.members);
+cmRouter.patch('/:id/members/:uid',           authenticate, cmWrite, cmCtrl.setRole);
+cmRouter.delete('/:id/members/:uid',          authenticate, cmWrite, cmCtrl.setRole);
+cmRouter.get('/:id/posts',                    authenticate, cmCtrl.posts);
+cmRouter.post('/:id/posts',                   authenticate, fulCtrl.limit('communities-post', 30, 3600), cmCtrl.createPost);
+router.use('/communities', cmRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -327,7 +357,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop16');
+  fs.copyFileSync(f, f + '.bak-shop17');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -353,4 +383,4 @@ for (const f of FILES) {
   else console.log('  NOTE: old lost-pets routes not found in this file — guard not needed');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop16 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop17 — restart the app from the MilesWeb panel.');
