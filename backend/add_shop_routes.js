@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v12: pet events) ─────────────────────────────
+const BLOCK = `${START} (v13: my pawbook) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -201,6 +201,31 @@ peRouter.post('/:id/register',                  authenticate, fulCtrl.limit('pet
 peRouter.get('/:id/registrations',              authenticate, peCtrl.registrations);
 peRouter.post('/:id/report',                    authenticate, fulCtrl.limit('petevents-report', 10, 3600), peCtrl.report);
 router.use('/petevents', peRouter);
+const mpCtrl = require('../controllers/mypawbook.controller');
+const mpRouter = require('express').Router();
+const mpWrite = fulCtrl.limit('mypawbook', 240, 600);
+mpRouter.get('/summary',                        authenticate, mpCtrl.summary);
+mpRouter.get('/collection',                     authenticate, mpCtrl.collection);
+mpRouter.post('/collection/items',              authenticate, mpWrite, mpCtrl.saveItem);
+mpRouter.delete('/collection/items/:kind/:ref', authenticate, mpWrite, mpCtrl.removeItem);
+mpRouter.post('/collections',                   authenticate, mpWrite, mpCtrl.createCollection);
+mpRouter.patch('/collections/:id',              authenticate, mpWrite, mpCtrl.updateCollection);
+mpRouter.delete('/collections/:id',             authenticate, mpWrite, mpCtrl.deleteCollection);
+mpRouter.put('/collections/:id/items',          authenticate, mpWrite, mpCtrl.collectionItem);
+mpRouter.get('/memories',                       authenticate, mpCtrl.memories);
+mpRouter.post('/memories',                      authenticate, mpWrite, mpCtrl.createMemory);
+mpRouter.post('/memories/flag',                 authenticate, mpWrite, mpCtrl.flagMemory);
+mpRouter.patch('/memories/:id',                 authenticate, mpWrite, mpCtrl.updateMemory);
+mpRouter.delete('/memories/:id',                authenticate, mpWrite, mpCtrl.deleteMemory);
+mpRouter.get('/journey',                        authenticate, mpCtrl.journey);
+mpRouter.get('/journey/export',                 authenticate, fulCtrl.limit('mypawbook-export', 10, 3600), mpCtrl.exportJourney);
+mpRouter.post('/journey/hide',                  authenticate, mpWrite, mpCtrl.hideJourney);
+mpRouter.post('/journey/clear',                 authenticate, mpWrite, mpCtrl.clearJourney);
+mpRouter.delete('/journey/clear',               authenticate, mpWrite, mpCtrl.clearJourney);
+mpRouter.get('/celebrations',                   authenticate, mpCtrl.celebrations);
+mpRouter.put('/celebrations/pets/:id',          authenticate, mpWrite, mpCtrl.setMilestones);
+mpRouter.post('/celebrations/wish',             authenticate, fulCtrl.limit('mypawbook-wish', 40, 3600), mpCtrl.wish);
+router.use('/mypawbook', mpRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -219,7 +244,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop12');
+  fs.copyFileSync(f, f + '.bak-shop13');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -240,4 +265,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop12 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop13 — restart the app from the MilesWeb panel.');

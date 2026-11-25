@@ -1,1056 +1,1042 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F47A38">
+<meta name="description" content="My PawBook: your saved collection, pet memories, your PawBook journey and pet birthday celebrations.">
+<title>My PawBook – PawBook</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════
-   PAWBOOK UNIFIED THEME v3
-   Facebook Blue × Clean White × India-first
-═══════════════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-:root {
-  --pb-blue: #1877F2;
-  --pb-blue-dark: #0d65d9;
-  --pb-blue-soft: #e7f0fd;
-  --pb-green: #22c55e;
-  --pb-green-soft: #dcfce7;
-  --pb-red: #ef4444;
-  --pb-red-soft: #fee2e2;
-  --pb-amber: #f59e0b;
-  --pb-purple: #8b5cf6;
-  --pb-grad: linear-gradient(135deg,#1877F2,#8b5cf6);
-  --pb-ig-grad: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-bg: #f0f2f5;
-  --pb-card: #ffffff;
-  --pb-border: #e4e6eb;
-  --pb-text: #050505;
-  --pb-text2: #65676b;
-  --pb-text3: #8a8d91;
-  --pb-radius: 12px;
-  --pb-radius-sm: 8px;
-  --pb-pill: 999px;
-  --pb-shadow: 0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --pb-shadow-md: 0 4px 20px rgba(0,0,0,.1);
-  --pb-shadow-lg: 0 12px 48px rgba(0,0,0,.16);
-  --pb-nav-h: 56px;
+:root{
+  /* PawBook design system (same tokens as the Animal Welfare page) */
+  --blue:#1877F2;--blue-d:#1a56db;--navy:#0f2057;--purple:#8b5cf6;
+  --coral:#e5484d;--coral-d:#c2353a;--coral-soft:#fff1f1;
+  --green:#16a34a;--amber:#f59e0b;
+  --bg:#f0f4fa;--card:#fff;--line:#e4e9f2;--line2:#eef2f8;--text:#1a1f36;--muted:#65676b;--sub:#3d4560;
+  --r:18px;--r-sm:12px;--pill:999px;--shadow:0 6px 24px rgba(15,32,87,.08);--nav-h:60px;
+  /* soft category tints */
+  --t-blue:#e8f1ff;--t-blue-d:#1a56db;--t-coral:#fff1f1;--t-coral-d:#c2353a;--t-green:#e7f7ee;--t-green-d:#15803d;
+  --t-amber:#fff6e0;--t-amber-d:#b45309;--t-purple:#f1ecff;--t-purple-d:#6d4fd8;--t-teal:#e3f7f5;--t-teal-d:#0f766e;
+  --grad:linear-gradient(135deg,#e5484d,#f97316);
 }
-
-/* ── RESET ── */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--pb-bg);color:var(--pb-text);-webkit-font-smoothing:antialiased}
-a{text-decoration:none;color:inherit}
-button{font-family:'Inter',sans-serif;cursor:pointer}
-input,textarea,select{font-family:'Inter',sans-serif}
-img{max-width:100%;display:block}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+body{font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:14px}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid rgba(24,119,242,.35);outline-offset:2px}
 
-/* ── TOPNAV ── */
-.pb-nav{
-  position:fixed;top:0;left:0;right:0;height:var(--pb-nav-h);
-  background:#fff;border-bottom:1px solid var(--pb-border);
-  display:flex;align-items:center;padding:0 16px;gap:10px;
-  z-index:400;box-shadow:0 1px 0 rgba(0,0,0,.08);
-}
-.pb-nav-logo{font-size:22px;font-weight:900;color:var(--pb-blue);display:flex;align-items:center;gap:8px;cursor:pointer}
-.pb-nav-logo-icon{width:36px;height:36px;border-radius:10px;background:var(--pb-grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.pb-nav-search{flex:1;max-width:260px;height:40px;background:var(--pb-bg);border-radius:var(--pb-pill);display:flex;align-items:center;padding:0 14px;gap:8px}
-.pb-nav-search input{border:none;outline:none;background:transparent;font-size:14px;color:var(--pb-text);width:100%}
-.pb-nav-search input::placeholder{color:var(--pb-text3)}
-.pb-nav-tabs{flex:1;display:flex;align-items:center;justify-content:center;gap:2px}
-.pb-nav-tab{height:48px;width:100px;border-radius:var(--pb-radius-sm);border:none;background:transparent;cursor:pointer;color:var(--pb-text3);font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
-.pb-nav-tab:hover{background:var(--pb-bg);color:var(--pb-blue)}
-.pb-nav-tab.active{color:var(--pb-blue)}
-.pb-nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--pb-blue);border-radius:3px 3px 0 0}
-.pb-nav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
-.pb-icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--pb-text);font-size:18px;transition:background .15s;position:relative}
-.pb-icon-btn:hover{background:var(--pb-border)}
-.pb-avatar{width:36px;height:36px;border-radius:50%;background:var(--pb-grad);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+/* ── top bar (matches the Animal Welfare page) ── */
+.nav{position:sticky;top:0;z-index:400;height:var(--nav-h);background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:10px;padding:0 16px}
+.nav .menu{width:38px;height:38px;border-radius:50%;border:none;background:transparent;font-size:21px;display:flex;align-items:center;justify-content:center;color:#1a3a6b}
+.nav .menu:hover{background:#f0f2f5}
+.logo{display:flex;align-items:center;gap:10px;color:var(--blue);font-size:21px;font-weight:900;cursor:pointer}
+.logo i{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:19px;font-style:normal}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.crumb b{color:var(--coral)}
+.nav .sp{flex:1}
+.nav-ic{width:38px;height:38px;border-radius:50%;border:none;background:#f0f2f5;color:#1a3a6b;font-size:19px;display:flex;align-items:center;justify-content:center}
+.nav-ic:hover{background:#e4ebf7;color:var(--blue)}
+.nav-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:none}
+.nav-av img{width:100%;height:100%;object-fit:cover}
+@media(max-width:640px){.crumb,.nav .hide-s{display:none}.logo{font-size:19px}}
 
-/* ── BUTTONS ── */
-.pb-btn{height:36px;padding:0 18px;border-radius:var(--pb-pill);border:none;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
-.pb-btn-blue{background:var(--pb-blue);color:#fff}
-.pb-btn-blue:hover{background:var(--pb-blue-dark)}
-.pb-btn-gray{background:var(--pb-bg);color:var(--pb-text)}
-.pb-btn-gray:hover{background:var(--pb-border)}
-.pb-btn-green{background:var(--pb-green);color:#fff}
-.pb-btn-green:hover{background:#16a34a}
-.pb-btn-red{background:var(--pb-red);color:#fff}
-.pb-btn-red:hover{background:#dc2626}
-.pb-btn-outline{background:transparent;border:1.5px solid var(--pb-border);color:var(--pb-text2)}
-.pb-btn-outline:hover{background:var(--pb-bg)}
-.pb-btn-sm{height:30px;padding:0 12px;font-size:12px}
-.pb-btn-lg{height:44px;padding:0 28px;font-size:15px}
-.pb-btn-full{width:100%;justify-content:center}
+/* ── layout ── */
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px 120px}
+.hero-band{position:relative;overflow:hidden;background:radial-gradient(1200px 500px at 85% -10%,#e5edff 0%,transparent 60%),linear-gradient(180deg,#f7f9ff 0%,#eef3fb 100%);margin:0 -24px;padding:0 24px}
+.hero-band::before{content:'';position:absolute;inset:0;opacity:.5;background-image:radial-gradient(circle at 20px 20px,rgba(24,119,242,.07) 3px,transparent 4px);background-size:44px 44px;pointer-events:none}
+.pets{position:relative;display:flex;gap:8px;overflow-x:auto;padding:18px 0 4px;scrollbar-width:none;max-width:1240px;margin:0 auto}.pets::-webkit-scrollbar{display:none}
+.pchip{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:700;font-size:13.5px;color:var(--navy);flex-shrink:0;box-shadow:0 2px 8px rgba(24,119,242,.06)}
+.pchip.on{border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 3px rgba(24,119,242,.12)}
+.pchip .av{width:32px;height:32px}
+.pchip.add{padding:5px 15px;color:var(--blue-d);border-style:dashed;background:rgba(255,255,255,.7)}
+.av{border-radius:50%;background:var(--t-blue);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
 
-/* ── CARDS ── */
-.pb-card{background:var(--pb-card);border-radius:var(--pb-radius);border:1px solid var(--pb-border);box-shadow:var(--pb-shadow);overflow:hidden}
-.pb-card-body{padding:14px 16px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.ch{display:flex;align-items:center;gap:10px;padding:18px 22px 6px;flex-wrap:wrap}
+.ch h2{font-size:17px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+.ch h2 i{width:32px;height:32px;border-radius:10px;background:var(--t-blue);color:var(--blue);display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.ch .badge{font-size:12px;font-weight:700;padding:4px 11px;border-radius:var(--pill);background:var(--coral-soft);color:var(--coral-d)}
+.cb{padding:8px 22px 22px}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}}
+.sec{margin-top:18px}
+.sec-title{font-size:22px;font-weight:900;color:var(--navy);margin:34px 0 4px}
+.sec-sub{font-size:13.5px;color:var(--muted);margin-bottom:14px}
 
-/* ── BADGES ── */
-.pb-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--pb-pill);font-size:11px;font-weight:700}
-.pb-badge-blue{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.pb-badge-green{background:var(--pb-green-soft);color:#16a34a}
-.pb-badge-red{background:var(--pb-red-soft);color:var(--pb-red)}
-.pb-badge-amber{background:#fef3c7;color:var(--pb-amber)}
-.pb-badge-purple{background:#f3e8ff;color:var(--pb-purple)}
+/* ── pet hero ── */
+.hero{position:relative;max-width:1240px;margin:0 auto;padding:22px 0 64px;display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #dbe4f3;color:var(--blue-d);font-size:12.5px;font-weight:700;box-shadow:0 2px 8px rgba(24,119,242,.08)}
+.eyebrow i{color:var(--coral);font-size:16px}
+.hero h1{font-size:48px;line-height:1.08;font-weight:900;color:var(--navy);margin:14px 0 10px;letter-spacing:-1px}
+.hero h1 .accent{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .tag{font-size:16px;line-height:1.6;color:var(--sub);max-width:520px}
+.facts{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px}
+.fact{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--sub)}
+.fact i{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:var(--pill)}
+.st-great{background:var(--t-green);color:var(--t-green-d)}.st-ok{background:var(--t-blue);color:var(--t-blue-d)}.st-care{background:var(--t-amber);color:var(--t-amber-d)}.st-new{background:var(--t-purple);color:var(--t-purple-d)}
+.collage{position:relative;display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:420px}
+.collage.one{grid-template-columns:1fr}.collage.one .ph{grid-row:1/3}
+.collage.two{grid-template-columns:1.35fr 1fr}.collage.two .ph{grid-row:1/3}
+.ph-sample{position:absolute;left:12px;top:12px;z-index:3;padding:4px 10px;border-radius:999px;background:rgba(15,32,87,.6);color:#fff;font-size:11px;font-weight:700;letter-spacing:.02em;backdrop-filter:blur(4px)}
+.px-credit{position:absolute;right:4px;bottom:-22px;font-size:10.5px;color:var(--muted)}.px-credit a{color:inherit}
+.ph{position:relative;border-radius:22px;overflow:hidden;background:#dfe7f5;box-shadow:0 14px 34px rgba(15,32,87,.16)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.ph:hover img{transform:scale(1.04)}
+.ph-main{grid-row:1/3}
+.ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35));pointer-events:none}
+.ph-tag{position:absolute;left:12px;bottom:12px;z-index:2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.ph-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#e8f1ff,#f1ecff);color:var(--navy);font-weight:700;font-size:13px;text-align:center;padding:16px}
+.ph-empty .e{font-size:76px;line-height:1}
+.ph-empty::after{display:none}
+.ph .cam{position:absolute;right:12px;top:12px;z-index:3;height:34px;padding:0 12px;border-radius:999px;border:none;background:rgba(255,255,255,.95);font-size:12.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.float-card{position:absolute;z-index:3;background:#fff;border-radius:16px;box-shadow:0 14px 34px rgba(15,32,87,.2);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.float-1{left:-22px;bottom:30px;max-width:260px}
+.float-2{right:-10px;top:-14px;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;color:var(--navy);gap:6px}
+.float-2 i{color:var(--coral)}
+.fc-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex-shrink:0}
+.fc-t{font-size:13px;font-weight:800;color:var(--navy);line-height:1.3}
+.fc-s{font-size:11.5px;color:var(--muted)}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:24px;padding-bottom:56px}.collage{height:300px}.float-1{left:10px;bottom:-18px}.float-2{right:8px}.hero h1{font-size:36px}}
+@media(max-width:520px){.collage{height:250px;grid-template-columns:1fr}.collage .ph:not(.ph-main){display:none}.hero h1{font-size:31px}}
 
-/* ── FORM INPUTS ── */
-.pb-input{width:100%;height:44px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:0 14px;font-size:14px;color:var(--pb-text);outline:none;background:var(--pb-card);transition:border-color .15s}
-.pb-input:focus{border-color:var(--pb-blue)}
-.pb-select{width:100%;height:44px;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:0 14px;font-size:14px;color:var(--pb-text);outline:none;background:var(--pb-card);cursor:pointer}
-.pb-select:focus{border-color:var(--pb-blue)}
-.pb-textarea{width:100%;border:1.5px solid var(--pb-border);border-radius:var(--pb-radius);padding:10px 14px;font-size:14px;color:var(--pb-text);outline:none;resize:none;transition:border-color .15s}
-.pb-textarea:focus{border-color:var(--pb-blue)}
-.pb-label{font-size:12px;font-weight:700;color:var(--pb-text2);display:block;margin-bottom:5px}
+/* stats strip overlapping the hero (like the emergency strip) */
+.stats{position:relative;z-index:5;margin-top:-34px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:flex;align-items:center;gap:12px}
+.stat .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.stat b{display:block;font-size:22px;font-weight:900;color:var(--navy);line-height:1.1}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:12px}.stat .ic{width:38px;height:38px;font-size:19px}.stat b{font-size:19px}}
 
-/* ── MODAL ── */
-.pb-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
-.pb-modal-bg.open{display:flex}
-.pb-modal{background:var(--pb-card);border-radius:16px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--pb-shadow-lg)}
-.pb-modal-head{padding:16px 18px;border-bottom:1px solid var(--pb-border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--pb-card);z-index:1;border-radius:16px 16px 0 0}
-.pb-modal-title{font-size:17px;font-weight:800;color:var(--pb-text)}
-.pb-modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--pb-bg);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;color:var(--pb-text2)}
-.pb-modal-body{padding:18px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:14px;font-size:14px;font-weight:700;border:none;white-space:nowrap;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:active{transform:translateY(1px)}
+.btn-o{background:var(--grad);color:#fff;box-shadow:0 8px 20px rgba(229,72,77,.3)}.btn-o:hover{filter:brightness(1.05);box-shadow:0 10px 24px rgba(229,72,77,.38)}
+.btn-w{background:#fff;color:var(--navy);border:1.5px solid #dbe4f3}.btn-w:hover{border-color:var(--blue);color:var(--blue)}
+.btn-b{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;box-shadow:0 8px 20px rgba(24,119,242,.26)}
+.btn-s{height:36px;padding:0 14px;font-size:13px;border-radius:11px}
+.btn-link{background:none;border:none;color:var(--blue);font-weight:700;font-size:13px;padding:0}
+.btn[disabled]{opacity:.55;pointer-events:none}
 
-/* ── TOAST ── */
-.pb-toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(0,0,0,.88);color:#fff;padding:10px 20px;border-radius:var(--pb-pill);font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;opacity:0;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center;backdrop-filter:blur(8px)}
-.pb-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* wellness */
+.well{display:flex;gap:20px;align-items:center}
+.ring{position:relative;width:118px;height:118px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:30px;font-weight:900;color:var(--navy);line-height:1}
+.ring .num span{font-size:11px;color:var(--muted);font-weight:600}
+.well h3{font-size:18px;font-weight:800;color:var(--navy)}
+.well p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.inds{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.ind{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center}
+.ind .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.ind .t{font-size:13.5px;font-weight:700;color:var(--navy)}.ind .t small{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.ind .bar{grid-column:2/4;height:6px;border-radius:9px;background:#edf1f8;overflow:hidden;margin-top:-4px}
+.ind .bar i{display:block;height:100%;border-radius:9px}
+.ind .pts{font-size:12px;font-weight:700;color:var(--muted)}
+.disc{font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.55;background:#f5f7fb;border:1px solid var(--line2);border-radius:12px;padding:9px 12px;display:flex;gap:8px}
+.disc i{color:var(--blue);font-size:15px;margin-top:1px}
 
-/* ── BOTTOM NAV ── */
-.pb-bottomnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid var(--pb-border);display:none;align-items:center;justify-content:space-around;z-index:400}
-@media(max-width:768px){.pb-bottomnav{display:flex}}
-.pb-bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px;border-radius:var(--pb-radius-sm);border:none;background:none}
-.pb-bnav-item i{font-size:22px;color:var(--pb-text3)}
-.pb-bnav-item.active i{color:var(--pb-blue)}
-.pb-bnav-label{font-size:9px;font-weight:600;color:var(--pb-text3)}
-.pb-bnav-item.active .pb-bnav-label{color:var(--pb-blue)}
+/* reminders */
+.rems{display:flex;flex-direction:column;gap:10px}
+.rem{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe}
+.rem .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rem .t{flex:1;min-width:0}.rem .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.rem .t span{font-size:12.5px;color:var(--muted)}
+.pill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:var(--pill);white-space:nowrap}
+.p-over{background:var(--coral-soft);color:var(--coral-d)}.p-soon{background:var(--t-amber);color:var(--t-amber-d)}.p-ok{background:var(--t-green);color:var(--t-green-d)}.p-info{background:var(--t-blue);color:var(--t-blue-d)}
+.c-peach{background:var(--t-coral);color:var(--t-coral-d)}.c-sage{background:var(--t-green);color:var(--t-green-d)}.c-lav{background:var(--t-purple);color:var(--t-purple-d)}.c-sky{background:var(--t-blue);color:var(--t-blue-d)}.c-coral{background:var(--t-coral);color:var(--t-coral-d)}.c-amber{background:var(--t-amber);color:var(--t-amber-d)}.c-teal{background:var(--t-teal);color:var(--t-teal-d)}
 
-/* ── PAGE LAYOUT ── */
-.pb-page-wrap{padding-top:var(--pb-nav-h);padding-bottom:60px;min-height:100vh}
-.pb-container{max-width:1100px;margin:0 auto;padding:20px 16px}
+/* quick actions: white cards with tinted icon tiles (like "How PawBook helps") */
+.qa{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1000px){.qa{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.qa{grid-template-columns:repeat(2,1fr);gap:10px}}
+.qa button{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;text-align:left;display:flex;flex-direction:column;gap:10px;min-height:104px;font-weight:700;font-size:13.5px;line-height:1.3;color:var(--navy);transition:transform .12s,box-shadow .12s,border-color .12s}
+.qa button:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(15,32,87,.12);border-color:#cfdaf0}
+.qa button i{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
 
-/* ── SECTION HEADERS ── */
-.pb-section-title{font-size:18px;font-weight:800;color:var(--pb-text);margin-bottom:14px}
-.pb-divider{height:1px;background:var(--pb-border);margin:12px 0}
-
-/* ── HERO BANNER ── */
-.pb-hero{background:var(--pb-blue);position:relative;overflow:hidden;padding:40px 20px}
-.pb-hero-dark{background:var(--pb-text)}
-.pb-hero::before{content:'';position:absolute;inset:0;opacity:.12}
-.pb-hero-inner{position:relative;z-index:1}
-.pb-hero h1{font-size:clamp(24px,4vw,36px);font-weight:900;color:#fff;margin-bottom:8px}
-.pb-hero p{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:20px}
-
-/* ── DROPDOWN ── */
-.pb-dropdown{position:relative}
-.pb-dropdown-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--pb-border);border-radius:var(--pb-radius);box-shadow:var(--pb-shadow-md);z-index:100;max-height:260px;overflow-y:auto;display:none}
-.pb-dropdown-menu.open{display:block}
-.pb-dropdown-item{padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--pb-bg)}
-.pb-dropdown-item:hover{background:var(--pb-blue-soft);color:var(--pb-blue)}
-.pb-dropdown-item:last-child{border-bottom:none}
-
-html,body{overflow-x:hidden!important;max-width:100%!important}
-</style>
-<script>
-(function(){
-  var token = localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
-  if(!token){ window.location.replace('01_login.html'); }
-})();
-</script>
-<script>
-(function(){
-  fetch((window.API_BASE||'https://pawbook.deemona.com/api/v1')+'/saved',{headers:(window.authHeaders?window.authHeaders():{Authorization:'Bearer '+(localStorage.getItem('pb_token')||'')})})
-    .then(function(r){return r.json();})
-    .then(function(d){if(d&&d.data)localStorage.setItem('pb_saved',JSON.stringify(d.data));})
-    .catch(function(){});
-})();
-function goTo(p){window.location.href=p;}
-
-function pbNavBar(activePage) {
-  var pages = {
-    home:'07_home.html', groups:'03_groups.html',
-    marketplace:'09_marketplace.html', vet:'11_vet_booking.html',
-    notifications:'12_notifications.html'
-  };
-  var tabs = [
-    {key:'home', icon:'ti-home', label:'Home'},
-    {key:'groups', icon:'ti-users', label:'Groups'},
-    {key:'marketplace', icon:'ti-building-store', label:'Shop'},
-    {key:'vet', icon:'ti-stethoscope', label:'Vet'},
-    {key:'notifications', icon:'ti-bell', label:'Alerts'},
-  ];
-  return tabs.map(function(t){
-    var isActive = t.key === activePage;
-    return '<button class="pb-nav-tab'+(isActive?' active':'')+'" onclick="goTo(\''+pages[t.key]+'\')" title="'+t.label+'"><i class="ti '+t.icon+'"></i></button>';
-  }).join('');
-}
-
-function pbBottomNav(activePage) {
-  var pages = {
-    home:'07_home.html', groups:'03_groups.html',
-    vet:'11_vet_booking.html', notifications:'12_notifications.html',
-    profile:'08_pet_profile.html'
-  };
-  var tabs = [
-    {key:'home', icon:'ti-home', label:'Home'},
-    {key:'groups', icon:'ti-users', label:'Groups'},
-    {key:'vet', icon:'ti-stethoscope', label:'Vet'},
-    {key:'notifications', icon:'ti-bell', label:'Alerts'},
-    {key:'profile', icon:'ti-user-circle', label:'Me'},
-  ];
-  return tabs.map(function(t){
-    var isActive = t.key === activePage;
-    return '<button class="pb-bnav-item'+(isActive?' active':'')+'" onclick="goTo(\''+pages[t.key]+'\')"><i class="ti '+t.icon+'"></i><span class="pb-bnav-label">'+t.label+'</span></button>';
-  }).join('');
-}
-
-// ── TOAST ────────────────────────────────────
-function toast(msg, type) {
-  var t = document.getElementById('pb-toast');
-  if(!t) {
-    t = document.createElement('div');
-    t.id = 'pb-toast';
-    t.className = 'pb-toast';
-    document.body.appendChild(t);
-  }
-  var bg = type==='error'?'#ef4444':type==='success'?'#22c55e':type==='info'?'#1877F2':'rgba(0,0,0,.88)';
-  t.style.background = bg;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 2800);
-}
-
-// ── MODAL HELPERS ────────────────────────────
-function openModal(id) {
-  var m = document.getElementById(id);
-  if(m) { m.classList.add('open'); document.body.style.overflow='hidden'; }
-}
-function closeModal(id) {
-  var m = document.getElementById(id);
-  if(m) { m.classList.remove('open'); document.body.style.overflow=''; }
-}
-
-// ── CITY DROPDOWN DATA ────────────────────────
-var PB_CITIES = {
-  'India': {
-    'Delhi': ['New Delhi','Gurgaon','Noida','Faridabad','Ghaziabad'],
-    'Maharashtra': ['Mumbai','Pune','Nagpur','Nashik','Aurangabad'],
-    'Karnataka': ['Bangalore','Mysore','Hubli','Mangalore','Belgaum'],
-    'Tamil Nadu': ['Chennai','Coimbatore','Madurai','Trichy','Salem'],
-    'Telangana': ['Hyderabad','Warangal','Nizamabad','Karimnagar'],
-    'West Bengal': ['Kolkata','Howrah','Durgapur','Asansol'],
-    'Gujarat': ['Ahmedabad','Surat','Vadodara','Rajkot','Gandhinagar'],
-    'Rajasthan': ['Jaipur','Jodhpur','Udaipur','Kota','Ajmer'],
-    'Uttar Pradesh': ['Lucknow','Kanpur','Agra','Varanasi','Allahabad'],
-    'Punjab': ['Chandigarh','Ludhiana','Amritsar','Jalandhar'],
-    'Kerala': ['Thiruvananthapuram','Kochi','Kozhikode','Thrissur'],
-  },
-  'USA': {
-    'California': ['Los Angeles','San Francisco','San Diego','Sacramento','San Jose'],
-    'New York': ['New York City','Buffalo','Rochester','Albany'],
-    'Texas': ['Houston','Dallas','Austin','San Antonio','Fort Worth'],
-    'Florida': ['Miami','Orlando','Tampa','Jacksonville'],
-    'Illinois': ['Chicago','Springfield','Rockford'],
-  },
-  'UK': {
-    'England': ['London','Manchester','Birmingham','Liverpool','Leeds','Bristol'],
-    'Scotland': ['Edinburgh','Glasgow','Aberdeen'],
-    'Wales': ['Cardiff','Swansea'],
-  },
-  'Australia': {
-    'New South Wales': ['Sydney','Newcastle','Wollongong'],
-    'Victoria': ['Melbourne','Geelong','Ballarat'],
-    'Queensland': ['Brisbane','Gold Coast','Cairns'],
-    'Western Australia': ['Perth','Fremantle'],
-  },
-  'Canada': {
-    'Ontario': ['Toronto','Ottawa','Hamilton','London'],
-    'British Columbia': ['Vancouver','Victoria','Kelowna'],
-    'Quebec': ['Montreal','Quebec City','Laval'],
-    'Alberta': ['Calgary','Edmonton'],
-  },
-  'Singapore': {'Singapore': ['Singapore City','Jurong','Tampines','Woodlands']},
-  'UAE': {
-    'Dubai': ['Dubai City','Deira','Bur Dubai','Jumeirah'],
-    'Abu Dhabi': ['Abu Dhabi City','Al Ain'],
-  },
-};
-
-// ── EMERGENCY NUMBERS ────────────────────────
-var PB_EMERGENCY = {
-  'India': {
-    'Delhi': [{name:'Animal Welfare Board Helpline',no:'1962',type:'govt'},{name:'Delhi Animal Hospital',no:'+91 11 2584 7200',type:'hospital'},{name:'Friendicoes SECA',no:'+91 11 2463 5945',type:'shelter'},{name:'Wildlife SOS',no:'+91 98005 44477',type:'wildlife'}],
-    'Maharashtra': [{name:'PETA India Helpline',no:'+91 98201 22602',type:'ngo'},{name:'Mumbai SPCA',no:'+91 22 2413 6640',type:'shelter'},{name:'Animal Welfare Hotline',no:'1962',type:'govt'}],
-    'Karnataka': [{name:'CUPA Bangalore',no:'+91 80 2341 0386',type:'shelter'},{name:'BBMP Animal Helpline',no:'+91 80 2295 5052',type:'govt'}],
-    'Tamil Nadu': [{name:'Blue Cross of India',no:'+91 44 2235 1006',type:'shelter'},{name:'Animal Welfare Board',no:'1962',type:'govt'}],
-    'All India': [{name:'Animal Welfare Board of India',no:'1962',type:'govt'},{name:'PETA India',no:'+91 98201 22602',type:'ngo'},{name:'Wildlife Crime Control Bureau',no:'+91 11 2436 2625',type:'govt'}],
-  },
-  'USA': {
-    'All USA': [{name:'ASPCA Emergency',no:'(888) 426-4435',type:'ngo'},{name:'Humane Society',no:'(202) 452-1100',type:'ngo'},{name:'Animal Poison Control',no:'(888) 426-4435',type:'emergency'}],
-    'California': [{name:'LA Animal Services',no:'(888) 452-7381',type:'govt'},{name:'SF SPCA',no:'(415) 554-3000',type:'shelter'}],
-    'New York': [{name:'NYC Animal Care Centers',no:'(212) 788-4000',type:'govt'},{name:'ASPCA NYC',no:'(212) 876-7700',type:'ngo'}],
-  },
-  'UK': {
-    'All UK': [{name:'RSPCA Emergency',no:'0300 1234 999',type:'ngo'},{name:'PDSA Vet Line',no:'0800 731 2502',type:'ngo'},{name:'British Vet Association',no:'020 7636 6541',type:'govt'}],
-    'England': [{name:'Dogs Trust',no:'020 7837 0006',type:'shelter'},{name:'Cats Protection',no:'03000 12 12 12',type:'shelter'}],
-  },
-  'Australia': {
-    'All Australia': [{name:'RSPCA Australia',no:'(02) 6282 8300',type:'ngo'},{name:'Animal Ethics',no:'1300 369 711',type:'govt'}],
-    'New South Wales': [{name:'NSW RSPCA',no:'(02) 9770 7555',type:'shelter'},{name:'Sydney Animal Hospital',no:'(02) 9519 4010',type:'hospital'}],
-  },
-  'Canada': {
-    'All Canada': [{name:'Canadian Humane Society',no:'(613) 224-8072',type:'ngo'},{name:'SPCA Canada',no:'1-833-722-7722',type:'ngo'}],
-    'Ontario': [{name:'Toronto Humane Society',no:'(416) 392-2273',type:'shelter'},{name:'Ottawa Humane Society',no:'(613) 725-3166',type:'shelter'}],
-  },
-  'UAE': {
-    'All UAE': [{name:'Dubai Municipality Animal',no:'800 900',type:'govt'},{name:'Emirates Animal Welfare',no:'+971 4 347 5536',type:'ngo'}],
-    'Dubai': [{name:'Dubai Pet Rescue',no:'+971 55 549 1986',type:'shelter'},{name:'K9 Friends Dubai',no:'+971 4 340 8402',type:'shelter'}],
-  },
-  'Singapore': {
-    'Singapore': [{name:'SPCA Singapore',no:'6287 5355',type:'shelter'},{name:'AVS Emergency',no:'1800 476 1600',type:'govt'},{name:'Animal Concern Research',no:'6974 1981',type:'ngo'}],
-  },
-};
-
-// ── CITY SELECTOR BUILDER ─────────────────────
-function buildCitySelector(countryId, stateId, cityId, onchange) {
-  var countries = Object.keys(PB_CITIES);
-  var countryHtml = '<select class="pb-select" id="'+countryId+'" onchange="pbUpdateStates(\''+countryId+'\',\''+stateId+'\',\''+cityId+'\')">';
-  countryHtml += '<option value="">🌍 Select Country</option>';
-  countries.forEach(function(c){ countryHtml += '<option>'+c+'</option>'; });
-  countryHtml += '</select>';
-
-  var stateHtml = '<select class="pb-select" id="'+stateId+'" onchange="pbUpdateCities(\''+countryId+'\',\''+stateId+'\',\''+cityId+'\')" disabled><option value="">Select State/Region</option></select>';
-  var cityHtml = '<select class="pb-select" id="'+cityId+'" disabled><option value="">Select City</option></select>';
-
-  return {country: countryHtml, state: stateHtml, city: cityHtml};
-}
-
-function pbUpdateStates(countryId, stateId, cityId) {
-  var country = document.getElementById(countryId).value;
-  var stateEl = document.getElementById(stateId);
-  var cityEl = document.getElementById(cityId);
-  stateEl.innerHTML = '<option value="">Select State/Region</option>';
-  cityEl.innerHTML = '<option value="">Select City</option>';
-  cityEl.disabled = true;
-  if(!country || !PB_CITIES[country]) { stateEl.disabled = true; return; }
-  stateEl.disabled = false;
-  Object.keys(PB_CITIES[country]).forEach(function(s){
-    stateEl.innerHTML += '<option>'+s+'</option>';
-  });
-}
-
-function pbUpdateCities(countryId, stateId, cityId) {
-  var country = document.getElementById(countryId).value;
-  var state = document.getElementById(stateId).value;
-  var cityEl = document.getElementById(cityId);
-  cityEl.innerHTML = '<option value="">Select City</option>';
-  if(!country || !state || !PB_CITIES[country] || !PB_CITIES[country][state]) { cityEl.disabled = true; return; }
-  cityEl.disabled = false;
-  PB_CITIES[country][state].forEach(function(c){
-    cityEl.innerHTML += '<option>'+c+'</option>';
-  });
-}
-
-// ── EMERGENCY NUMBER LOOKUP ───────────────────
-function pbGetEmergencyNumbers(country, region) {
-  if(!country || !PB_EMERGENCY[country]) return [];
-  var results = [];
-  var allKey = 'All ' + country;
-  if(PB_EMERGENCY[country][allKey]) results = results.concat(PB_EMERGENCY[country][allKey]);
-  if(region && PB_EMERGENCY[country][region]) results = results.concat(PB_EMERGENCY[country][region]);
-  return results;
-}
-
-// ── NEARBY SHELTERS ───────────────────────────
-var PB_SHELTERS = {
-  'Delhi': [{name:'Friendicoes SECA',addr:'6/7 Siri Institutional Area',phone:'+91 11 2463 5945',animals:'Dogs,Cats'},{name:'Jeevashram',addr:'Shiv Vihar, Delhi',phone:'+91 98100 45022',animals:'All animals'},{name:'Charlies Animal Rescue',addr:'Dwarka, New Delhi',phone:'+91 95992 03433',animals:'Dogs,Cats,Birds'}],
-  'Mumbai': [{name:'World For Animals',addr:'Oshiwara, Andheri West',phone:'+91 98192 89920',animals:'Dogs,Cats'},{name:'In Defence of Animals',addr:'Bandra West',phone:'+91 22 2641 3528',animals:'Dogs'}],
-  'Bangalore': [{name:'CUPA',addr:'Outer Ring Road, Devarabeesanahalli',phone:'+91 80 2341 0386',animals:'All animals'},{name:'Animal Rahat',addr:'Electronic City',phone:'+91 80 6741 8100',animals:'Horses,Donkeys,Bulls'}],
-  'Chennai': [{name:'Blue Cross of India',addr:'Velachery Main Road',phone:'+91 44 2235 1006',animals:'All animals'},{name:'PAWS Chennai',addr:'Anna Nagar',phone:'+91 44 2626 4460',animals:'Dogs,Cats'}],
-  'London': [{name:'Battersea Dogs and Cats Home',addr:'Battersea Park Road',phone:'020 7622 3626',animals:'Dogs,Cats'},{name:'RSPCA London',addr:'Southall',phone:'0300 1234 999',animals:'All animals'}],
-  'New York City': [{name:'NYC ACC Manhattan',addr:'326 E 110th St',phone:'(212) 788-4000',animals:'All animals'},{name:'ASPCA NYC',addr:'424 E 92nd St',phone:'(212) 876-7700',animals:'All animals'}],
-  'Sydney': [{name:'RSPCA NSW',addr:'Yagoona',phone:'(02) 9770 7555',animals:'All animals'},{name:'Sydney Dogs & Cats Home',addr:'St Peters',phone:'(02) 9587 9611',animals:'Dogs,Cats'}],
-};
-
-function pbGetNearbyShelters(city) {
-  return PB_SHELTERS[city] || [];
-}
-
-</script>
-
-
-<style>
-/* ── PAWBOOK DESIGN v2 OVERRIDE ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-:root{
-  --blue:#1877F2;--blue-dark:#0d65d9;--blue-soft:#e7f0fd;
-  --purple:#8b5cf6;--pink:#ec4899;
-  --green:#22c55e;--green-soft:#dcfce7;
-  --red:#ef4444;--amber:#f59e0b;
-  --ig-grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-  --pb-grad:linear-gradient(135deg,#1877F2,#8b5cf6);
-  --bg:#f0f2f5;--card:#fff;
-  --border:#e4e6eb;--border-soft:#f0f2f5;
-  --text:#050505;--text2:#65676b;--text3:#8a8d91;
-  --radius:12px;--radius-sm:8px;--pill:999px;
-  --shadow:0 1px 2px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
-  --shadow-md:0 4px 20px rgba(0,0,0,.1);
-}
-body{font-family:'Inter',-apple-system,sans-serif!important;background:var(--bg)!important;-webkit-font-smoothing:antialiased}
-
-/* Topnav */
-.topnav,.top-nav,.pb-nav,.reels-nav-bar,.vet-page .topnav{background:#fff!important;border-bottom:1px solid var(--border)!important;box-shadow:0 1px 0 rgba(0,0,0,.08)!important}
-.logo-icon,.nav-logo-icon,.pb-nav-logo-icon{background:var(--pb-grad)!important;border-radius:10px!important}
-.topnav-logo,.nav-logo{color:var(--blue)!important;font-weight:900!important}
-.topnav-tab.active{color:var(--blue)!important}
-.topnav-tab.active::after{background:var(--blue)!important}
-
-/* Buttons - make all buttons rounder and Facebook-style */
-.btn,.btn-blue,.btn-gray,.btn-outline,.btn-white,.btn-full,
-button[class*="btn"]{border-radius:var(--pill)!important;font-weight:700!important;font-family:'Inter',sans-serif!important}
-.btn-blue{background:var(--blue)!important;color:#fff!important}
-.btn-blue:hover{background:var(--blue-dark)!important}
-.btn-gray{background:var(--bg)!important;color:var(--text)!important}
-
-/* Cards - cleaner */
-.card,.sidebar-card,.scard,.filter-section,.pb-card{
-  border-radius:var(--radius)!important;
-  border:1px solid var(--border)!important;
-  box-shadow:var(--shadow)!important;
-  background:var(--card)!important;
-}
-
-/* Badges - rounder */
-.badge,.vbadge,.gb,.gbadge,.appt-pill,.pb-badge{border-radius:var(--pill)!important;font-weight:700!important}
-.badge-blue,.vbadge-gov,.gb-blue,.badge-blue,.gbadge-gov{background:var(--blue-soft)!important;color:var(--blue)!important}
-.badge-green,.vbadge-verified,.gb-green,.gbadge-verified{background:var(--green-soft)!important;color:#16a34a!important}
-
-/* Post actions */
-.post-action,.pa-btn,.post-btn{border-radius:var(--radius-sm)!important;font-family:'Inter',sans-serif!important;font-weight:700!important}
-.post-action.liked,.liked{color:var(--blue)!important}
-
-/* Story cards */
-.story-card{border-radius:var(--radius)!important}
-.story-card-av,.story-av{border:3px solid var(--blue)!important}
-
-/* Bottom nav */
-.bottomnav,.pb-bottomnav{background:#fff!important;border-top:1px solid var(--border)!important}
-.bnav-item.active i,.bni.on i,.pb-bnav-item.active i{color:var(--blue)!important}
-.bnav-item.active .bnav-label,.bni.on .bni-lbl,.pb-bnav-item.active .pb-bnav-label{color:var(--blue)!important}
-
-/* Market cards */
-.market-card,.product-card{border-radius:var(--radius)!important;border:1px solid var(--border)!important}
-
-/* Inputs */
-input,textarea,select{font-family:'Inter',sans-serif!important}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)!important;outline:none!important}
-
-/* Modals */
-.modal-box,.modal,.pb-modal,.create-box,.pb-create-box{border-radius:16px!important}
-.modal-header,.modal-head,.mhead,.pb-modal-header{border-radius:16px 16px 0 0!important}
-
-/* Progress/fill */
-.progress-fill,.prog-fill,.fund-fill,.vacc-bar-fill{background:var(--blue)!important}
-
-/* Tab bars */
-.vtab.active,.tbar-item.active,.stab.active,.tstab.active,.tab.active{color:var(--blue)!important;border-bottom-color:var(--blue)!important}
-
-/* Notification unread */
-.notif-item.unread,.notification-item.unread{background:var(--blue-soft)!important}
-
-/* Vet-specific */
-.vbtn-primary{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join{background:var(--blue)!important;border-radius:var(--pill)!important}
-.btn-join.joined{background:var(--green-soft)!important;color:#16a34a!important;border:1.5px solid #bbf7d0!important}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-</style>
-
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1877F2">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="PawBook">
-<link rel="manifest" href="manifest.json">
-<title>PawBook — Saved & More</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Poppins',sans-serif;background:#f0f2f5;color:#1e293b}
-.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:#fff;border-bottom:1px solid #e2e8f0;z-index:500;display:flex;align-items:center;padding:0 16px;gap:10px}
-.tabs{background:#fff;display:flex;border-bottom:1px solid #e2e8f0;position:sticky;top:56px;z-index:400;overflow-x:auto;scrollbar-width:none}
+/* tabs (segmented bar) */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:7px;background:#fff;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);scrollbar-width:none;margin:30px 0 16px;position:sticky;top:calc(var(--nav-h) + 8px);z-index:50}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex-shrink:0;height:44px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 16px;font-size:13px;font-weight:700;color:#64748b;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
-.tab.active{color:#1a4db3;border-bottom-color:#1a4db3}
-.card{background:#fff;border-radius:12px;margin:8px 16px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
-.section-title{font-size:15px;font-weight:800;color:#1e293b;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.post-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#e2e8f0;border-radius:12px;overflow:hidden;margin:8px 16px}
-.post-thumb{aspect-ratio:1;overflow:hidden;cursor:pointer;position:relative}
-.post-thumb img{width:100%;height:100%;object-fit:cover}
-.post-thumb-bar{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.5));padding:8px 6px 4px;color:#fff;font-size:10px;font-weight:700}
-.memory-card{background:linear-gradient(135deg,#1a4db3,#6366f1);border-radius:14px;margin:8px 16px;padding:20px;color:#fff;position:relative;overflow:hidden}
-.memory-card::before{content:'🌟';position:absolute;top:12px;right:16px;font-size:32px;opacity:0.3}
-.activity-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1f5f9}
-.activity-item:last-child{border-bottom:none}
-.activity-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.birthday-card{background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:14px;margin:8px 16px;padding:16px;color:#fff;display:flex;align-items:center;gap:14px}
-</style>
-<link rel="stylesheet" href="mobile.css">
-<style class="pb-mobile-pad">@media(max-width:768px){body{padding-bottom:72px}}</style>
-<style id="pb-mobile">
-html, body { overflow-x: hidden !important; }
-@media (max-width: 900px) {
-  html, body { width: 100% !important; overflow-x: hidden !important; }
-  div { min-width: 0 !important; }
-  .post-grid { display: block !important; grid-template-columns: 1fr !important; }
-  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; display: block !important; }
-  [style*="display: grid"], [style*="display:grid"] { display: block !important; }
-  .topnav-tabs, .nav-tabs { display: none !important; }
-  .bottomnav { display: flex !important; }
-  .left-sidebar, .right-sidebar, aside { display: none !important; }
-  body { padding-bottom: 72px !important; }
+.tab{height:42px;padding:0 15px;border-radius:11px;border:none;background:none;font-weight:700;font-size:13.5px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tab i{font-size:18px}
+.tab:hover{color:var(--navy);background:#f5f7fb}.tab.on{background:var(--t-blue);color:var(--blue)}
+.tab.rec{margin-left:auto}.tab.rec.on{background:var(--t-purple);color:var(--t-purple-d)}
+.panel{display:none}.panel.on{display:block}
+
+/* timeline */
+.month{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:20px 2px 10px;display:flex;align-items:center;gap:10px}
+.month::after{content:'';flex:1;height:1px;background:var(--line)}
+.month:first-child{margin-top:4px}
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ev{background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;border:1px solid var(--line);border-top:4px solid var(--evc,#e4e9f2);box-shadow:0 2px 10px rgba(15,32,87,.04)}
+.ev .top{display:flex;gap:10px;align-items:center}
+.ev .ic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ev b{font-size:14px;font-weight:700;color:var(--navy);line-height:1.3}
+.ev .d{font-size:12px;color:var(--muted)}
+.ev .who{font-size:12.5px;font-weight:600;color:var(--sub);display:flex;gap:5px;align-items:center}
+.ev p{font-size:13px;line-height:1.55;color:var(--sub)}
+.ev img{width:100%;height:150px;object-fit:cover;border-radius:12px;margin-top:4px}
+.ev .del{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:none;background:#f5f7fb;font-size:14px;color:var(--muted);opacity:0;transition:opacity .15s}
+.ev:hover .del,.ev:focus-within .del{opacity:1}
+@media(hover:none){.ev .del{opacity:.8}}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.fchip{height:32px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:12.5px;color:var(--muted)}
+.fchip.on{border-color:var(--blue);color:var(--blue);background:var(--t-blue)}
+
+/* lists */
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fbfcfe;flex-wrap:wrap}
+.row .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.row .t{flex:1;min-width:160px}.row .t b{display:block;font-size:14px;font-weight:700;color:var(--navy)}.row .t span{font-size:12.5px;color:var(--muted)}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty .e{font-size:40px;margin-bottom:8px}
+.empty b{display:block;color:var(--navy);font-size:16px;font-weight:800;margin-bottom:4px}
+.empty p{font-size:13.5px;max-width:420px;margin:0 auto 14px;line-height:1.55}
+
+/* daily wellness */
+.dw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.dw{grid-template-columns:repeat(2,1fr)}}
+.dws{border-radius:16px;padding:14px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
+.dws i{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:6px}
+.dws b{font-size:21px;font-weight:900;color:var(--navy);line-height:1.1}.dws span{font-size:12.5px;font-weight:600;color:var(--sub)}
+.dws small{font-size:11.5px;color:var(--muted)}
+button.dws:hover{border-color:#cfdaf0;box-shadow:var(--shadow)}
+.week{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:14px;padding:0 2px}
+.wk{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.wk .b{width:100%;max-width:36px;border-radius:8px 8px 4px 4px;background:#cfe0fb;min-height:4px}
+.wk.today .b{background:linear-gradient(180deg,var(--blue),var(--purple))}
+.wk span{font-size:11.5px;font-weight:600;color:var(--muted)}.wk em{font-style:normal;font-size:11px;font-weight:700;color:var(--navy)}
+.moods{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mood{height:38px;padding:0 13px;border-radius:var(--pill);border:1.5px solid #dbe4f3;background:#fff;font-weight:600;font-size:13px;color:var(--sub)}
+.mood.on{background:var(--t-purple);border-color:#cbbdf7;color:var(--t-purple-d)}
+.q{margin-top:16px;font-size:13.5px;font-weight:700;color:var(--navy)}
+.streak{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#fff6f0,#fff1f1);border:1px solid #ffe0d2;margin-top:14px;font-weight:700;font-size:13.5px;color:var(--navy)}
+.streak i{font-size:22px;color:#f97316}
+
+/* weight chart */
+.wchart{position:relative;height:210px;margin:12px 0 6px}
+.wchart svg{width:100%;height:100%;overflow:visible}
+.wtip{position:absolute;background:var(--navy);color:#fff;font-size:12px;font-weight:700;border-radius:10px;padding:6px 9px;pointer-events:none;transform:translate(-50%,-118%);white-space:nowrap;display:none}
+
+/* memories */
+.mems{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.mem{border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 2px 10px rgba(15,32,87,.05);position:relative}
+.mem img{width:100%;height:170px;object-fit:cover;display:block}
+.mem .noimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;background:linear-gradient(135deg,#e8f1ff,#f1ecff)}
+.mem .c{padding:11px 13px}.mem b{font-size:14px;font-weight:700;color:var(--navy);display:block}.mem span{font-size:12px;color:var(--muted)}
+.mem p{font-size:12.5px;margin-top:4px;line-height:1.5;color:var(--sub)}
+
+/* AI card */
+.ai{display:flex;gap:16px;align-items:center;padding:18px 20px;border-radius:var(--r);background:linear-gradient(135deg,#1877F2,#8b5cf6);color:#fff;margin-top:18px;flex-wrap:wrap;box-shadow:0 12px 30px rgba(24,119,242,.25)}
+.ai .ic{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:27px}
+.ai .t{flex:1;min-width:200px}.ai b{font-size:16px;font-weight:800;display:block}.ai span{font-size:12.5px;opacity:.9;line-height:1.5}
+.ai .btn-w{border:none}
+
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(15,32,87,.45);z-index:600;display:none;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+@media(min-width:620px){.mo{align-items:center}}
+.md{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;border-radius:22px 22px 0 0;animation:up .22s ease}
+@media(min-width:620px){.md{border-radius:22px}}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.mh{display:flex;align-items:center;gap:10px;padding:18px 22px 8px}
+.mh h3{flex:1;font-size:19px;font-weight:800;color:var(--navy)}
+.mx{width:36px;height:36px;border-radius:50%;border:none;background:#f0f2f5;font-size:16px}
+.mb{padding:6px 22px 8px;display:flex;flex-direction:column;gap:14px}
+.mf{padding:12px 22px 22px;display:flex;gap:8px;justify-content:flex-end}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl>span{font-size:13px;font-weight:700;color:#2b3250}
+.fl small{font-size:12px;color:var(--muted)}
+.fi{height:48px;border:1.5px solid #dfe5ef;border-radius:12px;padding:0 14px;font-size:14px;background:#f8fafd;outline:none;width:100%;transition:border-color .15s,background .15s}
+textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-height:1.55}
+.fi:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px rgba(24,119,242,.1)}
+.fl.bad .fi{border-color:var(--coral);background:#fff}.fl .err{display:none;color:var(--coral-d);font-size:12px;font-weight:600}.fl.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.seg{display:flex;flex-wrap:wrap;gap:7px}
+.seg label{cursor:pointer}.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border-radius:11px;border:1.5px solid #dfe5ef;font-weight:600;font-size:13px;background:#f8fafd}
+.seg input:checked+span{background:var(--t-blue);border-color:var(--blue);color:var(--blue)}
+.seg input:focus-visible+span{outline:3px solid rgba(24,119,242,.35)}
+
+/* health card */
+.hcard{border-radius:18px;padding:18px;background:linear-gradient(135deg,#f7f9ff,#eef3fb);border:1px solid #dbe4f3}
+.hcard .top{display:flex;gap:14px;align-items:center}
+.hcard .av{width:74px;height:74px;border-radius:20px;font-size:36px;border:3px solid #fff;box-shadow:0 6px 16px rgba(15,32,87,.12)}
+.hcard h4{font-size:20px;font-weight:900;color:var(--navy)}
+.hcard .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:12px}
+.hcard .kv span{color:var(--muted)}.hcard .kv b{font-weight:700;color:var(--navy)}
+.hcard ul{margin:8px 0 0 18px;font-size:13px;line-height:1.65}
+
+/* toast etc */
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;font-size:13.5px;opacity:0;transition:all .25s;z-index:700;pointer-events:none;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(15,32,87,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{background:linear-gradient(90deg,#e8edf6 25%,#f3f6fb 50%,#e8edf6 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:var(--r)}
+@keyframes sk{to{background-position:-200% 0}}
+.muted{color:var(--muted)}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;background:#fff;border-top:1px solid var(--line);z-index:300;padding-bottom:env(safe-area-inset-bottom)}
+@media(max-width:768px){.bnav{display:flex}.wrap{padding:0 16px 110px}.hero-band{margin:0 -16px;padding:0 16px}}
+.bnav button{flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted)}
+.bnav button i{font-size:22px}.bnav button.on{color:var(--blue)}
+@media print{
+  body{background:#fff}.nav,.bnav,.tabs,.qa,.no-print,#drawer-panel,#drawer-overlay{display:none!important}
+  body.print-card .wrap{display:none}body.print-card #cardModal{display:block!important;position:static;background:none}body.print-card #cardModal .md{box-shadow:none;max-height:none;animation:none}
+  body.print-card #cardModal .mf,body.print-card #cardModal .mx{display:none}
 }
-</style>
-<style id="pb-burger">
-.burger-btn { display: flex; width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: #1877F2; font-size: 28px; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; padding: 0; }
-.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 450; }
-.drawer-overlay.open { display: block; }
-.drawer-panel { position: fixed; top: 0; left: -320px; bottom: 0; width: 300px; background: #fff; z-index: 500; overflow-y: auto; transition: left .28s ease; box-shadow: 4px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; }
-.drawer-panel.open { left: 0; }
-.drawer-header { background: #1877F2; padding: 48px 16px 16px; position: relative; display: flex; align-items: center; gap: 12px; }
-.drawer-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; font-size: 16px; cursor: pointer; }
-.drawer-avatar { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); object-fit: cover; }
-.drawer-user-name { font-size: 15px; font-weight: 800; color: #fff; }
-.drawer-user-handle { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
-.drawer-body { flex: 1; padding: 6px 0; }
-.drawer-section { font-size: 10px; font-weight: 800; color: #1877F2; text-transform: uppercase; letter-spacing: .8px; padding: 16px 18px 4px; margin-top: 4px; border-top: 1px solid #e4e6eb; }
-.drawer-item { display: flex; align-items: center; gap: 14px; padding: 12px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #050505; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
-.drawer-item:hover { background: #eff6ff; color: #1877F2; }
-.drawer-item i { font-size: 20px; width: 24px; }
-.drawer-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
-.drawer-footer { padding: 8px 0; border-top: 1px solid #e4e6eb; }
-.bottomnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: #fff; border-top: 1px solid #e4e6eb; z-index: 300; align-items: center; justify-content: space-around; }
-.bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 0; border: none; background: none; font-family: inherit; color: #65676b; }
-.bnav-item i { font-size: 22px; }
-.bnav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.bnav-item.active { color: #1877F2; }
-@media (max-width: 900px) { .burger-btn { display: flex !important; } .bottomnav { display: flex !important; } }
-@media (min-width: 901px) { .burger-btn { display: none !important; } .bottomnav { display: none !important; } }
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;}
+  .drawer-overlay.open{display:block;}
+  .drawer-panel{position:fixed;top:0;left:-320px;bottom:0;width:300px;background:#fff;z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;transition:left .28s ease;box-shadow:4px 0 32px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .drawer-panel::-webkit-scrollbar{width:4px;}
+  .drawer-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+  .drawer-panel.open{left:0;}
+  .drawer-header{background:#1877F2;padding:48px 16px 16px;position:relative;display:flex;align-items:center;gap:12px;}
+  .drawer-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;}
+  .drawer-avatar{width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;}
+  .drawer-user-name{font-size:15px;font-weight:800;color:#fff;}
+  .drawer-user-handle{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+  .drawer-stats{display:flex;gap:16px;margin-top:10px;}
+  .drawer-stat{text-align:center;}
+  .drawer-stat-val{font-size:14px;font-weight:800;color:#fff;}
+  .drawer-stat-label{font-size:10px;color:rgba(255,255,255,.7);}
+  .drawer-body{flex:1;padding:6px 0;}
+  .drawer-section{font-size:10px;font-weight:800;color:#1877F2;text-transform:uppercase;letter-spacing:.8px;padding:16px 18px 4px;margin-top:4px;border-top:1px solid #e4e6eb;}
+  .drawer-item{display:flex;align-items:center;gap:14px;padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#050505;border:none;background:none;width:100%;font-family:inherit;text-align:left;}
+  .drawer-item:hover{background:#eff6ff;color:#1877F2;}
+  .drawer-item i{font-size:20px;width:24px;}
+  .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+  .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
+  /* ===== END DRAWER STYLES ===== */
+/* ── My PawBook: warm scrapbook design ── */
+:root{--bg:#FFF9F3;--line:#f2e5d6;--line2:#f8eee3;--text:#3b322b;--sub:#5d5147;--muted:#857869;--navy:#3a2a1f;
+  --orange:#F47A38;--orange-d:#d65f20;--yellow:#FFE7B5;--green:#E5F2E6;--lav:#EEE8FF;--pink:#FCE6E9;--sky:#E8F0FF;--peach:#FFEBDD;
+  --green-d:#2f7d4a;--lav-d:#6a50c9;--pink-d:#c0405e;--sky-d:#2b64c4;--yellow-d:#a86a00;--peach-d:#c25a1c;
+  --grad:linear-gradient(135deg,#F47A38,#f7a64b);--blue:#F47A38;--blue-d:#d65f20;--purple:#f7a64b;--shadow:0 6px 22px rgba(110,70,30,.08)}
+body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23f4e4d2' fill-opacity='.55'%3E%3Cellipse cx='30' cy='34' rx='6' ry='8'/%3E%3Cellipse cx='44' cy='28' rx='6' ry='8'/%3E%3Cellipse cx='58' cy='34' rx='6' ry='8'/%3E%3Cpath d='M44 42c-10 0-16 9-16 15 0 5 6 6 16 6s16-1 16-6c0-6-6-15-16-15z'/%3E%3C/g%3E%3C/svg%3E")}
+.logo{color:#1877F2}.logo i{background:linear-gradient(135deg,#1877F2,#8b5cf6)}
+.crumb b{color:var(--orange)}
+.nav-av{background:var(--grad)}
+:focus-visible{outline:3px solid rgba(244,122,56,.35)}
+.btn-o{background:var(--grad);box-shadow:0 8px 20px rgba(244,122,56,.28)}
+.btn-w{border-color:#efdcc7}.btn-w:hover{border-color:var(--orange);color:var(--orange-d)}
+.fi{background:#fffaf5;border-color:#eddccb}.fi:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(244,122,56,.12)}
+.seg input:checked+span{background:var(--peach);border-color:var(--orange);color:var(--orange-d)}
+.card{border-color:var(--line);border-radius:20px}
+/* header */
+.mph{position:relative;max-width:1240px;margin:0 auto;padding:26px 0 18px;display:grid;grid-template-columns:1.1fr 1fr;gap:34px;align-items:center}
+@media(max-width:900px){.mph{grid-template-columns:1fr;gap:20px}}
+.mph .eyb{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;background:#fff;border:1px solid #f0dcc5;color:var(--orange-d);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.mph h1{font-size:clamp(32px,4.4vw,50px);font-weight:900;color:var(--navy);line-height:1.05;margin:12px 0 10px;letter-spacing:-.02em}
+.mph h1 span{color:var(--orange)}
+.mph p.t{font-size:15.5px;line-height:1.65;color:var(--sub);max-width:520px}
+.petchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.pc{display:flex;align-items:center;gap:8px;padding:4px 14px 4px 4px;border-radius:999px;border:1.5px solid #efdcc7;background:#fff;font-weight:700;font-size:13px;color:var(--navy)}
+.pc.on{border-color:var(--orange);background:var(--peach);color:var(--orange-d)}
+.pc .pav{width:30px;height:30px;font-size:16px;background:var(--yellow)}
+.pc.all{padding:4px 14px}
+.pav{border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;background:var(--yellow)}.pav img{width:100%;height:100%;object-fit:cover}
+.mstats{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.ms{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 14px;min-width:96px}
+.ms b{display:block;font-size:22px;font-weight:900;color:var(--navy);line-height:1.1}.ms span{font-size:12px;color:var(--muted);font-weight:600}
+.book{position:relative;height:300px}
+@media(max-width:900px){.book{height:230px}}
+.book .pph{position:absolute;border-radius:18px;overflow:hidden;border:6px solid #fff;box-shadow:0 14px 30px rgba(110,70,30,.18);background:#f6e7d6}
+.book .pph img{width:100%;height:100%;object-fit:cover}
+.book .p1{left:0;top:10px;width:62%;height:82%;transform:rotate(-2.5deg)}
+.book .p2{right:2%;top:0;width:40%;height:52%;transform:rotate(3deg)}
+.book .p3{right:6%;bottom:0;width:38%;height:46%;transform:rotate(-1.5deg)}
+.book .tape{position:absolute;width:70px;height:20px;background:rgba(255,231,181,.85);top:-8px;left:50%;transform:translateX(-50%) rotate(-4deg);border-radius:3px;z-index:2}
+@media(max-width:520px){.book .p2,.book .p3{display:none}.book .p1{width:100%;height:92%;transform:none}}
+/* tabs */
+.mtabs{display:flex;gap:6px;overflow-x:auto;padding:6px;background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow);scrollbar-width:none;margin:8px 0 18px;position:sticky;top:calc(var(--nav-h) + 8px);z-index:60}
+.mtabs::-webkit-scrollbar{display:none}
+.mtab{flex:1;min-width:max-content;height:46px;padding:0 16px;border-radius:13px;border:none;background:none;font-weight:700;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.mtab i{font-size:19px}.mtab:hover{background:#fff6ee;color:var(--navy)}
+.mtab.on{background:var(--peach);color:var(--orange-d)}
+.mtab .n{font-size:11px;font-weight:800;background:#fff;border-radius:999px;padding:1px 7px;color:var(--orange-d)}
+.mpanel{display:none}.mpanel.on{display:block}
+/* section heads */
+.sh{display:flex;align-items:flex-end;gap:12px;margin:26px 0 12px;flex-wrap:wrap}
+.sh h2{font-size:21px;font-weight:900;color:var(--navy);display:flex;gap:9px;align-items:center}.sh p{font-size:13px;color:var(--muted)}.sh .sp{flex:1}
+.sh:first-child{margin-top:4px}
+/* tinted tiles */
+.t-peach{background:var(--peach);color:var(--peach-d)}.t-green{background:var(--green);color:var(--green-d)}.t-lav{background:var(--lav);color:var(--lav-d)}.t-pink{background:var(--pink);color:var(--pink-d)}.t-sky{background:var(--sky);color:var(--sky-d)}.t-yellow{background:var(--yellow);color:var(--yellow-d)}
+.kinds{display:grid;grid-template-columns:repeat(8,1fr);gap:10px}
+@media(max-width:1100px){.kinds{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:520px){.kinds{grid-template-columns:repeat(2,1fr)}}
+.kd{border:2px solid transparent;border-radius:18px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:92px}
+.kd i{font-size:22px}.kd b{font-size:22px;font-weight:900;line-height:1}.kd span{font-size:12.5px;font-weight:700}
+.kd.on{border-color:currentColor;box-shadow:0 6px 16px rgba(0,0,0,.07)}
+.cols{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(170px,190px);gap:12px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:thin}
+.colc{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;text-align:left;padding:0;display:flex;flex-direction:column}
+.colc .cv{height:96px;background:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:38px;overflow:hidden}.colc .cv img{width:100%;height:100%;object-fit:cover}
+.colc .t{padding:9px 12px}.colc b{display:block;font-size:13.5px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.colc span{font-size:12px;color:var(--muted)}
+.colc.on{outline:3px solid var(--orange)}
+.colc.new{border:2px dashed #efcfae;background:#fffaf5;align-items:center;justify-content:center;color:var(--orange-d);font-weight:800;font-size:13.5px;gap:6px;min-height:150px}
+.colc.new i{font-size:28px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 12px}
+.tools .fi{height:42px;font-size:13px;width:auto;flex:1 1 160px}
+.grid3{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:1100px){.grid3{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.grid3{grid-template-columns:repeat(2,1fr);gap:10px}}
+.it{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 10px rgba(110,70,30,.05)}
+.it .cv{position:relative;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;overflow:hidden}
+.it .cv img{width:100%;height:100%;object-fit:cover}
+.it .kb{position:absolute;left:8px;top:8px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.94);color:var(--navy);display:flex;gap:4px;align-items:center}
+.it .bd{padding:10px 12px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
+.it h4{font-size:13.5px;font-weight:700;color:var(--navy);line-height:1.35;cursor:pointer;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.it .s{font-size:12px;color:var(--muted)}
+.it .ac{display:flex;gap:6px;margin-top:auto;padding-top:8px}
+.it.na{opacity:.75}.it.na .cv{filter:grayscale(.7)}
+.ib{width:34px;height:34px;border-radius:11px;border:1.5px solid #efdcc7;background:#fff;color:var(--sub);font-size:16px;display:inline-flex;align-items:center;justify-content:center}
+.ib:hover{border-color:var(--orange);color:var(--orange-d)}.ib.on{background:var(--yellow);border-color:#f4cf85;color:var(--yellow-d)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px}
+/* empty */
+.emp{border-radius:24px;background:#fff3e6;border:1px solid #f6dfc6;padding:26px;display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center}
+@media(max-width:700px){.emp{grid-template-columns:1fr;text-align:center}.emp img{margin:0 auto}}
+.emp img{width:220px;height:180px;object-fit:cover;border-radius:20px}
+.emp h3{font-size:21px;font-weight:900;color:var(--navy)}.emp p{font-size:14px;color:var(--sub);margin:6px 0 14px;line-height:1.6}
+.dlinks{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:700px){.dlinks{justify-content:center}}
+.dlinks a{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 13px;border-radius:12px;background:#fff;border:1.5px solid #efd5bb;font-weight:700;font-size:13px;color:var(--navy)}
+.dlinks a:hover{border-color:var(--orange);color:var(--orange-d)}
+.mini-empty{border:2px dashed #efd9c2;border-radius:18px;padding:22px;text-align:center;color:var(--muted);background:#fffaf5;font-size:13.5px}
+.mini-empty b{display:block;color:var(--navy);font-size:15px;margin-bottom:4px}
+/* memories */
+.otd{border-radius:26px;background:linear-gradient(135deg,#ffe3cc,#ffd6dc 60%,#efe2ff);padding:18px;display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:center;box-shadow:0 14px 34px rgba(192,64,94,.12)}
+@media(max-width:820px){.otd{grid-template-columns:1fr}}
+.otd .pph{border-radius:20px;overflow:hidden;aspect-ratio:16/10;background:#fff}.otd .pph img{width:100%;height:100%;object-fit:cover}
+.otd .lab{display:inline-flex;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;background:#fff;color:var(--pink-d);letter-spacing:.05em;text-transform:uppercase}
+.otd h3{font-size:26px;font-weight:900;color:var(--navy);margin:10px 0 6px;line-height:1.2}.otd p{font-size:14px;color:var(--sub);line-height:1.6}
+.otd .d{font-size:12.5px;color:var(--muted);margin-top:8px}
+.otd .brow{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.otd-more{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hl{display:grid;grid-auto-flow:column;grid-auto-columns:150px;gap:12px;overflow-x:auto;padding:2px 2px 10px}
+.hlc{border-radius:18px;overflow:hidden;background:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(110,70,30,.12);cursor:pointer;text-align:left;padding:0;transform:rotate(-1deg)}
+.hlc:nth-child(even){transform:rotate(1.2deg)}
+.hlc .im{height:120px;background:var(--yellow);overflow:hidden}.hlc img{width:100%;height:100%;object-fit:cover}
+.hlc b{display:block;font-size:12.5px;color:var(--navy);padding:7px 9px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hlc span{display:block;font-size:11px;color:var(--muted);padding:0 9px 8px}
+.mtl{position:relative;padding-left:34px}
+.mtl::before{content:'';position:absolute;left:13px;top:6px;bottom:6px;width:3px;border-radius:3px;background:repeating-linear-gradient(180deg,#f3c9a5 0 10px,transparent 10px 18px)}
+.yr{position:relative;margin:22px 0 12px;font-size:20px;font-weight:900;color:var(--orange-d)}
+.yr::before{content:'';position:absolute;left:-29px;top:6px;width:17px;height:17px;border-radius:50%;background:var(--orange);border:4px solid #ffe3cc}
+.yr:first-child{margin-top:0}
+.mm{position:relative;display:grid;grid-template-columns:140px 1fr;gap:16px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:12px;margin-bottom:12px;box-shadow:0 3px 12px rgba(110,70,30,.05)}
+.mm::before{content:'';position:absolute;left:-27px;top:26px;width:11px;height:11px;border-radius:50%;background:#fff;border:3px solid #f3c9a5}
+.mm.hi{border-color:#f6cf85;background:linear-gradient(180deg,#fffaf0,#fff)}
+@media(max-width:620px){.mm{grid-template-columns:96px 1fr;gap:12px}}
+.mm .im{border-radius:14px;overflow:hidden;aspect-ratio:1;background:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer}
+.mm .im img{width:100%;height:100%;object-fit:cover}
+.mm h4{font-size:16px;font-weight:800;color:var(--navy);line-height:1.3}
+.mm .d{font-size:12.5px;color:var(--muted);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mm p{font-size:13.5px;color:var(--sub);margin-top:6px;line-height:1.55}
+.mm .ac{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.mm .more{display:flex;gap:4px;margin-top:8px}.mm .more img{width:46px;height:46px;border-radius:10px;object-fit:cover;cursor:pointer}
+.lnk{background:none;border:none;font-weight:700;font-size:12.5px;color:var(--orange-d);padding:4px 6px;border-radius:8px;display:inline-flex;gap:4px;align-items:center}
+.lnk:hover{background:#fff3e8}.lnk.mute{color:var(--muted)}
+.recap{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.rc{border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column}
+.rc .cv{height:110px;background:linear-gradient(135deg,var(--yellow),var(--pink));position:relative;overflow:hidden}.rc .cv img{width:100%;height:100%;object-fit:cover}
+.rc .cv b{position:absolute;left:12px;bottom:8px;font-size:30px;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+.rc .t{padding:10px 12px;display:flex;gap:6px;flex-wrap:wrap}
+/* journey */
+.jcats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:1000px){.jcats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.jcats{grid-template-columns:repeat(2,1fr)}}
+.jc{border-radius:16px;padding:12px;text-align:left;border:2px solid transparent;display:flex;gap:10px;align-items:center}
+.jc i{font-size:22px;width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.jc b{display:block;font-size:14px;color:var(--navy)}.jc span{font-size:12px;font-weight:600;opacity:.85}
+.jc.on{border-color:currentColor}
+.jday{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;display:flex;gap:10px;align-items:center}.jday::after{content:'';flex:1;height:1px;background:var(--line)}
+.ji{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:11px 12px;margin-bottom:8px}
+.ji .ic{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ji .t{flex:1;min-width:0}.ji b{display:block;font-size:13.5px;color:var(--navy);font-weight:700}.ji .dt{font-size:12.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ji .m{font-size:11.5px;color:var(--muted);margin-top:2px}
+.ji .th{width:46px;height:46px;border-radius:12px;object-fit:cover;flex-shrink:0}
+.ji a.ib,.ji button.ib{width:32px;height:32px;font-size:15px}
+.note{font-size:12.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start;margin-top:14px}
+.note i{color:var(--orange);font-size:16px;margin-top:1px}
+/* celebrations */
+.party{position:relative;overflow:hidden;border-radius:26px;background:linear-gradient(160deg,#fff0d6,#ffe4e8);padding:18px;box-shadow:0 16px 36px rgba(244,122,56,.16)}
+.party .lab{display:inline-flex;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;background:#fff;color:var(--orange-d);letter-spacing:.05em;text-transform:uppercase}
+.party .pph{border-radius:20px;overflow:hidden;aspect-ratio:16/8;max-height:380px;width:100%;margin-top:12px;background:#fff;position:relative}.party .pph img{width:100%;height:100%;object-fit:cover}
+@media(max-width:620px){.party .pph{aspect-ratio:4/3}}
+.party h3{font-size:clamp(24px,3vw,32px);font-weight:900;color:var(--navy);margin-top:12px}.party p{font-size:14px;color:var(--sub);margin-top:4px}
+.party .brow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.confetti{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+.confetti i{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;animation:fall 3.2s linear infinite;opacity:.85}
+@keyframes fall{to{transform:translateY(560px) rotate(540deg)}}
+.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start}
+@media(max-width:960px){.two-col{grid-template-columns:1fr}}
+.ub{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line2)}
+.ub:last-child{border-bottom:none}
+.ub .pav{width:52px;height:52px;border-radius:16px;font-size:24px}
+.ub .t{flex:1;min-width:0}.ub b{display:block;font-size:14.5px;color:var(--navy)}.ub span{font-size:12.5px;color:var(--muted)}
+.cal{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px}
+.cal .hd{display:flex;align-items:center;gap:8px;margin-bottom:10px}.cal .hd b{flex:1;font-size:16px;color:var(--navy);text-align:center}
+.cal .g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .dn{font-size:11px;font-weight:800;color:var(--muted);text-align:center;padding:4px 0}
+.cal .c{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:var(--sub);position:relative;background:#fffaf5;border:none;padding:0}
+.cal .c.x{background:none}
+.cal .c.td{outline:2px solid var(--orange)}
+.cal .c.ev{background:var(--peach);color:var(--orange-d);font-weight:800;cursor:pointer}
+.cal .c.ev.ad{background:var(--green);color:var(--green-d)}
+.cal .c .dots{font-size:10px;line-height:1}
+.cal-list{margin-top:10px;font-size:13px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--muted)}.legend span{display:inline-flex;gap:5px;align-items:center}.legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+.petd{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.pd{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.pd .top{display:flex;gap:12px;align-items:center}.pd .pav{width:56px;height:56px;border-radius:18px;font-size:28px}
+.pd b{font-size:16px;color:var(--navy)}.pd .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px}.pd .kv span{color:var(--muted)}.pd .kv em{font-style:normal;font-weight:600;color:var(--navy)}
+.wish{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13.5px}.wish:last-child{border-bottom:none}
+.wish .pav{width:36px;height:36px;font-size:15px;font-weight:800;color:var(--orange-d)}
+.tipbox{background:var(--green);border-radius:20px;padding:16px;color:#24563a;font-size:13.5px;line-height:1.6}
+.tipbox b{display:block;font-size:15px;margin-bottom:6px;color:#1d4a30}.tipbox ul{margin:6px 0 0 18px}
+.frames{display:flex;gap:8px;flex-wrap:wrap}
+.frames label{cursor:pointer}.frames input{position:absolute;opacity:0}.frames span{display:inline-flex;height:36px;align-items:center;padding:0 12px;border-radius:11px;border:1.5px solid #eddccb;font-size:13px;font-weight:600;background:#fffaf5}
+.frames input:checked+span{background:var(--peach);border-color:var(--orange);color:var(--orange-d)}
+#cardCanvas{width:100%;max-width:420px;aspect-ratio:1;border-radius:18px;display:block;margin:0 auto;box-shadow:0 10px 26px rgba(110,70,30,.18)}
+.lb{position:fixed;inset:0;background:rgba(30,20,10,.85);z-index:800;display:none;align-items:center;justify-content:center;padding:20px}
+.lb.open{display:flex}.lb img{max-width:100%;max-height:90vh;border-radius:14px}
+.pvwrap{display:flex;gap:8px;flex-wrap:wrap}.pvwrap .pv{position:relative;width:72px;height:72px;border-radius:12px;overflow:hidden}.pvwrap .pv img{width:100%;height:100%;object-fit:cover}
+.pvwrap .pv button{position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;font-size:12px}
+.wrap{padding-bottom:120px}
+@media(max-width:520px){.jc span{display:none}.jc{padding:10px}.jc i{width:32px;height:32px;font-size:18px}.book{height:170px}.kd{min-height:78px}.mph h1{font-size:30px}}
 </style>
 </head>
 <body>
-<nav class="topnav">
-  <button onclick="location.href='07_home.html'" style="background:none;border:none;cursor:pointer;font-size:22px;color:#64748b"><i class="ti ti-arrow-left"></i></button>
-  <div style="font-size:16px;font-weight:800">My Activity</div>
+
+<nav class="nav">
+  <button class="menu" onclick="openDrawer()" aria-label="Open menu"><i class="ti ti-menu-2"></i></button>
+  <div class="logo" onclick="location.href='07_home.html'"><i>🐾</i><span>PawBook</span></div>
+  <div class="crumb"><i class="ti ti-chevron-right"></i><b>My PawBook</b></div>
+  <div class="sp"></div>
+  <button class="nav-ic hide-s" onclick="location.href='36_pet_life_record.html'" title="Pet health" aria-label="Pet health"><i class="ti ti-heart-handshake"></i></button>
+  <button class="nav-ic" onclick="location.href='12_notifications.html'" title="Notifications" aria-label="Notifications"><i class="ti ti-bell"></i></button>
+  <button class="nav-av" id="nav-av" onclick="location.href='29_user_profile.html'" aria-label="My profile">·</button>
 </nav>
 
-<div style="padding-top:56px;padding-bottom:70px">
-  <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab active" onclick="showTab('saved',this)">🔖 Saved</div>
-    <div class="tab" onclick="showTab('memory',this)">🌟 Memories</div>
-    <div class="tab" onclick="showTab('activity',this)">📊 Activity</div>
-    <div class="tab" onclick="showTab('birthdays',this)">🎂 Birthdays</div>
-  </div>
+<main class="wrap" id="app">
+  <div class="skel" style="height:300px;margin:18px 0 12px"></div>
+  <div class="skel" style="height:60px;margin-bottom:12px"></div>
+  <div class="skel" style="height:300px"></div>
+</main>
 
-  <!-- SAVED POSTS -->
-  <div id="tab-saved">
-    <div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
-      <div style="font-size:14px;font-weight:800">Saved Posts <span style="color:#94a3b8;font-size:12px" id="saved-count">(0)</span></div>
-      <button onclick="clearSaved()" style="background:none;border:none;color:#ef4444;font-size:12px;font-weight:700;cursor:pointer">Clear all</button>
-    </div>
-    <div id="saved-grid" class="post-grid"></div>
-    <div id="saved-empty" style="display:none;text-align:center;padding:40px;color:#94a3b8">
-      <div style="font-size:48px;margin-bottom:10px">🔖</div>
-      <div style="font-weight:700;margin-bottom:6px">No saved posts yet</div>
-      <div style="font-size:13px">Tap the 🔖 icon on any post to save it here</div>
-    </div>
-  </div>
+<nav class="bnav">
+  <button onclick="location.href='07_home.html'"><i class="ti ti-home"></i>Home</button>
+  <button data-t="collection" onclick="setTab('collection')"><i class="ti ti-bookmarks"></i>Collection</button>
+  <button data-t="memories" onclick="setTab('memories')"><i class="ti ti-camera-heart"></i>Memories</button>
+  <button data-t="journey" onclick="setTab('journey')"><i class="ti ti-route"></i>Journey</button>
+  <button data-t="celebrations" onclick="setTab('celebrations')"><i class="ti ti-cake"></i>Birthdays</button>
+</nav>
 
-  <!-- MEMORY -->
-  <div id="tab-memory" style="display:none">
-    <div id="memory-list">
-      <div class="memory-card">
-        <div style="font-size:13px;font-weight:700;opacity:0.8;margin-bottom:4px">🌟 On This Day</div>
-        <div style="font-size:22px;font-weight:900;margin-bottom:6px">1 Year Ago Today</div>
-        <div style="font-size:14px;opacity:0.9">Bruno had his first birthday! 🎂🐾</div>
-        <button onclick="shareMemory()" style="margin-top:14px;height:36px;padding:0 20px;border-radius:20px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Share Memory</button>
-      </div>
-
-      <div class="card">
-        <div style="display:flex;gap:12px;align-items:center">
-          <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80" style="width:70px;height:70px;border-radius:10px;object-fit:cover">
-          <div style="flex:1">
-            <div style="font-size:12px;color:#94a3b8;font-weight:600">1 year ago • Sep 10</div>
-            <div style="font-size:14px;font-weight:700;margin-top:2px">🎂 Bruno's first birthday party!</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-          <button onclick="shareMemory()" style="height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
-          <button onclick="showToast('Added to highlights!','success')" style="height:28px;padding:0 12px;border-radius:999px;border:none;background:#eff6ff;color:#1a4db3;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Highlight</button>
-        </div>
-      </div>
-      <div class="card">
-        <div style="display:flex;gap:12px;align-items:center">
-          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80" style="width:70px;height:70px;border-radius:10px;object-fit:cover">
-          <div style="flex:1">
-            <div style="font-size:12px;color:#94a3b8;font-weight:600">2 years ago • Sep 10</div>
-            <div style="font-size:14px;font-weight:700;margin-top:2px">🏥 Bruno's first vet visit — so brave!</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-          <button onclick="shareMemory()" style="height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>
-          <button onclick="showToast('Added to highlights!','success')" style="height:28px;padding:0 12px;border-radius:999px;border:none;background:#eff6ff;color:#1a4db3;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Highlight</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ACTIVITY LOG -->
-  <div id="tab-activity" style="display:none">
-    <div class="card">
-      <div class="section-title">📊 Your Activity</div>
-      <div id="activity-list">
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#fee2e2">❤️</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">You liked Bruno's post</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">2 minutes ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#dbeafe">💬</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">You commented on Dr. Priya's post</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">15 minutes ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#dcfce7">👤</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">Rahul started following you</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">1 hour ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#fef3c7">🐾</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">Bruno's vaccination is due next week</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">2 hours ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#f3e8ff">🛒</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">You ordered Royal Canin Dog Food</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">1 day ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#fee2e2">📍</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">You reported a lost pet sighting</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">2 days ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#dbeafe">🏥</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">Vet appointment with Dr. Priya confirmed</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">3 days ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#dcfce7">🎉</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">You joined Delhi Dog Parents group</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">5 days ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#fef3c7">📸</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">You posted 3 new photos</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">1 week ago</div>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background:#f3e8ff">🔖</div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:#1e293b">You saved 2 posts</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:2px">1 week ago</div>
-            </div>
-          </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BIRTHDAYS -->
-  <div id="tab-birthdays" style="display:none">
-    <div id="birthday-today-wrap">
-      <div class="birthday-card">
-        <div style="font-size:48px">🎂</div>
-        <div>
-          <div style="font-size:12px;opacity:0.8;font-weight:600">TODAY</div>
-          <div style="font-size:16px;font-weight:900">Bruno turns 3! 🐕</div>
-          <button onclick="sendBirthdayWish('','Bruno')" style="margin-top:8px;height:32px;padding:0 16px;border-radius:16px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);color:#fff;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🎁 Send Wish</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-title">🐾 Upcoming Pet Birthdays</div>
-      <div id="birthday-list">
-        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9">
-          <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f59e0b">
-          <div style="flex:1">
-            <div style="font-size:13px;font-weight:700">Luna 🎂</div>
-            <div style="font-size:11px;color:#64748b">Persian Cat · Priya Sharma</div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-size:12px;font-weight:700;color:#f59e0b">Sep 18</div>
-            <button onclick="sendBirthdayWish('Priya Sharma','Luna')" style="font-size:10px;color:#1a4db3;background:none;border:none;cursor:pointer;font-weight:700;font-family:'Poppins',sans-serif">Send Wish</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9">
-          <img src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=80&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f59e0b">
-          <div style="flex:1">
-            <div style="font-size:13px;font-weight:700">Mittens 🎂</div>
-            <div style="font-size:11px;color:#64748b">Tabby Cat · Ananya Bose</div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-size:12px;font-weight:700;color:#f59e0b">Sep 25</div>
-            <button onclick="sendBirthdayWish('Ananya Bose','Mittens')" style="font-size:10px;color:#1a4db3;background:none;border:none;cursor:pointer;font-weight:700;font-family:'Poppins',sans-serif">Send Wish</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9">
-          <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=80&q=80" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f59e0b">
-          <div style="flex:1">
-            <div style="font-size:13px;font-weight:700">Gizmo 🎂</div>
-            <div style="font-size:11px;color:#64748b">Labrador · Rahul Dev</div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-size:12px;font-weight:700;color:#f59e0b">Oct 2</div>
-            <button onclick="sendBirthdayWish('Rahul Dev','Gizmo')" style="font-size:10px;color:#1a4db3;background:none;border:none;cursor:pointer;font-weight:700;font-family:'Poppins',sans-serif">Send Wish</button>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
+  <div class="md" id="mo-md" role="dialog" aria-modal="true" aria-labelledby="mo-title">
+    <div class="mh"><h3 id="mo-title"></h3><button class="mx" onclick="closeMo()" aria-label="Close"><i class="ti ti-x"></i></button></div>
+    <form id="mo-form" novalidate onsubmit="submitMo(event)"><div class="mb" id="mo-body"></div><div class="mf" id="mo-foot"></div></form>
   </div>
 </div>
-
-<!-- Bottom nav -->
-<div style="position:fixed;bottom:0;left:0;right:0;height:56px;background:#fff;border-top:1px solid #e2e8f0;display:flex;z-index:500">
-  <button onclick="location.href='07_home.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-home" style="font-size:20px"></i>Home</button>
-  <button onclick="location.href='30_events.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-calendar" style="font-size:20px"></i>Events</button>
-  <button style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#1a4db3;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-bookmark" style="font-size:20px"></i>Saved</button>
-  <button onclick="location.href='08_pet_profile.html'" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:#94a3b8;font-size:10px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif"><i class="ti ti-user" style="font-size:20px"></i>Profile</button>
-</div>
+<div class="lb" id="lb" onclick="this.classList.remove('open')"><img id="lb-img" alt=""></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="photo-in" accept="image/jpeg,image/png,image/webp" multiple hidden>
 
 <script>
-// ── STATE VARIABLES ────────────────────────────────────────
-var _tabLoaded = {saved:false,memory:false,activity:false,birthdays:false};
+/* ===================== My PawBook (31) ===================== */
+var API = 'https://pawbook.deemona.com/api/v1';
+var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
+var S = {pets: [], counts: {saved: 0, by_kind: {}, memories: 0}}, TAB = 'collection', PET = '', MO = null;
+var COL = null, CF = {kind: '', col: '', q: ''}, MEM = null, SHOWHIDDEN = false, JR = {items: [], next: null, counts: null, f: {cat: '', q: '', from: '', to: ''}}, CEL = null, CALM = null;
 
-// ── HELPER FUNCTIONS ───────────────────────────────────────
-function relativeTime(dateStr) {
-  var now = Date.now();
-  var then = new Date(dateStr).getTime();
-  if(isNaN(then)) return 'recently';
-  var diff = Math.floor((now - then) / 1000);
-  if(diff < 60) return 'just now';
-  if(diff < 3600) return Math.floor(diff/60)+' minutes ago';
-  if(diff < 86400) return Math.floor(diff/3600)+' hours ago';
-  return Math.floor(diff/86400)+' days ago';
-}
-
-function formatAmount(n) {
-  n = Number(n) || 0;
-  if(n >= 100000) return '₹'+Math.round(n/100000)+'L';
-  if(n >= 1000) return '₹'+Math.round(n/1000)+'K';
-  return '₹'+n;
-}
-
-function showToast(msg, type) {
-  var t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1a4db3;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;z-index:9999;font-family:Poppins,sans-serif;white-space:nowrap;max-width:90vw;text-align:center';
-  if(type==='error') t.style.background='#ef4444';
-  else if(type==='success') t.style.background='#22c55e';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(function(){ t.remove(); }, 2500);
-}
-
-// ── TAB SWITCHING ──────────────────────────────────────────
-function showTab(tab, el) {
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-  el.classList.add('active');
-  ['saved','memory','activity','birthdays'].forEach(function(t){
-    document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function toast(m){ var t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2800); }
+function api(path, o){
+  o = o || {}; var h = {}; if (TOKEN) h.Authorization = 'Bearer ' + TOKEN;
+  var body = o.body; if (body && !(body instanceof FormData)) { h['Content-Type'] = 'application/json'; body = JSON.stringify(body); }
+  return fetch(API + path, {method: o.method || 'GET', headers: h, body: body}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if (!r.ok || j.success === false) { var e = new Error(j.message || j.error || ('Something went wrong (' + r.status + ')')); e.status = r.status; e.fields = j.fields; throw e; }
+      return j.data !== undefined ? j.data : j;
+    });
   });
-  if(tab==='saved') { loadSavedPosts(); return; }
-  if(_tabLoaded[tab]) return;
-  _tabLoaded[tab] = true;
-  if(tab==='memory') loadMemories();
-  else if(tab==='activity') loadActivity();
-  else if(tab==='birthdays') loadBirthdays();
 }
+function fail(e){ if (e && e.status === 401) { location.href = '01_login.html'; return; } toast((e && e.message) || 'Something went wrong'); }
+function todayIST(){ return new Date(Date.now() + 330 * 60000).toISOString().slice(0, 10); }
+function fd(d, o){ if (!d) return ''; var x = new Date(String(d).slice(0, 10) + 'T00:00:00Z'); return isNaN(x) ? '' : x.toLocaleDateString('en-IN', Object.assign({day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'}, o || {})); }
+function ftime(t){ var d = new Date(t); return isNaN(d) ? '' : d.toLocaleTimeString('en-IN', {hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata'}); }
+function dayIST(t){ return new Date(new Date(t).getTime() + 330 * 60000).toISOString().slice(0, 10); }
+function rel(t){ var s = (Date.now() - new Date(t).getTime()) / 1000; if (s < 60) return 'Just now'; if (s < 3600) return Math.floor(s / 60) + ' min ago'; if (s < 86400) return Math.floor(s / 3600) + ' h ago'; var d = Math.floor(s / 86400); return d === 1 ? 'Yesterday' : d < 7 ? d + ' days ago' : fd(dayIST(t), {month: 'short'}); }
+function ago(d){ var y = +todayIST().slice(0, 4) - +String(d).slice(0, 4); return y <= 0 ? 'This year' : y === 1 ? '1 year ago' : y + ' years ago'; }
+var SP = {dog: '🐕', cat: '🐈', bird: '🦜', rabbit: '🐇', fish: '🐠', hamster: '🐹'};
+function emo(p){ var k = String((p && p.species) || '').toLowerCase(); return SP[k] || SP[/dog|puppy/.test(k) ? 'dog' : /cat|kitten/.test(k) ? 'cat' : ''] || '🐾'; }
+function av(p, cls){ return '<span class="pav ' + (cls || '') + '">' + (p && p.photo ? '<img src="' + esc(p.photo) + '" alt="" onerror="this.parentNode.textContent=\'' + emo(p) + '\'">' : emo(p)) + '</span>'; }
+function ordinal(n){ var s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+function loadScript(src){ return new Promise(function(ok, no){ var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
+function lightbox(u){ document.getElementById('lb-img').src = u; document.getElementById('lb').classList.add('open'); }
 
-// ── SAVED TAB ─────────────────────────────────────────────
-function loadSavedPosts() {
-  var grid = document.getElementById('saved-grid');
-  var empty = document.getElementById('saved-empty');
-  var count = document.getElementById('saved-count');
-  var fallbackImgs = [
-    'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',
-    'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80',
-    'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80',
-    'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=300&q=80',
-    'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300&q=80',
-    'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=300&q=80'
-  ];
+/* ---------- boot + header ---------- */
+var ALIAS = {saved: 'collection', collection: 'collection', memory: 'memories', memories: 'memories', activity: 'journey', journey: 'journey', birthdays: 'celebrations', celebrations: 'celebrations'};
+function boot(){
+  if (!TOKEN) { location.href = '01_login.html'; return; }
+  var qs = new URLSearchParams(location.search); TAB = ALIAS[qs.get('tab')] || TAB; var hp = qs.get('pet'); if (hp) PET = hp;
+  api('/mypawbook/summary').then(function(d){ S = d; if (PET && !S.pets.some(function(p){ return p.id === PET; })) PET = ''; renderShell(); setTab(TAB, true); })
+    .catch(function(e){ if (e.status === 401) return fail(e); document.getElementById('app').innerHTML = '<div class="mini-empty" style="margin-top:30px"><b>Could not load My PawBook</b>' + esc(e.message) + ' Please refresh in a moment.</div>'; });
+}
+var TABS = [['collection', 'ti-bookmarks', 'My Collection'], ['memories', 'ti-camera-heart', 'PawBook Memories'], ['journey', 'ti-route', 'My Journey'], ['celebrations', 'ti-cake', 'Paw Celebrations']];
+function renderShell(){
+  var names = S.pets.map(function(p){ return p.name; });
+  var who = names.length ? (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1]) : 'your pets';
+  document.getElementById('app').innerHTML =
+    '<section class="mph"><div><span class="eyb">🐾 My PawBook Journey</span><h1>A scrapbook of life with <span>' + esc(who) + '</span></h1>' +
+    '<p class="t">The things you save, the moments you remember, your journey in the pet community and every birthday worth celebrating — all in one place.</p>' +
+    (S.pets.length > 1 ? '<div class="petchips" id="petchips"></div>' : '') +
+    '<div class="mstats" id="mstats"></div></div>' +
+    '<div class="book"><div class="pph p1"><span class="tape"></span><img src="img/journey/scrapbook.jpg" alt="A pet scrapbook"></div><div class="pph p2"><img src="img/journey/birthday-garden.jpg" alt="A dog birthday party"></div><div class="pph p3"><img src="img/journey/album.jpg" alt="A photo album"></div></div></section>' +
+    '<div class="mtabs" role="tablist">' + TABS.map(function(t){ return '<button class="mtab" role="tab" data-t="' + t[0] + '" onclick="setTab(\'' + t[0] + '\')"><i class="ti ' + t[1] + '"></i>' + t[2] + '</button>'; }).join('') + '</div>' +
+    TABS.map(function(t){ return '<section class="mpanel" id="p-' + t[0] + '"></section>'; }).join('');
+  renderChips(); renderStats();
+}
+function renderChips(){
+  var el = document.getElementById('petchips'); if (!el) return;
+  el.innerHTML = '<button class="pc all' + (PET ? '' : ' on') + '" onclick="setPet(\'\')">All pets</button>' + S.pets.map(function(p){ return '<button class="pc' + (PET === p.id ? ' on' : '') + '" onclick="setPet(\'' + esc(p.id) + '\')">' + av(p) + esc(p.name) + '</button>'; }).join('');
+}
+function renderStats(){
+  var el = document.getElementById('mstats'); if (!el) return;
+  var mem = MEM ? MEM.items.length : null, up = CEL ? CEL.calendar.filter(function(e){ return e.days <= 30; }).length : null;
+  var st = [['Saved', S.counts.saved], ['Memories', mem != null ? mem : S.counts.memories], ['Pets', S.pets.length]];
+  if (up != null) st.push(['Celebrations in 30 days', up]);
+  el.innerHTML = st.map(function(s){ return '<div class="ms"><b>' + s[1] + '</b><span>' + s[0] + '</span></div>'; }).join('');
+}
+function setPet(id){ PET = id; renderChips(); if (TAB === 'memories') renderMemories(); if (TAB === 'journey') loadJourney(); }
+function setTab(t, first){
+  TAB = ALIAS[t] || 'collection';
+  document.querySelectorAll('.mtab').forEach(function(b){ b.classList.toggle('on', b.dataset.t === TAB); b.setAttribute('aria-selected', b.dataset.t === TAB); });
+  document.querySelectorAll('.bnav button[data-t]').forEach(function(b){ b.classList.toggle('on', b.dataset.t === TAB); });
+  document.querySelectorAll('.mpanel').forEach(function(p){ p.classList.toggle('on', p.id === 'p-' + TAB); });
+  try { history.replaceState({}, '', '31_saved.html?tab=' + TAB); } catch (e) {}
+  if (!first) { var tb = document.querySelector('.mtabs'); if (tb && tb.getBoundingClientRect().top < 0) tb.scrollIntoView({block: 'start'}); }
+  ({collection: loadCollection, memories: loadMemories, journey: loadJourney, celebrations: loadCelebrations})[TAB]();
+}
+function panel(){ return document.getElementById('p-' + TAB); }
+function loading(){ var p = panel(); if (p && !p.innerHTML) p.innerHTML = '<div class="skel" style="height:120px;margin-bottom:12px"></div><div class="skel" style="height:280px"></div>'; }
 
-  fetch(API_BASE+'/saved', {headers: authHeaders()})
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      var items = (d && d.data) ? d.data : [];
-      count.textContent = '('+items.length+')';
-      if(!items.length) {
-        grid.style.display = 'none';
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-      grid.style.display = 'grid';
-      grid.innerHTML = items.map(function(item, i) {
-        var imgSrc = item.image_url || fallbackImgs[i % fallbackImgs.length];
-        return '<div class="post-thumb"><img src="'+imgSrc+'" onerror="this.src=\''+fallbackImgs[i%fallbackImgs.length]+'\'"><div class="post-thumb-bar">❤️ Saved</div></div>';
-      }).join('');
-    })
-    .catch(function() {
-      // Fallback to localStorage
-      var saved = [];
-      try { saved = JSON.parse(localStorage.getItem('pb_saved') || localStorage.getItem('pb_saved_posts') || '[]'); } catch(e){}
-      count.textContent = '('+saved.length+')';
-      if(!saved.length) {
-        grid.style.display = 'none';
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-      grid.style.display = 'grid';
-      grid.innerHTML = saved.map(function(item, i) {
-        var imgSrc = (item && item.image_url) ? item.image_url : fallbackImgs[i % fallbackImgs.length];
-        return '<div class="post-thumb"><img src="'+imgSrc+'"><div class="post-thumb-bar">❤️ Saved</div></div>';
-      }).join('');
+/* ═════════════════ MY COLLECTION ═════════════════ */
+var KIND = {
+  post: ['Saved posts', 'ti-photo-heart', 't-peach', '📸', '07_home.html', 'Browse the feed'],
+  product: ['Favourite products', 'ti-shopping-bag-heart', 't-green', '🛍️', '42_shop.html', 'Visit the shop'],
+  event: ['Saved events', 'ti-calendar-heart', 't-lav', '🎪', '30_events.html', 'Explore events'],
+  vet: ['Favourite vets', 'ti-stethoscope', 't-sky', '🩺', '11_vet_booking.html', 'Find a vet'],
+  tip: ['Pet health tips', 'ti-bulb', 't-yellow', '💡', '37_pet_ai_health_agent.html', 'Ask the health assistant'],
+  training: ['Training resources', 'ti-school', 't-pink', '🎓', '22_training.html', 'Training'],
+  place: ['Favourite places', 'ti-map-pin-heart', 't-green', '📍', '24_pet_travel.html', 'Pet-friendly travel']
+};
+var KORDER = ['post', 'product', 'event', 'vet', 'tip', 'training', 'place'];
+function loadCollection(){ loading(); return api('/mypawbook/collection').then(function(d){ COL = d; S.counts.saved = d.items.length; renderStats(); renderCollection(); }).catch(fail); }
+function itemsFiltered(){
+  var q = CF.q.toLowerCase();
+  return COL.items.filter(function(i){ return (!CF.kind || i.kind === CF.kind) && (!CF.col || i.collections.indexOf(CF.col) >= 0) && (!q || (i.title + ' ' + (i.sub || '')).toLowerCase().indexOf(q) >= 0); });
+}
+function renderCollection(){
+  var p = document.getElementById('p-collection'), cnt = {}; COL.items.forEach(function(i){ cnt[i.kind] = (cnt[i.kind] || 0) + 1; });
+  if (!COL.items.length && !COL.collections.length) {
+    p.innerHTML = '<div class="sh"><div><h2>🐾 My PawBook Collection</h2><p>All the lovely things you save for your furry family.</p></div></div>' +
+      '<div class="emp"><img src="img/journey/puppy-art.jpg" alt=""><div><h3>Your collection is waiting!</h3><p>Save adorable pet photos, favourite products, interesting pet events and helpful tips — they will all gather here, ready when you need them.</p>' +
+      '<div class="dlinks">' + ['post', 'product', 'event', 'vet', 'tip', 'training'].map(function(k){ return '<a href="' + KIND[k][4] + '"><i class="ti ' + KIND[k][1] + '"></i>' + KIND[k][5] + '</a>'; }).join('') + '</div>' +
+      '<p style="margin:14px 0 0;font-size:12.5px">Found a great vet, tip or place somewhere else? <button class="lnk" onclick="addLink()"><i class="ti ti-link-plus"></i>Save a link</button> · <button class="lnk" onclick="newCollection()"><i class="ti ti-folder-plus"></i>Create a collection</button></p></div></div>';
+    return;
+  }
+  var list = itemsFiltered(), c = CF.col ? COL.collections.filter(function(x){ return x.id === CF.col; })[0] : null;
+  var h = '<div class="sh"><div><h2>🐾 My PawBook Collection</h2><p>All the lovely things you save for your furry family.</p></div><div class="sp"></div><button class="btn btn-w btn-s" onclick="addLink()"><i class="ti ti-link-plus"></i>Save a link</button></div>' +
+    '<div class="kinds"><button class="kd t-peach' + (CF.kind ? '' : ' on') + '" onclick="CF.kind=\'\';renderCollection()" style="background:#fff;color:var(--navy);border-color:' + (CF.kind ? 'var(--line)' : 'var(--orange)') + '"><i class="ti ti-paw"></i><b>' + COL.items.length + '</b><span>Everything</span></button>' +
+    KORDER.map(function(k){ var K = KIND[k]; return '<button class="kd ' + K[2] + (CF.kind === k ? ' on' : '') + '" onclick="CF.kind=CF.kind===\'' + k + '\'?\'\':\'' + k + '\';renderCollection()"><i class="ti ' + K[1] + '"></i><b>' + (cnt[k] || 0) + '</b><span>' + K[0] + '</span></button>'; }).join('') + '</div>' +
+    '<div class="sh"><div><h2 style="font-size:17px">📁 My collections</h2><p>Group anything you saved — like “Bruno’s favourite toys” or “Pet travel ideas”.</p></div></div>' +
+    '<div class="cols">' + COL.collections.map(function(x){ return '<button class="colc' + (CF.col === x.id ? ' on' : '') + '" onclick="CF.col=CF.col===\'' + x.id + '\'?\'\':\'' + x.id + '\';renderCollection()"><div class="cv">' + (x.cover ? '<img src="' + esc(x.cover) + '" alt="">' : esc(x.emoji || '📁')) + '</div><div class="t"><b>' + esc((x.emoji ? x.emoji + ' ' : '') + x.name) + '</b><span>' + x.count + ' item' + (x.count === 1 ? '' : 's') + '</span></div></button>'; }).join('') +
+    '<button class="colc new" onclick="newCollection()"><i class="ti ti-folder-plus"></i>New collection</button></div>' +
+    '<div class="tools"><input class="fi" type="search" placeholder="Search your collection…" value="' + esc(CF.q) + '" oninput="CF.q=this.value;renderItems()" aria-label="Search">' +
+    (c ? '<span class="chip t-yellow">📁 ' + esc(c.name) + ' <button class="lnk" style="padding:0 2px" onclick="CF.col=\'\';renderCollection()" aria-label="Show all"><i class="ti ti-x"></i></button></span><button class="lnk" onclick="editCollection(\'' + c.id + '\')"><i class="ti ti-edit"></i>Rename</button><button class="lnk mute" onclick="deleteCollection(\'' + c.id + '\')"><i class="ti ti-trash"></i>Delete collection</button>' : '') + '</div>' +
+    '<div id="items"></div>';
+  p.innerHTML = h; renderItems();
+}
+function renderItems(){
+  var el = document.getElementById('items'); if (!el) return; var list = itemsFiltered();
+  if (!list.length) { var K = KIND[CF.kind];
+    el.innerHTML = '<div class="mini-empty"><b>' + (CF.q ? 'Nothing matches “' + esc(CF.q) + '”' : CF.col ? 'This collection is empty' : K ? 'No ' + K[0].toLowerCase() + ' yet' : 'Nothing here yet') + '</b>' +
+      (CF.col ? 'Use “Add to collection” on any saved item to put it here.' : K ? (['vet', 'tip', 'training', 'place'].indexOf(CF.kind) >= 0 ? 'Save one with “Save a link”, or explore: ' : 'Explore and save something you love: ') + '<div class="dlinks" style="justify-content:center;margin-top:10px"><a href="' + K[4] + '"><i class="ti ' + K[1] + '"></i>' + K[5] + '</a>' + (['vet', 'tip', 'training', 'place'].indexOf(CF.kind) >= 0 ? '<a href="#" onclick="addLink(\'' + CF.kind + '\');return false"><i class="ti ti-link-plus"></i>Save a link</a>' : '') + '</div>' : '') + '</div>';
+    return; }
+  el.innerHTML = '<div class="grid3">' + list.map(function(i, n){ var K = KIND[i.kind];
+    return '<div class="it' + (i.available ? '' : ' na') + '" data-k="' + i.kind + '"><div class="cv ' + K[2] + '" onclick="openItem(' + n + ')">' + (i.image ? '<img src="' + esc(i.image) + '" alt="" loading="lazy" onerror="this.outerHTML=\'' + K[3] + '\'">' : K[3]) + '<span class="kb"><i class="ti ' + K[1] + '"></i>' + K[0].replace(/^(Saved|Favourite) /, '').replace(/^Pet health /, '').replace(/^./, function(c){ return c.toUpperCase(); }) + '</span></div>' +
+      '<div class="bd"><h4 onclick="openItem(' + n + ')">' + esc(i.title) + '</h4>' + (i.sub ? '<div class="s">' + esc(i.sub) + '</div>' : '') +
+      (i.collections.length ? '<div class="s">📁 ' + esc(i.collections.map(function(id){ var c = COL.collections.filter(function(x){ return x.id === id; })[0]; return c ? c.name : ''; }).filter(Boolean).join(', ')) + '</div>' : '') +
+      '<div class="ac"><button class="ib" title="Add to collection" aria-label="Add to collection" onclick="moveItem(' + n + ')"><i class="ti ti-folder-plus"></i></button>' + (i.url && i.available ? '<a class="ib" href="' + esc(i.url) + '" title="Open" aria-label="Open"><i class="ti ti-external-link"></i></a>' : '') +
+      '<span style="flex:1"></span><button class="ib" title="Remove" aria-label="Remove from collection" onclick="removeItem(' + n + ')"><i class="ti ti-bookmark-off"></i></button></div></div></div>'; }).join('') + '</div>';
+  el._list = list;
+}
+function cur(n){ return document.getElementById('items')._list[n]; }
+function openItem(n){
+  var i = cur(n);
+  if (i.kind === 'post') {
+    if (!i.available) return toast('This post is no longer visible');
+    return openMo(i.sub || 'Saved post', (i.images.length ? '<div style="display:grid;grid-template-columns:repeat(' + Math.min(2, i.images.length) + ',1fr);gap:6px">' + i.images.map(function(u){ return '<img src="' + esc(u) + '" alt="" style="width:100%;border-radius:12px;cursor:zoom-in" onclick="lightbox(this.src)">'; }).join('') + '</div>' : '') +
+      '<p style="font-size:14.5px;line-height:1.65;white-space:pre-wrap">' + esc(i.text || '') + '</p><small class="muted">Saved ' + esc(rel(i.saved_at)) + '</small>',
+      '<button type="button" class="btn btn-w" onclick="closeMo()">Close</button>');
+  }
+  if (i.url && i.available) location.href = i.url;
+}
+function removeItem(n){
+  var i = cur(n);
+  api('/mypawbook/collection/items/' + i.kind + '/' + encodeURIComponent(i.ref), {method: 'DELETE'}).then(function(){
+    COL.items = COL.items.filter(function(x){ return !(x.kind === i.kind && x.ref === i.ref); }); S.counts.saved = COL.items.length; renderStats();
+    toast('Removed from your collection'); loadCollection();
+  }).catch(fail);
+}
+function moveItem(n){
+  var i = cur(n);
+  if (!COL.collections.length) return newCollection(i);
+  openMo('Add to a collection', '<div class="cks" style="flex-direction:column;display:flex;gap:8px">' + COL.collections.map(function(c){ return '<label style="display:flex;gap:10px;align-items:center;font-weight:600;font-size:14px"><input type="checkbox" name="c" value="' + c.id + '"' + (i.collections.indexOf(c.id) >= 0 ? ' checked' : '') + ' style="width:20px;height:20px">' + esc((c.emoji ? c.emoji + ' ' : '') + c.name) + '</label>'; }).join('') + '</div>' +
+    '<button type="button" class="lnk" onclick="closeMo();newCollection(window._mv)"><i class="ti ti-folder-plus"></i>New collection</button>',
+    '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-check"></i>Save</button>', function(f){
+      var jobs = [].slice.call(f.querySelectorAll('input[name=c]')).filter(function(x){ return x.checked !== (i.collections.indexOf(x.value) >= 0); })
+        .map(function(x){ return api('/mypawbook/collections/' + x.value + '/items', {method: 'PUT', body: {kind: i.kind, ref: i.ref, on: x.checked}}); });
+      busy(true); Promise.all(jobs).then(function(){ closeMo(); toast('Collections updated'); loadCollection(); }).catch(function(e){ busy(false); fail(e); });
+    });
+  window._mv = i;
+}
+var EMOJIS = ['🧸', '🦴', '✈️', '🏖️', '🍖', '💊', '🎾', '🏡', '❤️', '📚'];
+function collForm(c){ return '<div class="fl"><span>Name</span><input class="fi" name="name" maxlength="60" value="' + esc(c ? c.name : '') + '" placeholder="e.g. Bruno\'s favourite toys"><div class="err">Please give it a name</div></div>' +
+  '<div class="fl"><span>Icon</span><div class="frames">' + EMOJIS.map(function(e, i){ return '<label><input type="radio" name="emoji" value="' + e + '"' + ((c ? c.emoji === e : i === 0) ? ' checked' : '') + '><span>' + e + '</span></label>'; }).join('') + '</div></div>'; }
+function newCollection(item){
+  openMo('New collection', collForm(), '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-folder-plus"></i>Create</button>', function(f){
+    var name = f.name.value.trim(); f.name.parentNode.classList.toggle('bad', name.length < 2); if (name.length < 2) return; busy(true);
+    api('/mypawbook/collections', {method: 'POST', body: {name: name, emoji: (f.querySelector('input[name=emoji]:checked') || {}).value}}).then(function(r){
+      return item && item.kind ? api('/mypawbook/collections/' + r.id + '/items', {method: 'PUT', body: {kind: item.kind, ref: item.ref}}) : null;
+    }).then(function(){ closeMo(); toast('Collection created'); loadCollection(); }).catch(function(e){ busy(false); fail(e); });
+  });
+}
+function editCollection(id){
+  var c = COL.collections.filter(function(x){ return x.id === id; })[0];
+  openMo('Rename collection', collForm(c), '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save">Save</button>', function(f){
+    var name = f.name.value.trim(); if (name.length < 2) return f.name.parentNode.classList.add('bad'); busy(true);
+    api('/mypawbook/collections/' + id, {method: 'PATCH', body: {name: name, emoji: (f.querySelector('input[name=emoji]:checked') || {}).value}}).then(function(){ closeMo(); loadCollection(); }).catch(function(e){ busy(false); fail(e); });
+  });
+}
+function deleteCollection(id){
+  openMo('Delete this collection?', '<p style="font-size:14px;line-height:1.6">The collection is removed, but everything in it stays saved in your collection.</p>', '<button type="button" class="btn btn-w" onclick="closeMo()">Keep it</button><button class="btn btn-o" id="mo-save">Delete</button>', function(){
+    busy(true); api('/mypawbook/collections/' + id, {method: 'DELETE'}).then(function(){ closeMo(); CF.col = ''; loadCollection(); }).catch(function(e){ busy(false); fail(e); });
+  });
+}
+function addLink(kind){
+  openMo('Save a link', '<div class="fl"><span>What is it?</span><div class="seg">' + ['vet', 'tip', 'training', 'place'].map(function(k, i){ return '<label><input type="radio" name="kind" value="' + k + '"' + ((kind ? kind === k : i === 0) ? ' checked' : '') + '><span>' + KIND[k][3] + ' ' + KIND[k][0].replace(/^(Favourite|Pet health) /, '') + '</span></label>'; }).join('') + '</div></div>' +
+    '<div class="fl"><span>Title</span><input class="fi" name="title" maxlength="160" placeholder="e.g. Dr. Mehta, Happy Paws Clinic"><div class="err">Please add a title</div></div>' +
+    '<div class="fl"><span>Link (optional)</span><input class="fi" name="url" type="url" placeholder="https://…"><div class="err">Please use a link starting with https://</div></div>' +
+    '<div class="fl"><span>Note (optional)</span><input class="fi" name="note" maxlength="300" placeholder="Why you saved it"></div>',
+    '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-bookmark"></i>Save</button>', function(f){
+      var t = f.title.value.trim(), u = f.url.value.trim(); f.title.parentNode.classList.toggle('bad', !t); f.url.parentNode.classList.toggle('bad', !!u && !/^https:\/\/\S+$/.test(u)); if (!t || (u && !/^https:\/\/\S+$/.test(u))) return;
+      busy(true); api('/mypawbook/collection/items', {method: 'POST', body: {kind: f.querySelector('input[name=kind]:checked').value, ref: u || 'note-' + Date.now(), title: t, url: u, note: f.note.value.trim()}})
+        .then(function(){ closeMo(); toast('Saved to your collection'); loadCollection(); }).catch(function(e){ busy(false); fail(e); });
     });
 }
 
-function clearSaved() {
-  if(!confirm('Remove all saved posts?')) return;
-  showToast('Use the unsave button on each post to remove individual saved posts.');
+/* ═════════════════ MEMORIES ═════════════════ */
+var MT = {moment: ['Moment', '📸', 't-peach'], home: ['First day home', '🏡', 't-green'], trip: ['Trip', '✈️', 't-sky'], grooming: ['Grooming', '🛁', 't-lav'], vet: ['Health', '🩺', 't-sky'], achievement: ['Achievement', '🏆', 't-yellow'],
+  adoption: ['Adoption', '💛', 't-green'], birthday: ['Birthday', '🎂', 't-pink'], meetup: ['Event', '🎪', 't-lav'], pawbook: ['PawBook', '🐾', 't-peach'], other: ['Memory', '💫', 't-peach']};
+var MT_IMG = {birthday: 'img/journey/birthday-cake.jpg', vet: 'img/journey/thumb-vet.jpg', home: 'img/journey/album.jpg', adoption: 'img/journey/birthday-garden.jpg', trip: 'img/journey/scrapbook.jpg', meetup: 'img/journey/birthday-garden.jpg'};
+function memPhoto(m){ return m.photos[0] || (m.pet && m.pet.photo) || MT_IMG[m.mtype] || 'img/journey/album.jpg'; }
+function loadMemories(){ loading(); return api('/mypawbook/memories' + (SHOWHIDDEN ? '?hidden=1' : '')).then(function(d){ MEM = d; renderStats(); renderMemories(); }).catch(fail); }
+function memList(){ return MEM.items.filter(function(m){ return !PET || m.pet_id === PET || !m.pet_id; }); }
+function renderMemories(){
+  var p = document.getElementById('p-memories'); if (!MEM) return;
+  var list = memList(), otd = MEM.on_this_day.filter(function(m){ return !PET || m.pet_id === PET || !m.pet_id; }), hl = list.filter(function(m){ return m.highlighted; });
+  var petName = PET ? (S.pets.filter(function(x){ return x.id === PET; })[0] || {}).name : null;
+  var h = '<div class="sh"><div><h2>❤️ Our PawBook Memories</h2><p>Birthdays, firsts and little moments' + (petName ? ' with ' + esc(petName) : '') + ' — kept like a scrapbook.</p></div><div class="sp"></div>' +
+    (S.pets.length ? '<button class="btn btn-o btn-s" onclick="memForm()"><i class="ti ti-camera-plus"></i>Add a memory</button>' : '') + '</div>';
+  if (!S.pets.length) { p.innerHTML = h + '<div class="emp"><img src="img/journey/album.jpg" alt=""><div><h3>Start your scrapbook</h3><p>Add your pet to PawBook and their birthdays, first vaccination, first vet visit and your favourite moments will appear here.</p><div class="dlinks"><a href="08_pet_profile.html"><i class="ti ti-paw"></i>Add your pet</a></div></div></div>'; return; }
+  if (otd.length) { var m = otd[0];
+    h += '<div class="otd"><div class="pph"><img src="' + esc(memPhoto(m)) + '" alt="" onerror="this.src=\'img/journey/album.jpg\'"></div><div><span class="lab">On this day · ' + esc(ago(m.date)) + '</span><h3>' + esc(m.title) + ' ' + MT[m.mtype][1] + '</h3>' +
+      (m.story ? '<p>' + esc(m.story) + '</p>' : '<p>' + esc(ago(m.date)) + ', you celebrated a special day' + (m.pet ? ' with ' + esc(m.pet.name) : '') + '.</p>') + '<div class="d">' + esc(fd(m.date)) + '</div>' +
+      '<div class="brow"><button class="btn btn-o btn-s" onclick="shareMem(\'' + esc(m.key) + '\')"><i class="ti ti-share"></i>Share memory</button><button class="btn btn-w btn-s" onclick="flagMem(\'' + esc(m.key) + '\',{highlighted:' + !m.highlighted + '})"><i class="ti ti-star' + (m.highlighted ? '-filled' : '') + '"></i>' + (m.highlighted ? 'Highlighted' : 'Highlight') + '</button></div>' +
+      (otd.length > 1 ? '<div class="otd-more">' + otd.slice(1, 4).map(function(o){ return '<span class="chip t-pink">' + MT[o.mtype][1] + ' ' + esc(o.title) + ' · ' + esc(ago(o.date)) + '</span>'; }).join('') + '</div>' : '') + '</div></div>'; }
+  if (hl.length) h += '<div class="sh"><div><h2 style="font-size:17px">⭐ Highlights</h2></div></div><div class="hl">' + hl.map(function(m){ return '<button class="hlc" onclick="document.getElementById(\'m-' + esc(m.key.replace(/[^\w-]/g, '_')) + '\').scrollIntoView({behavior:\'smooth\',block:\'center\'})"><div class="im"><img src="' + esc(memPhoto(m)) + '" alt=""></div><b>' + esc(m.title) + '</b><span>' + esc(fd(m.date, {month: 'short'})) + '</span></button>'; }).join('') + '</div>';
+  // life journey timeline
+  h += '<div class="sh"><div><h2 style="font-size:17px">🐾 ' + (petName ? esc(petName) + '\'s' : 'Our') + ' life journey</h2><p>Newest first · firsts and birthdays are added automatically from PawBook records.</p></div><div class="sp"></div>' +
+    '<button class="lnk mute" onclick="SHOWHIDDEN=!SHOWHIDDEN;loadMemories()">' + (SHOWHIDDEN ? 'Hide hidden memories' : (MEM.hidden_count ? 'Show ' + MEM.hidden_count + ' hidden' : '')) + '</button></div>';
+  var hasBday = CEL ? true : S.pets.length;
+  if (!list.length) h += '<div class="mini-empty"><b>No memories yet</b>Add a birthday in Paw Celebrations or your first memory to start the timeline.<div class="dlinks" style="justify-content:center;margin-top:10px"><a href="#" onclick="setTab(\'celebrations\');return false"><i class="ti ti-cake"></i>Add birthdays</a><a href="#" onclick="memForm();return false"><i class="ti ti-camera-plus"></i>Add a memory</a></div></div>';
+  else { var yr = null; h += '<div class="mtl">';
+    list.forEach(function(m){ var y = m.date.slice(0, 4); if (y !== yr) { yr = y; h += '<div class="yr">' + y + '</div>'; }
+      var T = MT[m.mtype] || MT.other, ph = memPhoto(m), first = /^auto:(vax|vet|groom|post|event|home|born)/.test(m.key);
+      h += '<div class="mm' + (m.highlighted ? ' hi' : '') + '" id="m-' + esc(m.key.replace(/[^\w-]/g, '_')) + '"' + (m.hidden ? ' style="opacity:.55"' : '') + '><div class="im ' + T[2] + '" onclick="lightbox(\'' + esc(ph) + '\')"><img src="' + esc(ph) + '" alt="" loading="lazy" onerror="this.outerHTML=\'' + T[1] + '\'"></div><div>' +
+        '<h4>' + esc(m.title) + ' ' + T[1] + '</h4><div class="d"><span>' + esc(fd(m.date)) + '</span>' + (m.pet && !PET ? '<span class="chip t-yellow">' + esc(m.pet.name) + '</span>' : '') + (first ? '<span class="chip t-green">First</span>' : '') +
+        (m.own ? '<span class="chip ' + (m.visibility === 'private' ? 't-lav"><i class="ti ti-lock"></i>Only me' : m.visibility === 'followers' ? 't-sky"><i class="ti ti-users"></i>Followers' : 't-green"><i class="ti ti-world"></i>Public') + '</span>' : '') + (m.auto ? '<span class="chip t-peach" title="Added automatically from PawBook records"><i class="ti ti-sparkles"></i>Auto</span>' : '') + '</div>' +
+        (m.story ? '<p>' + esc(m.story) + '</p>' : '') +
+        (m.photos.length > 1 ? '<div class="more">' + m.photos.slice(1, 6).map(function(u){ return '<img src="' + esc(u) + '" alt="" onclick="lightbox(this.src)">'; }).join('') + '</div>' : '') +
+        '<div class="ac"><button class="lnk" onclick="shareMem(\'' + esc(m.key) + '\')"><i class="ti ti-share"></i>Share</button><button class="lnk" onclick="flagMem(\'' + esc(m.key) + '\',{highlighted:' + !m.highlighted + '})"><i class="ti ti-star' + (m.highlighted ? '-filled' : '') + '"></i>' + (m.highlighted ? 'Highlighted' : 'Highlight') + '</button>' +
+        (m.own ? '<button class="lnk" onclick="memForm(\'' + esc(m.id) + '\')"><i class="ti ti-edit"></i>Edit</button><button class="lnk mute" onclick="delMem(\'' + esc(m.id) + '\')"><i class="ti ti-trash"></i>Delete</button>' : '<button class="lnk mute" onclick="flagMem(\'' + esc(m.key) + '\',{hidden:' + !m.hidden + '})"><i class="ti ti-eye' + (m.hidden ? '' : '-off') + '"></i>' + (m.hidden ? 'Show' : 'Hide') + '</button>') +
+        (m.url ? '<a class="lnk" href="' + esc(m.url) + '"><i class="ti ti-external-link"></i>Open</a>' : '') + '</div></div></div>'; });
+    h += '</div>'; }
+  var yrs = MEM.years; if (yrs.length) h += '<div class="sh"><div><h2 style="font-size:17px">📅 Year in memories</h2><p>Your yearly recap</p></div></div><div class="recap">' + yrs.map(function(y){ return '<div class="rc"><div class="cv">' + (y.cover ? '<img src="' + esc(y.cover) + '" alt="">' : '') + '<b>' + y.year + '</b></div><div class="t"><span class="chip t-peach">' + y.count + ' memor' + (y.count === 1 ? 'y' : 'ies') + '</span>' + (y.firsts ? '<span class="chip t-green">' + y.firsts + ' first' + (y.firsts === 1 ? '' : 's') + '</span>' : '') + (y.birthdays ? '<span class="chip t-pink">' + y.birthdays + ' 🎂</span>' : '') + (y.photos ? '<span class="chip t-sky">' + y.photos + ' photo' + (y.photos === 1 ? '' : 's') + '</span>' : '') + (y.highlights ? '<span class="chip t-yellow">' + y.highlights + ' ⭐</span>' : '') + '</div></div>'; }).join('') + '</div>';
+  p.innerHTML = h;
+}
+function findMem(key){ return MEM.items.filter(function(m){ return m.key === key; })[0] || MEM.on_this_day.filter(function(m){ return m.key === key; })[0]; }
+function flagMem(key, f){ api('/mypawbook/memories/flag', {method: 'POST', body: Object.assign({key: key}, f)}).then(function(){ toast(f.hidden ? 'Hidden from your timeline' : f.hidden === false ? 'Shown again' : f.highlighted ? 'Added to highlights ⭐' : 'Removed from highlights'); loadMemories(); }).catch(fail); }
+function shareMem(key){
+  var m = findMem(key); if (!m) return;
+  var text = m.title + ' ' + (MT[m.mtype] || MT.other)[1] + ' — ' + fd(m.date) + (m.story ? '\n' + m.story : '') + '\n\nShared from my PawBook 🐾';
+  if (m.own && m.visibility === 'private' && !confirmShare(key)) return;
+  if (navigator.share) return navigator.share({title: m.title, text: text}).catch(function(){});
+  openMo('Share this memory', '<textarea class="fi" readonly style="min-height:120px">' + esc(text) + '</textarea>', '<button type="button" class="btn btn-w" onclick="copyTxt()"><i class="ti ti-copy"></i>Copy</button><a class="btn btn-o" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent(text) + '"><i class="ti ti-brand-whatsapp"></i>WhatsApp</a>');
+}
+var SHARE_OK = {};
+function confirmShare(key){ if (SHARE_OK[key]) return true;
+  openMo('This memory is private', '<p style="font-size:14px;line-height:1.6">Only you can see this memory in PawBook. Sharing sends its title and story to whoever you share it with.</p>', '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save">Share anyway</button>', function(){ SHARE_OK[key] = 1; closeMo(); shareMem(key); });
+  return false; }
+function copyTxt(){ var t = document.querySelector('#mo-body textarea'); (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(function(){ toast('Copied'); }).catch(function(){ t.select(); toast('Select and copy the text'); }); }
+var MPH = [];
+function memForm(id){
+  var m = id ? MEM.items.filter(function(x){ return x.id === id; })[0] : null; MPH = m ? m.photos.slice() : [];
+  openMo(m ? 'Edit memory' : 'Add a memory',
+    '<div class="fl"><span>Pet</span><select class="fi" name="pet"' + (m ? ' disabled' : '') + '>' + S.pets.map(function(p){ return '<option value="' + esc(p.id) + '"' + ((m ? m.pet_id : PET) === p.id ? ' selected' : '') + '>' + esc(p.name) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="fl"><span>Title</span><input class="fi" name="title" maxlength="120" value="' + esc(m ? m.title : '') + '" placeholder="e.g. First trip to the hills"><div class="err">Please add a title</div></div>' +
+    '<div class="two"><div class="fl"><span>Date</span><input class="fi" type="date" name="date" max="' + todayIST() + '" value="' + esc(m ? m.date : todayIST()) + '"><div class="err">Please pick a date (not in the future)</div></div>' +
+    '<div class="fl"><span>Kind of memory</span><select class="fi" name="mtype">' + ['moment', 'home', 'trip', 'grooming', 'vet', 'achievement', 'adoption', 'birthday', 'meetup', 'other'].map(function(k){ return '<option value="' + k + '"' + ((m ? m.mtype : 'moment') === k ? ' selected' : '') + '>' + MT[k][1] + ' ' + MT[k][0] + '</option>'; }).join('') + '</select></div></div>' +
+    '<div class="fl"><span>The story (optional)</span><textarea class="fi" name="story" maxlength="2000" placeholder="What happened? What made it special?">' + esc(m ? m.story || '' : '') + '</textarea></div>' +
+    '<div class="fl"><span>Photos</span><div class="pvwrap" id="pvwrap"></div><button type="button" class="btn btn-w btn-s" onclick="document.getElementById(\'photo-in\').click()" style="align-self:flex-start"><i class="ti ti-photo-plus"></i>Add photos</button></div>' +
+    '<div class="fl"><span>Who can see it</span><div class="seg">' + [['private', '🔒 Only me'], ['followers', '👥 Followers'], ['public', '🌍 Everyone']].map(function(v){ return '<label><input type="radio" name="vis" value="' + v[0] + '"' + ((m ? m.visibility : 'private') === v[0] ? ' checked' : '') + '><span>' + v[1] + '</span></label>'; }).join('') + '</div><small>Memories are kept in your PawBook; this setting is used whenever you share them.</small></div>',
+    '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-heart"></i>' + (m ? 'Save' : 'Add memory') + '</button>', function(f){
+      var t = f.title.value.trim(), d = f.date.value; f.title.parentNode.classList.toggle('bad', t.length < 2); f.date.parentNode.classList.toggle('bad', !d || d > todayIST()); if (t.length < 2 || !d || d > todayIST()) return;
+      var body = {title: t, date: d, mtype: f.mtype.value, story: f.story.value.trim(), photos: MPH, visibility: f.querySelector('input[name=vis]:checked').value};
+      if (!m) body.pet_id = f.pet.value; busy(true);
+      api(m ? '/mypawbook/memories/' + m.id : '/mypawbook/memories', {method: m ? 'PATCH' : 'POST', body: body}).then(function(){ closeMo(); toast(m ? 'Memory saved' : 'Memory added to your scrapbook ❤️'); loadMemories(); }).catch(function(e){ busy(false); fail(e); });
+    }, 'wide');
+  renderPv();
+}
+function renderPv(){ var el = document.getElementById('pvwrap'); if (el) el.innerHTML = MPH.map(function(u, i){ return '<div class="pv"><img src="' + esc(u) + '" alt=""><button type="button" onclick="MPH.splice(' + i + ',1);renderPv()" aria-label="Remove photo">✕</button></div>'; }).join(''); }
+document.getElementById('photo-in').addEventListener('change', function(){
+  var files = [].slice.call(this.files).slice(0, 8 - MPH.length); this.value = ''; if (!files.length) return;
+  if (files.some(function(f){ return f.size > 8 * 1024 * 1024; })) return toast('Please choose photos under 8 MB');
+  toast('Uploading ' + files.length + ' photo' + (files.length > 1 ? 's' : '') + '…');
+  files.reduce(function(p, f){ return p.then(function(){ var fd = new FormData(); fd.append('file', f); return api('/media/upload', {method: 'POST', body: fd}).then(function(d){ var u = d.url || d.secure_url || (d.media && d.media.url) || (d.file && d.file.url); if (/^https:\/\//.test(u || '')) { MPH.push(u); renderPv(); } }); }); }, Promise.resolve())
+    .then(function(){ toast('Photos added'); }).catch(fail);
+});
+function delMem(id){
+  openMo('Delete this memory?', '<p style="font-size:14px">This removes it from your scrapbook and from the Pet Health page. This cannot be undone.</p>', '<button type="button" class="btn btn-w" onclick="closeMo()">Keep it</button><button class="btn btn-o" id="mo-save">Delete</button>', function(){
+    busy(true); api('/mypawbook/memories/' + id, {method: 'DELETE'}).then(function(){ closeMo(); toast('Memory deleted'); loadMemories(); }).catch(function(e){ busy(false); fail(e); });
+  });
 }
 
-// ── MEMORY TAB ────────────────────────────────────────────
-function loadMemories() {
-  fetch(API_BASE+'/memories', {headers: authHeaders()})
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      var items = (d && d.data) ? d.data : [];
-      if(!items.length) {
-        // Show note on existing fallback
-        var note = document.createElement('div');
-        note.style.cssText = 'text-align:center;padding:12px 16px;font-size:12px;color:#94a3b8;font-style:italic';
-        note.textContent = 'No memories yet — your posts from past years will appear here';
-        var memList = document.getElementById('memory-list');
-        if(memList && !memList.querySelector('.memory-api-note')) {
-          note.className = 'memory-api-note';
-          memList.insertBefore(note, memList.firstChild);
-        }
-        return;
-      }
-      var fallbackImgs = [
-        'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&q=80',
-        'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&q=80',
-        'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&q=80'
-      ];
-      var cardsHtml = items.map(function(m, i) {
-        var img = m.image_url || fallbackImgs[i % fallbackImgs.length];
-        var timeLabel = m.years_ago ? m.years_ago+' year'+(m.years_ago!==1?'s':'')+' ago' : (m.created_at ? relativeTime(m.created_at) : 'A while ago');
-        var dateStr = m.date_label || '';
-        return '<div class="card">'
-          +'<div style="display:flex;gap:12px;align-items:center">'
-          +'<img src="'+img+'" onerror="this.src=\''+fallbackImgs[i%fallbackImgs.length]+'\'" style="width:70px;height:70px;border-radius:10px;object-fit:cover">'
-          +'<div style="flex:1">'
-          +'<div style="font-size:12px;color:#94a3b8;font-weight:600">'+escHtml(timeLabel+(dateStr?' • '+dateStr:''))+'</div>'
-          +'<div style="font-size:14px;font-weight:700;margin-top:2px">'+escHtml(m.caption||m.content||'A memory')+'</div>'
-          +'</div></div>'
-          +'<div style="display:flex;gap:8px;margin-top:8px;align-items:center">'
-          +'<button onclick="shareMemory()" style="height:28px;padding:0 12px;border-radius:999px;border:1.5px solid #e2e8f0;background:#fff;font-family:\'Poppins\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Share</button>'
-          +'<button onclick="showToast(\'Added to highlights!\',\'success\')" style="height:28px;padding:0 12px;border-radius:999px;border:none;background:#eff6ff;color:#1a4db3;font-family:\'Poppins\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Highlight</button>'
-          +'</div></div>';
-      }).join('');
-      document.getElementById('memory-list').innerHTML =
-        '<div class="memory-card">'
-        +'<div style="font-size:13px;font-weight:700;opacity:0.8;margin-bottom:4px">🌟 On This Day</div>'
-        +'<div style="font-size:22px;font-weight:900;margin-bottom:6px">'+(items.length)+' Memor'+(items.length===1?'y':'ies')+'</div>'
-        +'<div style="font-size:14px;opacity:0.9">Relive your best moments 🐾</div>'
-        +'<button onclick="shareMemory()" style="margin-top:14px;height:36px;padding:0 20px;border-radius:20px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);color:#fff;font-family:\'Poppins\',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Share Memory</button>'
-        +'</div>'
-        +cardsHtml;
-    })
-    .catch(function(){}); // keep fallback on error
+/* ═════════════════ MY JOURNEY ═════════════════ */
+var JC = {social: ['Social', 'Likes, comments & follows', 'ti-heart', 't-pink'], care: ['Pet care', 'Health & vaccinations', 'ti-heartbeat', 't-green'], shopping: ['Shopping', 'Orders & purchases', 'ti-shopping-bag', 't-yellow'],
+  appointments: ['Appointments', 'Vet bookings', 'ti-stethoscope', 't-sky'], community: ['Community', 'Groups you joined', 'ti-users-group', 't-lav'], events: ['Events', 'Meetups & registrations', 'ti-confetti', 't-peach'],
+  lost: ['Lost & found', 'Reports you made', 'ti-map-search', 't-pink'], photos: ['Photos & memories', 'Uploads and posts', 'ti-camera', 't-sky'], saved: ['Saved', 'Things you kept', 'ti-bookmark', 't-green']};
+function loadJourney(more){
+  if (!more) loading();
+  var f = JR.f, q = new URLSearchParams(); if (f.cat) q.set('cat', f.cat); if (f.q) q.set('q', f.q); if (f.from) q.set('from', f.from); if (f.to) q.set('to', f.to); if (PET) q.set('pet', PET); if (more && JR.next) q.set('before', JR.next);
+  return api('/mypawbook/journey?' + q).then(function(d){ JR.items = more ? JR.items.concat(d.items) : d.items; JR.next = d.next_before; if (d.counts) { if (!f.cat && !f.q && !f.from && !f.to && !PET) JR.counts = d.counts; JR.cleared = d.cleared_before; } renderJourney(); }).catch(fail);
+}
+function renderJourney(){
+  var p = document.getElementById('p-journey'), f = JR.f, c = JR.counts || {};
+  var h = '<div class="sh"><div><h2>🐾 Your PawBook Journey</h2><p>Everything you have done in your pet community life.</p></div><div class="sp"></div><button class="btn btn-w btn-s" onclick="exportJourney()"><i class="ti ti-download"></i>Export</button></div>' +
+    '<div class="jcats">' + Object.keys(JC).map(function(k){ var J = JC[k]; return '<button class="jc ' + J[3] + (f.cat === k ? ' on' : '') + '" onclick="JR.f.cat=JR.f.cat===\'' + k + '\'?\'\':\'' + k + '\';loadJourney()"><i class="ti ' + J[2] + '"></i><div><b>' + J[0] + (c[k] ? ' · ' + c[k] : '') + '</b><span>' + J[1] + '</span></div></button>'; }).join('') + '</div>' +
+    '<div class="tools"><input class="fi" type="search" placeholder="Search your journey…" value="' + esc(f.q) + '" onchange="JR.f.q=this.value.trim();loadJourney()" aria-label="Search">' +
+    (S.pets.length > 1 ? '<select class="fi" onchange="setPet(this.value)" aria-label="Pet"><option value="">All pets</option>' + S.pets.map(function(x){ return '<option value="' + esc(x.id) + '"' + (PET === x.id ? ' selected' : '') + '>' + esc(x.name) + '</option>'; }).join('') + '</select>' : '') +
+    '<input class="fi" type="date" value="' + esc(f.from) + '" max="' + todayIST() + '" onchange="JR.f.from=this.value;loadJourney()" aria-label="From date" style="max-width:170px"><input class="fi" type="date" value="' + esc(f.to) + '" max="' + todayIST() + '" onchange="JR.f.to=this.value;loadJourney()" aria-label="To date" style="max-width:170px">' +
+    (f.cat || f.q || f.from || f.to || PET ? '<button class="lnk" onclick="JR.f={cat:\'\',q:\'\',from:\'\',to:\'\'};PET=\'\';renderChips();loadJourney()"><i class="ti ti-x"></i>Clear filters</button>' : '') + '</div>';
+  if (!JR.items.length) h += '<div class="mini-empty"><b>' + (f.cat || f.q || f.from || f.to || PET ? 'Nothing matches these filters' : JR.cleared ? 'Your journey history was cleared' : 'Your journey starts here') + '</b>' +
+    (JR.cleared && !(f.cat || f.q) ? 'New activity will appear here. <button class="lnk" onclick="restoreJourney()">Restore earlier history</button>' : 'Like a post, join a group, book a vet or register for an event and it will show up here.') + '</div>';
+  else { var day = null; JR.items.forEach(function(x, n){ var d = dayIST(x.at), J = JC[x.cat] || JC.social, t = todayIST();
+      if (d !== day) { day = d; h += '<div class="jday">' + (d === t ? 'Today' : d === new Date(Date.now() + 330 * 60000 - 86400000).toISOString().slice(0, 10) ? 'Yesterday' : fd(d, {weekday: 'short'})) + '</div>'; }
+      h += '<div class="ji"><span class="ic ' + J[3] + '"><i class="ti ti-' + esc(x.icon || 'paw') + '"></i></span><div class="t"><b>' + esc(x.title) + '</b>' + (x.detail ? '<div class="dt">' + esc(x.detail) + '</div>' : '') + '<div class="m">' + esc(ftime(x.at)) + ' · ' + J[0] + '</div></div>' +
+        (x.image ? '<img class="th" src="' + esc(x.image) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + (x.url ? '<a class="ib" href="' + esc(x.url) + '" title="Open" aria-label="Open"><i class="ti ti-chevron-right"></i></a>' : '') +
+        '<button class="ib" title="Remove from my journey" aria-label="Remove from my journey" onclick="hideJ(' + n + ')"><i class="ti ti-eye-off"></i></button></div>'; });
+    if (JR.next) h += '<div style="text-align:center;margin-top:12px"><button class="btn btn-w" onclick="loadJourney(true)"><i class="ti ti-chevron-down"></i>Show earlier</button></div>'; }
+  h += '<div class="note"><i class="ti ti-info-circle"></i><div>This is your own journey — things you did. What others do (likes on your posts, new followers) stays in <a href="12_notifications.html" style="color:var(--orange-d);font-weight:700">Notifications</a>. ' +
+    'Removing an item only hides it here; it does not undo the action. <button class="lnk" onclick="clearJourney()">Clear my journey history</button> · <a class="lnk" href="14_settings.html">Privacy settings</a></div></div>';
+  p.innerHTML = h;
+}
+function hideJ(n){ var x = JR.items[n]; api('/mypawbook/journey/hide', {method: 'POST', body: {key: x.key}}).then(function(){ JR.items.splice(n, 1); renderJourney(); toast('Removed from your journey'); }).catch(fail); }
+function clearJourney(){
+  openMo('Clear your journey history?', '<p style="font-size:14px;line-height:1.6">Your journey will start fresh from now. Nothing is deleted from PawBook — your posts, orders and bookings stay as they are — and you can restore the history later.</p><p style="font-size:13px;color:var(--muted)">Tip: export a copy first.</p>',
+    '<button type="button" class="btn btn-w" onclick="closeMo();exportJourney()"><i class="ti ti-download"></i>Export first</button><button class="btn btn-o" id="mo-save">Clear history</button>', function(){
+      busy(true); api('/mypawbook/journey/clear', {method: 'POST'}).then(function(){ closeMo(); toast('Journey history cleared'); JR.counts = null; loadJourney(); }).catch(function(e){ busy(false); fail(e); });
+    });
+}
+function restoreJourney(){ api('/mypawbook/journey/clear', {method: 'DELETE'}).then(function(){ toast('History restored'); loadJourney(); }).catch(fail); }
+function exportJourney(){
+  openMo('Export my journey', '<p style="font-size:14px;line-height:1.6">Download a copy of your PawBook journey — everything you have done, with dates and links.</p><div class="seg"><label><input type="radio" name="fmt" value="csv" checked><span>Spreadsheet (CSV)</span></label><label><input type="radio" name="fmt" value="json"><span>JSON</span></label></div>',
+    '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-download"></i>Download</button>', function(f){
+      var fmt = f.querySelector('input[name=fmt]:checked').value; busy(true);
+      api('/mypawbook/journey/export').then(function(d){
+        var body, type, name = 'pawbook-journey-' + todayIST();
+        if (fmt === 'json') { body = JSON.stringify(d, null, 2); type = 'application/json'; name += '.json'; }
+        else { var q = function(v){ v = String(v == null ? '' : v); if (/^[=+\-@]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
+          body = '\ufeff' + ['When', 'Category', 'What', 'Detail', 'Link'].map(q).join(',') + '\n' + d.items.map(function(x){ return [x.when, x.category, x.what, x.detail, x.link].map(q).join(','); }).join('\n'); type = 'text/csv'; name += '.csv'; }
+        var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([body], {type: type})); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        closeMo(); toast(d.items.length + ' items exported');
+      }).catch(function(e){ busy(false); fail(e); });
+    });
 }
 
-// ── ACTIVITY TAB ──────────────────────────────────────────
-function loadActivity() {
-  fetch(API_BASE+'/activity', {headers: authHeaders()})
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      var items = (d && d.data) ? d.data : [];
-      if(!items.length) return; // keep fallback HTML
-      var iconMap = {
-        'like': {icon:'❤️', bg:'#fee2e2'},
-        'comment': {icon:'💬', bg:'#dbeafe'},
-        'follow': {icon:'👤', bg:'#dcfce7'},
-        'post': {icon:'📸', bg:'#fef3c7'},
-        'save': {icon:'🔖', bg:'#f3e8ff'}
-      };
-      var html = items.map(function(a) {
-        var map = iconMap[a.action_type] || {icon:'🐾', bg:'#f3e8ff'};
-        return '<div class="activity-item">'
-          +'<div class="activity-icon" style="background:'+map.bg+'">'+map.icon+'</div>'
-          +'<div style="flex:1">'
-          +'<div style="font-size:13px;font-weight:600;color:#1e293b">'+escHtml(a.target_label||a.action_type||'Activity')+'</div>'
-          +'<div style="font-size:11px;color:#94a3b8;margin-top:2px">'+relativeTime(a.created_at)+'</div>'
-          +'</div></div>';
-      }).join('');
-      document.getElementById('activity-list').innerHTML = html;
-    })
-    .catch(function(){}); // keep fallback on error
+/* ═════════════════ PAW CELEBRATIONS ═════════════════ */
+function loadCelebrations(){ loading(); return api('/mypawbook/celebrations').then(function(d){ CEL = d; renderStats(); renderCelebrations(); }).catch(fail); }
+function confetti(){ var c = ['#F47A38', '#f7c548', '#7cc4a0', '#b39ddb', '#f48fb1', '#64b5f6'], h = ''; for (var i = 0; i < 28; i++) h += '<i style="left:' + (i * 3.6 % 100) + '%;background:' + c[i % c.length] + ';animation-delay:' + (i % 7 * .4) + 's;animation-duration:' + (2.6 + i % 5 * .35) + 's"></i>'; return '<div class="confetti" aria-hidden="true">' + h + '</div>'; }
+function whenLabel(d){ return d === 0 ? 'Today 🎉' : d === 1 ? 'Tomorrow' : 'In ' + d + ' days'; }
+function celTitle(e){ return e.type === 'birthday' ? (e.mine && e.turning ? 'Happy ' + ordinal(e.turning) + ' Birthday, ' + e.name + '!' : 'Happy Birthday, ' + e.name + '!') : e.type === 'adoption' ? e.name + "'s adoption anniversary" : e.name + "'s gotcha day"; }
+function renderCelebrations(){
+  var p = document.getElementById('p-celebrations'), C = CEL, motion = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var h = '<div class="sh"><div><h2>🎂 Paw Celebrations</h2><p>Birthdays, adoption anniversaries and gotcha days — yours and your friends\'.</p></div></div>';
+  if (C.today_list.length) C.today_list.forEach(function(e){
+    var mine = e.mine, ph = e.photo || 'img/journey/birthday-cake.jpg';
+    h += '<div class="party" style="margin-bottom:14px">' + (motion ? confetti() : '') + '<span class="lab">' + (e.type === 'birthday' ? "Today's celebration" : 'Today we celebrate') + '</span><div class="pph"><img src="' + esc(ph) + '" alt="" onerror="this.src=\'img/journey/birthday-cake.jpg\'"></div>' +
+      '<h3>' + esc(celTitle(e)) + ' ' + (e.type === 'birthday' ? '🎂' : '💛') + '</h3><p>' + (e.type === 'birthday' ? (mine ? (e.turning ? e.turning + ' year' + (e.turning > 1 ? 's' : '') + ' of unconditional love, happiness and paw prints.' : 'A day full of treats, cuddles and paw prints.') : esc(e.owner ? e.owner + "'s " : '') + esc(e.name) + ' is celebrating today!') : (e.years ? e.years + ' year' + (e.years > 1 ? 's' : '') + ' together.' : '')) + '</p>' +
+      '<div class="brow">' + (mine ? '<button class="btn btn-o btn-s" onclick="cardMaker(\'' + esc(e.pet_id) + '\')"><i class="ti ti-photo-heart"></i>Make a birthday card</button><button class="btn btn-w btn-s" onclick="memForm();setTimeout(function(){var f=document.getElementById(\'mo-form\');f.pet.value=\'' + esc(e.pet_id) + '\';f.mtype.value=\'birthday\';f.title.value=\'' + esc(celTitle(e)).replace(/'/g, "\\'") + '\'},50)"><i class="ti ti-camera-plus"></i>Save as a memory</button><a class="btn btn-w btn-s" href="30_events.html?create=1"><i class="ti ti-confetti"></i>Plan a pawty</a>'
+        : (e.wished ? '<button class="btn btn-w btn-s" disabled><i class="ti ti-check"></i>Wish sent</button>' : '<button class="btn btn-o btn-s" onclick="wish(\'' + esc(e.pet_id) + '\',\'' + esc(e.name).replace(/'/g, "\\'") + '\')"><i class="ti ti-gift"></i>Send wishes</button>')) + '</div></div>';
+  });
+  var wishes = C.wishes || [];
+  var up = C.upcoming;
+  h += '<div class="two-col"><div>';
+  h += '<div class="card" style="padding:14px 16px"><h3 style="font-size:16px;font-weight:800;color:var(--navy);margin-bottom:4px">Upcoming paw celebrations</h3>' +
+    (up.length ? up.map(function(e){ return '<div class="ub">' + av(e) + '<div class="t"><b>' + esc(e.name) + ' ' + (e.type === 'birthday' ? '🎂' : '💛') + '</b><span>' + esc([e.type === 'birthday' ? (e.mine && e.turning ? 'Turns ' + e.turning + (e.estimated ? ' (estimated)' : '') : 'Birthday') : e.type === 'adoption' ? 'Adoption anniversary · ' + e.years + ' yr' : 'Gotcha day · ' + e.years + ' yr', e.mine ? 'Your pet' : e.owner].filter(Boolean).join(' · ')) + '<br>' + esc(fd(e.date, {year: undefined})) + '</span></div>' +
+      '<div style="text-align:right"><span class="chip ' + (e.days <= 7 ? 't-peach' : 't-sky') + '">' + whenLabel(e.days) + '</span>' + (!e.mine && e.type === 'birthday' ? '<div style="margin-top:4px">' + (e.wished ? '<span class="chip t-green">Wish sent</span>' : '<button class="lnk" onclick="wish(\'' + esc(e.pet_id) + '\',\'' + esc(e.name).replace(/'/g, "\\'") + '\')"><i class="ti ti-gift"></i>Send wish</button>') + '</div>' : '') + '</div></div>'; }).join('')
+      : '<div class="mini-empty" style="margin-top:8px"><b>No celebrations in the next 60 days</b>' + (C.pets.some(function(x){ return x.birth_date || x.gotcha_date; }) ? 'Birthdays of pets whose parents you follow show up here too.' : 'Add your pets\' birthdays below to never miss one.') + '</div>') + '</div>';
+  if (wishes.length) h += '<div class="card" style="padding:14px 16px;margin-top:14px"><h3 style="font-size:16px;font-weight:800;color:var(--navy)">🎁 Birthday wishes this year</h3>' + wishes.map(function(w){ var pt = C.pets.filter(function(x){ return x.id === w.pet_id; })[0];
+    return '<div class="wish"><span class="pav" style="background:var(--peach)">' + (w.avatar ? '<img src="' + esc(w.avatar) + '" alt="">' : esc(w.from.charAt(0))) + '</span><div><b>' + esc(w.from) + '</b> <span class="muted">to ' + esc(pt ? pt.name : 'your pet') + ' · ' + esc(rel(w.at)) + '</span><div>' + esc(w.message) + '</div></div></div>'; }).join('') + '</div>';
+  h += '</div><div><div class="cal" id="cal"></div><div class="tipbox" style="margin-top:14px"><b>🐶 Pet-safe celebration ideas</b>Plain pet-safe treats, a new toy, an extra-long walk or a playdate make the best parties.<ul><li>Skip chocolate, xylitol (sugar-free sweets), grapes and raisins, onions and garlic — they are toxic to dogs and cats.</li><li>Keep candles, balloons and ribbons out of reach.</li><li>Check with your vet before trying a new food, especially for pets with allergies.</li></ul></div></div></div>';
+  // my pets' special dates
+  h += '<div class="sh"><div><h2 style="font-size:17px">🐾 Your pets\' special dates</h2><p>Birthdays can be exact, estimated or unknown — rescues often have a gotcha day instead.</p></div></div>';
+  h += C.pets.length ? '<div class="petd">' + C.pets.map(function(x){ return '<div class="pd"><div class="top">' + av(x) + '<div><b>' + esc(x.name) + '</b><div class="muted" style="font-size:12.5px">' + esc([x.breed, x.species].filter(Boolean).join(' · ')) + '</div></div></div>' +
+    '<div class="kv"><span>Birthday</span><em>' + (x.birth_date ? esc(fd(x.birth_date)) + (x.birth_precision === 'estimated' ? ' (estimated)' : '') : 'Not known') + '</em>' +
+    '<span>' + (x.gotcha_kind === 'adoption' ? 'Adopted' : 'Came home') + '</span><em>' + (x.gotcha_date ? esc(fd(x.gotcha_date)) : '—') + '</em>' +
+    '<span>Reminders</span><em>' + ([x.remind_week ? '7 days before' : null, x.remind_day ? 'on the day' : null].filter(Boolean).join(', ') || 'Off') + '</em>' +
+    '<span>Friends see it</span><em>' + (x.share_birthday && x.birth_date ? 'Day & month only' : 'No') + '</em></div>' +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-w btn-s" onclick="datesForm(\'' + esc(x.id) + '\')"><i class="ti ti-calendar-cog"></i>' + (x.birth_date || x.gotcha_date ? 'Edit dates' : 'Add dates') + '</button>' + (x.birth_date ? '<button class="btn btn-w btn-s" onclick="cardMaker(\'' + esc(x.id) + '\')"><i class="ti ti-photo-heart"></i>Birthday card</button>' : '') + '</div></div>'; }).join('') + '</div>'
+    : '<div class="mini-empty"><b>No pets yet</b><a href="08_pet_profile.html" style="color:var(--orange-d);font-weight:700">Add your pet</a> to start celebrating.</div>';
+  p.innerHTML = h;
+  if (!CALM) CALM = todayIST().slice(0, 7); renderCal();
+}
+function renderCal(){
+  var el = document.getElementById('cal'); if (!el) return;
+  var y = +CALM.slice(0, 4), m = +CALM.slice(5, 7), first = new Date(Date.UTC(y, m - 1, 1)), days = new Date(Date.UTC(y, m, 0)).getUTCDate(), start = (first.getUTCDay() + 6) % 7, t = todayIST();
+  var by = {}; CEL.calendar.forEach(function(e){ var md = e.date.slice(5); if (+md.slice(0, 2) === m) (by[+md.slice(3)] = by[+md.slice(3)] || []).push(e); });
+  var h = '<div class="hd"><button class="ib" onclick="calMove(-1)" aria-label="Previous month"><i class="ti ti-chevron-left"></i></button><b>' + first.toLocaleDateString('en-IN', {month: 'long', year: 'numeric', timeZone: 'UTC'}) + '</b><button class="ib" onclick="calMove(1)" aria-label="Next month"><i class="ti ti-chevron-right"></i></button></div><div class="g">' +
+    ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(function(d){ return '<div class="dn">' + d + '</div>'; }).join('');
+  for (var i = 0; i < start; i++) h += '<div class="c x"></div>';
+  for (var d = 1; d <= days; d++) { var ev = by[d], ds = CALM + '-' + (d < 10 ? '0' : '') + d;
+    h += ev ? '<button class="c ev' + (ev.every(function(e){ return e.type !== 'birthday'; }) ? ' ad' : '') + (ds === t ? ' td' : '') + '" onclick="calDay(' + d + ')" title="' + esc(ev.map(function(e){ return e.name; }).join(', ')) + '">' + d + '<span class="dots">' + ev.slice(0, 3).map(function(e){ return e.type === 'birthday' ? '🎂' : '💛'; }).join('') + '</span></button>'
+      : '<div class="c' + (ds === t ? ' td' : '') + '">' + d + '</div>'; }
+  h += '</div><div class="legend"><span><i style="background:var(--peach)"></i>Birthday</span><span><i style="background:var(--green)"></i>Adoption / gotcha day</span></div><div class="cal-list" id="cal-list"></div>';
+  el.innerHTML = h;
+}
+function calMove(n){ var y = +CALM.slice(0, 4), m = +CALM.slice(5, 7) + n; if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } CALM = y + '-' + (m < 10 ? '0' : '') + m; renderCal(); }
+function calDay(d){ var m = +CALM.slice(5, 7), list = CEL.calendar.filter(function(e){ return +e.date.slice(5, 7) === m && +e.date.slice(8) === d; });
+  document.getElementById('cal-list').innerHTML = list.map(function(e){ return '<div class="ub" style="padding:6px 0">' + av(e) + '<div class="t"><b style="font-size:13.5px">' + esc(e.name) + '</b><span>' + (e.type === 'birthday' ? 'Birthday' : e.type === 'adoption' ? 'Adoption anniversary' : 'Gotcha day') + (e.mine ? ' · your pet' : e.owner ? ' · ' + esc(e.owner) : '') + '</span></div></div>'; }).join(''); }
+function wish(petId, name){
+  var ideas = ['Happy birthday, ' + name + '! 🎂 Wishing you treats, belly rubs and zoomies all year!', 'Paw-some birthday, ' + name + '! 🐾 Have the best day ever.', 'Happy birthday ' + name + '! 🎉 Sending lots of love and wagging tails.'];
+  openMo('Send ' + name + ' a birthday wish', '<div class="fl"><span>Pick a greeting or write your own</span><div class="seg" style="flex-direction:column">' + ideas.map(function(x, i){ return '<label><input type="radio" name="idea" value="' + i + '" onchange="this.form.msg.value=WISH_IDEAS[' + i + ']"' + (i === 0 ? ' checked' : '') + '><span style="width:100%;height:auto;padding:8px 12px;line-height:1.4">' + esc(x) + '</span></label>'; }).join('') + '</div></div>' +
+    '<div class="fl"><span>Your message</span><textarea class="fi" name="msg" maxlength="300">' + esc(ideas[0]) + '</textarea><div class="err">Please write a short wish</div></div>',
+    '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-gift"></i>Send wish</button>', function(f){
+      var msg = f.msg.value.trim(); f.msg.parentNode.classList.toggle('bad', msg.length < 2); if (msg.length < 2) return; busy(true);
+      api('/mypawbook/celebrations/wish', {method: 'POST', body: {pet_id: petId, message: msg}}).then(function(){ closeMo(); toast('Wish sent to ' + name + ' 🎁'); loadCelebrations(); }).catch(function(e){ busy(false); fail(e); });
+    });
+  window.WISH_IDEAS = ideas;
+}
+function datesForm(id){
+  var x = CEL.pets.filter(function(p){ return p.id === id; })[0], t = todayIST();
+  openMo(x.name + "'s special dates",
+    '<div class="fl"><span>Birthday</span><div class="seg">' + [['exact', 'I know the date'], ['estimated', 'Estimated'], ['unknown', 'Not known']].map(function(o){ return '<label><input type="radio" name="prec" value="' + o[0] + '"' + (x.birth_precision === o[0] ? ' checked' : '') + ' onchange="this.form.bd.disabled=this.value===\'unknown\'"><span>' + o[1] + '</span></label>'; }).join('') + '</div>' +
+      '<input class="fi" type="date" name="bd" max="' + t + '" value="' + esc(x.birth_date || '') + '"' + (x.birth_precision === 'unknown' ? ' disabled' : '') + '><div class="err">Please pick a date (not in the future)</div><small>Not sure? Choose “Estimated” and pick your best guess — the vet can help estimate age.</small></div>' +
+    '<div class="two"><div class="fl"><span>Day they came home</span><input class="fi" type="date" name="gd" max="' + t + '" value="' + esc(x.gotcha_date || '') + '"><div class="err">Must be after the birthday, and not in the future</div></div>' +
+      '<div class="fl"><span>How they joined you</span><select class="fi" name="gk"><option value="home"' + (x.gotcha_kind !== 'adoption' ? ' selected' : '') + '>Came home (gotcha day)</option><option value="adoption"' + (x.gotcha_kind === 'adoption' ? ' selected' : '') + '>Adopted / rescued</option></select></div></div>' +
+    '<div class="fl"><span>Reminders & privacy</span>' + [['rw', 'Remind me 7 days before the birthday', x.remind_week], ['rd', 'Remind me on the day', x.remind_day], ['sb', 'Let people who follow me see the birthday (day and month only, never the year)', x.share_birthday], ['wn', 'Tell me when someone sends a birthday wish', x.wishes_notify]].map(function(o){ return '<label style="display:flex;gap:10px;align-items:flex-start;font-size:13.5px;font-weight:500;margin-top:6px"><input type="checkbox" name="' + o[0] + '"' + (o[2] ? ' checked' : '') + ' style="width:20px;height:20px;flex-shrink:0">' + o[1] + '</label>'; }).join('') + '<small>Reminders arrive in your PawBook notifications.</small></div>',
+    '<button type="button" class="btn btn-w" onclick="closeMo()">Cancel</button><button class="btn btn-o" id="mo-save"><i class="ti ti-check"></i>Save dates</button>', function(f){
+      var prec = f.querySelector('input[name=prec]:checked').value, bd = f.bd.value, gd = f.gd.value, ok = true;
+      var b1 = prec !== 'unknown' && (!bd || bd > t); f.bd.parentNode.classList.toggle('bad', b1); if (b1) ok = false;
+      var b2 = !!gd && (gd > t || (prec !== 'unknown' && bd && gd < bd)); f.gd.parentNode.classList.toggle('bad', b2); if (b2) ok = false; if (!ok) return;
+      busy(true); api('/mypawbook/celebrations/pets/' + id, {method: 'PUT', body: {birth_precision: prec, birth_date: prec === 'unknown' ? null : bd, gotcha_date: gd || null, gotcha_kind: f.gk.value, remind_week: f.rw.checked, remind_day: f.rd.checked, share_birthday: f.sb.checked, wishes_notify: f.wn.checked}})
+        .then(function(){ closeMo(); toast('Dates saved 🎂'); MEM = null; loadCelebrations(); }).catch(function(e){ busy(false); fail(e); });
+    }, 'wide');
+}
+/* digital birthday card (drawn in the browser, nothing is uploaded) */
+function cardMaker(id){
+  var x = CEL.pets.filter(function(p){ return p.id === id; })[0]; if (!x) return;
+  var turning = x.next_birthday && x.days_until === 0 ? x.turning : x.birth_date ? +todayIST().slice(0, 4) - +x.birth_date.slice(0, 4) : null;
+  openMo('Birthday card for ' + x.name, '<canvas id="cardCanvas" width="1080" height="1080"></canvas>' +
+    '<div class="fl"><span>Frame</span><div class="frames">' + [['confetti', '🎉 Confetti'], ['paws', '🐾 Paw prints'], ['gold', '✨ Gold']].map(function(o, i){ return '<label><input type="radio" name="fr" value="' + o[0] + '"' + (i === 0 ? ' checked' : '') + ' onchange="drawCard()"><span>' + o[1] + '</span></label>'; }).join('') + '</div></div>' +
+    '<div class="fl"><span>Message</span><input class="fi" name="cm" maxlength="40" value="' + esc(turning > 0 ? 'Happy ' + ordinal(turning) + ' Birthday, ' + x.name + '!' : 'Happy Birthday, ' + x.name + '!') + '" oninput="drawCard()"></div>',
+    '<button type="button" class="btn btn-w" onclick="closeMo()">Close</button><button type="button" class="btn btn-o" onclick="saveCard()"><i class="ti ti-download"></i>Save card</button>', null, 'wide');
+  window._card = x; drawCard();
+}
+var IMGC = {};
+function getImg(u){ if (IMGC[u]) return IMGC[u]; IMGC[u] = new Promise(function(ok){ var im = new Image(); if (/^https:/.test(u)) im.crossOrigin = 'anonymous'; im.onload = function(){ ok(im); }; im.onerror = function(){ ok(null); }; im.src = u; }); return IMGC[u]; }
+function drawCard(){
+  var cv = document.getElementById('cardCanvas'); if (!cv) return; var x = window._card, f = document.getElementById('mo-form'), fr = (f.querySelector('input[name=fr]:checked') || {}).value || 'confetti', msg = f.cm.value || '';
+  Promise.all([x.photo ? getImg(x.photo) : Promise.resolve(null), getImg('img/journey/birthday-cake.jpg')]).then(function(r){
+    var im = r[0] || r[1], g = cv.getContext('2d'), W = 1080;
+    g.fillStyle = fr === 'gold' ? '#2b1d12' : '#fff6ec'; g.fillRect(0, 0, W, W);
+    var cols = fr === 'gold' ? ['#e9c46a', '#f4d58d', '#c9a227'] : ['#F47A38', '#f7c548', '#7cc4a0', '#b39ddb', '#f48fb1', '#64b5f6'];
+    if (fr === 'confetti' || fr === 'gold') for (var i = 0; i < 90; i++) { g.fillStyle = cols[i % cols.length]; g.save(); g.translate((i * 137) % W, (i * 89) % W); g.rotate(i); g.fillRect(-9, -5, 18, 10); g.restore(); }
+    if (fr === 'paws') { g.fillStyle = '#f3d9bf'; for (var j = 0; j < 30; j++) { var px = (j * 211) % W, py = (j * 157) % W; g.beginPath(); g.ellipse(px, py + 14, 22, 18, 0, 0, 7); g.fill(); [[-20, -14], [-7, -26], [7, -26], [20, -14]].forEach(function(o){ g.beginPath(); g.ellipse(px + o[0], py + o[1], 7, 9, 0, 0, 7); g.fill(); }); } }
+    // photo in a rounded frame
+    var px0 = 120, py0 = 110, s = 840, h0 = 640; g.save(); g.fillStyle = '#fff'; rr(g, px0 - 16, py0 - 16, s + 32, h0 + 32, 44); g.fill(); rr(g, px0, py0, s, h0, 32); g.clip();
+    var sc = Math.max(s / im.width, h0 / im.height), dw = im.width * sc, dh = im.height * sc; g.drawImage(im, px0 + (s - dw) / 2, py0 + (h0 - dh) / 2, dw, dh); g.restore();
+    g.fillStyle = fr === 'gold' ? '#f4d58d' : '#3a2a1f'; g.textAlign = 'center'; g.font = '800 64px Poppins, sans-serif'; fitText(g, msg, W / 2, 880, 980, 64);
+    g.font = '600 34px Poppins, sans-serif'; g.fillStyle = fr === 'gold' ? '#e9c46a' : '#d65f20'; g.fillText('🐾 made with PawBook', W / 2, 970);
+  });
+}
+function fitText(g, t, x, y, max, size){ while (g.measureText(t).width > max && size > 28) { size -= 2; g.font = '800 ' + size + 'px Poppins, sans-serif'; } g.fillText(t, x, y); }
+function rr(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function saveCard(){
+  var cv = document.getElementById('cardCanvas'), name = 'pawbook-birthday-' + (window._card.name || 'pet').replace(/\W+/g, '-').toLowerCase() + '.png';
+  try { cv.toBlob(function(b){ if (!b) return toast('Could not create the image'); var file = new File([b], name, {type: 'image/png'});
+      if (navigator.canShare && navigator.canShare({files: [file]})) return navigator.share({files: [file], title: 'Happy birthday!'}).catch(function(){});
+      var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Card saved 🎉'); }, 'image/png'); }
+  catch (e) { toast('This photo cannot be used in a card — try the default photo'); }
 }
 
-// ── BIRTHDAYS TAB ─────────────────────────────────────────
-function loadBirthdays() {
-  fetch(API_BASE+'/birthdays', {headers: authHeaders()})
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      var items = (d && d.data) ? d.data : [];
-      if(!items.length) return; // keep fallback HTML
-
-      var todays = items.filter(function(b){ return b.days_until === 0; });
-      var upcoming = items.filter(function(b){ return b.days_until !== 0; });
-
-      // Today's birthdays
-      if(todays.length) {
-        var todayHtml = todays.map(function(b) {
-          var age = b.turning_age ? ' turns '+b.turning_age+'!' : '\'s birthday!';
-          var species = b.species === 'Dog' ? '🐕' : b.species === 'Cat' ? '🐱' : '🐾';
-          return '<div class="birthday-card">'
-            +'<div style="font-size:48px">🎂</div>'
-            +'<div>'
-            +'<div style="font-size:12px;opacity:0.8;font-weight:600">TODAY</div>'
-            +'<div style="font-size:16px;font-weight:900">'+escHtml(b.pet_name)+age+' '+species+'</div>'
-            +'<button onclick="sendBirthdayWish(\''+escAttr(b.owner_name)+'\',\''+escAttr(b.pet_name)+'\')" style="margin-top:8px;height:32px;padding:0 16px;border-radius:16px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);color:#fff;font-family:\'Poppins\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🎁 Send Wish</button>'
-            +'</div></div>';
-        }).join('');
-        document.getElementById('birthday-today-wrap').innerHTML = todayHtml;
-      }
-
-      // Upcoming
-      if(upcoming.length) {
-        var fallbackAvatars = [
-          'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=80&q=80',
-          'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=80&q=80',
-          'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=80&q=80'
-        ];
-        var listHtml = upcoming.map(function(b, i) {
-          var avatar = b.avatar_url || fallbackAvatars[i % fallbackAvatars.length];
-          var daysLabel = b.days_until != null ? (b.days_until===1?'Tomorrow':'In '+b.days_until+' days') : '';
-          var breed = b.breed || b.species || '';
-          var owner = b.owner_name || '';
-          var subtext = [breed, owner].filter(Boolean).join(' · ');
-          return '<div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9">'
-            +'<img src="'+avatar+'" onerror="this.src=\''+fallbackAvatars[i%fallbackAvatars.length]+'\'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f59e0b">'
-            +'<div style="flex:1">'
-            +'<div style="font-size:13px;font-weight:700">'+escHtml(b.pet_name)+' 🎂</div>'
-            +'<div style="font-size:11px;color:#64748b">'+escHtml(subtext)+'</div>'
-            +'</div>'
-            +'<div style="text-align:right">'
-            +'<div style="font-size:12px;font-weight:700;color:#f59e0b">'+escHtml(daysLabel)+'</div>'
-            +'<button onclick="sendBirthdayWish(\''+escAttr(b.owner_name)+'\',\''+escAttr(b.pet_name)+'\')" style="font-size:10px;color:#1a4db3;background:none;border:none;cursor:pointer;font-weight:700;font-family:\'Poppins\',sans-serif">Send Wish</button>'
-            +'</div></div>';
-        }).join('');
-        document.getElementById('birthday-list').innerHTML = listHtml;
-      }
-    })
-    .catch(function(){}); // keep fallback on error
+/* ---------- modal ---------- */
+function openMo(title, body, foot, onSubmit, size){
+  MO = {submit: onSubmit};
+  document.getElementById('mo-title').textContent = title; document.getElementById('mo-body').innerHTML = body;
+  var ft = document.getElementById('mo-foot'); ft.innerHTML = foot || ''; ft.style.display = foot ? '' : 'none';
+  document.getElementById('mo-md').className = 'md' + (size ? ' ' + size : '');
+  document.getElementById('mo').classList.add('open'); document.body.style.overflow = 'hidden';
 }
+function closeMo(){ document.getElementById('mo').classList.remove('open'); document.body.style.overflow = ''; MO = null; }
+function submitMo(ev){ ev.preventDefault(); if (MO && MO.submit) MO.submit(document.getElementById('mo-form')); }
+function busy(on){ var b = document.getElementById('mo-save'); if (b) b.disabled = !!on; }
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeMo(); document.getElementById('lb').classList.remove('open'); } });
 
-function sendBirthdayWish(ownerName, petName) {
-  showToast('🎂 Birthday wish sent to '+(petName||'your pet')+'!');
-}
-
-// ── EXISTING HELPER FUNCTIONS ─────────────────────────────
-function shareF(title) {
-  if(navigator.clipboard) {
-    navigator.clipboard.writeText('Support: '+title+' on PawBook').then(function(){ showToast('🔗 Link copied!'); });
-  } else {
-    showToast('🔗 Share: '+title);
-  }
-}
-
-function shareMemory() { showToast('🌟 Memory shared to your story!'); }
-
-// ── ESCAPE HELPERS ────────────────────────────────────────
-function escHtml(s) {
-  if(!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function escAttr(s) {
-  if(!s) return '';
-  return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
-}
-
-// ── INIT ──────────────────────────────────────────────────
-loadSavedPosts();
+/* keep the old saved-posts cache that other pages read */
+api('/saved').then(function(d){ try { localStorage.setItem('pb_saved', JSON.stringify(d)); } catch (e) {} }).catch(function(){});
+boot();
+if ('serviceWorker' in navigator) { window.addEventListener('load', function(){ navigator.serviceWorker.register('service-worker.js').catch(function(){}); }); }
 </script>
-<script>function goTo(p){window.location.href=p;}</script>
 
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottomnav">
-  <a class="bnav-item" onclick="goTo('07_home.html')"><i class="ti ti-home"></i><span>Home</span></a>
-  <a class="bnav-item" onclick="goTo('03_groups.html')"><i class="ti ti-users"></i><span>Groups</span></a>
-  <a class="bnav-item" onclick="goTo('26_discover.html')"><i class="ti ti-compass"></i><span>Discover</span></a>
-  <a class="bnav-item" onclick="goTo('38_lost_pet_network.html')"><i class="ti ti-alert-triangle"></i><span>Lost Pet</span></a>
-  <a class="bnav-item" onclick="goTo('08_pet_profile.html')"><i class="ti ti-user-circle"></i><span>Profile</span></a>
-</nav>
-<!-- DRAWER OVERLAY -->
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
-
-<!-- DRAWER PANEL -->
 <div id="drawer-panel" class="drawer-panel">
   <div class="drawer-header" style="position:relative">
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
-    <img class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
+    <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&q=80" onerror="this.style.display='none'">
     <div>
-      <div class="drawer-user-name" id="drawer-name">Pet Parent</div>
-      <div class="drawer-user-handle">@abhishek_pawbook</div>
+      <div class="drawer-user-name" id="drawer-user-name-txt">My Account</div>
+      <div class="drawer-user-handle" id="drawer-user-handle-txt">@pawbook</div>
       <div class="drawer-stats">
-        <div class="drawer-stat"><div class="drawer-stat-val">248</div><div class="drawer-stat-label">Friends</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">2</div><div class="drawer-stat-label">Pets</div></div>
-        <div class="drawer-stat"><div class="drawer-stat-val">32</div><div class="drawer-stat-label">Posts</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-friends">—</div><div class="drawer-stat-label">Friends</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-pets">—</div><div class="drawer-stat-label">Pets</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-val" id="dstat-posts">—</div><div class="drawer-stat-label">Posts</div></div>
       </div>
     </div>
   </div>
-    <div class="drawer-body">
+  <div class="drawer-body">
 
     <div class="drawer-section">Home</div>
-    <button class="drawer-item active" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('07_home.html')"><i class="ti ti-home"></i> Dashboard</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('26_discover.html')"><i class="ti ti-compass"></i> Discover 🌍</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('12_notifications.html')"><i class="ti ti-bell"></i> Notifications</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('15_search.html')"><i class="ti ti-search"></i> Search</button>
@@ -1083,7 +1069,7 @@ loadSavedPosts();
     <button class="drawer-item" onclick="closeDrawer();goTo('03_groups.html')"><i class="ti ti-users"></i> Groups <span class="drawer-badge">3</span></button>
     <button class="drawer-item" onclick="closeDrawer();goTo('13_messages.html')"><i class="ti ti-message-circle"></i> Messages</button>
     <button class="drawer-item" onclick="closeDrawer();goTo('30_events.html')"><i class="ti ti-calendar-event"></i> Events</button>
-    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> Saved &amp; Activity</button>
+    <button class="drawer-item" onclick="closeDrawer();goTo('31_saved.html')"><i class="ti ti-bookmark"></i> My PawBook</button>
 
     <div class="drawer-section">Adoption &amp; Safety</div>
     <button class="drawer-item" onclick="closeDrawer();goTo('04_adoption.html')"><i class="ti ti-heart"></i> Adopt a Pet</button>
@@ -1113,92 +1099,32 @@ loadSavedPosts();
     <button class="drawer-item" onclick="closeDrawer();goTo('legal.html')"><i class="ti ti-file-text"></i> Legal &amp; Policies</button>
     <button class="drawer-item" style="color:#dc2626" onclick="doLogout()"><i class="ti ti-logout" style="color:#dc2626"></i> Log Out</button>
   </div>
-  </div>
 </div>
 
-<script>
-function openDrawer() {
-  document.getElementById('drawer-panel').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  document.getElementById('drawer-panel').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-</script>
-<script>
-(function(){
-  function showBurgerOnMobile(){
-    var btns = document.querySelectorAll('.burger-btn');
-    var isMobile = window.innerWidth <= 768;
-    btns.forEach(function(b){
-      b.style.display = isMobile ? 'flex' : 'none';
-    });
-    // Also hide topnav-tabs on mobile
-    var tabs = document.querySelector('.topnav-tabs');
-    if(tabs) tabs.style.display = isMobile ? 'none' : 'flex';
-    // Show bottom nav on mobile
-    var bnav = document.querySelector('.bottomnav');
-    if(bnav) bnav.style.display = isMobile ? 'flex' : 'none';
-  }
-  showBurgerOnMobile();
-  window.addEventListener('resize', showBurgerOnMobile);
-})();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(reg) { console.log('[SW] Registered:', reg.scope); })
-      .catch(function(err) { console.warn('[SW] Registration failed:', err); });
-  });
-}
-
-// ── DRAWER USER INIT (dynamic) ──────────────────────────────────────
-(function initDrawerUser(){
-  var u = null;
-  try { u = JSON.parse(localStorage.getItem("pb_user") || "null"); } catch(e){}
-  if(!u) {
-    // fetch from API if not cached
-    var tok = localStorage.getItem("pb_token");
-    if(tok) {
-      fetch("https://pawbook.deemona.com/api/v1/auth/me", {
-        headers: {"Authorization": "Bearer " + tok, "Content-Type": "application/json"}
-      }).then(function(r){ return r.json(); }).then(function(res){
-        var ud = res.data || res;
-        if(ud && ud.username) {
-          localStorage.setItem("pb_user", JSON.stringify(ud));
-          populateDrawer(ud);
-        }
-      }).catch(function(){});
-    }
-    return;
-  }
-  populateDrawer(u);
-  function populateDrawer(ud){
-    var dn = document.getElementById("drawer-name");
-    var dh = document.getElementById("drawer-handle");
-    var da = document.getElementById("drawer-av");
-    if(dn) dn.textContent = ud.full_name || ud.username || "Pet Parent";
-    if(dh) dh.textContent = "@" + (ud.username || "pawbook");
-    if(da && ud.avatar_url) { da.src = ud.avatar_url; da.style.display = "block"; }
-  }
-})();
-</script>
-<script>
-if(typeof API_BASE==='undefined') window.API_BASE='https://pawbook.deemona.com/api/v1';
-if(typeof AuthAPI==='undefined') window.AuthAPI={me:function(){return Promise.resolve({ok:false,data:null});}};
-if(typeof authHeaders==='undefined') window.authHeaders=function(){var t=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token')||'';return{'Authorization':'Bearer '+t,'Content-Type':'application/json'};};
-if(typeof toast==='undefined') window.toast=function(m){};
-</script>
-<script src="pawbook-api.js"></script>
-<script src="upload.js"></script>
-
   <script>
+    /* === Drawer helpers === */
+    function openDrawer(){document.getElementById('drawer-panel').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+    function closeDrawer(){document.getElementById('drawer-panel').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
     if(typeof goTo==='undefined'){function goTo(p){window.location.href=p;}}
     if(typeof doLogout==='undefined'){function doLogout(){localStorage.removeItem('pb_token');localStorage.removeItem('pawbook_token');localStorage.removeItem('token');window.location.href='01_login.html';}}
+    /* Load drawer user info */
+    (function(){
+      try{
+        const tok=localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token');
+        if(!tok)return;
+        fetch('https://pawbook.deemona.com/api/v1/users/me',{headers:{Authorization:'Bearer '+tok}})
+          .then(r=>r.ok?r.json():null).then(d=>{
+            if(!d)return;
+            const u=d.user||d;
+            const el=id=>document.getElementById(id);
+            if(u.name&&el('drawer-user-name-txt'))el('drawer-user-name-txt').textContent=u.name;
+            if(u.username&&el('drawer-user-handle-txt'))el('drawer-user-handle-txt').textContent='@'+u.username;
+            if(u.avatar&&el('drawer-avatar-img'))el('drawer-avatar-img').src=u.avatar;
+            var nu=(d.data&&(d.data.user||d.data))||d.user||d,nm=nu.full_name||nu.name||nu.username||'',pic=nu.avatar_url||nu.avatar||'',av=el('nav-av');
+            if(av){ if(/^https:\/\//.test(pic)){ var im=new Image(); im.alt=''; im.onerror=function(){ av.textContent=(nm.charAt(0)||'·').toUpperCase(); }; im.src=pic; av.textContent=''; av.appendChild(im); } else if(nm) av.textContent=nm.charAt(0).toUpperCase(); }
+          }).catch(()=>{});
+      }catch(e){}
+    })();
   </script>
 <script src="pawbook-ai-widget.v4.js?v=5"></script>
 <script>/* PB admin-only sidebar link */(function(){try{var t=localStorage.getItem('pb_token');if(!t)return;var u=JSON.parse(localStorage.getItem('pb_user')||'null')||{};
