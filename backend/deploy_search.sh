@@ -20,7 +20,10 @@ for c in $PREV15 $PREV11; do git cat-file -e "$c" 2>/dev/null || { echo "Commit 
 
 # 1) Check everything before touching anything
 BAD=0
-if ! cmp -s <(git show "$PREV15:15_search.html" | norm) <(norm < "$WEB/15_search.html"); then echo "  DIFFERS from $PREV15: $WEB/15_search.html"; BAD=1; fi
+T1=$(mktemp) T2=$(mktemp)   # temp files (this server has no /dev/fd for <(...))
+git show "$PREV15:15_search.html" | norm > "$T1"; norm < "$WEB/15_search.html" > "$T2"
+if ! cmp -s "$T1" "$T2"; then echo "  DIFFERS from $PREV15: $WEB/15_search.html"; diff "$T1" "$T2" | head -20; BAD=1; fi
+rm -f "$T1" "$T2"
 git show "$PREV11:11_vet_booking.html" | cmp -s - "$WEB/11_vet_booking.html" || { echo "  DIFFERS from $PREV11: $WEB/11_vet_booking.html"; BAD=1; }
 for d in $DIRS; do [ -e "$d/search.controller.js" ] && { echo "  already exists (unexpected): $d/search.controller.js"; BAD=1; }; done
 for f in "$API/src/routes/index.js" "$API/routes/index.js"; do
