@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v11: vetcare workspace) ─────────────────────────────
+const BLOCK = `${START} (v12: pet events) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -179,6 +179,28 @@ vetcareRouter.get('/staff',                       authenticate, vcCtrl.staff);
 vetcareRouter.post('/staff',                      authenticate, fulCtrl.limit('vetcare-staff', 20, 3600), vcCtrl.addStaff);
 vetcareRouter.delete('/staff/:id',                authenticate, vcWrite, vcCtrl.removeStaff);
 router.use('/vetcare', vetcareRouter);
+const peCtrl = require('../controllers/petevents.controller');
+const peRouter = require('express').Router();
+const peWrite = fulCtrl.limit('petevents', 120, 600);
+peRouter.get('/config',                         authenticate, peCtrl.config);
+peRouter.get('/mine',                           authenticate, peCtrl.mine);
+peRouter.get('/admin/queue',                    authenticate, peCtrl.adminQueue);
+peRouter.post('/admin/reports/:rid',            authenticate, peWrite, peCtrl.resolveReport);
+peRouter.post('/admin/:id/moderate',            authenticate, peWrite, peCtrl.moderate);
+peRouter.post('/registrations/:rid/verify',     authenticate, peWrite, peCtrl.verifyPayment);
+peRouter.post('/registrations/:rid/pay',        authenticate, fulCtrl.limit('petevents-pay', 20, 600), peCtrl.payLater);
+peRouter.post('/registrations/:rid/cancel',     authenticate, peWrite, peCtrl.cancelRegistration);
+peRouter.patch('/registrations/:rid',           authenticate, peWrite, peCtrl.hostAction);
+peRouter.get('/',                               authenticate, peCtrl.list);
+peRouter.post('/',                              authenticate, fulCtrl.limit('petevents-new', 10, 3600), peCtrl.create);
+peRouter.get('/:id',                            authenticate, peCtrl.detail);
+peRouter.patch('/:id',                          authenticate, peWrite, peCtrl.update);
+peRouter.post('/:id/cancel',                    authenticate, peWrite, peCtrl.cancel);
+peRouter.post('/:id/interest',                  authenticate, peWrite, peCtrl.interest);
+peRouter.post('/:id/register',                  authenticate, fulCtrl.limit('petevents-reg', 30, 600), peCtrl.register);
+peRouter.get('/:id/registrations',              authenticate, peCtrl.registrations);
+peRouter.post('/:id/report',                    authenticate, fulCtrl.limit('petevents-report', 10, 3600), peCtrl.report);
+router.use('/petevents', peRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -197,7 +219,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop11');
+  fs.copyFileSync(f, f + '.bak-shop12');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -218,4 +240,4 @@ for (const f of FILES) {
   else console.log('  NOTE: marketRouter line not found in this file — legacy guard not added');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop11 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop12 — restart the app from the MilesWeb panel.');
