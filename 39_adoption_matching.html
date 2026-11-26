@@ -1297,9 +1297,13 @@ function nGoogleSug(q, seq){
   loadMaps().then(function(gm){
     var A = gm.places && gm.places.AutocompleteSuggestion; if (!A) return;
     if (!NTOKEN && gm.places.AutocompleteSessionToken) NTOKEN = new gm.places.AutocompleteSessionToken();
-    return A.fetchAutocompleteSuggestions({input: q, includedRegionCodes: ['in'], includedPrimaryTypes: ['(regions)'], sessionToken: NTOKEN, language: 'en'}).then(function(r){
+    return A.fetchAutocompleteSuggestions({input: q, includedRegionCodes: ['in'], sessionToken: NTOKEN, language: 'en'}).then(function(r){
       if (seq !== NQSEQ) return;
-      NSUG.google = (r.suggestions || []).filter(function(x){ return x.placePrediction; }).slice(0, 5).map(function(x){ var p = x.placePrediction;
+      // places people live in (sectors, colonies, neighbourhoods, localities, PINs) — not shops or businesses
+      var AREA = /sublocality|neighborhood|locality|postal_code|political|premise|route|colloquial_area|geocode/;
+      var all = (r.suggestions || []).filter(function(x){ return x.placePrediction; });
+      var areas = all.filter(function(x){ var t = x.placePrediction.types || []; return !t.length || (t.some(function(y){ return AREA.test(y); }) && t.indexOf('establishment') < 0); });
+      NSUG.google = areas.slice(0, 6).map(function(x){ var p = x.placePrediction;
         return {p: p, main: p.mainText ? p.mainText.text : (p.text ? p.text.text : ''), sec: p.secondaryText ? p.secondaryText.text : ''}; });
       nSugRender();
     });
