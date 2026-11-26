@@ -320,7 +320,7 @@
       + '<a href="43_shop_list.html?sort=discount&on_sale=1" class="hot' + (active === 'offers' ? ' on' : '') + '"><i class="ti ti-discount-2"></i><span data-i18n="h.offers">' + esc(T('h.offers')) + '</span></a>'
       + '<a href="45_shop_brands.html"' + (active === 'brands' ? ' class="on"' : '') + '><i class="ti ti-building-store"></i><span data-i18n="h.brands">' + esc(T('h.brands')) + '</span></a>'
       + '<a href="42_shop.html#services"><i class="ti ti-scissors"></i><span data-i18n="h.services">' + esc(T('h.services')) + '</span></a>'
-      + '<a href="04_adoption.html"><i class="ti ti-heart-handshake"></i><span data-i18n="h.adopt">' + esc(T('h.adopt')) + '</span></a>'
+      + '<a href="39_adoption_matching.html"><i class="ti ti-heart-handshake"></i><span data-i18n="h.adopt">' + esc(T('h.adopt')) + '</span></a>'
       + '<span class="sp"></span><a class="back" href="07_home.html"><i class="ti ti-arrow-back-up"></i><span data-i18n="h.back">' + esc(T('h.back')) + '</span></a>'
       + '</div></nav></header>';
     var host = document.getElementById('shop-header'); host.innerHTML = h;
@@ -350,7 +350,7 @@
       + '<p data-i18n="f.about">' + esc(T('f.about')) + '</p></div>'
       + '<div><h4 data-i18n="f.shop">' + esc(T('f.shop')) + '</h4>' + ['dog', 'cat', 'bird', 'fish', 'small_pet'].map(function (p) { return '<a href="43_shop_list.html?pet=' + p + '" data-i18n="pet.' + p + '">' + esc(T('pet.' + p)) + '</a>'; }).join('') + '<a href="45_shop_brands.html" data-i18n="h.brands">' + esc(T('h.brands')) + '</a></div>'
       + '<div><h4 data-i18n="f.help">' + esc(T('f.help')) + '</h4><a href="legal.html#terms" data-i18n="f.terms">' + esc(T('f.terms')) + '</a><a href="legal.html#privacy" data-i18n="f.privacy">' + esc(T('f.privacy')) + '</a><a href="legal.html#grievance" data-i18n="f.grievance">' + esc(T('f.grievance')) + '</a><a href="36_abuse_reporting.html" data-i18n="f.abuse">' + esc(T('f.abuse')) + '</a></div>'
-      + '<div><h4 data-i18n="f.pawbook">' + esc(T('f.pawbook')) + '</h4><a href="07_home.html" data-i18n="f.social">' + esc(T('f.social')) + '</a><a href="11_vet_booking.html" data-i18n="f.vet">' + esc(T('f.vet')) + '</a><a href="04_adoption.html" data-i18n="h.adopt">' + esc(T('h.adopt')) + '</a><a href="49_seller_join.html" data-i18n="f.sell">' + esc(T('f.sell')) + '</a></div>'
+      + '<div><h4 data-i18n="f.pawbook">' + esc(T('f.pawbook')) + '</h4><a href="07_home.html" data-i18n="f.social">' + esc(T('f.social')) + '</a><a href="11_vet_booking.html" data-i18n="f.vet">' + esc(T('f.vet')) + '</a><a href="39_adoption_matching.html" data-i18n="h.adopt">' + esc(T('h.adopt')) + '</a><a href="49_seller_join.html" data-i18n="f.sell">' + esc(T('f.sell')) + '</a></div>'
       + '</div><div class="foot-b"><span>© ' + new Date().getFullYear() + ' Deemona Global Solutions · PawBook</span><span data-i18n="f.note">' + esc(T('f.note')) + '</span></div></div></footer>';
   }
 
