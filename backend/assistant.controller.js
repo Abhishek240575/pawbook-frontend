@@ -54,7 +54,7 @@ const RX = {
   emergency: /\b(emergenc\w*|urgent(ly)?|bleed\w*|vomit\w* blood|blood in|poison\w*|toxic|not breathing|can'?t breathe|cannot breathe|breathing (hard|fast|difficult)|unconscious|collaps\w*|seizure\w*|fits?\b|convuls\w*|hit by|(road|car|bike) accident|met with (an )?accident|chok\w*|heat ?stroke|dying|swallowed|ate (rat|chocolate|grapes|poison|medicine|tablets?)|snake ?bite|electrocut\w*|broken (leg|bone)|can'?t stand|paraly\w*)/i,
   abuse: /\b(abuse\w*|cruel\w*|beat(ing|en)?|torture\w*|neglect\w*|chained|starv\w*)\b/i,
   support: /\b(complain\w*|grievance|refund|scam\w*|fraud\w*|cheat\w*|harass\w*|not working|bug|error|broken page|problem with|issue with|support|customer care|help ?desk|contact (you|the team|support|pawbook)|talk to (a )?(human|person|someone))\b/i,
-  orders: /\b(my orders?|order status|track(ing)? (my )?order|delivery|delivered|return (my|an) order|cancel (my|the) order)\b/i,
+  orders: /\b(my orders?|order status|track(ing)? (my )?(order|parcel|package)|delivery|delivered|return (my|an|the) order|cancel (my|the|an) order|where('?s| is) my (order|parcel|package|delivery)|my (last|recent|latest|previous) (order|purchase)|order (hasn'?t|has not|not|didn'?t) (arrived|come|reached|delivered)|mera order|order kab)\b/i,
   appts: /\b(my appointments?|my bookings?|upcoming (visit|appointment)s?|when is my (vet|appointment))\b/i,
   vacc: /\b(vaccin\w*|booster|rabies|deworm\w*|due (date|dose)|shots?)\b/i,
   mypets: /\b(my pets?|my dogs?|my cats?|my puppy|my kitten|pet profile|health record)\b/i,
@@ -95,7 +95,7 @@ async function myData(M) {
   try {
     const p = await cols('pets'); if (!p.name) return out;
     const id = pick(p, ['id', 'pet_id']), owner = pick(p, ['user_id', 'owner_id']); if (!id || !owner) return out;
-    const { rows } = await query(`SELECT ${qi(id)}::text AS id, name, ${p.species ? 'species' : 'NULL AS species'}, ${p.breed ? 'breed' : 'NULL AS breed'} FROM pets WHERE ${qi(owner)}::text = ANY($1) ORDER BY name LIMIT 12`, [M.ids]);
+    const { rows } = await query(`SELECT ${qi(id)}::text AS id, name, ${p.species ? 'species' : 'NULL AS species'}, ${p.breed ? 'breed' : 'NULL AS breed'}, ${p.age ? 'age::text AS age' : 'NULL AS age'} FROM pets WHERE ${qi(owner)}::text = ANY($1) ORDER BY name LIMIT 12`, [M.ids]);
     out.pets = rows;
     const v = await cols('pet_vaccinations'), vn = pick(v, ['vaccine_name', 'name', 'vaccine']), vd = pick(v, ['next_due_date', 'next_due', 'due_date']);
     if (rows.length && vn && vd && v.pet_id) {
@@ -159,6 +159,150 @@ function locOf(b) {
 function pickCard(x) { const o = {}; ['title', 'sub', 'meta', 'img', 'url', 'action', 'badge', 'price', 'mrp', 'at', 'near', 'verified', 'phone'].forEach(k => { if (x[k] != null && x[k] !== '') o[k] = x[k]; }); return o; }
 const TYPE_ONE = { adoption: 'pet for adoption', vets: 'vet', lost: 'lost & found case', products: 'product', communities: 'community', events: 'event', pets: 'pet', shelters: 'shelter', people: 'person' };
 const TYPE_WORD = { adoption: 'pets for adoption', vets: 'vets', lost: 'lost & found cases', products: 'products', communities: 'communities', events: 'events', pets: 'pets', shelters: 'shelters', people: 'people' };
+
+// ── SHOP: understands shopping questions ("cat food under 700", "cheapest treats for Bruno", "offers on toys",
+//    "is the orthopaedic bed in stock") and asks the real shop search (shop.controller) — same products, prices and
+//    stock people see in the shop. It never invents products, prices or discounts.
+const SHOP_PET = [[/\b(dogs?|pupp(y|ies)|pups?|canine|kutt[ae]|kutton)\b/i, 'dog'], [/\b(cats?|kittens?|kitty|feline|bill(i|ee|iyon))\b/i, 'cat'],
+  [/\b(birds?|budgies?|parrots?|cockatiels?|finch(es)?|lovebirds?|chidiya)\b/i, 'bird'], [/\b(fish|aquarium|goldfish|betta|guppy|machhli)\b/i, 'fish'],
+  [/\b(rabbits?|bunn(y|ies)|hamsters?|guinea pigs?|small pets?)\b/i, 'small_pet']];
+const SHOP_CAT = [[/\b(treats?|chews?|jerky|biscuits?|dental sticks?|snacks?)\b/i, 'treats'], [/\b(foods?|kibble|khana|diet|wet food|dry food|gravy|pellets?|seed( mix)?)\b/i, 'food'],
+  [/\b(toys?|balls?|teasers?|tug|squeaky|play)\b/i, 'toys'], [/\b(brush(es)?|combs?|shampoos?|groom\w*|nail ?clippers?|clippers?|wipes)\b/i, 'grooming'],
+  [/\b(leash(es)?|lead|harness(es)?|collars?|walk\w*)\b/i, 'walk'], [/\b(beds?|mats?|cushions?|blankets?)\b/i, 'beds'], [/\b(litter|litter box|scoop)\b/i, 'litter'],
+  [/\b(tank|filters?|water conditioner|aquarium (decor|plants?))\b/i, 'aquarium'], [/\b(medicines?|supplements?|vitamins?|tick|flea|dewormer|deworming tablets?|ointment)\b/i, 'health'],
+  [/\b(bowls?|feeders?|fountains?)\b/i, 'bowls'], [/\b(sweaters?|jackets?|coats?|raincoats?|clothes|t-?shirts?)\b/i, 'clothing'], [/\b(cages?|hutch(es)?)\b/i, 'cages'],
+  [/\b(carriers?|crates?|travel bags?)\b/i, 'travel'], [/\b(pee ?pads?|training pads?|clickers?)\b/i, 'training']];
+const SHOP_STOP = /^(i|me|my|we|our|a|an|the|for|of|to|in|on|with|and|or|some|any|please|pls|show|find|get|need|want|wants|looking|buy|purchase|order|best|good|top|rated|cheap|cheapest|cheaper|budget|price|prices|cost|costs|under|below|less|than|within|upto|up|over|above|more|max|min|rs|inr|rupees|offer|offers|discount|discounts|deal|deals|sale|in|stock|available|availability|is|are|there|do|you|have|has|what|which|how|much|new|latest|popular|selling|seller|bestseller|products?|items?|stuff|things?|something|anything|shop|store|compare|vs|versus|from|brand|brands|premium|expensive|lowest|highest|ke|liye|ka|ki|hai|chahiye|kya|mere|mera|meri|sasta|wala|wali|kam|tak|andar|daam|accha|achha|acha|dikhao|batao)$/;
+const shopSignal = m => /\b(buy|purchase|price|prices|cost|₹|rs\.?|rupees|cheap\w*|budget|offers?|discounts?|deals?|sale|in stock|out of stock|brands?|products?|kibble|treats?|toys?|litter|leash|harness|collar|brush|comb|shampoo|bowls?|feeder|cages?|carrier|khana|compare)\b/i.test(m)
+  || /\b(something|anything|stuff|things?|items?|products?) for (my |a |the )?\w+/i.test(m);
+let BRANDS = { at: 0, list: [] };
+async function shopBrands() {
+  if (Date.now() - BRANDS.at < 600000) return BRANDS.list;
+  try { const { rows } = await query(`SELECT DISTINCT brand FROM marketplace_products WHERE is_active = TRUE AND brand IS NOT NULL AND brand <> '' LIMIT 500`); BRANDS = { at: Date.now(), list: rows.map(r => r.brand) }; } catch (e) { BRANDS = { at: Date.now(), list: [] }; }
+  return BRANDS.list;
+}
+const petStage = p => {   // a pet's life stage from its age (e.g. "6 months", "2 years", "3")
+  const a = String(p.age || '').toLowerCase(), n = parseFloat(a); if (!a || isNaN(n)) return null;
+  const yrs = /month|mo\b|mth/.test(a) ? n / 12 : /week|wk/.test(a) ? n / 52 : n;
+  const sp = String(p.species || '').toLowerCase();
+  if (yrs < 1) return /cat/.test(sp) ? 'kitten' : /dog/.test(sp) ? 'puppy' : null;
+  if (yrs >= 8) return 'senior'; return 'adult';
+};
+const speciesKey = s => { s = String(s || '').toLowerCase(); return /dog|pupp/.test(s) ? 'dog' : /cat|kitten/.test(s) ? 'cat' : /bird|parrot|budgie/.test(s) ? 'bird' : /fish/.test(s) ? 'fish' : /rabbit|hamster|guinea/.test(s) ? 'small_pet' : null; };
+async function shopParse(msg, mine) {
+  const m = ' ' + msg.toLowerCase().replace(/(\d),(\d)/g, '$1$2').replace(/[₹,]/g, ' ₹ ').replace(/\s+/g, ' ') + ' ', f = {}, said = [];
+  const pet = (mine.pets || []).find(p => p.name && new RegExp('\\b' + p.name.toLowerCase().replace(/[^a-z0-9 ]/g, '') + '\\b').test(m));
+  if (pet) { f.pet = speciesKey(pet.species) || undefined; const st = petStage(pet); if (st) f.life_stage = st; said.push('for ' + pet.name); }
+  if (!f.pet) { const x = SHOP_PET.find(p => p[0].test(m)); if (x) f.pet = x[1]; }
+  if (/\b(pupp(y|ies)|pups?)\b/.test(m)) f.life_stage = 'puppy'; else if (/\bkittens?\b/.test(m)) f.life_stage = 'kitten'; else if (/\b(senior|old|elderly|aged)\b/.test(m)) f.life_stage = 'senior';
+  const c = SHOP_CAT.find(p => p[0].test(m)); if (c) f.category = c[1];
+  const num = s => Number(String(s).replace(/k$/i, '000'));
+  let r = m.match(/\b(?:between|from)\s*₹?\s*(\d+k?)\s*(?:and|to|-)\s*₹?\s*(\d+k?)\b/);
+  if (r) { f.min_price = num(r[1]); f.max_price = num(r[2]); }
+  else {
+    if ((r = m.match(/\b(?:under|below|less than|within|upto|up to|max(?:imum)?|not more than|budget(?: of| is)?|<)\s*(?:rs\.?|inr|₹)?\s*(\d+k?)\b/)) || (r = m.match(/(\d+k?)\s*(?:rs|rupees|₹)?\s*(?:se kam|tak|ke andar)\b/))) f.max_price = num(r[1]);
+    if ((r = m.match(/\b(?:above|over|more than|min(?:imum)?|>)\s*(?:rs\.?|inr|₹)?\s*(\d+k?)\b/))) f.min_price = num(r[1]);
+  }
+  if (/\b(cheap\w*|budget|lowest price|low price|affordable|sast[ae]|kam daam)\b/.test(m)) f.sort = 'price_asc';
+  else if (/\b(premium|expensive|costliest|highest price)\b/.test(m)) f.sort = 'price_desc';
+  else if (/\b(best|top|highest)[ -]?(rated|reviewed)\b|\bbest rating|\bmost reviewed|\bbest\b/.test(m)) f.sort = 'rating';
+  else if (/\b(popular|best ?sell\w*|most (bought|sold|ordered)|trending)\b/.test(m)) f.sort = 'popular';
+  else if (/\b(new|latest|newest|just arrived)\b/.test(m)) f.sort = 'new';
+  if (/\b(offers?|discounts?|deals?|on sale|sale|\d+% off|price drop)\b/.test(m)) f.on_sale = '1';
+  if (/\b(in stock|available|availability|out of stock)\b/.test(m)) f.stockQ = true;
+  const brands = await shopBrands(); const firstOk = w => w.length >= 5 && !SHOP_STOP.test(w) && !SHOP_PET.concat(SHOP_CAT).some(p => p[0].test(w));
+  const b = brands.filter(x => { const l = x.toLowerCase(), w1 = l.split(' ')[0]; return m.includes(' ' + l + ' ') || (firstOk(w1) && m.includes(' ' + w1 + ' ')); }).sort((a, z) => z.length - a.length)[0];
+  if (b) f.brand = b;
+  // the remaining real words (e.g. "chicken", "orthopaedic", "reflective") narrow the search
+  const used = [].concat(SHOP_PET.map(p => p[0]), SHOP_CAT.map(p => p[0]));
+  let rest = m; used.forEach(rx => { rest = rest.replace(new RegExp(rx.source, 'gi'), ' '); });
+  if (pet) rest = rest.replace(new RegExp('\\b' + pet.name.toLowerCase().replace(/[^a-z0-9 ]/g, '') + '\\b', 'g'), ' ');
+  if (b) rest = rest.replace(new RegExp(b.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), ' ').replace(new RegExp('\\b' + b.toLowerCase().split(' ')[0] + '\\b', 'g'), ' ');
+  const words = (rest.match(/[a-z][a-z-]{2,}/g) || []).filter(w => !SHOP_STOP.test(w) && !/^(senior|old|elderly|aged|adult)$/.test(w));
+  if (words.length) f.q = words.slice(0, 4).join(' ');
+  return { f, pet, said };
+}
+const PET_WORD = { dog: 'dogs', cat: 'cats', bird: 'birds', fish: 'fish', small_pet: 'small pets' };
+const CAT_WORD = { food: 'food', treats: 'treats', toys: 'toys', grooming: 'grooming products', walk: 'leashes, harnesses & collars', beds: 'beds', litter: 'litter', aquarium: 'aquarium supplies', health: 'health & care products', bowls: 'bowls & feeders', clothing: 'clothing', cages: 'cages', travel: 'carriers & travel gear', training: 'training supplies' };
+const STAGE_WORD = { puppy: 'puppies', kitten: 'kittens', senior: 'seniors', adult: 'adults' };
+const PET_ADJ = { dog: 'dog', cat: 'cat', bird: 'bird', fish: 'fish', small_pet: 'small-pet' };
+function shopWhat(f, pet) {
+  const thing = f.q && !f.category ? f.q : (f.q ? f.q + ' ' : '') + (CAT_WORD[f.category] || 'products');
+  if (pet) return (f.brand ? f.brand + ' ' : '') + thing + ' for ' + pet.name;
+  const adj = f.life_stage === 'puppy' || f.life_stage === 'kitten' ? f.life_stage : f.pet ? (f.life_stage === 'senior' ? 'senior ' : '') + PET_ADJ[f.pet] : '';
+  return [f.brand, adj, thing].filter(Boolean).join(' ');
+}
+async function shopCall(f, limit) {
+  const shop = require('./shop.controller'); let out = null;
+  const q = {}; ['q', 'category', 'pet', 'brand', 'life_stage', 'min_price', 'max_price', 'on_sale', 'sort'].forEach(k => { if (f[k] != null && f[k] !== '') q[k] = String(f[k]); });
+  q.limit = String(limit || 6); if (!q.sort) q.sort = 'recommended';
+  const res = { statusCode: 200, status(c) { this.statusCode = c; return this; }, json(o) { out = o; return this; }, set() { return this; }, setHeader() {} };
+  await shop.listProducts({ query: q, user: null, headers: {} }, res);
+  if (!out || out.success === false || res.statusCode >= 400) throw new Error('shop search failed');
+  const d = out.data !== undefined ? out.data : out; return { products: d.products || [], total: d.total || 0, did: d.did_you_mean || null, q };
+}
+const rupee = n => '₹' + Number(n).toLocaleString('en-IN');
+function shopCard(p) {
+  const off = p.compare_price && p.compare_price > p.price ? Math.round((1 - p.price / p.compare_price) * 100) : 0;
+  const stock = p.stock == null ? '' : p.stock <= 0 ? 'Out of stock' : p.stock <= 5 ? 'Only ' + p.stock + ' left' : 'In stock';
+  return { type: 'products', title: p.name, sub: [p.brand, p.seller_name].filter(Boolean).join(' · ') || null, price: p.price, mrp: p.compare_price || undefined,
+    meta: [p.rating ? '★ ' + p.rating + (p.review_count ? ' (' + p.review_count + ')' : '') : null, off ? off + '% off ' + rupee(p.compare_price) : null, stock, p.delivery_days ? 'Delivery in ' + p.delivery_days + ' days' : null].filter(Boolean).join(' · '),
+    img: (p.images || [])[0] || undefined, url: '44_shop_product.html?id=' + encodeURIComponent(p.product_id), action: 'View', badge: p.stock != null && p.stock <= 0 ? 'Out of stock' : off ? off + '% off' : undefined };
+}
+async function shopSmart(msg, mine) {
+  const { f, pet } = await shopParse(msg, mine);
+  const steps = [];   // what was relaxed to find something
+  let r = await shopCall(f);
+  if (!r.total && f.q) { const g = Object.assign({}, f); delete g.q; if (g.category || g.pet || g.brand) { const r2 = await shopCall(g); if (r2.total) { steps.push('no exact match for “' + f.q + '”'); r = r2; f._q = f.q; delete f.q; } } }
+  if (!r.total && f.life_stage) { const g = Object.assign({}, f); delete g.life_stage; const r2 = await shopCall(g); if (r2.total) { steps.push('nothing just for ' + STAGE_WORD[f.life_stage]); r = r2; delete f.life_stage; } }
+  if (!r.total && f.max_price) { const g = Object.assign({}, f, { sort: 'price_asc' }); delete g.max_price; const r2 = await shopCall(g); if (r2.total) { steps.push('nothing under ' + rupee(f.max_price)); f._cap = f.max_price; delete f.max_price; f.sort = 'price_asc'; r = r2; } }
+  if (!r.total && f.on_sale) { const g = Object.assign({}, f); delete g.on_sale; const r2 = await shopCall(g); if (r2.total) { steps.push('no offers on these right now'); delete f.on_sale; r = r2; } }
+  const what = shopWhat(f, pet), ps = r.products, L = [];
+  const listUrl = '43_shop_list.html?' + Object.keys(r.q).filter(k => k !== 'limit' && !(k === 'sort' && r.q.sort === 'recommended')).map(k => k + '=' + encodeURIComponent(r.q[k])).join('&');
+  if (!ps.length) {
+    L.push(`I couldn't find ${what}${f.max_price ? ' under ' + rupee(f.max_price) : ''} in the PawBook shop right now.` + (r.did ? ` Did you mean **${r.did}**?` : '') + ' Try other words, or browse the **Pet shop**.');
+    return { text: L.join('\n'), cards: [], actions: [act('shop', 'Browse the Pet shop')], suggestions: ['Dog food', 'Cat toys', 'Offers in the shop'], filters: f, total: 0 };
+  }
+  const how = f.sort === 'price_asc' ? ', cheapest first' : f.sort === 'price_desc' ? ', premium first' : f.sort === 'rating' ? ', best rated first' : f.sort === 'popular' ? ', most popular first' : f.sort === 'new' ? ', newest first' : '';
+  const range = f.min_price && f.max_price ? ` between ${rupee(f.min_price)} and ${rupee(f.max_price)}` : f.max_price ? ` under ${rupee(f.max_price)}` : f.min_price ? ` above ${rupee(f.min_price)}` : '';
+  if (steps.length) L.push(steps.join('; ').replace(/^./, c => c.toUpperCase()) + ' — so here ' + (r.total === 1 ? 'is the closest match' : 'are the closest matches') + ':');
+  L.push(`**${r.total} ${r.total === 1 ? 'match' : 'matches'}** for ${what}${range}${f.on_sale ? ' on offer' : ''}${how}:`);
+  ps.slice(0, 3).forEach(p => { const off = p.compare_price > p.price ? ` (${Math.round((1 - p.price / p.compare_price) * 100)}% off)` : ''; L.push(`• **${p.name}** — ${rupee(p.price)}${off}${p.rating ? ' · ★ ' + p.rating : ''}${f.stockQ ? ' · ' + (p.stock > 0 ? 'in stock' + (p.stock <= 5 ? ' (only ' + p.stock + ' left)' : '') : 'out of stock') : ''}`); });
+  if (f._cap && ps[0]) L.push(`The cheapest is ${rupee(ps[0].price)}.`);
+  if (pet && f.life_stage) L.push(`Matched to ${pet.name}'s age (${f.life_stage}).`);
+  const actions = [{ label: r.total > ps.length ? 'See all ' + r.total + ' in the shop' : 'Open in the shop', url: listUrl }];
+  if (ps.length >= 2) actions.push({ label: 'Compare these', url: '47_shop_compare.html?ids=' + ps.slice(0, 3).map(p => encodeURIComponent(p.product_id)).join(',') });
+  actions.push(act('orders'));
+  const sug = [];
+  if (f.sort !== 'price_asc') sug.push('Cheapest ' + (f.category ? CAT_WORD[f.category].split(/[ ,&]/)[0] : 'ones'));
+  if (!f.on_sale) sug.push('Any offers on these?');
+  if (f.pet === 'dog' && f.category !== 'treats') sug.push('Dog treats'); else if (f.pet === 'cat' && f.category !== 'toys') sug.push('Cat toys'); else sug.push('Best rated dog food');
+  return { text: L.join('\n'), cards: ps.slice(0, 6).map(shopCard), actions: actions.slice(0, 4), suggestions: sug.slice(0, 3), filters: f, total: r.total };
+}
+// ── ORDERS: the person's own recent orders and where they are
+const ORDER_WORD = { pending: 'Order placed', confirmed: 'Confirmed by the seller', packed: 'Packed', shipped: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled' };
+async function ordersSmart(req, msg) {
+  const co = require('./checkout.controller'); let out = null;
+  const res = { statusCode: 200, status(c) { this.statusCode = c; return this; }, json(o) { out = o; return this; } };
+  await co.myOrders({ user: req.user, query: {}, params: {}, headers: {} }, res);
+  if (!out || out.success === false || res.statusCode >= 400) throw new Error('orders failed');
+  const orders = ((out.data !== undefined ? out.data : out).orders || []);
+  const wantsReturn = /\b(return|refund|replace\w*|damaged|wrong item|broken|missing)\b/i.test(msg), wantsCancel = /\bcancel\w*\b/i.test(msg);
+  if (!orders.length) return { text: `You haven't placed any orders in the PawBook shop yet. When you do, I can tell you where each one is.`, actions: [act('shop'), act('orders')], cards: [] };
+  const L = [], act2 = [];
+  const show = orders.slice(0, 3);
+  L.push(orders.length === 1 ? '**Your order:**' : `**Your latest ${show.length} of ${orders.length} orders:**`);
+  show.forEach(o => {
+    const items = (o.items || []).map(i => i.name + (i.quantity > 1 ? ' ×' + i.quantity : '')).slice(0, 2).join(', ') + ((o.items || []).length > 2 ? ' +' + ((o.items || []).length - 2) + ' more' : '');
+    const st = ORDER_WORD[o.state] || o.state || o.status || 'Placed';
+    const track = (o.items || []).map(i => i.tracking && (i.tracking.awb || i.tracking.number || (typeof i.tracking === 'string' ? i.tracking : ''))).filter(Boolean)[0];
+    L.push(`• **${o.order_number || 'Order'}** — ${st}${o.estimated_delivery && o.state !== 'delivered' && o.state !== 'cancelled' ? ', expected by **' + fmtDate(d10(o.estimated_delivery)) + '**' : ''} ${o.total > 0 ? ' · ' + rupee(o.total) : ''} · placed ${fmtDate(d10(o.created_at))}${items ? '\n  ' + items : ''}${track ? '\n  Tracking: ' + track : ''}`);
+    act2.push({ label: 'Open ' + (o.order_number || 'order'), url: '53_shop_orders.html?id=' + encodeURIComponent(o.order_id) });
+  });
+  if (wantsReturn) L.push('\nTo **return or report a problem**, open the order and choose the item — or I can raise a support request for you.');
+  else if (wantsCancel) L.push('\nYou can **cancel** an item from the order page until it is packed. After that, ask for a return once it arrives.');
+  return { text: L.join('\n'), actions: act2.slice(0, 2).concat([act('orders', 'All my orders')]).concat(wantsReturn || wantsCancel ? [{ label: 'Raise a support request', url: '#support' }] : []).slice(0, 4), cards: [] };
+}
 
 // ── PawBook's adoption guide — the same policy, rules, documents and compliance text shown on Adopt a pet (page 39).
 //    Keep in step with TERMS in 39_adoption_matching.html (version 2026-11).
@@ -354,6 +498,8 @@ function contextBlock(M, mine, found, base, intent) {
   if (mine.appts.length) L.push('UPCOMING VET VISITS: ' + mine.appts.map(a => a.date + (a.time ? ' ' + a.time : '') + ' ' + (a.pet || '') + ' ' + (a.vet || '') + ' ' + (a.clinic || '')).join('; '));
   if (found) L.push('PAWBOOK DATA for "' + found.q + '"' + (found.city ? ' in ' + found.city : '') + ': ' + (found.total ? found.cards.map(c => c.type + ': ' + c.title + (c.sub ? ' — ' + c.sub : '') + (c.meta ? ' — ' + c.meta : '') + (c.price != null ? ' — ₹' + c.price : '')).join(' | ') + ' (these are shown to the user as cards below your reply; total ' + found.total + ')' : 'no results'));
   if (intent === 'adopt') L.push('PAWBOOK ADOPTION GUIDE (official text from the Adopt a pet page — answer adoption policy/rules/documents/law questions ONLY from this; people agree to it on Adopt a pet before applying and can quit any time):\n' + Object.keys(ADOPT_GUIDE).map(k => ADOPT_GUIDE[k].title.toUpperCase() + ': ' + ADOPT_GUIDE[k].points.map(p => p[0] + ' — ' + p[1]).join(' | ')).join('\n'));
+  if (base.shop) L.push('PAWBOOK SHOP RESULTS (real products, shown as cards under your reply — mention only these, with their exact prices; never invent products, prices, stock or discounts): ' + (base.shop.cards.length ? base.shop.cards.map(c => c.title + ' — ₹' + c.price + (c.meta ? ' — ' + c.meta : '')).join(' | ') : 'none found'));
+  if (base.orders) L.push('USER ORDERS: the draft answer below lists the user’s real orders and their status — keep those facts exactly.');
   L.push('A SAFE DRAFT ANSWER (facts you may rely on; improve the wording, keep the facts): ' + base.text.replace(/\n/g, ' '));
   return L.join('\n');
 }
@@ -385,6 +531,7 @@ exports.chat = async (req, res) => {
     const M = await me(req);
     let { main: intent } = detect(msg);
     // pet-keeping law questions (housing society, landlord, licence, community dogs) are answered from the adoption guide
+    if (['general', 'places', 'search'].includes(intent) && shopSignal(msg) && !/(near ?me|nearby|around me|close to me|groomers?|salon|boarding|kennel|vets?|clinic)/i.test(msg)) intent = 'shop';
     if (['general', 'account'].includes(intent) && /\b(societ(y|ies)|landlord|rwa|licen[cs]e|pet (laws?|rules)|keep(ing)? (a )?(pet|dog|cat)|community dogs?|street dogs?|abc rules)\b/i.test(msg)) intent = 'adopt';
     await save(M, 'user', msg, { intent });
     let reply;
@@ -392,10 +539,13 @@ exports.chat = async (req, res) => {
     else {
       const loc = locOf(req.body), named = cityOf(msg), city = named || (loc && loc.searchCity) || null;
       const wantsNear = /\b(near ?me|nearby|my (city|area|locality)|around me|close to me|in my town)\b/i.test(msg);
-      const needMine = ['vacc', 'mypets', 'appts', 'general', 'capabilities', 'greet'].includes(intent) || /\b(my|mine)\b/i.test(msg);
-      const [mine, found, gp] = await Promise.all([needMine ? myData(M) : Promise.resolve({ pets: [], due: [], appts: [] }), (intent === 'adopt' && adoptTopic(msg) ? Promise.resolve(null) : listings(req, intent, msg, city, loc)).catch(e => { console.error('[Assistant] listings:', e.message); return null; }),
+      const needMine = ['vacc', 'mypets', 'appts', 'general', 'capabilities', 'greet', 'shop'].includes(intent) || /\b(my|mine)\b/i.test(msg);
+      const [mine, found, gp] = await Promise.all([needMine ? myData(M) : Promise.resolve({ pets: [], due: [], appts: [] }), ((intent === 'adopt' && adoptTopic(msg)) || intent === 'shop' || intent === 'orders' ? Promise.resolve(null) : listings(req, intent, msg, city, loc)).catch(e => { console.error('[Assistant] listings:', e.message); return null; }),
         googlePlaces(msg, intent, loc).catch(e => { console.error('[Assistant] Google:', e.message); return null; })]);
       const base = rules(intent, msg, { M, mine, found });
+      let shopRes = null;
+      if (intent === 'shop') { try { shopRes = await shopSmart(msg, mine); Object.assign(base, { text: shopRes.text, actions: shopRes.actions, suggestions: shopRes.suggestions, shop: shopRes }); } catch (e) { console.error('[Assistant] shop:', e.message); } }
+      if (intent === 'orders') { try { const od = await ordersSmart(req, msg); Object.assign(base, { text: od.text, actions: od.actions, orders: true }); } catch (e) { console.error('[Assistant] orders:', e.message); } }
       if (wantsNear && !city && TYPES_FOR[intent] !== undefined) { base.text = '📍 Which city or area should I look in? Set your location with the **📍 location** button above the chat (country, state, city, area and PIN code) — or just tell me, e.g. “vets in Pune”.\n\n' + base.text; base.actions = [{ label: 'Set my location', url: '#location' }].concat(base.actions).slice(0, 4); }
       let hint = null;
       if (gp && gp.cards.length) {
@@ -431,7 +581,7 @@ exports.chat = async (req, res) => {
           if (ai && ai.trim().length > 1) { text = ai.trim().slice(0, 3000); source = 'ai'; }
         } catch (e) { console.error('[Assistant] AI:', e.message); }
       }
-      reply = { text, actions: base.actions, cards: (found && found.total ? found.cards : []).concat(gp && gp.cards.length ? gp.cards : []).slice(0, 10), suggestions: base.suggestions, source };
+      reply = { text, actions: base.actions, cards: (shopRes ? shopRes.cards : found && found.total ? found.cards : []).concat(gp && gp.cards.length ? gp.cards : []).slice(0, 10), suggestions: base.suggestions, source };
       if (found && found.q && found.total > found.cards.length) reply.actions = [{ label: 'See all ' + found.total + ' results', url: PAGES.search[0] + '?q=' + encodeURIComponent(found.q) + (found.city ? '&city=' + encodeURIComponent(cap(found.city)) : '') }].concat(reply.actions).slice(0, 4);
     }
     const r = await save(M, 'assistant', reply.text, { intent, cards: reply.cards, actions: reply.actions, source: reply.source });

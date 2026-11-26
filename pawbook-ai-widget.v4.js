@@ -1,6 +1,6 @@
 /**
  * PawBook AI Widget — floating assistant on every PawBook page.
- * Include once at the bottom of <body>: <script src="pawbook-ai-widget.v4.js?v=7"></script>
+ * Include once at the bottom of <body>: <script src="pawbook-ai-widget.v4.js?v=8"></script>
  * v5 brain: signed-in people get the real PawBook Assistant (/api/v1/assistant — their pets, vaccines due, appointments,
  * real listings, Google Maps places near them, support requests; Claude when the server has the AI key). Guests and
  * offline moments get safe built-in answers. It knows which page it is on, and never invents listings, counts or prices.
@@ -482,7 +482,7 @@ var RX = [
   ['orders', /\b(my orders?|order status|track(ing)? (my )?order|delivery|refund|return (my|an|the) order)\b/i],
   ['training', /\b(train\w*|potty|toilet|bark\w*|bit(e|es|ing)|chew\w*|pull\w* .*leash|leash .*pull\w*|behaviou?r|aggress\w*|commands?|sit\b|recall)\b/i],
   ['nutrition', /\b(diet|meal|nutrition|feed(ing)?|how much .*eat|can (dogs?|cats?) eat|chocolate|grapes|onion)\b/i],
-  ['shop', /\b(shop|buy|food|kibble|treats?|toys?|litter|leash|harness|collar|bed|shampoo|accessor\w*)\b/i],
+  ['shop', /\b(shop|buy|offers?|discounts?|deals?|cheap\w*|price|brush|comb|food|kibble|treats?|toys?|litter|leash|harness|collar|bed|shampoo|accessor\w*)\b/i],
   ['pawmatch', /\b(paw ?match|playdate|play date|walk buddy|mate|mating|breeding partner|match ?making)\b/i],
   ['groups', /\b(communit\w*|groups?|club|pet parents near)\b/i],
   ['events', /\b(events?|meetups?|adoption drive|camp|show)\b/i],
@@ -557,7 +557,12 @@ function localReply(msg){
       else { r.text = 'On **Book a vet** you can find vets listed on PawBook, see their timings and book a visit.' + signInLine(); r.actions = [act('vet'), act('appts')]; r.suggestions = ['Find a vet near me', 'My dog is vomiting']; }
       break;
     case 'orders': r.text = 'You can see every order, its delivery status, invoices and returns on **My orders**. If something went wrong, I can help you raise a support request.'; r.actions = [act('orders'), {label: 'Raise a support request', url: '#support'}]; break;
-    case 'shop': r.text = 'The **Pet shop** has food, treats, toys, grooming and care products. You can compare products and see delivery times before you buy.' + (_mode === 'live' ? '' : '\n\n🔐 Sign in and I can search the shop for you.'); r.actions = [act('shop'), act('orders')]; r.suggestions = ['Dog food', 'Cat litter']; break;
+    case 'shop':
+      var mx = (msg.replace(/(\d),(\d)/g, '$1$2').match(/\b(?:under|below|less than|within|up ?to|max)\s*(?:rs\.?|₹)?\s*(\d{2,6})\b/i) || [])[1], sale = /\b(offers?|discounts?|deals?|sale)\b/i.test(msg);
+      var sq = msg.replace(/(\d),(\d)/g, '$1$2').replace(/\b(?:under|below|less than|within|up ?to|max)\s*(?:rs\.?|₹)?\s*\d{2,6}\b/gi, ' ').replace(/\b(show|find|search|me|please|pls|i|want|need|to|buy|for|my|a|an|the|some|any|on|in the shop|offers?|discounts?|deals?|sale|cheap\w*|price)\b/gi, ' ').replace(/[?!.₹]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+      var qs = [sq ? 'q=' + encodeURIComponent(sq) : '', mx ? 'max_price=' + mx : '', sale ? 'on_sale=1' : '', /\bcheap/i.test(msg) ? 'sort=price_asc' : ''].filter(Boolean).join('&');
+      r.text = 'The **Pet shop** has food, treats, toys, grooming and care products — you can filter by pet, price and brand, compare products and see delivery times.' + (_mode === 'live' ? '' : '\n\n🔐 Sign in and I can find products for you by pet, price, brand and offers — and track your orders.');
+      r.actions = (qs ? [{label: sq ? 'Search the shop for “' + sq + '”' + (mx ? ' under ₹' + mx : '') : (sale ? 'Offers in the shop' : 'Search the shop'), url: '43_shop_list.html?' + qs}] : []).concat([act('shop'), act('orders')]); r.suggestions = ['Dog food under 1000', 'Offers in the shop', 'Cat toys']; break;
     case 'pawmatch': r.text = '**PawMatch** helps you find playdates, walk buddies and companions for your pet. When both of you like each other it\'s a match — then you chat and fix a date and a public place. Your phone, email and exact location are never shared.\n\nSafety: meet in public, keep pets on leash at first, and make sure both are vaccinated.'; r.actions = [act('pawmatch')]; break;
     case 'groups': r.text = '**Communities** bring pet parents together by city, area, breed or interest. Join one to ask questions, share tips and find meetups.'; r.actions = [act('groups'), act('events')]; break;
     case 'events': r.text = 'Pet meetups, adoption drives, camps and shows are listed on **Events**.'; r.actions = [act('events')]; break;
