@@ -377,9 +377,9 @@ html, body { overflow-x: hidden !important; }
     <div class="g-logo"></div>
     <span id="google-btn-text">Continue with <strong>Google</strong></span>
   </button>
-  <button class="social-btn facebook">
+  <button class="social-btn facebook" id="fb-btn" onclick="triggerFacebookLogin()">
     <i class="ti ti-brand-facebook" style="font-size:22px"></i>
-    Continue with <strong>Facebook</strong>
+    <span id="fb-btn-text">Continue with <strong>Facebook</strong></span>
   </button>
   <button class="social-btn apple">
     <i class="ti ti-brand-apple" style="font-size:22px"></i>
@@ -734,6 +734,64 @@ function showLoginErr(msg) {
   const err = document.getElementById('login-err');
   err.textContent = msg;
   err.style.display = 'block';
+}
+</script>
+
+<!-- ── FACEBOOK LOGIN ──────────────────────────────────────────────────────── -->
+<script>
+// Opens Facebook's own sign-in window, then the server checks the result with Facebook and logs you in.
+const FB_APP_ID = '2324747544987017';   // public app id (the app secret stays on the server)
+window.fbAsyncInit = function () {
+  FB.init({ appId: FB_APP_ID, cookie: false, xfbml: false, version: 'v26.0' });
+  window.__fbReady = true;
+};
+(function (d) {
+  if (d.getElementById('facebook-jssdk')) return;
+  var js = d.createElement('script'); js.id = 'facebook-jssdk'; js.async = true; js.defer = true; js.crossOrigin = 'anonymous';
+  js.src = 'https://connect.facebook.net/en_US/sdk.js';
+  js.onerror = function () { window.__fbFailed = true; };
+  d.body.appendChild(js);
+})(document);
+
+function setFbBusy(on) {
+  const btn = document.getElementById('fb-btn'), txt = document.getElementById('fb-btn-text');
+  btn.disabled = on; txt.innerHTML = on ? 'Signing in…' : 'Continue with <strong>Facebook</strong>';
+}
+function triggerFacebookLogin() {
+  document.getElementById('login-err').style.display = 'none';
+  if (!window.__fbReady || typeof FB === 'undefined') {
+    showLoginErr(window.__fbFailed ? 'Facebook could not be reached (an ad or tracking blocker may be stopping it). Please allow it, or log in another way.' : 'Facebook sign-in is still loading — please try again in a moment.');
+    return;
+  }
+  // FB.login must run straight from the click so the popup is not blocked
+  FB.login(function (resp) {
+    if (resp && resp.status === 'connected' && resp.authResponse && resp.authResponse.accessToken) {
+      finishFacebookLogin(resp.authResponse.accessToken);
+    } else {
+      showLoginErr('Facebook sign-in was cancelled.');
+    }
+  }, { scope: 'public_profile,email', return_scopes: true });
+}
+async function finishFacebookLogin(accessToken) {
+  setFbBusy(true);
+  try {
+    const res = await fetch('https://pawbook.deemona.com/api/v1/auth/facebook', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+      body: JSON.stringify({ access_token: accessToken }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success && data.data && data.data.token) {
+      localStorage.setItem('pb_token', data.data.token);
+      if (data.data.refresh) localStorage.setItem('pb_refresh', data.data.refresh);
+      if (data.data.user) localStorage.setItem('pb_user', JSON.stringify(data.data.user));
+      location.href = '07_home.html';
+      return;
+    }
+    showLoginErr(data.message || 'Facebook sign-in failed. Please try again.');
+  } catch (e) {
+    showLoginErr('Network error during Facebook sign-in. Please try again.');
+  }
+  setFbBusy(false);
 }
 </script>
 
