@@ -1,6 +1,6 @@
 /**
  * PawBook AI Widget — floating assistant on every PawBook page.
- * Include once at the bottom of <body>: <script src="pawbook-ai-widget.v4.js?v=6"></script>
+ * Include once at the bottom of <body>: <script src="pawbook-ai-widget.v4.js?v=7"></script>
  * v5 brain: signed-in people get the real PawBook Assistant (/api/v1/assistant — their pets, vaccines due, appointments,
  * real listings, Google Maps places near them, support requests; Claude when the server has the AI key). Guests and
  * offline moments get safe built-in answers. It knows which page it is on, and never invents listings, counts or prices.
@@ -475,7 +475,7 @@ var RX = [
   ['abuse', /\b(abuse\w*|cruel\w*|beating|beaten|torture\w*|neglect\w*|chained|starv\w*)\b/i],
   ['pagehelp', /\b(this page|this screen|here\b.*(do|use)|how (do|can) i use (this|it)|what can i do here|what is this page|help me with this page)\b/i],
   ['lost', /\b(lost|missing|ran away|run away|found a (dog|cat|pet|puppy|kitten)|i found|stray)\b/i],
-  ['adopt', /\b(adopt\w*|rescue|rehom\w*|foster\w*|shelter dogs?|pets? for adoption)\b/i],
+  ['adopt', /\b(adopt\w*|societ(y|ies)|landlord|rescue|rehom\w*|foster\w*|shelter dogs?|pets? for adoption)\b/i],
   ['places', /\b(groom\w*|boarding|kennel|daycare|day care|pet ?(shop|store)s?|shelters?|pet hotel|sitter)\b.*\b(near|nearby|around|in my|close)\b|\b(near|nearby|around)\b.*\b(groom\w*|boarding|kennel|daycare|pet ?(shop|store)s?|shelters?)\b/i],
   ['vacc', /\b(vaccin\w*|booster|rabies|deworm\w*|due (date|dose)|shots?)\b/i],
   ['vet', /\b(vets?|veterinar\w*|doctor|clinic|hospital|appointment|consult\w*|vomit\w*|diarrh\w*|limp\w*|not eating|sick|ill\b|fever|itch\w*|tick|flea)\b/i],
@@ -529,11 +529,14 @@ function localReply(msg){
       else { r.text = 'I\'m sorry — let\'s act fast. 🐾\n• **Report it on Lost & Found** now with a clear photo, the last place you saw your pet and the time.\n• Search the area at once, calling their name — most pets hide close by.\n• Tell nearby vets, shelters, guards and shopkeepers, and put up posters.\n• Check the lost & found cases every day — someone may have found your pet.'; r.actions = [act('lost', 'Report a lost pet'), {label: 'I found a pet', url: '38_lost_pet_network.html?found=1'}]; }
       r.suggestions = ['Lost pets near me', 'Find a vet near me']; break;
     case 'adopt':
-      r.text = (/document|paper|id proof|rule|policy|complian/.test(m)
-        ? '**Adopt a pet** has a dedicated section with PawBook\'s **adoption policy, rules, documents and compliance**. You read and agree to them before you apply — and you can quit at any time.'
-        : 'On **Adopt a pet** you can see pets looking for homes and find shelters and adoption centres near your area or PIN code.\n\nHow it works: send an interest request → the shelter reviews it → meet the pet → home visit and adoption.')
-        + '\n\n⚠️ Never pay anyone outside PawBook for a "free" adoption.' + signInLine();
-      r.actions = [act('adopt')]; r.suggestions = ['What documents do I need to adopt?', 'Questions to ask a shelter']; break;
+      // the same policy / rules / documents / compliance as the Adopt a pet page (page 39)
+      if (/document|docs?\b|paper|proof|\bid\b|agreement|bring|kyc/.test(m)) r.text = '**Adoption documents** — keep these ready:\n• **Your ID** — a government photo ID (voter ID, passport or driving licence). You don\'t need to share an Aadhaar number on PawBook.\n• **Address proof** — a utility bill or rent agreement.\n• **Landlord or society permission** (if you rent) — a message or letter saying pets are allowed.\n• **Signed adoption agreement** — you and the rescuer both sign it; keep a copy.\n• **Pet health records** you receive — vaccination card, deworming record, and sterilisation certificate and microchip number if done.\n• **After adoption** — register or license your dog if your city requires it.';
+      else if (/rule|eligib|age|who can|requirement|criteria/.test(m)) r.text = '**Adoption rules** — every adopter agrees to:\n• Be **18 or older**, with everyone at home agreeing\n• **Meet the pet** first and allow a home visit if asked\n• **Lifelong care** — food, water, shelter, exercise, vet care\n• Keep **vaccinations and deworming** up to date\n• **Never sell, breed for sale or pass on** the pet — return them to the rescuer if needed\n• Share updates for the agreed period';
+      else if (/fee|cost|price|pay|money|charge|polic|process|how does|how do|steps/.test(m)) r.text = '**How adoption works on PawBook:** send an interest request → the rescuer screens it and talks to you → meet & greet (and maybe a home visit) → sign the adoption agreement → hand-over.\n\n**Fees:** adoption is not a sale. A shelter may ask a **reasonable fee** for vaccination, sterilisation and care — they should tell you upfront and give a receipt.';
+      else if (/law|legal|act\b|complian|societ|landlord|licen/.test(m)) r.text = '**Adoption compliance** (general information, not legal advice):\n• Cruelty and abandonment are offences under the **Prevention of Cruelty to Animals Act, 1960**\n• **Housing societies** cannot ban pets under the Animal Welfare Board of India\'s guidance — follow reasonable rules like cleaning up and leashes in common areas\n• **Community dogs** are sterilised and returned to their area under the **ABC Rules, 2023** — don\'t relocate them\n• Some cities require **dog registration or a licence**';
+      else r.text = 'On **Adopt a pet** you can see pets looking for homes and find shelters and adoption centres near your area or PIN code.\n\nHow it works: send an interest request → the shelter reviews it → meet the pet → home visit and adoption.';
+      r.text += (/document|rule|polic|complian|law|fee/.test(r.text.slice(0, 40).toLowerCase()) ? '\n\nYou read and agree to the full policy, rules, documents and compliance on **Adopt a pet** before applying — and can quit any time.' : '\n\n⚠️ Never pay anyone outside PawBook for a "free" adoption.') + signInLine();
+      r.actions = [act('adopt')]; r.suggestions = ['What documents do I need to adopt?', 'Adoption rules', 'Is there an adoption fee?']; break;
     case 'places':
       var h = gHint(msg, intent);
       if (h) { r.text = '**' + cap(h.word) + ' near ' + h.near + '** from Google Maps are below (nearest first — not verified by PawBook, so call ahead).'; r.g = h; r.actions = [act('nearby', 'Open the map')]; }

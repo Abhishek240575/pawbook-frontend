@@ -160,6 +160,24 @@ function pickCard(x) { const o = {}; ['title', 'sub', 'meta', 'img', 'url', 'act
 const TYPE_ONE = { adoption: 'pet for adoption', vets: 'vet', lost: 'lost & found case', products: 'product', communities: 'community', events: 'event', pets: 'pet', shelters: 'shelter', people: 'person' };
 const TYPE_WORD = { adoption: 'pets for adoption', vets: 'vets', lost: 'lost & found cases', products: 'products', communities: 'communities', events: 'events', pets: 'pets', shelters: 'shelters', people: 'people' };
 
+// ── PawBook's adoption guide — the same policy, rules, documents and compliance text shown on Adopt a pet (page 39).
+//    Keep in step with TERMS in 39_adoption_matching.html (version 2026-11).
+const ADOPT_GUIDE = { "policy": { "title": "Adoption policy", "points": [ [ "Adoption, not a sale", "Pets on PawBook are adopted, not bought. A shelter or rescuer may ask a reasonable adoption fee to cover vaccination, sterilisation and care — they should tell you the amount upfront and give you a receipt. Selling pets through adoption listings is not allowed." ], [ "Every application is screened", "The rescuer reviews your application, talks to you, arranges a meet & greet and may ask for a home visit. They can decline an application if they feel the match isn’t right for the pet." ], [ "Adoption is complete only at hand-over", "Applying does not reserve or complete an adoption. It is complete only when you and the rescuer sign the adoption agreement and the pet is handed over to you." ], [ "Your information stays private", "Your application is seen only by that shelter or rescuer and PawBook moderators. PawBook never asks for your Aadhaar number." ], [ "If it doesn’t work out", "Contact the rescuer — they will take the pet back or help rehome them. Never abandon the pet or pass them on to someone else without telling the rescuer." ], [ "Misuse", "PawBook removes listings and accounts that sell animals, give false information or put animals at risk, and may report cruelty to the authorities." ] ] }, "rules": { "title": "Adoption rules", "points": [ [ "18 or older, whole family agrees", "You must be at least 18, and everyone you live with should agree to the adoption." ], [ "Meet before you adopt", "Meet the pet at least once before adopting, and allow a home visit if the rescuer asks for one." ], [ "Lifelong care", "Provide shelter, food, clean water, exercise, companionship and vet care for the pet’s whole life — including in old age or illness." ], [ "Health", "Keep vaccinations (including rabies) and deworming up to date as your vet advises, and sterilise the pet if agreed with the rescuer." ], [ "No selling, breeding for sale or passing on", "Don’t sell, breed for sale or give away an adopted pet. If you can no longer keep them, return them to the rescuer." ], [ "Stay in touch", "Share updates or allow follow-up visits for the period agreed with the rescuer." ], [ "Community dogs stay where they live", "Street (community) dogs are sterilised, vaccinated and returned to their own area under the Animal Birth Control Rules, 2023. Don’t pick up or relocate them — adopt through a shelter or rescuer." ] ] }, "documents": { "title": "Adoption documents", "points": [ [ "Your ID", "A government photo ID such as a voter ID, passport or driving licence. You don’t need to share an Aadhaar number on PawBook." ], [ "Your address", "Address proof such as a utility bill or rent agreement." ], [ "Landlord or society permission (if you rent)", "A message or letter saying pets are allowed helps your application." ], [ "Signed adoption agreement", "You and the rescuer both sign it — keep a copy. It records the pet, the adopter, the date and what each side agrees to." ], [ "Pet health records", "Vaccination card, deworming record and, if done, the sterilisation certificate and microchip number." ], [ "After adoption", "Register or license your dog if your city requires it (for example, Mumbai’s BMC issues dog licences) and add your pet to My Pets and the Vaccination diary on PawBook." ] ] }, "compliance": { "title": "Adoption compliance", "points": [ [ "Prevention of Cruelty to Animals Act, 1960", "Cruelty to animals is an offence under Section 11 — including abandoning an animal in circumstances where it is likely to suffer, and not giving it enough food, water or shelter." ], [ "Bharatiya Nyaya Sanhita, 2023 — Section 325", "Killing, poisoning, maiming or rendering useless any animal is punishable with up to five years’ imprisonment, a fine, or both." ], [ "Animal Birth Control Rules, 2023", "Community dogs are sterilised, vaccinated and returned to the same area; they must not be relocated." ], [ "Dog Breeding and Marketing Rules, 2017 · Pet Shop Rules, 2018", "Dog breeders and pet shops must register with the State Animal Welfare Board. Adoption is not a sale — report anyone selling pets through adoption listings." ], [ "Housing societies", "The Animal Welfare Board of India’s guidance says housing societies cannot ban residents from keeping pets; follow reasonable rules such as cleaning up after your pet and keeping dogs on a leash in common areas." ], [ "Local rules", "Some cities require pet dog registration or a licence — check with your municipal corporation." ], [ "Please note", "This is general information, not legal advice. Rules can differ by state and city." ] ] } };
+// which part(s) of the guide a question is about (null = an ordinary "show me pets" question)
+function adoptTopic(msg) {
+  const m = String(msg || '').toLowerCase(), t = [];
+  if (/\b(documents?|docs?|papers?|paperwork|proofs?|id\b|identity|address proof|agreement|contract|what (do i|should i) (need|bring|keep)|need to (bring|show|submit)|kyc)\b/.test(m)) t.push('documents');
+  if (/\b(rules?|eligib\w*|who can adopt|age limit|requirements?|criteria|conditions?|home visit|follow.?up)\b/.test(m)) t.push('rules');
+  if (/\b(polic\w*|fees?|charges?|cost|price|pay|money|process|procedure|steps|how (does|do|to)|returns?|give (it|him|her) back|declin\w*|reject\w*|privacy|aadhaar)\b/.test(m)) t.push('policy');
+  if (/\b(laws?|legal\w*|acts?\b|complian\w*|society|societies|landlord|licen[cs]e\w*|regist\w*|abc rules|street dogs?|community dogs?|cruelty)\b/.test(m)) t.push('compliance');
+  return t.length ? t : null;
+}
+const GSTOP = /^(the|and|for|you|your|are|can|what|how|does|need|with|from|that|this|have|adopt\w*|pets?|dogs?|cats?|on|in|to|of|a|an|my|me|i|is|do)$/;
+// the points that share words with the question come first
+const guideText = (k, n, msg) => { const w = String(msg || '').toLowerCase().match(/[a-z]{3,}/g) || [], key = w.filter(x => !GSTOP.test(x)).map(x => x.replace(/(ies|es|s)$/, ''));
+  const sc = p => key.filter(x => (p[0] + ' ' + p[1]).toLowerCase().includes(x)).length;
+  return ADOPT_GUIDE[k].points.map((p, i) => ({ p, i, s: sc(p) })).sort((a, b) => b.s - a.s || a.i - b.i).slice(0, n || 99).map(x => '• **' + x.p[0] + '** — ' + x.p[1]).join('\n'); };
+
 // ── rule-based replies (used when the AI is off, and as the safe base for every reply) ──
 const SUGG = {
   general: ['Find a vet near me', 'Pets for adoption', 'My vaccinations', 'Report a lost pet'],
@@ -206,7 +224,13 @@ function rules(intent, msg, ctx) {
       break; }
     case 'vet': text = found && found.total ? foundLine(found) + '\nOpen a vet to see their timings and book a visit.' : (found ? none('a vet matching that', 'vet') : `You can book in-clinic or video visits with verified vets on **Book a vet**. Tell me your city (e.g. “vets in Pune”) and I'll look for vets on PawBook.`)
       + `\n\nIf your pet seems unwell right now, the **AI health check** can help you judge how urgent it is.`; actions = found && !found.total ? [act('vet'), act('nearby', 'Clinics near me on the map'), act('health')] : [act('vet'), act('appts'), act('health')]; break;
-    case 'adopt': text = found && found.total ? foundLine(found) : (found ? none('pets for adoption matching that', 'adopt') : `Pets waiting for a home are listed by shelters and rescuers on **Adopt a pet**. Tell me what you're looking for — e.g. “indie puppy in Delhi” or “cat for adoption in Pune”.`)
+    case 'adopt': { const tp = adoptTopic(msg);
+      if (tp) {
+        text = tp.map(k => '**' + ADOPT_GUIDE[k].title + '**\n' + guideText(k, tp.length > 1 ? 3 : 99, msg)).join('\n\n')
+          + '\n\nYou read and agree to the full policy, rules, documents and compliance on **Adopt a pet** before applying — and you can quit at any time. This is general information, not legal advice.';
+        actions = [act('adopt', 'Read it on Adopt a pet')]; break;
+      } }
+      text = found && found.total ? foundLine(found) : (found ? none('pets for adoption matching that', 'adopt') : `Pets waiting for a home are listed by shelters and rescuers on **Adopt a pet**. Tell me what you're looking for — e.g. “indie puppy in Delhi” or “cat for adoption in Pune”.`)
       + `\n\nAdoption on PawBook: send an interest request → the shelter reviews it → meet the pet → home visit and adoption. Never pay anyone outside PawBook for a “free” adoption.`; actions = [act('adopt')]; break;
     case 'lost': text = (found && found.total ? foundLine(found) + '\n\n' : '') + `**Lost your pet?** Report it on **Lost & Found** with a clear photo and the area it was last seen — people nearby are alerted, and your phone number stays hidden.\n**Found a pet?** Post it there too, keep it safe, and check for a collar tag. A vet can scan for a microchip for free in most clinics.`;
       actions = [act('lost', 'Report a lost pet'), act('lost', 'I found a pet')]; actions[1].url = PAGES.lost[0] + '?found=1'; break;
@@ -329,6 +353,7 @@ function contextBlock(M, mine, found, base, intent) {
   if (mine.due.length) L.push('VACCINES DUE (next 60 days): ' + mine.due.map(d => d.pet + ' — ' + d.vaccine + ' ' + (d.overdue ? 'OVERDUE since ' : 'due ') + d.due).join('; '));
   if (mine.appts.length) L.push('UPCOMING VET VISITS: ' + mine.appts.map(a => a.date + (a.time ? ' ' + a.time : '') + ' ' + (a.pet || '') + ' ' + (a.vet || '') + ' ' + (a.clinic || '')).join('; '));
   if (found) L.push('PAWBOOK DATA for "' + found.q + '"' + (found.city ? ' in ' + found.city : '') + ': ' + (found.total ? found.cards.map(c => c.type + ': ' + c.title + (c.sub ? ' — ' + c.sub : '') + (c.meta ? ' — ' + c.meta : '') + (c.price != null ? ' — ₹' + c.price : '')).join(' | ') + ' (these are shown to the user as cards below your reply; total ' + found.total + ')' : 'no results'));
+  if (intent === 'adopt') L.push('PAWBOOK ADOPTION GUIDE (official text from the Adopt a pet page — answer adoption policy/rules/documents/law questions ONLY from this; people agree to it on Adopt a pet before applying and can quit any time):\n' + Object.keys(ADOPT_GUIDE).map(k => ADOPT_GUIDE[k].title.toUpperCase() + ': ' + ADOPT_GUIDE[k].points.map(p => p[0] + ' — ' + p[1]).join(' | ')).join('\n'));
   L.push('A SAFE DRAFT ANSWER (facts you may rely on; improve the wording, keep the facts): ' + base.text.replace(/\n/g, ' '));
   return L.join('\n');
 }
@@ -358,7 +383,9 @@ exports.chat = async (req, res) => {
     const msg = str((req.body || {}).message, 1000).replace(/\s+/g, ' ');
     if (msg.length < 1) return bad(res, ['message'], 'Type a message first.');
     const M = await me(req);
-    const { main: intent } = detect(msg);
+    let { main: intent } = detect(msg);
+    // pet-keeping law questions (housing society, landlord, licence, community dogs) are answered from the adoption guide
+    if (['general', 'account'].includes(intent) && /\b(societ(y|ies)|landlord|rwa|licen[cs]e|pet (laws?|rules)|keep(ing)? (a )?(pet|dog|cat)|community dogs?|street dogs?|abc rules)\b/i.test(msg)) intent = 'adopt';
     await save(M, 'user', msg, { intent });
     let reply;
     if (intent === 'emergency') { const e = emergencyReply(); reply = { text: e.text, actions: e.actions, cards: [], suggestions: e.suggestions, source: 'rules' }; }
@@ -366,7 +393,7 @@ exports.chat = async (req, res) => {
       const loc = locOf(req.body), named = cityOf(msg), city = named || (loc && loc.searchCity) || null;
       const wantsNear = /\b(near ?me|nearby|my (city|area|locality)|around me|close to me|in my town)\b/i.test(msg);
       const needMine = ['vacc', 'mypets', 'appts', 'general', 'capabilities', 'greet'].includes(intent) || /\b(my|mine)\b/i.test(msg);
-      const [mine, found, gp] = await Promise.all([needMine ? myData(M) : Promise.resolve({ pets: [], due: [], appts: [] }), listings(req, intent, msg, city, loc).catch(e => { console.error('[Assistant] listings:', e.message); return null; }),
+      const [mine, found, gp] = await Promise.all([needMine ? myData(M) : Promise.resolve({ pets: [], due: [], appts: [] }), (intent === 'adopt' && adoptTopic(msg) ? Promise.resolve(null) : listings(req, intent, msg, city, loc)).catch(e => { console.error('[Assistant] listings:', e.message); return null; }),
         googlePlaces(msg, intent, loc).catch(e => { console.error('[Assistant] Google:', e.message); return null; })]);
       const base = rules(intent, msg, { M, mine, found });
       if (wantsNear && !city && TYPES_FOR[intent] !== undefined) { base.text = '📍 Which city or area should I look in? Set your location with the **📍 location** button above the chat (country, state, city, area and PIN code) — or just tell me, e.g. “vets in Pune”.\n\n' + base.text; base.actions = [{ label: 'Set my location', url: '#location' }].concat(base.actions).slice(0, 4); }
