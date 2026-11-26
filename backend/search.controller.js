@@ -244,22 +244,28 @@ async function runAll(ctx, types) {
 }
 
 // GET /pbsearch?q=&type=all|pets|people|...&city=
+// core search, also used by the PawBook Assistant (assistant.controller.js)
+async function find(req, rawQ, opts) {
+  opts = opts || {};
+  const raw = str(rawQ, 100), words = wordsOf(raw), type = TYPES.includes(opts.type) ? opts.type : 'all';
+  if (!words.length) return { q: raw, words, city: null, type, sections: [], total: 0, match: 'none' };
+  const city = str(opts.city, 80).toLowerCase();
+  const canFuzzy = await trgm();
+  const ctx = { M: await me(req), words, raw: raw.toLowerCase(), city, cityAlts: CITY_ALIASES[city] || [city], lim: opts.lim || (type === 'all' ? 6 : 40), any: false, fuzzy: false };
+  const types = opts.types ? opts.types.filter(t => TYPES.includes(t)) : (type === 'all' ? TYPES : [type]), count = g => Object.values(g).reduce((n, l) => n + l.length, 0);
+  // 1) exact words (with synonyms)  2) allow small spelling mistakes  3) any of the words
+  let got = await runAll(ctx, types), match = 'exact';
+  if (!count(got) && canFuzzy) { ctx.fuzzy = true; got = await runAll(ctx, types); match = 'close'; }
+  if (!count(got) && words.length > 1 && !opts.noPartial) { ctx.any = true; got = await runAll(ctx, types); match = 'partial'; }
+  if (!count(got)) match = 'none';
+  const sections = types.filter(t => got[t] && got[t].length).map(t => ({ type: t, count: got[t][0].total || got[t].length, items: got[t].map(x => { const y = Object.assign({}, x); delete y.total; return y; }) }));
+  return { q: raw, words, city: city || null, type, sections, total: sections.reduce((n, s) => n + s.count, 0), match };
+}
+exports.find = find;
+exports.TYPES = TYPES;
 exports.search = async (req, res) => {
-  try {
-    const raw = str(req.query.q, 100), words = wordsOf(raw), type = TYPES.includes(req.query.type) ? req.query.type : 'all';
-    if (!words.length) return R.ok(res, { q: raw, sections: [], total: 0, match: 'none' });
-    const city = str(req.query.city, 80).toLowerCase();
-    const canFuzzy = await trgm();
-    const ctx = { M: await me(req), words, raw: raw.toLowerCase(), city, cityAlts: CITY_ALIASES[city] || [city], lim: type === 'all' ? 6 : 40, any: false, fuzzy: false };
-    const types = type === 'all' ? TYPES : [type], count = g => Object.values(g).reduce((n, l) => n + l.length, 0);
-    // 1) exact words (with synonyms)  2) allow small spelling mistakes  3) any of the words
-    let got = await runAll(ctx, types), match = 'exact';
-    if (!count(got) && canFuzzy) { ctx.fuzzy = true; got = await runAll(ctx, types); match = 'close'; }
-    if (!count(got) && words.length > 1) { ctx.any = true; got = await runAll(ctx, types); match = 'partial'; }
-    if (!count(got)) match = 'none';
-    const sections = types.filter(t => got[t] && got[t].length).map(t => ({ type: t, count: got[t][0].total || got[t].length, items: got[t].map(x => { const y = Object.assign({}, x); delete y.total; return y; }) }));
-    return R.ok(res, { q: raw, words, city: city || null, type, sections, total: sections.reduce((n, s) => n + s.count, 0), match });
-  } catch (e) { return fail(res, 'search', e); }
+  try { return R.ok(res, await find(req, req.query.q, { type: req.query.type, city: req.query.city })); }
+  catch (e) { return fail(res, 'search', e); }
 };
 
 // GET /pbsearch/home — real counts for the page header and popular breeds to try
