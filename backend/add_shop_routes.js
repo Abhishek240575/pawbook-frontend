@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v20: assistant areas) ─────────────────────────────
+const BLOCK = `${START} (v21: pawmatch) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -343,6 +343,26 @@ asRouter.post('/support',                     authenticate, fulCtrl.limit('suppo
 asRouter.get('/admin/support',                authenticate, asCtrl.adminTickets);
 asRouter.post('/admin/support/:id',           authenticate, asCtrl.adminReply);
 router.use('/assistant', asRouter);
+// PawMatch 2.0 — pet matchmaking (page 35)
+const pmCtrl = require('../controllers/pawmatch.controller');
+const pmRouter = require('express').Router();
+pmRouter.get('/me',                           authenticate, pmCtrl.me);
+pmRouter.post('/profiles',                    authenticate, fulCtrl.limit('pm_profile', 20, 3600), pmCtrl.saveProfile);
+pmRouter.put('/profiles/:id',                 authenticate, fulCtrl.limit('pm_profile', 40, 3600), pmCtrl.saveProfile);
+pmRouter.post('/profiles/:id/active',         authenticate, pmCtrl.pauseProfile);
+pmRouter.delete('/profiles/:id',              authenticate, pmCtrl.deleteProfile);
+pmRouter.get('/deck',                         authenticate, pmCtrl.deck);
+pmRouter.post('/swipe',                       authenticate, fulCtrl.limit('pm_swipe', 400, 3600), pmCtrl.swipe);
+pmRouter.get('/liked-you',                    authenticate, pmCtrl.likedYou);
+pmRouter.get('/matches',                      authenticate, pmCtrl.matches);
+pmRouter.get('/matches/:id',                  authenticate, pmCtrl.match);
+pmRouter.post('/matches/:id/messages',        authenticate, fulCtrl.limit('pm_msg', 120, 3600), pmCtrl.send);
+pmRouter.post('/matches/:id/dates',           authenticate, fulCtrl.limit('pm_date', 30, 3600), pmCtrl.propose);
+pmRouter.post('/matches/:id/dates/respond',   authenticate, fulCtrl.limit('pm_date', 30, 3600), pmCtrl.respond);
+pmRouter.post('/matches/:id/unmatch',         authenticate, pmCtrl.unmatch);
+pmRouter.post('/report',                      authenticate, fulCtrl.limit('pm_report', 10, 3600), pmCtrl.report);
+pmRouter.get('/dates',                        authenticate, pmCtrl.dates);
+router.use('/matchmaking', pmRouter);
 ${END} ─────────────────────────────────────────────────────────────────
 `;
 
@@ -377,7 +397,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop20');
+  fs.copyFileSync(f, f + '.bak-shop21');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -403,4 +423,4 @@ for (const f of FILES) {
   else console.log('  NOTE: old lost-pets routes not found in this file — guard not needed');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop20 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop21 — restart the app from the MilesWeb panel.');
