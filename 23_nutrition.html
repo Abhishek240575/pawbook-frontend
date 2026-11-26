@@ -533,6 +533,17 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
 .vp-q:hover{background:#d1fae5}
 .toast-el{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(8px);color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .25s;max-width:90vw;text-align:center;pointer-events:none}
 .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px}
+/* dish photos */
+.meal-chip.has-img{padding:4px 11px 4px 4px;gap:8px;border-radius:14px;align-items:center}
+.meal-chip .mthumb{width:38px;height:38px;border-radius:10px;object-fit:cover;flex:0 0 38px;box-shadow:0 2px 6px rgba(15,32,87,.15)}
+.course .meal-chip.has-img{display:flex;margin:0 0 6px}
+.mpi-emoji.has-img{padding:0;overflow:hidden;width:52px;height:52px}.mpi-emoji .pthumb{width:100%;height:100%;object-fit:cover}
+#panel-recipes .card.has-cover{overflow:hidden}#panel-recipes .card.has-cover [style*="font-size:32px"]{display:none}
+.rcover{height:130px;background:linear-gradient(135deg,#ecfdf5,#e8f1ff)}.rcover img{width:100%;height:100%;object-fit:cover;display:block}
+.mhero{position:relative;height:190px;border-radius:16px;overflow:hidden;margin-bottom:14px;background:linear-gradient(135deg,#ecfdf5,#e8f1ff)}
+.mhero img{width:100%;height:100%;object-fit:cover;display:block}
+.mhero span{position:absolute;left:10px;bottom:8px;font-size:10.5px;font-weight:700;color:#fff;background:rgba(15,32,87,.55);padding:3px 8px;border-radius:999px}
+.meal-chip.has-img .memo{display:none}
 </style>
 </head>
 <body>
@@ -1702,6 +1713,46 @@ function toggleMic(){
 <script>
 /* page-look helper only: photo fallback to Pexels if the saved copy is missing */
 function nuImg(im){ if (!im.getAttribute('data-tried') && im.getAttribute('data-px')) { im.setAttribute('data-tried', '1'); var id = im.getAttribute('data-px'); im.src = 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=900'; } else { im.onerror = null; im.style.visibility = 'hidden'; } }
+</script>
+<script>
+/* Dish photos — page-look only. Matches each dish name to a photo of its main ingredient (Pexels, free licence,
+   saved on the server in img/food/; falls back to Pexels). The planner's own code is not changed: this only
+   decorates what it has already drawn (meal chips, meal picker, recipe cards, meal/recipe windows). */
+var FOOD = [
+  [/\begg/i, 'egg', 7243349, 'Scrambled eggs'], [/salmon|tuna|sardine/i, 'fish', 3029526, 'Fresh salmon'], [/shrimp/i, 'shrimp', 566344, 'Boiled shrimp'],
+  [/chicken|turkey/i, 'chicken', 24738519, 'Chicken with rice and vegetables'], [/beef|lamb|stew|broth|liver/i, 'stew', 1618952, 'Meat stew in a bowl'],
+  [/lentil|legume/i, 'lentil', 6120506, 'Lentil soup'], [/tofu|paneer/i, 'tofu', 4518587, 'Tofu on a plate'], [/oat/i, 'oats', 16144160, 'Oatmeal with banana'],
+  [/yoghurt|yogurt/i, 'yogurt', 10421049, 'Yoghurt with berries'], [/peanut|almond/i, 'peanut', 5149349, 'Peanut butter'],
+  [/blueberr|pomegranate/i, 'berries', 7024, 'Blueberries in a bowl'], [/strawberr/i, 'strawberry', 4038780, 'Strawberries'],
+  [/carrot|peas/i, 'carrot', 2452277, 'Carrots and green beans'], [/\bapple/i, 'apple', 6368799, 'Apple slices'], [/pumpkin/i, 'pumpkin', 30462273, 'Cut pumpkin'],
+  [/sweet potato/i, 'sweetpotato', 6060223, 'Sweet potatoes'], [/\bhay\b|timothy|chamomile|herb/i, 'hay', 7192754, 'Rabbit on hay'],
+  [/green|leafy|spinach|lettuce/i, 'greens', 2095569, 'Leafy greens'], [/veggie|vegetable|steamed/i, 'veg', 3872367, 'Broccoli'], [/seed|pellet|grain/i, 'seeds', 28552092, 'Seed mix'],
+  [/melon|fruit|banana/i, 'fruit', 1161682, 'Assorted fruit'], [/rice|broccoli/i, 'veg', 3872367, 'Broccoli']];
+function foodFor(name){ name = String(name || ''); for (var i = 0; i < FOOD.length; i++) if (FOOD[i][0].test(name)) return FOOD[i]; return null; }
+function foodImg(f, w, cls){ return '<img class="' + cls + '" src="img/food/' + f[1] + '.jpg" data-px="' + f[2] + '" data-w="' + (w || 300) + '" alt="' + f[3] + '" loading="lazy" onerror="foodFail(this)">'; }
+function foodFail(im){ if (!im.getAttribute('data-tried')) { im.setAttribute('data-tried', '1'); var id = im.getAttribute('data-px'); im.src = 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + (im.getAttribute('data-w') || 300); } else { im.onerror = null; im.remove(); } }
+var nameOf = function(t){ return String(t || '').replace(/^[^A-Za-z⚠]+/, '').replace(/\s+/g, ' ').trim(); };
+function decorateFood(root){
+  root = root || document;
+  // meal chips in the plan: photo instead of the emoji
+  root.querySelectorAll('.meal-chip:not([data-f])').forEach(function(c){ c.setAttribute('data-f', '1'); var f = foodFor(nameOf(c.textContent)); if (!f) return;
+    var tn = c.firstChild; if (tn && tn.nodeType === 3) { var t = tn.nodeValue, m = t.match(/^[^A-Za-z]*/)[0]; if (m) { tn.nodeValue = t.slice(m.length); var sp = document.createElement('span'); sp.className = 'memo'; sp.textContent = m; c.insertBefore(sp, tn); } }
+    c.insertAdjacentHTML('afterbegin', foodImg(f, 200, 'mthumb')); c.classList.add('has-img'); });
+  // meal picker rows
+  root.querySelectorAll('.meal-pick-item:not([data-f])').forEach(function(r){ r.setAttribute('data-f', '1'); var nm = r.querySelector('.mpi-name'), e = r.querySelector('.mpi-emoji'); var f = nm && foodFor(nm.textContent); if (f && e) { e.innerHTML = foodImg(f, 200, 'pthumb'); e.classList.add('has-img'); } });
+  // recipe cards (Recipes tab)
+  root.querySelectorAll('#panel-recipes .card:not([data-f])').forEach(function(c){ c.setAttribute('data-f', '1'); var b = c.querySelector('[style*="font-weight:800"]'), f = b && foodFor(b.textContent); if (f) { c.insertAdjacentHTML('afterbegin', '<div class="rcover">' + foodImg(f, 600, '') + '</div>'); c.classList.add('has-cover'); } });
+}
+function decorateModal(){
+  var body = document.getElementById('recipe-body'), t = document.getElementById('recipe-title'); if (!body || !t || !body.firstElementChild || body.querySelector('.mhero')) return;   // already has its photo (the page rewrites the window each time)
+  var f = foodFor(nameOf(t.textContent)); if (f) body.insertAdjacentHTML('afterbegin', '<div class="mhero">' + foodImg(f, 900, '') + '<span>' + f[3] + ' · photo for illustration</span></div>');
+}
+(function(){
+  if (!window.MutationObserver) return;
+  var run = function(){ decorateFood(document); decorateModal(); };
+  ['panel-plan', 'panel-recipes', 'picker-list', 'recipe-body'].forEach(function(id){ var el = document.getElementById(id); if (el) new MutationObserver(run).observe(el, {childList: true, subtree: id !== 'recipe-body'}); });
+  run();
+})();
 </script>
 
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
