@@ -91,6 +91,8 @@
 .split{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
 .hint{font-size:12px;color:var(--muted);padding:0 18px 16px;line-height:1.55}
 @media(max-width:900px){ .split{grid-template-columns:1fr} .f{grid-template-columns:1fr} .cwrap{overflow-x:auto} }
+.upl{display:flex;gap:8px;align-items:center}.upl input{flex:1;min-width:0}.upl-pv{width:42px;height:42px;border-radius:10px;object-fit:contain;border:1px solid var(--line);background:#fff;flex:0 0 42px}.upl-wide{width:84px;flex-basis:84px;object-fit:cover}.upl-pv[hidden]{display:none}
+.br-row{display:flex;gap:10px;align-items:center}.br-thumb{width:34px;height:34px;border-radius:9px;object-fit:contain;border:1px solid var(--line);background:#fff;flex:0 0 34px}.br-ini{display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--muted);background:#f6f2ec}
 </style>
 </head>
 <body>
@@ -185,14 +187,17 @@
             <label>Slug (URL)<input name="slug" placeholder="auto"></label>
             <label>Country<input name="country"></label>
             <label class="full">Tagline<input name="tagline" maxlength="160"></label>
-            <label class="full">Logo URL (https)<input name="logo_url" type="url"></label>
-            <label class="full">Cover image URL (https)<input name="cover_url" type="url"></label>
+            <label class="full">Logo (square image from the brand)<span class="upl"><img id="br-logo-pv" class="upl-pv" alt="" hidden><input name="logo_url" type="url" placeholder="https://… or upload" oninput="brPv()"><button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('br-logo-file').click()"><i class="ti ti-upload"></i>Upload</button></span></label>
+            <input type="file" id="br-logo-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden onchange="upBrandImg(this,'logo_url')">
+            <label class="full">Cover image<span class="upl"><img id="br-cover-pv" class="upl-pv upl-wide" alt="" hidden><input name="cover_url" type="url" placeholder="https://… or upload" oninput="brPv()"><button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('br-cover-file').click()"><i class="ti ti-upload"></i>Upload</button></span></label>
+            <input type="file" id="br-cover-file" accept="image/png,image/jpeg,image/webp" hidden onchange="upBrandImg(this,'cover_url')">
             <label class="full">Website (https)<input name="website" type="url"></label>
             <label class="full">Brand story<textarea name="description" maxlength="4000"></textarea></label>
             <label style="flex-direction:row;align-items:center;gap:10px"><span class="sw"><input type="checkbox" name="is_verified"><span></span></span>Verified brand</label>
             <label style="flex-direction:row;align-items:center;gap:10px"><span class="sw"><input type="checkbox" name="is_active" checked><span></span></span>Profile active</label>
             <div class="full"><button class="btn btn-o"><i class="ti ti-device-floppy"></i>Save brand</button></div>
           </form>
+          <div class="hint">Use the logo the brand sends you (or one from its official press kit with permission) — brand logos are trademarks.</div>
           <div class="hint">Only mark a brand <b>Verified</b> after confirming it with the brand owner (for example trademark or authorisation letter). Shoppers see the badge on brand pages and products.</div></div>
       </div>
     </section>
@@ -341,15 +346,33 @@ function loadBrands(){ S.api('/shop/admin/brands').then(function(d){ BRANDS = d.
 function renderBrands(){
   var q = (document.getElementById('br-q').value || '').toLowerCase();
   document.getElementById('br-tbl').innerHTML = '<tr><th>Brand</th><th>Products</th><th>Profile</th><th></th></tr>' + BRANDS.filter(function(b){ return !q || b.name.toLowerCase().indexOf(q) >= 0; }).map(function(b, i){
-    return '<tr><td><b>' + esc(b.name) + '</b>' + (b.is_verified ? ' <span class="vbadge"><i class="ti ti-rosette"></i>Verified</span>' : '') + '<br><small style="color:var(--muted)">/' + esc(b.slug || '') + '</small></td><td>' + (b.n || 0) + '</td><td>' + (b.tagline || b.logo_url ? '✓' : '<span style="color:var(--muted)">—</span>') + '</td>'
+    return '<tr><td><span class="br-row">' + (b.logo_url ? '<img class="br-thumb" src="' + esc(b.logo_url) + '" alt="">' : '<span class="br-thumb br-ini">' + esc((b.name || '?').charAt(0)) + '</span>') + '<span><b>' + esc(b.name) + '</b>' + (b.is_verified ? ' <span class="vbadge"><i class="ti ti-rosette"></i>Verified</span>' : '') + '<br><small style="color:var(--muted)">/' + esc(b.slug || '') + '</small></span></span></td><td>' + (b.n ? b.n : '<span style="color:var(--muted)">none yet</span>') + '</td><td>' + (b.tagline || b.logo_url ? '✓' : '<span style="color:var(--muted)">—</span>') + '</td>'
       + '<td><button class="btn btn-ghost btn-sm" onclick="editBrand(\'' + esc(b.name).replace(/'/g, "\\'") + '\')">Edit</button> <a class="btn btn-ghost btn-sm" href="46_shop_brand.html?b=' + encodeURIComponent(b.slug || '') + '" target="_blank"><i class="ti ti-external-link"></i></a></td></tr>';
   }).join('');
 }
 function editBrand(name){
   var b = BRANDS.filter(function(x){ return x.name === name; })[0] || {name:name}, f = document.getElementById('br-form');
   ['name','slug','country','tagline','logo_url','cover_url','website','description'].forEach(function(k){ f.elements[k].value = b[k] || ''; });
-  f.elements.is_verified.checked = !!b.is_verified; f.elements.is_active.checked = b.is_active !== false;
+  f.elements.is_verified.checked = !!b.is_verified; f.elements.is_active.checked = b.is_active !== false; brPv();
   document.getElementById('br-title').textContent = 'Edit: ' + name; f.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function brPv(){
+  var f = document.getElementById('br-form');
+  [['logo_url','br-logo-pv'],['cover_url','br-cover-pv']].forEach(function(p){ var v = f.elements[p[0]].value.trim(), im = document.getElementById(p[1]);
+    if (/^https:\/\//.test(v)) { im.src = v; im.hidden = false; } else { im.hidden = true; im.removeAttribute('src'); } });
+}
+function upBrandImg(inp, field){
+  var file = inp.files && inp.files[0]; inp.value = ''; if (!file) return;
+  if (!/^image\//.test(file.type)) return S.toast('Please choose an image file', 'ti-alert-triangle');
+  if (file.size > 5 * 1024 * 1024) return S.toast('Image is larger than 5 MB', 'ti-alert-triangle');
+  var t = ''; try { t = localStorage.getItem('pb_token') || ''; } catch (x) {}
+  var fd = new FormData(); fd.append('file', file); S.toast('Uploading…', 'ti-upload');
+  fetch('https://pawbook.deemona.com/api/v1/media/upload', { method: 'POST', headers: t ? { Authorization: 'Bearer ' + t } : {}, credentials: 'include', body: fd })
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok || j.success === false) throw new Error(j.message || 'Upload failed'); return j.data !== undefined ? j.data : j; }); })
+    .then(function(d){ var u = d.url || d.secure_url || (d.media && d.media.url) || (d.file && d.file.url);
+      if (!/^https:\/\//.test(u || '')) throw new Error('Upload failed');
+      document.getElementById('br-form').elements[field].value = u; brPv(); S.toast('Image added — press Save brand', 'ti-check'); })
+    .catch(function(e){ S.toast(e.message || 'Upload failed', 'ti-alert-triangle'); });
 }
 function saveBrand(e){
   e.preventDefault(); var f = e.target, body = {};
