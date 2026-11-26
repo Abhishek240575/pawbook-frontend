@@ -1,18 +1,18 @@
 /**
- * PawBook AI Widget — Floating chatbot for all pages
- * Include once at bottom of <body>: <script src="pawbook-ai-widget.js"></script>
- * No dependencies. Self-contained. Works on all 35 PawBook pages.
+ * PawBook AI Widget — floating assistant on every PawBook page.
+ * Include once at the bottom of <body>: <script src="pawbook-ai-widget.v4.js?v=6"></script>
+ * v5 brain: signed-in people get the real PawBook Assistant (/api/v1/assistant — their pets, vaccines due, appointments,
+ * real listings, Google Maps places near them, support requests; Claude when the server has the AI key). Guests and
+ * offline moments get safe built-in answers. It knows which page it is on, and never invents listings, counts or prices.
  */
 (function(){
 'use strict';
 
-// ── Prevent double-init ──────────────────────────────────────────
 if(window.__PAWBOOK_AI_WIDGET__) return;
 window.__PAWBOOK_AI_WIDGET__ = true;
-window.__PAWBOOK_AI_VERSION__ = 'v4-20261121-features';
+window.__PAWBOOK_AI_VERSION__ = 'v5-20261126-assistant';
 
 var API_BASE = 'https://pawbook.deemona.com/api/v1';
-var _chatHistory = []; // conversation memory for Claude
 
 // ═══════════════════════════════════════════════════════════════
 //  INJECT STYLES
@@ -191,8 +191,58 @@ var CSS = `
 .pb-fswitch{text-align:center;font-size:12px;color:#65676b}
 .pb-fswitch a{color:#1877F2;cursor:pointer;font-weight:700}
 .pb-back-btn{background:none;border:none;color:#1877F2;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;padding:0;display:flex;align-items:center;gap:4px}
-`;
 
+/* ── v5 additions ── */
+.pb-ai-locbar{display:flex;align-items:center;gap:6px;padding:6px 12px;background:#f7f8fa;border-bottom:1px solid #e4e6eb;font-family:'Inter',sans-serif;font-size:11px;color:#65676b;flex-shrink:0;overflow:hidden;white-space:nowrap}
+.pb-ai-locbar button{border:none;background:#fff;border:1px solid #e4e6eb;border-radius:999px;padding:3px 9px;font:600 11px 'Inter',sans-serif;color:#1877F2;cursor:pointer;max-width:58%;overflow:hidden;text-overflow:ellipsis}
+.pb-ai-locbar span{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pb-ai-locbar .pb-signin{margin-left:auto;background:#1877F2;color:#fff;border-color:#1877F2;flex-shrink:0}
+.pb-msg-body{min-width:0;max-width:100%}
+.pb-msg.past{opacity:.72}
+.pb-div{align-self:center;font:700 10px 'Inter',sans-serif;color:#8a8d91;text-transform:uppercase;letter-spacing:.5px;padding:4px 0}
+.pb-cards{display:flex;gap:8px;overflow-x:auto;padding:6px 0 4px;scroll-snap-type:x mandatory;max-width:290px}
+.pb-cards::-webkit-scrollbar{height:3px}.pb-cards::-webkit-scrollbar-thumb{background:#d0d3d8;border-radius:3px}
+.pb-card{flex:0 0 150px;scroll-snap-align:start;border:1px solid #e4e6eb;border-radius:12px;overflow:hidden;background:#fff;text-decoration:none;color:#050505;display:flex;flex-direction:column;font-family:'Inter',sans-serif}
+.pb-card-im{height:74px;background:#eef3fb;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.pb-card-im img{width:100%;height:100%;object-fit:cover}
+.pb-card-im b{font-size:28px}
+.pb-card-im span{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.6);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px}
+.pb-card-bd{padding:7px 8px 8px;display:flex;flex-direction:column;gap:2px;font-size:11px;line-height:1.35}
+.pb-card-bd b{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pb-card-bd .s{color:#65676b;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pb-card-bd .mt{color:#8a8d91}
+.pb-card-bd .pr{font-weight:800;color:#050505}
+.pb-card-bd .go{color:#1877F2;font-weight:700;margin-top:2px}
+.pb-card.g .pb-card-im{height:44px;background:#f0f7f0}
+.pb-card .gl{display:flex;gap:6px;margin-top:4px}
+.pb-card .gl a{flex:1;text-align:center;border:1px solid #1877F2;color:#1877F2;border-radius:7px;padding:3px 0;font-weight:700;text-decoration:none}
+.pb-gattr{font:500 10px 'Inter',sans-serif;color:#8a8d91;padding:0 2px 2px}
+.pb-gload{font:500 11px 'Inter',sans-serif;color:#65676b;padding:6px 2px}
+.pb-gload a{color:#1877F2;font-weight:700}
+.pb-acts{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.pb-act{display:inline-flex;align-items:center;gap:3px;padding:6px 10px;border-radius:8px;background:#e7f0fd;color:#1877F2;border:none;font:700 11px 'Inter',sans-serif;cursor:pointer;text-decoration:none}
+.pb-act:hover{background:#d3e4fc}
+.pb-act.pri{background:#1877F2;color:#fff}
+.pb-act.sos{background:#fee2e2;color:#b91c1c}
+.pb-fb{border:none;background:none;cursor:pointer;font-size:11px;padding:0 2px;opacity:.45;filter:grayscale(1)}
+.pb-fb:hover,.pb-fb.on{opacity:1;filter:none}
+.pb-sup{display:flex;flex-direction:column;gap:6px;margin-top:4px;background:#fff;border:1px solid #e4e6eb;border-radius:12px;padding:10px;width:250px;max-width:100%}
+.pb-sup textarea{resize:vertical;min-height:60px}
+.pb-sup-err{color:#dc2626;font:600 11px 'Inter',sans-serif}
+.pb-sup-ok{background:#ecfdf3;color:#067647;border-radius:10px;padding:8px 10px;font:600 12px 'Inter',sans-serif}
+.pb-feat-open{margin-left:auto;font:700 11px 'Inter',sans-serif;color:#1877F2;text-decoration:none}
+button.pb-feat-tag{border:none;font-family:'Inter',sans-serif}
+.pb-loc-form{padding:14px 16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex:1;font-family:'Inter',sans-serif}
+.pb-loc-form h3{font-size:15px;font-weight:800;color:#050505;margin:2px 0 0}
+.pb-loc-form p{font-size:12px;color:#65676b;margin:0}
+.pb-loc-form label{font:700 11px 'Inter',sans-serif;color:#65676b;display:flex;flex-direction:column;gap:3px}
+.pb-loc-row{display:flex;gap:8px}.pb-loc-row label{flex:1;min-width:0}
+.pb-loc-msg{font:600 11px 'Inter',sans-serif;color:#1877F2;min-height:14px}
+.pb-gps{width:100%;padding:9px;border-radius:10px;border:1.5px dashed #1877F2;background:#f5f9ff;color:#1877F2;font:700 12px 'Inter',sans-serif;cursor:pointer}
+.pb-ghost{background:none;border:none;color:#dc2626;font:700 12px 'Inter',sans-serif;cursor:pointer;padding:4px}
+.pb-note{font:500 11px 'Inter',sans-serif;color:#8a8d91;text-align:center}
+@media (prefers-reduced-motion: reduce){#pb-ai-fab{animation:none}#pb-ai-panel{transition:none}}
+`;
 var styleEl = document.createElement('style');
 styleEl.textContent = CSS;
 document.head.appendChild(styleEl);
@@ -202,37 +252,35 @@ document.head.appendChild(styleEl);
 // ═══════════════════════════════════════════════════════════════
 var HTML = `
 <!-- FAB -->
-<button id="pb-ai-fab" onclick="pbAI.toggle()" aria-label="PawBook AI Assistant">
+<button id="pb-ai-fab" onclick="pbAI.toggle()" aria-label="PawBook AI assistant" aria-expanded="false" aria-controls="pb-ai-panel">
   <span class="pb-fab-icon">🤖</span>
-  <span class="pb-fab-badge" id="pb-fab-badge">1</span>
+  <span class="pb-fab-badge" id="pb-fab-badge"></span>
 </button>
 
 <!-- PANEL -->
-<div id="pb-ai-panel">
-  <!-- Header -->
+<div id="pb-ai-panel" role="dialog" aria-label="PawBook AI">
   <div class="pb-ai-head">
-    <div class="pb-ai-head-av">🤖</div>
+    <div class="pb-ai-head-av">🐾</div>
     <div class="pb-ai-head-info">
       <div class="pb-ai-head-name">PawBook AI</div>
-      <div class="pb-ai-head-status">
-        <span class="pb-ai-head-dot"></span> Online · Always here
-      </div>
+      <div class="pb-ai-head-status" id="pb-ai-status"><span class="pb-ai-head-dot"></span> Online</div>
     </div>
     <div class="pb-ai-head-actions">
-      <button class="pb-tts-toggle" id="pb-tts-toggle" onclick="pbAI.toggleTTS()" title="Toggle voice reply">🔊</button>
-      <button class="pb-ai-head-btn" id="pb-feat-btn" onclick="pbAI.toggleFeatures()" title="Browse all features">📋</button>
-      <button class="pb-ai-head-btn" onclick="pbAI.clearChat()" title="Clear">🗑</button>
-      <button class="pb-ai-head-btn" onclick="pbAI.openFull()" title="Open full page">⤢</button>
-      <button class="pb-ai-head-btn" onclick="pbAI.toggle()" title="Close">✕</button>
+      <button class="pb-ai-head-btn pb-tts-toggle" id="pb-tts-toggle" onclick="pbAI.toggleTTS()" title="Read replies aloud" aria-label="Read replies aloud">🔇</button>
+      <button class="pb-ai-head-btn" id="pb-feat-btn" onclick="pbAI.toggleFeatures()" title="Browse PawBook features" aria-label="Browse PawBook features">📋</button>
+      <button class="pb-ai-head-btn" onclick="pbAI.clearChat(this)" title="Clear conversation" aria-label="Clear conversation">🗑</button>
+      <button class="pb-ai-head-btn" onclick="pbAI.openFull()" title="Open the full Assistant" aria-label="Open the full Assistant">⤢</button>
+      <button class="pb-ai-head-btn" onclick="pbAI.toggle()" title="Close" aria-label="Close">✕</button>
     </div>
   </div>
+  <div class="pb-ai-locbar" id="pb-ai-locbar"></div>
 
   <!-- Chat view -->
   <div id="pb-chat-view" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
-    <div class="pb-ai-msgs" id="pb-ai-msgs"></div>
+    <div class="pb-ai-msgs" id="pb-ai-msgs" aria-live="polite"></div>
     <div class="pb-voice-bar" id="pb-voice-bar">🎙 Listening… <span id="pb-voice-interim" style="font-weight:400;margin-left:4px;opacity:.7"></span></div>
     <div class="pb-ai-input-row">
-      <button class="pb-mic-btn" id="pb-mic-btn" onclick="pbAI.toggleVoice()" title="Voice input">🎙</button>
+      <button class="pb-mic-btn" id="pb-mic-btn" onclick="pbAI.toggleVoice()" title="Speak your question" aria-label="Speak your question">🎙</button>
       <div class="pb-lang-wrap" id="pb-lang-wrap">
         <button class="pb-lang-btn" id="pb-lang-btn" onclick="pbAI.toggleLang(event)" title="Select language">🌐</button>
         <div class="pb-lang-dropdown" id="pb-lang-dropdown">
@@ -263,235 +311,440 @@ var HTML = `
         </div>
       </div>
       <div class="pb-ai-input-wrap">
-        <textarea id="pb-ai-input" placeholder="Ask anything about PawBook…" rows="1"
+        <textarea id="pb-ai-input" placeholder="Ask me anything…" rows="1" maxlength="1000" aria-label="Your message"
           onkeydown="pbAI.handleKey(event)" oninput="pbAI.autoResize(this)"></textarea>
       </div>
-      <button class="pb-send-btn" id="pb-send-btn" onclick="pbAI.send()">➤</button>
+      <button class="pb-send-btn" id="pb-send-btn" onclick="pbAI.send()" aria-label="Send">➤</button>
     </div>
   </div>
 
-  <!-- Features Guide panel -->
+  <!-- Features guide -->
   <div id="pb-features-view" style="display:none;flex-direction:column;flex:1;overflow:hidden">
     <div style="padding:10px 12px 6px;border-bottom:1px solid #e4e6eb">
-      <input id="pb-feat-search" type="text" placeholder="🔍 Search features…" oninput="pbAI.filterFeatures(this.value)"
+      <input id="pb-feat-search" type="text" placeholder="🔍 Search features…" oninput="pbAI.filterFeatures(this.value)" aria-label="Search features"
         style="width:100%;box-sizing:border-box;padding:7px 12px;border-radius:20px;border:1.5px solid #e4e6eb;font-size:12px;font-family:'Inter',sans-serif;outline:none"/>
     </div>
-    <div id="pb-feat-list" style="flex:1;overflow-y:auto;padding:8px 10px">
-    </div>
+    <div id="pb-feat-list" style="flex:1;overflow-y:auto;padding:8px 10px"></div>
     <div style="padding:8px 12px;border-top:1px solid #e4e6eb;text-align:center">
-      <button onclick="pbAI.toggleFeatures()" style="background:none;border:none;color:#1877F2;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">← Back to Chat</button>
+      <button class="pb-back-btn" style="margin:0 auto" onclick="pbAI.toggleFeatures()">← Back to chat</button>
     </div>
   </div>
 
-  <!-- Login view -->
+  <!-- Location -->
+  <div id="pb-loc-view" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <form class="pb-loc-form" id="pb-loc-form" onsubmit="pbAI.saveLocation(event)" autocomplete="off">
+      <button type="button" class="pb-back-btn" onclick="pbAI.showChat()">← Back to chat</button>
+      <h3>📍 Where are you?</h3>
+      <p>Used for vets, groomers, shelters and pets near you. It stays on this device and is shared with the Assistant page.</p>
+      <button type="button" class="pb-gps" onclick="pbAI.useGps(this)">🎯 Use my current location</button>
+      <label>City<input class="pb-finput" name="city" maxlength="80" placeholder="e.g. New Delhi, Pune"></label>
+      <label>Area / locality<input class="pb-finput" name="area" maxlength="100" placeholder="e.g. Dwarka Sector 10"></label>
+      <div class="pb-loc-row"><label>PIN code<input class="pb-finput" name="pin" inputmode="numeric" maxlength="6" placeholder="6 digits"></label><label>State<input class="pb-finput" name="state" maxlength="80" placeholder="optional"></label></div>
+      <input type="hidden" name="lat"><input type="hidden" name="lng">
+      <div class="pb-loc-msg" id="pb-loc-msg"></div>
+      <button class="pb-fsubmit" type="submit">Save location</button>
+      <button type="button" class="pb-ghost" id="pb-loc-clear" onclick="pbAI.clearLocation()">Clear my location</button>
+    </form>
+  </div>
+
+  <!-- Sign in -->
   <div id="pb-login-view" style="display:none;flex-direction:column;flex:1;overflow:hidden">
     <div class="pb-login-form" id="pb-login-inner">
       <button class="pb-back-btn" onclick="pbAI.showChat()">← Back to chat</button>
       <div style="text-align:center;font-size:36px;margin:4px 0">🐾</div>
       <h3>Sign in to PawBook</h3>
-      <p>Access your pets, bookings & history</p>
-      <div id="pb-login-err" class="pb-ferr"></div>
-      <button class="pb-social-btn" onclick="pbAI.socialLogin('google')">
-        <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        Continue with Google
-      </button>
-      <button class="pb-social-btn fb" onclick="pbAI.socialLogin('facebook')">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.971H15.83c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
-        Continue with Facebook
-      </button>
+      <p>So I can use your pets, vaccinations, bookings and orders</p>
+      <div id="pb-login-err" class="pb-ferr" role="alert"></div>
+      <a class="pb-social-btn" href="01_login.html" style="text-decoration:none;color:#050505"><svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google</a>
+      <div class="pb-note">Opens the PawBook sign-in page</div>
       <div class="pb-divider">or email</div>
       <div id="pb-email-login">
         <input class="pb-finput" type="email" id="pb-w-email" placeholder="Email" autocomplete="email" style="margin-bottom:8px">
         <input class="pb-finput" type="password" id="pb-w-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')pbAI.emailLogin()" style="margin-bottom:8px">
         <button class="pb-fsubmit" id="pb-w-submit" onclick="pbAI.emailLogin()">Sign In</button>
-        <div class="pb-fswitch" style="margin-top:8px">New here? <a onclick="pbAI.showRegister()">Create account</a></div>
+        <div class="pb-fswitch" style="margin-top:8px"><a href="01_login.html">Forgot password?</a> · New here? <a onclick="pbAI.showRegister()">Create account</a></div>
       </div>
       <div id="pb-email-register" style="display:none">
-        <input class="pb-finput" type="text" id="pb-w-name" placeholder="Full name" style="margin-bottom:8px">
-        <input class="pb-finput" type="email" id="pb-w-reg-email" placeholder="Email" style="margin-bottom:8px">
-        <input class="pb-finput" type="password" id="pb-w-reg-pass" placeholder="Password (min 6 chars)" onkeydown="if(event.key==='Enter')pbAI.doRegister()" style="margin-bottom:8px">
+        <input class="pb-finput" type="text" id="pb-w-name" placeholder="Full name" autocomplete="name" style="margin-bottom:8px">
+        <input class="pb-finput" type="email" id="pb-w-reg-email" placeholder="Email" autocomplete="email" style="margin-bottom:8px">
+        <input class="pb-finput" type="password" id="pb-w-reg-pass" placeholder="Password (min 6 characters)" autocomplete="new-password" onkeydown="if(event.key==='Enter')pbAI.doRegister()" style="margin-bottom:8px">
         <button class="pb-fsubmit" id="pb-w-reg-submit" onclick="pbAI.doRegister()">Create Account</button>
-        <div class="pb-fswitch" style="margin-top:8px">Have account? <a onclick="pbAI.showLoginForm()">Sign in</a></div>
+        <div class="pb-fswitch" style="margin-top:8px">Have an account? <a onclick="pbAI.showLoginForm()">Sign in</a></div>
       </div>
     </div>
   </div>
 </div>
 `;
-
 var container = document.createElement('div');
 container.innerHTML = HTML;
 document.body.appendChild(container);
 
 // ═══════════════════════════════════════════════════════════════
-//  KNOWLEDGE BASE
-// ═══════════════════════════════════════════════════════════════
-var KB = {
-  general:    { p:['what can you','capabilities','features','what is pawbook','about pawbook','hi','hello','hey','namaste','good morning','good afternoon','good evening','help','what can you do','get started','how does','tell me','version','v4','all features','show features','browse features'], a: function(){ return { t:'Hi! 👋 I\'m PawBook AI — your complete guide to all 35 PawBook features.\n\n📋 **Tap the 📋 button** (top-right) to browse ALL features with descriptions and test guides.\n\nOr ask me about any specific feature:\n🔍 Lost & Found · 🐾 Adoption · 🏥 Vet Booking · 💉 Vaccination\n🚨 Emergency · 🛍️ Marketplace · 🗺️ Discover Map · 🛡️ Insurance\n🎓 Training · ✈️ Pet Travel · 📺 Live Stream · 📚 Breeds\n👥 Groups · ⚙️ Settings · 📊 Analytics · 💬 DM Chat', pills:['Browse all features','Book a vet','Lost pet','Emergency'] }; } },
-  lost:       { p:['lost pet','lost dog','lost cat','missing pet','found a dog','found a cat','stray','report lost','lost and found','pet missing','report lost pet','found a pet','view alerts','lost and found','i found'], a: function(){ return { t:'🔍 **Lost & Found**\n\nReport a lost pet → upload photo + location → alert sent to users within 10 km instantly.\n\nFound a stray? Tap "I Found a Pet" to notify owners.\n\n💡 Also share in your local group for wider reach.', pills:['Report lost pet','Found a pet','View alerts'], page:'05_lost_pet.html', pageLabel:'Lost Pet Page' }; } },
-  adoption:   { p:['adopt','adoption','rescue','rehome','foster','shelter dog','shelter cat','want a dog','want a cat','puppy','kitten','browse dog','browse cat','find shelter','find a shelter','browse pets','adopt dog','adopt cat'], a: function(opts,raw){
-    var t=String(raw||'');
-    if(t.indexOf('dog')!==-1||t.indexOf('puppy')!==-1) return { t:'🐕 **Adopt a Dog**\n\nOver 1,200 dogs available across India and UAE.\n\nFilter by: breed, age, size, vaccinated, house-trained.\n\nTop breeds available: Indie, Labrador, Golden Retriever, Beagle, Pomeranian.\n\n💰 Cost: Free – ₹2,000 (vaccination/microchip only)', pills:['Find shelter','Browse cats','Adoption tips'], page:'04_adoption.html', pageLabel:'Browse Dogs' };
-    if(t.indexOf('cat')!==-1||t.indexOf('kitten')!==-1) return { t:'🐈 **Adopt a Cat**\n\nOver 600 cats and kittens available.\n\nFilter by: breed, age, indoor/outdoor, vaccinated.\n\nTop breeds: Indie, Persian, Siamese, British Shorthair.\n\n💰 Cost: Free – ₹1,500 (vaccination/microchip only)', pills:['Find shelter','Browse dogs','Adoption tips'], page:'04_adoption.html', pageLabel:'Browse Cats' };
-    if(t.indexOf('shelter')!==-1) return { t:'🏠 **Find a Shelter**\n\nFeatured shelters near you:\n\n• Blue Cross of India — Chennai\n• Friendicoes SECA — Delhi\n• CUPA — Bangalore\n• World For All — Mumbai\n• K9 Friends — Dubai\n\nTap to chat with any shelter directly on PawBook.', pills:['Browse dogs','Browse cats','Adoption tips'], page:'04_adoption.html', pageLabel:'Find Shelters' };
-    return { t:'🐾 **Adoption**\n\nBrowse pets by species, breed, age & city. Chat with shelters directly.\n\nFeatured shelters: Blue Cross (Chennai), Friendicoes (Delhi), CUPA (Bangalore), K9 Friends (Dubai).\n\n💰 Cost: Free – ₹2,000 (vaccination/microchip only)', pills:['Browse dogs','Browse cats','Find shelter'], page:'04_adoption.html', pageLabel:'Adoption Page' };
-  } },
-  marketplace:{ p:['marketplace','buy','sell','shop','listing','pet food','pet accessories','pet products','pet store','order','browse listing','post listing','new listing','grooming tool','what is available','available in marketplace','what can i buy','what can i find'], a: function(opts,raw){
-    var t=String(raw||'');
-    if(t.indexOf('browse')!==-1||t.indexOf('available')!==-1||t.indexOf('what')!==-1||t.indexOf('find')!==-1||t.indexOf('buy')!==-1){
-      return { t:'🛍️ **Browse Marketplace**\n\nCategories available:\n\n🥩 **Pet Food** — dry, wet, raw, treats (brands: Pedigree, Royal Canin, Drools, Whiskas)\n✂️ **Grooming** — brushes, clippers, shampoos, nail cutters\n🛏️ **Accessories** — beds, crates, carriers, leashes, collars\n🧸 **Toys** — chew toys, fetch, puzzle, interactive\n💊 **Health** — supplements, dewormers, flea/tick products\n🐾 **Pets** — responsibly-bred kittens, puppies, birds, fish\n\nFilter by city to find sellers near you.', pills:['Pet food','Grooming tools','Post listing','Safety tips'], page:'09_marketplace.html', pageLabel:'Browse Marketplace' };
-    }
-    if(t.indexOf('post')!==-1||t.indexOf('sell')!==-1||t.indexOf('list')!==-1){
-      return { t:'📦 **Post a Listing**\n\nSell anything pet-related in 3 steps:\n\n1️⃣ Tap **+ New Listing** on the Marketplace page\n2️⃣ Add title, photos, price, description & your city\n3️⃣ Tap **Publish** — goes live instantly\n\n💡 Tips for faster sales:\n• Add 3–5 clear photos\n• Set a fair price (check similar listings first)\n• Mention pet age, breed & vaccine status for pets\n• Respond quickly to buyers\n\n⚠️ Never share your address publicly — meet in a public place.', pills:['Browse listings','Safety tips','Pet food'], page:'09_marketplace.html', pageLabel:'Post a Listing' };
-    }
-    if(t.indexOf('food')!==-1){
-      return { t:'🥩 **Pet Food on Marketplace**\n\nFind deals from local sellers:\n\n• **Dog food**: Pedigree, Royal Canin, Drools, Orijen\n• **Cat food**: Whiskas, Sheba, Me-O, Farmina\n• **Raw/BARF diet** packs\n• **Homemade treats** from verified pet bakers\n• **Prescription diet** food (vet-recommended brands)\n\n💰 Typically 10–30% cheaper than retail stores.\n🚚 Many sellers offer delivery within city.', pills:['Browse listings','Grooming tools','Post listing'], page:'09_marketplace.html', pageLabel:'Pet Food Listings' };
-    }
-    if(t.indexOf('groom')!==-1){
-      return { t:'✂️ **Grooming Tools on Marketplace**\n\nPopular items:\n\n• Slicker brushes & deshedding tools (₹150–₹800)\n• Pet clippers & trimmers (₹500–₹3,000)\n• Shampoos & conditioners (₹200–₹1,200)\n• Nail clippers & grinders (₹200–₹700)\n• Grooming tables (₹2,000–₹8,000)\n• Ear cleaning kits (₹100–₹400)\n\n💡 Also find professional mobile groomers who list their services on Marketplace.', pills:['Browse listings','Pet food','Post listing'], page:'09_marketplace.html', pageLabel:'Grooming Tools' };
-    }
-    if(t.indexOf('safe')!==-1||t.indexOf('tip')!==-1){
-      return { t:'🔒 **Marketplace Safety Tips**\n\n✅ Always meet the seller in a **public place**\n✅ Inspect the pet/product before paying\n✅ Use PawBook\'s in-app chat — never move to WhatsApp for payments\n✅ Ask for vaccination certificates for pets\n✅ Check seller reviews & rating before buying\n\n🚫 Never:\n• Pay advance without seeing the item\n• Share your home address with a new seller\n• Send money via UPI to unverified accounts\n\n🚨 Report suspicious listings using the 3-dot menu.', pills:['Browse listings','Post listing','Report a listing'] };
-    }
-    return { t:'🛍️ **Marketplace**\n\nBuy/sell pet food, accessories, products & responsibly-bred pets.\n\nTo list: tap + New Listing → add photos, price, location → live instantly.\n\n⚠️ Safety: Always meet in public. Never pay before seeing the pet.', pills:['Browse listings','Post listing','Pet food','Grooming tools'], page:'09_marketplace.html', pageLabel:'Marketplace' };
-  } },
-  vet:        { p:['vet','veterinarian','doctor','appointment','book vet','clinic','hospital','consultation','video vet','find vet','pet doctor','book now','video consult','vet near me','book a vet','consult'], a: function(opts,raw){
-    var t=String(raw||'');
-    if(t.indexOf('video')!==-1||t.indexOf('online')!==-1){
-      return { t:'📱 **Video Consultation**\n\nTalk to a licensed vet from home — perfect for:\n• Minor symptoms & concerns\n• Post-surgery follow-ups\n• Diet & nutrition advice\n• Behaviour questions\n• Prescription refills\n\n💰 Cost: ₹200–₹500 per session\n⏱️ Available: 7am–11pm daily\n📲 Works on any device — no app download needed\n\nBook a slot in under 2 minutes.', pills:['Book video consult','In-clinic booking','Vet near me'], page:'11_vet_booking.html', pageLabel:'Book Video Consult' };
-    }
-    if(t.indexOf('near')!==-1||t.indexOf('find')!==-1||t.indexOf('locate')!==-1){
-      return { t:'📍 **Find a Vet Near You**\n\nSearch by city or allow location access to find:\n\n• General veterinary clinics\n• Specialist vets (dermatology, ortho, cardio)\n• 24-hour emergency hospitals\n• Mobile/home-visit vets\n• Exotic pet specialists\n\n🗺️ Also available on the Discover map — tap the Vet filter.', pills:['Book now','Video consult','Emergency vet'], page:'11_vet_booking.html', pageLabel:'Find Vets' };
-    }
-    if(t.indexOf('emergency')!==-1){
-      return { t:'🚨 **Emergency Vet Clinics**\n\n• Delhi: Cessna Lifeline +91 98102 60604\n• Mumbai: Bombay Vet College +91 22 2419 4071\n• Bangalore: CUPA +91 80 2334 1086\n• Chennai: Blue Cross +91 44 2235 1074\n• Dubai: Dubai Vet Hospital +971 4 349 4646\n\nOpen 24×7. Call ahead before rushing in.', pills:['First aid tips','Find 24hr vet','Book a vet'], page:'37_pet_ai_health_agent.html?sos=1', pageLabel:'Emergency SOS' };
-    }
-    return { t:'🏥 **Vet Booking**\n\nBook in-clinic, video or home-visit consultations.\n\n• Video call: ₹200–₹500\n• In-clinic: ₹300–₹1,000\n• Home visit: ₹800–₹2,000\n\nSearch by city → pick slot → instant confirmation.', pills:['Book now','Video consult','Vet near me','Emergency vet'], page:'11_vet_booking.html', pageLabel:'Book a Vet' };
-  } },
-  vaccination:{ p:['vaccination','vaccine','vaccin','shot','booster','immunization','rabies','deworming','health record','medical record','add vaccine','upcoming vaccine','vaccine record'], a: function(opts,raw){
-    var t=String(raw||'');
-    if(t.indexOf('add')!==-1||t.indexOf('record')!==-1||t.indexOf('log')!==-1){
-      return { t:'📋 **Add Vaccine Record**\n\nTo log a vaccination:\n1. Go to Vaccination Diary\n2. Select your pet\n3. Tap **+ Add Record**\n4. Enter vaccine name, date given & next due date\n5. Upload vet certificate (optional)\n\nAll records are stored securely and can be shared as a PDF with any vet.', pills:['Upcoming vaccines','Book vaccine appt','Dog vaccine schedule'], page:'10_vaccination.html', pageLabel:'Add Record' };
-    }
-    if(t.indexOf('upcoming')!==-1||t.indexOf('due')!==-1||t.indexOf('remind')!==-1){
-      return { t:'🔔 **Upcoming Vaccinations**\n\nPawBook sends automatic reminders:\n• 7 days before due date — push notification\n• 3 days before — reminder SMS/email\n• Day of — final alert\n\nCheck your pet\'s upcoming schedule in the Vaccination Diary → Upcoming tab.', pills:['Add vaccine record','Book vaccine appt','Dog vaccine schedule'], page:'10_vaccination.html', pageLabel:'Upcoming Vaccines' };
-    }
-    if(t.indexOf('dog')!==-1||t.indexOf('dhpp')!==-1){
-      return { t:'🐕 **Dog Vaccine Schedule**\n\n• **DHPP** (Distemper, Hepatitis, Parvovirus, Parainfluenza): 6, 8, 10, 12 weeks → annual booster\n• **Rabies**: 12–16 weeks → every 1–3 years\n• **Leptospirosis**: 12 weeks → annual\n• **Bordetella**: 8 weeks → annual\n• **Deworming**: every 3 months\n\nConsult your vet for exact timing based on your dog\'s breed & health.', pills:['Add vaccine record','Cat vaccine schedule','Book vaccine appt'], page:'10_vaccination.html', pageLabel:'Dog Vaccine Schedule' };
-    }
-    return { t:'💉 **Vaccination Diary**\n\nTrack every vaccine & booster for all your pets.\n\n• Auto-reminders 7 days before each due date\n• Shareable PDF certificate\n• Dog: DHPP, Rabies, Leptospirosis schedule\n• Cat: FVRCP, Rabies schedule', pills:['Add vaccine record','Upcoming vaccines','Book vaccine appt'], page:'10_vaccination.html', pageLabel:'Vaccination Diary' };
-  } },
-  emergency:  { p:['emergency','urgent','critical','sick pet','dying','accident','bleeding','poisoned','poison','not breathing','unconscious','seizure','24 hour','24hr','night vet','emergency vet','find 24hr vet','first aid tips','first aid','emergency map','emergency number','call vet'], a: function(o,raw){
-    var t=String(raw||'');
-    if(t.indexOf('first aid')!==-1){
-      return { t:'🩺 **Pet First Aid Tips**\n\n🔥 **Heatstroke**: Move to shade, cool paws & belly with wet cloth, offer water, rush to vet\n\n☠️ **Poisoning**: Do NOT induce vomiting. Note what was eaten. Rush to vet immediately\n\n🩸 **Bleeding**: Apply firm pressure with clean cloth for 5–10 mins. Do not remove cloth\n\n💨 **Not breathing**: Check airway for blockage. Keep calm and rush to emergency vet\n\n🦴 **Fracture**: Immobilise gently, do not splint at home, carry carefully to vet', pills:['Emergency numbers','Find 24hr vet','Emergency map'], page:'37_pet_ai_health_agent.html?sos=1', pageLabel:'Emergency SOS' };
-    }
-    return { t:'🚨 **EMERGENCY — Call Now:**\n\n• Delhi: Cessna Lifeline +91 98102 60604\n• Mumbai: Bombay Vet College +91 22 2419 4071\n• Bangalore: CUPA +91 80 2334 1086\n• Chennai: Blue Cross +91 44 2235 1074\n• Dubai: Dubai Vet Hospital +971 4 349 4646\n\n⚡ Heatstroke: cool paws with water, rush to vet\n⚡ Poison: do NOT induce vomiting, rush to vet\n⚡ Bleeding: firm pressure with cloth', pills:['Find 24hr vet','First aid tips','Emergency map'], page:'37_pet_ai_health_agent.html?sos=1', pageLabel:'Emergency SOS' };
-  } },
-  discover:   { p:['discover','find services','boarding','nearby','near me','locate','map','pet shop','pet store near','emergency map','pet shops near me','grooming salon','grooming near','vets on map','find vet near','services near'], a: function(){ return { t:'🗺️ **Discover**\n\nFind any pet service near you — worldwide.\n\nVets · Grooming · Pet Shops · Shelters · Zoos · 24hr Emergency\n\nPowered by live Google Maps. Works in India, UAE, UK, Europe, USA & more.', pills:['Pet shops near me','Grooming salons','Vets on map'], page:'26_discover.html', pageLabel:'Open Discover' }; } },
-  groups:     { p:['group','community','join group','create group','pet group','meetup','club','pet parents','breed group'], a: function(){ return { t:'👥 **Groups & Community**\n\nJoin 500+ local & breed-specific groups.\n\nTop groups: Delhi Dog Parents (12.4k), Mumbai Cat Lovers (8.9k), Stray Rescue Network (9.8k)\n\nCreate your own group in 2 taps.', pills:['Browse groups','Create group','Pet events'], page:'03_groups.html', pageLabel:'Go to Groups' }; } },
-  insurance:  { p:['insurance','pet insurance','cover','coverage','claim','policy','premium','insure'], a: function(){ return { t:'🛡️ **Pet Insurance**\n\n• Basic (accidents): ₹500/month\n• Standard (accidents+illness): ₹900/month\n• Premium (comprehensive): ₹1,500/month\n\nClaims reimbursed within 7 working days. Upload bill + vet notes on the Insurance page.', pills:['View plans','Get a quote','File a claim'], page:'21_pet_insurance.html', pageLabel:'Pet Insurance' }; } },
-  training:   { p:['training','train','obedience','behaviour','bark','biting','potty','leash','commands','aggressive','puppy training','trainer'], a: function(){ return { t:'🎓 **Pet Training**\n\nVideo lessons, breed guides & certified trainers near you.\n\n• Excessive barking → distraction & reward\n• Potty training → schedule + positive reinforcement\n• Leash pulling → stop-and-go technique\n• Aggression → professional trainer recommended\n\nHome sessions: ₹500–₹2,000', pills:['Find a trainer','Basic commands','Stop barking','Puppy guide'], page:'22_training.html', pageLabel:'Training Hub' }; } },
-  grievance:  { p:['complaint','complain','grievance','issue','problem','not working','bug','report','scam','fraud','fake','harassment','inappropriate','abuse','unhappy','refund','dispute'], a: function(){ return { t:'📋 **Complaints & Support**\n\nResponse times:\n• Critical (abuse/fraud): within 4 hours\n• Standard queries: within 24 hours\n\n📧 support@deemona.com\n📍 Grievance Officer: Deemona Global Solutions, New Delhi 110075\n\nTo report in-app: 3-dot menu on any post/user → Report.', pills:['Report fake listing','Report a user','Technical bug','Request refund'] }; } },
-  account:    { p:['account','profile','settings','password','privacy','delete account','notification','dark mode','block user','deactivate'], a: function(){ return { t:'⚙️ **Account & Settings**\n\n• Change password: Settings → Security\n• Privacy: control who sees posts & can message you\n• Notifications: set quiet hours, choose channels\n• Delete account: Settings → Account (30-day cooldown)\n• Block users from their profile → Block', pills:['Change password','Privacy settings','Notifications'], page:'14_settings.html', pageLabel:'Open Settings' }; } },
-  login:      { p:['sign in','login','log in','sign up','register','create account','forgot password','reset password','sign out','logout','log out'], a: function(o){ return { t: o._user ? 'You\'re signed in as '+o._user+'! 👋\n\nTo sign out, tap your name in the top-right of any PawBook page.\n\nNeed help with your account?' : 'You can sign in with **Google**, **Facebook** or **email**.\n\nTap the Sign In button above, or I can open the sign-in form for you here! 👇', loginPrompt: !o._user, pills: o._user ? ['My profile','My pets','My bookings'] : ['Sign in now'] }; } },
-  fallback:   { a: function(opts,raw){ var input=raw||''; return { t:'Let me check with PawBook AI for "'+input.substring(0,40)+'"…\n\nOr tap 📋 (top-right) to browse all 35 PawBook features with test guides!', pills:['Browse all features','Lost pet','Book a vet','Emergency','Marketplace'] }; } }
-};
-
-function detectIntent(s){
-  var l=s.toLowerCase();
-  var order=['emergency','lost','grievance','vet','vaccination','adoption','marketplace','insurance','training','groups','discover','account','login','general'];
-  for(var i=0;i<order.length;i++){
-    var e=KB[order[i]];
-    if(e&&e.p) for(var j=0;j<e.p.length;j++) if(l.indexOf(e.p[j])!==-1) return order[i];
-  }
-  return 'fallback';
-}
-
-// ═══════════════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════════════
-var _open = false;
-var _msgId = 0;
-var _typing = false;
-var _currentUser = null;
-var _greeted = false;
+var _open = false, _typing = false, _greeted = false, _busy = false;
+var _currentUser = null, _token = '', _state = null, _stateAt = 0, _mode = 'guest';   // guest | live
+var _loc = null, _gh = {}, _ghN = 0, _gmp = null, _lastQ = '';
 
-try{ _currentUser = JSON.parse(localStorage.getItem('pb_user')||'null'); }catch(e){}
+function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k, v){ try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch(e){} }
+function ssGet(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
+function ssSet(k, v){ try { sessionStorage.setItem(k, v); } catch(e){} }
+
+function readSession(){
+  _token = lsGet('pb_token') || lsGet('pawbook_token') || lsGet('token') || '';
+  // the old widget made fake "demo_" sign-ins — those are not real accounts, so drop them
+  if (/^demo_/.test(_token)) { lsSet('pb_token', null); lsSet('pb_user', null); _token = ''; }
+  try { _currentUser = JSON.parse(lsGet('pb_user') || 'null'); } catch(e){ _currentUser = null; }
+  _mode = _token ? 'live' : 'guest';
+}
+function readLoc(){
+  var l = null;
+  try { l = JSON.parse(lsGet('pb_assist_loc') || 'null'); } catch(e){}
+  if (!l || !(l.city || l.state || l.pin)) { try { var a = JSON.parse(lsGet('pb_adopt_loc') || 'null'); if (a && (a.city || a.pin)) l = {country: a.country || 'India', state: a.state || '', city: a.city || '', area: a.area || '', pin: a.pin || '', lat: a.lat, lng: a.lng}; } catch(e){} }
+  _loc = l && (l.city || l.state || l.pin) ? l : null;
+}
+function locLabel(l){ l = l || _loc; if (!l) return ''; return [l.area, l.city].filter(Boolean).join(', ') || l.state || ('PIN ' + l.pin); }
+function userName(){ var u = _currentUser || {}; var n = (_state && _state.name) || u.full_name || u.name || u.username || ''; return String(n).trim().split(/\s+/)[0] || ''; }
 
 // ═══════════════════════════════════════════════════════════════
-//  RENDER HELPERS
+//  WHERE AM I — page awareness (the widget knows which page it is on)
 // ═══════════════════════════════════════════════════════════════
-function fmt(t){
-  return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-}
-function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function timeNow(){ var d=new Date(); return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
+var PAGE = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+var PAGE_CTX = {
+  '07_home.html':            ['Home feed', 'Your feed of posts from pet parents you follow and the communities you are in.', ['Find a vet near me', 'Pets for adoption', 'When are my pet\'s vaccines due?']],
+  '08_pet_profile.html':     ['Pet profile', 'Your pet\'s profile — photos, details and health information.', ['When are my pet\'s vaccines due?', 'Book a vet', 'Diet for my dog']],
+  '09_marketplace.html':     ['Marketplace', 'Buy and sell pet products.', ['Dog food', 'Cat litter', 'My orders']],
+  '10_vaccination.html':     ['Vaccinations', 'Keep your pet\'s vaccination records and see which doses are due.', ['When are my pet\'s vaccines due?', 'Puppy vaccine schedule', 'Book a vaccination visit']],
+  '11_vet_booking.html':     ['Book a vet', 'Find vets listed on PawBook, book a visit and see your appointments.', ['Find a vet near me', 'My appointments', 'My dog is vomiting']],
+  '12_notifications.html':   ['Notifications', 'Everything that needs your attention — replies, reminders and updates.', ['When are my pet\'s vaccines due?', 'My appointments', 'Raise a support request']],
+  '13_messages.html':        ['Messages', 'Your private chats with other pet parents.', ['How do I report a user?', 'Communities near me']],
+  '14_settings.html':        ['Settings', 'Your account, privacy, password and notification choices.', ['How do I delete my account?', 'I can\'t sign in', 'Raise a support request']],
+  '16_vet_profile.html':     ['Vet profile', 'A vet\'s details, timings and booking.', ['My appointments', 'Find a vet near me']],
+  '19_order_confirmation.html': ['Order confirmation', 'The details of the order you just placed.', ['My orders', 'Problem with my order']],
+  '20_shelter_detail.html':  ['Shelter', 'A shelter\'s details and the pets they have for adoption.', ['How does adoption work?', 'Pets for adoption']],
+  '21_pet_insurance.html':   ['Pet insurance', 'Pet insurance options. Always check exclusions, waiting periods and the claim process.', ['What should I check before buying pet insurance?', 'Book a vet']],
+  '22_training.html':        ['Training & behaviour', 'Training guides for good manners and common problems.', ['How do I stop my dog pulling on the leash?', 'Potty training a puppy', 'My puppy bites']],
+  '23_nutrition.html':       ['Meal planner', 'Meal plans and recipes for your pet.', ['Foods dogs must never eat', 'How much should my puppy eat?', 'Dog food']],
+  '24_pet_travel.html':      ['Pet travel', 'Guides for travelling with your pet.', ['Travelling with my dog by train', 'Find pet boarding near me']],
+  '25_analytics.html':       ['Analytics', 'How your posts and profile are doing.', ['Communities near me', 'Events near me']],
+  '26_discover.html':        ['Discover', 'Find pet places near you on the map.', ['Pet groomers near me', 'Find pet boarding near me', 'Find a vet near me']],
+  '27_register_business.html': ['Register a business', 'List your pet business on PawBook.', ['How do I sell on PawBook?', 'Raise a support request']],
+  '27_stories.html':         ['Stories', 'Short photo and video stories from pet parents.', ['Communities near me', 'Events near me']],
+  '28_reels.html':           ['Reels', 'Short pet videos.', ['Communities near me', 'Events near me']],
+  '29_user_profile.html':    ['Profile', 'A pet parent\'s profile, pets and posts.', ['How do I report a user?', 'My pets']],
+  '30_events.html':          ['Events', 'Pet meetups, adoption drives, camps and shows.', ['Events near me', 'Adoption drives']],
+  '31_saved.html':           ['My PawBook', 'Things you have saved.', ['My pets', 'My orders']],
+  '32_gallery.html':         ['Gallery', 'Your photos and videos.', ['My pets']],
+  '33_breeds.html':          ['Breeds', 'Learn about dog and cat breeds.', ['Which dog breed suits a small flat?', 'Pets for adoption']],
+  '34_live.html':            ['Live', 'Live videos from pet parents.', ['Communities near me', 'Events near me']],
+  '35_pawmatch.html':        ['PawMatch', 'Find playdates, walk buddies and companions for your pet, then fix a date.', ['How does PawMatch work?', 'Is PawMatch safe?', 'Events near me']],
+  '36_pet_life_record.html': ['My pets & health records', 'Your pets\' records — vaccinations, medicines and vet visits.', ['When are my pet\'s vaccines due?', 'My appointments', 'Book a vet']],
+  '38_lost_pet_network.html':['Lost & Found', 'Report a lost or found pet and see cases near you.', ['My dog is missing — what should I do?', 'I found a pet', 'Lost pets near me']],
+  '39_adoption_matching.html': ['Adopt a pet', 'Pets looking for homes, adoption rules and documents, and shelters near you.', ['What documents do I need to adopt?', 'Pets for adoption in my city', 'How does adoption work?']],
+  '40_voice_pet_assistant.html': ['Voice assistant', 'Talk to the assistant using your voice.', ['Find a vet near me', 'When are my pet\'s vaccines due?']],
+  'account-deletion.html':   ['Account deletion', 'How to delete your PawBook account and data.', ['How do I delete my account?', 'Raise a support request']],
+  'privacy-policy.html':     ['Privacy policy', 'How PawBook handles your data.', ['How do I delete my account?', 'Raise a support request']],
+  'legal.html':              ['Legal', 'PawBook\'s terms and policies.', ['Raise a support request']],
+  'reset_password.html':     ['Reset password', 'Set a new password for your account.', ['I can\'t sign in', 'Raise a support request']]
+};
+function pageCtx(){ return PAGE_CTX[PAGE] || null; }
 
-function scrollBottom(){
-  var el=document.getElementById('pb-ai-msgs');
-  if(el) el.scrollTop=el.scrollHeight;
-}
+// ═══════════════════════════════════════════════════════════════
+//  PAWBOOK PAGES the widget may link to (the same list the Assistant uses)
+// ═══════════════════════════════════════════════════════════════
+var P = {
+  home: ['07_home.html', 'Home feed'], pets: ['36_pet_life_record.html', 'My pets & health records'], vacc: ['10_vaccination.html', 'Vaccinations'],
+  vet: ['11_vet_booking.html', 'Book a vet'], appts: ['11_vet_booking.html?tab=appointments', 'My appointments'], health: ['37_pet_ai_health_agent.html', 'AI health check'],
+  sos: ['37_pet_ai_health_agent.html?sos=1', 'Open Emergency SOS'], nearby: ['37_pet_ai_health_agent.html?tab=nearby', 'Nearby help (map)'], lost: ['38_lost_pet_network.html', 'Lost & Found'],
+  adopt: ['39_adoption_matching.html', 'Adopt a pet'], shop: ['42_shop.html', 'Pet shop'], orders: ['53_shop_orders.html', 'My orders'], groups: ['03_groups.html', 'Communities'],
+  events: ['30_events.html', 'Events'], search: ['15_search.html', 'Search'], abuse: ['36_abuse_reporting.html', 'Report animal cruelty'], training: ['22_training.html', 'Training & behaviour'],
+  nutrition: ['23_nutrition.html', 'Meal planner'], travel: ['24_pet_travel.html', 'Pet travel'], insurance: ['21_pet_insurance.html', 'Pet insurance'], settings: ['14_settings.html', 'Settings'],
+  breeds: ['33_breeds.html', 'Breeds'], pawmatch: ['35_pawmatch.html', 'PawMatch'], discover: ['26_discover.html', 'Discover map'], seller: ['49_seller_join.html', 'Sell on PawBook'],
+  assistant: ['35_ai_agent.html', 'Full Assistant'], login: ['01_login.html', 'Sign in']
+};
+function act(k, label){ return {label: label || P[k][1], url: P[k][0]}; }
 
-function botMsg(text, pills, extraHtml, page, pageLabel){
-  var msgs=document.getElementById('pb-ai-msgs');
-  if(!msgs) return;
-  var d=document.createElement('div');
-  d.className='pb-msg bot';
-  var html='<div class="pb-msg-av">🤖</div><div>';
-  html+='<div class="pb-msg-bubble">'+fmt(text)+'</div>';
-  if(extraHtml) html+='<div style="margin-top:4px">'+extraHtml+'</div>';
-  if(page){
-    html+='<a class="pb-action-link" onclick="window.location.href=\''+page+'\'">⤢ '+pageLabel+'</a>';
+// ═══════════════════════════════════════════════════════════════
+//  LOCAL BRAIN — instant, safe answers. Used for guests, when PawBook can't be reached,
+//  for questions about the page you're on, and for emergencies (never waits for the network).
+//  It never makes up listings, counts, prices, ratings or phone numbers.
+// ═══════════════════════════════════════════════════════════════
+var RX = [
+  ['emergency', /\b(emergenc\w*|urgent(ly)?|bleed\w*|blood|poison\w*|toxic|not breathing|can'?t breathe|cannot breathe|breathing (hard|fast|difficult)|unconscious|collaps\w*|seizure\w*|fits?\b|convuls\w*|hit by|accident|heat ?stroke|choking|swallowed|bitten by (a )?snake|snake ?bite|dying|(ate|eaten|swallowed) (some )?(chocolate|grapes|raisins|xylitol|rat poison|medicine|tablets?))\b/i],
+  ['abuse', /\b(abuse\w*|cruel\w*|beating|beaten|torture\w*|neglect\w*|chained|starv\w*)\b/i],
+  ['pagehelp', /\b(this page|this screen|here\b.*(do|use)|how (do|can) i use (this|it)|what can i do here|what is this page|help me with this page)\b/i],
+  ['lost', /\b(lost|missing|ran away|run away|found a (dog|cat|pet|puppy|kitten)|i found|stray)\b/i],
+  ['adopt', /\b(adopt\w*|rescue|rehom\w*|foster\w*|shelter dogs?|pets? for adoption)\b/i],
+  ['places', /\b(groom\w*|boarding|kennel|daycare|day care|pet ?(shop|store)s?|shelters?|pet hotel|sitter)\b.*\b(near|nearby|around|in my|close)\b|\b(near|nearby|around)\b.*\b(groom\w*|boarding|kennel|daycare|pet ?(shop|store)s?|shelters?)\b/i],
+  ['vacc', /\b(vaccin\w*|booster|rabies|deworm\w*|due (date|dose)|shots?)\b/i],
+  ['vet', /\b(vets?|veterinar\w*|doctor|clinic|hospital|appointment|consult\w*|vomit\w*|diarrh\w*|limp\w*|not eating|sick|ill\b|fever|itch\w*|tick|flea)\b/i],
+  ['orders', /\b(my orders?|order status|track(ing)? (my )?order|delivery|refund|return (my|an|the) order)\b/i],
+  ['training', /\b(train\w*|potty|toilet|bark\w*|bit(e|es|ing)|chew\w*|pull\w* .*leash|leash .*pull\w*|behaviou?r|aggress\w*|commands?|sit\b|recall)\b/i],
+  ['nutrition', /\b(diet|meal|nutrition|feed(ing)?|how much .*eat|can (dogs?|cats?) eat|chocolate|grapes|onion)\b/i],
+  ['shop', /\b(shop|buy|food|kibble|treats?|toys?|litter|leash|harness|collar|bed|shampoo|accessor\w*)\b/i],
+  ['pawmatch', /\b(paw ?match|playdate|play date|walk buddy|mate|mating|breeding partner|match ?making)\b/i],
+  ['groups', /\b(communit\w*|groups?|club|pet parents near)\b/i],
+  ['events', /\b(events?|meetups?|adoption drive|camp|show)\b/i],
+  ['travel', /\b(travel\w*|flight|train journey|by train|airline|trip)\b/i],
+  ['insurance', /\b(insur\w*|policy|claim)\b/i],
+  ['breeds', /\b(breeds?|which dog|which cat|labrador|indie|pug|beagle|shih tzu|persian)\b/i],
+  ['account', /\b(account|password|sign ?in|log ?in|sign ?up|register|profile|privacy|delete my|notification settings)\b/i],
+  ['support', /\b(complain\w*|grievance|scam\w*|fraud\w*|harass\w*|not working|bug|error|support|customer care|talk to (a )?(human|person|someone)|report a user)\b/i],
+  ['thanks', /^\s*(thanks|thank you|thx|ty|great|ok(ay)?|cool|nice)\b/i],
+  ['greet', /^\s*(hi|hello|hey|namaste|hii+|good (morning|afternoon|evening))\b/i]
+];
+var ADVICE = {training: 1, nutrition: 1, travel: 1, breeds: 1, pawmatch: 1, insurance: 1};   // general advice the built-in guide covers well
+function detectIntent(s){ for (var i = 0; i < RX.length; i++) if (RX[i][1].test(s)) return RX[i][0]; return 'general'; }
+var GKIND = [   // what to look up on Google Maps (in the browser) — kind, words, emoji, text query
+  [/groom/i, 'groomer', 'pet groomers', '✂️', 'pet grooming'], [/boarding|kennel|daycare|day care|hotel|sitter/i, 'boarding', 'pet boarding places', '🏨', 'pet boarding'],
+  [/shop|store/i, 'petstore', 'pet shops', '🛍️', 'pet shop'], [/shelter/i, 'shelter', 'animal shelters', '🏠', 'animal shelter'], [/./, 'vet', 'vet clinics', '🩺', 'veterinary clinic']
+];
+function gHint(msg, intent){
+  if (!_loc) return null;
+  var k = intent === 'vet' ? GKIND[GKIND.length - 1] : (GKIND.filter(function(x){ return x[0].test(msg); })[0] || GKIND[GKIND.length - 1]);
+  var near = locLabel();
+  return {kind: k[1], word: k[2], emoji: k[3], text: k[4], lat: _loc.lat != null ? _loc.lat : null, lng: _loc.lng != null ? _loc.lng : null,
+    address: [_loc.area, _loc.city, _loc.state, _loc.pin, _loc.country || 'India'].filter(Boolean).join(', '), near: near};
+}
+function signInLine(){ return _mode === 'live' ? '' : '\n\n🔐 **Sign in** and I can also use your own pets, vaccinations, appointments and PawBook listings.'; }
+
+function localReply(msg){
+  var intent = detectIntent(msg), m = msg.toLowerCase(), r = {intent: intent, text: '', actions: [], suggestions: []};
+  var near = /\b(near ?me|nearby|around me|close to me|my (city|area))\b/i.test(msg);
+  switch (intent) {
+    case 'emergency':
+      r.text = '🚨 **This sounds urgent — please don\'t wait.**\n• Take your pet to the **nearest vet or 24-hour animal hospital now**, and call them on the way.\n• Keep your pet calm, warm and still. Don\'t give human medicines.\n• For heatstroke: move to shade, cool with normal (not ice-cold) water, and go to a vet.\n• If a person is in danger, call **112**.\n\nOpen **Emergency SOS** for first aid steps and vets near you.';
+      r.actions = [act('sos'), act('nearby', 'Vets near me (map)'), {label: 'Call 112', url: 'tel:112'}];
+      r.suggestions = ['First aid for heatstroke', 'Find a vet near me']; r.noNet = true; break;
+    case 'abuse':
+      r.text = 'If an animal is being hurt right now, call **112**. Then report it on **Report animal cruelty** with photos, the place and the time. Keep yourself safe — don\'t confront anyone.';
+      r.actions = [act('abuse'), {label: 'Call 112', url: 'tel:112'}]; break;
+    case 'pagehelp':
+      var c = pageCtx();
+      r.text = c ? ('You\'re on **' + c[0] + '**. ' + c[1] + '\n\nAsk me anything about it, or try one of these:') : 'Ask me anything about PawBook — vets, vaccinations, adoption, lost & found, the shop, training or your account.';
+      r.suggestions = c ? c[2] : ['Find a vet near me', 'Pets for adoption']; break;
+    case 'lost':
+      if (/found/.test(m)) { r.text = 'Thank you for helping! 🐾\n• Keep the pet safe, give water, and check for a collar or tag.\n• A vet can scan for a **microchip** for free or a small fee.\n• Post it on **Lost & Found** as a found pet with a clear photo and the place — owners nearby can see it.'; r.actions = [{label: 'I found a pet', url: '38_lost_pet_network.html?found=1'}, act('lost', 'See lost pets')]; }
+      else { r.text = 'I\'m sorry — let\'s act fast. 🐾\n• **Report it on Lost & Found** now with a clear photo, the last place you saw your pet and the time.\n• Search the area at once, calling their name — most pets hide close by.\n• Tell nearby vets, shelters, guards and shopkeepers, and put up posters.\n• Check the lost & found cases every day — someone may have found your pet.'; r.actions = [act('lost', 'Report a lost pet'), {label: 'I found a pet', url: '38_lost_pet_network.html?found=1'}]; }
+      r.suggestions = ['Lost pets near me', 'Find a vet near me']; break;
+    case 'adopt':
+      r.text = (/document|paper|id proof|rule|policy|complian/.test(m)
+        ? '**Adopt a pet** has a dedicated section with PawBook\'s **adoption policy, rules, documents and compliance**. You read and agree to them before you apply — and you can quit at any time.'
+        : 'On **Adopt a pet** you can see pets looking for homes and find shelters and adoption centres near your area or PIN code.\n\nHow it works: send an interest request → the shelter reviews it → meet the pet → home visit and adoption.')
+        + '\n\n⚠️ Never pay anyone outside PawBook for a "free" adoption.' + signInLine();
+      r.actions = [act('adopt')]; r.suggestions = ['What documents do I need to adopt?', 'Questions to ask a shelter']; break;
+    case 'places':
+      var h = gHint(msg, intent);
+      if (h) { r.text = '**' + cap(h.word) + ' near ' + h.near + '** from Google Maps are below (nearest first — not verified by PawBook, so call ahead).'; r.g = h; r.actions = [act('nearby', 'Open the map')]; }
+      else { r.text = '📍 Tell me where you are and I\'ll find places near you. Tap **Set my location**, or open the map.'; r.actions = [{label: 'Set my location', url: '#location'}, act('discover')]; }
+      break;
+    case 'vacc':
+      r.text = (/puppy|schedule/.test(m)
+        ? 'A typical **puppy schedule** in India (your vet will tailor it):\n• **6–8 weeks** — first combination vaccine (DHPPi)\n• **9–12 weeks** — second dose, with leptospirosis\n• **12–16 weeks** — third dose + **rabies**\n• Then **yearly boosters**, and regular deworming.\nAlways follow your own vet\'s advice.'
+        : 'On **Vaccinations** you can keep every dose your pet gets and see what is due next. PawBook reminds you before a dose is due.') + signInLine();
+      r.actions = [act('vacc'), act('vet', 'Book a vaccination visit')]; r.suggestions = ['Puppy vaccine schedule', 'Find a vet near me']; break;
+    case 'vet':
+      var h2 = gHint(msg, 'vet');
+      if (/vomit|diarrh|limp|not eating|sick|ill\b|fever|itch|tick|flea/.test(m)) {
+        r.text = 'I can\'t diagnose, but here\'s a safe way to decide:\n• **Go to a vet today** if it keeps happening, there\'s blood, your pet is weak, very young or old, or not drinking.\n• Otherwise watch closely, keep fresh water available and note what you see.\n\nThe **AI health check** helps you judge how urgent it is.';
+        r.actions = [act('health'), act('vet')]; r.suggestions = ['Find a vet near me', 'Emergency signs to watch for'];
+      } else if (h2 && near) { r.text = '**Vet clinics near ' + h2.near + '** from Google Maps are below (nearest first — not verified by PawBook, so call ahead). Vets listed on PawBook can be booked on **Book a vet**.'; r.g = h2; r.actions = [act('vet'), act('nearby', 'Open the map')]; }
+      else if (near) { r.text = '📍 Tell me where you are and I\'ll show vet clinics near you. Tap **Set my location**.'; r.actions = [{label: 'Set my location', url: '#location'}, act('vet')]; }
+      else { r.text = 'On **Book a vet** you can find vets listed on PawBook, see their timings and book a visit.' + signInLine(); r.actions = [act('vet'), act('appts')]; r.suggestions = ['Find a vet near me', 'My dog is vomiting']; }
+      break;
+    case 'orders': r.text = 'You can see every order, its delivery status, invoices and returns on **My orders**. If something went wrong, I can help you raise a support request.'; r.actions = [act('orders'), {label: 'Raise a support request', url: '#support'}]; break;
+    case 'shop': r.text = 'The **Pet shop** has food, treats, toys, grooming and care products. You can compare products and see delivery times before you buy.' + (_mode === 'live' ? '' : '\n\n🔐 Sign in and I can search the shop for you.'); r.actions = [act('shop'), act('orders')]; r.suggestions = ['Dog food', 'Cat litter']; break;
+    case 'pawmatch': r.text = '**PawMatch** helps you find playdates, walk buddies and companions for your pet. When both of you like each other it\'s a match — then you chat and fix a date and a public place. Your phone, email and exact location are never shared.\n\nSafety: meet in public, keep pets on leash at first, and make sure both are vaccinated.'; r.actions = [act('pawmatch')]; break;
+    case 'groups': r.text = '**Communities** bring pet parents together by city, area, breed or interest. Join one to ask questions, share tips and find meetups.'; r.actions = [act('groups'), act('events')]; break;
+    case 'events': r.text = 'Pet meetups, adoption drives, camps and shows are listed on **Events**.'; r.actions = [act('events')]; break;
+    case 'nutrition':
+      r.text = (/chocolate|grape|raisin|onion|garlic|xylitol|never eat|toxic|can (dogs?|cats?) eat/.test(m)
+        ? 'Foods that are **dangerous for dogs and cats**: chocolate, grapes and raisins, onion and garlic, xylitol (sugar-free gum/sweets), alcohol, caffeine, and cooked bones. Cats must also avoid lilies. If your pet ate any of these, call a vet **now**.'
+        : 'Good basics: a **complete and balanced** pet food for your pet\'s age, fixed meal times, fresh water always, and treats under 10% of the day\'s food. The amount depends on weight, age and activity — ask your vet.') + '\n\nThe **Meal planner** has meal plans and recipes.';
+      r.actions = [act('nutrition'), act('shop', 'Pet food in the shop')]; break;
+    case 'training':
+      r.text = 'A few basics that work for most dogs:\n• **Reward what you want** — treat or praise within 2 seconds of the right behaviour\n• **Short sessions** — 5–10 minutes, a few times a day\n• **Be consistent** — same words and rules from everyone at home\n• **Never hit or shout** — it makes fear and biting worse\n\nSee **Training & behaviour** for step-by-step guides.';
+      r.actions = [act('training')]; r.suggestions = ['Potty training a puppy', 'My puppy bites']; break;
+    case 'travel': r.text = 'Before travelling, check the airline\'s or railway\'s current pet rules, carry your pet\'s **vaccination record**, and get a vet health certificate if needed. **Pet travel** has guides.'; r.actions = [act('travel'), act('vacc')]; break;
+    case 'insurance': r.text = 'See **Pet insurance** for the options on PawBook. Before you buy any policy, check what is **excluded**, the **waiting period** and the **claim process**.'; r.actions = [act('insurance')]; break;
+    case 'breeds': r.text = 'The **Breeds** guide covers size, energy, grooming and health for dog and cat breeds. Indian native dogs (Indies) are hardy, smart and great for Indian weather — and many are waiting for homes on **Adopt a pet**.'; r.actions = [act('breeds'), act('adopt')]; break;
+    case 'account': r.text = 'Your name, photo, password, privacy and notification choices are in **Settings**. To delete your account, open Settings → Account. If you can\'t sign in, use "Forgot password" on the sign-in page.'; r.actions = [act('settings'), act('login', 'Sign-in page')]; break;
+    case 'support': r.text = (_mode === 'live' ? 'I can raise a support request for the PawBook team — they reply in your notifications.' : 'Sign in and I can raise a support request for the PawBook team. You can also email **support@deemona.com**.') + ' To report cruelty to an animal, use **Report animal cruelty**.'; r.actions = _mode === 'live' ? [{label: 'Raise a support request', url: '#support'}, act('abuse')] : [act('login', 'Sign in'), act('abuse')]; break;
+    case 'thanks': r.text = 'Happy to help! 🐾 Anything else for your pet?'; break;
+    case 'greet': r.text = 'Hi' + (userName() ? ' ' + userName() : '') + '! 🐾 What can I help you and your pet with?'; break;
+    default:
+      r.text = 'I can help with **vets near you, vaccinations, adoption, lost & found, the pet shop, training, food and travel**, and how to use any PawBook page. Try asking it another way, or pick one below.' + signInLine();
+      r.actions = [act('search', 'Search PawBook')];
   }
-  if(pills&&pills.length){
-    html+='<div class="pb-qr-row">';
-    pills.forEach(function(p){
-      html+='<button class="pb-qr-btn" onclick="pbAI.quick(\''+p.replace(/'/g,"\\'")+'\')">'+ p+'</button>';
+  if (!r.suggestions.length) r.suggestions = startersFor();
+  return r;
+}
+function cap(s){ s = String(s || ''); return s.replace(/\b\w/g, function(c){ return c.toUpperCase(); }); }
+function startersFor(){
+  var c = pageCtx(), base = ['Find a vet near me', 'Pets for adoption', 'When are my pet\'s vaccines due?', 'My dog is missing — what should I do?'];
+  var l = (c ? c[2] : []).concat(base), seen = {};
+  return l.filter(function(x){ if (seen[x]) return false; seen[x] = 1; return true; }).slice(0, 4);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PAWBOOK API
+// ═══════════════════════════════════════════════════════════════
+function api(path, o){
+  o = o || {}; var h = {}; if (_token) h.Authorization = 'Bearer ' + _token; var body = o.body;
+  if (body) { h['Content-Type'] = 'application/json'; body = JSON.stringify(body); }
+  var ctl = window.AbortController ? new AbortController() : null, t = ctl ? setTimeout(function(){ ctl.abort(); }, o.timeout || 40000) : null;
+  return fetch(API_BASE + path, {method: o.method || 'GET', headers: h, body: body, signal: ctl ? ctl.signal : undefined}).then(function(r){
+    if (t) clearTimeout(t);
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if (!r.ok || j.success === false) { var e = new Error(j.message || ('HTTP ' + r.status)); e.status = r.status; throw e; }
+      return j.data !== undefined ? j.data : j;
     });
-    html+='</div>';
+  }, function(e){ if (t) clearTimeout(t); e.status = 0; throw e; });
+}
+function onExpired(){   // the saved sign-in is not valid any more
+  _mode = 'guest'; _state = null; _token = ''; setHeadStatus();
+  botMsg({text: 'Your sign-in has expired, so I\'m answering in guest mode. Sign in again to get answers about your own pets and bookings.', actions: [{label: 'Sign in', url: '#login'}]});
+}
+function loadState(force){
+  if (_mode !== 'live') return Promise.resolve(null);
+  if (_state && !force && Date.now() - _stateAt < 120000) return Promise.resolve(_state);
+  return api('/assistant/state', {timeout: 15000}).then(function(d){ _state = d; _stateAt = Date.now(); saveNudge(d); setHeadStatus(); return d; })
+    .catch(function(e){ if (e.status === 401) { _mode = 'guest'; _token = ''; setHeadStatus(); } return null; });
+}
+
+// ── reminders on the button (vaccines due within 7 days / overdue, appointments today or tomorrow) ──
+function todayStr(off){ var d = new Date(Date.now() + (off || 0) * 864e5); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function soonItems(d){
+  var out = []; if (!d) return out; var wk = todayStr(7), t0 = todayStr(0), t1 = todayStr(1);
+  (d.due || []).forEach(function(v){ if (v.overdue || (v.due && v.due <= wk)) out.push({kind: 'vacc', v: v}); });
+  (d.appts || []).forEach(function(a){ if (a.date === t0 || a.date === t1) out.push({kind: 'appt', a: a}); });
+  return out;
+}
+function saveNudge(d){ ssSet('pb_ai_nudge', JSON.stringify({at: Date.now(), n: soonItems(d).length})); showBadge(); }
+function showBadge(){
+  var b = document.getElementById('pb-fab-badge'); if (!b || _open) return; var n = 0;
+  try { var x = JSON.parse(ssGet('pb_ai_nudge') || 'null'); if (x) n = x.n; } catch(e){}
+  if (n > 0) { b.textContent = n > 9 ? '9+' : String(n); b.classList.add('show'); b.title = n + ' reminder' + (n > 1 ? 's' : ''); }
+  else b.classList.remove('show');
+}
+function fdate(d){ var x = new Date(d + 'T00:00:00'); return isNaN(x) ? d : x.toLocaleDateString('en-IN', {weekday: 'short', day: 'numeric', month: 'short'}); }
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDERING
+// ═══════════════════════════════════════════════════════════════
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function fmt(t){ return esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/(^|\n)[•\-\*] /g, '$1• ').replace(/\n/g, '<br>'); }
+function hm(v){ var d = v ? new Date(v) : new Date(); return d.toLocaleTimeString('en-IN', {hour: 'numeric', minute: '2-digit'}); }
+function scrollBottom(){ var el = document.getElementById('pb-ai-msgs'); if (el) el.scrollTop = el.scrollHeight; }
+var TEMOJI = {pets: '🐾', vets: '🩺', communities: '🤝', products: '🛍️', adoption: '🏡', lost: '📍', events: '🎉', shelters: '🏠', people: '👤'};
+function safeUrl(u){ return /^(tel:112$|[0-9]{2}_[a-z_0-9]+\.html([?#][^"'<>\s]*)?$)/.test(String(u || '')); }
+function cardHTML(c){
+  if (c.src === 'google') {
+    return '<div class="pb-card g"><div class="pb-card-im"><b>' + esc(c.emoji || '📍') + '</b></div><div class="pb-card-bd"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '')
+      + '<span class="gl">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">Directions</a>' : '') + (c.phone ? '<a href="tel:' + esc(String(c.phone).replace(/[^\d+]/g, '')) + '">Call</a>' : '') + '</span></div></div>';
   }
-  html+='<div class="pb-msg-time">'+timeNow()+'</div></div>';
-  d.innerHTML=html;
-  msgs.appendChild(d);
-  scrollBottom();
+  var href = safeUrl(c.url) ? c.url : '#';
+  return '<a class="pb-card" href="' + esc(href) + '"><div class="pb-card-im">' + (c.img ? '<img src="' + esc(c.img) + '" alt="" loading="lazy" onerror="this.remove()">' : '<b>' + (TEMOJI[c.type] || '🐾') + '</b>') + (c.badge ? '<span>' + esc(c.badge) + '</span>' : c.near ? '<span>Near you</span>' : '') + '</div>'
+    + '<div class="pb-card-bd"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.price != null ? '<span class="pr">₹' + Number(c.price).toLocaleString('en-IN') + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '') + '<span class="go">' + esc(c.action || 'Open') + ' →</span></div></a>';
 }
-
-function userMsg(text){
-  var msgs=document.getElementById('pb-ai-msgs');
-  if(!msgs) return;
-  var d=document.createElement('div');
-  d.className='pb-msg user';
-  var init=_currentUser?((_currentUser.full_name||_currentUser.username||'U').charAt(0).toUpperCase()):'U';
-  d.innerHTML='<div class="pb-msg-av" style="font-size:10px">'+init+'</div>'+
-    '<div><div class="pb-msg-bubble">'+esc(text)+'</div>'+
-    '<div class="pb-msg-time" style="text-align:right">'+timeNow()+'</div></div>';
-  msgs.appendChild(d);
-  scrollBottom();
+function actHTML(a, gid){
+  if (a.url === '#gnear') return gid ? '<button class="pb-act" onclick="pbAI._runG(\'' + gid + '\')">🗺️ ' + esc(a.label) + '</button>' : '';
+  if (a.url === '#location') return '<button class="pb-act" onclick="pbAI.showLocation()">📍 ' + esc(a.label) + '</button>';
+  if (a.url === '#support') return _mode === 'live' ? '<button class="pb-act" onclick="pbAI.showSupport()">✉️ ' + esc(a.label) + '</button>' : '';
+  if (a.url === '#tickets') return '<a class="pb-act" href="35_ai_agent.html?tickets=1">🎫 ' + esc(a.label) + '</a>';
+  if (a.url === '#login') return '<button class="pb-act pri" onclick="pbAI.showLoginView()">🔐 ' + esc(a.label) + '</button>';
+  if (!safeUrl(a.url)) return '';
+  var sos = /sos=1|^tel:/.test(a.url);
+  return '<a class="pb-act' + (sos ? ' sos' : '') + '" href="' + esc(a.url) + '">' + (/^tel:/.test(a.url) ? '📞 ' : sos ? '🚨 ' : '') + esc(a.label) + ' ↗</a>';
 }
-
-function showTyping(){
-  var msgs=document.getElementById('pb-ai-msgs');
-  if(!msgs||_typing) return;
-  _typing=true;
-  var d=document.createElement('div');
-  d.className='pb-msg bot'; d.id='pb-typing';
-  d.innerHTML='<div class="pb-msg-av">🤖</div><div class="pb-typing"><span></span><span></span><span></span></div>';
+// m: {text, cards, actions, suggestions, id, at, g, offline, past}
+function botMsg(m, pills, extraHtml){
+  if (typeof m === 'string') m = {text: m, suggestions: pills || null, extra: extraHtml || null};
+  var msgs = document.getElementById('pb-ai-msgs'); if (!msgs) return null;
+  var d = document.createElement('div'); d.className = 'pb-msg bot' + (m.past ? ' past' : ''); if (m.id) d.setAttribute('data-id', m.id);
+  var gid = null, acts = (m.actions || []).slice();
+  var g = m.g || (acts.filter(function(a){ return a.url === '#gnear' && a.g; })[0] || {}).g;
+  if (g) { gid = 'g' + (++_ghN); _gh[gid] = g; }
+  var h = '<div class="pb-msg-av">🐾</div><div class="pb-msg-body"><div class="pb-msg-bubble">' + fmt(m.text) + '</div>';
+  if (m.extra) h += '<div style="margin-top:4px">' + m.extra + '</div>';
+  if (m.cards && m.cards.length) h += '<div class="pb-cards">' + m.cards.map(cardHTML).join('') + '</div>' + (m.cards.some(function(c){ return c.src === 'google'; }) ? '<div class="pb-gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead</div>' : '');
+  if (gid) h += '<div class="pb-gx" id="pb-gx-' + gid + '"></div>';
+  var ah = acts.map(function(a){ return actHTML(a, gid); }).join('');
+  if (ah) h += '<div class="pb-acts">' + ah + '</div>';
+  if (m.retry) h += '<div class="pb-acts"><button class="pb-act" data-q="' + esc(m.retry) + '" onclick="pbAI._retry(this)">↻ Try again</button></div>';
+  if (!m.past && m.suggestions && m.suggestions.length) h += '<div class="pb-qr-row">' + m.suggestions.slice(0, 4).map(function(p){ return '<button class="pb-qr-btn" data-q="' + esc(p) + '" onclick="pbAI._pill(this)">' + esc(p) + '</button>'; }).join('') + '</div>';
+  h += '<div class="pb-msg-time">' + esc(hm(m.at)) + (m.offline ? ' · general answer' : '') + (m.id && !m.past ? ' · <button class="pb-fb' + (m.helpful === true ? ' on' : '') + '" title="Helpful" aria-label="Helpful" onclick="pbAI._rate(this,true)">👍</button><button class="pb-fb' + (m.helpful === false ? ' on' : '') + '" title="Not helpful" aria-label="Not helpful" onclick="pbAI._rate(this,false)">👎</button>' : '') + '</div></div>';
+  d.innerHTML = h; msgs.appendChild(d);
+  // remove older suggestion pills so only the latest set shows
+  var rows = msgs.querySelectorAll('.pb-qr-row'); for (var i = 0; i < rows.length - 1; i++) rows[i].remove();
+  scrollBottom();
+  if (gid && !m.past) setTimeout(function(){ pbAI._runG(gid); }, 30);
+  return d;
+}
+function userMsg(text, past, at){
+  var msgs = document.getElementById('pb-ai-msgs'); if (!msgs) return;
+  var d = document.createElement('div'); d.className = 'pb-msg user' + (past ? ' past' : '');
+  var init = (userName() || 'You').charAt(0).toUpperCase();
+  d.innerHTML = '<div class="pb-msg-av">' + esc(init) + '</div><div class="pb-msg-body"><div class="pb-msg-bubble">' + esc(text) + '</div><div class="pb-msg-time" style="text-align:right">' + esc(hm(at)) + '</div></div>';
   msgs.appendChild(d); scrollBottom();
 }
-
-function hideTyping(){
-  var el=document.getElementById('pb-typing');
-  if(el){el.remove();} _typing=false;
+function divider(t){ var msgs = document.getElementById('pb-ai-msgs'); if (!msgs) return; var d = document.createElement('div'); d.className = 'pb-div'; d.textContent = t; msgs.appendChild(d); }
+function showTyping(){
+  var msgs = document.getElementById('pb-ai-msgs'); if (!msgs || _typing) return; _typing = true;
+  var d = document.createElement('div'); d.className = 'pb-msg bot'; d.id = 'pb-typing';
+  d.innerHTML = '<div class="pb-msg-av">🐾</div><div class="pb-typing"><span></span><span></span><span></span></div>'; msgs.appendChild(d); scrollBottom();
+}
+function hideTyping(){ var el = document.getElementById('pb-typing'); if (el) el.remove(); _typing = false; }
+function setHeadStatus(){
+  var s = document.getElementById('pb-ai-status'); if (s) s.innerHTML = '<span class="pb-ai-head-dot"></span> ' + (_mode === 'live' ? 'Signed in' : 'Guest mode');
+  var l = document.getElementById('pb-ai-locbar');
+  if (l) { var c = pageCtx(); l.innerHTML = '<button type="button" onclick="pbAI.showLocation()" title="Set your location">📍 ' + esc(_loc ? locLabel() : 'Set location') + '</button>' + (c ? '<span title="The page you are on">📄 ' + esc(c[0]) + '</span>' : '') + (_mode === 'live' ? '' : '<button type="button" class="pb-signin" onclick="pbAI.showLoginView()">Sign in</button>'); }
 }
 
-function loginPromptMsg(){
-  var html='<div class="pb-login-prompt">'+
-    '<p>🔐 Sign in to access your pet data, bookings & history</p>'+
-    '<div class="pb-login-prompt-btns">'+
-    '<button class="pb-lbtn primary" onclick="pbAI.showLoginView()">Sign In</button>'+
-    '<button class="pb-lbtn secondary" onclick="pbAI.showLoginView(true)">Register</button>'+
-    '</div></div>';
-  botMsg('You\'re not signed in yet.', null, html);
+// ═══════════════════════════════════════════════════════════════
+//  GOOGLE MAPS — nearby places, looked up in the browser with the website's Maps key
+// ═══════════════════════════════════════════════════════════════
+var GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk';
+function loadMaps(){
+  if (window.google && google.maps && google.maps.places && google.maps.places.Place && google.maps.Geocoder) return Promise.resolve(google.maps);
+  if (_gmp) return _gmp;
+  if (window.google && google.maps && google.maps.importLibrary) { _gmp = Promise.all([google.maps.importLibrary('places'), google.maps.importLibrary('geocoding')]).then(function(){ return google.maps; }); return _gmp; }
+  _gmp = new Promise(function(res, rej){
+    window._pbAiMaps = function(){ res(google.maps); };
+    var s = document.createElement('script'); s.src = 'https://maps.googleapis.com/maps/api/js?key=' + GMAPS_KEY + '&libraries=places&v=weekly&region=IN&callback=_pbAiMaps'; s.async = true;
+    s.onerror = function(){ _gmp = null; rej(new Error('maps')); }; document.head.appendChild(s);
+  });
+  return _gmp;
+}
+function km(a, b, c, d){ var r = function(x){ return x * Math.PI / 180; }, dl = r(c - a), dn = r(d - b), h = Math.sin(dl / 2) * Math.sin(dl / 2) + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(dn / 2) * Math.sin(dn / 2); return 6371 * 2 * Math.asin(Math.sqrt(h)); }
+var GQ = {vet: 'veterinary clinic', shelter: 'animal shelter', groomer: 'pet grooming', boarding: 'pet boarding', petstore: 'pet shop'};
+function runG(id){
+  var g = _gh[id], box = document.getElementById('pb-gx-' + id); if (!g || !box) return;
+  var put = function(h){ var b = document.getElementById('pb-gx-' + id); if (b) b.innerHTML = h; scrollBottom(); };
+  put('<div class="pb-gload">⏳ Looking up ' + esc(g.word) + ' near ' + esc(g.near) + ' on Google Maps…</div>');
+  var failed = function(){ put('<div class="pb-gload">Couldn\'t load places from Google Maps right now. <a href="' + P.nearby[0] + '">Open the map</a> instead.</div>'); };
+  loadMaps().then(function(gm){
+    var center = g.lat != null ? Promise.resolve({lat: Number(g.lat), lng: Number(g.lng)}) : new Promise(function(res){ try { new gm.Geocoder().geocode({address: g.address}, function(r, st){ if (st === 'OK' && r[0]) { var l = r[0].geometry.location; res({lat: l.lat(), lng: l.lng()}); } else res(null); }); } catch(e){ res(null); } });
+    return center.then(function(c){
+      if (!c || !gm.places || !gm.places.Place) return failed();
+      var req = {textQuery: GQ[g.kind] || g.text || 'veterinary clinic', fields: ['displayName', 'formattedAddress', 'location', 'rating', 'userRatingCount', 'nationalPhoneNumber', 'googleMapsURI', 'businessStatus', 'regularOpeningHours', 'utcOffsetMinutes'], locationBias: {center: c, radius: 8000}, maxResultCount: 10, region: 'in'};
+      if (gm.places.SearchByTextRankPreference) req.rankPreference = gm.places.SearchByTextRankPreference.DISTANCE;
+      return gm.places.Place.searchByText(req).then(function(r){
+        var list = (r.places || []).filter(function(p){ return p.location && p.businessStatus !== 'CLOSED_PERMANENTLY'; }).map(function(p){
+          var la = typeof p.location.lat === 'function' ? p.location.lat() : p.location.lat, ln = typeof p.location.lng === 'function' ? p.location.lng() : p.location.lng;
+          return {p: p, km: km(c.lat, c.lng, la, ln)}; }).filter(function(x){ return x.km <= 25; }).sort(function(a, b){ return a.km - b.km; }).slice(0, 6);
+        if (!list.length) return put('<div class="pb-gload">Google Maps has no ' + esc(g.word) + ' listed near ' + esc(g.near) + '. <a href="' + P.nearby[0] + '">Open the map</a> to look further out.</div>');
+        return Promise.all(list.map(function(x){ return (x.p.isOpen ? Promise.resolve(x.p.isOpen()).catch(function(){ return undefined; }) : Promise.resolve(undefined)).then(function(o){ x.open = o; return x; }); })).then(function(list){
+          var cards = list.map(function(x){ var p = x.p, name = typeof p.displayName === 'string' ? p.displayName : (p.displayName && p.displayName.text) || 'Place';
+            var url = /^https:\/\/(maps\.google\.com|www\.google\.com\/maps|maps\.app\.goo\.gl|goo\.gl)/.test(p.googleMapsURI || '') ? p.googleMapsURI : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name + ' ' + (p.formattedAddress || ''));
+            return {src: 'google', emoji: g.emoji, title: name, sub: (p.formattedAddress || '').replace(/, India$/, ''), phone: p.nationalPhoneNumber || null, url: url,
+              meta: [x.km < 1 ? Math.round(x.km * 1000) + ' m away' : (Math.round(x.km * 10) / 10) + ' km away', x.open === true ? 'Open now' : x.open === false ? 'Closed now' : null, p.rating ? '★ ' + p.rating + (p.userRatingCount ? ' (' + p.userRatingCount + ')' : '') : null].filter(Boolean).join(' · ')}; });
+          put('<div class="pb-cards">' + cards.map(cardHTML).join('') + '</div><div class="pb-gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead before visiting</div>');
+        });
+      });
+    });
+  }).catch(failed);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -501,36 +754,193 @@ window.pbAI = {
 
   toggle: function(){
     _open = !_open;
-    var panel=document.getElementById('pb-ai-panel');
-    var fab=document.getElementById('pb-ai-fab');
-    if(_open){
-      panel.classList.add('open');
-      fab.classList.add('open');
-      // Hide the new-message badge
-      var badge=document.getElementById('pb-fab-badge');
-      if(badge) badge.classList.remove('show');
-      // Greet once
-      if(!_greeted){ _greeted=true; this._greet(); }
-      setTimeout(function(){ var inp=document.getElementById('pb-ai-input'); if(inp) inp.focus(); },300);
+    var panel = document.getElementById('pb-ai-panel'), fab = document.getElementById('pb-ai-fab');
+    if (_open) {
+      panel.classList.add('open'); fab.classList.add('open'); fab.setAttribute('aria-expanded', 'true');
+      var badge = document.getElementById('pb-fab-badge'); if (badge) badge.classList.remove('show');
+      readSession(); readLoc(); setHeadStatus();
+      if (!_greeted) { _greeted = true; this._greet(); }
+      setTimeout(function(){ var inp = document.getElementById('pb-ai-input'); if (inp && window.innerWidth > 600) inp.focus(); }, 300);
     } else {
-      panel.classList.remove('open');
-      fab.classList.remove('open');
+      panel.classList.remove('open'); fab.classList.remove('open'); fab.setAttribute('aria-expanded', 'false');
+      window.speechSynthesis && window.speechSynthesis.cancel();
     }
   },
 
+  // Greeting: who you are, what's due for your pets, and what you can do on this page
   _greet: function(){
-    var h=new Date().getHours();
-    var g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-    var name=_currentUser?(' '+(_currentUser.full_name||_currentUser.username||'')):'';
-    botMsg(g+name+'! 🐾 I\'m PawBook AI — your complete guide to all 35 PawBook features.\n\n💬 **Ask me anything** — features, how to use them, testing steps.\n📋 **Tap 📋 above** to browse all features with one tap.\n🎙 **Use voice** — tap 🎙 to speak your question.\n🌐 **Change language** — tap 🌐 for Hindi, Tamil, Telugu & more.',
-      ['Browse all features','Lost pet','Book a vet','Emergency']);
-    // show badge on FAB before first open
+    var self = this, h = new Date().getHours(), g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening', c = pageCtx();
+    if (_mode !== 'live') {
+      botMsg({text: g + '! 🐾 I\'m **PawBook AI**.\n\n' + (c ? 'You\'re on **' + c[0] + '** — ' + c[1] + '\n\n' : '') + 'I can find **vets, groomers and shelters near you**, guide you through **adoption, lost & found, vaccinations, training and food**, and help with any PawBook page.\n\n🔐 **Sign in** and I can also use your own pets, vaccinations and bookings.',
+        actions: [{label: 'Sign in', url: '#login'}].concat(_loc ? [] : [{label: 'Set my location', url: '#location'}]), suggestions: startersFor()});
+      return;
+    }
+    showTyping();
+    loadState(true).then(function(d){
+      hideTyping();
+      if (!d) { if (_mode !== 'live') return self._greet(); botMsg({text: g + '! 🐾 I couldn\'t reach PawBook just now, so I\'ll give general answers for a bit. In an emergency, open SOS.', actions: [act('sos')], suggestions: startersFor()}); return; }
+      var past = (d.messages || []).slice(-6);
+      if (past.length) {
+        divider('Earlier — your conversation with the PawBook Assistant');
+        past.forEach(function(m){ if (m.role === 'user') userMsg(m.text, true, m.at); else botMsg({text: m.text, cards: m.cards, actions: (m.actions || []).filter(function(a){ return a.url !== '#gnear'; }), at: m.at, past: true}); });
+        divider('Today');
+      }
+      var name = d.name || userName(), L = [g + (name ? ', ' + name : '') + '! 🐾'];
+      var soon = soonItems(d);
+      if (soon.length) {
+        L.push('\n**Coming up for your pets:**');
+        soon.slice(0, 4).forEach(function(x){
+          if (x.kind === 'vacc') L.push('• **' + x.v.pet + '** — ' + x.v.vaccine + (x.v.overdue ? ' was due **' + fdate(x.v.due) + '** (overdue)' : ' due **' + fdate(x.v.due) + '**'));
+          else L.push('• Vet visit' + (x.a.pet ? ' for **' + x.a.pet + '**' : '') + ' — **' + fdate(x.a.date) + (x.a.time ? ', ' + x.a.time : '') + '**' + (x.a.vet ? ' with ' + x.a.vet : '') + (x.a.clinic ? ' (' + x.a.clinic + ')' : ''));
+        });
+      } else if ((d.pets || []).length) L.push('\nNothing is due for ' + d.pets.map(function(p){ return p.name; }).slice(0, 3).join(', ') + ' in the next week. ✅');
+      else L.push('\nAdd your pet on **My pets** and I\'ll keep track of vaccinations and vet visits for you.');
+      if (c) L.push('\nYou\'re on **' + c[0] + '** — ask me anything about it.');
+      if (!_loc) L.push('\n📍 Set your location for vets and places near you.');
+      var acts = [];
+      if (soon.some(function(x){ return x.kind === 'vacc'; })) acts.push(act('vet', 'Book a vaccination visit'), act('vacc'));
+      if (soon.some(function(x){ return x.kind === 'appt'; })) acts.push(act('appts'));
+      if (!(d.pets || []).length) acts.push(act('pets', 'Add my pet'));
+      if (!_loc) acts.push({label: 'Set my location', url: '#location'});
+      if (d.open_tickets) acts.push({label: 'My support requests (' + d.open_tickets + ' open)', url: '#tickets'});
+      botMsg({text: L.join('\n'), actions: acts.slice(0, 4), suggestions: startersFor()});
+    });
+  },
+
+  send: function(){
+    var inp = document.getElementById('pb-ai-input'), text = inp.value.trim();
+    if (!text || _busy) return;
+    inp.value = ''; inp.style.height = '';
+    this._process(text);
+  },
+  quick: function(text){ this._process(text); },
+  _pill: function(b){ this._process(b.getAttribute('data-q')); },
+  _retry: function(b){ var q = b.getAttribute('data-q'); var m = b.closest('.pb-msg'); if (m) m.remove(); this._process(q, true); },
+
+  _process: function(text, isRetry){
+    text = String(text || '').trim().slice(0, 1000); if (!text || _busy) return;
+    var low = text.toLowerCase(), viaVoice = this._viaVoice; this._viaVoice = false;
+    if (low === 'browse all features') { this.toggleFeatures(); return; }
+    if (low === 'set my location') { this.showLocation(); return; }
+    if (low === 'open sos') { location.href = P.sos[0]; return; }
+    if (low === 'raise a support request') { if (_mode === 'live') { this.showSupport(); return; } }
+    if (!isRetry) userMsg(text);
+    _lastQ = text;
+    var self = this, intent = detectIntent(text), done = function(m){ hideTyping(); _busy = false; var b = document.getElementById('pb-send-btn'); if (b) b.disabled = false; if (m) { botMsg(m); self._speak(m.text, viaVoice); } };
+    // instant, safe answers that never wait for the network
+    if (intent === 'emergency' || intent === 'pagehelp' || _mode !== 'live') {
+      showTyping(); _busy = true;
+      setTimeout(function(){ done(localReply(text)); }, intent === 'emergency' ? 50 : 350);
+      return;
+    }
+    _busy = true; document.getElementById('pb-send-btn').disabled = true; showTyping();
+    api('/assistant/chat', {method: 'POST', body: {message: text, location: _loc || undefined}}).then(function(d){
+      // when the server answered from simple rules (no AI) and misread an advice question (e.g. "leash" read as shopping),
+      // the built-in guide answers it better — use that, unless the server found real listings
+      if (d.source !== 'ai' && ADVICE[intent] && d.intent !== intent && !(d.cards && d.cards.length)) { var lr = localReply(text); lr.at = d.at; done(lr); _stateAt = 0; return; }
+      done({id: d.id, text: d.text, cards: d.cards, actions: d.actions, suggestions: d.suggestions && d.suggestions.length ? d.suggestions : startersFor(), at: d.at});
+      _stateAt = 0;   // the next greeting re-reads what's due
+    }).catch(function(e){
+      if (e.status === 401) { done(null); onExpired(); botMsg(localReply(text)); return; }
+      if (e.status === 429) { done({text: 'You\'re sending messages very fast — please wait a minute and try again.', retry: text}); return; }
+      var r = localReply(text); r.offline = true; r.retry = text;
+      r.text = 'I couldn\'t reach PawBook just now, so here\'s a general answer:\n\n' + r.text;
+      done(r);
+    });
+  },
+
+  _rate: function(b, v){
+    var m = b.closest('.pb-msg'), id = m && m.getAttribute('data-id'); if (!id || _mode !== 'live') return;
+    api('/assistant/messages/' + encodeURIComponent(id) + '/feedback', {method: 'POST', body: {helpful: v}}).then(function(){
+      b.parentNode.querySelectorAll('.pb-fb').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); b.title = 'Thanks for the feedback!';
+    }).catch(function(){});
+  },
+
+  _runG: function(id){ runG(id); },
+
+  handleKey: function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); } },
+  autoResize: function(el){ el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 90) + 'px'; },
+
+  clearChat: function(btn){
+    var self = this, reset = function(){ var msgs = document.getElementById('pb-ai-msgs'); if (msgs) msgs.innerHTML = ''; _greeted = true; self._greet(); };
+    if (_mode !== 'live') { reset(); return; }
+    if (btn && btn.getAttribute('data-sure') !== '1') {
+      btn.setAttribute('data-sure', '1'); btn.textContent = '✓'; btn.title = 'Tap again to clear the conversation';
+      setTimeout(function(){ btn.removeAttribute('data-sure'); btn.textContent = '🗑'; btn.title = 'Clear conversation'; }, 4000); return;
+    }
+    if (btn) { btn.removeAttribute('data-sure'); btn.textContent = '🗑'; }
+    api('/assistant/history', {method: 'DELETE'}).then(function(){ if (_state) _state.messages = []; reset(); }).catch(function(){ reset(); });
+  },
+
+  openFull: function(){ location.href = _mode === 'live' ? P.assistant[0] : P.login[0]; },
+
+  // ── LOCATION (shared with the Assistant page; used for "near me") ──
+  _view: function(id){
+    ['pb-chat-view', 'pb-login-view', 'pb-features-view', 'pb-loc-view'].forEach(function(v){ var el = document.getElementById(v); if (el) el.style.display = v === id ? 'flex' : 'none'; });
+    var fb = document.getElementById('pb-feat-btn'); if (fb) fb.style.background = id === 'pb-features-view' ? 'rgba(255,255,255,.4)' : '';
+    this._featVisible = id === 'pb-features-view';
+  },
+  showLocation: function(){
+    readLoc(); var f = document.getElementById('pb-loc-form'), l = _loc || {};
+    f.city.value = l.city || ''; f.area.value = l.area || ''; f.pin.value = l.pin || ''; f.state.value = l.state || ''; f.lat.value = l.lat != null ? l.lat : ''; f.lng.value = l.lng != null ? l.lng : '';
+    document.getElementById('pb-loc-msg').textContent = ''; document.getElementById('pb-loc-clear').style.display = _loc ? '' : 'none';
+    this._view('pb-loc-view'); setTimeout(function(){ f.city.focus(); }, 50);
+  },
+  saveLocation: function(e){
+    if (e) e.preventDefault();
+    var f = document.getElementById('pb-loc-form'), m = document.getElementById('pb-loc-msg');
+    var l = {country: 'India', state: f.state.value.trim(), city: f.city.value.trim(), area: f.area.value.trim(), pin: f.pin.value.replace(/\D/g, '').slice(0, 6)};
+    if (!l.city && l.pin.length !== 6) { m.textContent = 'Type your city, or a 6-digit PIN code.'; f.city.focus(); return; }
+    if (l.pin && l.pin.length !== 6) { m.textContent = 'A PIN code has 6 digits.'; f.pin.focus(); return; }
+    var la = parseFloat(f.lat.value), ln = parseFloat(f.lng.value); if (isFinite(la) && isFinite(ln)) { l.lat = la; l.lng = ln; }
+    var finish = function(){ lsSet('pb_assist_loc', JSON.stringify(l)); _loc = l; setHeadStatus(); pbAI._view('pb-chat-view'); botMsg({text: '📍 Got it — I\'ll use **' + locLabel(l) + '** for places near you.', suggestions: ['Find a vet near me', 'Pet groomers near me', 'Pets for adoption in my city']}); };
+    if (l.lat != null) return finish();
+    // find the map point once, so "near me" lookups are accurate (works without it too)
+    loadMaps().then(function(gm){ new gm.Geocoder().geocode({address: [l.area, l.city, l.state, l.pin, 'India'].filter(Boolean).join(', ')}, function(r, st){
+      if (st === 'OK' && r && r[0]) { var p = r[0].geometry.location; l.lat = Math.round(p.lat() * 1e5) / 1e5; l.lng = Math.round(p.lng() * 1e5) / 1e5; } finish(); }); }).catch(finish);
+  },
+  clearLocation: function(){ lsSet('pb_assist_loc', null); _loc = null; readLoc(); setHeadStatus(); this._view('pb-chat-view'); botMsg({text: _loc ? '📍 Cleared. I\'m now using the area you picked on Adopt a pet: **' + locLabel() + '**.' : '📍 Location cleared.'}); },
+  useGps: function(b){
+    var m = document.getElementById('pb-loc-msg'), f = document.getElementById('pb-loc-form');
+    if (!navigator.geolocation) { m.textContent = 'Location is not available in this browser — type your city instead.'; return; }
+    b.disabled = true; b.textContent = '⏳ Finding you…';
+    var done = function(t){ b.disabled = false; b.textContent = '🎯 Use my current location'; if (t) m.textContent = t; };
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var la = pos.coords.latitude, ln = pos.coords.longitude; f.lat.value = Math.round(la * 1e5) / 1e5; f.lng.value = Math.round(ln * 1e5) / 1e5;
+      loadMaps().then(function(gm){ new gm.Geocoder().geocode({location: {lat: la, lng: ln}}, function(r, st){
+        if (st !== 'OK' || !r || !r[0]) { done('Found you on the map — type your city and save.'); return; }
+        var comps = r[0].address_components || [], gt = function(t){ var x = comps.filter(function(a){ return a.types.indexOf(t) >= 0; })[0]; return x ? x.long_name : ''; };
+        f.city.value = gt('locality') || gt('administrative_area_level_3') || gt('administrative_area_level_2'); f.state.value = gt('administrative_area_level_1');
+        f.area.value = gt('sublocality_level_1') || gt('sublocality') || gt('neighborhood') || ''; f.pin.value = gt('postal_code');
+        done('Found: ' + [f.area.value, f.city.value, f.pin.value].filter(Boolean).join(', ') + ' — check and save.'); }); })
+      .catch(function(){ done('Found you on the map — type your city and save.'); });
+    }, function(){ done('Location permission was not given — type your city instead.'); }, {timeout: 10000, maximumAge: 600000});
+  },
+
+  // ── SUPPORT REQUEST (signed in) ──
+  showSupport: function(){
+    var self = this, TOP = [['account', 'Account & sign-in'], ['payment', 'Payment or refund'], ['order', 'Shop order'], ['vet', 'Vet booking'], ['listing', 'Fake or wrong listing'], ['safety', 'Safety or harassment'], ['bug', 'Something is not working'], ['grievance', 'Grievance (IT Rules)'], ['other', 'Other']];
+    var html = '<form class="pb-sup" onsubmit="pbAI.submitSupport(event)"><select name="topic" class="pb-finput" required><option value="">What is it about?</option>' + TOP.map(function(t){ return '<option value="' + t[0] + '">' + esc(t[1]) + '</option>'; }).join('') + '</select>'
+      + '<input name="subject" class="pb-finput" maxlength="150" placeholder="Short title" required>'
+      + '<textarea name="message" class="pb-finput" rows="3" maxlength="4000" placeholder="What happened? (at least 15 characters — never share passwords, OTPs, card or ID numbers)" required></textarea>'
+      + '<div class="pb-sup-err"></div><button class="pb-fsubmit" type="submit">Send to the PawBook team</button></form>';
+    botMsg({text: '✉️ Tell the PawBook team what happened. They reply in your **notifications**, usually within 24 hours.', extra: html});
+  },
+  submitSupport: function(e){
+    e.preventDefault(); var f = e.target, err = f.querySelector('.pb-sup-err'), b = f.querySelector('button');
+    var body = {topic: f.topic.value, subject: f.subject.value.trim(), message: f.message.value.trim(), page_url: PAGE};
+    if (!body.topic || body.subject.length < 4 || body.message.length < 15) { err.textContent = 'Pick a topic, add a short title and at least 15 characters.'; return; }
+    b.disabled = true; b.textContent = 'Sending…';
+    api('/assistant/support', {method: 'POST', body: body}).then(function(d){
+      f.outerHTML = '<div class="pb-sup-ok">✅ Request <b>' + esc(d.ticket && d.ticket.ref || '') + '</b> sent. You\'ll get the reply in your notifications.</div>';
+      botMsg({text: 'Your support request is raised. Anything else I can help with?', actions: [{label: 'My support requests', url: '#tickets'}]});
+    }).catch(function(x){ b.disabled = false; b.textContent = 'Send to the PawBook team'; err.textContent = x.status === 401 ? 'Please sign in again.' : (x.message || 'Could not send — try again.'); });
   },
 
   // ── VOICE ENGINE ──────────────────────────────────────────────
   _voiceRecog: null,
   _voiceActive: false,
-  _ttsEnabled: true,
+  _ttsEnabled: lsGet('pb_ai_tts') === '1',   // read replies aloud (off by default; questions asked by voice are always answered aloud)
   _ttsLang: '',       // auto-detected from speech (fallback)
   _selectedLang: 'en-IN',  // explicitly chosen by user via lang picker
 
@@ -562,7 +972,7 @@ window.pbAI = {
   _startVoice: function(){
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if(!SR){
-      botMsg('Voice input is not supported in this browser. Please use Chrome or Edge. 🎙');
+      botMsg('Voice input isn\'t available in this browser. Try Chrome or Edge, or type your question. 🎙');
       return;
     }
     // Stop any ongoing TTS
@@ -617,7 +1027,7 @@ window.pbAI = {
       // Auto-send if we got text
       var inp = document.getElementById('pb-ai-input');
       if(inp && inp.value.trim()){
-        setTimeout(function(){ pbAI.send(); }, 100);
+        setTimeout(function(){ pbAI._viaVoice = true; pbAI.send(); }, 100);
       }
     };
 
@@ -638,8 +1048,8 @@ window.pbAI = {
     if(vi) vi.textContent = '';
   },
 
-  _speak: function(text){
-    if(!this._ttsEnabled) return;
+  _speak: function(text, force){
+    if(!text || (!this._ttsEnabled && !force)) return;
     if(!window.speechSynthesis) return;
     // Strip markdown symbols for cleaner speech
     var clean = text
@@ -648,7 +1058,7 @@ window.pbAI = {
       .replace(/#{1,6}\s/g,'')
       .replace(/`([^`]+)`/g,'$1')
       .replace(/\n/g,'. ')
-      .substring(0, 500); // cap length
+      .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu,'').replace(/•/g,'').substring(0, 600); // cap length, no emoji read out
 
     window.speechSynthesis.cancel();
     var utt = new SpeechSynthesisUtterance(clean);
@@ -696,7 +1106,7 @@ window.pbAI = {
   },
 
   toggleTTS: function(){
-    this._ttsEnabled = !this._ttsEnabled;
+    this._ttsEnabled = !this._ttsEnabled; lsSet('pb_ai_tts', this._ttsEnabled ? '1' : '0');
     var btn = document.getElementById('pb-tts-toggle');
     if(btn){
       btn.textContent = this._ttsEnabled ? '🔊' : '🔇';
@@ -765,340 +1175,99 @@ window.pbAI = {
     }
   },
   // ── END VOICE ENGINE ──────────────────────────────────────────
+  _initTTSButton: function(){ var b = document.getElementById('pb-tts-toggle'); if (b) { b.textContent = this._ttsEnabled ? '🔊' : '🔇'; b.classList.toggle('muted', !this._ttsEnabled); b.title = this._ttsEnabled ? 'Reading replies aloud — tap to stop' : 'Read replies aloud'; } },
 
-  // ── FEATURES GUIDE ───────────────────────────────────────────
+  // ── FEATURES GUIDE (what PawBook has, and where) ──
   _FEATURES: [
-    { icon:'🏠', title:'Home Feed', desc:'Social feed — post photos, videos, feelings & location. Like, comment, share, save.', tags:['Post a photo','Add feeling','Like a post','Comment','Share post','Story'], page:'07_home.html', section:'Social' },
-    { icon:'👤', title:'My Profile', desc:'Your pet parent profile with bio, cover photo, pets grid, posts and followers.', tags:['Edit profile','My pets','View posts','Add photo'], page:'02_profile.html', section:'Social' },
-    { icon:'👥', title:'Groups & Community', desc:'500+ local & breed groups. Create groups, chat, post events.', tags:['Join a group','Create group','Find local groups','Group events'], page:'03_groups.html', section:'Social' },
-    { icon:'📖', title:'Stories', desc:'24-hour disappearing photos & videos with stickers and text overlays.', tags:['Post a story','View story','Add sticker','Who viewed'], page:'07_home.html', section:'Social' },
-    { icon:'💬', title:'Direct Messages', desc:'Private 1-on-1 and group chat with photos, voice notes and read receipts.', tags:['Send a message','Group chat','Voice note','Read receipts'], page:'', section:'Social' },
-    { icon:'🔍', title:'Lost & Found', desc:'Report a lost pet — alerts sent to users within 10 km radius instantly.', tags:['Report lost pet','Found a pet','View alerts','Share alert'], page:'05_lost_pet.html', section:'Pet Care' },
-    { icon:'🐾', title:'Adoption', desc:'Browse 1,200+ pets from verified shelters across India & UAE. Filter by breed, age, city.', tags:['Adopt a dog','Adopt a cat','Find shelter','Adoption tips'], page:'04_adoption.html', section:'Pet Care' },
-    { icon:'🚨', title:'Emergency Services', desc:'24/7 emergency vet numbers, first aid guides, and live emergency map.', tags:['Emergency number','First aid','Find 24hr vet','Emergency map'], page:'37_pet_ai_health_agent.html?sos=1', section:'Pet Care' },
-    { icon:'🏥', title:'Vet Booking', desc:'Book in-clinic (₹300–₹1,000), video (₹200–₹500) or home-visit (₹800–₹2,000) vet appointments.', tags:['Book a vet','Video consult','Find vet near me','My bookings'], page:'11_vet_booking.html', section:'Pet Care' },
-    { icon:'💉', title:'Vaccination Diary', desc:'Track all vaccines with calendar, reminders 7 days ahead, and PDF export.', tags:['Add vaccine record','Upcoming vaccines','Dog schedule','Cat schedule','Export PDF'], page:'10_vaccination.html', section:'Pet Care' },
-    { icon:'🎓', title:'Pet Training', desc:'Video lessons, certified trainers (₹500–₹2,000), breed guides and progress tracker.', tags:['Find a trainer','Stop barking','Potty training','Puppy 101'], page:'22_training.html', section:'Pet Care' },
-    { icon:'✈️', title:'Pet Travel', desc:'Airline pet policies, IRCTC guide, international travel requirements, travel checklist.', tags:['Airline rules','Train travel','International travel','Travel checklist'], page:'24_pet_travel.html', section:'Pet Care' },
-    { icon:'🛍️', title:'Marketplace', desc:'Buy/sell pet food, accessories, grooming tools, toys, and responsibly-bred pets.', tags:['Browse listings','Post a listing','Pet food','Grooming tools','Safety tips'], page:'09_marketplace.html', section:'Commerce' },
-    { icon:'🗺️', title:'Discover Map', desc:'Find vets, groomers, pet shops, shelters, 24hr emergency clinics near you worldwide.', tags:['Vets near me','Grooming salons','Pet shops','Boarding'], page:'26_discover.html', section:'Commerce' },
-    { icon:'🛡️', title:'Pet Insurance', desc:'Plans from ₹500/month. File claims, get reimbursed in 7 days.', tags:['View plans','Get a quote','File a claim','Compare plans'], page:'21_pet_insurance.html', section:'Commerce' },
-    { icon:'📺', title:'Live Streaming', desc:'Watch pet live streams or go live yourself. Chat, react with emojis, gift coins.', tags:['Watch a stream','Go Live','Emoji reactions','Gift coins'], page:'34_live.html', section:'Entertainment' },
-    { icon:'📚', title:'Breeds Encyclopedia', desc:'200+ dog breeds & 80+ cat breeds with photos, temperament, health info and quiz.', tags:['Search a breed','Compare breeds','Breed quiz','Breed photos'], page:'33_breeds.html', section:'Entertainment' },
-    { icon:'📊', title:'Analytics', desc:'Post engagement charts, follower growth, vaccination compliance score and PDF report.', tags:['View engagement','Follower growth','Vaccination score','Export report'], page:'25_analytics.html', section:'Account' },
-    { icon:'🔔', title:'Notifications', desc:'All activity in one place — social, health reminders, marketplace, emergency alerts.', tags:['View notifications','Mark all read','Notification settings','Quiet hours'], page:'12_notifications.html', section:'Account' },
-    { icon:'⚙️', title:'Settings', desc:'Password, privacy, dark mode, notification preferences, security, connected apps.', tags:['Change password','Dark mode','Privacy settings','Block a user','Delete account'], page:'14_settings.html', section:'Account' },
-    { icon:'📋', title:'Complaints & Support', desc:'Report abuse or fraud (4-hr response), technical issues (24-hr response).', tags:['Report a user','Report listing','Technical bug','Contact support'], page:'', section:'Account' }
+    {icon: '🏠', title: 'Home feed', desc: 'Posts from pet parents and communities you follow.', tags: ['Communities near me', 'Events near me'], page: '07_home.html', section: 'Social'},
+    {icon: '🤝', title: 'Communities', desc: 'Groups by city, area, breed or interest.', tags: ['Communities near me'], page: '03_groups.html', section: 'Social'},
+    {icon: '🎉', title: 'Events', desc: 'Meetups, adoption drives, camps and shows.', tags: ['Events near me', 'Adoption drives'], page: '30_events.html', section: 'Social'},
+    {icon: '💞', title: 'PawMatch', desc: 'Playdates, walk buddies and companions for your pet — match, chat and fix a date.', tags: ['How does PawMatch work?', 'Is PawMatch safe?'], page: '35_pawmatch.html', section: 'Social'},
+    {icon: '💬', title: 'Messages', desc: 'Private chats with other pet parents.', tags: ['How do I report a user?'], page: '13_messages.html', section: 'Social'},
+    {icon: '🩺', title: 'Book a vet', desc: 'Vets listed on PawBook — timings, booking and your appointments.', tags: ['Find a vet near me', 'My appointments'], page: '11_vet_booking.html', section: 'Pet care'},
+    {icon: '💉', title: 'Vaccinations', desc: 'Your pet\'s vaccination records and what is due next.', tags: ['When are my pet\'s vaccines due?', 'Puppy vaccine schedule'], page: '10_vaccination.html', section: 'Pet care'},
+    {icon: '📋', title: 'My pets & health records', desc: 'Vaccinations, medicines and vet visits in one place.', tags: ['My pets'], page: '36_pet_life_record.html', section: 'Pet care'},
+    {icon: '🤖', title: 'AI health check & SOS', desc: 'Judge how urgent a symptom is, first aid steps and nearby help.', tags: ['My dog is vomiting', 'First aid for heatstroke'], page: '37_pet_ai_health_agent.html', section: 'Pet care'},
+    {icon: '📍', title: 'Lost & Found', desc: 'Report a lost or found pet and see cases near you.', tags: ['My dog is missing — what should I do?', 'I found a pet'], page: '38_lost_pet_network.html', section: 'Pet care'},
+    {icon: '🏡', title: 'Adopt a pet', desc: 'Pets looking for homes, adoption rules and documents, and shelters near you.', tags: ['What documents do I need to adopt?', 'Pets for adoption in my city'], page: '39_adoption_matching.html', section: 'Pet care'},
+    {icon: '🎓', title: 'Training & behaviour', desc: 'Guides for good manners and common problems.', tags: ['Potty training a puppy', 'How do I stop my dog pulling on the leash?'], page: '22_training.html', section: 'Pet care'},
+    {icon: '🥣', title: 'Meal planner', desc: 'Meal plans and recipes for your pet.', tags: ['Foods dogs must never eat', 'How much should my puppy eat?'], page: '23_nutrition.html', section: 'Pet care'},
+    {icon: '✈️', title: 'Pet travel', desc: 'Guides for travelling with your pet.', tags: ['Travelling with my dog by train'], page: '24_pet_travel.html', section: 'Pet care'},
+    {icon: '📚', title: 'Breeds', desc: 'Size, energy, grooming and health for dog and cat breeds.', tags: ['Which dog breed suits a small flat?'], page: '33_breeds.html', section: 'Pet care'},
+    {icon: '🛍️', title: 'Pet shop', desc: 'Food, treats, toys, grooming and care products.', tags: ['Dog food', 'Cat litter', 'My orders'], page: '42_shop.html', section: 'Shop & services'},
+    {icon: '🗺️', title: 'Discover map', desc: 'Pet places near you on the map.', tags: ['Pet groomers near me', 'Find pet boarding near me'], page: '26_discover.html', section: 'Shop & services'},
+    {icon: '🛡️', title: 'Pet insurance', desc: 'Insurance options — check exclusions and waiting periods.', tags: ['What should I check before buying pet insurance?'], page: '21_pet_insurance.html', section: 'Shop & services'},
+    {icon: '🏪', title: 'Sell on PawBook', desc: 'List your products after a quick verification.', tags: ['How do I sell on PawBook?'], page: '49_seller_join.html', section: 'Shop & services'},
+    {icon: '⚙️', title: 'Settings', desc: 'Account, privacy, password and notifications.', tags: ['How do I delete my account?', 'I can\'t sign in'], page: '14_settings.html', section: 'Account & help'},
+    {icon: '🚩', title: 'Report animal cruelty', desc: 'Report cruelty with photos, place and time.', tags: ['How do I report animal cruelty?'], page: '36_abuse_reporting.html', section: 'Account & help'},
+    {icon: '✉️', title: 'Help & support', desc: 'Raise a support request to the PawBook team, or email support@deemona.com.', tags: ['Raise a support request'], page: '35_ai_agent.html?support=1', section: 'Account & help'}
   ],
-
   _featVisible: false,
-
   toggleFeatures: function(){
-    this._featVisible = !this._featVisible;
-    var chatView = document.getElementById('pb-chat-view');
-    var featView = document.getElementById('pb-features-view');
-    var btn = document.getElementById('pb-feat-btn');
-    if(this._featVisible){
-      if(chatView) chatView.style.display = 'none';
-      if(featView){ featView.style.display = 'flex'; this._renderFeatureCards(''); }
-      if(btn) btn.style.background = '#e7f0fd';
-    } else {
-      if(chatView) chatView.style.display = 'flex';
-      if(featView) featView.style.display = 'none';
-      if(btn) btn.style.background = '';
-    }
+    if (this._featVisible) { this._view('pb-chat-view'); return; }
+    this._view('pb-features-view'); this._renderFeatureCards(document.getElementById('pb-feat-search').value || '');
   },
-
-  filterFeatures: function(q){
-    this._renderFeatureCards(q || '');
-  },
-
+  filterFeatures: function(q){ this._renderFeatureCards(q || ''); },
   _renderFeatureCards: function(q){
-    var list = document.getElementById('pb-feat-list');
-    if(!list) return;
-    var query = (q || '').toLowerCase().trim();
-    var features = this._FEATURES;
-    if(query){
-      features = features.filter(function(f){
-        return f.title.toLowerCase().indexOf(query) !== -1 ||
-               f.desc.toLowerCase().indexOf(query) !== -1 ||
-               f.tags.some(function(t){ return t.toLowerCase().indexOf(query) !== -1; });
-      });
-    }
-    // Group by section
-    var sections = {};
-    features.forEach(function(f){
-      if(!sections[f.section]) sections[f.section] = [];
-      sections[f.section].push(f);
+    var list = document.getElementById('pb-feat-list'); if (!list) return;
+    var query = (q || '').toLowerCase().trim(), fs = this._FEATURES.filter(function(f){ return !query || (f.title + ' ' + f.desc + ' ' + f.tags.join(' ')).toLowerCase().indexOf(query) !== -1; });
+    if (!fs.length) { list.innerHTML = '<div style="text-align:center;padding:24px;color:#65676b;font-size:12px">Nothing found for "' + esc(q) + '" — ask me in the chat instead.</div>'; return; }
+    var html = '', sec = '';
+    fs.forEach(function(f, i){
+      if (!query && f.section !== sec) { sec = f.section; html += '<div class="pb-feat-section">' + esc(sec) + '</div>'; }
+      html += '<div class="pb-feat-card"><div class="pb-feat-card-head"><span class="pb-feat-card-icon">' + f.icon + '</span><span class="pb-feat-card-title">' + esc(f.title) + '</span>'
+        + '<a class="pb-feat-open" href="' + esc(f.page) + '">Open ↗</a></div><div class="pb-feat-card-desc">' + esc(f.desc) + '</div><div class="pb-feat-card-tags">'
+        + f.tags.map(function(t){ return '<button type="button" class="pb-feat-tag" data-q="' + esc(t) + '" onclick="pbAI._featQuick(this)">' + esc(t) + '</button>'; }).join('') + '</div></div>';
     });
-    var html = '';
-    if(!features.length){
-      html = '<div style="text-align:center;padding:24px;color:#65676b;font-size:12px">No features found for "'+q+'"</div>';
-    } else {
-      var sectionOrder = ['Social','Pet Care','Commerce','Entertainment','Account'];
-      sectionOrder.forEach(function(sec){
-        if(!sections[sec]) return;
-        if(!query) html += '<div class="pb-feat-section">'+sec+'</div>';
-        sections[sec].forEach(function(f){
-          html += '<div class="pb-feat-card" onclick="pbAI._featAsk(\''+f.title.replace(/'/g,"\\'")+'\')">';
-          html += '<div class="pb-feat-card-head"><span class="pb-feat-card-icon">'+f.icon+'</span><span class="pb-feat-card-title">'+f.title+'</span></div>';
-          html += '<div class="pb-feat-card-desc">'+f.desc+'</div>';
-          html += '<div class="pb-feat-card-tags">';
-          f.tags.forEach(function(tag){
-            html += '<span class="pb-feat-tag" onclick="event.stopPropagation();pbAI._featQuick(\''+tag.replace(/'/g,"\\'")+'\')">'+ tag+'</span>';
-          });
-          html += '</div>';
-          if(f.page){
-            html += '<div style="margin-top:6px"><a onclick="event.stopPropagation();window.location.href=\''+f.page+'\'" style="font-size:11px;color:#1877F2;font-weight:600;cursor:pointer;text-decoration:none">⤢ Open '+f.title+'</a></div>';
-          }
-          html += '</div>';
-        });
-      });
-    }
     list.innerHTML = html;
   },
+  _featQuick: function(b){ this._view('pb-chat-view'); this._process(b.getAttribute('data-q')); },
 
-  _featAsk: function(title){
-    this.toggleFeatures();
-    this._process('Tell me everything about ' + title + ' in PawBook — features, how to use it, and how to test it.');
+  // ── SIGN IN (real PawBook accounts only) ──
+  showLoginView: function(reg){ this._view('pb-login-view'); if (reg) this.showRegister(); else this.showLoginForm(); },
+  showChat: function(){ this._view('pb-chat-view'); },
+  showRegister: function(){ document.getElementById('pb-email-login').style.display = 'none'; document.getElementById('pb-email-register').style.display = 'block'; document.getElementById('pb-login-err').style.display = 'none'; },
+  showLoginForm: function(){ document.getElementById('pb-email-register').style.display = 'none'; document.getElementById('pb-email-login').style.display = 'block'; document.getElementById('pb-login-err').style.display = 'none'; },
+  _loginErr: function(msg){ var el = document.getElementById('pb-login-err'); el.textContent = msg; el.style.display = 'block'; },
+  _loginSuccess: function(d){
+    var tok = d.token || (d.data && d.data.token), ud = d.user || (d.data && d.data.user) || {}, ref = d.refresh || (d.data && d.data.refresh);
+    lsSet('pb_token', tok); if (ref) lsSet('pb_refresh', ref); lsSet('pb_user', JSON.stringify(ud));
+    readSession(); _state = null; this._view('pb-chat-view');
+    if (typeof window.renderUserChip === 'function') try { window.renderUserChip(); } catch(e){}
+    var msgs = document.getElementById('pb-ai-msgs'); if (msgs) msgs.innerHTML = '';
+    _greeted = true; this._greet();
   },
-
-  _featQuick: function(tag){
-    this.toggleFeatures();
-    this._process(tag);
-  },
-  // ── END FEATURES GUIDE ────────────────────────────────────────
-
-  send: function(){
-    var inp=document.getElementById('pb-ai-input');
-    var text=inp.value.trim();
-    if(!text) return;
-    inp.value=''; inp.style.height='';
-    document.getElementById('pb-send-btn').disabled=true;
-    this._process(text);
-  },
-
-  quick: function(text){
-    if(text === 'Browse all features'){ this.toggleFeatures(); return; }
-    this._process(text);
-  },
-
-  _process: function(text){
-    userMsg(text);
-    showTyping();
-    var self=this;
-
-    // Add to history
-    _chatHistory.push({ role: 'user', content: text });
-    if(_chatHistory.length > 12) _chatHistory = _chatHistory.slice(-12);
-
-    // Try Claude AI first
-    var tok = localStorage.getItem('pb_token')||localStorage.getItem('pawbook_token')||localStorage.getItem('token')||'';
-    var headers = { 'Content-Type': 'application/json' };
-    if(tok) headers['Authorization'] = 'Bearer ' + tok;
-
-    fetch(API_BASE + '/ai/chat', {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({ message: text, history: _chatHistory.slice(0,-1) })
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      hideTyping();
-      if(d.success && d.data && d.data.reply){
-        // Store assistant reply in history
-        _chatHistory.push({ role: 'assistant', content: d.data.reply });
-        if(_chatHistory.length > 12) _chatHistory = _chatHistory.slice(-12);
-        // Render — detect if reply has quick action links based on keywords
-        var reply = d.data.reply;
-        var pills = self._suggestPills(text);
-        botMsg(reply, pills.length ? pills : null, null, null, null);
-        // Speak the reply in detected language
-        self._speak(reply);
-      } else {
-        // API returned error — fall back to KB
-        self._kbFallback(text);
-      }
-      document.getElementById('pb-send-btn').disabled=false;
-    })
-    .catch(function(){
-      hideTyping();
-      // Network error or AI down — fall back to KB
-      self._kbFallback(text);
-      document.getElementById('pb-send-btn').disabled=false;
-    });
-  },
-
-  // Suggest quick-reply pills based on detected intent
-  _suggestPills: function(text){
-    var intent = detectIntent(text);
-    var pillMap = {
-      lost:        ['Report lost pet','Found a pet','View alerts'],
-      adoption:    ['Browse dogs','Browse cats','Find shelter'],
-      vet:         ['Book now','Video consult','Emergency vet'],
-      vaccination: ['Add vaccine record','Upcoming vaccines','Dog vaccine schedule'],
-      emergency:   ['First aid tips','Find 24hr vet','Emergency map'],
-      marketplace: ['Browse listings','Post listing','Pet food'],
-      insurance:   ['View plans','Get a quote','File a claim'],
-      training:    ['Find a trainer','Stop barking','Puppy guide'],
-      groups:      ['Browse groups','Create group'],
-      grievance:   ['Report a user','Technical bug'],
-      general:     ['Lost pet','Book a vet','Emergency','Adoption']
-    };
-    return pillMap[intent] || [];
-  },
-
-  // KB-based fallback when Claude is unavailable
-  _kbFallback: function(text){
-    var intent = detectIntent(text);
-    var entry = KB[intent];
-    var opts = { _user: _currentUser ? (_currentUser.full_name||_currentUser.username) : null };
-    var r = entry.a(opts, String(text).toLowerCase());
-    if(r.loginPrompt){
-      loginPromptMsg();
-    } else {
-      botMsg('(Offline mode) ' + r.t, r.pills, null, r.page, r.pageLabel);
-    }
-  },
-
-  handleKey: function(e){
-    if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); this.send(); }
-  },
-
-  autoResize: function(el){
-    el.style.height='auto';
-    el.style.height=Math.min(el.scrollHeight,90)+'px';
-  },
-
-  clearChat: function(){
-    var msgs=document.getElementById('pb-ai-msgs');
-    if(msgs) msgs.innerHTML='';
-    _greeted=false;
-    _chatHistory=[];
-    this._greet();
-  },
-
-  openFull: function(){
-    window.location.href='35_ai_agent.html';
-  },
-
-  // ── LOGIN VIEW ──────────────────────────────────────────────
-  showLoginView: function(reg){
-    document.getElementById('pb-chat-view').style.display='none';
-    document.getElementById('pb-login-view').style.display='flex';
-    if(reg) this.showRegister();
-    else this.showLoginForm();
-  },
-
-  showChat: function(){
-    document.getElementById('pb-login-view').style.display='none';
-    document.getElementById('pb-chat-view').style.display='flex';
-  },
-
-  showRegister: function(){
-    document.getElementById('pb-email-login').style.display='none';
-    document.getElementById('pb-email-register').style.display='block';
-    document.getElementById('pb-login-err').style.display='none';
-  },
-
-  showLoginForm: function(){
-    document.getElementById('pb-email-register').style.display='none';
-    document.getElementById('pb-email-login').style.display='block';
-    document.getElementById('pb-login-err').style.display='none';
-  },
-
-  _loginErr: function(msg){
-    var el=document.getElementById('pb-login-err');
-    el.textContent=msg; el.style.display='block';
-  },
-
-  _loginSuccess: function(tok, ud, provider){
-    localStorage.setItem('pb_token', tok);
-    localStorage.setItem('pb_user', JSON.stringify(ud));
-    _currentUser=ud;
-    this.showChat();
-    // Notify parent page if it has renderUserChip
-    if(typeof renderUserChip==='function') renderUserChip();
-    if(typeof loadUser==='function') loadUser();
-    var name=ud.full_name||ud.username||'friend';
-    botMsg('Welcome'+(provider?' ('+provider+')':'')+', '+name+'! 🐾 You\'re signed in.\n\nHow can I help you today?',
-      ['My pet profile','Track vaccinations','Book a vet','Find lost pets']);
-  },
-
-  socialLogin: function(provider){
-    // Real OAuth would open a popup here
-    // Demo: simulate successful login
-    var self=this;
-    var btn=document.querySelector('.pb-social-btn'+(provider==='facebook'?'.fb':''));
-    if(btn){ btn.textContent='Connecting…'; btn.disabled=true; }
-    setTimeout(function(){
-      if(btn){ btn.innerHTML=provider==='google'
-        ? '<svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google'
-        : '<svg width="17" height="17" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.971H15.83c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg> Continue with Facebook';
-        btn.disabled=false; }
-      var demo={full_name:'Pet Parent', username:'petparent', email:'demo@pawbook.app'};
-      self._loginSuccess('demo_'+provider, demo, provider.charAt(0).toUpperCase()+provider.slice(1));
-    },1400);
-  },
-
   emailLogin: function(){
-    var email=document.getElementById('pb-w-email').value.trim();
-    var pass=document.getElementById('pb-w-pass').value;
-    if(!email||!pass){ this._loginErr('Enter email and password.'); return; }
-    var btn=document.getElementById('pb-w-submit');
-    btn.disabled=true; btn.textContent='Signing in…';
-    var self=this;
-    fetch(API_BASE+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      btn.disabled=false; btn.textContent='Sign In';
-      if(d.token||(d.data&&d.data.token)){
-        var tok=d.token||d.data.token;
-        var ud=d.user||d.data||{};
-        self._loginSuccess(tok,ud,'');
-      } else { self._loginErr(d.message||'Invalid email or password.'); }
-    })
-    .catch(function(){
-      btn.disabled=false; btn.textContent='Sign In';
-      // Demo fallback
-      if(email==='abhishek@pawbook.app'){
-        self._loginSuccess('demo_email',{full_name:'Abhishek',username:'abhishek',email:email},'');
-      } else { self._loginErr('Could not connect. Try again.'); }
-    });
+    var email = document.getElementById('pb-w-email').value.trim(), pass = document.getElementById('pb-w-pass').value;
+    if (!email || !pass) { this._loginErr('Enter your email and password.'); return; }
+    var btn = document.getElementById('pb-w-submit'), self = this; btn.disabled = true; btn.textContent = 'Signing in…';
+    fetch(API_BASE + '/auth/login', {method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include', body: JSON.stringify({email: email, password: pass})})
+      .then(function(r){ return r.json().catch(function(){ return {}; }); })
+      .then(function(d){ btn.disabled = false; btn.textContent = 'Sign In'; if (d.token || (d.data && d.data.token)) self._loginSuccess(d); else self._loginErr(d.message || 'Wrong email or password.'); })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Sign In'; self._loginErr('Could not connect. Check your internet and try again.'); });
   },
-
   doRegister: function(){
-    var name=document.getElementById('pb-w-name').value.trim();
-    var email=document.getElementById('pb-w-reg-email').value.trim();
-    var pass=document.getElementById('pb-w-reg-pass').value;
-    if(!name||!email||!pass){ this._loginErr('Fill all fields.'); return; }
-    if(pass.length<6){ this._loginErr('Password min 6 characters.'); return; }
-    var btn=document.getElementById('pb-w-reg-submit');
-    btn.disabled=true; btn.textContent='Creating…';
-    var self=this;
-    fetch(API_BASE+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({full_name:name,email:email,password:pass})})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      btn.disabled=false; btn.textContent='Create Account';
-      if(d.token||(d.data&&d.data.token)){
-        var tok=d.token||d.data.token;
-        var ud=d.user||d.data||{full_name:name,email:email};
-        self._loginSuccess(tok,ud,'');
-      } else { self._loginErr(d.message||'Registration failed.'); }
-    })
-    .catch(function(){
-      btn.disabled=false; btn.textContent='Create Account';
-      self._loginErr('Could not connect. Try again.');
-    });
+    var name = document.getElementById('pb-w-name').value.trim(), email = document.getElementById('pb-w-reg-email').value.trim(), pass = document.getElementById('pb-w-reg-pass').value;
+    if (!name || !email || !pass) { this._loginErr('Fill in all the fields.'); return; }
+    if (pass.length < 6) { this._loginErr('Use at least 6 characters for your password.'); return; }
+    var btn = document.getElementById('pb-w-reg-submit'), self = this; btn.disabled = true; btn.textContent = 'Creating…';
+    fetch(API_BASE + '/auth/register', {method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include', body: JSON.stringify({full_name: name, email: email, password: pass})})
+      .then(function(r){ return r.json().catch(function(){ return {}; }); })
+      .then(function(d){ btn.disabled = false; btn.textContent = 'Create Account'; if (d.token || (d.data && d.data.token)) self._loginSuccess(d); else self._loginErr(d.message || 'Could not create the account.'); })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Create Account'; self._loginErr('Could not connect. Check your internet and try again.'); });
   }
 };
 
-// Show the badge dot after 2 seconds (tease first-time users)
-setTimeout(function(){
-  if(!_open){
-    var badge=document.getElementById('pb-fab-badge');
-    if(badge) badge.classList.add('show');
-  }
-}, 2000);
+// Esc closes the panel
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && _open) pbAI.toggle(); });
+// Keep sign-in in step with other tabs/pages
+window.addEventListener('storage', function(e){ if (e.key === 'pb_token' || e.key === 'pb_user') { var was = _mode; readSession(); if (was !== _mode) { _state = null; setHeadStatus(); } } if (e.key === 'pb_assist_loc') { readLoc(); setHeadStatus(); } });
+
+// Reminders on the button: once in a while (at most every 30 minutes per tab session), check what's due
+readSession(); readLoc(); showBadge(); pbAI._initTTSButton();
+(function(){
+  var last = 0; try { last = (JSON.parse(ssGet('pb_ai_nudge') || 'null') || {}).at || 0; } catch(e){}
+  if (_mode === 'live' && Date.now() - last > 30 * 60000) setTimeout(function(){ if (!_open) loadState(true); }, 4000);
+})();
 
 })(); // end IIFE
