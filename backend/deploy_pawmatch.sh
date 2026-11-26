@@ -38,9 +38,12 @@ cp -p "$WEB/$F" "$BK/web/"
 cp -p "$API/src/routes/index.js" "$BK/api-src/index.js"; [ -f "$API/routes/index.js" ] && cp -p "$API/routes/index.js" "$BK/api/index.js"
 echo "Backup: $BK"
 
-# 3) Database migration 022 (idempotent; only ADDS tables)
+# 3) Database migration 022 (only ADDS new pm_ tables; runs as ONE transaction — all or nothing)
 export $(grep '^DATABASE_URL=' "$API/.env" | tr -d '\r' | xargs)
-if ! psql "$DATABASE_URL" -q -v ON_ERROR_STOP=1 -f "$REPO/backend/022_pawmatch.sql"; then echo "STOPPED: migration failed. Files not changed (backup is in $BK)."; exit 1; fi
+EXIST=$(psql "$DATABASE_URL" -tAc "SELECT string_agg(table_name, ', ') FROM information_schema.tables WHERE table_schema = current_schema() AND table_name IN ('pm_profiles','pm_swipes','pm_matches','pm_messages','pm_reads','pm_dates','pm_reports')") || { echo "STOPPED: could not reach the database. Nothing was changed."; exit 1; }
+if [ -n "$EXIST" ] && [ "$(psql "$DATABASE_URL" -tAc "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'pm_swipes' AND column_name = 'to_profile'")" != "1" ]; then
+  echo "STOPPED: tables with these names already exist and are not PawMatch 2.0 tables: $EXIST. Nothing was changed. Send me this output."; exit 1; fi
+if ! psql "$DATABASE_URL" -q -1 -v ON_ERROR_STOP=1 -f "$REPO/backend/022_pawmatch.sql"; then echo "STOPPED: migration failed and was rolled back. Files not changed (backup is in $BK)."; exit 1; fi
 echo "Migration 022 applied."
 
 # 4) Backend
