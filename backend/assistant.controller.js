@@ -122,13 +122,23 @@ async function listings(req, intent, msg, city, loc) {
   const types = TYPES_FOR[intent] || ['pets', 'vets', 'communities', 'products', 'adoption', 'lost', 'events', 'shelters'];
   const specific = !!TYPES_FOR[intent];
   let r;
-  if (terms && terms.length >= 2) r = await search.find(req, terms, { types, city: city || '', lim: 4, noPartial: true });
-  else if (specific && (city || intent === 'adopt' || intent === 'events' || intent === 'lost')) r = await search.find(req, '', { types, city: city || '', lim: 4, browse: true });   // e.g. "pets for adoption near me"
+  if (terms && terms.length >= 2) r = await search.find(req, terms, { types, city: city || '', lim: city ? 12 : 4, noPartial: true });
+  else if (specific && (city || intent === 'adopt' || intent === 'events' || intent === 'lost')) r = await search.find(req, '', { types, city: city || '', lim: city ? 12 : 4, browse: true });   // e.g. "pets for adoption near me"
   else return city ? { q: '', city, terms: '', total: 0, match: 'none', cards: [], sections: [], near: 0, area: loc && loc.area } : null;
-  const cards = [];
-  r.sections.forEach(s => s.items.forEach(x => { if (cards.length < 6) cards.push(Object.assign({ type: s.type }, pickCard(x))); }));
-  const near = cards.filter(c => c.near).length;
-  return { q: terms, city, terms, total: r.total, match: r.match, cards, sections: r.sections.map(s => ({ type: s.type, count: s.count })), near, area: loc && loc.area };
+  let cards = [];
+  r.sections.forEach(s => s.items.forEach(x => cards.push(Object.assign({ type: s.type }, pickCard(x)))));
+  let total = r.total, sections = r.sections.map(s => ({ type: s.type, count: s.count }));
+  // a city was given and some results are there: show ONLY those (never mix in other cities); the chosen area comes first
+  if (city && cards.some(c => c.near)) {
+    cards = cards.filter(c => c.near);
+    const ar = loc && loc.area ? loc.area.toLowerCase() : '';
+    if (ar) cards.sort((a, b) => (JSON.stringify(b).toLowerCase().includes(ar) ? 1 : 0) - (JSON.stringify(a).toLowerCase().includes(ar) ? 1 : 0));
+    const byType = {}; cards.forEach(c => { byType[c.type] = (byType[c.type] || 0) + 1; });
+    sections = Object.keys(byType).map(t => ({ type: t, count: byType[t] })); total = cards.length;
+  }
+  cards = cards.slice(0, 6);
+  const near = cards.filter(c => c.near).length, ar2 = loc && loc.area ? loc.area.toLowerCase() : '', areaHits = ar2 ? cards.filter(c => JSON.stringify(c).toLowerCase().includes(ar2)).length : 0;
+  return { q: terms, city, terms, total, match: r.match, cards, sections, near, area: loc && loc.area, areaHits, inCityOnly: !!(city && near) };
 }
 // a chosen location from the page: country / state / district or city / area / PIN
 const DISTRICT_CITY = { 'bengaluru urban': 'bengaluru', 'bengaluru rural': 'bengaluru', 'bangalore urban': 'bengaluru', 'mumbai suburban': 'mumbai', 'gautam buddha nagar': 'noida', 'medchal malkajgiri': 'hyderabad', 'rangareddy': 'hyderabad', 'ranga reddy': 'hyderabad', 'gurgaon': 'gurugram', 'kolkata': 'kolkata', 'north 24 parganas': 'kolkata', 'south 24 parganas': 'kolkata', 'ernakulam': 'kochi', 'thane': 'thane' };
@@ -168,7 +178,7 @@ function rules(intent, msg, ctx) {
   const foundLine = f => { if (!f || !f.total) return null;
     const what = f.sections.map(s => (s.count === 1 ? TYPE_ONE[s.type] : TYPE_WORD[s.type]) || s.type).join(', ');
     if (f.city && !f.near) return `There's nothing listed in ${cap(f.city)} yet, so here are the closest matches elsewhere on PawBook (${f.total} ${what}):`;
-    return `I found ${f.total} matching ${what} on PawBook${f.city ? ' — ' + (f.near === f.cards.length ? 'in ' : 'nearest first, around ') + cap(f.city) : ''}${f.match === 'close' ? ' (closest spellings)' : ''}:`; };
+    return `I found ${f.total} ${what} on PawBook${f.city ? ' in ' + cap(f.city) : ''}${f.areaHits && f.inCityOnly ? ' (' + cap(f.area) + ' first)' : ''}${f.match === 'close' ? ' (closest spellings)' : ''}:`; };
   const none = (what, page) => found && !found.q && found.city ? `No ${what.replace(/^an? /, '').replace(/ matching that$/, 's').replace(/ss$/, 's')} are listed on PawBook in ${cap(found.city)} yet. You can check the ${PAGES[page][1]} page, which is updated as new ones join.` : `I couldn't find ${what}${found && found.city ? ' in ' + cap(found.city) : ''} on PawBook right now. You can browse everything on the ${PAGES[page][1]} page.`;
   switch (intent) {
     case 'greet': text = `Hi${name ? ' ' + name : ''}! 🐾 I can find vets, pets for adoption, products and communities on PawBook, check your pets' vaccinations and appointments, or answer pet-care questions. What do you need?`; break;
