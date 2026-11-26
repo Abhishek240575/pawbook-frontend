@@ -1675,6 +1675,68 @@ var _LOCATION_DATA = {
   }
 };
 
+// ── INDIA: the full India Post list — every state & UT, district and area with its PIN code ──────────
+// (the same data the Adopt a pet page uses: adopt-loc/index.json + one file per state)
+var _IN = { idx: null, p: null, st: {} }, _locCenter = null;
+function _inIndex() {
+  if (_IN.idx) return Promise.resolve(_IN.idx);
+  if (_IN.p) return _IN.p;
+  _IN.p = fetch('adopt-loc/index.json').then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); })
+    .then(function(d){ _IN.idx = d.states; return _IN.idx; }).catch(function(e){ _IN.p = null; throw e; });
+  return _IN.p;
+}
+function _inState(s) {
+  if (_IN.st[s]) return Promise.resolve(_IN.st[s]);
+  return _inIndex().then(function(ix){ if (!ix[s]) throw new Error('x'); return fetch('adopt-loc/' + ix[s].file).then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); }); })
+    .then(function(d){ _IN.st[s] = d; return d; });
+}
+function _esc(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+// vets are saved with a city name ("Bangalore"); the picker uses India Post districts ("Bengaluru Urban")
+var _CITY_ALIAS = {bangalore:'bengaluru', bombay:'mumbai', calcutta:'kolkata', madras:'chennai', gurgaon:'gurugram', poona:'pune', mysore:'mysuru', trivandrum:'thiruvananthapuram', cochin:'ernakulam', kochi:'ernakulam', calicut:'kozhikode', vizag:'visakhapatnam', baroda:'vadodara', mangalore:'dakshina kannada', mangaluru:'dakshina kannada', noida:'gautam buddha nagar', 'greater noida':'gautam buddha nagar', secunderabad:'hyderabad', 'new delhi':'delhi'};
+var _ONE_CITY = ['Delhi', 'Chandigarh', 'Puducherry', 'Lakshadweep', 'Ladakh', 'Andaman and Nicobar Islands'];
+function _cityNorm(x) { x = String(x || '').toLowerCase().replace(/\b(urban|rural|district|city)\b/g, '').replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim(); return _CITY_ALIAS[x] || x; }
+function _stateNorm(x) { return String(x || '').toLowerCase().replace(/^nct of /, '').replace(/&/g, 'and').replace(/\s+/g, ' ').trim(); }
+function _cityMatch(vetCity, district, state) {
+  if (_ONE_CITY.indexOf(state) >= 0) return true;
+  var a = _cityNorm(vetCity), b = _cityNorm(district); if (!a || !b) return false;
+  if (b === 'medchal malkajgiri' || b === 'rangareddy' || b === 'ranga reddy') b = 'hyderabad';
+  if (b === 'mumbai suburban') b = 'mumbai';
+  return a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0;
+}
+function _isIndia() { return (_locFilters.country || '') === 'India'; }
+function _inFillStates() {
+  var stateEl = document.getElementById('loc-state');
+  stateEl.innerHTML = '<option value="">📍 Loading states…</option>';
+  _inIndex().then(function(ix){
+    if (!_isIndia()) return;
+    stateEl.innerHTML = '<option value="">📍 State / UT</option>' + Object.keys(ix).sort().map(function(s){ return '<option value="' + _esc(s) + '">' + _esc(s) + '</option>'; }).join('');
+    stateEl.disabled = false; stateEl.style.opacity = '1';
+  }).catch(function(){   // list not reachable: fall back to the short built-in list
+    stateEl.innerHTML = '<option value="">📍 State</option>' + Object.keys(_LOCATION_DATA.India).sort().map(function(s){ return '<option value="' + s + '">' + s + '</option>'; }).join('');
+    stateEl.disabled = false; stateEl.style.opacity = '1'; _IN.off = true;
+  });
+}
+function _inFillCities(state) {
+  var cityEl = document.getElementById('loc-city');
+  _inIndex().then(function(ix){
+    var st = ix[state]; if (!st || _locFilters.state !== state) return;
+    cityEl.innerHTML = '<option value="">🏙️ City / district</option>' + st.districts.slice().sort().map(function(d){ return '<option value="' + _esc(d) + '">' + _esc(d) + '</option>'; }).join('');
+    cityEl.disabled = false; cityEl.style.opacity = '1';
+  });
+}
+function _inFillAreas(state, district) {
+  var areaEl = document.getElementById('loc-area');
+  areaEl.innerHTML = '<option value="">📌 Loading areas…</option>';
+  _inState(state).then(function(d){
+    if (_locFilters.state !== state || _locFilters.city !== district) return;
+    var seen = {}, list = (d[district] || []).filter(function(a){ var k = a[0] + '|' + a[1]; if (seen[k]) return false; seen[k] = 1; return true; })
+      .sort(function(a, b){ return a[0].localeCompare(b[0]); });
+    _IN.areas = list;
+    areaEl.innerHTML = '<option value="">📌 Area (' + list.length + ')</option>' + list.map(function(a, i){ return '<option value="' + i + '">' + _esc(a[0]) + ' — ' + a[1] + '</option>'; }).join('');
+    areaEl.disabled = !list.length; areaEl.style.opacity = list.length ? '1' : '.5';
+  }).catch(function(){ areaEl.innerHTML = '<option value="">📌 Area</option>'; areaEl.disabled = true; areaEl.style.opacity = '.5'; });
+}
+
 // ── LOCATION FILTER STATE ─────────────────────────────────────────────────────
 var _locFilters = { country:'', state:'', city:'', area:'' };
 var _areaTimer = null;
@@ -1690,7 +1752,10 @@ function onCountryChange() {
   stateEl.innerHTML = '<option value="">📍 State</option>';
   cityEl.innerHTML  = '<option value="">🏙️ City</option>';
   areaEl.value = '';
-  if (country && _LOCATION_DATA[country]) {
+  _locCenter = null;
+  if (country === 'India') {
+    _inFillStates();
+  } else if (country && _LOCATION_DATA[country]) {
     Object.keys(_LOCATION_DATA[country]).sort().forEach(function(s){
       stateEl.innerHTML += '<option value="'+s+'">'+s+'</option>';
     });
@@ -1711,7 +1776,11 @@ function onStateChange() {
   var areaEl = document.getElementById('loc-area');
   cityEl.innerHTML = '<option value="">🏙️ City</option>';
   areaEl.innerHTML = '<option value="">📌 Area</option>';
-  if (state && _LOCATION_DATA[country] && _LOCATION_DATA[country][state]) {
+  _locCenter = null;
+  if (state && country === 'India' && !_IN.off) {
+    cityEl.disabled = true; cityEl.style.opacity = '.5'; cityEl.innerHTML = '<option value="">🏙️ Loading…</option>';
+    _inFillCities(state);
+  } else if (state && _LOCATION_DATA[country] && _LOCATION_DATA[country][state]) {
     _LOCATION_DATA[country][state].cities.forEach(function(c){
       cityEl.innerHTML += '<option value="'+c+'">'+c+'</option>';
     });
@@ -1730,7 +1799,13 @@ function onCityChange() {
   _locFilters.city = city; _locFilters.area = '';
   var areaEl = document.getElementById('loc-area');
   areaEl.innerHTML = '<option value="">📌 Area</option>';
-  if (city && _LOCATION_DATA[country] && _LOCATION_DATA[country][state] && _LOCATION_DATA[country][state].areas && _LOCATION_DATA[country][state].areas[city]) {
+  _locCenter = null;
+  if (city && country === 'India' && !_IN.off) {
+    var c0 = _IN.idx && _IN.idx[state] && _IN.idx[state].c && _IN.idx[state].c[city];
+    if (c0) _locCenter = { lat: c0[0], lng: c0[1] };
+    areaEl.disabled = true; areaEl.style.opacity = '.5';
+    _inFillAreas(state, city);
+  } else if (city && _LOCATION_DATA[country] && _LOCATION_DATA[country][state] && _LOCATION_DATA[country][state].areas && _LOCATION_DATA[country][state].areas[city]) {
     _LOCATION_DATA[country][state].areas[city].forEach(function(a){
       areaEl.innerHTML += '<option value="'+a+'">'+a+'</option>';
     });
@@ -1742,7 +1817,14 @@ function onCityChange() {
 }
 
 function onAreaChange() {
-  _locFilters.area = document.getElementById('loc-area').value;
+  var v = document.getElementById('loc-area').value;
+  if (_isIndia() && _IN.areas && /^\d+$/.test(v) && _IN.areas[+v]) {
+    var a = _IN.areas[+v]; _locFilters.area = a[0]; _locFilters.pin = String(a[1]);
+    if (a[2] != null && a[3] != null) _locCenter = { lat: a[2], lng: a[3] };
+    _updateBreadcrumb(); filterVets(); return;
+  }
+  _locFilters.pin = '';
+  _locFilters.area = v;
   _updateBreadcrumb(); filterVets();
 }
 
@@ -1800,7 +1882,7 @@ function _updateBreadcrumb() {
 }
 
 function _clearLocation() {
-  _locFilters = { country:'', state:'', city:'', area:'' };
+  _locFilters = { country:'', state:'', city:'', area:'' }; _locCenter = null;
   document.getElementById('loc-country').value = '';
   document.getElementById('loc-state').innerHTML = '<option value="">📍 State</option>';
   document.getElementById('loc-city').innerHTML  = '<option value="">🏙️ City</option>';
@@ -1985,8 +2067,8 @@ function _applyVetFilters(source) {
   var out = source.slice();
   if (q) out = out.filter(function(v){ return (v.first_name+' '+v.last_name+' '+(v.primary_specialty||'')+' '+(v.city||'')+' '+(v.area||'')).toLowerCase().includes(q); });
   if (_locFilters.country) out = out.filter(function(v){ return (v.country||'').toLowerCase() === _locFilters.country.toLowerCase(); });
-  if (_locFilters.state) out = out.filter(function(v){ return (v.state||'').toLowerCase() === _locFilters.state.toLowerCase(); });
-  if (_locFilters.city)  out = out.filter(function(v){ return (v.city||'').toLowerCase() === _locFilters.city.toLowerCase(); });
+  if (_locFilters.state) out = out.filter(function(v){ return v._source === 'google' || _stateNorm(v.state) === _stateNorm(_locFilters.state); });
+  if (_locFilters.city)  out = out.filter(function(v){ return v._source === 'google' || (_isIndia() ? _cityMatch(v.city, _locFilters.city, _locFilters.state) : (v.city||'').toLowerCase() === _locFilters.city.toLowerCase()); });
   // Area is a soft hint — don't hard-filter vets by area (a vet in Connaught Place still serves Dwarka patients)
   // Area is passed to the real API as a param so registered vets can be area-specific
   if (_filters.type)   out = out.filter(function(v){ return (v.consult_types||[]).includes(_filters.type); });
@@ -2060,7 +2142,8 @@ async function _searchGooglePlacesVets(callback) {
   else if (city)  searchText += ' ' + city;
   if (state && state !== city) searchText += ' ' + state;
 
-  var coords = (city && _CITY_COORDS[city]) ? _CITY_COORDS[city] : { lat: 20.5937, lng: 78.9629 };
+  var coords = _locCenter || ((city && _CITY_COORDS[city]) ? _CITY_COORDS[city] : { lat: 20.5937, lng: 78.9629 });
+  if (_isIndia() && city && city !== state && _ONE_CITY.indexOf(state) < 0 && !/district/i.test(searchText)) searchText = searchText.replace(' ' + city, ' ' + city + ' district');
   var centre = new google.maps.LatLng(coords.lat, coords.lng);
 
   try {
