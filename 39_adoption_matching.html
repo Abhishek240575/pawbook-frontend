@@ -1375,7 +1375,11 @@ function nArea(){
 function nPin(){
   var s = document.getElementById('n-state').value, d = document.getElementById('n-city').value, pin = Number(document.getElementById('n-pin').value); if (!pin) return;
   var list = (ASTATE[s] || {})[d] || [], areas = list.filter(function(x){ return x[1] === pin; }), a = document.getElementById('n-area');
-  if (areas.length) a.value = areas[0][0] + '|' + pin;
+  var cur = a.value ? a.value.split('|')[0] : '';
+  if (NG && NG.s === s && NG.d === d && cur === NG.name) {   // a locality from Google Maps search: keep it, just correct its PIN
+    NG.pin = pin; var o = a.options[a.selectedIndex]; o.value = NG.name + '|' + pin; o.textContent = NG.name + ' — ' + pin; a.value = o.value;
+    nMsg('PIN for ' + NG.name + ' changed to ' + pin + '.');
+  } else if (areas.length) a.value = areas[0][0] + '|' + pin;
   nShow();
 }
 function nPoint(){   // the chosen spot: the area's post office, else the average of that PIN, else the district
