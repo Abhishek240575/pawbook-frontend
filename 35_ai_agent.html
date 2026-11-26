@@ -502,6 +502,8 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
 .mc2.g .im{text-decoration:none;background:linear-gradient(135deg,#e7f7ee,#e8f1ff)}.mc2.g .ge{font-size:34px}
 .mc2 .gl{display:flex;gap:6px;margin-top:auto;padding-top:6px}.mc2 .gl a{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:4px;height:30px;border-radius:9px;border:1.5px solid #cfdcf3;color:var(--blue-d);font-weight:800;font-size:12px;text-decoration:none}
 .gattr{font-size:11px;color:var(--muted);padding-left:2px}.gattr b{color:var(--sub)}
+.gx:empty{display:none}.gx{display:flex;flex-direction:column;gap:6px}
+.gload{font-size:12.5px;color:var(--sub);background:#fff;border:1px dashed #cfdcf3;border-radius:12px;padding:9px 12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.gload a{color:var(--blue-d);font-weight:800}
 </style>
 </head>
 <body>
@@ -546,7 +548,7 @@ var API = 'https://pawbook.deemona.com/api/v1';
 var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
 var ST = null, BUSY = false, MO = null, TOPICS = null, LASTSUGG = null;
 var GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk', GMP = null, INLOC = null, INLOAD = null, PINIDX = {};
-var LOCN = null; try { LOCN = JSON.parse(localStorage.getItem('pb_assist_loc') || 'null'); } catch (e) {}
+var GH = {}, GRES = {}, LOCN = null; try { LOCN = JSON.parse(localStorage.getItem('pb_assist_loc') || 'null'); } catch (e) {}
 var TEMOJI = {pets: '🐾', vets: '🩺', communities: '🤝', products: '🛍️', adoption: '🏡', lost: '📍', events: '🎉', shelters: '🏠', people: '👤'};
 var STARTERS = [['ti-stethoscope', 'c-sage', 'Find a vet near me'], ['ti-cut', 'c-teal', 'Pet groomers near me'], ['ti-heart-handshake', 'c-rose', 'Pets for adoption in my city'], ['ti-vaccine', 'c-sky', 'When are my pet\'s vaccines due?'], ['ti-map-search', 'c-coral', 'My dog is missing — what should I do?'], ['ti-message-report', 'c-lav', 'I have a complaint']];
 var TOPICS2 = [['Find a vet', 'img/vet/vet-exam.jpg', 'ti-stethoscope', 'Find a vet near me'], ['Adopt', 'img/adopt/rescue-golden.jpg', 'ti-heart-handshake', 'Show pets for adoption'], ['Lost & Found', 'img/lost/missing-golden.jpg', 'ti-map-search', 'My pet is lost, what do I do?'],
@@ -632,6 +634,7 @@ function renderMsgs(){
   var el = document.getElementById('msgs'); if (!el) return;
   if (!ST.messages.length) { el.innerHTML = welcomeHTML(); setSugg(null); return; }
   el.innerHTML = ST.messages.map(msgHTML).join('');
+  Object.keys(GRES).forEach(function(id){ var x = document.getElementById('gx-' + id); if (x) x.innerHTML = GRES[id]; });
   var last = ST.messages[ST.messages.length - 1]; setSugg(last && last.role === 'assistant' ? suggFor(last.intent) : null);
   el.scrollTop = el.scrollHeight;
 }
@@ -646,7 +649,9 @@ function msgHTML(m){
   if (m.role === 'user') return '<div class="m u"><div class="av4">' + esc((ST.name || 'Y').charAt(0).toUpperCase()) + '</div><div class="bw"><div class="bub">' + esc(m.text) + '</div><div class="tm">' + esc(hm(m.at)) + '</div></div></div>';
   var h = '<div class="m b' + (m.err ? ' err' : '') + '" data-id="' + esc(m.id || '') + '"><div class="av4"><i class="ti ti-paw"></i></div><div class="bw"><div class="bub">' + fmt(m.text) + '</div>';
   if (m.cards && m.cards.length) h += '<div class="cards">' + m.cards.map(cardHTML).join('') + '</div>' + (m.cards.some(function(c){ return c.src === 'google'; }) ? '<div class="gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead before visiting</div>' : '');
-  if (m.actions && m.actions.length) h += '<div class="acts">' + m.actions.map(actHTML).join('') + '</div>';
+  var gh = (m.actions || []).filter(function(a){ return a.url === '#gnear' && a.g; })[0];
+  if (gh && m.id) { GH[m.id] = gh.g; h += '<div class="gx" id="gx-' + esc(m.id) + '"></div>'; }
+  if (m.actions && m.actions.length) h += '<div class="acts">' + m.actions.map(function(a){ return actHTML(a, m.id); }).join('') + '</div>';
   if (m.err) h += '<div class="acts"><button onclick="send(this.dataset.q, true)" data-q="' + esc(m.retry) + '"><i class="ti ti-refresh"></i>Try again</button></div>';
   h += '<div class="tm">' + esc(hm(m.at)) + (m.id && !m.err ? ' · <button class="fb' + (m.helpful === true ? ' on' : '') + '" title="Helpful" aria-label="Helpful" onclick="rate(this,true)"><i class="ti ti-thumb-up"></i></button><button class="fb' + (m.helpful === false ? ' on' : '') + '" title="Not helpful" aria-label="Not helpful" onclick="rate(this,false)"><i class="ti ti-thumb-down"></i></button>' : '') + '</div></div></div>';
   return h;
@@ -660,7 +665,8 @@ function cardHTML(c){
   return '<a class="mc2" href="' + esc(c.url || '#') + '"><div class="im">' + (c.img ? img(c.img, c.title) : (TEMOJI[c.type] || '🐾')) + (c.badge ? '<span>' + esc(c.badge) + '</span>' : c.near ? '<span>Near you</span>' : '') + '</div><div class="bd"><b>' + esc(c.title) + '</b>'
     + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.price != null ? '<span class="pr">₹' + Number(c.price).toLocaleString('en-IN') + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '') + '<span class="go">' + esc(c.action || 'Open') + ' →</span></div></a>';
 }
-function actHTML(a){
+function actHTML(a, mid){
+  if (a.url === '#gnear') return mid ? '<button onclick="runG(\'' + esc(mid) + '\')"><i class="ti ti-map-search"></i>' + esc(a.label) + '</button>' : '';
   if (a.url === '#support') return '<button onclick="supportForm()"><i class="ti ti-message-plus"></i>' + esc(a.label) + '</button>';
   if (a.url === '#location') return '<button onclick="locForm()"><i class="ti ti-map-pin"></i>' + esc(a.label) + '</button>';
   if (a.url === '#tickets') return '<button onclick="showTickets()"><i class="ti ti-ticket"></i>' + esc(a.label) + '</button>';
@@ -680,6 +686,7 @@ function send(text, isRetry){
   var el = document.getElementById('msgs'); el.innerHTML = ST.messages.map(msgHTML).join('') + '<div class="m b" id="typing"><div class="av4"><i class="ti ti-paw"></i></div><div class="bub typing"><i></i><i></i><i></i></div></div>'; el.scrollTop = el.scrollHeight;
   api('/assistant/chat', {method: 'POST', body: {message: text, location: LOCN || undefined}}).then(function(d){
     ST.messages.push({id: d.id, role: 'assistant', text: d.text, intent: d.intent, cards: d.cards, actions: d.actions, at: d.at}); renderMsgs(); setSugg(d.suggestions && d.suggestions.length ? d.suggestions.slice(0, 4) : suggFor(d.intent));
+    if (GH[d.id]) runG(d.id);
   }).catch(function(e){
     if (e.status === 401) return fail(e);
     ST.messages.push({role: 'assistant', err: true, retry: text, text: e.status === 429 ? 'You\'re sending messages very fast — please wait a minute and try again.' : 'I couldn\'t reach PawBook just now. Check your connection and try again. In an emergency, open SOS.', actions: [{label: 'Open Emergency SOS', url: '37_pet_ai_health_agent.html?sos=1'}], at: new Date().toISOString()}); renderMsgs();
@@ -789,7 +796,7 @@ function locPin(f){ var v = f.pin.value.replace(/\D/g, '').slice(0, 6); if (v !=
 function loadMaps(){
   if (window.google && google.maps && google.maps.Geocoder) return Promise.resolve(google.maps);
   if (GMP) return GMP;
-  GMP = new Promise(function(res, rej){ window._asMaps = function(){ res(google.maps); }; window.gm_authFailure = function(){ rej(new Error('maps')); }; var s = document.createElement('script'); s.src = 'https://maps.googleapis.com/maps/api/js?key=' + GMAPS_KEY + '&v=weekly&region=IN&callback=_asMaps'; s.async = true; s.onerror = function(){ GMP = null; rej(new Error('maps')); }; document.head.appendChild(s); setTimeout(function(){ rej(new Error('timeout')); }, 9000); });
+  GMP = new Promise(function(res, rej){ window._asMaps = function(){ res(google.maps); }; window.gm_authFailure = function(){ rej(new Error('maps')); }; var s = document.createElement('script'); s.src = 'https://maps.googleapis.com/maps/api/js?key=' + GMAPS_KEY + '&libraries=places&v=weekly&region=IN&callback=_asMaps'; s.async = true; s.onerror = function(){ GMP = null; rej(new Error('maps')); }; document.head.appendChild(s); setTimeout(function(){ rej(new Error('timeout')); }, 9000); });
   return GMP;
 }
 function areaFromGoogle(f, req){   // optional: name of the locality from Google; the picker works without it
@@ -808,6 +815,37 @@ function useGps(b){
       f.glat.value = Math.round(la * 1e5) / 1e5; f.glng.value = Math.round(ln * 1e5) / 1e5;
       areaFromGoogle(f, {location: {lat: la, lng: ln}}); done('Nearest PIN ' + best + ' · ' + p[1] + ', ' + p[0] + ' — check and save.'); });
   }, function(){ done('Location permission was not given — choose your place from the lists instead.'); }, {timeout: 10000, maximumAge: 600000});
+}
+
+/* ---------- nearby places from Google Maps (runs in the browser with the website's Maps key) ---------- */
+var GQ = {vet: 'veterinary clinic', shelter: 'animal shelter', groomer: 'pet grooming', boarding: 'pet boarding', petstore: 'pet shop'};
+function kmBetween(a, b, c, d){ var r = function(x){ return x * Math.PI / 180; }, dl = r(c - a), dn = r(d - b), h = Math.sin(dl / 2) * Math.sin(dl / 2) + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(dn / 2) * Math.sin(dn / 2); return 6371 * 2 * Math.asin(Math.sqrt(h)); }
+function runG(id){
+  var g = GH[id], box = document.getElementById('gx-' + id); if (!g || !box) return;
+  var put = function(h){ GRES[id] = h; var b = document.getElementById('gx-' + id); if (b) b.innerHTML = h; var el = document.getElementById('msgs'); if (el && ST && ST.messages.length && ST.messages[ST.messages.length - 1].id === id) el.scrollTop = el.scrollHeight; };
+  put('<div class="gload"><i class="ti ti-loader-2 spin"></i>Looking up ' + esc(g.word) + ' near ' + esc(g.near) + ' on Google Maps…</div>');
+  var failed = function(){ put('<div class="gload">Couldn\'t load places from Google Maps right now. <a href="37_pet_ai_health_agent.html?tab=nearby">Open the map</a> instead.</div>'); };
+  loadMaps().then(function(gm){
+    var center = g.lat != null ? Promise.resolve({lat: Number(g.lat), lng: Number(g.lng)}) : new Promise(function(res){ try { new gm.Geocoder().geocode({address: g.address}, function(r, st){ if (st === 'OK' && r[0]) { var l = r[0].geometry.location; res({lat: l.lat(), lng: l.lng()}); } else res(null); }); } catch (e) { res(null); } });
+    return center.then(function(c){
+      if (!c || !gm.places || !gm.places.Place) return failed();
+      var req = {textQuery: GQ[g.kind] || g.text || 'veterinary clinic', fields: ['displayName', 'formattedAddress', 'location', 'rating', 'userRatingCount', 'nationalPhoneNumber', 'googleMapsURI', 'businessStatus', 'regularOpeningHours', 'utcOffsetMinutes'], locationBias: {center: c, radius: 8000}, maxResultCount: 10, region: 'in'};
+      if (gm.places.SearchByTextRankPreference) req.rankPreference = gm.places.SearchByTextRankPreference.DISTANCE;
+      return gm.places.Place.searchByText(req).then(function(r){
+        var list = (r.places || []).filter(function(p){ return p.location && p.businessStatus !== 'CLOSED_PERMANENTLY'; }).map(function(p){
+          var la = typeof p.location.lat === 'function' ? p.location.lat() : p.location.lat, ln = typeof p.location.lng === 'function' ? p.location.lng() : p.location.lng;
+          return {p: p, km: kmBetween(c.lat, c.lng, la, ln)}; }).filter(function(x){ return x.km <= 25; }).sort(function(a, b){ return a.km - b.km; }).slice(0, 6);
+        if (!list.length) return put('<div class="gload">Google Maps has no ' + esc(g.word) + ' listed near ' + esc(g.near) + '. <a href="37_pet_ai_health_agent.html?tab=nearby">Open the map</a> to look further out.</div>');
+        return Promise.all(list.map(function(x){ return (x.p.isOpen ? Promise.resolve(x.p.isOpen()).catch(function(){ return undefined; }) : Promise.resolve(undefined)).then(function(open){ x.open = open; return x; }); })).then(function(list){
+          var cards = list.map(function(x){ var p = x.p, name = typeof p.displayName === 'string' ? p.displayName : (p.displayName && p.displayName.text) || 'Place';
+            var url = /^https:\/\/(maps\.google\.com|www\.google\.com\/maps|maps\.app\.goo\.gl|goo\.gl)/.test(p.googleMapsURI || '') ? p.googleMapsURI : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name + ' ' + (p.formattedAddress || ''));
+            return {src: 'google', emoji: g.emoji, title: name, sub: (p.formattedAddress || '').replace(/, India$/, ''), phone: p.nationalPhoneNumber || null, url: url,
+              meta: [x.km < 1 ? Math.round(x.km * 1000) + ' m away' : (Math.round(x.km * 10) / 10) + ' km away', x.open === true ? 'Open now' : x.open === false ? 'Closed now' : null, p.rating ? '★ ' + p.rating + (p.userRatingCount ? ' (' + p.userRatingCount + ')' : '') : null].filter(Boolean).join(' · ')}; });
+          put('<div class="cards">' + cards.map(gcardHTML).join('') + '</div><div class="gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead before visiting</div>');
+        });
+      });
+    });
+  }).catch(failed);
 }
 
 /* ---------- modal helpers ---------- */

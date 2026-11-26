@@ -370,15 +370,28 @@ exports.chat = async (req, res) => {
         googlePlaces(msg, intent, loc).catch(e => { console.error('[Assistant] Google:', e.message); return null; })]);
       const base = rules(intent, msg, { M, mine, found });
       if (wantsNear && !city && TYPES_FOR[intent] !== undefined) { base.text = '📍 Which city or area should I look in? Set your location with the **📍 location** button above the chat (country, state, city, area and PIN code) — or just tell me, e.g. “vets in Pune”.\n\n' + base.text; base.actions = [{ label: 'Set my location', url: '#location' }].concat(base.actions).slice(0, 4); }
+      let hint = null;
       if (gp && gp.cards.length) {
         const lead = `**${gp.cards.length} ${gp.word} near ${cap(gp.near)}** from Google Maps (nearest first — not verified by PawBook, so call ahead):`;
         if (intent === 'vet' && found && found.total && found.near) base.text = base.text.replace('\nOpen a vet to see their timings and book a visit.', '\nPawBook vets can be booked right here. ') + '\n\nAlso nearby — ' + lead;
         else base.text = ((intent === 'vet' ? (found && found.total && !found.near ? `No PawBook vets are listed in ${cap(found.city)} yet.` : found && !found.total && found.city ? `No PawBook vets are listed in ${cap(found.city)} yet.` : '') + ' Here are ' : 'Here are ') + lead).trim();
         if (intent === 'vet' && found && found.total && !found.near) found.cards = [];   // don't show far-away PawBook vets next to nearby clinics
         base.actions = [{ label: 'Open the map', url: PAGES.nearby[0] }].concat(base.actions.filter(a => a.url !== PAGES.nearby[0])).slice(0, 4);
-      } else if (intent === 'places' && !gp) {
-        base.text = loc ? `I can't look up ${(GKIND.find(k => k[0].test(msg)) || GKIND[0])[4]} right now. Open **Nearby help** to see them on the map around ${cap(loc.area || loc.city)}.` : 'Set your location with the **📍 location** button above the chat and I\'ll find places near you — or open **Nearby help** to see them on the map.';
-        base.actions = [act('nearby', 'Open the map')].concat(loc ? [] : [{ label: 'Set my location', url: '#location' }]);
+      } else if (['vet', 'places'].includes(intent) && loc) {
+        // no server key: the PAGE looks these up with the website's Google Maps key (browser), and shows them under the reply
+        const kind = intent === 'vet' ? GKIND[GKIND.length - 1] : (GKIND.find(k => k[0].test(msg)) || GKIND[GKIND.length - 1]);
+        const near = cap(loc.area || loc.city || loc.state);
+        hint = { kind: kind[1], word: kind[4], emoji: kind[3], types: kind[2].includedTypes || null, text: kind[2].textQuery || null, lat: loc.lat != null ? loc.lat : null, lng: loc.lng != null ? loc.lng : null,
+          address: [loc.area, loc.city, loc.state, loc.pin, loc.country || 'India'].filter(Boolean).join(', '), near };
+        const gl = `**${cap(kind[4])} near ${near}** from Google Maps are below (nearest first — not verified by PawBook, so call ahead).`;
+        if (intent === 'vet') {
+          if (found && found.total && found.near) base.text = base.text.replace('\nOpen a vet to see their timings and book a visit.', '\nPawBook vets can be booked right here.') + '\n\n' + gl;
+          else { base.text = (found && found.city ? `No PawBook vets are listed in ${cap(found.city)} yet. ` : '') + gl; if (found) found.cards = []; }
+        } else base.text = gl;
+        base.actions = [{ label: 'Show ' + kind[4] + ' near ' + near, url: '#gnear', g: hint }].concat(base.actions.filter(a => a.url !== PAGES.nearby[0])).slice(0, 3).concat([act('nearby', 'Open the map')]);
+      } else if (intent === 'places') {
+        base.text = 'Set your location with the **📍 location** button above the chat and I\'ll find places near you — or open **Nearby help** to see them on the map.';
+        base.actions = [{ label: 'Set my location', url: '#location' }, act('nearby', 'Open the map')];
       }
       let text = base.text, source = 'rules';
       if (aiOn() && !['greet', 'thanks'].includes(intent)) {
@@ -387,7 +400,7 @@ exports.chat = async (req, res) => {
           const msgs = []; rows.forEach(h => { const role = h.role === 'assistant' ? 'assistant' : 'user'; if (msgs.length && msgs[msgs.length - 1].role === role) msgs[msgs.length - 1].content += '\n' + h.body; else msgs.push({ role, content: h.body.slice(0, 1500) }); });
           while (msgs.length && msgs[0].role !== 'user') msgs.shift();
           if (!msgs.length || msgs[msgs.length - 1].role !== 'user') msgs.push({ role: 'user', content: msg });
-          const ai = await claude(SYSTEM + '\n\n' + contextBlock(M, mine, found, base, intent) + (gp && gp.cards.length ? '\nGOOGLE MAPS (shown as cards under your reply): ' + gp.cards.map(c => c.title + ' — ' + c.meta).join(' | ') : '') + (loc ? '\nUSER CHOSEN LOCATION: ' + loc.label : '\nUSER LOCATION: not set (they can set it with the location button above the chat)'), msgs);
+          const ai = await claude(SYSTEM + '\n\n' + contextBlock(M, mine, found, base, intent) + (gp && gp.cards.length ? '\nGOOGLE MAPS (shown as cards under your reply): ' + gp.cards.map(c => c.title + ' — ' + c.meta).join(' | ') : '') + (hint ? '\nGOOGLE MAPS: the app will list ' + hint.word + ' near ' + hint.near + ' from Google Maps right under your reply. Say so in one short line; do not name or invent any of those places.' : '') + (loc ? '\nUSER CHOSEN LOCATION: ' + loc.label : '\nUSER LOCATION: not set (they can set it with the location button above the chat)'), msgs);
           if (ai && ai.trim().length > 1) { text = ai.trim().slice(0, 3000); source = 'ai'; }
         } catch (e) { console.error('[Assistant] AI:', e.message); }
       }
