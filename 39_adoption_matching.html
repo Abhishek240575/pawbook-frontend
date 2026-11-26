@@ -521,6 +521,15 @@ body{background:var(--bg)}
 .lb{position:fixed;inset:0;background:rgba(20,15,10,.88);z-index:800;display:none;align-items:center;justify-content:center;padding:20px}.lb.open{display:flex}.lb img{max-width:100%;max-height:90vh;border-radius:14px}
 
 .mini-empty{border:2px dashed #ecd6c2;border-radius:18px;padding:22px;text-align:center;color:var(--muted);background:#fffaf5;font-size:13.5px}.mini-empty b{display:block;color:var(--navy);font-size:15px;margin-bottom:4px}
+.nsearch{position:relative;margin-bottom:6px}
+.nsearch>i{position:absolute;left:14px;top:15px;font-size:19px;color:var(--muted);z-index:1}
+.nsearch .fi{padding-left:42px;height:50px;font-size:15px}
+.nsug{position:absolute;left:0;right:0;top:54px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 36px rgba(15,32,87,.16);z-index:40;max-height:360px;overflow-y:auto;padding:6px}
+.sg{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:none;background:none;padding:9px 10px;border-radius:10px;font:inherit;cursor:pointer}
+.sg:hover,.sg:focus{background:#fff4ee;outline:none}.sg i{font-size:18px;color:#c2410c;margin-top:1px}
+.sg b{display:block;font-size:14px;color:var(--navy)}.sg small{font-size:12px;color:var(--muted)}
+.sg-none{padding:10px;font-size:13px;color:var(--muted)}
+.nor{font-size:12px;color:var(--muted);margin:6px 2px 8px;font-weight:600}
 /* ── adoption guide + agreement + help near you ── */
 .guide{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
 .gtabs{display:flex;gap:6px;overflow-x:auto;padding:10px;border-bottom:1px solid var(--line);scrollbar-width:none;background:#fffaf5}.gtabs::-webkit-scrollbar{display:none}
@@ -1234,7 +1243,7 @@ function termsQuit(){
 function refreshGuide(){ var g = document.getElementById('guide'); if (g) g.outerHTML = guideHtml(); }
 
 /* ── Shelters & help near you ── */
-var NKEY = null, GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk', GMP = null, AIDX = null, AIDXP = null, ASTATE = {}, NEAR = null, NRES = {}, NSEQ = 0;
+var AIDXRAW = {}, NKEY = null, GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk', GMP = null, AIDX = null, AIDXP = null, ASTATE = {}, NEAR = null, NRES = {}, NSEQ = 0;
 var NCAT = [
   {k: 'shelter', t: 'Animal shelters', ic: 'ti-home-heart', q: 'animal shelter', w: 'animal shelters'},
   {k: 'adoption', t: 'Adoption centres', ic: 'ti-heart-handshake', q: 'pet adoption centre', w: 'adoption centres'},
@@ -1242,12 +1251,14 @@ var NCAT = [
   {k: 'emergency', t: 'Emergency vet / 24×7', ic: 'ti-ambulance', q: '24 hour emergency veterinary hospital', w: 'emergency vets'},
   {k: 'police', t: 'Police stations', ic: 'ti-shield', q: 'police station', w: 'police stations'}];
 try { NEAR = JSON.parse(localStorage.getItem('pb_adopt_loc') || 'null'); } catch (e) { NEAR = null; }
-function aIndex(){ if (AIDX) return Promise.resolve(AIDX); if (AIDXP) return AIDXP; AIDXP = fetch('adopt-loc/index.json').then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); }).then(function(d){ AIDX = d.states; return AIDX; }).catch(function(e){ AIDXP = null; throw e; }); return AIDXP; }
+var NG = NEAR && NEAR.g && NEAR.g.name ? NEAR.g : null, NSUG = {local: [], google: []}, NQT = null, NQSEQ = 0, NTOKEN = null;
+function aIndex(){ if (AIDX) return Promise.resolve(AIDX); if (AIDXP) return AIDXP; AIDXP = fetch('adopt-loc/index.json').then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); }).then(function(d){ AIDXRAW = d; AIDX = d.states; return AIDX; }).catch(function(e){ AIDXP = null; throw e; }); return AIDXP; }
 function aState(s){ if (ASTATE[s]) return Promise.resolve(ASTATE[s]); return aIndex().then(function(ix){ if (!ix[s]) throw new Error('x'); return fetch('adopt-loc/' + ix[s].file).then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); }); }).then(function(d){ ASTATE[s] = d; return d; }); }
 function o2(list, v, first, map){ return '<option value="">' + first + '</option>' + list.map(function(x){ var val = map ? map(x)[0] : x, lab = map ? map(x)[1] : x; return '<option value="' + esc(val) + '"' + (String(val) === String(v) ? ' selected' : '') + '>' + esc(lab) + '</option>'; }).join(''); }
 function nearHtml(){
   return '<section class="sec" id="near"><div class="sh"><div><h2>📍 Shelters &amp; help near you</h2><p>Choose your area to see the nearest animal shelters, adoption centres, vet clinics, emergency vets and police stations.</p></div></div>'
-    + '<div class="near"><div class="npick">'
+    + '<div class="near"><div class="nsearch"><i class="ti ti-search"></i><input id="n-q" class="fi" autocomplete="off" aria-label="Search your area or PIN code" placeholder="Search your area or PIN code — e.g. Dwarka or 110075" oninput="nQ()" onkeydown="nQkey(event)" onfocus="if(this.value.trim().length>1)nQ()" onblur="setTimeout(function(){var b=document.getElementById(\'n-sug\');if(b)b.hidden=true;},180)"><div class="nsug" id="n-sug" role="listbox" hidden></div></div>'
+    + '<p class="nor">or choose from the lists</p><div class="npick">'
     + '<label class="fl"><span>Country</span><select class="fi" id="n-country" onchange="nCountry()"><option>India</option><option value="other">Other countries — coming soon</option></select></label>'
     + '<label class="fl"><span>State / UT</span><select class="fi" id="n-state" onchange="nState()"><option value="">Loading…</option></select></label>'
     + '<label class="fl"><span>City / district</span><select class="fi" id="n-city" onchange="nCity()" disabled><option value="">Choose a state first</option></select></label>'
@@ -1263,6 +1274,74 @@ function nearInit(){
     if (NEAR && NEAR.state && ix[NEAR.state]) { nState(true); }
   }).catch(function(){ st.innerHTML = '<option value="">Could not load the list</option>'; nMsg('Could not load the list of places. Please refresh the page.'); });
 }
+/* search: India Post areas and PINs (any district) + localities from Google Maps */
+function normA(x){ return String(x || '').toLowerCase().replace(/\bsec(tor)?\b\.?/g, 'sector').replace(/[^a-z0-9]+/g, ' ').trim(); }
+function nQ(){ clearTimeout(NQT); NQT = setTimeout(nQrun, 220); }
+function nQrun(){
+  var q = (document.getElementById('n-q') || {}).value || ''; q = q.trim(); var box = document.getElementById('n-sug'), seq = ++NQSEQ;
+  if (q.length < 2) { box.hidden = true; return; }
+  var st = document.getElementById('n-state').value, pinQ = /^\d{3,6}$/.test(q);
+  aIndex().then(function(ix){
+    var ss = pinQ ? (AIDXRAW.p && AIDXRAW.p[q.slice(0, 3)]) || (st ? [st] : []) : (st ? [st] : Object.keys(ASTATE));
+    return Promise.all(ss.map(function(s){ return aState(s).then(function(d){ return [s, d]; }).catch(function(){ return null; }); }));
+  }).then(function(arr){
+    if (seq !== NQSEQ) return; var res = [], nq = normA(q);
+    (arr || []).filter(Boolean).forEach(function(x){ var s = x[0], d = x[1]; Object.keys(d).forEach(function(di){ d[di].forEach(function(a){ if (res.length >= 60) return; if (pinQ ? String(a[1]).indexOf(q) === 0 : normA(a[0]).indexOf(nq) >= 0) res.push({s: s, d: di, a: a[0], pin: a[1]}); }); }); });
+    if (!pinQ) res.sort(function(x, y){ var ax = normA(x.a).indexOf(nq) === 0 ? 0 : 1, ay = normA(y.a).indexOf(nq) === 0 ? 0 : 1; return ax - ay || x.a.length - y.a.length; });
+    else res.sort(function(x, y){ return x.pin - y.pin || x.a.localeCompare(y.a); });
+    NSUG = {local: res.slice(0, 8), google: [], q: q}; nSugRender();
+    if (!pinQ || q.length === 6) nGoogleSug(q, seq);
+  });
+}
+function nGoogleSug(q, seq){
+  loadMaps().then(function(gm){
+    var A = gm.places && gm.places.AutocompleteSuggestion; if (!A) return;
+    if (!NTOKEN && gm.places.AutocompleteSessionToken) NTOKEN = new gm.places.AutocompleteSessionToken();
+    return A.fetchAutocompleteSuggestions({input: q, includedRegionCodes: ['in'], includedPrimaryTypes: ['(regions)'], sessionToken: NTOKEN, language: 'en'}).then(function(r){
+      if (seq !== NQSEQ) return;
+      NSUG.google = (r.suggestions || []).filter(function(x){ return x.placePrediction; }).slice(0, 5).map(function(x){ var p = x.placePrediction;
+        return {p: p, main: p.mainText ? p.mainText.text : (p.text ? p.text.text : ''), sec: p.secondaryText ? p.secondaryText.text : ''}; });
+      nSugRender();
+    });
+  }).catch(function(){});
+}
+function nSugRender(){
+  var box = document.getElementById('n-sug'); if (!box) return; var h = '';
+  NSUG.local.forEach(function(x, i){ h += '<button type="button" class="sg" role="option" onmousedown="event.preventDefault()" onclick="nPickLocal(' + i + ')"><i class="ti ti-mail"></i><span><b>' + esc(x.a) + ' — ' + x.pin + '</b><small>' + esc(x.d) + ', ' + esc(x.s) + ' · India Post</small></span></button>'; });
+  NSUG.google.forEach(function(x, i){ h += '<button type="button" class="sg" role="option" onmousedown="event.preventDefault()" onclick="nPickGoogle(' + i + ')"><i class="ti ti-map-pin"></i><span><b>' + esc(x.main) + '</b><small>' + esc(x.sec) + ' · Google Maps</small></span></button>'; });
+  if (!h) h = '<div class="sg-none">No match yet — keep typing, or check the spelling.</div>';
+  box.innerHTML = h; box.hidden = false;
+}
+function nQkey(e){ if (e.key === 'Escape') document.getElementById('n-sug').hidden = true; if (e.key === 'Enter') { e.preventDefault(); var b = document.querySelector('#n-sug .sg'); if (b) b.click(); } }
+function nQdone(label){ var q = document.getElementById('n-q'); if (q) { q.value = label; q.blur(); } var b = document.getElementById('n-sug'); if (b) b.hidden = true; }
+function nPickLocal(i){
+  var x = NSUG.local[i]; if (!x) return; nQdone(x.a + ' — ' + x.pin);
+  NEAR = {state: x.s, city: x.d, area: x.a, pin: String(x.pin)}; document.getElementById('n-state').value = x.s; nState(true);
+}
+function nPickGoogle(i){
+  var x = NSUG.google[i]; if (!x) return; nQdone(x.main); nMsg('Finding ' + x.main + '…');
+  var place = x.p.toPlace(); NTOKEN = null;
+  place.fetchFields({fields: ['displayName', 'location', 'addressComponents']}).then(function(){
+    var la = typeof place.location.lat === 'function' ? place.location.lat() : place.location.lat, ln = typeof place.location.lng === 'function' ? place.location.lng() : place.location.lng;
+    var comp = place.addressComponents || [], g = function(t){ var c = comp.filter(function(a){ return (a.types || []).indexOf(t) >= 0; })[0]; return c ? (c.longText || c.long_name || '') : ''; };
+    var gpin = g('postal_code'), gst = g('administrative_area_level_1');
+    return aIndex().then(function(ix){
+      var norm = function(v){ return String(v || '').toLowerCase().replace(/^the /, '').replace(/national capital territory of /, '').replace(/[^a-z]/g, ''); };
+      var cands = Object.keys(ix).filter(function(k){ var a = norm(k), b = norm(gst); return b && (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0); });
+      if (gpin && AIDXRAW.p && AIDXRAW.p[gpin.slice(0, 3)]) cands = cands.concat(AIDXRAW.p[gpin.slice(0, 3)].filter(function(k){ return cands.indexOf(k) < 0; }));
+      if (!cands.length) throw new Error('state');
+      return Promise.all(cands.map(function(s){ return aState(s).then(function(d){ return [s, d]; }); })).then(function(arr){
+        var best = null;   // nearest India Post office gives the district (and the PIN if Google has none)
+        arr.forEach(function(sd){ Object.keys(sd[1]).forEach(function(d){ sd[1][d].forEach(function(a){ if (a[2] == null) return; var dd = (a[2] - la) * (a[2] - la) + (a[3] - ln) * (a[3] - ln) - (gpin && String(a[1]) === gpin ? 1e-4 : 0); if (!best || dd < best.dd) best = {dd: dd, s: sd[0], d: d, a: a}; }); }); });
+        if (!best) throw new Error('none');
+        var pin = /^\d{6}$/.test(gpin) ? Number(gpin) : best.a[1], name = typeof place.displayName === 'string' ? place.displayName : (place.displayName && place.displayName.text) || x.main;
+        NG = {s: best.s, d: best.d, name: name, pin: pin, lat: Math.round(la * 1e5) / 1e5, lng: Math.round(ln * 1e5) / 1e5};
+        NEAR = {state: best.s, city: best.d, area: name, pin: String(pin)}; document.getElementById('n-state').value = best.s;
+        nMsg(name + ' is in ' + best.d + ' district, ' + best.s + ' · ' + pin); return nState(true);
+      });
+    });
+  }).catch(function(){ nMsg('Couldn’t place that on the map — try another name or choose from the lists.'); });
+}
 function nMsg(t){ var m = document.getElementById('n-msg'); if (m) m.textContent = t || ''; }
 function nCountry(){ var c = document.getElementById('n-country'); if (c.value === 'other') { nMsg('Right now areas are listed for India only. More countries are coming soon.'); c.value = 'India'; } }
 function nState(restore){
@@ -1270,15 +1349,17 @@ function nState(restore){
   a.innerHTML = '<option value="">Choose a city first</option>'; a.disabled = true; p.innerHTML = '<option value="">—</option>'; p.disabled = true;
   if (!s) { c.innerHTML = '<option value="">Choose a state first</option>'; c.disabled = true; return; }
   c.innerHTML = o2(AIDX[s].districts, restore === true && NEAR ? NEAR.city : '', 'Choose a city / district'); c.disabled = false;
-  aState(s).then(function(){ if (restore === true && NEAR && NEAR.city && c.value === NEAR.city) nCity(true); }).catch(function(){ nMsg('Could not load areas for ' + s + '.'); });
+  return aState(s).then(function(){ if (restore === true && NEAR && NEAR.city && c.value === NEAR.city) return nCity(true); }).catch(function(){ nMsg('Could not load areas for ' + s + '.'); });
 }
 function nCity(restore){
   var s = document.getElementById('n-state').value, d = document.getElementById('n-city').value, a = document.getElementById('n-area'), p = document.getElementById('n-pin');
   if (!d) { a.innerHTML = '<option value="">Choose a city first</option>'; a.disabled = true; p.innerHTML = '<option value="">—</option>'; p.disabled = true; return; }
-  aState(s).then(function(sd){
+  return aState(s).then(function(sd){
     var list = sd[d] || [];
+    if (NG && NG.s === s && NG.d === d && !list.some(function(x){ return x[0] === NG.name && x[1] === NG.pin; })) list = [[NG.name, NG.pin, NG.lat, NG.lng]].concat(list);   // a locality picked from Google Maps search
     a.innerHTML = o2(list, restore === true && NEAR ? NEAR.area + '|' + NEAR.pin : '', 'Choose an area (' + list.length + ')', function(x){ return [x[0] + '|' + x[1], x[0] + ' — ' + x[1]]; }); a.disabled = !list.length;
     var pins = []; list.forEach(function(x){ if (pins.indexOf(x[1]) < 0) pins.push(x[1]); }); pins.sort();
+    a.title = list.length + ' areas in ' + d + ' (India Post)';
     p.innerHTML = o2(pins, restore === true && NEAR ? NEAR.pin : '', 'Choose a postal code (' + pins.length + ')'); p.disabled = !pins.length;
     if (restore === true && NEAR && NEAR.pin) nShow();
   });
@@ -1296,6 +1377,7 @@ function nPin(){
 function nPoint(){   // the chosen spot: the area's post office, else the average of that PIN, else the district
   var s = document.getElementById('n-state').value, d = document.getElementById('n-city').value, av = document.getElementById('n-area').value, pin = Number(document.getElementById('n-pin').value);
   var list = (ASTATE[s] || {})[d] || [], an = av ? av.split('|')[0] : '';
+  if (NG && NG.s === s && NG.d === d && NG.name === an && NG.pin === pin) return {lat: NG.lat, lng: NG.lng};
   var hit = list.filter(function(x){ return x[0] === an && x[1] === pin && x[2] != null; })[0];
   if (hit) return {lat: hit[2], lng: hit[3]};
   var ps = list.filter(function(x){ return x[1] === pin && x[2] != null; }); if (!ps.length) ps = list.filter(function(x){ return x[2] != null; });
@@ -1306,7 +1388,7 @@ function nShow(){
   var s = document.getElementById('n-state').value, d = document.getElementById('n-city').value, av = document.getElementById('n-area').value, pin = document.getElementById('n-pin').value;
   if (!s || !d || !pin) return;
   var area = av ? av.split('|')[0] : '', c = nPoint();
-  NEAR = {country: 'India', state: s, city: d, area: area, pin: pin, lat: c && c.lat, lng: c && c.lng, gps: NEAR && NEAR.gps && NEAR.pin === pin ? NEAR.gps : null};
+  NEAR = {country: 'India', state: s, city: d, area: area, pin: pin, lat: c && c.lat, lng: c && c.lng, gps: NEAR && NEAR.gps && NEAR.pin === pin ? NEAR.gps : null, g: NG && NG.s === s && NG.d === d && NG.name === area ? NG : null};
   try { localStorage.setItem('pb_adopt_loc', JSON.stringify(NEAR)); } catch (e) {}
   nMsg(''); nLoad();
 }
