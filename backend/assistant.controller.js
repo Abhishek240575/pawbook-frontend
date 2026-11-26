@@ -61,6 +61,7 @@ const RX = {
   lost: /\b(lost|missing|ran away|run away|found a (dog|cat|pet|puppy|kitten)|stray)\b/i,
   adopt: /\b(adopt\w*|rescue|foster\w*|rehom\w*)\b/i,
   vet: /\b(vets?|veterinar\w*|doctor|clinic|hospital|consult\w*|check-?up)\b/i,
+  places: /\b(shelters?|ngos?|groom\w*|salons?|pet spa|boarding|daycare|day care|kennels?|pet hostel|pet (shop|store)s?|pet hotels?)\b/i,
   shop: /\b(buy|shop\w*|food|treats?|toys?|leash|collar|harness|bed|shampoo|litter|kibble|products?|price|cheap|deal)\b/i,
   groups: /\b(groups?|communit\w*|meetups?|clubs?|pet parents near)\b/i,
   events: /\b(events?|shows?|camps?|workshops?|festival|competition)\b/i,
@@ -73,7 +74,7 @@ const RX = {
   thanks: /^\s*(thanks?|thank you|thx|ty|great|ok(ay)?|cool|nice)\b[\s!.]*$/i,
   capabilities: /\b(what can you do|what do you do|help me|capabilit\w*|features?|how does pawbook work|what is pawbook)\b/i
 };
-const ORDER = ['emergency', 'abuse', 'support', 'orders', 'appts', 'vacc', 'lost', 'adopt', 'vet', 'groups', 'events', 'training', 'insurance', 'sell', 'shop', 'account', 'mypets', 'capabilities', 'greet', 'thanks', 'search'];
+const ORDER = ['emergency', 'abuse', 'support', 'orders', 'appts', 'vacc', 'lost', 'adopt', 'vet', 'places', 'groups', 'events', 'training', 'insurance', 'sell', 'shop', 'account', 'mypets', 'capabilities', 'greet', 'thanks', 'search'];
 function detect(msg) { const hits = ORDER.filter(k => RX[k].test(msg)); return { main: hits[0] || 'general', all: hits }; }
 
 const CITIES = ['delhi', 'new delhi', 'mumbai', 'bombay', 'bangalore', 'bengaluru', 'chennai', 'kolkata', 'hyderabad', 'pune', 'ahmedabad', 'jaipur', 'lucknow', 'chandigarh', 'gurgaon', 'gurugram', 'noida', 'ghaziabad', 'faridabad', 'kochi', 'thiruvananthapuram', 'coimbatore', 'indore', 'bhopal', 'nagpur', 'surat', 'vadodara', 'patna', 'bhubaneswar', 'guwahati', 'dehradun', 'mysore', 'mysuru', 'mangalore', 'visakhapatnam', 'vijayawada', 'nashik', 'kanpur', 'varanasi', 'agra', 'amritsar', 'ludhiana', 'raipur', 'ranchi', 'goa', 'panaji', 'shimla', 'srinagar', 'jammu', 'udaipur', 'jodhpur', 'madurai', 'trichy', 'thane', 'navi mumbai'];
@@ -151,6 +152,8 @@ function locOf(b) {
   else c = DISTRICT_CITY[c] || c.replace(/\s+(urban|rural)$/, '');
   o.searchCity = c;
   o.label = [o.area, o.city, o.state].filter(Boolean).join(', ') + (o.pin ? ' ' + o.pin : '');
+  const la = Number(l.lat), ln = Number(l.lng);
+  if (isFinite(la) && isFinite(ln) && Math.abs(la) <= 90 && Math.abs(ln) <= 180 && (la || ln)) { o.lat = Math.round(la * 1e5) / 1e5; o.lng = Math.round(ln * 1e5) / 1e5; }
   return o;
 }
 function pickCard(x) { const o = {}; ['title', 'sub', 'meta', 'img', 'url', 'action', 'badge', 'price', 'mrp', 'at', 'near', 'verified', 'phone'].forEach(k => { if (x[k] != null && x[k] !== '') o[k] = x[k]; }); return o; }
@@ -170,7 +173,8 @@ const SUGG = {
   events: ['Events this weekend', 'Communities near me'],
   training: ['Stop leash pulling', 'Potty training a puppy', 'Find a trainer'],
   support: ['Raise a support request', 'Report a listing', 'My support requests'],
-  account: ['Change my password', 'Privacy settings', 'Delete my account']
+  account: ['Change my password', 'Privacy settings', 'Delete my account'],
+  places: ['Vets near me', 'Animal shelters near me', 'Pet groomers near me']
 };
 function rules(intent, msg, ctx) {
   const { M, mine, found } = ctx, name = first(M.name);
@@ -233,6 +237,69 @@ function emergencyReply() {
 }
 
 // ── Claude (optional) ────────────────────────────────────────────────────────
+// ── Google Maps Places (server side) ─────────────────────────────────────────
+// Uses the Google key already in .env (first of these names that is set). Only called when someone asks for vets,
+// shelters, groomers, boarding or pet shops near a place. Results are shown live with "Google Maps" attribution and
+// are never stored. A daily cap (PB_GOOGLE_DAILY_CAP, default 300 calls) keeps the bill predictable.
+const GKEYS = ['GOOGLE_MAPS_SERVER_KEY', 'GOOGLE_PLACES_API_KEY', 'GOOGLE_MAPS_API_KEY', 'GOOGLE_MAPS_KEY', 'GOOGLE_API_KEY', 'MAPS_API_KEY', 'GMAPS_KEY', 'GOOGLE_KEY'];
+const gKey = () => { const n = GKEYS.find(k => process.env[k] && String(process.env[k]).trim().length > 20); return n ? { name: n, key: String(process.env[n]).trim() } : null; };
+const G = { off: 0, err: null, day: '', calls: 0 };
+const gOn = () => (process.env.PB_GOOGLE_MOCK === '1' || !!gKey()) && process.env.PB_GOOGLE_PLACES !== '0' && Date.now() > G.off;
+function gBudget() { const d = todayIST(); if (G.day !== d) { G.day = d; G.calls = 0; } const cap = parseInt(process.env.PB_GOOGLE_DAILY_CAP, 10) || 300; if (G.calls >= cap) return false; G.calls++; return true; }
+async function gFetch(url, body, mask) {
+  if (process.env.PB_GOOGLE_MOCK === '1') { const c = body.locationRestriction || body.locationBias; const la = c.circle.center.latitude, ln = c.circle.center.longitude;   // tests only
+    return { places: [{ id: 'g1', displayName: { text: 'Mock Pet Clinic' }, shortFormattedAddress: 'Sector 10, Dwarka', location: { latitude: la + 0.01, longitude: ln }, rating: 4.6, userRatingCount: 120, currentOpeningHours: { openNow: true }, nationalPhoneNumber: '011 0000 0000', googleMapsUri: 'https://maps.google.com/?cid=1', businessStatus: 'OPERATIONAL' },
+      { id: 'g2', displayName: { text: 'Closed Forever Vet' }, location: { latitude: la, longitude: ln }, businessStatus: 'CLOSED_PERMANENTLY' }, { id: 'g3', displayName: { text: 'Mock Animal Hospital' }, shortFormattedAddress: 'Sector 6, Dwarka', location: { latitude: la + 0.002, longitude: ln }, googleMapsUri: 'https://evil.example/x', businessStatus: 'OPERATIONAL' }] }; }
+  const k = gKey(); if (!k || !gBudget()) return null;
+  const r = await fetch(url, { method: body ? 'POST' : 'GET', signal: AbortSignal.timeout(9000), headers: Object.assign({ 'X-Goog-Api-Key': k.key, 'content-type': 'application/json' }, mask ? { 'X-Goog-FieldMask': mask } : {}), body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const why = (j.error && (j.error.status + ' ' + String(j.error.message || '').slice(0, 160))) || ('HTTP ' + r.status);
+    if (r.status === 403 || r.status === 401 || r.status === 400) { G.off = Date.now() + 30 * 60000; }   // key not allowed for this: stop trying for 30 min
+    if (G.err !== why) console.error('[Assistant] Google (' + k.name + '):', why); G.err = why;
+    return null;
+  }
+  G.err = null; return j;
+}
+const KM = (a, b, c, d) => { const r = x => x * Math.PI / 180, dl = r(c - a), dn = r(d - b), h = Math.sin(dl / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(dn / 2) ** 2; return 6371 * 2 * Math.asin(Math.sqrt(h)); };
+async function gCenter(loc) {
+  if (!loc) return null; if (loc.lat != null) return { lat: loc.lat, lng: loc.lng };
+  if (process.env.PB_GOOGLE_MOCK === '1') return { lat: 28.59, lng: 77.05 };
+  const k = gKey(); if (!k) return null;
+  const addr = [loc.area, loc.city, loc.state, loc.pin, loc.country || 'India'].filter(Boolean).join(', ');
+  if (!gBudget()) return null;
+  try {
+    const r = await fetch('https://maps.googleapis.com/maps/api/geocode/json?region=in&address=' + encodeURIComponent(addr) + '&key=' + encodeURIComponent(k.key), { signal: AbortSignal.timeout(8000) });
+    const j = await r.json(); const g = j.results && j.results[0];
+    if (!g) { if (j.status && j.status !== 'ZERO_RESULTS' && G.err !== j.status) { console.error('[Assistant] Google geocode (' + k.name + '):', j.status, String(j.error_message || '').slice(0, 160)); G.err = j.status; if (j.status === 'REQUEST_DENIED') G.off = Date.now() + 30 * 60000; } return null; }
+    return { lat: g.geometry.location.lat, lng: g.geometry.location.lng };
+  } catch (e) { return null; }
+}
+const GKIND = [
+  [/\b(shelters?|ngos?|rescue)\b/i, 'shelter', { textQuery: 'animal shelter' }, '🏠', 'animal shelters'],
+  [/\bgroom\w*|salons?|pet spa\b/i, 'groomer', { textQuery: 'pet grooming' }, '✂️', 'pet groomers'],
+  [/\b(boarding|daycare|day care|kennels?|pet hostel|pet hotels?)\b/i, 'boarding', { textQuery: 'pet boarding' }, '🏨', 'pet boarding places'],
+  [/\bpet (shop|store)s?\b/i, 'petstore', { includedTypes: ['pet_store'] }, '🛍️', 'pet shops'],
+  [/./, 'vet', { includedTypes: ['veterinary_care'] }, '🏥', 'vet clinics']];
+async function googlePlaces(msg, intent, loc) {
+  if (!gOn() || !loc || !['vet', 'places'].includes(intent)) return null;
+  const kind = intent === 'vet' ? GKIND[GKIND.length - 1] : (GKIND.find(k => k[0].test(msg)) || GKIND[GKIND.length - 1]);
+  const c = await gCenter(loc); if (!c) return null;
+  const mask = 'places.id,places.displayName,places.shortFormattedAddress,places.location,places.rating,places.userRatingCount,places.currentOpeningHours.openNow,places.nationalPhoneNumber,places.googleMapsUri,places.businessStatus';
+  const circle = { circle: { center: { latitude: c.lat, longitude: c.lng }, radius: 8000 } };
+  const j = kind[2].includedTypes
+    ? await gFetch('https://places.googleapis.com/v1/places:searchNearby', { includedTypes: kind[2].includedTypes, maxResultCount: 8, rankPreference: 'DISTANCE', locationRestriction: circle, languageCode: 'en', regionCode: 'IN' }, mask)
+    : await gFetch('https://places.googleapis.com/v1/places:searchText', { textQuery: kind[2].textQuery, maxResultCount: 8, rankPreference: 'DISTANCE', locationBias: circle, languageCode: 'en', regionCode: 'IN' }, mask);
+  if (!j) return null;
+  const list = (j.places || []).filter(p => p.businessStatus !== 'CLOSED_PERMANENTLY' && p.location).map(p => {
+    const km = KM(c.lat, c.lng, p.location.latitude, p.location.longitude), oh = p.currentOpeningHours;
+    return { type: 'google', src: 'google', emoji: kind[3], title: (p.displayName && p.displayName.text) || 'Place', sub: p.shortFormattedAddress || '', km: Math.round(km * 10) / 10,
+      meta: [km < 1 ? Math.round(km * 1000) + ' m away' : (Math.round(km * 10) / 10) + ' km away', oh && oh.openNow === true ? 'Open now' : oh && oh.openNow === false ? 'Closed now' : null, p.rating ? '★ ' + p.rating + (p.userRatingCount ? ' (' + p.userRatingCount + ')' : '') : null].filter(Boolean).join(' · '),
+      phone: p.nationalPhoneNumber || null, url: /^https:\/\/(maps\.google\.com|www\.google\.com\/maps|maps\.app\.goo\.gl|goo\.gl)/.test(p.googleMapsUri || '') ? p.googleMapsUri : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(((p.displayName && p.displayName.text) || '') + ' ' + (p.shortFormattedAddress || '')), action: 'Directions' };
+  }).sort((a, b) => a.km - b.km).slice(0, 6);
+  return { kind: kind[1], word: kind[4], cards: list, near: loc.area || loc.city || '' };
+}
+
 const SYSTEM = `You are the PawBook Assistant, a friendly helper inside PawBook — an Indian pet social & care app.
 Rules:
 - Be warm, clear and short (under 130 words). Use simple words. Use **bold** for key words and "• " bullets when listing. Reply in the language the user writes in (English, Hindi or Hinglish).
@@ -243,7 +310,8 @@ Rules:
 - Never ask for passwords, OTPs, card or bank details, Aadhaar or other ID numbers.
 - If the user wants to complain or needs a human, tell them you can raise a support request (the app shows the button).
 - If USER CHOSEN LOCATION is given, that is where the user is: use it and NEVER ask for their city or area again. If PAWBOOK DATA has no results there, say so plainly and point to the right page (for vets also "Nearby help", which shows clinics on a map).
-- Do not start with a greeting or the user's name unless the user greeted you. Get straight to the answer.`;
+- Do not start with a greeting or the user's name unless the user greeted you. Get straight to the answer.
+- GOOGLE MAPS results are real places near the user but are NOT verified by PawBook and cannot be booked on PawBook; say they come from Google Maps. Suggest calling ahead. Do not repeat their phone numbers in the text (the cards show them).`;
 async function claude(system, messages) {
   if (process.env.PB_AI_MOCK === '1') return 'MOCK ASSISTANT · ' + messages[messages.length - 1].content.slice(0, 60);
   const key = process.env.ANTHROPIC_API_KEY; if (!key) throw Object.assign(new Error('no key'), { code: 'NOKEY' });
@@ -280,7 +348,7 @@ exports.state = async (req, res) => {
     const M = await me(req), mine = await myData(M);
     const { rows } = await query(`SELECT * FROM (SELECT * FROM pb_assistant_messages WHERE user_id = $1 ORDER BY id DESC LIMIT 60) x ORDER BY id`, [M.id]);
     const t = await query(`SELECT COUNT(*) FILTER (WHERE status IN ('open','in_progress'))::int AS open FROM pb_support_tickets WHERE user_id = $1`, [M.id]);
-    return R.ok(res, { name: first(M.name), admin: M.admin, ai: aiOn(), pets: mine.pets.map(p => ({ id: p.id, name: p.name, species: p.species, breed: p.breed })), due: mine.due, appts: mine.appts, messages: rows.map(outMsg), open_tickets: t.rows[0].open });
+    return R.ok(res, { name: first(M.name), admin: M.admin, ai: aiOn(), maps: gOn(), pets: mine.pets.map(p => ({ id: p.id, name: p.name, species: p.species, breed: p.breed })), due: mine.due, appts: mine.appts, messages: rows.map(outMsg), open_tickets: t.rows[0].open });
   } catch (e) { return fail(res, 'state', e); }
 };
 
@@ -298,9 +366,20 @@ exports.chat = async (req, res) => {
       const loc = locOf(req.body), named = cityOf(msg), city = named || (loc && loc.searchCity) || null;
       const wantsNear = /\b(near ?me|nearby|my (city|area|locality)|around me|close to me|in my town)\b/i.test(msg);
       const needMine = ['vacc', 'mypets', 'appts', 'general', 'capabilities', 'greet'].includes(intent) || /\b(my|mine)\b/i.test(msg);
-      const [mine, found] = await Promise.all([needMine ? myData(M) : Promise.resolve({ pets: [], due: [], appts: [] }), listings(req, intent, msg, city, loc).catch(e => { console.error('[Assistant] listings:', e.message); return null; })]);
+      const [mine, found, gp] = await Promise.all([needMine ? myData(M) : Promise.resolve({ pets: [], due: [], appts: [] }), listings(req, intent, msg, city, loc).catch(e => { console.error('[Assistant] listings:', e.message); return null; }),
+        googlePlaces(msg, intent, loc).catch(e => { console.error('[Assistant] Google:', e.message); return null; })]);
       const base = rules(intent, msg, { M, mine, found });
       if (wantsNear && !city && TYPES_FOR[intent] !== undefined) { base.text = '📍 Which city or area should I look in? Set your location with the **📍 location** button above the chat (country, state, city, area and PIN code) — or just tell me, e.g. “vets in Pune”.\n\n' + base.text; base.actions = [{ label: 'Set my location', url: '#location' }].concat(base.actions).slice(0, 4); }
+      if (gp && gp.cards.length) {
+        const lead = `**${gp.cards.length} ${gp.word} near ${cap(gp.near)}** from Google Maps (nearest first — not verified by PawBook, so call ahead):`;
+        if (intent === 'vet' && found && found.total && found.near) base.text = base.text.replace('\nOpen a vet to see their timings and book a visit.', '\nPawBook vets can be booked right here. ') + '\n\nAlso nearby — ' + lead;
+        else base.text = ((intent === 'vet' ? (found && found.total && !found.near ? `No PawBook vets are listed in ${cap(found.city)} yet.` : found && !found.total && found.city ? `No PawBook vets are listed in ${cap(found.city)} yet.` : '') + ' Here are ' : 'Here are ') + lead).trim();
+        if (intent === 'vet' && found && found.total && !found.near) found.cards = [];   // don't show far-away PawBook vets next to nearby clinics
+        base.actions = [{ label: 'Open the map', url: PAGES.nearby[0] }].concat(base.actions.filter(a => a.url !== PAGES.nearby[0])).slice(0, 4);
+      } else if (intent === 'places' && !gp) {
+        base.text = loc ? `I can't look up ${(GKIND.find(k => k[0].test(msg)) || GKIND[0])[4]} right now. Open **Nearby help** to see them on the map around ${cap(loc.area || loc.city)}.` : 'Set your location with the **📍 location** button above the chat and I\'ll find places near you — or open **Nearby help** to see them on the map.';
+        base.actions = [act('nearby', 'Open the map')].concat(loc ? [] : [{ label: 'Set my location', url: '#location' }]);
+      }
       let text = base.text, source = 'rules';
       if (aiOn() && !['greet', 'thanks'].includes(intent)) {
         try {
@@ -308,11 +387,11 @@ exports.chat = async (req, res) => {
           const msgs = []; rows.forEach(h => { const role = h.role === 'assistant' ? 'assistant' : 'user'; if (msgs.length && msgs[msgs.length - 1].role === role) msgs[msgs.length - 1].content += '\n' + h.body; else msgs.push({ role, content: h.body.slice(0, 1500) }); });
           while (msgs.length && msgs[0].role !== 'user') msgs.shift();
           if (!msgs.length || msgs[msgs.length - 1].role !== 'user') msgs.push({ role: 'user', content: msg });
-          const ai = await claude(SYSTEM + '\n\n' + contextBlock(M, mine, found, base, intent) + (loc ? '\nUSER CHOSEN LOCATION: ' + loc.label : '\nUSER LOCATION: not set (they can set it with the location button above the chat)'), msgs);
+          const ai = await claude(SYSTEM + '\n\n' + contextBlock(M, mine, found, base, intent) + (gp && gp.cards.length ? '\nGOOGLE MAPS (shown as cards under your reply): ' + gp.cards.map(c => c.title + ' — ' + c.meta).join(' | ') : '') + (loc ? '\nUSER CHOSEN LOCATION: ' + loc.label : '\nUSER LOCATION: not set (they can set it with the location button above the chat)'), msgs);
           if (ai && ai.trim().length > 1) { text = ai.trim().slice(0, 3000); source = 'ai'; }
         } catch (e) { console.error('[Assistant] AI:', e.message); }
       }
-      reply = { text, actions: base.actions, cards: found && found.total ? found.cards : [], suggestions: base.suggestions, source };
+      reply = { text, actions: base.actions, cards: (found && found.total ? found.cards : []).concat(gp && gp.cards.length ? gp.cards : []).slice(0, 10), suggestions: base.suggestions, source };
       if (found && found.q && found.total > found.cards.length) reply.actions = [{ label: 'See all ' + found.total + ' results', url: PAGES.search[0] + '?q=' + encodeURIComponent(found.q) + (found.city ? '&city=' + encodeURIComponent(cap(found.city)) : '') }].concat(reply.actions).slice(0, 4);
     }
     const r = await save(M, 'assistant', reply.text, { intent, cards: reply.cards, actions: reply.actions, source: reply.source });

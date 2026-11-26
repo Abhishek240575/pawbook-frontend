@@ -499,6 +499,9 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
 .locbar .sp{flex:1}.locbar .lx{border:none;background:none;color:var(--muted);font-size:15px;padding:4px}
 .spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 #mo .fl input[name=tstate],#mo .fl input[name=tcity]{margin-top:0}
+.mc2.g .im{text-decoration:none;background:linear-gradient(135deg,#e7f7ee,#e8f1ff)}.mc2.g .ge{font-size:34px}
+.mc2 .gl{display:flex;gap:6px;margin-top:auto;padding-top:6px}.mc2 .gl a{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:4px;height:30px;border-radius:9px;border:1.5px solid #cfdcf3;color:var(--blue-d);font-weight:800;font-size:12px;text-decoration:none}
+.gattr{font-size:11px;color:var(--muted);padding-left:2px}.gattr b{color:var(--sub)}
 </style>
 </head>
 <body>
@@ -545,7 +548,7 @@ var ST = null, BUSY = false, MO = null, TOPICS = null, LASTSUGG = null;
 var GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk', GMP = null, INLOC = null, INLOAD = null, PINIDX = {};
 var LOCN = null; try { LOCN = JSON.parse(localStorage.getItem('pb_assist_loc') || 'null'); } catch (e) {}
 var TEMOJI = {pets: '🐾', vets: '🩺', communities: '🤝', products: '🛍️', adoption: '🏡', lost: '📍', events: '🎉', shelters: '🏠', people: '👤'};
-var STARTERS = [['ti-stethoscope', 'c-sage', 'Find a vet near me'], ['ti-heart-handshake', 'c-rose', 'Pets for adoption in my city'], ['ti-vaccine', 'c-sky', 'When are my pet\'s vaccines due?'], ['ti-map-search', 'c-coral', 'My dog is missing — what should I do?'], ['ti-bone', 'c-amber', 'What food is good for a puppy?'], ['ti-message-report', 'c-lav', 'I have a complaint']];
+var STARTERS = [['ti-stethoscope', 'c-sage', 'Find a vet near me'], ['ti-cut', 'c-teal', 'Pet groomers near me'], ['ti-heart-handshake', 'c-rose', 'Pets for adoption in my city'], ['ti-vaccine', 'c-sky', 'When are my pet\'s vaccines due?'], ['ti-map-search', 'c-coral', 'My dog is missing — what should I do?'], ['ti-message-report', 'c-lav', 'I have a complaint']];
 var TOPICS2 = [['Find a vet', 'img/vet/vet-exam.jpg', 'ti-stethoscope', 'Find a vet near me'], ['Adopt', 'img/adopt/rescue-golden.jpg', 'ti-heart-handshake', 'Show pets for adoption'], ['Lost & Found', 'img/lost/missing-golden.jpg', 'ti-map-search', 'My pet is lost, what do I do?'],
   ['Pet shop', 'img/adopt/new-home-prep.jpg', 'ti-shopping-bag', 'Dog food'], ['Communities', 'img/events/festival.jpg', 'ti-users-group', 'Communities near me'], ['Training', 'img/pets/dog-run.jpg', 'ti-target-arrow', 'How do I stop my dog pulling on the leash?']];
 
@@ -621,7 +624,7 @@ function renderSide(){
   h += '<section class="card"><div class="ch"><h2><i class="ti ti-headset"></i>Need a person?</h2>' + (s.open_tickets ? '<span class="badge">' + s.open_tickets + ' open</span>' : '') + '</div><div class="cb"><div class="hum">' + img('img/lost/community.jpg', 'Pet parents helping each other') + '<p>Raise a support request and the PawBook team will reply in your notifications. Or write to <a href="mailto:support@deemona.com" style="color:var(--blue-d);font-weight:700">support@deemona.com</a>.</p></div>'
     + '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn btn-o btn-s" onclick="supportForm()"><i class="ti ti-message-plus"></i>Raise a request</button><button class="btn btn-w btn-s" onclick="showTickets()"><i class="ti ti-ticket"></i>My requests</button>' + (s.admin ? '<button class="btn btn-w btn-s" onclick="showAdmin()"><i class="ti ti-shield"></i>Support inbox</button>' : '') + '</div></div></section>';
   document.getElementById('side').innerHTML = h;
-  var md = document.getElementById('mode'); if (md) md.innerHTML = '<i class="dot"></i>' + (s.ai ? 'Online · AI answers' : 'Online · Quick answers');
+  var md = document.getElementById('mode'); if (md) md.innerHTML = '<i class="dot"></i>' + (s.ai ? 'Online · AI answers' : 'Online · Quick answers') + (s.maps ? ' · Google Maps' : '');
 }
 
 /* ---------- messages ---------- */
@@ -642,13 +645,18 @@ function setSugg(l){ LASTSUGG = l; var el = document.getElementById('sugs'); if 
 function msgHTML(m){
   if (m.role === 'user') return '<div class="m u"><div class="av4">' + esc((ST.name || 'Y').charAt(0).toUpperCase()) + '</div><div class="bw"><div class="bub">' + esc(m.text) + '</div><div class="tm">' + esc(hm(m.at)) + '</div></div></div>';
   var h = '<div class="m b' + (m.err ? ' err' : '') + '" data-id="' + esc(m.id || '') + '"><div class="av4"><i class="ti ti-paw"></i></div><div class="bw"><div class="bub">' + fmt(m.text) + '</div>';
-  if (m.cards && m.cards.length) h += '<div class="cards">' + m.cards.map(cardHTML).join('') + '</div>';
+  if (m.cards && m.cards.length) h += '<div class="cards">' + m.cards.map(cardHTML).join('') + '</div>' + (m.cards.some(function(c){ return c.src === 'google'; }) ? '<div class="gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead before visiting</div>' : '');
   if (m.actions && m.actions.length) h += '<div class="acts">' + m.actions.map(actHTML).join('') + '</div>';
   if (m.err) h += '<div class="acts"><button onclick="send(this.dataset.q, true)" data-q="' + esc(m.retry) + '"><i class="ti ti-refresh"></i>Try again</button></div>';
   h += '<div class="tm">' + esc(hm(m.at)) + (m.id && !m.err ? ' · <button class="fb' + (m.helpful === true ? ' on' : '') + '" title="Helpful" aria-label="Helpful" onclick="rate(this,true)"><i class="ti ti-thumb-up"></i></button><button class="fb' + (m.helpful === false ? ' on' : '') + '" title="Not helpful" aria-label="Not helpful" onclick="rate(this,false)"><i class="ti ti-thumb-down"></i></button>' : '') + '</div></div></div>';
   return h;
 }
+function gcardHTML(c){
+  return '<div class="mc2 g"><a class="im" href="' + esc(c.url) + '" target="_blank" rel="noopener"><b class="ge">' + esc(c.emoji || '📍') + '</b><span>Google Maps</span></a><div class="bd"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '')
+    + '<span class="gl"><a href="' + esc(c.url) + '" target="_blank" rel="noopener"><i class="ti ti-directions"></i>Directions</a>' + (c.phone ? '<a href="tel:' + esc(String(c.phone).replace(/[^\d+]/g, '')) + '"><i class="ti ti-phone"></i>Call</a>' : '') + '</span></div></div>';
+}
 function cardHTML(c){
+  if (c.src === 'google') return gcardHTML(c);
   return '<a class="mc2" href="' + esc(c.url || '#') + '"><div class="im">' + (c.img ? img(c.img, c.title) : (TEMOJI[c.type] || '🐾')) + (c.badge ? '<span>' + esc(c.badge) + '</span>' : c.near ? '<span>Near you</span>' : '') + '</div><div class="bd"><b>' + esc(c.title) + '</b>'
     + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.price != null ? '<span class="pr">₹' + Number(c.price).toLocaleString('en-IN') + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '') + '<span class="go">' + esc(c.action || 'Open') + ' →</span></div></a>';
 }
@@ -746,9 +754,11 @@ function locForm(){
     + '<label class="fl" data-f="city"><span>City / district *</span><select class="fi" name="city" onchange="locCity(this.form)" disabled><option value="">Choose a state first</option></select><input class="fi" name="tcity" maxlength="80" placeholder="City" style="display:none" value="' + esc(l.city || '') + '"><div class="err">Choose a city or district</div></label></div>'
     + '<div class="two"><label class="fl"><span>Area / locality</span><input class="fi" name="area" maxlength="100" list="arealist" placeholder="e.g. Dwarka Sector 10" value="' + esc(l.area || '') + '"><datalist id="arealist"></datalist></label>'
     + '<label class="fl" data-f="pin"><span>PIN code</span><input class="fi" name="pin" inputmode="numeric" maxlength="6" list="pinlist" placeholder="6 digits" value="' + esc(l.pin || '') + '" oninput="locPin(this.form)"><datalist id="pinlist"></datalist><div class="err">Enter a valid 6-digit PIN code</div></label></div>'
+    + '<input type="hidden" name="glat" value="' + esc(l.gps ? l.lat : '') + '"><input type="hidden" name="glng" value="' + esc(l.gps ? l.lng : '') + '">'
     + '<p id="locmsg" style="font-size:12px;color:var(--muted);min-height:16px"></p>', function(f){
       clearBad(f); var oc = f.country.value === 'Other', o = {country: oc ? (f.ocountry.value.trim() || 'Other') : 'India', state: oc ? f.tstate.value.trim() : f.state.value, city: oc ? f.tcity.value.trim() : f.city.value, area: f.area.value.trim(), pin: oc ? '' : f.pin.value.trim()}, e = [];
       if (!o.state) e.push('state'); if (!o.city) e.push('city'); if (o.pin && !/^\d{6}$/.test(o.pin)) e.push('pin'); if (e.length) return markBad(f, e);
+      var c = coordsFor(o, f); if (c) { o.lat = c[0]; o.lng = c[1]; if (c[2]) o.gps = true; }
       setLoc(o); closeMo(); toast('Location set — ' + locLabel(o));
     }, 'Save location');
   var f = document.getElementById('mo-form');
@@ -756,6 +766,13 @@ function locForm(){
   loadIndia().then(function(d){ if (!d) { document.getElementById('locmsg').textContent = 'Could not load the list of places — choose “Other country” to type it instead.'; f.state.innerHTML = '<option value="">—</option>'; return; }
     f.state.innerHTML = opts(Object.keys(d).sort(), l.country === 'India' || !l.country ? l.state : '', 'Choose a state');
     if (f.state.value) { locState(f, l.city); if (l.city) { f.city.value = l.city; locCity(f, true); } } });
+}
+function coordsFor(o, f){   // map point for the chosen place: GPS > PIN > middle of the district
+  if (f.glat.value && f.glng.value && (!o.pin || !PINIDX[o.pin] || f.pin.dataset.gps === o.pin)) return [Number(f.glat.value), Number(f.glng.value), true];
+  if (o.pin && PINIDX[o.pin] && PINIDX[o.pin][2] != null) return [PINIDX[o.pin][2], PINIDX[o.pin][3]];
+  var pins = INLOC && INLOC[o.state] && INLOC[o.state][o.city] ? INLOC[o.state][o.city].filter(function(p){ return p.length > 2; }) : [];
+  if (pins.length) return [pins.reduce(function(a, p){ return a + p[1]; }, 0) / pins.length, pins.reduce(function(a, p){ return a + p[2]; }, 0) / pins.length];
+  return null;
 }
 function locCountry(f, init){ var oc = f.country.value === 'Other'; document.getElementById('f-oc').style.display = oc ? '' : 'none'; f.state.style.display = oc ? 'none' : ''; f.tstate.style.display = oc ? '' : 'none'; f.city.style.display = oc ? 'none' : ''; f.tcity.style.display = oc ? '' : 'none'; f.pin.closest('.fl').style.display = oc ? 'none' : ''; document.getElementById('gps').style.display = oc ? 'none' : ''; }
 function locState(f, keep){ var s = f.state.value, ds = s && INLOC && INLOC[s] ? Object.keys(INLOC[s]).filter(Boolean).sort() : [];
@@ -787,7 +804,8 @@ function useGps(b){
     var la = pos.coords.latitude, ln = pos.coords.longitude;
     loadIndia().then(function(){ var best = null, bd = 1e9; Object.keys(PINIDX).forEach(function(k){ var p = PINIDX[k]; if (p[2] == null) return; var d = (p[2] - la) * (p[2] - la) + (p[3] - ln) * (p[3] - ln); if (d < bd) { bd = d; best = k; } });
       if (!best || bd > 0.25) { done('You seem to be outside India — choose “Other country” and type your city.'); return; }
-      var p = PINIDX[best]; f.country.value = 'India'; locCountry(f); f.state.value = p[0]; locState(f); f.city.value = p[1]; locCity(f, true); f.pin.value = best; f.area.value = '';
+      var p = PINIDX[best]; f.country.value = 'India'; locCountry(f); f.state.value = p[0]; locState(f); f.city.value = p[1]; locCity(f, true); f.pin.value = best; f.pin.dataset.gps = best; f.area.value = '';
+      f.glat.value = Math.round(la * 1e5) / 1e5; f.glng.value = Math.round(ln * 1e5) / 1e5;
       areaFromGoogle(f, {location: {lat: la, lng: ln}}); done('Nearest PIN ' + best + ' · ' + p[1] + ', ' + p[0] + ' — check and save.'); });
   }, function(){ done('Location permission was not given — choose your place from the lists instead.'); }, {timeout: 10000, maximumAge: 600000});
 }
