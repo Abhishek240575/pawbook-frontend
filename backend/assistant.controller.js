@@ -169,7 +169,7 @@ function rules(intent, msg, ctx) {
     const what = f.sections.map(s => (s.count === 1 ? TYPE_ONE[s.type] : TYPE_WORD[s.type]) || s.type).join(', ');
     if (f.city && !f.near) return `There's nothing listed in ${cap(f.city)} yet, so here are the closest matches elsewhere on PawBook (${f.total} ${what}):`;
     return `I found ${f.total} matching ${what} on PawBook${f.city ? ' — ' + (f.near === f.cards.length ? 'in ' : 'nearest first, around ') + cap(f.city) : ''}${f.match === 'close' ? ' (closest spellings)' : ''}:`; };
-  const none = (what, page) => `I couldn't find ${what}${found && found.city ? ' in ' + cap(found.city) : ''} on PawBook right now. You can browse everything on the ${PAGES[page][1]} page.`;
+  const none = (what, page) => found && !found.q && found.city ? `No ${what.replace(/^an? /, '').replace(/ matching that$/, 's').replace(/ss$/, 's')} are listed on PawBook in ${cap(found.city)} yet. You can check the ${PAGES[page][1]} page, which is updated as new ones join.` : `I couldn't find ${what}${found && found.city ? ' in ' + cap(found.city) : ''} on PawBook right now. You can browse everything on the ${PAGES[page][1]} page.`;
   switch (intent) {
     case 'greet': text = `Hi${name ? ' ' + name : ''}! 🐾 I can find vets, pets for adoption, products and communities on PawBook, check your pets' vaccinations and appointments, or answer pet-care questions. What do you need?`; break;
     case 'thanks': text = 'Happy to help! 🐾 Ask me anything else whenever you need.'; break;
@@ -191,7 +191,7 @@ function rules(intent, msg, ctx) {
       text = L.join('\n'); actions = intent === 'appts' ? [act('appts'), act('vet')] : [act('vacc'), act('pets'), act('vet', 'Book a vaccination visit')];
       break; }
     case 'vet': text = found && found.total ? foundLine(found) + '\nOpen a vet to see their timings and book a visit.' : (found ? none('a vet matching that', 'vet') : `You can book in-clinic or video visits with verified vets on **Book a vet**. Tell me your city (e.g. “vets in Pune”) and I'll look for vets on PawBook.`)
-      + `\n\nIf your pet seems unwell right now, the **AI health check** can help you judge how urgent it is.`; actions = [act('vet'), act('appts'), act('health')]; break;
+      + `\n\nIf your pet seems unwell right now, the **AI health check** can help you judge how urgent it is.`; actions = found && !found.total ? [act('vet'), act('nearby', 'Clinics near me on the map'), act('health')] : [act('vet'), act('appts'), act('health')]; break;
     case 'adopt': text = found && found.total ? foundLine(found) : (found ? none('pets for adoption matching that', 'adopt') : `Pets waiting for a home are listed by shelters and rescuers on **Adopt a pet**. Tell me what you're looking for — e.g. “indie puppy in Delhi” or “cat for adoption in Pune”.`)
       + `\n\nAdoption on PawBook: send an interest request → the shelter reviews it → meet the pet → home visit and adoption. Never pay anyone outside PawBook for a “free” adoption.`; actions = [act('adopt')]; break;
     case 'lost': text = (found && found.total ? foundLine(found) + '\n\n' : '') + `**Lost your pet?** Report it on **Lost & Found** with a clear photo and the area it was last seen — people nearby are alerted, and your phone number stays hidden.\n**Found a pet?** Post it there too, keep it safe, and check for a collar tag. A vet can scan for a microchip for free in most clinics.`;
@@ -231,7 +231,9 @@ Rules:
 - The only phone numbers you may give: 112 (national emergency) and 1962 (government mobile vet units, mainly livestock, not in every state). Email: support@deemona.com.
 - Health: give general guidance only, never a diagnosis or medicine doses. For anything worrying, tell them to see a vet and mention the AI health check. For emergencies tell them to go to a vet now and open Emergency SOS.
 - Never ask for passwords, OTPs, card or bank details, Aadhaar or other ID numbers.
-- If the user wants to complain or needs a human, tell them you can raise a support request (the app shows the button).`;
+- If the user wants to complain or needs a human, tell them you can raise a support request (the app shows the button).
+- If USER CHOSEN LOCATION is given, that is where the user is: use it and NEVER ask for their city or area again. If PAWBOOK DATA has no results there, say so plainly and point to the right page (for vets also "Nearby help", which shows clinics on a map).
+- Do not start with a greeting or the user's name unless the user greeted you. Get straight to the answer.`;
 async function claude(system, messages) {
   if (process.env.PB_AI_MOCK === '1') return 'MOCK ASSISTANT · ' + messages[messages.length - 1].content.slice(0, 60);
   const key = process.env.ANTHROPIC_API_KEY; if (!key) throw Object.assign(new Error('no key'), { code: 'NOKEY' });
