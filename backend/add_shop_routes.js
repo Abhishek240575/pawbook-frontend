@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v21: pawmatch) ─────────────────────────────
+const BLOCK = `${START} (v22: adoption terms) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -252,6 +252,8 @@ adRouter.post('/reports',                            authenticate, fulCtrl.limit
 adRouter.get('/foster',                              authenticate, adCtrl.myFoster);
 adRouter.put('/foster',                              authenticate, adWrite, adCtrl.saveFoster);
 adRouter.get('/stories',                             authenticate, adCtrl.stories);
+// adoption terms (v22) — registered only once the updated adopt.controller.js is on the server
+if (typeof adCtrl.terms === 'function') adRouter.post('/terms', authenticate, fulCtrl.limit('adopt-terms', 30, 3600), adCtrl.terms);
 adRouter.get('/admin/queue',                         authenticate, adCtrl.adminQueue);
 adRouter.post('/admin/:kind/:id',                    authenticate, adWrite, adCtrl.adminAction);
 router.use('/adopt', adRouter);
@@ -397,7 +399,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop21');
+  fs.copyFileSync(f, f + '.bak-shop22');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -423,4 +425,4 @@ for (const f of FILES) {
   else console.log('  NOTE: old lost-pets routes not found in this file — guard not needed');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop21 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop22 — restart the app from the MilesWeb panel.');

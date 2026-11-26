@@ -112,6 +112,29 @@ function match(p, a) {
 async function prefsOf(uid) { const { rows } = await query(`SELECT answers FROM adoption_preferences WHERE user_id::text = $1`, [uid]); return rows[0] ? rows[0].answers : null; }
 
 // GET /adopt/config
+// ── adoption terms: policy, rules, documents, compliance (page 39) ──
+// Bump TERMS_VERSION whenever the wording on the page changes in substance — everyone is asked to agree again.
+const TERMS_VERSION = '2026-11';
+const TERMS_SECTIONS = ['policy', 'rules', 'documents', 'compliance'];
+async function termsOf(uid) {
+  try {
+    const { rows } = await query(`SELECT action, created_at FROM adoption_terms_events WHERE user_id::text = $1 AND version = $2 ORDER BY created_at DESC LIMIT 1`, [uid, TERMS_VERSION]);
+    const r = rows[0];
+    return { version: TERMS_VERSION, accepted_at: r && r.action === 'accepted' ? r.created_at : null, declined_at: r && r.action === 'declined' ? r.created_at : null };
+  } catch (e) { console.error('[Adopt] terms:', e.message); return { version: TERMS_VERSION, accepted_at: null, declined_at: null, unavailable: true }; }
+}
+exports.terms = async (req, res) => {
+  try {
+    const M = await me(req), b = req.body || {}, action = b.action === 'accept' ? 'accepted' : b.action === 'decline' ? 'declined' : null;
+    if (!action) return bad(res, ['action']);
+    if (String(b.version || '') !== TERMS_VERSION) return res.status(409).json({ success: false, code: 'terms_changed', message: 'The adoption terms were updated — please read them again.', data: { version: TERMS_VERSION } });
+    const sections = Array.isArray(b.sections) ? [...new Set(b.sections.map(String).filter(x => TERMS_SECTIONS.includes(x)))] : [];
+    if (action === 'accepted' && sections.length !== TERMS_SECTIONS.length) return bad(res, ['sections'], 'Please confirm each section: policy, rules, documents and compliance.');
+    await query(`INSERT INTO adoption_terms_events (user_id, version, action, sections) VALUES ($1,$2,$3,$4)`, [M.id, TERMS_VERSION, action, sections]);
+    return R.ok(res, { terms: await termsOf(M.id) });
+  } catch (e) { return fail(res, 'terms', e); }
+};
+
 exports.config = async (req, res) => {
   try {
     const M = await me(req), [st, pr] = await Promise.all([
@@ -121,7 +144,7 @@ exports.config = async (req, res) => {
                     (SELECT COUNT(DISTINCT lower(COALESCE(location_city, ''))) ::int FROM adoptable_pets WHERE status IN ('available','reserved') AND moderation = 'approved' AND location_city IS NOT NULL) AS cities`),
       prefsOf(M.id)]);
     const req2 = (await query(`SELECT status, org_name, decision_note, created_at FROM adoption_partner_requests WHERE user_id::text = $1 ORDER BY created_at DESC LIMIT 1`, [M.id])).rows[0] || null;
-    return R.ok(res, { stats: st.rows[0], preferences: pr, partner: { shelters: M.shelters, request: req2 }, admin: M.admin });
+    return R.ok(res, { stats: st.rows[0], preferences: pr, partner: { shelters: M.shelters, request: req2 }, admin: M.admin, terms: await termsOf(M.id) });
   } catch (e) { return fail(res, 'config', e); }
 };
 // GET /adopt/pets?species&city&state&country&gender&age&size&kids&q&sort&limit&offset
@@ -204,6 +227,8 @@ const legacyStatus = s => (['rejected', 'withdrawn'].includes(s) ? s : ['handed_
 exports.apply = async (req, res) => {
   try {
     const M = await me(req), id = parseInt(req.params.id, 10), b = req.body || {}, e = [];
+    const T = await termsOf(M.id);
+    if (!T.accepted_at) return res.status(428).json({ success: false, code: 'terms_required', message: 'Please read and agree to the adoption policy, rules, documents and compliance first.', data: { version: TERMS_VERSION } });
     const name = str(b.name, 200) || M.name || '', phone = str(b.phone, 30), email = str(b.email, 200);
     if (!phone || !/^[+\d][\d\s-]{6,20}$/.test(phone)) e.push('phone');
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.push('email');

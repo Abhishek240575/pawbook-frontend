@@ -56,7 +56,7 @@ OK=1
 for f in "$API/src/routes/index.js" "$API/routes/index.js"; do
   [ -f "$f" ] || continue
   node --check "$f" || OK=0
-  grep -q "(v21: pawmatch)" "$f" && grep -q "pmRouter" "$f" && grep -q "asRouter" "$f" && grep -q "cmRouter" "$f" && grep -q "lfRouter" "$f" || OK=0
+  grep -qE "\(v2[12]: (pawmatch|adoption terms)\)" "$f" && grep -q "pmRouter" "$f" && grep -q "asRouter" "$f" && grep -q "cmRouter" "$f" && grep -q "lfRouter" "$f" || OK=0
 done
 for d in $DIRS; do [ -f "$d/pawmatch.controller.js" ] && { node --check "$d/pawmatch.controller.js" || OK=0; }; done
 if [ "$OK" -eq 1 ]; then echo "Backend files OK."; else echo "Check failed; backend restored."; restore_backend; exit 1; fi
