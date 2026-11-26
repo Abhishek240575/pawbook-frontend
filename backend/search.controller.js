@@ -58,6 +58,7 @@ function wordsOf(q) {
 }
 // returns { where, score } SQL for a lowered document expression; params are pushed to args
 function matcher(doc, words, args, any, fuzzy) {
+  if (!words.length) return { where: 'TRUE', score: '0', doc };   // browse mode (no words): everything, nearest first
   const conds = [], scores = [];
   for (const w of words) {
     const alts = SYN[w] || [w], parts = [];
@@ -248,7 +249,7 @@ async function runAll(ctx, types) {
 async function find(req, rawQ, opts) {
   opts = opts || {};
   const raw = str(rawQ, 100), words = wordsOf(raw), type = TYPES.includes(opts.type) ? opts.type : 'all';
-  if (!words.length) return { q: raw, words, city: null, type, sections: [], total: 0, match: 'none' };
+  if (!words.length && !opts.browse) return { q: raw, words, city: null, type, sections: [], total: 0, match: 'none' };
   const city = str(opts.city, 80).toLowerCase();
   const canFuzzy = await trgm();
   const ctx = { M: await me(req), words, raw: raw.toLowerCase(), city, cityAlts: CITY_ALIASES[city] || [city], lim: opts.lim || (type === 'all' ? 6 : 40), any: false, fuzzy: false };

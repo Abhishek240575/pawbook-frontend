@@ -78,7 +78,7 @@ function detect(msg) { const hits = ORDER.filter(k => RX[k].test(msg)); return {
 
 const CITIES = ['delhi', 'new delhi', 'mumbai', 'bombay', 'bangalore', 'bengaluru', 'chennai', 'kolkata', 'hyderabad', 'pune', 'ahmedabad', 'jaipur', 'lucknow', 'chandigarh', 'gurgaon', 'gurugram', 'noida', 'ghaziabad', 'faridabad', 'kochi', 'thiruvananthapuram', 'coimbatore', 'indore', 'bhopal', 'nagpur', 'surat', 'vadodara', 'patna', 'bhubaneswar', 'guwahati', 'dehradun', 'mysore', 'mysuru', 'mangalore', 'visakhapatnam', 'vijayawada', 'nashik', 'kanpur', 'varanasi', 'agra', 'amritsar', 'ludhiana', 'raipur', 'ranchi', 'goa', 'panaji', 'shimla', 'srinagar', 'jammu', 'udaipur', 'jodhpur', 'madurai', 'trichy', 'thane', 'navi mumbai'];
 function cityOf(msg) { const m = ' ' + msg.toLowerCase().replace(/[^a-z ]+/g, ' ') + ' '; let best = null; CITIES.forEach(c => { if (m.includes(' ' + c + ' ') && (!best || c.length > best.length)) best = c; }); return best; }
-const FILLER = new Set(('i me my we you your a an the to for of in on at near nearby around is are am be was it this that there here please pls plz can could would should will want wanna need looking look find search show me give tell list any some all available ' +
+const FILLER = new Set(('i me my we you your a an the to for of in on at near nearby around close closest nearest city town area place location locality neighbourhood neighborhood is are am be was it this that there here please pls plz can could would should will want wanna need looking look find search show me give tell list any some all available ' +
   'how what where which who when do does get got have has with and or from by about best good top new latest cheap online ' +
   'adopt adoption adopting rescue foster vet vets veterinarian veterinary doctor doctors clinic clinics hospital book booking appointment consult consultation ' +
   'buy shop shopping product products price order lost missing found stray group groups community communities meetup meetups event events pet pets animal animals').split(' '));
@@ -116,15 +116,32 @@ const fmtDate = d => { if (!d) return ''; const x = new Date(d + 'T00:00:00'); r
 
 // ── listings from PawBook (real data only) ───────────────────────────────────
 const TYPES_FOR = { adopt: ['adoption'], vet: ['vets'], lost: ['lost'], shop: ['products'], groups: ['communities'], events: ['events'], search: null, general: null };
-async function listings(req, intent, msg, city) {
+async function listings(req, intent, msg, city, loc) {
   if (!(intent in TYPES_FOR)) return null;
-  const terms = termsOf(msg, city), q = terms || (city || '');
-  if (!q || q.length < 2) return null;
+  const terms = termsOf(msg, city);
   const types = TYPES_FOR[intent] || ['pets', 'vets', 'communities', 'products', 'adoption', 'lost', 'events', 'shelters'];
-  const r = await search.find(req, q, { types, city: city || '', lim: 4, noPartial: true });
+  const specific = !!TYPES_FOR[intent];
+  let r;
+  if (terms && terms.length >= 2) r = await search.find(req, terms, { types, city: city || '', lim: 4, noPartial: true });
+  else if (specific && (city || intent === 'adopt' || intent === 'events' || intent === 'lost')) r = await search.find(req, '', { types, city: city || '', lim: 4, browse: true });   // e.g. "pets for adoption near me"
+  else return city ? { q: '', city, terms: '', total: 0, match: 'none', cards: [], sections: [], near: 0, area: loc && loc.area } : null;
   const cards = [];
   r.sections.forEach(s => s.items.forEach(x => { if (cards.length < 6) cards.push(Object.assign({ type: s.type }, pickCard(x))); }));
-  return { q, city, terms, total: r.total, match: r.match, cards, sections: r.sections.map(s => ({ type: s.type, count: s.count })) };
+  const near = cards.filter(c => c.near).length;
+  return { q: terms, city, terms, total: r.total, match: r.match, cards, sections: r.sections.map(s => ({ type: s.type, count: s.count })), near, area: loc && loc.area };
+}
+// a chosen location from the page: country / state / district or city / area / PIN
+const DISTRICT_CITY = { 'bengaluru urban': 'bengaluru', 'bengaluru rural': 'bengaluru', 'bangalore urban': 'bengaluru', 'mumbai suburban': 'mumbai', 'gautam buddha nagar': 'noida', 'medchal malkajgiri': 'hyderabad', 'rangareddy': 'hyderabad', 'ranga reddy': 'hyderabad', 'gurgaon': 'gurugram', 'kolkata': 'kolkata', 'north 24 parganas': 'kolkata', 'south 24 parganas': 'kolkata', 'ernakulam': 'kochi', 'thane': 'thane' };
+function locOf(b) {
+  const l = b && typeof b.location === 'object' && b.location ? b.location : null; if (!l) return null;
+  const o = { country: str(l.country, 60) || 'India', state: str(l.state, 80), city: str(l.city, 80), area: str(l.area, 100), pin: /^\d{6}$/.test(str(l.pin, 6)) ? str(l.pin, 6) : '' };
+  if (!o.state && !o.city && !o.pin) return null;
+  let c = o.city.toLowerCase().replace(/\s+district$/, '').trim();
+  if (/^(nct of )?delhi$/i.test(o.state)) c = 'new delhi';
+  else c = DISTRICT_CITY[c] || c.replace(/\s+(urban|rural)$/, '');
+  o.searchCity = c;
+  o.label = [o.area, o.city, o.state].filter(Boolean).join(', ') + (o.pin ? ' ' + o.pin : '');
+  return o;
 }
 function pickCard(x) { const o = {}; ['title', 'sub', 'meta', 'img', 'url', 'action', 'badge', 'price', 'mrp', 'at', 'near', 'verified', 'phone'].forEach(k => { if (x[k] != null && x[k] !== '') o[k] = x[k]; }); return o; }
 const TYPE_ONE = { adoption: 'pet for adoption', vets: 'vet', lost: 'lost & found case', products: 'product', communities: 'community', events: 'event', pets: 'pet', shelters: 'shelter', people: 'person' };
@@ -148,7 +165,10 @@ const SUGG = {
 function rules(intent, msg, ctx) {
   const { M, mine, found } = ctx, name = first(M.name);
   const L = []; let actions = [], text = '';
-  const foundLine = f => f && f.total ? `I found ${f.total} matching ${f.sections.map(s => (s.count === 1 ? TYPE_ONE[s.type] : TYPE_WORD[s.type]) || s.type).join(', ')} on PawBook${f.city ? ' around ' + cap(f.city) : ''}${f.match === 'close' ? ' (closest spellings)' : ''}:` : null;
+  const foundLine = f => { if (!f || !f.total) return null;
+    const what = f.sections.map(s => (s.count === 1 ? TYPE_ONE[s.type] : TYPE_WORD[s.type]) || s.type).join(', ');
+    if (f.city && !f.near) return `There's nothing listed in ${cap(f.city)} yet, so here are the closest matches elsewhere on PawBook (${f.total} ${what}):`;
+    return `I found ${f.total} matching ${what} on PawBook${f.city ? ' — ' + (f.near === f.cards.length ? 'in ' : 'nearest first, around ') + cap(f.city) : ''}${f.match === 'close' ? ' (closest spellings)' : ''}:`; };
   const none = (what, page) => `I couldn't find ${what}${found && found.city ? ' in ' + cap(found.city) : ''} on PawBook right now. You can browse everything on the ${PAGES[page][1]} page.`;
   switch (intent) {
     case 'greet': text = `Hi${name ? ' ' + name : ''}! 🐾 I can find vets, pets for adoption, products and communities on PawBook, check your pets' vaccinations and appointments, or answer pet-care questions. What do you need?`; break;
@@ -263,10 +283,12 @@ exports.chat = async (req, res) => {
     let reply;
     if (intent === 'emergency') { const e = emergencyReply(); reply = { text: e.text, actions: e.actions, cards: [], suggestions: e.suggestions, source: 'rules' }; }
     else {
-      const city = cityOf(msg);
+      const loc = locOf(req.body), named = cityOf(msg), city = named || (loc && loc.searchCity) || null;
+      const wantsNear = /\b(near ?me|nearby|my (city|area|locality)|around me|close to me|in my town)\b/i.test(msg);
       const needMine = ['vacc', 'mypets', 'appts', 'general', 'capabilities', 'greet'].includes(intent) || /\b(my|mine)\b/i.test(msg);
-      const [mine, found] = await Promise.all([needMine ? myData(M) : Promise.resolve({ pets: [], due: [], appts: [] }), listings(req, intent, msg, city).catch(e => { console.error('[Assistant] listings:', e.message); return null; })]);
+      const [mine, found] = await Promise.all([needMine ? myData(M) : Promise.resolve({ pets: [], due: [], appts: [] }), listings(req, intent, msg, city, loc).catch(e => { console.error('[Assistant] listings:', e.message); return null; })]);
       const base = rules(intent, msg, { M, mine, found });
+      if (wantsNear && !city && TYPES_FOR[intent] !== undefined) { base.text = '📍 Which city or area should I look in? Set your location with the **📍 location** button above the chat (country, state, city, area and PIN code) — or just tell me, e.g. “vets in Pune”.\n\n' + base.text; base.actions = [{ label: 'Set my location', url: '#location' }].concat(base.actions).slice(0, 4); }
       let text = base.text, source = 'rules';
       if (aiOn() && !['greet', 'thanks'].includes(intent)) {
         try {
@@ -274,12 +296,12 @@ exports.chat = async (req, res) => {
           const msgs = []; rows.forEach(h => { const role = h.role === 'assistant' ? 'assistant' : 'user'; if (msgs.length && msgs[msgs.length - 1].role === role) msgs[msgs.length - 1].content += '\n' + h.body; else msgs.push({ role, content: h.body.slice(0, 1500) }); });
           while (msgs.length && msgs[0].role !== 'user') msgs.shift();
           if (!msgs.length || msgs[msgs.length - 1].role !== 'user') msgs.push({ role: 'user', content: msg });
-          const ai = await claude(SYSTEM + '\n\n' + contextBlock(M, mine, found, base, intent), msgs);
+          const ai = await claude(SYSTEM + '\n\n' + contextBlock(M, mine, found, base, intent) + (loc ? '\nUSER CHOSEN LOCATION: ' + loc.label : '\nUSER LOCATION: not set (they can set it with the location button above the chat)'), msgs);
           if (ai && ai.trim().length > 1) { text = ai.trim().slice(0, 3000); source = 'ai'; }
         } catch (e) { console.error('[Assistant] AI:', e.message); }
       }
       reply = { text, actions: base.actions, cards: found && found.total ? found.cards : [], suggestions: base.suggestions, source };
-      if (found && found.total > found.cards.length) reply.actions = [{ label: 'See all ' + found.total + ' results', url: PAGES.search[0] + '?q=' + encodeURIComponent(found.q) + (found.city ? '&city=' + encodeURIComponent(cap(found.city)) : '') }].concat(reply.actions).slice(0, 4);
+      if (found && found.q && found.total > found.cards.length) reply.actions = [{ label: 'See all ' + found.total + ' results', url: PAGES.search[0] + '?q=' + encodeURIComponent(found.q) + (found.city ? '&city=' + encodeURIComponent(cap(found.city)) : '') }].concat(reply.actions).slice(0, 4);
     }
     const r = await save(M, 'assistant', reply.text, { intent, cards: reply.cards, actions: reply.actions, source: reply.source });
     return R.ok(res, { id: String(r.id), role: 'assistant', text: reply.text, intent, cards: reply.cards, actions: reply.actions, suggestions: reply.suggestions, source: reply.source, at: r.created_at });
@@ -358,4 +380,17 @@ exports.adminReply = async (req, res) => {
     return R.ok(res, { ticket: ticketOut(t) });
   } catch (e) { return fail(res, 'adminReply', e); }
 };
-exports._test = { detect, cityOf, termsOf };
+// GET /assistant/areas?state=&city= — area / locality names already used on PawBook in that city (for the area picker)
+exports.areas = async (req, res) => {
+  try {
+    const l = locOf({ location: { state: req.query.state, city: req.query.city } }); if (!l || !l.searchCity) return R.ok(res, { areas: [] });
+    const names = ({ 'new delhi': ['new delhi', 'delhi'], delhi: ['delhi', 'new delhi'], bengaluru: ['bengaluru', 'bangalore'], gurugram: ['gurugram', 'gurgaon'], mumbai: ['mumbai', 'bombay'] })[l.searchCity] || [l.searchCity];
+    const out = {};
+    const add = rows => rows.forEach(r => { const a = String(r.a || '').trim(); if (a.length >= 3 && a.length <= 60) { const k = a.toLowerCase(); if (!out[k]) out[k] = a.replace(/\b\w/g, m => m.toUpperCase()); } });
+    for (const [t, col, cityCol] of [['"Group"', 'area', 'city'], ['lost_pet_reports', 'area', 'city'], ['found_pet_reports', 'area', 'city']]) {
+      try { const { rows } = await query(`SELECT DISTINCT ${col} AS a FROM ${t} WHERE lower(trim(COALESCE(${cityCol}, ''))) = ANY($1) AND ${col} IS NOT NULL LIMIT 100`, [names]); add(rows); } catch (e) { /* table not there */ }
+    }
+    return R.ok(res, { areas: Object.values(out).sort().slice(0, 80) });
+  } catch (e) { return fail(res, 'areas', e); }
+};
+exports._test = { detect, cityOf, termsOf, locOf };

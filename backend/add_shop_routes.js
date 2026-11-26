@@ -8,7 +8,7 @@ const FILES = [path.join(API, 'src/routes/index.js'), path.join(API, 'routes/ind
 const START = '// ── MARKETPLACE 2.0: SHOP';
 const END = '// ── END SHOP';
 
-const BLOCK = `${START} (v19: assistant) ─────────────────────────────
+const BLOCK = `${START} (v20: assistant areas) ─────────────────────────────
 const shopCtrl = require('../controllers/shop.controller');
 const shopRouter = require('express').Router();
 const shopRL = require('express-rate-limit');
@@ -333,6 +333,7 @@ const asCtrl = require('../controllers/assistant.controller');
 const asRouter = require('express').Router();
 const asLimit = fulCtrl.limit('assistant', 40, 600);
 asRouter.get('/state',                        authenticate, asCtrl.state);
+asRouter.get('/areas',                        authenticate, asCtrl.areas);
 asRouter.post('/chat',                        authenticate, asLimit, asCtrl.chat);
 asRouter.delete('/history',                   authenticate, asCtrl.clear);
 asRouter.post('/messages/:id/feedback',       authenticate, asCtrl.feedback);
@@ -376,7 +377,7 @@ const MR = /const\s+marketRouter\s*=\s*require\(['"]express['"]\)\.Router\(\);?[
 for (const f of FILES) {
   if (!fs.existsSync(f)) { console.log('skip (missing):', f); continue; }
   const src = fs.readFileSync(f, 'utf8');
-  fs.copyFileSync(f, f + '.bak-shop19');
+  fs.copyFileSync(f, f + '.bak-shop20');
   let out;
   // END must be searched after START and must not be the guard's "END SHOP GUARD" marker
   const a = src.indexOf(START);
@@ -402,4 +403,4 @@ for (const f of FILES) {
   else console.log('  NOTE: old lost-pets routes not found in this file — guard not needed');
   fs.writeFileSync(f, out);
 }
-console.log('Backups saved as index.js.bak-shop19 — restart the app from the MilesWeb panel.');
+console.log('Backups saved as index.js.bak-shop20 — restart the app from the MilesWeb panel.');

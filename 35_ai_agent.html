@@ -491,6 +491,14 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
 .tk small{color:var(--muted);font-size:11.5px}
 .warn{font-size:12px;color:#8a5a12;background:#fff8ec;border:1px solid #f6dfb5;border-radius:12px;padding:8px 10px}
 .credit{font-size:11.5px;color:var(--muted);text-align:center;margin:22px 0 8px}
+/* location bar */
+.locbar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line);background:#fbfcff;flex:0 0 auto}
+.locbar #locbtn{display:flex;align-items:center;gap:7px;border:none;background:none;font-size:12.5px;color:var(--sub);min-width:0;text-align:left;padding:2px}
+.locbar #locbtn i{font-size:17px;color:#e8590c;flex:0 0 auto}.locbar #locbtn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.locbar #locbtn b{color:var(--navy)}
+.locbar #locbtn em{font-style:normal;font-weight:800;color:var(--blue-d);margin-left:4px;flex:0 0 auto}
+.locbar .sp{flex:1}.locbar .lx{border:none;background:none;color:var(--muted);font-size:15px;padding:4px}
+.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+#mo .fl input[name=tstate],#mo .fl input[name=tcity]{margin-top:0}
 </style>
 </head>
 <body>
@@ -534,6 +542,8 @@ textarea.fi{height:auto;min-height:90px;padding:12px 14px;resize:vertical;line-h
 var API = 'https://pawbook.deemona.com/api/v1';
 var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
 var ST = null, BUSY = false, MO = null, TOPICS = null, LASTSUGG = null;
+var GMAPS_KEY = 'AIzaSyC1qmdaaKwEUJTI2Fa1yVPjECTNU-ZnEYk', GMP = null, INLOC = null, INLOAD = null, PINIDX = {};
+var LOCN = null; try { LOCN = JSON.parse(localStorage.getItem('pb_assist_loc') || 'null'); } catch (e) {}
 var TEMOJI = {pets: '🐾', vets: '🩺', communities: '🤝', products: '🛍️', adoption: '🏡', lost: '📍', events: '🎉', shelters: '🏠', people: '👤'};
 var STARTERS = [['ti-stethoscope', 'c-sage', 'Find a vet near me'], ['ti-heart-handshake', 'c-rose', 'Pets for adoption in my city'], ['ti-vaccine', 'c-sky', 'When are my pet\'s vaccines due?'], ['ti-map-search', 'c-coral', 'My dog is missing — what should I do?'], ['ti-bone', 'c-amber', 'What food is good for a puppy?'], ['ti-message-report', 'c-lav', 'I have a complaint']];
 var TOPICS2 = [['Find a vet', 'img/vet/vet-exam.jpg', 'ti-stethoscope', 'Find a vet near me'], ['Adopt', 'img/adopt/rescue-golden.jpg', 'ti-heart-handshake', 'Show pets for adoption'], ['Lost & Found', 'img/lost/missing-golden.jpg', 'ti-map-search', 'My pet is lost, what do I do?'],
@@ -581,6 +591,7 @@ function renderShell(){
     + '<div class="float-card float-2"><i class="ti ti-lock"></i>We never ask for passwords or OTPs</div></div></section></div>'
     + '<div class="agrid"><section class="chat" aria-label="Chat with the PawBook Assistant"><div class="chd"><div class="bot-av"><i class="ti ti-paw"></i></div><div><b>PawBook Assistant</b><span id="mode"><i class="dot"></i>Online</span></div><span class="sp"></span>'
     + '<button class="icb" title="My support requests" aria-label="My support requests" onclick="showTickets()"><i class="ti ti-ticket"></i></button><button class="icb" id="clr" title="Clear chat" aria-label="Clear chat" onclick="clearChat(this)"><i class="ti ti-trash"></i></button></div>'
+    + '<div class="locbar"><button type="button" id="locbtn" onclick="locForm()"></button><span class="sp"></span><button type="button" class="lx" id="locx" onclick="setLoc(null)" aria-label="Clear location"><i class="ti ti-x"></i></button></div>'
     + '<div class="msgs" id="msgs" aria-live="polite"><div class="skel" style="height:70px;width:70%"></div><div class="skel" style="height:50px;width:50%;align-self:flex-end"></div></div>'
     + '<div class="sugs" id="sugs"></div>'
     + '<form class="inbar" onsubmit="event.preventDefault();sendInput()"><div class="iw"><textarea id="cin" rows="1" maxlength="1000" placeholder="Ask about vets, adoption, your pet\'s vaccines…" aria-label="Your message" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendInput()}" oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,130)+\'px\'"></textarea></div>'
@@ -589,6 +600,7 @@ function renderShell(){
     + '<aside class="side3" id="side"></aside></div>'
     + '<p class="credit">Your conversation is saved to your account so you can continue on any device. Clear it any time with the bin icon.</p>';
   document.getElementById('app').innerHTML = h;
+  showLoc();
 }
 
 /* ---------- side column ---------- */
@@ -621,7 +633,7 @@ function renderMsgs(){
   el.scrollTop = el.scrollHeight;
 }
 function welcomeHTML(){
-  return '<div class="welcome">' + img('img/adopt/family-cat-dog.jpg', 'A family with their cat and dog') + '<h3>Hi' + (ST.name ? ' ' + esc(ST.name) : '') + '! How can I help today? 🐾</h3><p>Ask in English, Hindi or Hinglish. Here are a few things people ask:</p>'
+  return '<div class="welcome">' + img('img/adopt/family-cat-dog.jpg', 'A family with their cat and dog') + '<h3>Hi' + (ST.name ? ' ' + esc(ST.name) : '') + '! How can I help today? 🐾</h3><p>Ask in English, Hindi or Hinglish.' + (LOCN ? '' : ' <button class="btn-link" onclick="locForm()">📍 Set your location</button> for results near you.') + '</p>'
     + '<div class="starters">' + STARTERS.map(function(s){ return '<button onclick="send(this.dataset.q)" data-q="' + esc(s[2]) + '"><i class="ti ' + s[0] + ' ' + s[1] + '"></i>' + esc(s[2]) + '</button>'; }).join('') + '</div></div>';
 }
 var SUGG = {emergency: ['Open SOS', 'First aid for heatstroke'], vet: ['My appointments', 'AI health check'], adopt: ['Dogs for adoption', 'Cats for adoption'], lost: ['I found a pet', 'Lost pets near me'], shop: ['Cat litter', 'My orders'], support: ['Raise a support request', 'My support requests'], vacc: ['My pets', 'Book a vet'], training: ['Potty training a puppy', 'Stop biting']};
@@ -642,6 +654,7 @@ function cardHTML(c){
 }
 function actHTML(a){
   if (a.url === '#support') return '<button onclick="supportForm()"><i class="ti ti-message-plus"></i>' + esc(a.label) + '</button>';
+  if (a.url === '#location') return '<button onclick="locForm()"><i class="ti ti-map-pin"></i>' + esc(a.label) + '</button>';
   if (a.url === '#tickets') return '<button onclick="showTickets()"><i class="ti ti-ticket"></i>' + esc(a.label) + '</button>';
   var sos = /sos=1|^tel:/.test(a.url);
   if (!/^(tel:112$|[0-9]{2}_[a-z_]+\.html)/.test(a.url)) return '';
@@ -651,12 +664,13 @@ function sendInput(){ var i = document.getElementById('cin'); var v = i.value.tr
 function send(text, isRetry){
   if (BUSY || !ST) return; text = String(text || '').trim(); if (!text) return;
   if (text === 'Open SOS') { location.href = '37_pet_ai_health_agent.html?sos=1'; return; }
+  if (text === 'Set my location') { locForm(); return; }
   if (text === 'Raise a support request') { supportForm(); return; }
   if (text === 'My support requests') { showTickets(); return; }
   BUSY = true; document.getElementById('sendb').disabled = true; setSugg(null);
   if (isRetry) ST.messages = ST.messages.filter(function(m){ return !m.err; }); else ST.messages.push({role: 'user', text: text, at: new Date().toISOString()});
   var el = document.getElementById('msgs'); el.innerHTML = ST.messages.map(msgHTML).join('') + '<div class="m b" id="typing"><div class="av4"><i class="ti ti-paw"></i></div><div class="bub typing"><i></i><i></i><i></i></div></div>'; el.scrollTop = el.scrollHeight;
-  api('/assistant/chat', {method: 'POST', body: {message: text}}).then(function(d){
+  api('/assistant/chat', {method: 'POST', body: {message: text, location: LOCN || undefined}}).then(function(d){
     ST.messages.push({id: d.id, role: 'assistant', text: d.text, intent: d.intent, cards: d.cards, actions: d.actions, at: d.at}); renderMsgs(); setSugg(d.suggestions && d.suggestions.length ? d.suggestions.slice(0, 4) : suggFor(d.intent));
   }).catch(function(e){
     if (e.status === 401) return fail(e);
@@ -708,6 +722,75 @@ function showAdmin(){
 }
 function admReply(b, status){ var w = b.closest('.tk'), reply = w.querySelector('textarea').value.trim(); if (status === 'in_progress' && !reply) { toast('Write a reply first'); return; }
   api('/assistant/admin/support/' + w.getAttribute('data-id'), {method: 'POST', body: {status: status, reply: reply}}).then(function(){ toast('Sent'); showAdmin(); }).catch(fail); }
+
+/* ---------- location: country → state → city/district → area → PIN ---------- */
+function locLabel(l){ return l ? [l.area, l.city, l.state].filter(Boolean).join(', ') + (l.pin ? ' · ' + l.pin : '') + (l.country && l.country !== 'India' ? ' · ' + l.country : '') : ''; }
+function showLoc(){ var b = document.getElementById('locbtn'), x = document.getElementById('locx'); if (!b) return;
+  b.innerHTML = '<i class="ti ti-map-pin' + (LOCN ? '-filled' : '') + '"></i>' + (LOCN ? '<span>Results near <b>' + esc(locLabel(LOCN)) + '</b></span><em>Change</em>' : '<span>Set your location for results near you</span><em>Set</em>');
+  x.style.display = LOCN ? '' : 'none'; }
+function setLoc(l){ LOCN = l; try { if (l) localStorage.setItem('pb_assist_loc', JSON.stringify(l)); else localStorage.removeItem('pb_assist_loc'); } catch (e) {} showLoc(); if (!l) toast('Location cleared'); if (ST && !ST.messages.length) renderMsgs(); }
+function loadIndia(){
+  if (INLOAD) return INLOAD;
+  INLOAD = fetch('pawbook-in-locations.json').then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); }).then(function(d){ INLOC = d.states || {}; delete INLOC['']; Object.keys(INLOC).forEach(function(s){ Object.keys(INLOC[s]).forEach(function(dt){ if (!dt) return; INLOC[s][dt].forEach(function(p){ PINIDX[p[0]] = [s, dt, p[1], p[2]]; }); }); }); return INLOC; })
+    .catch(function(){ INLOAD = null; INLOC = null; return null; });
+  return INLOAD;
+}
+function opts(list, v, first){ return '<option value="">' + first + '</option>' + list.map(function(x){ return '<option' + (x === v ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join(''); }
+function locForm(){
+  var l = LOCN || {country: 'India'};
+  openMo('Your location', '<p style="font-size:13px;color:var(--sub)">The assistant shows vets, pets for adoption, lost &amp; found and communities near this place first. It is saved only on this device.</p>'
+    + '<button type="button" class="btn btn-w btn-s" id="gps" onclick="useGps(this)" style="align-self:flex-start"><i class="ti ti-current-location"></i>Use my current location</button>'
+    + '<div class="two"><label class="fl"><span>Country</span><select class="fi" name="country" onchange="locCountry(this.form)"><option' + (l.country !== 'Other' && (!l.country || l.country === 'India') ? ' selected' : '') + '>India</option><option value="Other"' + (l.country && l.country !== 'India' ? ' selected' : '') + '>Other country</option></select></label>'
+    + '<label class="fl" id="f-oc" style="display:none"><span>Country name</span><input class="fi" name="ocountry" maxlength="60" value="' + esc(l.country && l.country !== 'India' ? l.country : '') + '"></label></div>'
+    + '<div class="two"><label class="fl" data-f="state"><span>State / UT *</span><select class="fi" name="state" onchange="locState(this.form)"><option value="">Loading…</option></select><input class="fi" name="tstate" maxlength="80" placeholder="State / region" style="display:none" value="' + esc(l.state || '') + '"><div class="err">Choose a state</div></label>'
+    + '<label class="fl" data-f="city"><span>City / district *</span><select class="fi" name="city" onchange="locCity(this.form)" disabled><option value="">Choose a state first</option></select><input class="fi" name="tcity" maxlength="80" placeholder="City" style="display:none" value="' + esc(l.city || '') + '"><div class="err">Choose a city or district</div></label></div>'
+    + '<div class="two"><label class="fl"><span>Area / locality</span><input class="fi" name="area" maxlength="100" list="arealist" placeholder="e.g. Dwarka Sector 10" value="' + esc(l.area || '') + '"><datalist id="arealist"></datalist></label>'
+    + '<label class="fl" data-f="pin"><span>PIN code</span><input class="fi" name="pin" inputmode="numeric" maxlength="6" list="pinlist" placeholder="6 digits" value="' + esc(l.pin || '') + '" oninput="locPin(this.form)"><datalist id="pinlist"></datalist><div class="err">Enter a valid 6-digit PIN code</div></label></div>'
+    + '<p id="locmsg" style="font-size:12px;color:var(--muted);min-height:16px"></p>', function(f){
+      clearBad(f); var oc = f.country.value === 'Other', o = {country: oc ? (f.ocountry.value.trim() || 'Other') : 'India', state: oc ? f.tstate.value.trim() : f.state.value, city: oc ? f.tcity.value.trim() : f.city.value, area: f.area.value.trim(), pin: oc ? '' : f.pin.value.trim()}, e = [];
+      if (!o.state) e.push('state'); if (!o.city) e.push('city'); if (o.pin && !/^\d{6}$/.test(o.pin)) e.push('pin'); if (e.length) return markBad(f, e);
+      setLoc(o); closeMo(); toast('Location set — ' + locLabel(o));
+    }, 'Save location');
+  var f = document.getElementById('mo-form');
+  locCountry(f, true);
+  loadIndia().then(function(d){ if (!d) { document.getElementById('locmsg').textContent = 'Could not load the list of places — choose “Other country” to type it instead.'; f.state.innerHTML = '<option value="">—</option>'; return; }
+    f.state.innerHTML = opts(Object.keys(d).sort(), l.country === 'India' || !l.country ? l.state : '', 'Choose a state');
+    if (f.state.value) { locState(f, l.city); if (l.city) { f.city.value = l.city; locCity(f, true); } } });
+}
+function locCountry(f, init){ var oc = f.country.value === 'Other'; document.getElementById('f-oc').style.display = oc ? '' : 'none'; f.state.style.display = oc ? 'none' : ''; f.tstate.style.display = oc ? '' : 'none'; f.city.style.display = oc ? 'none' : ''; f.tcity.style.display = oc ? '' : 'none'; f.pin.closest('.fl').style.display = oc ? 'none' : ''; document.getElementById('gps').style.display = oc ? 'none' : ''; }
+function locState(f, keep){ var s = f.state.value, ds = s && INLOC && INLOC[s] ? Object.keys(INLOC[s]).filter(Boolean).sort() : [];
+  f.city.innerHTML = opts(ds, keep || '', ds.length ? 'Choose a city / district' : 'Choose a state first'); f.city.disabled = !ds.length; document.getElementById('pinlist').innerHTML = ''; document.getElementById('arealist').innerHTML = ''; }
+function locCity(f, keepPin){ var s = f.state.value, d = f.city.value, pins = d && INLOC && INLOC[s] && INLOC[s][d] ? INLOC[s][d] : [];
+  document.getElementById('pinlist').innerHTML = pins.map(function(p){ return '<option value="' + p[0] + '">'; }).join('');
+  if (!keepPin && f.pin.value && PINIDX[f.pin.value] && (PINIDX[f.pin.value][0] !== s || PINIDX[f.pin.value][1] !== d)) f.pin.value = '';
+  if (d) api('/assistant/areas?state=' + encodeURIComponent(s) + '&city=' + encodeURIComponent(d)).then(function(r){ document.getElementById('arealist').innerHTML = r.areas.map(function(a){ return '<option value="' + esc(a) + '">'; }).join(''); }).catch(function(){}); }
+function locPin(f){ var v = f.pin.value.replace(/\D/g, '').slice(0, 6); if (v !== f.pin.value) f.pin.value = v; if (v.length !== 6) return;
+  loadIndia().then(function(){ var p = PINIDX[v], m = document.getElementById('locmsg');
+    if (!p) { m.textContent = 'PIN ' + v + ' is not in the India Post list — check it, or leave it empty.'; return; }
+    if (f.state.value !== p[0]) { f.state.value = p[0]; locState(f); } if (f.city.value !== p[1]) { f.city.value = p[1]; locCity(f, true); }
+    m.textContent = 'PIN ' + v + ' → ' + p[1] + ', ' + p[0]; if (!f.area.value) areaFromGoogle(f, {address: v + ', India'}); }); }
+function loadMaps(){
+  if (window.google && google.maps && google.maps.Geocoder) return Promise.resolve(google.maps);
+  if (GMP) return GMP;
+  GMP = new Promise(function(res, rej){ window._asMaps = function(){ res(google.maps); }; window.gm_authFailure = function(){ rej(new Error('maps')); }; var s = document.createElement('script'); s.src = 'https://maps.googleapis.com/maps/api/js?key=' + GMAPS_KEY + '&v=weekly&region=IN&callback=_asMaps'; s.async = true; s.onerror = function(){ GMP = null; rej(new Error('maps')); }; document.head.appendChild(s); setTimeout(function(){ rej(new Error('timeout')); }, 9000); });
+  return GMP;
+}
+function areaFromGoogle(f, req){   // optional: name of the locality from Google; the picker works without it
+  loadMaps().then(function(gm){ new gm.Geocoder().geocode(req, function(r, st){ if (st !== 'OK' || !r || !r[0] || f.area.value) return; var c = r[0].address_components || [], g = function(t){ var x = c.filter(function(a){ return a.types.indexOf(t) >= 0; })[0]; return x ? x.long_name : ''; };
+    var a = g('sublocality_level_1') || g('sublocality') || g('neighborhood') || g('locality'); if (a && a !== f.city.value) f.area.value = a; }); }).catch(function(){});
+}
+function useGps(b){
+  if (!navigator.geolocation) { toast('Location is not available in this browser'); return; }
+  b.disabled = true; b.innerHTML = '<i class="ti ti-loader-2 spin"></i>Finding you…';
+  var f = document.getElementById('mo-form'), done = function(m){ b.disabled = false; b.innerHTML = '<i class="ti ti-current-location"></i>Use my current location'; if (m) document.getElementById('locmsg').textContent = m; };
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var la = pos.coords.latitude, ln = pos.coords.longitude;
+    loadIndia().then(function(){ var best = null, bd = 1e9; Object.keys(PINIDX).forEach(function(k){ var p = PINIDX[k]; if (p[2] == null) return; var d = (p[2] - la) * (p[2] - la) + (p[3] - ln) * (p[3] - ln); if (d < bd) { bd = d; best = k; } });
+      if (!best || bd > 0.25) { done('You seem to be outside India — choose “Other country” and type your city.'); return; }
+      var p = PINIDX[best]; f.country.value = 'India'; locCountry(f); f.state.value = p[0]; locState(f); f.city.value = p[1]; locCity(f, true); f.pin.value = best; f.area.value = '';
+      areaFromGoogle(f, {location: {lat: la, lng: ln}}); done('Nearest PIN ' + best + ' · ' + p[1] + ', ' + p[0] + ' — check and save.'); });
+  }, function(){ done('Location permission was not given — choose your place from the lists instead.'); }, {timeout: 10000, maximumAge: 600000});
+}
 
 /* ---------- modal helpers ---------- */
 function openMo(title, body, onSubmit, saveLabel){
