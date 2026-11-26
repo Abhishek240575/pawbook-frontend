@@ -1,6 +1,6 @@
 /**
  * PawBook AI Widget — floating assistant on every PawBook page.
- * Include once at the bottom of <body>: <script src="pawbook-ai-widget.v4.js?v=8"></script>
+ * Include once at the bottom of <body>: <script src="pawbook-ai-widget.v4.js?v=6"></script>
  * v5 brain: signed-in people get the real PawBook Assistant (/api/v1/assistant — their pets, vaccines due, appointments,
  * real listings, Google Maps places near them, support requests; Claude when the server has the AI key). Guests and
  * offline moments get safe built-in answers. It knows which page it is on, and never invents listings, counts or prices.
@@ -196,51 +196,51 @@ var CSS = `
 .pb-ai-locbar{display:flex;align-items:center;gap:6px;padding:6px 12px;background:#f7f8fa;border-bottom:1px solid #e4e6eb;font-family:'Inter',sans-serif;font-size:11px;color:#65676b;flex-shrink:0;overflow:hidden;white-space:nowrap}
 .pb-ai-locbar button{border:none;background:#fff;border:1px solid #e4e6eb;border-radius:999px;padding:3px 9px;font:600 11px 'Inter',sans-serif;color:#1877F2;cursor:pointer;max-width:58%;overflow:hidden;text-overflow:ellipsis}
 .pb-ai-locbar span{overflow:hidden;text-overflow:ellipsis;min-width:0}
-.pb-ai-locbar .pb-signin{margin-left:auto;background:#1877F2;color:#fff;border-color:#1877F2;flex-shrink:0}
-.pb-msg-body{min-width:0;max-width:100%}
+.pb-ai-locbar .pbw-signin{margin-left:auto;background:#1877F2;color:#fff;border-color:#1877F2;flex-shrink:0}
+.pbw-msg-body{min-width:0;max-width:100%}
 .pb-msg.past{opacity:.72}
-.pb-div{align-self:center;font:700 10px 'Inter',sans-serif;color:#8a8d91;text-transform:uppercase;letter-spacing:.5px;padding:4px 0}
-.pb-cards{display:flex;gap:8px;overflow-x:auto;padding:6px 0 4px;scroll-snap-type:x mandatory;max-width:290px}
-.pb-cards::-webkit-scrollbar{height:3px}.pb-cards::-webkit-scrollbar-thumb{background:#d0d3d8;border-radius:3px}
-.pb-card{flex:0 0 150px;scroll-snap-align:start;border:1px solid #e4e6eb;border-radius:12px;overflow:hidden;background:#fff;text-decoration:none;color:#050505;display:flex;flex-direction:column;font-family:'Inter',sans-serif}
-.pb-card-im{height:74px;background:#eef3fb;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.pb-card-im img{width:100%;height:100%;object-fit:cover}
-.pb-card-im b{font-size:28px}
-.pb-card-im span{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.6);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px}
-.pb-card-bd{padding:7px 8px 8px;display:flex;flex-direction:column;gap:2px;font-size:11px;line-height:1.35}
-.pb-card-bd b{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pb-card-bd .s{color:#65676b;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pb-card-bd .mt{color:#8a8d91}
-.pb-card-bd .pr{font-weight:800;color:#050505}
-.pb-card-bd .go{color:#1877F2;font-weight:700;margin-top:2px}
-.pb-card.g .pb-card-im{height:44px;background:#f0f7f0}
-.pb-card .gl{display:flex;gap:6px;margin-top:4px}
-.pb-card .gl a{flex:1;text-align:center;border:1px solid #1877F2;color:#1877F2;border-radius:7px;padding:3px 0;font-weight:700;text-decoration:none}
-.pb-gattr{font:500 10px 'Inter',sans-serif;color:#8a8d91;padding:0 2px 2px}
-.pb-gload{font:500 11px 'Inter',sans-serif;color:#65676b;padding:6px 2px}
-.pb-gload a{color:#1877F2;font-weight:700}
-.pb-acts{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.pb-act{display:inline-flex;align-items:center;gap:3px;padding:6px 10px;border-radius:8px;background:#e7f0fd;color:#1877F2;border:none;font:700 11px 'Inter',sans-serif;cursor:pointer;text-decoration:none}
-.pb-act:hover{background:#d3e4fc}
-.pb-act.pri{background:#1877F2;color:#fff}
-.pb-act.sos{background:#fee2e2;color:#b91c1c}
-.pb-fb{border:none;background:none;cursor:pointer;font-size:11px;padding:0 2px;opacity:.45;filter:grayscale(1)}
-.pb-fb:hover,.pb-fb.on{opacity:1;filter:none}
-.pb-sup{display:flex;flex-direction:column;gap:6px;margin-top:4px;background:#fff;border:1px solid #e4e6eb;border-radius:12px;padding:10px;width:250px;max-width:100%}
-.pb-sup textarea{resize:vertical;min-height:60px}
-.pb-sup-err{color:#dc2626;font:600 11px 'Inter',sans-serif}
-.pb-sup-ok{background:#ecfdf3;color:#067647;border-radius:10px;padding:8px 10px;font:600 12px 'Inter',sans-serif}
-.pb-feat-open{margin-left:auto;font:700 11px 'Inter',sans-serif;color:#1877F2;text-decoration:none}
+.pbw-div{align-self:center;font:700 10px 'Inter',sans-serif;color:#8a8d91;text-transform:uppercase;letter-spacing:.5px;padding:4px 0}
+.pbw-cards{display:flex;gap:8px;overflow-x:auto;padding:6px 0 4px;scroll-snap-type:x mandatory;max-width:290px}
+.pbw-cards::-webkit-scrollbar{height:3px}.pbw-cards::-webkit-scrollbar-thumb{background:#d0d3d8;border-radius:3px}
+.pbw-card{flex:0 0 150px;scroll-snap-align:start;border:1px solid #e4e6eb;border-radius:12px;overflow:hidden;background:#fff;text-decoration:none;color:#050505;display:flex;flex-direction:column;font-family:'Inter',sans-serif}
+.pbw-card-im{height:74px;background:#eef3fb;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.pbw-card-im img{width:100%;height:100%;object-fit:cover}
+.pbw-card-im b{font-size:28px}
+.pbw-card-im span{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.6);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px}
+.pbw-card-bd{padding:7px 8px 8px;display:flex;flex-direction:column;gap:2px;font-size:11px;line-height:1.35}
+.pbw-card-bd b{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pbw-card-bd .s{color:#65676b;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pbw-card-bd .mt{color:#8a8d91}
+.pbw-card-bd .pr{font-weight:800;color:#050505}
+.pbw-card-bd .go{color:#1877F2;font-weight:700;margin-top:2px}
+.pbw-card.g .pbw-card-im{height:44px;background:#f0f7f0}
+.pbw-card .gl{display:flex;gap:6px;margin-top:4px}
+.pbw-card .gl a{flex:1;text-align:center;border:1px solid #1877F2;color:#1877F2;border-radius:7px;padding:3px 0;font-weight:700;text-decoration:none}
+.pbw-gattr{font:500 10px 'Inter',sans-serif;color:#8a8d91;padding:0 2px 2px}
+.pbw-gload{font:500 11px 'Inter',sans-serif;color:#65676b;padding:6px 2px}
+.pbw-gload a{color:#1877F2;font-weight:700}
+.pbw-acts{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.pbw-act{display:inline-flex;align-items:center;gap:3px;padding:6px 10px;border-radius:8px;background:#e7f0fd;color:#1877F2;border:none;font:700 11px 'Inter',sans-serif;cursor:pointer;text-decoration:none}
+.pbw-act:hover{background:#d3e4fc}
+.pbw-act.pri{background:#1877F2;color:#fff}
+.pbw-act.sos{background:#fee2e2;color:#b91c1c}
+.pbw-fb{border:none;background:none;cursor:pointer;font-size:11px;padding:0 2px;opacity:.45;filter:grayscale(1)}
+.pbw-fb:hover,.pbw-fb.on{opacity:1;filter:none}
+.pbw-sup{display:flex;flex-direction:column;gap:6px;margin-top:4px;background:#fff;border:1px solid #e4e6eb;border-radius:12px;padding:10px;width:250px;max-width:100%}
+.pbw-sup textarea{resize:vertical;min-height:60px}
+.pbw-sup-err{color:#dc2626;font:600 11px 'Inter',sans-serif}
+.pbw-sup-ok{background:#ecfdf3;color:#067647;border-radius:10px;padding:8px 10px;font:600 12px 'Inter',sans-serif}
+.pbw-feat-open{margin-left:auto;font:700 11px 'Inter',sans-serif;color:#1877F2;text-decoration:none}
 button.pb-feat-tag{border:none;font-family:'Inter',sans-serif}
-.pb-loc-form{padding:14px 16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex:1;font-family:'Inter',sans-serif}
-.pb-loc-form h3{font-size:15px;font-weight:800;color:#050505;margin:2px 0 0}
-.pb-loc-form p{font-size:12px;color:#65676b;margin:0}
-.pb-loc-form label{font:700 11px 'Inter',sans-serif;color:#65676b;display:flex;flex-direction:column;gap:3px}
-.pb-loc-row{display:flex;gap:8px}.pb-loc-row label{flex:1;min-width:0}
-.pb-loc-msg{font:600 11px 'Inter',sans-serif;color:#1877F2;min-height:14px}
-.pb-gps{width:100%;padding:9px;border-radius:10px;border:1.5px dashed #1877F2;background:#f5f9ff;color:#1877F2;font:700 12px 'Inter',sans-serif;cursor:pointer}
-.pb-ghost{background:none;border:none;color:#dc2626;font:700 12px 'Inter',sans-serif;cursor:pointer;padding:4px}
-.pb-note{font:500 11px 'Inter',sans-serif;color:#8a8d91;text-align:center}
+.pbw-loc-form{padding:14px 16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex:1;font-family:'Inter',sans-serif}
+.pbw-loc-form h3{font-size:15px;font-weight:800;color:#050505;margin:2px 0 0}
+.pbw-loc-form p{font-size:12px;color:#65676b;margin:0}
+.pbw-loc-form label{font:700 11px 'Inter',sans-serif;color:#65676b;display:flex;flex-direction:column;gap:3px}
+.pbw-loc-row{display:flex;gap:8px}.pbw-loc-row label{flex:1;min-width:0}
+.pbw-loc-msg{font:600 11px 'Inter',sans-serif;color:#1877F2;min-height:14px}
+.pbw-gps{width:100%;padding:9px;border-radius:10px;border:1.5px dashed #1877F2;background:#f5f9ff;color:#1877F2;font:700 12px 'Inter',sans-serif;cursor:pointer}
+.pbw-ghost{background:none;border:none;color:#dc2626;font:700 12px 'Inter',sans-serif;cursor:pointer;padding:4px}
+.pbw-note{font:500 11px 'Inter',sans-serif;color:#8a8d91;text-align:center}
 @media (prefers-reduced-motion: reduce){#pb-ai-fab{animation:none}#pb-ai-panel{transition:none}}
 `;
 var styleEl = document.createElement('style');
@@ -332,18 +332,18 @@ var HTML = `
 
   <!-- Location -->
   <div id="pb-loc-view" style="display:none;flex-direction:column;flex:1;overflow:hidden">
-    <form class="pb-loc-form" id="pb-loc-form" onsubmit="pbAI.saveLocation(event)" autocomplete="off">
+    <form class="pbw-loc-form" id="pbw-loc-form" onsubmit="pbAI.saveLocation(event)" autocomplete="off">
       <button type="button" class="pb-back-btn" onclick="pbAI.showChat()">← Back to chat</button>
       <h3>📍 Where are you?</h3>
       <p>Used for vets, groomers, shelters and pets near you. It stays on this device and is shared with the Assistant page.</p>
-      <button type="button" class="pb-gps" onclick="pbAI.useGps(this)">🎯 Use my current location</button>
+      <button type="button" class="pbw-gps" onclick="pbAI.useGps(this)">🎯 Use my current location</button>
       <label>City<input class="pb-finput" name="city" maxlength="80" placeholder="e.g. New Delhi, Pune"></label>
       <label>Area / locality<input class="pb-finput" name="area" maxlength="100" placeholder="e.g. Dwarka Sector 10"></label>
-      <div class="pb-loc-row"><label>PIN code<input class="pb-finput" name="pin" inputmode="numeric" maxlength="6" placeholder="6 digits"></label><label>State<input class="pb-finput" name="state" maxlength="80" placeholder="optional"></label></div>
+      <div class="pbw-loc-row"><label>PIN code<input class="pb-finput" name="pin" inputmode="numeric" maxlength="6" placeholder="6 digits"></label><label>State<input class="pb-finput" name="state" maxlength="80" placeholder="optional"></label></div>
       <input type="hidden" name="lat"><input type="hidden" name="lng">
-      <div class="pb-loc-msg" id="pb-loc-msg"></div>
+      <div class="pbw-loc-msg" id="pbw-loc-msg"></div>
       <button class="pb-fsubmit" type="submit">Save location</button>
-      <button type="button" class="pb-ghost" id="pb-loc-clear" onclick="pbAI.clearLocation()">Clear my location</button>
+      <button type="button" class="pbw-ghost" id="pb-loc-clear" onclick="pbAI.clearLocation()">Clear my location</button>
     </form>
   </div>
 
@@ -356,7 +356,7 @@ var HTML = `
       <p>So I can use your pets, vaccinations, bookings and orders</p>
       <div id="pb-login-err" class="pb-ferr" role="alert"></div>
       <a class="pb-social-btn" href="01_login.html" style="text-decoration:none;color:#050505"><svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google</a>
-      <div class="pb-note">Opens the PawBook sign-in page</div>
+      <div class="pbw-note">Opens the PawBook sign-in page</div>
       <div class="pb-divider">or email</div>
       <div id="pb-email-login">
         <input class="pb-finput" type="email" id="pb-w-email" placeholder="Email" autocomplete="email" style="margin-bottom:8px">
@@ -649,22 +649,22 @@ var TEMOJI = {pets: '🐾', vets: '🩺', communities: '🤝', products: '🛍�
 function safeUrl(u){ return /^(tel:112$|[0-9]{2}_[a-z_0-9]+\.html([?#][^"'<>\s]*)?$)/.test(String(u || '')); }
 function cardHTML(c){
   if (c.src === 'google') {
-    return '<div class="pb-card g"><div class="pb-card-im"><b>' + esc(c.emoji || '📍') + '</b></div><div class="pb-card-bd"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '')
+    return '<div class="pbw-card g"><div class="pbw-card-im"><b>' + esc(c.emoji || '📍') + '</b></div><div class="pbw-card-bd"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '')
       + '<span class="gl">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">Directions</a>' : '') + (c.phone ? '<a href="tel:' + esc(String(c.phone).replace(/[^\d+]/g, '')) + '">Call</a>' : '') + '</span></div></div>';
   }
   var href = safeUrl(c.url) ? c.url : '#';
-  return '<a class="pb-card" href="' + esc(href) + '"><div class="pb-card-im">' + (c.img ? '<img src="' + esc(c.img) + '" alt="" loading="lazy" onerror="this.remove()">' : '<b>' + (TEMOJI[c.type] || '🐾') + '</b>') + (c.badge ? '<span>' + esc(c.badge) + '</span>' : c.near ? '<span>Near you</span>' : '') + '</div>'
-    + '<div class="pb-card-bd"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.price != null ? '<span class="pr">₹' + Number(c.price).toLocaleString('en-IN') + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '') + '<span class="go">' + esc(c.action || 'Open') + ' →</span></div></a>';
+  return '<a class="pbw-card" href="' + esc(href) + '"><div class="pbw-card-im">' + (c.img ? '<img src="' + esc(c.img) + '" alt="" loading="lazy" onerror="this.remove()">' : '<b>' + (TEMOJI[c.type] || '🐾') + '</b>') + (c.badge ? '<span>' + esc(c.badge) + '</span>' : c.near ? '<span>Near you</span>' : '') + '</div>'
+    + '<div class="pbw-card-bd"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span class="s">' + esc(c.sub) + '</span>' : '') + (c.price != null ? '<span class="pr">₹' + Number(c.price).toLocaleString('en-IN') + '</span>' : '') + (c.meta ? '<span class="mt">' + esc(c.meta) + '</span>' : '') + '<span class="go">' + esc(c.action || 'Open') + ' →</span></div></a>';
 }
 function actHTML(a, gid){
-  if (a.url === '#gnear') return gid ? '<button class="pb-act" onclick="pbAI._runG(\'' + gid + '\')">🗺️ ' + esc(a.label) + '</button>' : '';
-  if (a.url === '#location') return '<button class="pb-act" onclick="pbAI.showLocation()">📍 ' + esc(a.label) + '</button>';
-  if (a.url === '#support') return _mode === 'live' ? '<button class="pb-act" onclick="pbAI.showSupport()">✉️ ' + esc(a.label) + '</button>' : '';
-  if (a.url === '#tickets') return '<a class="pb-act" href="35_ai_agent.html?tickets=1">🎫 ' + esc(a.label) + '</a>';
-  if (a.url === '#login') return '<button class="pb-act pri" onclick="pbAI.showLoginView()">🔐 ' + esc(a.label) + '</button>';
+  if (a.url === '#gnear') return gid ? '<button class="pbw-act" onclick="pbAI._runG(\'' + gid + '\')">🗺️ ' + esc(a.label) + '</button>' : '';
+  if (a.url === '#location') return '<button class="pbw-act" onclick="pbAI.showLocation()">📍 ' + esc(a.label) + '</button>';
+  if (a.url === '#support') return _mode === 'live' ? '<button class="pbw-act" onclick="pbAI.showSupport()">✉️ ' + esc(a.label) + '</button>' : '';
+  if (a.url === '#tickets') return '<a class="pbw-act" href="35_ai_agent.html?tickets=1">🎫 ' + esc(a.label) + '</a>';
+  if (a.url === '#login') return '<button class="pbw-act pri" onclick="pbAI.showLoginView()">🔐 ' + esc(a.label) + '</button>';
   if (!safeUrl(a.url)) return '';
   var sos = /sos=1|^tel:/.test(a.url);
-  return '<a class="pb-act' + (sos ? ' sos' : '') + '" href="' + esc(a.url) + '">' + (/^tel:/.test(a.url) ? '📞 ' : sos ? '🚨 ' : '') + esc(a.label) + ' ↗</a>';
+  return '<a class="pbw-act' + (sos ? ' sos' : '') + '" href="' + esc(a.url) + '">' + (/^tel:/.test(a.url) ? '📞 ' : sos ? '🚨 ' : '') + esc(a.label) + ' ↗</a>';
 }
 // m: {text, cards, actions, suggestions, id, at, g, offline, past}
 function botMsg(m, pills, extraHtml){
@@ -674,15 +674,15 @@ function botMsg(m, pills, extraHtml){
   var gid = null, acts = (m.actions || []).slice();
   var g = m.g || (acts.filter(function(a){ return a.url === '#gnear' && a.g; })[0] || {}).g;
   if (g) { gid = 'g' + (++_ghN); _gh[gid] = g; }
-  var h = '<div class="pb-msg-av">🐾</div><div class="pb-msg-body"><div class="pb-msg-bubble">' + fmt(m.text) + '</div>';
+  var h = '<div class="pb-msg-av">🐾</div><div class="pbw-msg-body"><div class="pb-msg-bubble">' + fmt(m.text) + '</div>';
   if (m.extra) h += '<div style="margin-top:4px">' + m.extra + '</div>';
-  if (m.cards && m.cards.length) h += '<div class="pb-cards">' + m.cards.map(cardHTML).join('') + '</div>' + (m.cards.some(function(c){ return c.src === 'google'; }) ? '<div class="pb-gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead</div>' : '');
-  if (gid) h += '<div class="pb-gx" id="pb-gx-' + gid + '"></div>';
+  if (m.cards && m.cards.length) h += '<div class="pbw-cards">' + m.cards.map(cardHTML).join('') + '</div>' + (m.cards.some(function(c){ return c.src === 'google'; }) ? '<div class="pbw-gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead</div>' : '');
+  if (gid) h += '<div class="pbw-gx" id="pb-gx-' + gid + '"></div>';
   var ah = acts.map(function(a){ return actHTML(a, gid); }).join('');
-  if (ah) h += '<div class="pb-acts">' + ah + '</div>';
-  if (m.retry) h += '<div class="pb-acts"><button class="pb-act" data-q="' + esc(m.retry) + '" onclick="pbAI._retry(this)">↻ Try again</button></div>';
+  if (ah) h += '<div class="pbw-acts">' + ah + '</div>';
+  if (m.retry) h += '<div class="pbw-acts"><button class="pbw-act" data-q="' + esc(m.retry) + '" onclick="pbAI._retry(this)">↻ Try again</button></div>';
   if (!m.past && m.suggestions && m.suggestions.length) h += '<div class="pb-qr-row">' + m.suggestions.slice(0, 4).map(function(p){ return '<button class="pb-qr-btn" data-q="' + esc(p) + '" onclick="pbAI._pill(this)">' + esc(p) + '</button>'; }).join('') + '</div>';
-  h += '<div class="pb-msg-time">' + esc(hm(m.at)) + (m.offline ? ' · general answer' : '') + (m.id && !m.past ? ' · <button class="pb-fb' + (m.helpful === true ? ' on' : '') + '" title="Helpful" aria-label="Helpful" onclick="pbAI._rate(this,true)">👍</button><button class="pb-fb' + (m.helpful === false ? ' on' : '') + '" title="Not helpful" aria-label="Not helpful" onclick="pbAI._rate(this,false)">👎</button>' : '') + '</div></div>';
+  h += '<div class="pb-msg-time">' + esc(hm(m.at)) + (m.offline ? ' · general answer' : '') + (m.id && !m.past ? ' · <button class="pbw-fb' + (m.helpful === true ? ' on' : '') + '" title="Helpful" aria-label="Helpful" onclick="pbAI._rate(this,true)">👍</button><button class="pbw-fb' + (m.helpful === false ? ' on' : '') + '" title="Not helpful" aria-label="Not helpful" onclick="pbAI._rate(this,false)">👎</button>' : '') + '</div></div>';
   d.innerHTML = h; msgs.appendChild(d);
   // remove older suggestion pills so only the latest set shows
   var rows = msgs.querySelectorAll('.pb-qr-row'); for (var i = 0; i < rows.length - 1; i++) rows[i].remove();
@@ -694,10 +694,10 @@ function userMsg(text, past, at){
   var msgs = document.getElementById('pb-ai-msgs'); if (!msgs) return;
   var d = document.createElement('div'); d.className = 'pb-msg user' + (past ? ' past' : '');
   var init = (userName() || 'You').charAt(0).toUpperCase();
-  d.innerHTML = '<div class="pb-msg-av">' + esc(init) + '</div><div class="pb-msg-body"><div class="pb-msg-bubble">' + esc(text) + '</div><div class="pb-msg-time" style="text-align:right">' + esc(hm(at)) + '</div></div>';
+  d.innerHTML = '<div class="pb-msg-av">' + esc(init) + '</div><div class="pbw-msg-body"><div class="pb-msg-bubble">' + esc(text) + '</div><div class="pb-msg-time" style="text-align:right">' + esc(hm(at)) + '</div></div>';
   msgs.appendChild(d); scrollBottom();
 }
-function divider(t){ var msgs = document.getElementById('pb-ai-msgs'); if (!msgs) return; var d = document.createElement('div'); d.className = 'pb-div'; d.textContent = t; msgs.appendChild(d); }
+function divider(t){ var msgs = document.getElementById('pb-ai-msgs'); if (!msgs) return; var d = document.createElement('div'); d.className = 'pbw-div'; d.textContent = t; msgs.appendChild(d); }
 function showTyping(){
   var msgs = document.getElementById('pb-ai-msgs'); if (!msgs || _typing) return; _typing = true;
   var d = document.createElement('div'); d.className = 'pb-msg bot'; d.id = 'pb-typing';
@@ -707,7 +707,7 @@ function hideTyping(){ var el = document.getElementById('pb-typing'); if (el) el
 function setHeadStatus(){
   var s = document.getElementById('pb-ai-status'); if (s) s.innerHTML = '<span class="pb-ai-head-dot"></span> ' + (_mode === 'live' ? 'Signed in' : 'Guest mode');
   var l = document.getElementById('pb-ai-locbar');
-  if (l) { var c = pageCtx(); l.innerHTML = '<button type="button" onclick="pbAI.showLocation()" title="Set your location">📍 ' + esc(_loc ? locLabel() : 'Set location') + '</button>' + (c ? '<span title="The page you are on">📄 ' + esc(c[0]) + '</span>' : '') + (_mode === 'live' ? '' : '<button type="button" class="pb-signin" onclick="pbAI.showLoginView()">Sign in</button>'); }
+  if (l) { var c = pageCtx(); l.innerHTML = '<button type="button" onclick="pbAI.showLocation()" title="Set your location">📍 ' + esc(_loc ? locLabel() : 'Set location') + '</button>' + (c ? '<span title="The page you are on">📄 ' + esc(c[0]) + '</span>' : '') + (_mode === 'live' ? '' : '<button type="button" class="pbw-signin" onclick="pbAI.showLoginView()">Sign in</button>'); }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -727,32 +727,36 @@ function loadMaps(){
 }
 function km(a, b, c, d){ var r = function(x){ return x * Math.PI / 180; }, dl = r(c - a), dn = r(d - b), h = Math.sin(dl / 2) * Math.sin(dl / 2) + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(dn / 2) * Math.sin(dn / 2); return 6371 * 2 * Math.asin(Math.sqrt(h)); }
 var GQ = {vet: 'veterinary clinic', shelter: 'animal shelter', groomer: 'pet grooming', boarding: 'pet boarding', petstore: 'pet shop'};
-function runG(id){
-  var g = _gh[id], box = document.getElementById('pb-gx-' + id); if (!g || !box) return;
-  var put = function(h){ var b = document.getElementById('pb-gx-' + id); if (b) b.innerHTML = h; scrollBottom(); };
-  put('<div class="pb-gload">⏳ Looking up ' + esc(g.word) + ' near ' + esc(g.near) + ' on Google Maps…</div>');
-  var failed = function(){ put('<div class="pb-gload">Couldn\'t load places from Google Maps right now. <a href="' + P.nearby[0] + '">Open the map</a> instead.</div>'); };
-  loadMaps().then(function(gm){
+// nearby places as HTML (cards + attribution, or a short message) — used by the widget and the Voice page
+function placesHTML(g){
+  var failed = '<div class="pbw-gload">Couldn\'t load places from Google Maps right now. <a href="' + P.nearby[0] + '">Open the map</a> instead.</div>';
+  return loadMaps().then(function(gm){
     var center = g.lat != null ? Promise.resolve({lat: Number(g.lat), lng: Number(g.lng)}) : new Promise(function(res){ try { new gm.Geocoder().geocode({address: g.address}, function(r, st){ if (st === 'OK' && r[0]) { var l = r[0].geometry.location; res({lat: l.lat(), lng: l.lng()}); } else res(null); }); } catch(e){ res(null); } });
     return center.then(function(c){
-      if (!c || !gm.places || !gm.places.Place) return failed();
+      if (!c || !gm.places || !gm.places.Place) return failed;
       var req = {textQuery: GQ[g.kind] || g.text || 'veterinary clinic', fields: ['displayName', 'formattedAddress', 'location', 'rating', 'userRatingCount', 'nationalPhoneNumber', 'googleMapsURI', 'businessStatus', 'regularOpeningHours', 'utcOffsetMinutes'], locationBias: {center: c, radius: 8000}, maxResultCount: 10, region: 'in'};
       if (gm.places.SearchByTextRankPreference) req.rankPreference = gm.places.SearchByTextRankPreference.DISTANCE;
       return gm.places.Place.searchByText(req).then(function(r){
         var list = (r.places || []).filter(function(p){ return p.location && p.businessStatus !== 'CLOSED_PERMANENTLY'; }).map(function(p){
           var la = typeof p.location.lat === 'function' ? p.location.lat() : p.location.lat, ln = typeof p.location.lng === 'function' ? p.location.lng() : p.location.lng;
           return {p: p, km: km(c.lat, c.lng, la, ln)}; }).filter(function(x){ return x.km <= 25; }).sort(function(a, b){ return a.km - b.km; }).slice(0, 6);
-        if (!list.length) return put('<div class="pb-gload">Google Maps has no ' + esc(g.word) + ' listed near ' + esc(g.near) + '. <a href="' + P.nearby[0] + '">Open the map</a> to look further out.</div>');
+        if (!list.length) return '<div class="pbw-gload">Google Maps has no ' + esc(g.word) + ' listed near ' + esc(g.near) + '. <a href="' + P.nearby[0] + '">Open the map</a> to look further out.</div>';
         return Promise.all(list.map(function(x){ return (x.p.isOpen ? Promise.resolve(x.p.isOpen()).catch(function(){ return undefined; }) : Promise.resolve(undefined)).then(function(o){ x.open = o; return x; }); })).then(function(list){
           var cards = list.map(function(x){ var p = x.p, name = typeof p.displayName === 'string' ? p.displayName : (p.displayName && p.displayName.text) || 'Place';
             var url = /^https:\/\/(maps\.google\.com|www\.google\.com\/maps|maps\.app\.goo\.gl|goo\.gl)/.test(p.googleMapsURI || '') ? p.googleMapsURI : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name + ' ' + (p.formattedAddress || ''));
             return {src: 'google', emoji: g.emoji, title: name, sub: (p.formattedAddress || '').replace(/, India$/, ''), phone: p.nationalPhoneNumber || null, url: url,
               meta: [x.km < 1 ? Math.round(x.km * 1000) + ' m away' : (Math.round(x.km * 10) / 10) + ' km away', x.open === true ? 'Open now' : x.open === false ? 'Closed now' : null, p.rating ? '★ ' + p.rating + (p.userRatingCount ? ' (' + p.userRatingCount + ')' : '') : null].filter(Boolean).join(' · ')}; });
-          put('<div class="pb-cards">' + cards.map(cardHTML).join('') + '</div><div class="pb-gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead before visiting</div>');
+          return '<div class="pbw-cards">' + cards.map(cardHTML).join('') + '</div><div class="pbw-gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead before visiting</div>';
         });
       });
     });
-  }).catch(failed);
+  }).catch(function(){ return failed; });
+}
+function runG(id){
+  var g = _gh[id], box = document.getElementById('pb-gx-' + id); if (!g || !box) return;
+  var put = function(h){ var b = document.getElementById('pb-gx-' + id); if (b) b.innerHTML = h; scrollBottom(); };
+  put('<div class="pbw-gload">⏳ Looking up ' + esc(g.word) + ' near ' + esc(g.near) + ' on Google Maps…</div>');
+  placesHTML(g).then(put);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -860,7 +864,7 @@ window.pbAI = {
   _rate: function(b, v){
     var m = b.closest('.pb-msg'), id = m && m.getAttribute('data-id'); if (!id || _mode !== 'live') return;
     api('/assistant/messages/' + encodeURIComponent(id) + '/feedback', {method: 'POST', body: {helpful: v}}).then(function(){
-      b.parentNode.querySelectorAll('.pb-fb').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); b.title = 'Thanks for the feedback!';
+      b.parentNode.querySelectorAll('.pbw-fb').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); b.title = 'Thanks for the feedback!';
     }).catch(function(){});
   },
 
@@ -889,14 +893,14 @@ window.pbAI = {
     this._featVisible = id === 'pb-features-view';
   },
   showLocation: function(){
-    readLoc(); var f = document.getElementById('pb-loc-form'), l = _loc || {};
+    readLoc(); var f = document.getElementById('pbw-loc-form'), l = _loc || {};
     f.city.value = l.city || ''; f.area.value = l.area || ''; f.pin.value = l.pin || ''; f.state.value = l.state || ''; f.lat.value = l.lat != null ? l.lat : ''; f.lng.value = l.lng != null ? l.lng : '';
-    document.getElementById('pb-loc-msg').textContent = ''; document.getElementById('pb-loc-clear').style.display = _loc ? '' : 'none';
+    document.getElementById('pbw-loc-msg').textContent = ''; document.getElementById('pb-loc-clear').style.display = _loc ? '' : 'none';
     this._view('pb-loc-view'); setTimeout(function(){ f.city.focus(); }, 50);
   },
   saveLocation: function(e){
     if (e) e.preventDefault();
-    var f = document.getElementById('pb-loc-form'), m = document.getElementById('pb-loc-msg');
+    var f = document.getElementById('pbw-loc-form'), m = document.getElementById('pbw-loc-msg');
     var l = {country: 'India', state: f.state.value.trim(), city: f.city.value.trim(), area: f.area.value.trim(), pin: f.pin.value.replace(/\D/g, '').slice(0, 6)};
     if (!l.city && l.pin.length !== 6) { m.textContent = 'Type your city, or a 6-digit PIN code.'; f.city.focus(); return; }
     if (l.pin && l.pin.length !== 6) { m.textContent = 'A PIN code has 6 digits.'; f.pin.focus(); return; }
@@ -909,7 +913,7 @@ window.pbAI = {
   },
   clearLocation: function(){ lsSet('pb_assist_loc', null); _loc = null; readLoc(); setHeadStatus(); this._view('pb-chat-view'); botMsg({text: _loc ? '📍 Cleared. I\'m now using the area you picked on Adopt a pet: **' + locLabel() + '**.' : '📍 Location cleared.'}); },
   useGps: function(b){
-    var m = document.getElementById('pb-loc-msg'), f = document.getElementById('pb-loc-form');
+    var m = document.getElementById('pbw-loc-msg'), f = document.getElementById('pbw-loc-form');
     if (!navigator.geolocation) { m.textContent = 'Location is not available in this browser — type your city instead.'; return; }
     b.disabled = true; b.textContent = '⏳ Finding you…';
     var done = function(t){ b.disabled = false; b.textContent = '🎯 Use my current location'; if (t) m.textContent = t; };
@@ -928,19 +932,19 @@ window.pbAI = {
   // ── SUPPORT REQUEST (signed in) ──
   showSupport: function(){
     var self = this, TOP = [['account', 'Account & sign-in'], ['payment', 'Payment or refund'], ['order', 'Shop order'], ['vet', 'Vet booking'], ['listing', 'Fake or wrong listing'], ['safety', 'Safety or harassment'], ['bug', 'Something is not working'], ['grievance', 'Grievance (IT Rules)'], ['other', 'Other']];
-    var html = '<form class="pb-sup" onsubmit="pbAI.submitSupport(event)"><select name="topic" class="pb-finput" required><option value="">What is it about?</option>' + TOP.map(function(t){ return '<option value="' + t[0] + '">' + esc(t[1]) + '</option>'; }).join('') + '</select>'
+    var html = '<form class="pbw-sup" onsubmit="pbAI.submitSupport(event)"><select name="topic" class="pb-finput" required><option value="">What is it about?</option>' + TOP.map(function(t){ return '<option value="' + t[0] + '">' + esc(t[1]) + '</option>'; }).join('') + '</select>'
       + '<input name="subject" class="pb-finput" maxlength="150" placeholder="Short title" required>'
       + '<textarea name="message" class="pb-finput" rows="3" maxlength="4000" placeholder="What happened? (at least 15 characters — never share passwords, OTPs, card or ID numbers)" required></textarea>'
-      + '<div class="pb-sup-err"></div><button class="pb-fsubmit" type="submit">Send to the PawBook team</button></form>';
+      + '<div class="pbw-sup-err"></div><button class="pb-fsubmit" type="submit">Send to the PawBook team</button></form>';
     botMsg({text: '✉️ Tell the PawBook team what happened. They reply in your **notifications**, usually within 24 hours.', extra: html});
   },
   submitSupport: function(e){
-    e.preventDefault(); var f = e.target, err = f.querySelector('.pb-sup-err'), b = f.querySelector('button');
+    e.preventDefault(); var f = e.target, err = f.querySelector('.pbw-sup-err'), b = f.querySelector('button');
     var body = {topic: f.topic.value, subject: f.subject.value.trim(), message: f.message.value.trim(), page_url: PAGE};
     if (!body.topic || body.subject.length < 4 || body.message.length < 15) { err.textContent = 'Pick a topic, add a short title and at least 15 characters.'; return; }
     b.disabled = true; b.textContent = 'Sending…';
     api('/assistant/support', {method: 'POST', body: body}).then(function(d){
-      f.outerHTML = '<div class="pb-sup-ok">✅ Request <b>' + esc(d.ticket && d.ticket.ref || '') + '</b> sent. You\'ll get the reply in your notifications.</div>';
+      f.outerHTML = '<div class="pbw-sup-ok">✅ Request <b>' + esc(d.ticket && d.ticket.ref || '') + '</b> sent. You\'ll get the reply in your notifications.</div>';
       botMsg({text: 'Your support request is raised. Anything else I can help with?', actions: [{label: 'My support requests', url: '#tickets'}]});
     }).catch(function(x){ b.disabled = false; b.textContent = 'Send to the PawBook team'; err.textContent = x.status === 401 ? 'Please sign in again.' : (x.message || 'Could not send — try again.'); });
   },
@@ -1224,7 +1228,7 @@ window.pbAI = {
     fs.forEach(function(f, i){
       if (!query && f.section !== sec) { sec = f.section; html += '<div class="pb-feat-section">' + esc(sec) + '</div>'; }
       html += '<div class="pb-feat-card"><div class="pb-feat-card-head"><span class="pb-feat-card-icon">' + f.icon + '</span><span class="pb-feat-card-title">' + esc(f.title) + '</span>'
-        + '<a class="pb-feat-open" href="' + esc(f.page) + '">Open ↗</a></div><div class="pb-feat-card-desc">' + esc(f.desc) + '</div><div class="pb-feat-card-tags">'
+        + '<a class="pbw-feat-open" href="' + esc(f.page) + '">Open ↗</a></div><div class="pb-feat-card-desc">' + esc(f.desc) + '</div><div class="pb-feat-card-tags">'
         + f.tags.map(function(t){ return '<button type="button" class="pb-feat-tag" data-q="' + esc(t) + '" onclick="pbAI._featQuick(this)">' + esc(t) + '</button>'; }).join('') + '</div></div>';
     });
     list.innerHTML = html;
@@ -1264,6 +1268,15 @@ window.pbAI = {
       .then(function(d){ btn.disabled = false; btn.textContent = 'Create Account'; if (d.token || (d.data && d.data.token)) self._loginSuccess(d); else self._loginErr(d.message || 'Could not create the account.'); })
       .catch(function(){ btn.disabled = false; btn.textContent = 'Create Account'; self._loginErr('Could not connect. Check your internet and try again.'); });
   }
+};
+
+// ── shared with the Voice assistant page (40): the same brain, cards and Google Maps lookup ──
+window.pbAI.kit = {
+  local: function(t){ readSession(); readLoc(); return localReply(t); },
+  intent: detectIntent, advice: ADVICE, fmt: fmt, esc: esc, safeUrl: safeUrl,
+  cardsHTML: function(cards){ return cards && cards.length ? '<div class="pbw-cards">' + cards.map(cardHTML).join('') + '</div>' + (cards.some(function(c){ return c.src === 'google'; }) ? '<div class="pbw-gattr">Places from <b>Google Maps</b> · not verified by PawBook — call ahead</div>' : '') : ''; },
+  nearby: placesHTML, loc: function(){ readLoc(); return _loc; }, locLabel: function(){ readLoc(); return locLabel(); },
+  setLocation: function(){ if (!_open) pbAI.toggle(); pbAI.showLocation(); }
 };
 
 // Esc closes the panel

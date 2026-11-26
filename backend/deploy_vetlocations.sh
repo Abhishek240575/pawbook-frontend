@@ -9,7 +9,7 @@ REPO=~/pb-sync
 WEB=/var/www/1015d59e-67f5-4aea-838c-7f7392731800/public_html
 BK=~/backup-vetlocations-$(date +%Y%m%d-%H%M%S)
 F=11_vet_booking.html
-norm() { sed -e '1s/^\xEF\xBB\xBF//' -e 's/\r$//'; }
+norm() { sed -e '1s/^\xEF\xBB\xBF//' -e 's/\r$//' -e 's/pawbook-ai-widget\.v4\.js?v=[0-9]*"/pawbook-ai-widget.v4.js?v=X"/'; }   # the widget version may already be newer
 cd "$REPO" || { echo "No $REPO"; exit 1; }
 git pull -q || { echo "git pull failed"; exit 1; }
 grep -q "_inFillStates" "$REPO/$F" || { echo "STOPPED: the repo doesn't have the new page yet (git pull?). Nothing was changed."; exit 1; }

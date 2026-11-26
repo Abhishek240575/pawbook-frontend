@@ -228,6 +228,24 @@ input,textarea,select{font-family:'Inter',sans-serif}
   .drawer-badge{margin-left:auto;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
   .drawer-footer{padding:8px 0;border-top:1px solid #e4e6eb;}
   /* ===== END DRAWER STYLES ===== */
+
+/* ── voice assistant: real answers ── */
+.va-empty{font-size:12px;color:var(--pb-text3);padding:10px 12px;background:var(--pb-bg);border-radius:var(--pb-radius-sm)}
+.va-empty a{color:var(--pb-indigo);font-weight:700}
+.va-body{display:flex;flex-direction:column;gap:6px;max-width:86%;min-width:0}
+.va-body .vc-bubble{max-width:100%}
+.va-cards .pbw-cards{max-width:100%}
+.va-cards .pbw-gattr,.va-cards .pbw-gload{color:rgba(255,255,255,.65)}
+.va-cards .pbw-gload a{color:#c7d2fe}
+.va-acts{display:flex;flex-wrap:wrap;gap:6px}
+.va-act,.va-sug{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--pb-pill);font:700 12px inherit;font-family:inherit;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff}
+.va-act:hover,.va-sug:hover{background:rgba(255,255,255,.2)}
+.va-act.sos{background:#dc2626;border-color:#dc2626}
+.va-sug{background:transparent;color:rgba(255,255,255,.85);font-weight:600}
+.va-note{font-size:11px;color:rgba(255,255,255,.55)}
+.feature-card[role=button]{cursor:pointer}
+.feature-card[role=button]:hover{outline:2px solid rgba(99,102,241,.35)}
+.vc-pet-btn{text-decoration:none}
 </style>
 </head>
 <body>
@@ -240,7 +258,7 @@ input,textarea,select{font-family:'Inter',sans-serif}
   </div>
   <div class="pb-nav-search">
     <i class="ti ti-search" style="color:var(--pb-text3);font-size:16px"></i>
-    <input type="text" placeholder="Ask anything about your pet...">
+    <input type="text" id="navAsk" placeholder="Ask anything about your pet..." onkeydown="if(event.key==='Enter'&&this.value.trim()){ask(this.value);this.value='';}">
   </div>
   <div class="pb-nav-tabs">
     <button class="pb-nav-tab" onclick="location.href='07_home.html'"><i class="ti ti-home"></i></button>
@@ -249,8 +267,8 @@ input,textarea,select{font-family:'Inter',sans-serif}
     <button class="pb-nav-tab active"><i class="ti ti-microphone"></i></button>
   </div>
   <div class="pb-nav-right">
-    <button class="pb-icon-btn" onclick="openModal('settingsModal')"><i class="ti ti-settings"></i></button>
-    <div class="pb-avatar">A</div>
+    <button class="pb-icon-btn" title="Voice settings" onclick="document.getElementById('vaSettings').scrollIntoView({behavior:'smooth',block:'center'})"><i class="ti ti-settings"></i></button>
+    <div class="pb-avatar" id="navAv">·</div>
   </div>
 </nav>
 
@@ -263,114 +281,37 @@ input,textarea,select{font-family:'Inter',sans-serif}
     <!-- Voice History -->
     <div class="pb-card" style="margin-bottom:16px">
       <div class="pb-card-header">
-        <h3><i class="ti ti-history" style="color:var(--pb-indigo)"></i> Recent Queries</h3>
-        <button class="pb-btn pb-btn-gray pb-btn-sm">Clear</button>
+        <h3><i class="ti ti-history" style="color:var(--pb-indigo)"></i> Recent Questions</h3>
+        <button class="pb-btn pb-btn-gray pb-btn-sm" id="histClear" onclick="clearHistory(this)">Clear</button>
       </div>
-      <div class="history-list">
-        <div class="history-item">
-          <div class="history-icon"><i class="ti ti-microphone"></i></div>
-          <div class="history-info">
-            <div class="history-query">"Is Rocky due for vaccination?"</div>
-            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> 10 mins ago</div>
-          </div>
-          <span class="history-pet">Rocky</span>
-        </div>
-        <div class="history-item">
-          <div class="history-icon"><i class="ti ti-microphone"></i></div>
-          <div class="history-info">
-            <div class="history-query">"Log Rocky's weight as 28 kg"</div>
-            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> 1 hr ago</div>
-          </div>
-          <span class="history-pet">Rocky</span>
-        </div>
-        <div class="history-item">
-          <div class="history-icon"><i class="ti ti-microphone"></i></div>
-          <div class="history-info">
-            <div class="history-query">"Set medicine reminder for Mittens"</div>
-            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> Yesterday</div>
-          </div>
-          <span class="history-pet">Mittens</span>
-        </div>
-        <div class="history-item">
-          <div class="history-icon"><i class="ti ti-microphone"></i></div>
-          <div class="history-info">
-            <div class="history-query">"Find vet near me open now"</div>
-            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> 2 days ago</div>
-          </div>
-          <span class="history-pet">Both</span>
-        </div>
-        <div class="history-item">
-          <div class="history-icon"><i class="ti ti-microphone"></i></div>
-          <div class="history-info">
-            <div class="history-query">"Mittens ate less today, is it okay?"</div>
-            <div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> 3 days ago</div>
-          </div>
-          <span class="history-pet">Mittens</span>
-        </div>
-      </div>
+      <div class="history-list" id="histList"><div class="va-empty">Your questions will appear here.</div></div>
     </div>
-
-    <!-- Voice Reminders -->
+    <!-- Coming up for your pets -->
     <div class="pb-card" style="margin-bottom:16px">
       <div class="pb-card-header">
-        <h3><i class="ti ti-bell" style="color:var(--pb-amber)"></i> Voice Reminders</h3>
-        <button class="pb-btn pb-btn-indigo pb-btn-sm" onclick="openModal('reminderModal')"><i class="ti ti-plus"></i> Add</button>
+        <h3><i class="ti ti-bell" style="color:var(--pb-amber)"></i> Coming Up for Your Pets</h3>
+        <a class="pb-btn pb-btn-indigo pb-btn-sm" href="10_vaccination.html" style="text-decoration:none"><i class="ti ti-vaccine"></i> Vaccinations</a>
       </div>
-      <div class="reminder-list">
-        <div class="reminder-item">
-          <div class="reminder-dot" style="background:var(--pb-red)"></div>
-          <div class="reminder-info">
-            <div class="reminder-title">🐱 Mittens — Deworming</div>
-            <div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> Today, 8:00 PM</div>
-          </div>
-        </div>
-        <div class="reminder-item">
-          <div class="reminder-dot" style="background:var(--pb-amber)"></div>
-          <div class="reminder-info">
-            <div class="reminder-title">🐕 Rocky — Vet Visit</div>
-            <div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> Tomorrow, 10:00 AM</div>
-          </div>
-        </div>
-        <div class="reminder-item">
-          <div class="reminder-dot" style="background:var(--pb-blue)"></div>
-          <div class="reminder-info">
-            <div class="reminder-title">🐕 Rocky — Flea treatment</div>
-            <div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> Nov 15, 2026</div>
-          </div>
-        </div>
-        <div class="reminder-item">
-          <div class="reminder-dot" style="background:var(--pb-green)"></div>
-          <div class="reminder-info">
-            <div class="reminder-title">🐱 Mittens — Rabies booster</div>
-            <div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> Nov 20, 2026</div>
-          </div>
-        </div>
-      </div>
+      <div class="reminder-list" id="remList"><div class="va-empty">Sign in to see vaccinations and vet visits coming up.</div></div>
     </div>
-
     <!-- Voice Settings -->
-    <div class="pb-card">
+    <div class="pb-card" id="vaSettings">
       <div class="pb-card-header">
         <h3><i class="ti ti-adjustments" style="color:var(--pb-teal)"></i> Settings</h3>
       </div>
       <div class="settings-row">
-        <div><div class="settings-label">Wake Word</div><div class="settings-desc">"Hey PawBook"</div></div>
-        <div class="toggle-switch" onclick="this.classList.toggle('off')"></div>
+        <div><div class="settings-label">Read replies aloud</div><div class="settings-desc">Speak each answer in your language</div></div>
+        <div class="toggle-switch" id="setTts" role="switch" tabindex="0" onclick="toggleSetting('tts')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSetting('tts')}"></div>
       </div>
       <div class="settings-row">
-        <div><div class="settings-label">Auto-read responses</div><div class="settings-desc">Speak replies aloud</div></div>
-        <div class="toggle-switch" onclick="this.classList.toggle('off')"></div>
-      </div>
-      <div class="settings-row">
-        <div><div class="settings-label">Noise cancellation</div><div class="settings-desc">Filter background noise</div></div>
-        <div class="toggle-switch" onclick="this.classList.toggle('off')"></div>
+        <div><div class="settings-label">Send when I stop talking</div><div class="settings-desc">Off: check the words first, then send</div></div>
+        <div class="toggle-switch" id="setAuto" role="switch" tabindex="0" onclick="toggleSetting('auto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSetting('auto')}"></div>
       </div>
       <div class="settings-row" style="border-bottom:none">
-        <div><div class="settings-label">Hindi + English</div><div class="settings-desc">Hinglish mode active</div></div>
-        <div class="toggle-switch" onclick="this.classList.toggle('off')"></div>
+        <div><div class="settings-label">My location</div><div class="settings-desc" id="locDesc">Not set — used for vets and places near you</div></div>
+        <button class="pb-btn pb-btn-gray pb-btn-sm" onclick="setLocation()"><i class="ti ti-map-pin"></i> Set</button>
       </div>
     </div>
-
   </aside>
 
   <!-- MAIN CONTENT -->
@@ -379,26 +320,21 @@ input,textarea,select{font-family:'Inter',sans-serif}
     <!-- Voice Console -->
     <div class="voice-console">
       <div class="vc-header">
-        <div class="vc-label"><span class="vc-status-dot"></span> AI Voice Assistant · Active</div>
+        <div class="vc-label"><span class="vc-status-dot"></span> <span id="vcMode">AI Voice Assistant</span></div>
         <div class="vc-title">🎤 PawBook Voice</div>
-        <div class="vc-sub">Ask anything about Rocky & Mittens — health, reminders, vets, food, and more</div>
+        <div class="vc-sub" id="vcSub">Ask anything about your pets — vaccinations, vets near you, food, training, the shop and more</div>
       </div>
 
       <!-- Pet selector -->
       <div class="vc-visualizer-wrap">
-        <div class="vc-pet-select">
-          <button class="vc-pet-btn active" id="petRocky" onclick="selectPet('rocky',this)">🐕 Rocky</button>
-          <button class="vc-pet-btn" id="petMittens" onclick="selectPet('mittens',this)">🐱 Mittens</button>
-          <button class="vc-pet-btn" id="petBoth" onclick="selectPet('both',this)">🐾 Both</button>
-        </div>
-
+        <div class="vc-pet-select" id="petSel"></div>
         <!-- Orb -->
         <div class="vc-orb-wrap">
           <div class="vc-orb-ring"></div>
           <div class="vc-orb-ring"></div>
           <div class="vc-orb-ring"></div>
-          <div class="vc-orb" id="vcOrb" onclick="toggleMic()">
-            <span class="vc-orb-emoji" id="orbEmoji">🐕</span>
+          <div class="vc-orb" id="vcOrb" onclick="toggleMic()" role="button" tabindex="0" aria-label="Speak your question" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleMic()}">
+            <span class="vc-orb-emoji" id="orbEmoji">🐾</span>
           </div>
         </div>
         <div class="vc-orb-label" id="orbLabel">Tap orb or mic to speak</div>
@@ -411,45 +347,43 @@ input,textarea,select{font-family:'Inter',sans-serif}
         <!-- Transcript -->
         <div class="vc-transcript">
           <div class="vc-transcript-text" id="transcriptText"></div>
-          <div class="vc-transcript-hint" id="transcriptHint">Listening for your voice command…</div>
+          <div class="vc-transcript-hint" id="transcriptHint">Tap the mic and ask your question</div>
         </div>
 
         <!-- Mic controls -->
         <div class="vc-controls">
-          <button class="vc-ctrl-btn" title="Text input" onclick="openModal('textInputModal')"><i class="ti ti-keyboard"></i></button>
-          <button class="vc-mic-btn vc-mic-btn-main" id="micBtn" onclick="toggleMic()"><i class="ti ti-microphone" id="micIcon"></i></button>
-          <button class="vc-ctrl-btn" title="Stop & clear" onclick="stopListening()"><i class="ti ti-square"></i></button>
+          <button class="vc-ctrl-btn" title="Type instead" aria-label="Type instead" onclick="openModal('textInputModal')"><i class="ti ti-keyboard"></i></button>
+          <button class="vc-mic-btn vc-mic-btn-main" id="micBtn" onclick="toggleMic()" aria-label="Speak"><i class="ti ti-microphone" id="micIcon"></i></button>
+          <button class="vc-ctrl-btn" title="Stop" aria-label="Stop listening and speaking" onclick="stopAll()"><i class="ti ti-square"></i></button>
         </div>
 
       </div>
 
       <!-- Language bar -->
-      <div class="vc-lang-bar">
-        <button class="vc-lang-btn active" onclick="setLang(this)">🇮🇳 Hinglish</button>
-        <button class="vc-lang-btn" onclick="setLang(this)">🇬🇧 English</button>
-        <button class="vc-lang-btn" onclick="setLang(this)">🇮🇳 हिंदी</button>
-        <button class="vc-lang-btn" onclick="setLang(this)">বাংলা</button>
-        <button class="vc-lang-btn" onclick="setLang(this)">తెలుగు</button>
-        <button class="vc-lang-btn" onclick="setLang(this)">தமிழ்</button>
-        <button class="vc-lang-btn" onclick="setLang(this)">मराठी</button>
+      <div class="vc-lang-bar" id="langBar">
+        <button class="vc-lang-btn" data-lang="en-IN" data-k="hinglish" onclick="setLang(this)">🇮🇳 Hinglish</button>
+        <button class="vc-lang-btn" data-lang="en-IN" data-k="en" onclick="setLang(this)">🇬🇧 English</button>
+        <button class="vc-lang-btn" data-lang="hi-IN" data-k="hi" onclick="setLang(this)">🇮🇳 हिंदी</button>
+        <button class="vc-lang-btn" data-lang="bn-IN" data-k="bn" onclick="setLang(this)">বাংলা</button>
+        <button class="vc-lang-btn" data-lang="te-IN" data-k="te" onclick="setLang(this)">తెలుగు</button>
+        <button class="vc-lang-btn" data-lang="ta-IN" data-k="ta" onclick="setLang(this)">தமிழ்</button>
+        <button class="vc-lang-btn" data-lang="mr-IN" data-k="mr" onclick="setLang(this)">मराठी</button>
       </div>
-
       <!-- Quick commands -->
-      <div class="vc-quick">
-        <button class="vc-quick-btn" onclick="quickCommand(this,'Is Rocky due for any vaccine?')">💉 Vaccine status</button>
-        <button class="vc-quick-btn" onclick="quickCommand(this,'Log Rocky weight 28 kg')">⚖️ Log weight</button>
-        <button class="vc-quick-btn" onclick="quickCommand(this,'Find nearest vet open now')">🏥 Nearest vet</button>
-        <button class="vc-quick-btn" onclick="quickCommand(this,'Set medicine reminder for Mittens at 8 PM')">⏰ Set reminder</button>
-        <button class="vc-quick-btn" onclick="quickCommand(this,'What should Rocky eat today?')">🍖 Diet advice</button>
-        <button class="vc-quick-btn" onclick="quickCommand(this,'Rocky seems lethargic today')">🩺 Health check</button>
-        <button class="vc-quick-btn" onclick="quickCommand(this,'Show upcoming appointments')">📅 Appointments</button>
-        <button class="vc-quick-btn" onclick="quickCommand(this,'Emergency! Rocky is not breathing normally')">🚨 Emergency</button>
+      <div class="vc-quick" id="quickBar">
+        <button class="vc-quick-btn" onclick="ask(this.dataset.q)" data-q="When are my pet's vaccines due?">💉 Vaccines due</button>
+        <button class="vc-quick-btn" onclick="ask(this.dataset.q)" data-q="Find a vet near me">🏥 Vet near me</button>
+        <button class="vc-quick-btn" onclick="ask(this.dataset.q)" data-q="Food for my pet">🍖 Food for my pet</button>
+        <button class="vc-quick-btn" onclick="ask(this.dataset.q)" data-q="My dog is not eating, what should I do?">🩺 Not eating</button>
+        <button class="vc-quick-btn" onclick="ask(this.dataset.q)" data-q="My appointments">📅 Appointments</button>
+        <button class="vc-quick-btn" onclick="ask(this.dataset.q)" data-q="Where is my order?">📦 My order</button>
+        <button class="vc-quick-btn" onclick="ask(this.dataset.q)" data-q="How do I stop my dog pulling on the leash?">🎓 Training tip</button>
+        <button class="vc-quick-btn" onclick="ask(this.dataset.q)" data-q="My pet ate chocolate, what do I do?">🚨 Emergency</button>
       </div>
-
       <!-- AI Response Area -->
       <div class="vc-response" id="vcResponse" style="display:none">
-        <div class="vc-response-label">🤖 AI Response</div>
-        <div id="conversationArea"></div>
+        <div class="vc-response-label">🤖 PawBook AI</div>
+        <div id="conversationArea" aria-live="polite"></div>
       </div>
 
     </div>
@@ -461,65 +395,40 @@ input,textarea,select{font-family:'Inter',sans-serif}
         <button class="pb-btn pb-btn-indigo pb-btn-sm" onclick="openModal('commandsModal')"><i class="ti ti-list"></i> All Commands</button>
       </div>
       <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon" style="background:var(--pb-purple-soft)">💊</div>
-          <div>
-            <div class="feature-title">Medicine Reminders</div>
-            <div class="feature-desc">"Give Mittens her medicine at 8 PM daily"</div>
-          </div>
-        </div>
-        <div class="feature-card">
+        <div class="feature-card" role="button" tabindex="0" onclick="ask(this.dataset.q)" onkeydown="if(event.key==='Enter')ask(this.dataset.q)" data-q="When are my pet's vaccines due?">
           <div class="feature-icon" style="background:var(--pb-blue-soft)">💉</div>
-          <div>
-            <div class="feature-title">Vaccination Tracking</div>
-            <div class="feature-desc">"Is Rocky's rabies vaccine due?"</div>
-          </div>
+          <div><div class="feature-title">Vaccinations due</div><div class="feature-desc">"When are my pet's vaccines due?"</div></div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon" style="background:var(--pb-green-soft)">🍖</div>
-          <div>
-            <div class="feature-title">Diet & Nutrition</div>
-            <div class="feature-desc">"What food is safe for Rocky today?"</div>
-          </div>
-        </div>
-        <div class="feature-card">
+        <div class="feature-card" role="button" tabindex="0" onclick="ask(this.dataset.q)" onkeydown="if(event.key==='Enter')ask(this.dataset.q)" data-q="Pet groomers near me">
           <div class="feature-icon" style="background:var(--pb-teal-soft)">🏥</div>
-          <div>
-            <div class="feature-title">Vet Finder</div>
-            <div class="feature-desc">"Find nearest vet clinic open right now"</div>
-          </div>
+          <div><div class="feature-title">Vets & places near you</div><div class="feature-desc">"Pet groomers near me"</div></div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon" style="background:var(--pb-amber-soft)">⚖️</div>
-          <div>
-            <div class="feature-title">Health Logging</div>
-            <div class="feature-desc">"Log Rocky's weight as 28 kg today"</div>
-          </div>
+        <div class="feature-card" role="button" tabindex="0" onclick="ask(this.dataset.q)" onkeydown="if(event.key==='Enter')ask(this.dataset.q)" data-q="Dog food under 1000">
+          <div class="feature-icon" style="background:var(--pb-green-soft)">🍖</div>
+          <div><div class="feature-title">Food & the pet shop</div><div class="feature-desc">"Dog food under 1000"</div></div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" role="button" tabindex="0" onclick="ask(this.dataset.q)" onkeydown="if(event.key==='Enter')ask(this.dataset.q)" data-q="My cat is vomiting since morning">
+          <div class="feature-icon" style="background:var(--pb-purple-soft)">🩺</div>
+          <div><div class="feature-title">Is it urgent?</div><div class="feature-desc">"My cat is vomiting since morning"</div></div>
+        </div>
+        <div class="feature-card" role="button" tabindex="0" onclick="ask(this.dataset.q)" onkeydown="if(event.key==='Enter')ask(this.dataset.q)" data-q="My dog ate grapes, what do I do?">
           <div class="feature-icon" style="background:var(--pb-red-soft)">🚨</div>
-          <div>
-            <div class="feature-title">Emergency Guide</div>
-            <div class="feature-desc">"Rocky ate chocolate — what do I do?"</div>
-          </div>
+          <div><div class="feature-title">Emergency help</div><div class="feature-desc">"My dog ate grapes, what do I do?"</div></div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon" style="background:rgba(99,102,241,.12)">📅</div>
-          <div>
-            <div class="feature-title">Appointment Booking</div>
-            <div class="feature-desc">"Book a vet checkup for next Monday"</div>
-          </div>
+        <div class="feature-card" role="button" tabindex="0" onclick="ask(this.dataset.q)" onkeydown="if(event.key==='Enter')ask(this.dataset.q)" data-q="Where is my order?">
+          <div class="feature-icon" style="background:var(--pb-amber-soft)">📦</div>
+          <div><div class="feature-title">Orders & delivery</div><div class="feature-desc">"Where is my order?"</div></div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" role="button" tabindex="0" onclick="ask(this.dataset.q)" onkeydown="if(event.key==='Enter')ask(this.dataset.q)" data-q="What documents do I need to adopt?">
+          <div class="feature-icon" style="background:rgba(99,102,241,.12)">🏡</div>
+          <div><div class="feature-title">Adoption</div><div class="feature-desc">"What documents do I need to adopt?"</div></div>
+        </div>
+        <div class="feature-card" role="button" tabindex="0" onclick="ask(this.dataset.q)" onkeydown="if(event.key==='Enter')ask(this.dataset.q)" data-q="Mere kutte ke liye khana 500 se kam">
           <div class="feature-icon" style="background:var(--pb-pink-soft)">💬</div>
-          <div>
-            <div class="feature-title">Hinglish Support</div>
-            <div class="feature-desc">"Rocky ko aaj kya khilana chahiye?"</div>
-          </div>
+          <div><div class="feature-title">Hindi & Hinglish</div><div class="feature-desc">"Mere kutte ke liye khana 500 se kam"</div></div>
         </div>
       </div>
     </div>
-
   </main>
 </div>
 
@@ -533,61 +442,22 @@ input,textarea,select{font-family:'Inter',sans-serif}
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">Ask anything about your pets</label>
-        <input type="text" class="form-input" id="textQueryInput" placeholder="e.g. Is Rocky's vaccine due this month?" style="font-size:15px;height:48px">
+        <input type="text" class="form-input" id="textQueryInput" placeholder="e.g. When is my dog's next vaccine due?" style="font-size:15px;height:48px">
       </div>
-      <div style="font-size:12px;color:var(--pb-text3);margin-bottom:12px">Supports English and Hindi</div>
+      <div style="font-size:12px;color:var(--pb-text3);margin-bottom:12px">English, Hindi or Hinglish</div>
       <div>
         <div style="font-size:12px;font-weight:700;color:var(--pb-text2);margin-bottom:8px">Try these:</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Rocky weight log</span>
-          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Nearest vet now</span>
-          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Medicine reminder 8pm</span>
-          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Rocky ki vaccine kab thi?</span>
+          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Vet near me</span>
+          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Vaccines due</span>
+          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Cat food under 700</span>
+          <span style="padding:5px 12px;background:var(--pb-bg);border-radius:var(--pb-pill);font-size:12px;cursor:pointer" onclick="document.getElementById('textQueryInput').value=this.textContent">Kutte ka khana</span>
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="pb-btn pb-btn-gray" onclick="closeModal('textInputModal')">Cancel</button>
       <button class="pb-btn pb-btn-indigo" onclick="submitTextQuery()"><i class="ti ti-send"></i> Ask AI</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── REMINDER MODAL ── -->
-<div class="modal-overlay" id="reminderModal" onclick="closeModalOutside(event,'reminderModal')">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>⏰ Set Voice Reminder</h3>
-      <button class="modal-close" onclick="closeModal('reminderModal')"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div style="padding:12px;background:rgba(99,102,241,.08);border-radius:var(--pb-radius-sm);border:1px solid #c7d2fe;font-size:13px;color:#3730a3;margin-bottom:16px">
-        <strong>🎤 Or just say:</strong> "Set a medicine reminder for Rocky every day at 7 PM"
-      </div>
-      <div class="form-group">
-        <label class="form-label">Select Pet</label>
-        <select class="form-select"><option>Rocky (Golden Retriever)</option><option>Mittens (Persian Cat)</option><option>Both pets</option></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Reminder Type</label>
-        <select class="form-select"><option>Medicine / Medication</option><option>Vaccination</option><option>Vet appointment</option><option>Grooming</option><option>Feeding time</option><option>Custom</option></select>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input"></div>
-        <div class="form-group"><label class="form-label">Time</label><input type="time" class="form-input" value="20:00"></div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Repeat</label>
-        <select class="form-select"><option>Once</option><option>Daily</option><option>Weekly</option><option>Monthly</option></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Note (optional)</label>
-        <input type="text" class="form-input" placeholder="e.g. Give with food, 1 tablet">
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('reminderModal')">Cancel</button>
-      <button class="pb-btn pb-btn-indigo" onclick="closeModal('reminderModal')"><i class="ti ti-bell"></i> Set Reminder</button>
     </div>
   </div>
 </div>
@@ -600,42 +470,23 @@ input,textarea,select{font-family:'Inter',sans-serif}
       <button class="modal-close" onclick="closeModal('commandsModal')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body" style="padding:0 24px 20px">
-      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Health & Medical</div>
-      <div class="command-example"><div class="cmd-icon">💉</div><div class="cmd-text"><strong>"Is Rocky due for vaccination?"</strong>Checks the full vaccination schedule and tells you what's pending</div></div>
-      <div class="command-example"><div class="cmd-icon">🩺</div><div class="cmd-text"><strong>"Rocky is scratching his ear a lot"</strong>AI diagnoses potential cause and suggests if a vet visit is needed</div></div>
-      <div class="command-example"><div class="cmd-icon">🚨</div><div class="cmd-text"><strong>"Mittens ate onion, what do I do?"</strong>Immediate emergency guidance with nearest emergency vet</div></div>
-      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Logging & Tracking</div>
-      <div class="command-example"><div class="cmd-icon">⚖️</div><div class="cmd-text"><strong>"Log Rocky's weight as 28 kilograms"</strong>Saves to health record and shows trend vs last entry</div></div>
-      <div class="command-example"><div class="cmd-icon">💊</div><div class="cmd-text"><strong>"Mark Mittens' medicine as given"</strong>Logs medication dose in the health record</div></div>
-      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Reminders & Schedule</div>
-      <div class="command-example"><div class="cmd-icon">⏰</div><div class="cmd-text"><strong>"Remind me to give Mittens medicine every night at 9"</strong>Creates a daily repeating reminder with push notification</div></div>
-      <div class="command-example"><div class="cmd-icon">📅</div><div class="cmd-text"><strong>"Book a vet appointment for Rocky next Monday"</strong>Opens scheduling with nearby vets</div></div>
-      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Hinglish Examples 🇮🇳</div>
-      <div class="command-example"><div class="cmd-icon">🇮🇳</div><div class="cmd-text"><strong>"Rocky ko aaj kya khilana chahiye?"</strong>Diet and nutrition advice in Hindi</div></div>
-      <div class="command-example"><div class="cmd-icon">🇮🇳</div><div class="cmd-text"><strong>"Mittens ki vaccine kab lagni hai?"</strong>Upcoming vaccination schedule query</div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Your pets</div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="When are my pet's vaccines due?"><div class="cmd-icon">💉</div><div class="cmd-text"><strong>"When are my pet's vaccines due?"</strong>Uses your pets and their vaccination records</div></div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="My appointments"><div class="cmd-icon">📅</div><div class="cmd-text"><strong>"My appointments"</strong>Your upcoming vet visits</div></div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="My dog is scratching his ear a lot"><div class="cmd-icon">🩺</div><div class="cmd-text"><strong>"My dog is scratching his ear a lot"</strong>General guidance and whether to see a vet — never a diagnosis</div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Near you</div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="Find a vet near me"><div class="cmd-icon">🏥</div><div class="cmd-text"><strong>"Find a vet near me"</strong>Vets on PawBook plus clinics from Google Maps near your location</div></div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="Pet groomers near me"><div class="cmd-icon">✂️</div><div class="cmd-text"><strong>"Pet groomers near me"</strong>Groomers, boarding, pet shops and shelters</div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Shop & orders</div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="Cat food under 700"><div class="cmd-icon">🍖</div><div class="cmd-text"><strong>"Cat food under 700"</strong>Real products from the PawBook shop, with price and stock</div></div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="Where is my order?"><div class="cmd-icon">📦</div><div class="cmd-text"><strong>"Where is my order?"</strong>Your latest orders and their status</div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Emergency</div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="My cat ate onion, what do I do?"><div class="cmd-icon">🚨</div><div class="cmd-text"><strong>"My cat ate onion, what do I do?"</strong>Immediate safe steps, Emergency SOS and 112</div></div>
+      <div style="font-size:12px;font-weight:700;color:var(--pb-indigo);text-transform:uppercase;letter-spacing:.06em;padding:16px 0 10px">Hindi & Hinglish 🇮🇳</div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="Kutte ka khana 1000 se kam"><div class="cmd-icon">🇮🇳</div><div class="cmd-text"><strong>"Kutte ka khana 1000 se kam"</strong>Answers Hindi and Hinglish questions</div></div>
+      <div class="command-example" role="button" tabindex="0" style="cursor:pointer" onclick="closeModal('commandsModal');ask(this.dataset.q)" data-q="Adoption ke liye kaun se documents chahiye"><div class="cmd-icon">🇮🇳</div><div class="cmd-text"><strong>"Adoption ke liye kaun se documents chahiye"</strong>Adoption rules and documents</div></div>
     </div>
     <div class="modal-footer"><button class="pb-btn pb-btn-indigo" style="width:100%;justify-content:center" onclick="closeModal('commandsModal')">Got it!</button></div>
-  </div>
-</div>
-
-<!-- ── SETTINGS MODAL ── -->
-<div class="modal-overlay" id="settingsModal" onclick="closeModalOutside(event,'settingsModal')">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>⚙️ Voice Assistant Settings</h3>
-      <button class="modal-close" onclick="closeModal('settingsModal')"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Assistant Name</label><input type="text" class="form-input" value="Pawie" placeholder="Give your assistant a name"></div>
-      <div class="form-group"><label class="form-label">Wake Word</label><select class="form-select"><option>Hey PawBook</option><option>Hey Pawie</option><option>OK PawBook</option><option>Custom</option></select></div>
-      <div class="form-group"><label class="form-label">Voice Response Speed</label><select class="form-select"><option>Normal</option><option>Slow</option><option>Fast</option></select></div>
-      <div class="form-group"><label class="form-label">Primary Language</label><select class="form-select"><option>Hinglish (Hindi + English)</option><option>English only</option><option>Hindi only</option><option>Bengali</option><option>Telugu</option><option>Tamil</option></select></div>
-      <div class="form-group"><label class="form-label">Default Pet Context</label><select class="form-select"><option>Rocky (Golden Retriever)</option><option>Mittens (Persian Cat)</option><option>Ask every time</option></select></div>
-    </div>
-    <div class="modal-footer">
-      <button class="pb-btn pb-btn-gray" onclick="closeModal('settingsModal')">Cancel</button>
-      <button class="pb-btn pb-btn-indigo" onclick="closeModal('settingsModal')"><i class="ti ti-check"></i> Save Settings</button>
-    </div>
   </div>
 </div>
 
@@ -649,190 +500,243 @@ input,textarea,select{font-family:'Inter',sans-serif}
 </nav>
 
 <script>
-// ── WAVEFORM INIT ──
-const wf = document.getElementById('waveform');
-const NUM_BARS = 32;
-for(let i=0;i<NUM_BARS;i++){
-  const b = document.createElement('div');
-  b.className = 'wave-bar';
-  b.style.height = '4px';
-  wf.appendChild(b);
+/* ============ PawBook Voice (page 40) ============
+   Real speech → the same PawBook Assistant as the 🤖 widget (/api/v1/assistant: your pets, vaccines due, appointments,
+   real listings & shop products, Google Maps places near you, orders, adoption rules; Claude when the server has the key).
+   Guests and offline moments get the widget's safe built-in answers. Answers can be read aloud in your language. */
+var API = 'https://pawbook.deemona.com/api/v1';
+var TOKEN = ''; try { TOKEN = localStorage.getItem('pb_token') || localStorage.getItem('pawbook_token') || localStorage.getItem('token') || ''; } catch (e) {}
+if (/^demo_/.test(TOKEN)) TOKEN = '';
+var ST = null, BUSY = false, PET = 'all', REC = null, LISTENING = false, HEARD = '', WAVE = null;
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function lsGet(k, d){ try { var v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+var SET = { tts: lsGet('pb_voice_tts', '1') === '1', auto: lsGet('pb_voice_auto', '1') === '1', lang: lsGet('pb_voice_lang', 'hinglish') };
+var LANGS = { hinglish: 'en-IN', en: 'en-IN', hi: 'hi-IN', bn: 'bn-IN', te: 'te-IN', ta: 'ta-IN', mr: 'mr-IN' };
+var SPECIES_EMOJI = function(s){ s = String(s || '').toLowerCase(); return /cat|kitten/.test(s) ? '🐱' : /bird|parrot|budgie/.test(s) ? '🐦' : /fish/.test(s) ? '🐟' : /rabbit|bunny/.test(s) ? '🐰' : /hamster|guinea/.test(s) ? '🐹' : '🐕'; };
+function kit(){ return window.pbAI && window.pbAI.kit; }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function fmt(t){ return kit() ? kit().fmt(t) : esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); }
+function $(id){ return document.getElementById(id); }
+function api(path, o){
+  o = o || {}; var h = {}; if (TOKEN) h.Authorization = 'Bearer ' + TOKEN; var body = o.body;
+  if (body) { h['Content-Type'] = 'application/json'; body = JSON.stringify(body); }
+  return fetch(API + path, {method: o.method || 'GET', headers: h, body: body}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok || j.success === false) { var e = new Error(j.message || 'HTTP ' + r.status); e.status = r.status; throw e; } return j.data !== undefined ? j.data : j; });
+  }, function(e){ e.status = 0; throw e; });
+}
+function ago(v){ var d = (Date.now() - new Date(v).getTime()) / 60000; if (!isFinite(d)) return ''; if (d < 1) return 'just now'; if (d < 60) return Math.round(d) + ' min ago'; if (d < 1440) return Math.round(d / 60) + ' hr ago'; var n = Math.round(d / 1440); return n === 1 ? 'yesterday' : n + ' days ago'; }
+function fdate(d){ var x = new Date(d + 'T00:00:00'); return isNaN(x) ? d : x.toLocaleDateString('en-IN', {weekday: 'short', day: 'numeric', month: 'short'}); }
+function today(off){ var d = new Date(Date.now() + (off || 0) * 864e5); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+/* ---------- start ---------- */
+(function waveInit(){ var wf = $('waveform'); for (var i = 0; i < 32; i++) { var b = document.createElement('div'); b.className = 'wave-bar'; b.style.height = '4px'; wf.appendChild(b); } })();
+function boot(){
+  var u = null; try { u = JSON.parse(localStorage.getItem('pb_user') || 'null'); } catch (e) {}
+  if (u && (u.full_name || u.name)) $('navAv').textContent = String(u.full_name || u.name).trim().charAt(0).toUpperCase();
+  document.querySelectorAll('#langBar .vc-lang-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.k === SET.lang); });
+  $('setTts').classList.toggle('off', !SET.tts); $('setTts').setAttribute('aria-checked', SET.tts);
+  $('setAuto').classList.toggle('off', !SET.auto); $('setAuto').setAttribute('aria-checked', SET.auto);
+  showLoc(); renderPets();
+  if (!SR) $('transcriptHint').textContent = 'Voice input needs Chrome or Edge — tap ⌨️ to type your question';
+  if (!TOKEN) { $('vcMode').textContent = 'Guest mode · sign in for your pets'; $('histList').innerHTML = '<div class="va-empty">Sign in to keep your questions.</div>';
+    $('remList').innerHTML = '<div class="va-empty"><a href="01_login.html">Sign in</a> to see vaccinations and vet visits coming up.</div>'; return; }
+  loadState();
+}
+function loadState(){
+  return api('/assistant/state').then(function(d){ ST = d; $('vcMode').textContent = 'AI Voice Assistant · ' + (d.ai ? 'AI on' : 'Ready'); renderPets(); renderHistory(); renderComing(); })
+    .catch(function(e){ if (e.status === 401) { TOKEN = ''; $('vcMode').textContent = 'Guest mode · sign in again'; } renderPets(); });
+}
+function showLoc(){ var k = kit(), l = k ? k.locLabel() : ''; if (!l) { try { var a = JSON.parse(localStorage.getItem('pb_assist_loc') || localStorage.getItem('pb_adopt_loc') || 'null'); if (a) l = [a.area, a.city].filter(Boolean).join(', '); } catch (e) {} }
+  $('locDesc').textContent = l ? '📍 ' + l : 'Not set — used for vets and places near you'; }
+function setLocation(){ if (kit()) { kit().setLocation(); var t = setInterval(function(){ showLoc(); if (!document.getElementById('pb-ai-panel') || !document.getElementById('pb-ai-panel').classList.contains('open')) clearInterval(t); }, 800); } }
+
+/* ---------- pets ---------- */
+function renderPets(){
+  var pets = (ST && ST.pets) || [], el = $('petSel');
+  if (!TOKEN) { el.innerHTML = '<a class="vc-pet-btn" href="01_login.html" style="text-decoration:none">🔐 Sign in for your pets</a>'; return; }
+  if (!pets.length) { el.innerHTML = ST ? '<a class="vc-pet-btn" href="36_pet_life_record.html" style="text-decoration:none">➕ Add your pet</a>' : ''; $('orbEmoji').textContent = '🐾'; return; }
+  if (PET !== 'all' && !pets.some(function(p){ return String(p.id) === PET; })) PET = 'all';
+  el.innerHTML = (pets.length > 1 ? '<button class="vc-pet-btn' + (PET === 'all' ? ' active' : '') + '" onclick="selectPet(\'all\')">🐾 All pets</button>' : '')
+    + pets.slice(0, 5).map(function(p){ return '<button class="vc-pet-btn' + (PET === String(p.id) || pets.length === 1 ? ' active' : '') + '" onclick="selectPet(\'' + esc(String(p.id)) + '\')">' + SPECIES_EMOJI(p.species) + ' ' + esc(p.name) + '</button>'; }).join('');
+  if (pets.length === 1) PET = String(pets[0].id);
+  var cur = pets.filter(function(p){ return String(p.id) === PET; })[0];
+  $('orbEmoji').textContent = cur ? SPECIES_EMOJI(cur.species) : '🐾';
+  $('vcSub').textContent = 'Ask anything about ' + (cur ? cur.name : pets.map(function(p){ return p.name; }).slice(0, 3).join(' & ')) + ' — vaccinations, vets near you, food, training, the shop and more';
+}
+function selectPet(id){ PET = id; renderPets(); }
+function petContext(text){   // "food" → "food (about Bruno)" so the answer fits the chosen pet
+  var pets = (ST && ST.pets) || []; if (PET === 'all' || !pets.length) return text;
+  var cur = pets.filter(function(p){ return String(p.id) === PET; })[0]; if (!cur) return text;
+  var named = pets.some(function(p){ return new RegExp('\\b' + String(p.name).replace(/[^\w ]/g, '') + '\\b', 'i').test(text); });
+  return named ? text : text + ' (about ' + cur.name + ')';
 }
 
-// ── STATE ──
-let isListening = false;
-let waveInterval = null;
-let currentPet = 'rocky';
-const petEmojis = {rocky:'🐕', mittens:'🐱', both:'🐾'};
-
-// ── MIC TOGGLE ──
-function toggleMic(){
-  isListening = !isListening;
-  const btn = document.getElementById('micBtn');
-  const icon = document.getElementById('micIcon');
-  const orb = document.getElementById('vcOrb');
-  const orbLabel = document.getElementById('orbLabel');
-  const fabBtn = document.getElementById('fabMic');
-  const fabIcon = document.getElementById('fabIcon');
-  const hint = document.getElementById('transcriptHint');
-  const txt = document.getElementById('transcriptText');
-
-  if(isListening){
-    btn.classList.add('active');
-    orb.classList.add('listening');
-    icon.className = 'ti ti-player-stop-filled';
-    fabIcon.className = 'ti ti-player-stop-filled';
-    orbLabel.textContent = 'Listening… speak now';
-    hint.textContent = '';
-    txt.textContent = '';
-    startWave();
-    // Simulate detecting voice after 2.5s
-    setTimeout(()=>{
-      if(isListening) simulateVoice();
-    }, 2500);
-  } else {
-    stopListening();
-  }
+/* ---------- sidebar: recent questions & coming up ---------- */
+function renderHistory(){
+  var list = ((ST && ST.messages) || []).filter(function(m){ return m.role === 'user'; }).slice(-8).reverse(), el = $('histList');
+  el.innerHTML = list.length ? list.map(function(m){ return '<div class="history-item" role="button" tabindex="0" data-q="' + esc(m.text) + '" onclick="ask(this.dataset.q)" onkeydown="if(event.key===\'Enter\')ask(this.dataset.q)"><div class="history-icon"><i class="ti ti-message-question"></i></div><div class="history-info"><div class="history-query">"' + esc(m.text.length > 70 ? m.text.slice(0, 68) + '…' : m.text) + '"</div><div class="history-time"><i class="ti ti-clock" style="font-size:11px"></i> ' + esc(ago(m.at)) + '</div></div></div>'; }).join('')
+    : '<div class="va-empty">Your questions will appear here.</div>';
+}
+function renderComing(){
+  var d = ST || {}, items = [], wk = today(7);
+  (d.due || []).forEach(function(v){ items.push({at: v.due, html: '<div class="reminder-item"><div class="reminder-dot" style="background:' + (v.overdue ? 'var(--pb-red)' : v.due <= wk ? 'var(--pb-amber)' : 'var(--pb-blue)') + '"></div><div class="reminder-info"><div class="reminder-title">💉 ' + esc(v.pet) + ' — ' + esc(v.vaccine) + '</div><div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> ' + (v.overdue ? 'Overdue since ' : 'Due ') + esc(fdate(v.due)) + '</div></div></div>'}); });
+  (d.appts || []).forEach(function(a){ items.push({at: a.date, html: '<div class="reminder-item"><div class="reminder-dot" style="background:var(--pb-green)"></div><div class="reminder-info"><div class="reminder-title">🩺 ' + esc(a.pet || 'Vet visit') + (a.vet ? ' — ' + esc(a.vet) : '') + '</div><div class="reminder-time"><i class="ti ti-clock" style="font-size:11px"></i> ' + esc(fdate(a.date)) + (a.time ? ', ' + esc(a.time) : '') + (a.clinic ? ' · ' + esc(a.clinic) : '') + '</div></div></div>'}); });
+  items.sort(function(a, b){ return a.at < b.at ? -1 : 1; });
+  $('remList').innerHTML = items.length ? items.slice(0, 6).map(function(x){ return x.html; }).join('')
+    : '<div class="va-empty">' + ((d.pets || []).length ? 'Nothing due in the next 60 days. ✅' : '<a href="36_pet_life_record.html">Add your pet</a> to track vaccinations and vet visits.') + '</div>';
+}
+function clearHistory(b){
+  if (!TOKEN) return;
+  if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Tap again'; setTimeout(function(){ b.dataset.sure = ''; b.textContent = 'Clear'; }, 4000); return; }
+  b.dataset.sure = ''; b.textContent = 'Clear';
+  api('/assistant/history', {method: 'DELETE'}).then(function(){ if (ST) ST.messages = []; renderHistory(); $('conversationArea').innerHTML = ''; $('vcResponse').style.display = 'none'; }).catch(function(){});
 }
 
-function stopListening(){
-  isListening = false;
-  const btn = document.getElementById('micBtn');
-  const icon = document.getElementById('micIcon');
-  const orb = document.getElementById('vcOrb');
-  const orbLabel = document.getElementById('orbLabel');
-  const fabIcon = document.getElementById('fabIcon');
-  btn.classList.remove('active');
-  orb.classList.remove('listening');
-  icon.className = 'ti ti-microphone';
-  fabIcon.className = 'ti ti-microphone';
-  orbLabel.textContent = 'Tap orb or mic to speak';
-  stopWave();
+/* ---------- settings & language ---------- */
+function toggleSetting(k){
+  SET[k] = !SET[k]; lsSet(k === 'tts' ? 'pb_voice_tts' : 'pb_voice_auto', SET[k] ? '1' : '0');
+  var el = $(k === 'tts' ? 'setTts' : 'setAuto'); el.classList.toggle('off', !SET[k]); el.setAttribute('aria-checked', SET[k]);
+  if (k === 'tts' && !SET.tts && window.speechSynthesis) speechSynthesis.cancel();
 }
-
-function startWave(){
-  waveInterval = setInterval(()=>{
-    document.querySelectorAll('.wave-bar').forEach((b,i)=>{
-      const h = isListening ? (Math.random() * 32 + 4) : 4;
-      b.style.height = h + 'px';
-      b.classList.toggle('active', isListening);
-    });
-  }, 80);
-}
-
-function stopWave(){
-  clearInterval(waveInterval);
-  document.querySelectorAll('.wave-bar').forEach(b=>{
-    b.style.height = '4px';
-    b.classList.remove('active');
-  });
-}
-
-// ── PET SELECT ──
-function selectPet(pet, el){
-  currentPet = pet;
-  document.querySelectorAll('.vc-pet-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('orbEmoji').textContent = petEmojis[pet];
-}
-
-// ── LANGUAGE ──
 function setLang(el){
-  document.querySelectorAll('.vc-lang-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
+  SET.lang = el.dataset.k; lsSet('pb_voice_lang', SET.lang);
+  document.querySelectorAll('#langBar .vc-lang-btn').forEach(function(b){ b.classList.toggle('active', b === el); });
+  $('transcriptHint').textContent = SR ? 'Language: ' + el.textContent.trim() + ' — tap the mic and speak' : $('transcriptHint').textContent;
 }
 
-// ── SIMULATE VOICE DETECTION ──
-const sampleQueries = [
-  "Is Rocky due for vaccination?",
-  "Rocky seems lethargic today",
-  "Log Rocky's weight as 28 kg",
-  "Find nearest vet open now",
-  "Set medicine reminder for Mittens",
-  "What should Rocky eat today?",
-];
+/* ---------- listening ---------- */
+function setOrb(state, label){
+  var orb = $('vcOrb'), btn = $('micBtn');
+  orb.classList.toggle('listening', state === 'listening'); btn.classList.toggle('active', state === 'listening');
+  $('micIcon').className = state === 'listening' ? 'ti ti-player-stop-filled' : 'ti ti-microphone';
+  $('fabIcon').className = state === 'listening' ? 'ti ti-player-stop-filled' : 'ti ti-microphone';
+  $('orbLabel').textContent = label || (state === 'listening' ? 'Listening… speak now' : state === 'thinking' ? 'Thinking…' : state === 'speaking' ? 'Speaking… tap ⏹ to stop' : 'Tap orb or mic to speak');
+  if (state === 'listening' || state === 'speaking') startWave(); else stopWave();
+}
+function startWave(){ stopWave(); WAVE = setInterval(function(){ document.querySelectorAll('.wave-bar').forEach(function(b){ b.style.height = (Math.random() * 32 + 4) + 'px'; b.classList.add('active'); }); }, 90); }
+function stopWave(){ clearInterval(WAVE); WAVE = null; document.querySelectorAll('.wave-bar').forEach(function(b){ b.style.height = '4px'; b.classList.remove('active'); }); }
+function toggleMic(){
+  if (LISTENING) { try { REC.stop(); } catch (e) {} return; }
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  if (!SR) { $('transcriptHint').textContent = 'Voice input isn\'t available in this browser — type your question instead.'; openModal('textInputModal'); return; }
+  if (BUSY) return;
+  REC = new SR(); REC.lang = LANGS[SET.lang] || 'en-IN'; REC.interimResults = true; REC.continuous = false; REC.maxAlternatives = 1;
+  HEARD = ''; var errored = false;
+  REC.onstart = function(){ LISTENING = true; setOrb('listening'); $('transcriptText').textContent = ''; $('transcriptHint').textContent = ''; };
+  REC.onresult = function(e){ var fin = '', inter = ''; for (var i = 0; i < e.results.length; i++) { if (e.results[i].isFinal) fin += e.results[i][0].transcript; else inter += e.results[i][0].transcript; }
+    HEARD = (fin || HEARD); $('transcriptText').textContent = '"' + (fin + (inter ? ' ' + inter : '')).trim() + '"'; };
+  REC.onerror = function(e){ errored = true; LISTENING = false; setOrb('idle');
+    $('transcriptHint').textContent = e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'Microphone permission is blocked — allow it in your browser\'s site settings, or type instead.' : e.error === 'no-speech' ? 'I didn\'t hear anything — tap the mic and try again.' : e.error === 'network' ? 'Voice recognition needs an internet connection — try again or type instead.' : 'Couldn\'t listen just now — try again or type instead.'; };
+  REC.onend = function(){ LISTENING = false; if (errored) return; setOrb('idle');
+    var q = HEARD.trim(); if (!q) { $('transcriptHint').textContent = 'I didn\'t catch that — tap the mic and try again.'; return; }
+    if (SET.auto) ask(q, true); else { $('textQueryInput').value = q; openModal('textInputModal'); } };
+  try { REC.start(); } catch (e) { setOrb('idle'); }
+}
+function stopListening(){ if (LISTENING && REC) { try { REC.abort(); } catch (e) {} } LISTENING = false; setOrb('idle'); }
+function stopAll(){ stopListening(); if (window.speechSynthesis) speechSynthesis.cancel(); setOrb('idle'); }
 
-const aiResponses = {
-  "Is Rocky due for vaccination?": "🐕 <strong>Rocky's vaccination status:</strong><br>✅ Rabies — Done (Jan 2026, next due Jan 2027)<br>⚠️ Leptospirosis booster — Due in <strong>18 days</strong> (Nov 29, 2026)<br>✅ Parvovirus — Done (Feb 2026)<br><br>I've added a reminder for the Leptospirosis booster. Would you like me to book an appointment with Dr. Sharma?",
-  "Rocky seems lethargic today": "🩺 <strong>AI Health Assessment for Rocky:</strong><br>Lethargy can be caused by several factors. Key questions:<br>• Any change in eating or drinking habits?<br>• Any vomiting or loose stools?<br>• Any recent activity changes?<br><br>⚠️ If lethargy persists over 24 hours, a vet visit is recommended. <strong>Nearest vet: Dr. Sharma Pet Clinic — 1.2 km, open now.</strong>",
-  "Log Rocky's weight as 28 kg": "✅ <strong>Weight logged successfully!</strong><br>Rocky — 28 kg on Nov 11, 2026<br>📉 Down 0.5 kg from last entry (28.5 kg, Oct 25)<br>📊 Healthy range for Golden Retriever: 25–34 kg ✓<br><br>Keep maintaining his current diet. I'll add this to Rocky's health record.",
-  "Find nearest vet open now": "🏥 <strong>Nearest vets open right now:</strong><br>1. <strong>Dr. Sharma Pet Clinic</strong> — 1.2 km · Open till 9 PM · ⭐ 4.8<br>2. <strong>PawCare Animal Hospital</strong> — 2.8 km · Open 24 hrs · ⭐ 4.6<br>3. <strong>Green Paws Vet</strong> — 3.4 km · Open till 8 PM · ⭐ 4.5<br><br>Would you like me to call or book an appointment?",
-  "Set medicine reminder for Mittens": "⏰ <strong>Reminder set for Mittens!</strong><br>Daily medicine reminder — 8:00 PM<br>Repeat: Every day<br>Push notification: ON<br><br>✅ I'll notify you every evening at 8 PM. You can say 'Mark Mittens' medicine done' to log each dose.",
-  "What should Rocky eat today?": "🍖 <strong>Rocky's diet for today:</strong><br>Weight: 28 kg | Activity: Moderate<br><br>✅ Recommended:<br>• Morning: 200g dry kibble + 50g boiled chicken<br>• Evening: 180g dry kibble + 1 tbsp pumpkin puree<br><br>❌ Avoid today: No table scraps — his last checkup showed slightly elevated cholesterol.<br>💧 Fresh water: Keep full at all times.",
-};
-
-function simulateVoice(){
-  if(!isListening) return;
-  const query = sampleQueries[Math.floor(Math.random() * sampleQueries.length)];
-  const txt = document.getElementById('transcriptText');
-  const hint = document.getElementById('transcriptHint');
-
-  // Show transcript
-  txt.textContent = '"' + query + '"';
-  hint.textContent = '';
-  stopListening();
-
-  setTimeout(()=>{ showAIResponse(query, aiResponses[query] || "I'm processing your query about " + (currentPet === 'rocky' ? 'Rocky' : 'Mittens') + ". Please wait a moment…"); }, 600);
+/* ---------- speaking ---------- */
+function speakLang(t){ return /[ঀ-৿]/.test(t) ? 'bn-IN' : /[ఀ-౿]/.test(t) ? 'te-IN' : /[஀-௿]/.test(t) ? 'ta-IN' : /[ऀ-ॿ]/.test(t) ? (SET.lang === 'mr' ? 'mr-IN' : 'hi-IN') : 'en-IN'; }
+function speak(text){
+  if (!window.speechSynthesis || !text) return;
+  var clean = String(text).replace(/\*\*(.+?)\*\*/g, '$1').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, '').replace(/•/g, '').replace(/\n+/g, '. ').replace(/\s+/g, ' ').trim().slice(0, 700);
+  if (!clean) return;
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(clean), lang = speakLang(clean), vs = speechSynthesis.getVoices();
+  var v = vs.filter(function(x){ return x.lang === lang; })[0] || vs.filter(function(x){ return x.lang && x.lang.indexOf(lang.split('-')[0]) === 0; })[0] || vs.filter(function(x){ return x.lang === 'en-IN'; })[0];
+  if (v) u.voice = v; u.lang = lang; u.rate = 1;
+  u.onstart = function(){ setOrb('speaking'); }; u.onend = u.onerror = function(){ if (!LISTENING) setOrb('idle'); };
+  speechSynthesis.speak(u);
 }
 
-function quickCommand(btn, text){
-  const txt = document.getElementById('transcriptText');
-  const hint = document.getElementById('transcriptHint');
-  txt.textContent = '"' + text + '"';
-  hint.textContent = '';
-  const response = aiResponses[text] || "Processing: <em>" + text + "</em><br>AI is analyzing Rocky's health records to answer this query…";
-  setTimeout(()=>{ showAIResponse(text, response); }, 500);
+/* ---------- asking ---------- */
+var ACT_ICON = function(u){ return /^tel:/.test(u) ? '📞 ' : /sos=1/.test(u) ? '🚨 ' : ''; };
+function actHTML(a, gid){
+  var k = kit();
+  if (a.url === '#gnear') return '';
+  if (a.url === '#location') return '<button class="va-act" onclick="setLocation()">📍 ' + esc(a.label) + '</button>';
+  if (a.url === '#support') return '<a class="va-act" href="35_ai_agent.html?support=1">✉️ ' + esc(a.label) + '</a>';
+  if (a.url === '#tickets') return '<a class="va-act" href="35_ai_agent.html?tickets=1">🎫 ' + esc(a.label) + '</a>';
+  if (a.url === '#login') return '<a class="va-act" href="01_login.html">🔐 ' + esc(a.label) + '</a>';
+  if (!(k ? k.safeUrl(a.url) : /^(tel:112$|[0-9]{2}_[a-z_0-9]+\.html([?#][^"'<>\s]*)?$)/.test(a.url))) return '';
+  return '<a class="va-act' + (/sos=1|^tel:/.test(a.url) ? ' sos' : '') + '" href="' + esc(a.url) + '">' + ACT_ICON(a.url) + esc(a.label) + ' ↗</a>';
 }
-
-function showAIResponse(userText, aiText){
-  const area = document.getElementById('conversationArea');
-  const resp = document.getElementById('vcResponse');
-  resp.style.display = 'block';
-
-  // User msg
-  const userMsg = document.createElement('div');
-  userMsg.className = 'vc-msg vc-msg-user';
-  userMsg.innerHTML = `<div class="vc-msg-avatar vc-user-avatar">A</div><div class="vc-bubble vc-bubble-user">${userText}</div>`;
-  area.appendChild(userMsg);
-
-  // Typing indicator
-  const typingDiv = document.createElement('div');
-  typingDiv.className = 'vc-msg';
-  typingDiv.id = 'typingIndicator';
-  typingDiv.innerHTML = `<div class="vc-msg-avatar vc-ai-avatar"><i class="ti ti-microphone" style="font-size:14px;color:#fff"></i></div><div class="vc-typing"><div class="vc-typing-dot"></div><div class="vc-typing-dot"></div><div class="vc-typing-dot"></div></div>`;
-  area.appendChild(typingDiv);
-  area.scrollTop = area.scrollHeight;
-
-  setTimeout(()=>{
-    document.getElementById('typingIndicator')?.remove();
-    const aiMsg = document.createElement('div');
-    aiMsg.className = 'vc-msg';
-    aiMsg.innerHTML = `<div class="vc-msg-avatar vc-ai-avatar"><i class="ti ti-microphone" style="font-size:14px;color:#fff"></i></div><div class="vc-bubble vc-bubble-ai">${aiText}</div>`;
-    area.appendChild(aiMsg);
-    area.scrollTop = area.scrollHeight;
-  }, 1600);
+var GN = 0;
+function addMsg(role, html){
+  var area = $('conversationArea'); $('vcResponse').style.display = 'block';
+  var d = document.createElement('div'); d.className = 'vc-msg' + (role === 'user' ? ' vc-msg-user' : '');
+  d.innerHTML = role === 'user' ? '<div class="vc-msg-avatar vc-user-avatar">' + esc($('navAv').textContent || 'Y') + '</div><div class="vc-bubble vc-bubble-user">' + html + '</div>'
+    : '<div class="vc-msg-avatar vc-ai-avatar"><i class="ti ti-paw" style="font-size:14px;color:#fff"></i></div><div class="va-body">' + html + '</div>';
+  area.appendChild(d); d.scrollIntoView({behavior: 'smooth', block: 'nearest'}); return d;
 }
-
-// ── TEXT QUERY ──
-function submitTextQuery(){
-  const input = document.getElementById('textQueryInput');
-  const text = input.value.trim();
-  if(!text) return;
-  closeModal('textInputModal');
-  document.getElementById('transcriptText').textContent = '"' + text + '"';
-  document.getElementById('transcriptHint').textContent = '';
-  const response = aiResponses[text] || "Processing: <em>" + text + "</em><br>AI is analyzing your pet records to answer this query…";
-  setTimeout(()=>{ showAIResponse(text, response); }, 400);
-  input.value = '';
+function botHTML(m){
+  var k = kit(), g = m.g || ((m.actions || []).filter(function(a){ return a.url === '#gnear' && a.g; })[0] || {}).g, gid = null;
+  var h = '<div class="vc-bubble vc-bubble-ai">' + fmt(m.text) + '</div>';
+  if (m.cards && m.cards.length && k) h += '<div class="va-cards">' + k.cardsHTML(m.cards) + '</div>';
+  if (g) { gid = 'vg' + (++GN); h += '<div class="va-cards" id="' + gid + '"><div class="pbw-gload">⏳ Looking up ' + esc(g.word) + ' near ' + esc(g.near) + ' on Google Maps…</div></div>'; }
+  var acts = (m.actions || []).map(function(a){ return actHTML(a); }).join('');
+  if (acts) h += '<div class="va-acts">' + acts + '</div>';
+  if (m.suggestions && m.suggestions.length) h += '<div class="va-acts">' + m.suggestions.slice(0, 3).map(function(s){ return '<button class="va-sug" data-q="' + esc(s) + '" onclick="ask(this.dataset.q)">' + esc(s) + '</button>'; }).join('') + '</div>';
+  if (m.note) h += '<div class="va-note">' + esc(m.note) + '</div>';
+  return {html: h, g: g, gid: gid};
 }
-document.getElementById('textQueryInput')?.addEventListener('keydown', e=>{
-  if(e.key === 'Enter') submitTextQuery();
-});
+function showBot(m, spoken){
+  var b = botHTML(m), el = addMsg('bot', b.html);
+  if (b.g && kit()) kit().nearby(b.g).then(function(h){ var x = document.getElementById(b.gid); if (x) x.innerHTML = h; });
+  if (SET.tts || spoken) speak(m.text);
+  return el;
+}
+// things the voice page can't do by itself yet — say so honestly and point to the right page
+function localOnly(t){
+  if (/\b(log|record|note|save|update|add)\b.*\b(weight|wt|kg|kilo)/i.test(t) || /\bweigh(s|t)? (is|was)\b/i.test(t))
+    return {text: 'I can\'t save weights by voice yet. Add the weight on **My pets & health records** — it keeps every entry for your pet.', actions: [{label: 'My pets & health records', url: '36_pet_life_record.html'}]};
+  if (/\b(remind|reminder|alarm|alert me)\b/i.test(t))
+    return {text: 'I can\'t set reminders by voice yet. Vaccination reminders are automatic: add each dose on **Vaccinations** with its next due date and PawBook reminds you before it\'s due.', actions: [{label: 'Vaccinations', url: '10_vaccination.html'}, {label: 'My pets & health records', url: '36_pet_life_record.html'}]};
+  if (/\b(medicine|tablet|dose)\b.*\b(given|done|gave)\b|\bmark\b.*\b(medicine|dose)\b/i.test(t))
+    return {text: 'I can\'t log medicine doses by voice yet. Keep your pet\'s medicines on **My pets & health records**.', actions: [{label: 'My pets & health records', url: '36_pet_life_record.html'}]};
+  return null;
+}
+function ask(text, spoken){
+  text = String(text || '').trim().slice(0, 1000); if (!text || BUSY) return;
+  stopListening(); if (window.speechSynthesis) speechSynthesis.cancel();
+  $('transcriptText').textContent = '"' + text + '"'; $('transcriptHint').textContent = '';
+  addMsg('user', esc(text));
+  var k = kit(), intent = k ? k.intent(text) : 'general';
+  var lo = localOnly(text);
+  if (intent === 'emergency' && k) { showBot(k.local(text), spoken); remember(text); return; }   // never wait for the network
+  if (lo) { showBot(lo, spoken); return; }
+  if (!TOKEN) { var r = k ? k.local(text) : {text: 'Please sign in to use the voice assistant.', actions: []}; r.actions = [{label: 'Sign in', url: '01_login.html'}].concat(r.actions || []).slice(0, 4); showBot(r, spoken); return; }
+  BUSY = true; setOrb('thinking');
+  var typing = addMsg('bot', '<div class="vc-typing"><div class="vc-typing-dot"></div><div class="vc-typing-dot"></div><div class="vc-typing-dot"></div></div>');
+  var loc = k ? k.loc() : null;
+  api('/assistant/chat', {method: 'POST', body: {message: petContext(text), location: loc || undefined}}).then(function(d){
+    typing.remove();
+    var m = {text: d.text, cards: d.cards, actions: d.actions, suggestions: d.suggestions};
+    if (k && d.source !== 'ai' && k.advice[intent] && d.intent !== intent && !(d.cards && d.cards.length)) m = k.local(text);
+    showBot(m, spoken); remember(text);
+    if (['vacc', 'appts', 'mypets'].indexOf(d.intent) >= 0) loadState();
+  }).catch(function(e){
+    typing.remove();
+    if (e.status === 401) { TOKEN = ''; $('vcMode').textContent = 'Guest mode · sign in again'; }
+    var r = k ? k.local(text) : {text: '', actions: []};
+    r.text = (e.status === 429 ? 'You\'re asking very fast — please wait a minute. Meanwhile, a general answer:\n\n' : e.status === 401 ? 'Your sign-in has expired, so here\'s a general answer:\n\n' : 'I couldn\'t reach PawBook just now, so here\'s a general answer:\n\n') + r.text;
+    r.note = 'General answer — not using your pet\'s records.'; showBot(r, spoken);
+  }).then(function(){ BUSY = false; if (!LISTENING && !(window.speechSynthesis && speechSynthesis.speaking)) setOrb('idle'); });
+}
+function remember(text){ if (!ST) return; ST.messages = (ST.messages || []).concat([{role: 'user', text: text, at: new Date().toISOString()}]); renderHistory(); }
 
-// ── MODAL ──
-function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
-function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
-function closeModalOutside(e,id){if(e.target.id===id)closeModal(id)}
+/* ---------- typing ---------- */
+function submitTextQuery(){ var i = $('textQueryInput'), t = i.value.trim(); if (!t) { i.focus(); return; } closeModal('textInputModal'); i.value = ''; ask(t); }
+$('textQueryInput').addEventListener('keydown', function(e){ if (e.key === 'Enter') submitTextQuery(); });
+
+/* ---------- modal ---------- */
+function openModal(id){ $(id).classList.add('open'); document.body.style.overflow = 'hidden'; if (id === 'textInputModal') setTimeout(function(){ $('textQueryInput').focus(); }, 50); }
+function closeModal(id){ $(id).classList.remove('open'); document.body.style.overflow = ''; }
+function closeModalOutside(e, id){ if (e.target.id === id) closeModal(id); }
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { document.querySelectorAll('.modal-overlay.open').forEach(function(m){ closeModal(m.id); }); } });
+window.addEventListener('storage', function(e){ if (e.key === 'pb_assist_loc') showLoc(); });
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 </script>
 
 <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
@@ -941,7 +845,7 @@ function closeModalOutside(e,id){if(e.target.id===id)closeModal(id)}
       }catch(e){}
     })();
   </script>
-<script src="pawbook-ai-widget.v4.js?v=8"></script>
+<script src="pawbook-ai-widget.v4.js?v=9"></script>
 <script>/* PB admin-only sidebar link */(function(){try{var t=localStorage.getItem('pb_token');if(!t)return;var u=JSON.parse(localStorage.getItem('pb_user')||'null')||{};
 var A='https://pawbook.deemona.com/api/v1/shop/admin/',o={headers:{Authorization:'Bearer '+t},credentials:'include'};
 var g=function(p){return fetch(A+p,o).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});};
